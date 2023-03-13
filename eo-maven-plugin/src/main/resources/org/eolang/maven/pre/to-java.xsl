@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -198,7 +198,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.tuple'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree());</xsl:text>
     </xsl:if>
@@ -214,7 +214,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="class" mode="equals-and-hashCode">
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.array'">
+    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.tuple'">
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:text>@Override</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
@@ -273,7 +273,7 @@ SOFTWARE.
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="array">
+  <xsl:template match="tuple">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'a'"/>
     <xsl:value-of select="$indent"/>
@@ -518,7 +518,7 @@ SOFTWARE.
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
     <xsl:param name="rho"/>
-    <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and name()!='tuple' and position() &gt; $skip][not(@level)]">
       <xsl:if test="position() = 1">
         <xsl:value-of select="$indent"/>
         <xsl:value-of select="$name"/>
@@ -545,7 +545,7 @@ SOFTWARE.
         </xsl:with-param>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="./*[name()!='value' and name()!='array' and position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and name()!='tuple' and position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -572,7 +572,7 @@ SOFTWARE.
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
-    <xsl:apply-templates select="value|array">
+    <xsl:apply-templates select="value|tuple">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>

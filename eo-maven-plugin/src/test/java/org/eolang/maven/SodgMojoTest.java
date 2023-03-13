@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,22 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
+import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.Description;
 import org.hamcrest.MatcherAssert;
@@ -58,7 +62,7 @@ final class SodgMojoTest {
 
     @Test
     @Disabled
-    void bigSlowTest() throws Exception {
+    void convertsToGraph() throws Exception {
         final StringBuilder program = new StringBuilder(1000);
         for (int idx = 0; idx < 40; ++idx) {
             for (int spc = 0; spc < idx; ++spc) {
@@ -128,42 +132,21 @@ final class SodgMojoTest {
      * @return The graph
      * @throws IOException If fails
      */
-    private static XML toGraph(final String code, final String inclusion) throws IOException {
-        final Path temp = Files.createTempDirectory("eo");
-        final Path src = temp.resolve("foo/main.eo");
-        new Home(temp).save(code, temp.relativize(src));
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo.main")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, src.toString());
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
-        new Moja<>(SodgMojo.class)
-            .with("generateSodgXmlFiles", true)
-            .with("generateXemblyFiles", true)
-            .with("generateGraphFiles", true)
-            .with("generateDotFiles", true)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .with("generateDotFiles", true)
+    private static XML toGraph(final String code, final String inclusion) throws Exception {
+        final Map<String, Path> res = new FakeMaven(Files.createTempDirectory("eo"))
             .with("sodgIncludes", new SetOf<>(inclusion))
-            .execute();
+            .withProgram(code)
+            .execute(new FakeMaven.Sodg())
+            .result();
+        Logger.debug(
+            SodgMojoTest.class,
+            "XML: %s",
+            new TextOf(
+                new InputOf(res.get(String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)))
+            ).asString()
+        );
         return new XMLDocument(
-            target.resolve(
-                String.format("%s/foo/main.sodg.graph.xml", SodgMojo.DIR)
-            )
+            res.get(String.format("target/%s/foo/x/main.sodg.graph.xml", SodgMojo.DIR))
         );
     }
 
@@ -212,7 +195,9 @@ final class SodgMojoTest {
 
         @Override
         public void describeTo(final Description desc) {
-            desc.appendText(this.failure);
+            desc.appendText(this.failure)
+                .appendText(" in this XML:\n")
+                .appendText(this.graph.toString());
         }
 
         @Override
@@ -280,7 +265,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("Δ=")) {
+                if (sub.startsWith("δ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -305,7 +290,7 @@ final class SodgMojoTest {
                     }
                     continue;
                 }
-                if (sub.startsWith("λ=")) {
+                if (sub.startsWith("τ=")) {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
@@ -315,16 +300,20 @@ final class SodgMojoTest {
                         );
                     }
                     final String data = sub.substring(2);
+                    final String hex = SodgMojoTest.ExistsIn.bytesToHex(
+                        data.getBytes(StandardCharsets.UTF_8)
+                    );
                     final boolean matches = !node.xpath(
                         String.format(
-                            "data[text() = '%s']/text()", data
+                            "data[text() = '%s']/text()",
+                            hex
                         )
                     ).isEmpty();
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s'",
-                                node.xpath("data/text()").get(0), vertex, data
+                                "Lambda '%s' at '%s' is not equal to '%s' (%s)",
+                                node.xpath("data/text()").get(0), vertex, data, hex
                             )
                         );
                     }
@@ -352,6 +341,18 @@ final class SodgMojoTest {
             }
         }
 
+        /**
+         * Bytes to HEX.
+         * @param bytes Bytes.
+         * @return Hexadecimal value as string.
+         */
+        private static String bytesToHex(final byte... bytes) {
+            final StringJoiner out = new StringJoiner("-");
+            for (final byte bty : bytes) {
+                out.add(String.format("%02X", bty));
+            }
+            return out.toString();
+        }
     }
 
 }

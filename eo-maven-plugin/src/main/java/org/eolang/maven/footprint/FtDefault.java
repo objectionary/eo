@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,11 @@
 package org.eolang.maven.footprint;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -34,6 +38,8 @@ import org.eolang.maven.util.Home;
 
 /**
  * Default implementation of a Footprint.
+ * Program footprint of EO compilation process.
+ * <p>The footprint consists of file in {@link #main} folder</p>
  * @since 1.0
  */
 public final class FtDefault implements Footprint {
@@ -45,10 +51,10 @@ public final class FtDefault implements Footprint {
 
     /**
      * Ctor.
-     * @param main Main location.
+     * @param path Main location.
      */
-    public FtDefault(final Path main) {
-        this.main = main;
+    public FtDefault(final Path path) {
+        this.main = path;
     }
 
     @Override
@@ -67,5 +73,19 @@ public final class FtDefault implements Footprint {
             new IoChecked<>(content).value(),
             this.main.relativize(new Place(program).make(this.main, ext))
         );
+    }
+
+    @Override
+    public List<Path> list(final String ext) throws IOException {
+        final List<Path> res;
+        if (Files.exists(this.main)) {
+            res = Files.walk(this.main)
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(ext))
+                .collect(Collectors.toList());
+        } else {
+            res = Collections.emptyList();
+        }
+        return res;
     }
 }

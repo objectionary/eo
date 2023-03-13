@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.eolang.maven.objectionary;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -35,6 +36,7 @@ import org.eolang.maven.util.Rel;
  * Objectionary stored locally.
  *
  * @since 1.0
+ * @checkstyle IllegalCatchCheck (150 lines)
  */
 public final class OyHome implements Objectionary {
     /**
@@ -82,9 +84,21 @@ public final class OyHome implements Objectionary {
                 .resolve(this.version),
             "eo"
         );
-        if (!file.toFile().exists()) {
+        if (!Files.exists(file)) {
             throw new FileNotFoundException(name);
         }
         return new InputOf(file);
+    }
+
+    @Override
+    public boolean contains(final String name) {
+        return Files.exists(
+            new Place(name).make(
+                this.home
+                    .resolve("pulled")
+                    .resolve(this.version),
+                "eo"
+            )
+        );
     }
 }

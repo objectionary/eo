@@ -20,7 +20,7 @@
 **EO** (stands for [Elegant Objects](http://www.yegor256.com/elegant-objects.html) or
 ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language based on
-[φ-calculus](https://arxiv.org/abs/2111.13384).
+[𝜑-calculus](https://arxiv.org/abs/2111.13384).
 We're aware of popular semi-OOP languages and we don't think
 they are good enough, including
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
@@ -29,17 +29,8 @@ they are good enough, including
 [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk),
 [Python](https://en.wikipedia.org/wiki/Python_%28programming_language%29),
 [PHP](https://en.wikipedia.org/wiki/PHP),
-[C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29):
-all of them have something we don't tolerate.
-
-EO is not planning to become a mainstream language&mdash;this is not what
-we want. Our main goal is to prove to ourselves that true object-oriented
-programming is practically possible. Not just in books and abstract
-examples, but in real code that works. That's why EO is being created&mdash;to
-put all that "crazy" pure object-oriented ideas into practice and
-see whether they can work.
-
-These things we **don't** tolerate:
+[C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
+All of them have something **we don't tolerate**:
 
   * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))

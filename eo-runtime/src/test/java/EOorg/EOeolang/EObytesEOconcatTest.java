@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 public final class EObytesEOconcatTest {
 
     @Test
-    public void concatBytes() {
+    public void concatenatesBytes() {
         final Phi current = new EOstring$EOas_bytes(new Data.ToPhi("привет "));
         final Phi provided = new EOstring$EOas_bytes(new Data.ToPhi("mr. ㄤㄠ!"));
         final Phi phi = new PhMethod(

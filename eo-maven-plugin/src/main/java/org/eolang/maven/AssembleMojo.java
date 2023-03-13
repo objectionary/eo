@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -41,11 +42,6 @@ import org.eolang.maven.objectionary.Objectionary;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
- * @todo #1323:30m Create `ProbeMojo` and include it into assemble cycle. It
- *  has to be included between discover and pull steps.
- *  New mojo needs to go through all `probe` metas in XMIRs, try to locate the
- *  objects pointed by `probe` in Objectionary and if found register them in
- *  `foreign.csv`.
  */
 @Mojo(
     name = "assemble",
@@ -95,6 +91,11 @@ public final class AssembleMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.LongVariable")
     public static final String ATTR_DISCOVERED_AT = "discovered-at";
+
+    /**
+     * Tojo ATTR.
+     */
+    public static final String ATTR_PROBED = "probed";
 
     /**
      * Tojo ATTR.
@@ -224,6 +225,28 @@ public final class AssembleMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
+    /**
+     * If set to TRUE, the exception on exit will be printed in details
+     * to the log.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.29.0
+     */
+    @Parameter(property = "eo.unrollExitError")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean unrollExitError = true;
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * It is the predefined maven property as  MavenProject, MavenSession, MojoExecution, etc.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
@@ -235,6 +258,7 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(ParseMojo.class),
             new Moja<>(OptimizeMojo.class),
             new Moja<>(DiscoverMojo.class),
+            new Moja<>(ProbeMojo.class),
             new Moja<>(PullMojo.class),
             new Moja<>(ResolveMojo.class),
             new Moja<>(MarkMojo.class),
@@ -274,6 +298,7 @@ public final class AssembleMojo extends SafeMojo {
             AssembleMojo.ATTR_XMIR,
             AssembleMojo.ATTR_XMIR2,
             AssembleMojo.ATTR_DISCOVERED,
+            AssembleMojo.ATTR_PROBED,
         };
         final Collection<String> parts = new LinkedList<>();
         for (final String attr : attrs) {

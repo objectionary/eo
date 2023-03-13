@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.64.1</version>
+    <version>0.65.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -62,7 +62,7 @@ SOFTWARE.
           </execution>
         </executions>
         <configuration>
-          <withRuntimeDependency>false</withRuntimeDependency>
+          <unrollExitError>true</unrollExitError>
           <sodgIncludes>
             <o>org.eolang.error</o>
           </sodgIncludes>

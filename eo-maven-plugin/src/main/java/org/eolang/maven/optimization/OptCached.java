@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,11 @@ package org.eolang.maven.optimization;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Place;
+import org.eolang.maven.footprint.FtDefault;
 
 /**
  * The cached optimization.
@@ -74,9 +74,11 @@ public final class OptCached implements Optimization {
                 optimized = new XMLDocument(path);
             } else {
                 optimized = this.delegate.apply(xml);
-                Files.createDirectories(path.getParent());
-                Files.createFile(path);
-                Files.write(path, optimized.toString().getBytes(StandardCharsets.UTF_8));
+                new FtDefault(this.folder).save(
+                    xml.xpath("/program/@name").get(0),
+                    AssembleMojo.ATTR_XMIR,
+                    optimized::toString
+                );
             }
             return optimized;
         } catch (final IOException ex) {

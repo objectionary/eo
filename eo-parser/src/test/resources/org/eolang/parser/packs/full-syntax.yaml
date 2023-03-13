@@ -5,10 +5,6 @@ tests:
   - /program/metas/meta[head='foo' and tail='']
   - //o[@base='bool']
   - //o[@base='string']
-  - //o[@base='string' and text()='\t']
-  - //o[@base='float' and text()='500.43']
-  - //o[@base='int' and text()='31']
-  - //o[@base='string' and text()='Hello, друг!']
   - //o[@name='hello' and @const]
   - //o[@as='i']
   - //o[@base='&']
@@ -16,8 +12,6 @@ tests:
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@vararg and @name='a']]
-  - //o[@base='float' and text()='-2400.0']
-  - //o[@base='float' and text()='7.33E-10']
 eo: |
   # The purpose of this test case is to make
   # sure all possible syntax scenarios can
@@ -42,6 +36,8 @@ eo: |
       $.plus.@ 5.< > i
       third:foo > x...!
         $:^
+        <.
+          z
         f 12 false
           (((t' 22) r:t 8.54 "yes".< "\t").print 88 0x1f):hey TRUE.< FALSE > a!
             # This object is also very good

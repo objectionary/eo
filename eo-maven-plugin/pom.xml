@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.28.11</version>
+      <version>0.29.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -85,25 +85,25 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.8.6</version>
+      <version>3.9.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.8.6</version>
+      <version>3.9.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.8.6</version>
+      <version>3.9.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.7.0</version>
+      <version>3.8.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -115,7 +115,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.8.6</version>
+      <version>3.9.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -168,7 +168,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.16.0</version>
+      <version>0.17.0</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -339,6 +339,65 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-check</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.70</minimum>
+                    </limit>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.73</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.54</minimum>
+                    </limit>
+                    <limit>
+                      <counter>COMPLEXITY</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.60</minimum>
+                    </limit>
+                    <limit>
+                      <counter>METHOD</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.79</minimum>
+                    </limit>
+                    <limit>
+                      <counter>CLASS</counter>
+                      <value>MISSEDCOUNT</value>
+                      <maximum>6</maximum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -356,7 +415,8 @@ SOFTWARE.
                 <exclude>pmd:/src/it.*</exclude>
                 <exclude>pmd:/src/test/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
-                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
+                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml
+                </exclude>
               </excludes>
             </configuration>
           </plugin>

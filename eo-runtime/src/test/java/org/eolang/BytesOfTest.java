@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 final class BytesOfTest {
 
     @Test
-    void notWorks() {
+    void negatesSeveralTimes() {
         final String text = "abc";
         final Bytes bytes = new BytesOf(text);
         MatcherAssert.assertThat(
@@ -48,7 +48,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void notWorksNumeric() {
+    void negatesOnce() {
         final Bytes bytes = new BytesOf(-128L);
         MatcherAssert.assertThat(
             bytes.not(),
@@ -57,7 +57,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void andWorks() {
+    void checksAnd() {
         final Bytes bytes = new BytesOf(127L);
         MatcherAssert.assertThat(
             bytes.and(bytes.not()),
@@ -66,7 +66,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void orWorks() {
+    void checksOr() {
         final Bytes bytes = new BytesOf(127L);
         MatcherAssert.assertThat(
             bytes.or(bytes.not()),
@@ -75,7 +75,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void xorWorks() {
+    void checksXor() {
         final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
             bytes.xor(new BytesOf(-512L)),
@@ -84,7 +84,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void asNumberLong() {
+    void checksAsNumberLong() {
         final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
             bytes.asNumber(Long.class),
@@ -93,7 +93,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void underflowForLong() {
+    void checksUnderflowForLong() {
         final Bytes bytes = new BytesOf("A");
         Assertions.assertThrows(
             UnsupportedOperationException.class,
@@ -111,7 +111,7 @@ final class BytesOfTest {
         "0xFF000000,  24, 0x000000FF",
         "0x000000FF,   8, 0x00000000"
     })
-    void shiftWorks(final long num, final int bits, final long expected) {
+    void checksShift(final long num, final int bits, final long expected) {
         final Bytes bytes = new BytesOf(num);
         MatcherAssert.assertThat(
             bytes.shift(bits).asNumber(Long.class),
@@ -131,7 +131,7 @@ final class BytesOfTest {
         "0xFFFFFF80,   3, 0xFFFFFFF0",
         "0xFFFFFC00,   3, 0xFFFFFF80"
     })
-    void sshiftWorks(final long num, final int bits, final long expected) {
+    void checksShifts(final long num, final int bits, final long expected) {
         final Bytes bytes = new BytesOf((int) num);
         final int actual = bytes.sshift(bits).asNumber(Integer.class);
         MatcherAssert.assertThat(
@@ -141,7 +141,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void sshiftDoesNotSupportRightShift() {
+    void doesNotSupportRightShift() {
         final Bytes bytes = new BytesOf(Integer.MAX_VALUE);
         Assertions.assertThrows(
             UnsupportedOperationException.class,

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@ package org.eolang.maven.footprint;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -35,33 +37,17 @@ import org.eolang.maven.util.Home;
 
 /**
  * Program footprint of EO compilation process.
- * <p/>The footprint consists of file in {@link #main} folder and optionally cached
- * file in {@link #cache} folder.
- * Caching is applied if {@link #hash} is not empty otherwise caching is ignored.
- * <p/>Usage example:
- * <code>
- *  <pre>
- *    final Footprint footprint = new Footprint(
- *      hash,
- *      targetRoot,
- *      cacheRoot
- *    ).save(program, ext);
+ * <p>The footprint optionally cached in {@link #cache} folder.</p>
+ * Caching is applied if {@link #version} is not empty otherwise caching is ignored.
  *
- *    String content = footprint.content(program, ext);
- *  </pre>
- * </code>
  * @since 1.0
  */
 public final class FtCached implements Footprint {
-    /**
-     * Path to target root.
-     */
-    private final Path main;
 
     /**
      * Version tag.
      */
-    private final String hash;
+    private final CacheVersion version;
 
     /**
      * Path to cache root.
@@ -69,51 +55,106 @@ public final class FtCached implements Footprint {
     private final Path cache;
 
     /**
-     * Ctor.
-     * @param hash Version tag
-     * @param main Main root
-     * @param cache Cache root
+     * Path to main root.
      */
-    public FtCached(final String hash, final Path main, final Path cache) {
-        this.hash = hash;
-        this.main = main;
+    private final Footprint origin;
+
+    /**
+     * Ctor.
+     * @param hash Version tag or hash
+     * @param cache Cache root
+     * @param origin Origin
+     */
+    public FtCached(
+        final String hash,
+        final Path cache,
+        final Footprint origin
+    ) {
+        this(new CacheVersion("", hash), cache, origin);
+    }
+
+    /**
+     * Ctor.
+     * @param ver Version
+     * @param cache Cache root
+     * @param origin Origin
+     */
+    public FtCached(
+        final CacheVersion ver,
+        final Path cache,
+        final Footprint origin
+    ) {
+        this.version = ver;
         this.cache = cache;
+        this.origin = origin;
     }
 
     @Override
     public String load(final String program, final String ext) throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
-        final Path target = new Place(program).make(this.main, ext);
-        final IoCheckedText content;
-        if (cached.toFile().exists()) {
+        final String content;
+        if (this.version.cacheable() && this.isCached(program, ext)) {
             content = new IoCheckedText(
-                new TextOf(cached)
-            );
+                new TextOf(
+                    this.cache.resolve(this.path(program, ext))
+                )
+            ).asString();
         } else {
-            content = new IoCheckedText(
-                new TextOf(target)
-            );
+            content = this.origin.load(program, ext);
         }
-        return content.asString();
+        return content;
     }
 
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        final Path cached = new Place(program).make(this.cache.resolve(this.hash), ext);
-        final Path target = new Place(program).make(this.main, ext);
         final String text;
-        if (cached.toFile().exists()) {
-            Logger.debug(
-                this,
-                "Program %s.%s found in cache: %s",
-                program, ext, cached
-            );
-            text = this.load(program, ext);
+        if (this.version.cacheable()) {
+            if (this.isCached(program, ext)) {
+                text = this.load(program, ext);
+            } else {
+                text = new IoChecked<>(content).value();
+                new Home(this.cache).save(text, this.path(program, ext));
+            }
         } else {
             text = new IoChecked<>(content).value();
-            new Home(this.cache).save(text, this.cache.relativize(cached));
         }
-        new Home(this.main).save(text, this.main.relativize(target));
+        this.origin.save(program, ext, () -> text);
+    }
+
+    @Override
+    public List<Path> list(final String ext) throws IOException {
+        return this.origin.list(ext);
+    }
+
+    /**
+     * Is cached?
+     * @param program Program name
+     * @param ext Extension
+     * @return TRUE if cached
+     */
+    private boolean isCached(final String program, final String ext) {
+        final Path relative = this.path(program, ext);
+        final boolean res;
+        if (Files.exists(this.cache.resolve(relative))) {
+            Logger.debug(
+                this,
+                "Program %s.%s is found in cache: %s",
+                program, ext, relative
+            );
+            res = true;
+        } else {
+            res = false;
+        }
+        return res;
+    }
+
+    /**
+     * Relative path to cached file.
+     * @param program Program name
+     * @param ext Extension
+     * @return Path
+     */
+    private Path path(final String program, final String ext) {
+        return new Place(program).make(this.version.path(), ext);
     }
 }

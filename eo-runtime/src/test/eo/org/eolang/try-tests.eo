@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -83,3 +83,32 @@
       nop
     $.equal-to 32
 
+[] > try-memory-update
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write 1
+      try
+        []
+          m.write (m.plus 1) > @
+        [e]
+          e > @
+        nop
+      m
+    $.equal-to 3
+
+[] > try-memory-update-catch
+  memory 0 > m
+  assert-that > @
+    seq
+      m.write 1
+      try
+        []
+          seq > @
+            5.div 0
+            m.write (m.plus 1)
+        [e]
+          e > @
+        nop
+      m
+    $.equal-to 1

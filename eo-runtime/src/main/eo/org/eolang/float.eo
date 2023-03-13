@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -30,9 +29,20 @@
 [] > float
   # Tests that $ = x
   [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+    if. > @
+      and.
+        eq.
+          ^.as-bytes > self-as-bytes!
+          00-00-00-00-00-00-00-00 > zero-as-bytes!
+        eq.
+          x.as-bytes > x-as-bytes!
+          zero-as-bytes
+      eq.
+        ^.neg.as-bytes
+        x.neg.as-bytes
+      eq.
+        self-as-bytes
+        x-as-bytes
 
   # Tests that $ < x
   [x] > lt
@@ -45,16 +55,18 @@
 
   # Tests that $ ≤ x
   [x] > lte
-    not. > @
-      ^.gt x
+    or. > @
+      ^.eq x
+      ^.lt x
 
   # Tests that $ > x
   [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
-    not. > @
-      ^.lt x
+    or. > @
+      ^.eq x
+      ^.gt x
 
   # Multiplication of $ and x
   [x...] > times /float
@@ -68,14 +80,23 @@
 
   # Difference between $ and x
   [x...] > minus
-    mapped. > x-neg
-      list
-        x
-      [element]
-        neg. > @
-          element
+    [acc index terms] > rec-terms
+      if. > @
+        index.eq terms.length
+        acc
+        rec-terms
+          acc.with
+            (terms.at index).neg
+          index.plus 1
+          terms
+
+    rec-terms > neg-terms
+      *
+      0
+      x
+
     ^.plus > @
-      ...x-neg
+      ...neg-terms
 
   # Quotient of the division of $ by x
   [x...] > div /float

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,25 @@
               i.lt 10
               g.backward
               TRUE
+      stdout "Finished!"
+      i
+    $.equal-to 11
+
+[] > goto-jumps-backwards-without-last-datization
+  memory 0 > i
+  assert-that > @
+    seq
+      i.write 1
+      goto
+        [g]
+          seq > @
+            i.write (i.plus 1)
+            if.
+              i.lt 10
+              g.backward
+              TRUE
+      .@
+      .<
       stdout "Finished!"
       i
     $.equal-to 10

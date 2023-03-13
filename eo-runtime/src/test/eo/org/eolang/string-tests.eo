@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2022 Objectionary.com
+# Copyright (c) 2016-2023 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,24 @@
     "Hello"
     $.not
       $.equal-to 42
+
+[] > compares-string-with-nan
+  assert-that > @
+    nan
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-positive-infinity
+  assert-that > @
+    positive-infinity
+    $.not
+      $.equal-to "друг"
+
+[] > compares-string-with-negative-infinity
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to "друг"
 
 [] > text-block-one-line
   assert-that > @

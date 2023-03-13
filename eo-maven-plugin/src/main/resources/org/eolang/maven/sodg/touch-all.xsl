@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -72,11 +72,12 @@ SOFTWARE.
   <xsl:template name="touch">
     <xsl:param name="o"/>
     <xsl:param name="loc"/>
-    <xsl:for-each select="tokenize($loc, '\.')">
+    <xsl:variable name="identifiers" select="tokenize($loc, '\.')"/>
+    <xsl:for-each select="$identifiers">
       <xsl:variable name="p" select="position()"/>
       <xsl:if test="$p &gt; 1">
         <xsl:variable name="kid">
-          <xsl:for-each select="tokenize($loc, '\.')">
+          <xsl:for-each select="$identifiers">
             <xsl:if test="position() &lt;= $p">
               <xsl:if test="position() &gt; 1">
                 <xsl:text>.</xsl:text>

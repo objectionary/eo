@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,9 +52,7 @@ public final class DemandMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        for (final String obj : this.objects) {
-            this.scopedTojos().add(obj);
-        }
+        this.objects.forEach(this.scopedTojos()::add);
         Logger.info(
             this, "Added %d objects to foreign catalog at %s",
             this.objects.size(), new Rel(this.foreign)

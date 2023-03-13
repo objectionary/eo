@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,14 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="data" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@data]">
-    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@* except @data"/>
-      <xsl:if test="@data='array'">
-        <xsl:element name="array">
+      <xsl:if test="@data='tuple'">
+        <xsl:element name="tuple">
           <xsl:apply-templates select="node()"/>
         </xsl:element>
       </xsl:if>
-      <xsl:if test="@data!='array'">
+      <xsl:if test="@data!='tuple'">
         <xsl:attribute name="primitive" select="@data"/>
         <xsl:element name="value">
           <xsl:choose>
@@ -75,9 +74,11 @@ SOFTWARE.
                   <xsl:text>).getLong()</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:text>/** ERROR: Unsupported type: </xsl:text>
-                  <xsl:value-of select="@base"/>
-                  <xsl:text>**/</xsl:text>
+                  <xsl:message terminate="yes">
+                    <xsl:text>Unsupported type: '</xsl:text>
+                    <xsl:value-of select="@base"/>
+                    <xsl:text>'</xsl:text>
+                  </xsl:message>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:when>
@@ -93,6 +94,10 @@ SOFTWARE.
             <xsl:when test="@data='float'">
               <xsl:value-of select="text()"/>
               <xsl:text>d</xsl:text>
+            </xsl:when>
+            <xsl:when test="@data='bool'">
+              <xsl:text>Boolean.</xsl:text>
+              <xsl:value-of select="text()"/>
             </xsl:when>
             <xsl:otherwise>
               <xsl:value-of select="text()"/>

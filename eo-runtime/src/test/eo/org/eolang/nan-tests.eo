@@ -1,0 +1,148 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2023 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++junit
++version 0.0.0
+
+[] > nan-not-eq-number
+  assert-that > @
+    nan
+    $.not
+      $.equal-to 42
+
+[] > nan-not-eq-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number
+    $.not
+      $.equal-to not-a-number
+
+[] > nan-not-lt-number
+  assert-that > @
+    nan
+    $.not
+      $.less-than 42
+
+[] > nan-not-lt-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number
+    $.not
+      $.less-than not-a-number
+
+[] > nan-not-lte-number
+  assert-that > @
+    nan.lte 42
+    $.equal-to FALSE
+
+[] > nan-not-lte-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number.lte not-a-number
+    $.equal-to FALSE
+
+[] > nan-not-gt-number
+  assert-that > @
+    nan
+    $.not
+      $.greater-than 42
+
+[] > nan-not-gt-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number
+    $.not
+      $.greater-than not-a-number
+
+[] > nan-not-gte-number
+  assert-that > @
+    nan.gte 42
+    $.equal-to FALSE
+
+[] > nan-not-gte-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number.gte not-a-number
+    $.equal-to FALSE
+
+[] > nan-times-number-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.times 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-times-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.times not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-div-number-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.div 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-div-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.div not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-plus-number-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.plus 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-plus-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.plus not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-neg-is-nan
+  nan > not-a-number!
+  assert-that > @
+    not-a-number.neg.as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-minus-number-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.minus 42).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-minus-nan-is-nan
+  nan > not-a-number!
+  assert-that > @
+    (not-a-number.minus not-a-number).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > nan-as-bytes-is-bytes-of-zero-div-zero
+  assert-that > @
+    nan.as-bytes
+    $.equal-to (0.0.div 0.0).as-bytes

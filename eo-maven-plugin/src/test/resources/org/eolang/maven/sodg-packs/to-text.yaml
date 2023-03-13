@@ -1,0 +1,11 @@
+sheets:
+  - /org/eolang/maven/sodg-to/to-text.xsl
+document:
+  <sodg>
+    <i name="ADD">
+      <a>xyz</a>
+    </i>
+  </sodg>
+asserts:
+  - /text[contains(., 'This file was auto-generated')]
+  - /text[contains(., 'ADD(xyz);')]

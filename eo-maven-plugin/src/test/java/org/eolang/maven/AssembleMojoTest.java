@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,14 +25,13 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -40,6 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
 
     @Test
@@ -70,12 +70,11 @@ final class AssembleMojoTest {
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
+                new OyFake()
             )
             .execute();
         MatcherAssert.assertThat(
@@ -98,7 +97,9 @@ final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
                 "+package test",
+                "+version 0.0.0",
                 "",
                 "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
             ),
@@ -108,7 +109,9 @@ final class AssembleMojoTest {
             String.join(
                 "\n",
                 "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
                 "+package test",
+                "+version 0.0.0",
                 "",
                 "[x] > main\n  (stdout \"Hello!\" x).print\n"
             ),
@@ -132,11 +135,10 @@ final class AssembleMojoTest {
             .with("failOnError", false)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
+                new OyFake()
             )
             .execute();
         MatcherAssert.assertThat(
@@ -162,4 +164,5 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
     }
+
 }

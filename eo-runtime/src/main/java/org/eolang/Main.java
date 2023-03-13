@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -174,11 +174,10 @@ public final class Main {
      * @throws Exception If fails
      */
     private static void run(final List<String> opts) throws Exception {
-        final String path = Arrays.stream(opts.get(0).split("\\."))
-            .map(p -> String.format("EO%s", p))
-            .collect(Collectors.joining("."));
+        final String path = new JavaPath(opts.get(0)).toString();
         final Phi app;
         try {
+            Main.LOGGER.fine(String.format("Loading class %s...", path));
             app = Phi.class.cast(
                 Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)

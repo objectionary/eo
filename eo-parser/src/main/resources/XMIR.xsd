@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ SOFTWARE.
         </xs:complexType>
       </xs:element>
       <xs:element name="license" type="xs:string" minOccurs="0"/>
-      <xs:element name="metas" minOccurs="0">
+      <xs:element name="metas">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="meta" minOccurs="0" maxOccurs="unbounded">

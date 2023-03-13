@@ -1,0 +1,495 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2023 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.hamcrest.assert-that
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++junit
++version 0.0.0
+
+# Equal to
+[] > negative-infinity-is-equal-to-one-div-zero
+  assert-that > @
+    negative-infinity
+    $.equal-to (-1.0.div 0.0)
+
+[] > negative-infinity-eq-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf
+    $.equal-to neg-inf
+
+[] > negative-infinity-not-eq-positive-infinity
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to positive-infinity
+
+[] > negative-infinity-not-eq-nan
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to nan
+
+[] > negative-infinity-not-eq-int
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to 42
+
+[] > negative-infinity-not-eq-float
+  assert-that > @
+    negative-infinity
+    $.not
+      $.equal-to 42.5
+
+# Less than
+[] > negative-infinity-lt-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf
+    $.not
+      $.less-than neg-inf
+
+[] > negative-infinity-lt-positive-infinity
+  assert-that > @
+    negative-infinity
+    $.less-than positive-infinity
+
+[] > negative-infinity-not-lt-nan
+  assert-that > @
+    negative-infinity
+    $.not
+      $.less-than nan
+
+[] > negative-infinity-lt-int
+  assert-that > @
+    negative-infinity
+    $.less-than 42
+
+[] > negative-infinity-lt-float
+  assert-that > @
+    negative-infinity
+    $.less-than 42.5
+
+# Less or equal than
+[] > negative-infinity-lte-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.lte neg-inf
+    $.equal-to TRUE
+
+[] > negative-infinity-lte-positive-infinity
+  assert-that > @
+    negative-infinity.lte positive-infinity
+    $.equal-to TRUE
+
+[] > negative-infinity-not-lte-nan
+  assert-that > @
+    negative-infinity.lte nan
+    $.equal-to FALSE
+
+[] > negative-infinity-lte-int
+  assert-that > @
+    negative-infinity.lte 42
+    $.equal-to TRUE
+
+[] > negative-infinity-lte-float
+  assert-that > @
+    negative-infinity.lte 42.5
+    $.equal-to TRUE
+
+# Greater than
+[] > negative-infinity-gt-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf
+    $.not
+      $.greater-than neg-inf
+
+[] > negative-infinity-not-gt-positive-infinity
+  assert-that > @
+    negative-infinity
+    $.not
+      $.greater-than positive-infinity
+
+[] > negative-infinity-not-gt-nan
+  assert-that > @
+    negative-infinity
+    $.not
+      $.greater-than nan
+
+[] > negative-infinity-not-gt-int
+  assert-that > @
+    negative-infinity
+    $.not
+      $.greater-than 42
+
+[] > negative-infinity-not-gt-float
+  assert-that > @
+    negative-infinity
+    $.not
+      $.greater-than 42.5
+
+# Greater or equal than
+[] > negative-infinity-gte-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.gte neg-inf
+    $.equal-to TRUE
+
+[] > negative-infinity-not-gte-positive-infinity
+  assert-that > @
+    negative-infinity.gte positive-infinity
+    $.equal-to FALSE
+
+[] > negative-infinity-not-gte-nan
+  assert-that > @
+    negative-infinity.gte nan
+    $.equal-to FALSE
+
+[] > negative-infinity-not-gte-int
+  assert-that > @
+    negative-infinity.gte 42
+    $.equal-to FALSE
+
+[] > negative-infinity-not-gte-float
+  assert-that > @
+    negative-infinity.gte 42.5
+    $.equal-to FALSE
+
+# Times
+[] > negative-infinity-times-float-zero
+  assert-that > @
+    as-bytes.
+      negative-infinity.times 0.0
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-neg-float-zero
+  assert-that > @
+    as-bytes.
+      negative-infinity.times -0.0
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-int-zero
+  assert-that > @
+    as-bytes.
+      positive-infinity.times 0
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      negative-infinity.times not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-times-positive-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times positive-infinity
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times neg-inf
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-positive-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times 42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-positive-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times 42
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-negative-float
+  assert-that > @
+    negative-infinity.times -42.5
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-negative-int
+  assert-that > @
+    negative-infinity.times -42
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-multiple-positive-numbers
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times 25 11.2 51
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-two-negative-numbers
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.times -11.2 -5
+    $.equal-to neg-inf
+
+[] > negative-infinity-times-three-negative-numbers
+  assert-that > @
+    negative-infinity.times -11.2 -5 -3
+    $.equal-to positive-infinity
+
+[] > negative-infinity-times-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (negative-infinity.times -25 not-a-number 51).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-float-zero
+  assert-that > @
+    (negative-infinity.times -25 0.0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-neg-float-zero
+  assert-that > @
+    (negative-infinity.times -25 -0.0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-numbers-with-int-zero
+  assert-that > @
+    (negative-infinity.times -25 0 51).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-times-multiple-infinites
+  negative-infinity > neg-inf!
+  positive-infinity > pos-inf!
+  assert-that > @
+    neg-inf.times pos-inf neg-inf pos-inf pos-inf
+    $.equal-to pos-inf
+
+# Plus
+[] > negative-infinity-plus-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      negative-infinity.plus not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-plus-positive-infinity
+  assert-that > @
+    as-bytes.
+      negative-infinity.plus positive-infinity
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-plus-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus neg-inf
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-positive-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-multiple-floats
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42.5 22.2 51.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-multiple-numbers
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42.5 -22 11 -1.2
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (negative-infinity.plus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-plus-multiple-numbers-with-positive-infinity
+  assert-that > @
+    (negative-infinity.plus 42 positive-infinity 30).as-bytes
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-plus-positive-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus 42
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-negative-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus -42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-plus-negative-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.plus -42
+    $.equal-to neg-inf
+
+# Negation
+[] > negative-infinity-neg-is-positive-infinity
+  assert-that > @
+    negative-infinity.neg
+    $.equal-to positive-infinity
+
+# Minus
+[] > negative-infinity-minus-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      negative-infinity.minus not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-minus-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    as-bytes.
+      neg-inf.minus neg-inf
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-minus-positive-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus positive-infinity
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-positive-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus 42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-positive-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus 42
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-negative-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus -42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-negative-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus -42
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-multiple-floats
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus 42.5 22.2 51.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-multiple-numbers
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus 42.5 -22 11 -1.2
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    (negative-infinity.minus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-minus-multiple-numbers-with-positive-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.minus 42 positive-infinity 30
+    $.equal-to neg-inf
+
+[] > negative-infinity-minus-multiple-numbers-with-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    (neg-inf.minus 42 neg-inf 30).as-bytes
+    $.equal-to nan.as-bytes
+
+# Division
+[] > negative-infinity-div-float-zero
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div 0.0
+    $.equal-to neg-inf
+
+[] > negative-infinity-div-int-zero
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div 0
+    $.equal-to neg-inf
+
+[] > negative-infinity-div-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      negative-infinity.div not-a-number
+    $.equal-to not-a-number.as-bytes
+
+[] > negative-infinity-div-positive-infinity
+  assert-that > @
+    as-bytes.
+      negative-infinity.div positive-infinity
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-div-negative-infinity
+  negative-infinity > neg-inf!
+  assert-that > @
+    as-bytes.
+      neg-inf.div neg-inf
+    $.equal-to nan.as-bytes
+
+[] > negative-infinity-div-positive-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div 42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-div-positive-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div 42
+    $.equal-to neg-inf
+
+[] > negative-infinity-div-negative-float
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div -42.5
+    $.equal-to neg-inf
+
+[] > negative-infinity-div-negative-int
+  negative-infinity > neg-inf!
+  assert-that > @
+    neg-inf.div -42
+    $.equal-to neg-inf
+
+# Bytes
+[] > negative-infinity-as-bytes-is-valid
+  assert-that > @
+    negative-infinity.as-bytes
+    $.equal-to (-1.0.div 0.0).as-bytes

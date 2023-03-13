@@ -4,6 +4,9 @@ tests:
   - //o[@name='x']
   - //o[@name='y' and @abstract]
 eo: |
+  +home https://github.com/objectionary/eo
   +package test
+  +version 0.0.0
+
   [x] > foo
     [] > y

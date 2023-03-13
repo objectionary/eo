@@ -1,0 +1,16 @@
+xsls:
+  - /org/eolang/parser/warnings/incorrect-home.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=2]
+  - /program/errors/error[@line='1']
+  - /program/errors/error[@line='6']
+
+eo: |
+  +home url
+  +home https://github.com/objectionary/eo
+  +home 255.255.255.255
+  +home www.something.com
+  +alias org.eolang.io.stdout
+  +home https://|http/wrong.com
+  [x] > foo
+    x.div in.nextInt > @

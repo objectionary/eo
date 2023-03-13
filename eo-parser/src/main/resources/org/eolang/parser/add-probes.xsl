@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,11 @@ SOFTWARE.
    </meta>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:function name="eo:contains-any-of" as="xs:boolean">
+    <xsl:param name="original" as="xs:string"/>
+    <xsl:param name="chars" as="xs:string*"/>
+    <xsl:sequence select="some $char in $chars satisfies contains($original, $char)"/>
+  </xsl:function>
   <xsl:function name="eo:qualify" as="xs:string">
     <xsl:param name="e" as="element()"/>
     <xsl:variable name="fco" select="$e/o[1]"/>
@@ -57,20 +62,24 @@ SOFTWARE.
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
         <xsl:for-each select="//o[starts-with(@base, '.')]">
-          <xsl:element name="meta">
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:element name="head">
-              <xsl:text>probe</xsl:text>
+          <xsl:variable name="p" select="eo:qualify(.)"/>
+          <xsl:variable name="c" select="string-length($p) - string-length(translate($p, '.', ''))"/>
+          <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
+            <xsl:element name="meta">
+              <xsl:attribute name="line">
+                <xsl:value-of select="@line"/>
+              </xsl:attribute>
+              <xsl:element name="head">
+                <xsl:text>probe</xsl:text>
+              </xsl:element>
+              <xsl:element name="tail">
+                <xsl:value-of select="$p"/>
+              </xsl:element>
+              <xsl:element name="part">
+                <xsl:value-of select="$p"/>
+              </xsl:element>
             </xsl:element>
-            <xsl:element name="tail">
-              <xsl:value-of select="eo:qualify(.)"/>
-            </xsl:element>
-            <xsl:element name="part">
-              <xsl:value-of select="eo:qualify(.)"/>
-            </xsl:element>
-          </xsl:element>
+          </xsl:if>
         </xsl:for-each>
       </xsl:copy>
     </xsl:variable>

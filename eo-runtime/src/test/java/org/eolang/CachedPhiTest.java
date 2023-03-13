@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 final class CachedPhiTest {
 
     @Test
-    void simpleCaching() {
+    void caches() {
         final AtomicInteger count = new AtomicInteger(0);
         final CachedPhi cphi = new CachedPhi();
         final Supplier<Phi> sup = () -> {
@@ -54,7 +54,7 @@ final class CachedPhiTest {
     }
 
     @Test
-    void recursiveCaching() {
+    void cachesRecursive() {
         final AtomicInteger count = new AtomicInteger(3);
         final CachedPhi cphi = new CachedPhi();
         final AtomicReference<Supplier<Phi>> sup = new AtomicReference<>();

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 class EOheapEOmallocTest {
 
     @Test
-    public void allocateMemory() {
+    public void allocatesMemory() {
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(
             new PhMethod(heap, "malloc"),
@@ -76,7 +76,7 @@ class EOheapEOmallocTest {
     }
 
     @Test
-    public void checkMallocPointer() {
+    public void checksMallocPointer() {
         final long size = 20L;
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(

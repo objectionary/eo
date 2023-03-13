@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,20 +35,74 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <!-- remove this "!=array" after the fix: https://github.com/objectionary/eo/issues/1060 -->
-  <xsl:template match="o[@base and @data and @data != 'array']" mode="sodg" priority="1">
+  <!-- remove this "!=tuple" after the fix: https://github.com/objectionary/eo/issues/1060 -->
+  <xsl:template match="o[@base and @data and @data != 'tuple']" mode="sodg" priority="1">
+    <xsl:variable name="v">
+      <xsl:value-of select="@loc"/>
+      <xsl:text>.Δ</xsl:text>
+    </xsl:variable>
     <xsl:call-template name="i">
-      <xsl:with-param name="name" select="'PUT'"/>
+      <xsl:with-param name="name" select="'ADD'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a data vertex for "</xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text>"</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
         <xsl:sequence>
           <xsl:value-of select="eo:var(@loc)"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:value-of select="concat(replace(text(), ' ', '-'), '-')"/>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>Δ</xsl:text>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">
-        <xsl:text>This is a data object of type "</xsl:text>
+        <xsl:text>This is an edge for the data vertex</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>ρ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is the parent of the lambda vertex</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'PUT'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:variable name="data">
+            <xsl:value-of select="replace(text(), ' ', '-')"/>
+          </xsl:variable>
+          <xsl:value-of select="$data"/>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is the data of type "</xsl:text>
         <xsl:value-of select="@base"/>
         <xsl:text>"</xsl:text>
       </xsl:with-param>

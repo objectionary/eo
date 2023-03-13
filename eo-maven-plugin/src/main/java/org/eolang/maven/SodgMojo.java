@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StSchema;
 import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
@@ -45,11 +46,13 @@ import com.yegor256.xsline.TrWith;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -67,6 +70,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
+import org.eolang.parser.StXPath;
 import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -126,7 +130,8 @@ public final class SodgMojo extends SafeMojo {
                             )
                         )
                     ).asString(),
-                    new ClasspathSources()
+                    new ClasspathSources(),
+                    "to-xembly.xsl"
                 ).with("testing", "no")
             )
         ),
@@ -149,6 +154,25 @@ public final class SodgMojo extends SafeMojo {
     );
 
     /**
+     * Graph modification right after it's generated from Xembly.
+     */
+    private static final Train<Shift> FINISH = new TrLogged(
+        new TrFast(
+            new TrClasspath<>(
+                "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+                "/org/eolang/maven/sodg-to/catch-crowded-epsilons.xsl",
+                "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
+                "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
+                "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+            ).back(),
+            SodgMojo.class
+        ),
+        SodgMojo.class,
+        Level.FINEST
+    );
+
+    /**
      * The train that generates SODG.
      */
     private static final Train<Shift> TRAIN = new TrWith(
@@ -158,6 +182,22 @@ public final class SodgMojo extends SafeMojo {
                     "/org/eolang/maven/sodg/pre-clean.xsl",
                     "/org/eolang/maven/sodg/remove-leveled.xsl"
                 ).back(),
+                new TrDefault<>(
+                    new StEndless(
+                        new StXPath(
+                            "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
+                            xml -> {
+                                final String loc = xml.xpath("@loc").get(0);
+                                return new Directives().attr(
+                                    "lambda",
+                                    SodgMojo.locToHex(
+                                        loc.substring(loc.indexOf('.') + 1)
+                                    )
+                                );
+                            }
+                        )
+                    )
+                ),
                 new TrLogged(
                     new TrMapped<>(
                         (Function<String, Shift>) path -> new StBefore(
@@ -169,10 +209,12 @@ public final class SodgMojo extends SafeMojo {
                         ),
                         "/org/eolang/maven/sodg/add-sodg-root.xsl",
                         "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
+                        "/org/eolang/maven/sodg/add-root.xsl",
+                        "/org/eolang/maven/sodg/append-xi.xsl",
                         "/org/eolang/maven/sodg/touch-all.xsl",
                         "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",
-                        "/org/eolang/maven/sodg/xi-binds.xsl",
+                        "/org/eolang/maven/sodg/epsilon-bindings.xsl",
                         "/org/eolang/maven/sodg/connect-dots.xsl",
                         "/org/eolang/maven/sodg/put-data.xsl",
                         "/org/eolang/maven/sodg/put-atoms.xsl"
@@ -182,10 +224,7 @@ public final class SodgMojo extends SafeMojo {
                 ),
                 new TrClasspath<>(
                     "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl",
-                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+                    "/org/eolang/maven/sodg/add-license.xsl"
                 ).back()
             ),
             SodgMojo.class
@@ -409,12 +448,14 @@ public final class SodgMojo extends SafeMojo {
             );
             final ListOf<Directive> directives = new ListOf<>(all);
             final Directive comment = directives.remove(0);
-            final XML graph = new XMLDocument(
-                new Xembler(
-                    new Directives()
-                        .append(Collections.singleton(comment))
-                        .append(directives)
-                ).domQuietly()
+            final XML graph = new Xsline(SodgMojo.FINISH).pass(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives()
+                            .append(Collections.singleton(comment))
+                            .append(directives)
+                    ).domQuietly()
+                )
             );
             final Path sibling = sodg.resolveSibling(
                 String.format("%s.graph.xml", sodg.getFileName())
@@ -449,6 +490,19 @@ public final class SodgMojo extends SafeMojo {
                 sibling.getParent().relativize(sibling)
             );
         }
+    }
+
+    /**
+     * Lambda to HEX.
+     * @param loc The lambda
+     * @return Hexadecimal value as string.
+     */
+    private static String locToHex(final String loc) {
+        final StringJoiner out = new StringJoiner("-");
+        for (final byte bty : loc.getBytes(StandardCharsets.UTF_8)) {
+            out.add(String.format("%02X", bty));
+        }
+        return out.toString();
     }
 
 }

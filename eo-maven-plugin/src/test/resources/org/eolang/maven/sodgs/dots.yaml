@@ -2,9 +2,9 @@ locators:
   - .org .eolang .bool
   - .org .eolang .bool !.not
   - .org .eolang .int !.plus
-  - .dots .x .ξ/.not Δ=01- .π >bool
+  - .dots .x .ε .β .Δ δ=01 .ρ .π >bool
   - .dots .y >b
-  - .dots .z .π/.times .π/.plus Δ=00-00-00-00-00-00-00-2A- .π >int
+  - .dots .z .π .times .π .plus .Δ δ=00-00-00-00-00-00-00-2A .ρ .π >int
 eo: |
   [] > dots
     TRUE.not > x

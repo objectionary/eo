@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,19 +32,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
@@ -58,8 +58,6 @@ import org.xembly.Xembler;
  * Parse EO to XML.
  *
  * @since 0.1
- * @todo #1230:30min Make number of threads used in thread executor within {@link #exec()} method
- *  configurable via mojo parameter `threads`. Default value should be 4.
  */
 @Mojo(
     name = "parse",
@@ -68,7 +66,7 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo {
+public final class ParseMojo extends SafeMojo implements CompilationStep {
 
     /**
      * Zero version.
@@ -78,7 +76,7 @@ public final class ParseMojo extends SafeMojo {
     /**
      * The directory where to parse to.
      */
-    public static final String DIR = "01-parse";
+    public static final String DIR = "1-parse";
 
     /**
      * Subdirectory for parsed cache.
@@ -105,84 +103,65 @@ public final class ParseMojo extends SafeMojo {
     private boolean failOnError = true;
 
     /**
-     * Number of parallel threads.
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.threads", defaultValue = "4")
-    private int threads = 4;
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_EO)
-        );
-        final Set<Callable<Object>> tasks = new HashSet<>(0);
-        final AtomicInteger total = new AtomicInteger(0);
-        tojos.stream()
-            .forEach(
-                tojo -> {
-                    if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
-                        final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-                        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-                        if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
-                            Logger.debug(
-                                this, "Already parsed %s to %s (it's newer than the source)",
-                                tojo.get(Tojos.KEY), new Rel(xmir)
-                            );
-                            return;
-                        }
-                    }
-                    tasks.add(
-                        Executors.callable(
-                            () -> {
-                                try {
-                                    this.parse(tojo);
-                                    total.incrementAndGet();
-                                } catch (final IOException ex) {
-                                    throw new IllegalStateException(
-                                        String.format(
-                                            "Unable to parse %s",
-                                            tojo.get(Tojos.KEY)
-                                        ),
-                                        ex
-                                    );
-                                }
-                            }
-                        )
-                    );
-                }
-            );
-        try {
-            for (final Future<Object> completed : Executors.newFixedThreadPool(this.threads)
-                .invokeAll(tasks)) {
-                try {
-                    completed.get();
-                } catch (final ExecutionException ex) {
-                    throw new IllegalArgumentException(
-                        ex.getCause().getMessage(),
-                        ex
-                    );
-                }
-            }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Interrupted while waiting for %d parsing to finish",
-                    total.get()
-                ),
-                ex
-            );
-        }
-        if (total.get() == 0) {
-            if (tojos.isEmpty()) {
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> (Scalar<Integer>) () -> {
+                        this.parse(tojo);
+                        return 1;
+                    },
+                    new Filtered<>(
+                        this::isNotParsed,
+                        this.scopedTojos().select(row -> row.exists(AssembleMojo.ATTR_EO))
+                    )
+                )
+            )
+        ).intValue();
+        if (0 == total) {
+            if (((Collection<Tojo>) this.scopedTojos().select(
+                row -> row.exists(AssembleMojo.ATTR_EO)
+            )).isEmpty()) {
                 Logger.info(this, "No .eo sources need to be parsed to XMIRs");
             } else {
                 Logger.info(this, "No .eo sources parsed to XMIRs");
             }
         } else {
-            Logger.info(this, "Parsed %d .eo sources to XMIRs", total.get());
+            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
         }
+    }
+
+    /**
+     * Check if the given tojo has not been parsed.
+     *
+     * @param tojo Tojo.
+     * @return True if the tojo has not been parsed.
+     */
+    private boolean isNotParsed(final Tojo tojo) {
+        boolean res = true;
+        if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
+            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+            if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already parsed %s to %s (it's newer than the source)",
+                    tojo.get(Tojos.KEY), new Rel(xmir)
+                );
+                res = false;
+            }
+        }
+        return res;
     }
 
     /**
@@ -195,16 +174,15 @@ public final class ParseMojo extends SafeMojo {
     private void parse(final Tojo tojo) throws IOException {
         final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
         final String name = tojo.get(Tojos.KEY);
-        final Footprint footprint;
+        Footprint footprint;
+        footprint = new FtDefault(
+            this.targetDir.toPath().resolve(ParseMojo.DIR)
+        );
         if (tojo.exists(AssembleMojo.ATTR_HASH)) {
             footprint = new FtCached(
-                tojo.get(AssembleMojo.ATTR_HASH),
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                this.cache.resolve(ParseMojo.PARSED)
-            );
-        } else {
-            footprint = new FtDefault(
-                this.targetDir.toPath().resolve(ParseMojo.DIR)
+                new CacheVersion(this.plugin.getVersion(), tojo.get(AssembleMojo.ATTR_HASH)),
+                this.cache.resolve(ParseMojo.PARSED),
+                footprint
             );
         }
         try {

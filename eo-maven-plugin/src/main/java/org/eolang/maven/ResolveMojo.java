@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,16 +28,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
+import org.cactoos.Func;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.dependencies.DcsDefault;
+import org.eolang.maven.dependencies.DcsDepgraph;
+import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
+import org.eolang.maven.dependencies.DcsUniquelyVersioned;
+import org.eolang.maven.dependencies.DcsWithRuntime;
+import org.eolang.maven.dependencies.DcsWithoutRuntime;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -55,12 +60,12 @@ import org.eolang.maven.util.Walk;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ResolveMojo extends SafeMojo {
+public final class ResolveMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to resolve to.
      */
-    public static final String DIR = "06-resolve";
+    public static final String DIR = "4-resolve";
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -69,7 +74,7 @@ public final class ResolveMojo extends SafeMojo {
      * @since 0.9.0
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    private Boolean skipZeroVersions;
+    private boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -102,6 +107,12 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Add eo-runtime dependency to the classpath.
      *
+     * That property is useful only for eo-runtime library compilation.
+     * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
+     * (since you compile eo-runtime library and classpath will anyway have all required classes)
+     * and in this case you should set this property to false. In any other cases the eo-runtime
+     * dependency will be downloaded and added to the classpath automatically.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
@@ -114,6 +125,24 @@ public final class ResolveMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
+    /**
+     * Transitive dependency extractor. It's a strategy pattern for extracting transitive
+     * dependencies for a particular artifact.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private Func<Dependency, Iterable<Dependency>> transitiveStrategy =
+        dependency -> new DcsDepgraph(
+            this.project,
+            this.session,
+            this.manager,
+            this.targetDir.toPath()
+                .resolve(ResolveMojo.DIR)
+                .resolve("dependencies-info"),
+            dependency
+        );
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
@@ -122,7 +151,7 @@ public final class ResolveMojo extends SafeMojo {
         final Collection<Dependency> deps = this.deps();
         for (final Dependency dep : deps) {
             String classifier = dep.getClassifier();
-            if (classifier.isEmpty()) {
+            if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
             final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
@@ -159,6 +188,17 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
+     * Checks if dependency is runtime.
+     * @param dep Dependency
+     * @return True if runtime.
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
      * Find all deps for all Tojos.
      *
      * @return List of them
@@ -170,48 +210,25 @@ public final class ResolveMojo extends SafeMojo {
             this.skipZeroVersions
         );
         if (this.withRuntimeDependency) {
-            deps = new DcsWithRuntime(deps);
+            final Optional<Dependency> runtime = this.runtimeDependencyFromPom();
+            if (runtime.isPresent()) {
+                deps = new DcsWithRuntime(deps, runtime.get());
+                Logger.info(
+                    this,
+                    "Runtime dependency added from pom with version: %s",
+                    runtime.get().getVersion()
+                );
+            } else {
+                deps = new DcsWithRuntime(deps);
+            }
+        } else {
+            deps = new DcsWithoutRuntime(deps);
         }
         if (!this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {
-            deps = new Mapped<>(
-                dependency -> {
-                    final Iterable<Dependency> transitives = new Filtered<>(
-                        dep -> !ResolveMojo.eqTo(dep, dependency)
-                            && !dep.getScope().contains("test")
-                            && !("org.eolang".equals(dep.getGroupId())
-                                && "eo-runtime".equals(dep.getArtifactId())),
-                        new DcsDepgraph(
-                            this.project,
-                            this.session,
-                            this.manager,
-                            this.targetDir.toPath()
-                                .resolve(ResolveMojo.DIR)
-                                .resolve("dependencies-info"),
-                            dependency
-                        )
-                    );
-                    final String list = String.join(
-                        ", ",
-                        new Mapped<>(
-                            dep -> new Coordinates(dep).toString(),
-                            transitives
-                        )
-                    );
-                    if (!list.isEmpty()) {
-                        throw new IllegalStateException(
-                            String.format(
-                                "%s contains transitive dependencies: [%s]",
-                                dependency, list
-                            )
-                        );
-                    }
-                    return dependency;
-                },
-                deps
-            );
+            deps = new DcsEachWithoutTransitive(deps, this.transitiveStrategy);
         }
         return new ListOf<>(deps)
             .stream()
@@ -223,18 +240,22 @@ public final class ResolveMojo extends SafeMojo {
     }
 
     /**
-     * Compare with NULL-safety.
-     * @param left Left
-     * @param right Right
-     * @return TRUE if they are equal
+     * Runtime dependency from pom.xml.
+     *
+     * @return Dependency if found.
      */
-    private static boolean eqTo(final Dependency left, final Dependency right) {
-        return Objects.equals(
-            Objects.toString(left.getClassifier(), ""),
-            Objects.toString(right.getClassifier(), "")
-        )
-            && Objects.equals(left.getArtifactId(), right.getArtifactId())
-            && Objects.equals(left.getGroupId(), right.getGroupId());
+    private Optional<Dependency> runtimeDependencyFromPom() {
+        final Optional<Dependency> res;
+        if (this.project == null) {
+            res = Optional.empty();
+        } else {
+            res = this.project
+                .getDependencies()
+                .stream()
+                .filter(ResolveMojo::isRuntime)
+                .findFirst();
+        }
+        return res;
     }
 
     /**

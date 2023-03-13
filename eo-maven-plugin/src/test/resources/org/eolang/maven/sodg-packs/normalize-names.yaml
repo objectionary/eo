@@ -5,10 +5,10 @@ document:
     <sodg>
       <i>
         <a>$Φ.foo</a>
-        <a>$Φ.foo.x</a>
+        <a>ν0</a>
       </i>
     </sodg>
   </program>
 asserts:
   - //sodg[count(i)=1]
-  - //i[a='$ν1' and a='$ν2']
+  - //i[a='$v1' and a='v0']

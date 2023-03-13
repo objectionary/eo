@@ -1,0 +1,263 @@
+# The MIT License (MIT)
+#
+#  2016-2022 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.0.0
++version 0.0.0
+
+# Negative infinity
+[] > negative-infinity
+  -1.0.div 0.0 > @
+
+  # Tests that $ = x
+  [x] > eq
+    eq. > @
+      ^.as-bytes
+      x.as-bytes
+
+  # Tests that $ < x
+  [x] > lt
+    not. > @
+      or.
+        x.as-bytes.eq (nan.as-bytes)
+        ^.eq x
+
+  # Tests that $ ≤ x
+  [x] > lte
+    not. > @
+      eq.
+        x.as-bytes
+        nan.as-bytes
+
+  # Tests that $ > x
+  [x] > gt
+    FALSE > @
+
+  # Tests that $ ≥ x
+  [x] > gte
+    ^.eq x > @
+
+  # Multiplication of $ and x
+  [x...] > times
+    positive-infinity > pos-inf!
+    0 > zero!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
+      not. > @
+        num.eq num
+
+    [term] > is-nan-or-zero
+      or. > @
+        is-nan
+          term > t!
+        t.eq -0.0
+        t.eq 0.0
+        t.eq 0
+
+    [term] > is-term-gt-zero
+      try > @
+        []
+          term.gt 0 > @
+        [e]
+          term.gt 0.0 > @
+        FALSE
+
+    [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
+      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 1 > index!
+      acc-index-terms.at 2 > terms
+      infs.at 0 > neg-inf
+      infs.at 1 > pos-inf
+
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          is-nan-or-zero
+            terms.at index > term!
+          nan
+          []
+            if. > @
+              acc.gt 0.0
+              times-rec
+                *
+                  if.
+                    is-term-gt-zero term > term-gt-zero
+                    acc
+                    neg-inf
+                  index.plus 1 > next-index
+                  terms
+                infs
+                is-nan-or-zero
+                is-term-gt-zero
+              times-rec
+                *
+                  if.
+                    term-gt-zero
+                    acc
+                    pos-inf
+                  next-index
+                  terms
+                infs
+                is-nan-or-zero
+                is-term-gt-zero
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        zero
+      ^
+      if.
+        terms-count.gt 1
+        times-rec
+          * ^ zero x
+          * ^ pos-inf
+          is-nan-or-zero
+          is-term-gt-zero
+        if.
+          is-nan-or-zero
+            x.at zero > first!
+          nan
+          if.
+            is-term-gt-zero first
+            ^
+            pos-inf
+
+  # Sum of $ and x
+  [x...] > plus
+    positive-infinity.as-bytes > pos-inf-as-bytes!
+    0 > zero!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
+      not. > @
+        num.eq num
+
+    [term] > is-nan-or-pos-inf
+      or. > @
+        is-nan
+          term > t!
+        t.as-bytes.eq pos-inf-as-bytes
+
+    [acc index terms is-nan-or-pos-inf] > plus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          is-nan-or-pos-inf
+            terms.at index
+          nan
+          plus-rec
+            acc
+            index.plus 1
+            terms
+            is-nan-or-pos-inf
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        zero
+      ^
+      if.
+        terms-count.gt 1
+        plus-rec
+          ^
+          zero
+          x
+          is-nan-or-pos-inf
+        if.
+          is-nan-or-pos-inf
+            x.at zero
+          nan
+          ^
+
+  # Negation of $
+  [] > neg
+    positive-infinity > @
+
+  # Difference between $ and x
+  [x...] > minus
+    ^.as-bytes > neg-inf-as-bytes!
+    0 > zero!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
+      not. > @
+        num.eq num
+
+    [term] > is-nan-or-neg-inf
+      or. > @
+        is-nan
+          term > t!
+        t.as-bytes.eq neg-inf-as-bytes
+
+    [acc index terms is-nan-or-neg-inf] > minus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          is-nan-or-neg-inf
+            terms.at index
+          nan
+          minus-rec
+            acc
+            index.plus 1
+            terms
+            is-nan-or-neg-inf
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        zero
+      ^
+      if.
+        terms-count.gt 1
+        minus-rec
+          ^
+          zero
+          x
+          is-nan-or-neg-inf
+        if.
+          is-nan-or-neg-inf
+            x.at zero
+          nan
+          ^
+
+  # Quotient of the division of $ by x
+  [x...] > div
+    x.at 0 > first!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > check-nan
+      not. > @
+        num.eq num
+
+    if. > @
+      or.
+        check-nan first
+        first.eq ^
+        first.eq positive-infinity
+      nan
+      ^

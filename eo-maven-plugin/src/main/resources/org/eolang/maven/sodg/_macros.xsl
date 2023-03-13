@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,9 @@ SOFTWARE.
         </xsl:when>
         <xsl:when test="$o/@base = 'Q'">
           <xsl:text>Φ</xsl:text>
+        </xsl:when>
+        <xsl:when test="$o/@base = '$'">
+          <xsl:value-of select="$o/ancestor::o[@abstract][1]/@loc"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:text>Φ.</xsl:text>

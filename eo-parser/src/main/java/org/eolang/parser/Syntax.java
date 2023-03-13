@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,12 +81,6 @@ public final class Syntax {
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
-     * @todo #485:90min The {@link org.eolang.parser.Syntax} by default just write warning to the
-     *  log about redundant parentheses because some objects from objectioanry already contain
-     *  redundancy parentheses in their source code that causes exceptions during parsing if
-     *  {@link org.eolang.parser.Syntax#redundancy} is true. By that reason it's important to
-     *  fix all redundancy parentheses in the objectionary. Then we will be able to remove
-     *  'redundancy' flag and check all eo programs for redundant parentheses by default.
      */
     public Syntax(final String nme, final Input ipt, final Output tgt) {
         this(nme, ipt, tgt, new RedundantParentheses());

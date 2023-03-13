@@ -1,0 +1,16 @@
+xsls:
+  - /org/eolang/parser/warnings/incorrect-version.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=2]
+  - /program/errors/error[@line='3']
+  - /program/errors/error[@line='5']
+
+eo: |
+  +version 0.0.0
+  +version 0.2.1
+  +version alpha
+  +alias org.eolang.io.stdout
+  +version 1.0.0-alpha.beta
+
+  [x] > foo
+    x.div in.nextInt > @

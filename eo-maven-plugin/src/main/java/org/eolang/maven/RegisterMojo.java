@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -94,8 +95,21 @@ public final class RegisterMojo extends SafeMojo {
     @Parameter
     private Set<String> excludeSources = new SetOf<>();
 
+    /**
+     * Whether it should fail on file names not matching required pattern.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.strictFileNames",
+        required = true,
+        defaultValue = "true"
+    )
+    private boolean strictFileNames = true;
+
     @Override
     public void exec() throws IOException {
+        final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.tojos.value().select(t -> true).size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
@@ -105,6 +119,15 @@ public final class RegisterMojo extends SafeMojo {
             .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
+            if (this.strictFileNames && !pattern.matcher(file.getFileName().toString()).matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Incorrect name found: '%s'. EO name must match '%s'",
+                        file.getFileName().toString(),
+                        pattern
+                    )
+                );
+            }
             final String name = unplace.make(file);
             if (!this.scopedTojos().select(t -> t.get(Tojos.KEY).equals(name)).isEmpty()) {
                 Logger.debug(this, "EO source %s already registered", name);

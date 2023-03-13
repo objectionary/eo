@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -44,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
 class CleanMojoTest {
 
     @Test
-    void execSuccessfully(@TempDir final Path temp) throws IOException {
+    void cleansSuccessfully(@TempDir final Path temp) throws IOException {
         final Path dir = Files.createDirectories(temp.resolve("target"));
         final Path out = Files.createDirectories(dir.resolve("child"));
         final Path small = Files.createDirectories(out.resolve("child.eo"));
@@ -62,7 +61,8 @@ class CleanMojoTest {
     }
 
     @Test
-    void fullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
+    @ExtendWith(OnlineCondition.class)
+    void makesFullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
         final Path src = temp.resolve("src");
         new Home(src).save(
             String.join(
@@ -90,11 +90,10 @@ class CleanMojoTest {
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf(
-                    "[] > sprintf\n"
-                )
+                new OyFake()
             )
             .execute();
         new Moja<>(CleanMojo.class)

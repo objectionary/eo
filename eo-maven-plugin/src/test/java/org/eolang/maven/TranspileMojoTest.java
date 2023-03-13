@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,15 @@ import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link TranspileMojo}.
@@ -57,7 +60,16 @@ final class TranspileMojoTest {
     @BeforeEach
     void setUp() throws Exception {
         this.program = new TextOf(new ResourceOf("org/eolang/maven/mess.eo")).asString();
-        this.compiled = "generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
+        this.compiled = "target/generated/EOorg/EOeolang/EOexamples/EOmessTest.java";
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
+    void createsPreStylesheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
+        );
     }
 
     @Test
@@ -88,7 +100,7 @@ final class TranspileMojoTest {
             .execute(new FakeMaven.Transpile())
             .result();
         final Path java = res.get(this.compiled);
-        final Path xmir = res.get("target/06-transpile/foo/x/main.xmir");
+        final Path xmir = res.get("target/6-transpile/foo/x/main.xmir");
         MatcherAssert.assertThat(java.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(xmir.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(java.toFile().setLastModified(0L), Matchers.is(true));
@@ -115,18 +127,18 @@ final class TranspileMojoTest {
 
     @Test
     void transpilesSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/array.eo");
+        final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(src)
             .execute(new FakeMaven.Transpile())
             .result();
-        final String java = "generated/EOorg/EOeolang/EOarray.java";
+        final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(java)
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(java)).asString(),
-            Matchers.containsString("class EOarray")
+            Matchers.containsString("class EOtuple")
         );
     }
 }

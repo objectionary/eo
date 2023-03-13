@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -116,13 +116,7 @@ public final class Param {
         } else if (Character.class.isInstance(ret)) {
             res = new BytesOf((char) ret);
         } else if (Double.class.isInstance(ret)) {
-            final double adjusted;
-            if (ret.equals(0.0)) {
-                adjusted = -0.0;
-            } else {
-                adjusted = (double) ret;
-            }
-            res = new BytesOf(adjusted);
+            res = new BytesOf((double) ret);
         } else if (byte[].class.isInstance(ret)) {
             res = new BytesOf((byte[]) ret);
         } else {

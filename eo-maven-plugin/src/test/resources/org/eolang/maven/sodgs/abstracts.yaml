@@ -1,7 +1,7 @@
 locators:
   - .org .eolang .int
-  - .foo .bar .a .x .α0 Δ=00-00-00-00-00-00-00-2A-
-  - .foo .bar .b .y .α0 Δ=00-00-00-00-00-00-01-00-
+  - .foo .bar .a .x .α0 .Δ δ=00-00-00-00-00-00-00-2A
+  - .foo .bar .b .y .α0 .Δ δ=00-00-00-00-00-00-01-00
   - .foo .bar .a .x .α0 .π >int ν=$Φ.org.eolang.int
   - .foo .bar .a .x .π >bar .ρ ν=ν0
 eo: |

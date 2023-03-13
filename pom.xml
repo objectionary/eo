@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.64.1</version>
+    <version>0.65.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -92,13 +92,16 @@ SOFTWARE.
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
     <stack-size>8M</stack-size>
+    <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
+    <sonar.organization>objectionary</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
-        <version>1.18.24</version>
+        <version>1.18.26</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
@@ -124,43 +127,43 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.19.0</version>
+        <version>0.20.1</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.1</version>
+        <version>5.9.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
-        <version>1.9.1</version>
+        <version>2.0.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.33</version>
+        <version>2.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -170,13 +173,13 @@ SOFTWARE.
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>11.4</version>
+        <version>12.0</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.26.0</version>
+        <version>0.27.2</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -196,7 +199,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
-        <version>4.11.1</version>
+        <version>4.12.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -240,7 +243,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.13</version>
+            <version>3.0.15</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -250,7 +253,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.1</version>
           <executions>
             <execution>
               <id>enforce-java</id>
@@ -281,7 +284,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
-          <version>4.11.1</version>
+          <version>4.12.0</version>
           <configuration>
             <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
@@ -319,6 +322,19 @@ SOFTWARE.
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.volodya-lombrozo</groupId>
+            <artifactId>test-naming-conventions</artifactId>
+            <version>0.1.8</version>
+            <executions>
+              <execution>
+                <id>check-tests-names</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

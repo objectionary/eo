@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.util.logging.Logger;
+
 /**
  * An attribute that logs all its operations to the console (very
  * convenient for debugging).
@@ -43,13 +45,29 @@ final class AtLogged implements Attr {
     private final String owner;
 
     /**
+     * Logger.
+     */
+    private final Logger log;
+
+    /**
      * Ctor.
      * @param attr Attribute
      * @param label Label
      */
     AtLogged(final Attr attr, final String label) {
+        this(attr, label, Logger.getLogger(AtLogged.class.getName()));
+    }
+
+    /**
+     * Ctor.
+     * @param attr Attribute
+     * @param label Label
+     * @param logger Logger
+     */
+    AtLogged(final Attr attr, final String label, final Logger logger) {
         this.origin = attr;
         this.owner = label;
+        this.log = logger;
     }
 
     @Override
@@ -64,25 +82,24 @@ final class AtLogged implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        System.out.printf("  %s.copy()...\n", this.owner);
+        this.log.info(String.format("  %s.copy()...\n", this.owner));
         final Attr ret = this.origin.copy(self);
-        System.out.printf("  %s.copy()!\n", this.owner);
+        this.log.info(String.format("  %s.copy()!\n", this.owner));
         return ret;
     }
 
     @Override
     public Phi get() {
-        System.out.printf("  %s.get()...\n", this.owner);
+        this.log.info(String.format("  %s.get()...\n", this.owner));
         final Phi ret = this.origin.get();
-        System.out.printf("  %s.get()! -> %d\n", this.owner, ret.hashCode());
+        this.log.info(String.format("  %s.get()! -> %d\n", this.owner, ret.hashCode()));
         return ret;
     }
 
     @Override
     public void put(final Phi src) {
-        System.out.printf("  %s.put()...\n", this.owner);
+        this.log.info(String.format("  %s.put()...\n", this.owner));
         this.origin.put(src);
-        System.out.printf("  %s.put()!\n", this.owner);
+        this.log.info(String.format("  %s.put()!\n", this.owner));
     }
-
 }

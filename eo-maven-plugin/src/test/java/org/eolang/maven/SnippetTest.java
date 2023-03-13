@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,24 +28,28 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.IsEmpty;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -81,6 +85,17 @@ final class SnippetTest {
     @TempDir
     public Path temp;
 
+    /**
+     * Runs and checks of eo snippets.
+     *
+     * @todo #1723:90m Enable runsAllSpinners test. This test disabled because it requires
+     *  foreign eo objects from the internet. We need to find a way to mock them or to put into
+     *  eo-runtime.jar. You can read more about the problem
+     *  <a href="https://github.com/objectionary/eo/issues/1724">here</a>. Also it's important to
+     *  remove bytes-as-array.eo and list.eo from the test resources.
+     * @param yml Yaml test case.
+     * @throws Exception If fails
+     */
     @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
@@ -98,18 +113,23 @@ final class SnippetTest {
         );
         MatcherAssert.assertThat(
             String.format("'%s' returned wrong exit code", yml),
-            result, Matchers.equalTo(map.get("exit"))
+            result,
+            Matchers.equalTo(map.get("exit"))
         );
-        Logger.debug(this, "Stdout: \"%s\"", stdout.toString());
-        for (final String ptn : (Iterable<String>) map.get("out")) {
-            MatcherAssert.assertThat(
-                String.format("'%s' printed something wrong", yml),
-                new String(stdout.toByteArray(), StandardCharsets.UTF_8),
-                Matchers.matchesPattern(
-                    Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+        final String actual = new String(stdout.toByteArray(), StandardCharsets.UTF_8);
+        Logger.debug(this, "Stdout: \"%s\"", actual);
+        MatcherAssert.assertThat(
+            String.format("'%s' printed something wrong", yml),
+            actual,
+            Matchers.allOf(
+                new Mapped<>(
+                    ptn -> Matchers.matchesPattern(
+                        Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                    ),
+                    (Iterable<String>) map.get("out")
                 )
-            );
-        }
+            )
+        );
     }
 
     /**
@@ -123,71 +143,37 @@ final class SnippetTest {
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("unchecked")
-    private static int run(final Path tmp, final Input code, final List<String> args,
-        final Input stdin, final Output stdout) throws Exception {
+    @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
+    private static int run(
+        final Path tmp,
+        final Input code,
+        final List<String> args,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
         final Path src = tmp.resolve("src");
-        new Home(src).save(code, Paths.get("code.eo"));
-        final Path target = tmp.resolve("target");
-        final Path foreign = target.resolve("eo-foreign.json");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", target.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
+        final FakeMaven maven = new FakeMaven(tmp)
+            .withProgram(code)
             .with("sourcesDir", src.toFile())
-            .execute();
-        new Moja<>(DemandMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("objects", new ListOf<>("org.eolang.bool"))
-            .execute();
-        final Path home = Paths.get(
-            System.getProperty(
-                "runtime.path",
-                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
-            )
-        );
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", target.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("placed", target.resolve("list").toFile())
-            .with(
-                "objectionary",
-                (Objectionary) name -> new InputOf(
-                    home.resolve(
-                        String.format(
-                            "src/main/eo/%s.eo",
-                            name.replace(".", "/")
-                        )
-                    )
-                )
-            )
-            .with("central", Central.EMPTY)
-            .execute();
-        final Path generated = target.resolve("generated");
-        new Moja<>(TranspileMojo.class)
-            .with("project", new MavenProjectStub())
-            .with("targetDir", target.toFile())
-            .with("generatedDir", generated.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .execute();
-        final Path classes = target.resolve("classes");
-        classes.toFile().mkdir();
-        final String cpath = String.format(
-            ".%s%s",
-            File.pathSeparatorChar,
-            System.getProperty(
-                "runtime.jar",
-                Paths.get(System.getProperty("user.home")).resolve(
-                    String.format(
-                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                        "1.0-SNAPSHOT"
-                    )
-                ).toString()
-            )
-        );
+            .with("objects", Arrays.asList("org.eolang.bool"))
+            .with("objectionary", SnippetTest.objectionary());
+        maven.execute(RegisterMojo.class);
+        maven.execute(DemandMojo.class);
+        maven.execute(AssembleMojo.class);
+        maven.execute(TranspileMojo.class);
+        final Path classes = maven.targetPath().resolve("classes");
+        SnippetTest.compileJava(maven.generatedPath(), classes);
+        SnippetTest.runJava(args, stdin, stdout, classes);
+        return 0;
+    }
+
+    /**
+     * Compile Java sources.
+     * @param generated Where to find Java sources
+     * @param classes Where to put compiled classes
+     * @throws Exception If fails
+     */
+    private static void compileJava(final Path generated, final Path classes) throws Exception {
         SnippetTest.exec(
             String.format(
                 "%s -encoding utf-8 %s -d %s -cp %s",
@@ -197,10 +183,27 @@ final class SnippetTest {
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
                 classes,
-                cpath
+                SnippetTest.classpath()
             ),
             generated
         );
+    }
+
+    /**
+     * Run Java.
+     * @param args Command line arguments
+     * @param stdin The input
+     * @param stdout Where to put stdout
+     * @param classes Where to find compiled classes
+     * @throws Exception If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    private static void runJava(
+        final List<String> args,
+        final Input stdin,
+        final Output stdout,
+        final Path classes
+    ) throws Exception {
         SnippetTest.exec(
             String.join(
                 " ",
@@ -209,17 +212,14 @@ final class SnippetTest {
                         SnippetTest.jdkExecutable("java"),
                         "-Dfile.encoding=utf-8",
                         "-cp",
-                        cpath,
+                        SnippetTest.classpath(),
                         "org.eolang.Main"
                     ),
                     args
                 )
             ),
-            classes,
-            stdin,
-            stdout
+            classes, stdin, stdout
         );
-        return 0;
     }
 
     /**
@@ -228,9 +228,11 @@ final class SnippetTest {
      * @param cmd The command
      * @param dir The home dir
      */
-    private static void exec(final String cmd, final Path dir) {
+    private static void exec(final String cmd, final Path dir) throws Exception {
         SnippetTest.exec(
-            cmd, dir, new InputOf(""),
+            cmd,
+            dir,
+            new InputOf(""),
             new OutputTo(new ByteArrayOutputStream())
         );
     }
@@ -244,33 +246,31 @@ final class SnippetTest {
      * @param stdout Stdout
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static void exec(final String cmd, final Path dir,
-        final Input stdin, final Output stdout) {
+    private static void exec(
+        final String cmd,
+        final Path dir,
+        final Input stdin,
+        final Output stdout
+    ) throws Exception {
         Logger.debug(SnippetTest.class, "+%s", cmd);
-        try {
-            final Process proc = new ProcessBuilder()
-                .command(cmd.split(" "))
-                .directory(dir.toFile())
-                .redirectErrorStream(true)
-                .start();
+        final Process proc = new ProcessBuilder()
+            .command(cmd.split(" "))
+            .directory(dir.toFile())
+            .redirectErrorStream(true)
+            .start();
+        new LengthOf(
+            new TeeInput(
+                stdin,
+                new OutputTo(proc.getOutputStream())
+            )
+        ).value();
+        try (VerboseProcess vproc = new VerboseProcess(proc)) {
             new LengthOf(
                 new TeeInput(
-                    stdin,
-                    new OutputTo(proc.getOutputStream())
+                    new InputOf(vproc.stdout()),
+                    stdout
                 )
             ).value();
-            try (VerboseProcess vproc = new VerboseProcess(proc)) {
-                new LengthOf(
-                    new TeeInput(
-                        new InputOf(vproc.stdout()),
-                        stdout
-                    )
-                ).value();
-            }
-            // @checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception ex) {
-            throw new IllegalStateException(ex);
         }
     }
 
@@ -296,4 +296,78 @@ final class SnippetTest {
         return result;
     }
 
+    /**
+     * Fake objectionary.
+     * @return Fake objectionary.
+     */
+    private static Objectionary objectionary() {
+        final Path home = Paths.get(
+            System.getProperty(
+                "runtime.path",
+                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
+            )
+        );
+        return new OyFake(
+            name -> {
+                final Input res;
+                if (name.contains("collections")) {
+                    res = new ResourceOf(
+                        String.format("%s.eo", name.replace(".", "/"))
+                    );
+                } else {
+                    res = new InputOf(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
+                    );
+                }
+                return res;
+            },
+            name -> {
+                final boolean res;
+                if (name.contains("collections")) {
+                    res = !new IsEmpty(
+                        new TextOf(
+                            new ResourceOf(
+                                String.format("%s.eo", name.replace(".", "/"))
+                            )
+                        )
+                    ).value();
+                } else {
+                    res = Files.exists(
+                        home.resolve(
+                            String.format(
+                                "src/main/eo/%s.eo",
+                                name.replace(".", "/")
+                            )
+                        )
+                    );
+                }
+                return res;
+            }
+        );
+    }
+
+    /**
+     * Classpath.
+     * @return Classpath.
+     */
+    private static String classpath() {
+        return String.format(
+            ".%s%s",
+            File.pathSeparatorChar,
+            System.getProperty(
+                "runtime.jar",
+                Paths.get(System.getProperty("user.home")).resolve(
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
+                ).toString()
+            )
+        );
+    }
 }

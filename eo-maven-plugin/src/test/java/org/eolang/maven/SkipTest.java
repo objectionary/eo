@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.io.InputOf;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
@@ -44,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 class SkipTest {
 
     @Test
-    void testExecutedPullMojo(@TempDir final Path temp) throws IOException {
+    void executesPullMojo(@TempDir final Path temp) throws IOException {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, false);
         MatcherAssert.assertThat(
@@ -61,7 +59,7 @@ class SkipTest {
     }
 
     @Test
-    void testSkippedPullMojo(@TempDir final Path temp) {
+    void skipsPullMojo(@TempDir final Path temp) {
         final Path target = temp.resolve("target");
         this.executePullMojo(temp, target, true);
         MatcherAssert.assertThat(
@@ -78,7 +76,7 @@ class SkipTest {
     }
 
     @Test
-    void testSkippedCopyMojo(@TempDir final Path temp) throws IOException {
+    void skipsCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         this.executeCopyMojo(temp, classes, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
@@ -89,7 +87,7 @@ class SkipTest {
     }
 
     @Test
-    void testExecutedCopyMojo(@TempDir final Path temp) throws IOException {
+    void executesCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         this.executeCopyMojo(temp, classes, false);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
@@ -116,7 +114,7 @@ class SkipTest {
             .with("skip", skip)
             .with(
                 "objectionary",
-                (Objectionary) input -> new InputOf("[] > hello\n")
+                new OyFake()
             )
             .execute();
     }

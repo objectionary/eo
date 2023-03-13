@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public final class SpyTrain extends TrEnvelope {
                     new StLambda(
                         shift::uid,
                         (pos, xml) -> {
-                            final String log = shift.uid().replaceAll("[^a-z0-9]", "-");
+                            final String log = shift.uid().replaceAll("[^A-Za-z0-9]", "-");
                             new Home(dir).save(
                                 xml.toString(),
                                 Paths.get(String.format("%02d-%s.xml", pos, log))

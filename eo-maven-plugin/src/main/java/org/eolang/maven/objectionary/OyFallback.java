@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,14 +57,6 @@ public final class OyFallback implements Objectionary {
     }
 
     @Override
-    public String toString() {
-        return String.format(
-            "[%s]+[fallback to %s]",
-            this.first, this.second
-        );
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public Input get(final String name) throws IOException {
         return new IoCheckedFunc<>(
@@ -76,5 +68,19 @@ public final class OyFallback implements Objectionary {
                 )
             )
         ).apply(name);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean contains(final String name) throws IOException {
+        return this.first.contains(name) || this.second.contains(name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "[%s]+[fallback to %s]",
+            this.first, this.second
+        );
     }
 }

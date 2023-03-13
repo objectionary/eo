@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,17 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
+import org.cactoos.Func;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -39,11 +44,12 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(OnlineCondition.class)
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
 
     @Test
-    void resolveWithSingleDependency(@TempDir final Path temp) throws Exception {
+    void resolvesWithSingleDependency(@TempDir final Path temp) throws Exception {
         final Path foo = Paths.get("src").resolve("foo.eo");
         new Home(temp).save(
             String.format(
@@ -61,7 +67,7 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
-        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/0.7.0");
+        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path.resolve("eo-runtime-0.7.0.jar").toFile(),
@@ -70,7 +76,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void resolveWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
         final Path foo = Paths.get("src").resolve("sum.eo");
         final Home home = new Home(temp);
         home.save(
@@ -86,7 +92,7 @@ final class ResolveMojoTest {
             .set(AssembleMojo.ATTR_VERSION, "0.22.1");
         final Path target = temp.resolve("target");
         this.resolve(new DummyCentral(), foreign, target);
-        final Path path = temp.resolve("target/06-resolve/org.eolang/eo-runtime/-/");
+        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
@@ -116,6 +122,92 @@ final class ResolveMojoTest {
         );
     }
 
+    @Test
+    void resolvesIfRuntimeDependencyComesFromTojos(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-0.22.1.jar")
+        );
+    }
+
+    @Test
+    void resolvesIfRuntimeDependencyComesFromTojosButParamIsFalse(@TempDir final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
+            .with("withRuntimeDependency", false)
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+        );
+    }
+
+    @Test
+    void resolvesWithRuntimeDependencyFromPom(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Dependency runtime = new Dependency();
+        runtime.setGroupId("org.eolang");
+        runtime.setArtifactId("eo-runtime");
+        runtime.setVersion("0.7.0");
+        final MavenProject project = new MavenProject();
+        project.setDependencies(Collections.singletonList(runtime));
+        maven.withHelloWorld()
+            .with("project", project)
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-0.7.0.jar")
+        );
+    }
+
+    @Test
+    void resolvesWithoutTransitiveDependencies(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld()
+            .with("ignoreTransitive", false)
+            .with(
+                "transitiveStrategy",
+                (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.emptyList()
+            )
+            .execute(new FakeMaven.Resolve());
+        MatcherAssert.assertThat(
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
+    }
+
+    @Test
+    void throwsExceptionWithTransitiveDependency(@TempDir final Path temp) {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Dependency dependency = new Dependency();
+        dependency.setScope("compiled");
+        dependency.setGroupId("org.eolang");
+        dependency.setArtifactId("eo-transitive");
+        dependency.setVersion("0.1.0");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven
+                .withProgram(
+                    "+rt jvm org.eolang:eo-foreign:0.22.1",
+                    "[] > foo /int"
+                )
+                .with("ignoreTransitive", false)
+                .with(
+                    "transitiveStrategy",
+                    (Func<Dependency, Iterable<Dependency>>) ignore -> Collections.singleton(
+                        dependency
+                    )
+                )
+                .execute(new FakeMaven.Resolve())
+        );
+    }
+
     /**
      * Test conflicts.
      *
@@ -123,7 +215,7 @@ final class ResolveMojoTest {
      * @throws IOException In case of I/O issues.
      */
     @Test
-    void testConflictingDependencies(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependencies(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Home(temp).save(
             String.format(
@@ -184,7 +276,7 @@ final class ResolveMojoTest {
     }
 
     @Test
-    void testConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
+    void resolvesWithConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
         final Path first = temp.resolve("src/foo1.src");
         new Home(temp).save(
             String.format(

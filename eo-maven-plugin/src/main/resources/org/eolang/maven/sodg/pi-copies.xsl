@@ -2,7 +2,7 @@
 <!--
 The MIT License (MIT)
 
-Copyright (c) 2016-2022 Objectionary.com
+Copyright (c) 2016-2023 Objectionary.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and (o or @data)]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and (o or @data or @abstract)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">

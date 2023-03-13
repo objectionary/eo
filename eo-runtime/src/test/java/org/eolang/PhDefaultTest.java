@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -145,7 +145,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void recursiveCachingOfPhi() {
+    void cachesPhiRecursively() {
         final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
@@ -155,7 +155,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void recursiveCachingOfPhiViaNew() {
+    void cachesPhiViaNewRecursively() {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,6 @@ import java.util.logging.Level;
  * Train of XSL shifts.
  *
  * @since 0.1
- * @todo #1024:30min Need to figure out, which errors need to be
- *   "critical", same as "duplicate-names" error. After that
- *   move them to "critical-errors" directory.
  */
 public final class ParsingTrain extends TrEnvelope {
 
@@ -50,7 +47,8 @@ public final class ParsingTrain extends TrEnvelope {
      * Apply changes to each XML after processing.
      */
     private static final XSL EACH = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("_each.xsl")
+        ParsingTrain.class.getResourceAsStream("_each.xsl"),
+        "each.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -74,6 +72,8 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/warnings/unsorted-metas.xsl",
         "/org/eolang/parser/warnings/incorrect-architect.xsl",
+        "/org/eolang/parser/warnings/incorrect-home.xsl",
+        "/org/eolang/parser/warnings/incorrect-version.xsl",
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
         "/org/eolang/parser/synthetic-references.xsl",
@@ -84,6 +84,8 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/critical-errors/duplicate-names.xsl",
         "/org/eolang/parser/warnings/duplicate-metas.xsl",
         "/org/eolang/parser/warnings/mandatory-package-meta.xsl",
+        "/org/eolang/parser/warnings/mandatory-home-meta.xsl",
+        "/org/eolang/parser/warnings/mandatory-version-meta.xsl",
         "/org/eolang/parser/warnings/correct-package-meta.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/errors/data-objects.xsl",
@@ -96,11 +98,19 @@ public final class ParsingTrain extends TrEnvelope {
      */
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
+        this(ParsingTrain.SHEETS);
+    }
+
+    /**
+     * Ctor.
+     * @param sheets Sheets
+     */
+    ParsingTrain(final String... sheets) {
         super(
             new TrLambda(
                 new TrFast(
                     new TrLogged(
-                        new TrClasspath<>(ParsingTrain.SHEETS).back(),
+                        new TrClasspath<>(sheets).back(),
                         ParsingTrain.class,
                         Level.FINEST
                     )

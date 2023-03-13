@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>This class is thread-safe.</p>
  *
  * @since 0.16
+ * @todo #1614:30min This class don't have enough tests. We need to add more, at least for
+ *  the next methods: toString(), φTerm(), copy(), put().
  */
 final class AtConst implements Attr {
 

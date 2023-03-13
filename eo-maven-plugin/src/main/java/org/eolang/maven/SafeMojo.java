@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -45,6 +46,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -133,8 +135,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    protected String placedFormat = "csv";
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
+    protected String placedFormat = "json";
 
     /**
      * The path to a text file where paths of generated java files per EO program.
@@ -166,6 +168,16 @@ abstract class SafeMojo extends AbstractMojo {
     protected String transpiledFormat = "csv";
 
     /**
+     * If set to TRUE, the exception on exit will be printed in details
+     * to the log.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @since 0.29.0
+     */
+    @Parameter(property = "eo.unrollExitError")
+    protected boolean unrollExitError = true;
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
@@ -191,10 +203,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
-        )
+    protected final TranspiledTojos transpiledTojos = new TranspiledTojos(
+        new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
     );
 
     /**
@@ -226,7 +236,7 @@ abstract class SafeMojo extends AbstractMojo {
                     );
                 }
             } catch (final IOException ex) {
-                throw new MojoFailureException(
+                this.exitError(
                     String.format(
                         "Failed to execute %s",
                         this.getClass().getCanonicalName()
@@ -234,7 +244,7 @@ abstract class SafeMojo extends AbstractMojo {
                     ex
                 );
             } catch (final TimeoutException ex) {
-                throw new MojoExecutionException(
+                this.exitError(
                     Logger.format(
                         "Timeout %[ms]s for Mojo execution is reached",
                         TimeUnit.SECONDS.toMillis(this.timeout)
@@ -242,7 +252,7 @@ abstract class SafeMojo extends AbstractMojo {
                     ex
                 );
             } catch (final ExecutionException ex) {
-                throw new MojoExecutionException(
+                this.exitError(
                     String.format("'%s' execution failed", this),
                     ex
                 );
@@ -254,7 +264,7 @@ abstract class SafeMojo extends AbstractMojo {
                     SafeMojo.closeTojos(this.placedTojos.value());
                 }
                 if (this.transpiled != null) {
-                    SafeMojo.closeTojos(this.transpiledTojos.value());
+                    SafeMojo.closeTojos(this.transpiledTojos);
                 }
             }
         }
@@ -315,13 +325,13 @@ abstract class SafeMojo extends AbstractMojo {
                     this.exec();
                     return new Object();
                 }
-            ).get(this.timeout, TimeUnit.SECONDS);
+            ).get(this.timeout.longValue(), TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(
                 Logger.format(
                     "Timeout %[ms]s thread was interrupted",
-                    TimeUnit.SECONDS.toMillis(this.timeout)
+                    TimeUnit.SECONDS.toMillis(this.timeout.longValue())
                 ),
                 ex
             );
@@ -339,5 +349,37 @@ abstract class SafeMojo extends AbstractMojo {
         } catch (final IOException ex) {
             throw new MojoFailureException(ex);
         }
+    }
+
+    /**
+     * Make an error for the exit and throw it.
+     * @param msg The message
+     * @param exp Original problem
+     * @throws MojoFailureException For sure
+     */
+    private void exitError(final String msg, final Throwable exp)
+        throws MojoFailureException {
+        final MojoFailureException out = new MojoFailureException(msg, exp);
+        if (this.unrollExitError) {
+            for (final String cause : SafeMojo.causes(exp)) {
+                Logger.error(this, cause);
+            }
+        }
+        throw out;
+    }
+
+    /**
+     * Turn the exception into an array of causes.
+     * @param exp Original problem
+     * @return List of causes
+     */
+    private static List<String> causes(final Throwable exp) {
+        final List<String> causes = new LinkedList<>();
+        causes.add(exp.getMessage());
+        final Throwable cause = exp.getCause();
+        if (cause != null) {
+            causes.addAll(SafeMojo.causes(cause));
+        }
+        return causes;
     }
 }

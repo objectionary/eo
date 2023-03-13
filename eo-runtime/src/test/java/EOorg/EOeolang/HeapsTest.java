@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 public final class HeapsTest {
 
     @Test
-    public void mallocAndFreeWork() {
+    public void performsMallocAndFreeWork() {
         final Phi heap = new EOheap(Phi.Φ);
         final int pointer = Heaps.INSTANCE.malloc(heap, 100);
         MatcherAssert.assertThat(

@@ -1,0 +1,21 @@
+xsls: [ ]
+tests:
+  - //o[@name='i1' and text()='00 00 00 00 00 00 00 2A']
+  - //o[@name='i2' and text()='00 00 00 00 00 00 01 2F']
+  - //o[@name='f1' and text()='40 09 21 CA C0 83 12 6F']
+  - //o[@name='b1' and text()='01']
+  - //o[@name='b2' and text()='00']
+  - //o[@name='s1' and text()='48 69 2C 20 E5 A4 A7 E5 AE B6 21']
+  - //o[@name='s2' and text()='42 79 65 2C 20 E5 A4 A7 E5 AE B6 21']
+  - //o[@name='s3' and text()='41 00 01 09 0A']
+eo: |
+  42 > i1
+  0x12f > i2
+  3.1415 > f1
+  TRUE > b1
+  FALSE > b2
+  "Hi, 大家!" > s1
+  """
+  Bye, 大家!
+  """ > s2
+  "A\u0000\u0001\t\n" > s3

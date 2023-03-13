@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
@@ -47,6 +46,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.StUnhex;
 
 /**
  * Compile.
@@ -60,28 +60,27 @@ import org.eolang.parser.ParsingTrain;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class TranspileMojo extends SafeMojo {
-
-    /**
-     * Extension for compiled sources in XMIR format (XML).
-     */
-    public static final String EXT = "xmir";
+public final class TranspileMojo extends SafeMojo implements CompilationStep {
 
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "06-transpile";
+    public static final String DIR = "6-transpile";
 
     /**
-     * The directory where to put pre-transpile files.
+     * Extension for compiled sources in XMIR format (XML).
      */
-    public static final String PRE = "05-pre";
+    static final String EXT = "xmir";
 
     /**
      * Parsing train with XSLs.
      */
-    private static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(new ParsingTrain().empty()),
+    static final Train<Shift> TRAIN = new TrBulk<>(
+        new TrClasspath<>(
+            new ParsingTrain()
+                .empty()
+                .with(new StUnhex())
+        ),
         Arrays.asList(
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
@@ -93,6 +92,11 @@ public final class TranspileMojo extends SafeMojo {
             "/org/eolang/maven/pre/to-java.xsl"
         )
     ).back().back();
+
+    /**
+     * The directory where to put pre-transpile files.
+     */
+    private static final String PRE = "5-pre";
 
     /**
      * Target directory.
@@ -150,11 +154,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
             } else {
                 final List<Path> paths = this.transpile(src, input, target);
-                for (final Path path : paths) {
-                    this.transpiledTojos.value()
-                        .add(String.valueOf(path))
-                        .set(AssembleMojo.ATTR_XMIR2, tojo.get(AssembleMojo.ATTR_XMIR2));
-                }
+                paths.forEach(p -> this.transpiledTojos.add(p, tojo.get(AssembleMojo.ATTR_XMIR2)));
                 saved += paths.size();
             }
         }
@@ -186,8 +186,11 @@ public final class TranspileMojo extends SafeMojo {
      * @return List of Paths to generated java file
      * @throws IOException If any issues with I/O
      */
-    private List<Path> transpile(final Path src, final XML input,
-        final Path target) throws IOException {
+    private List<Path> transpile(
+        final Path src,
+        final XML input,
+        final Path target
+    ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
         final int removed = this.removeTranspiled(src);
         if (removed > 0) {
@@ -205,19 +208,12 @@ public final class TranspileMojo extends SafeMojo {
         }
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
-            TranspileMojo.TRAIN, place.make(
-                this.targetDir.toPath().resolve(TranspileMojo.PRE),
-                ""
-            )
+            TranspileMojo.TRAIN,
+            place.make(this.targetDir.toPath().resolve(TranspileMojo.PRE), "")
         );
-        final XML out = new Xsline(trn).pass(input);
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        new Home(dir)
-            .save(out.toString(), dir.relativize(target));
-        return new JavaFiles(
-            target,
-            this.generatedDir.toPath()
-        ).save();
+        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
+        return new JavaFiles(target, this.generatedDir.toPath()).save();
     }
 
     /**
@@ -232,16 +228,7 @@ public final class TranspileMojo extends SafeMojo {
         );
         int count = 0;
         for (final Tojo exist : existed) {
-            final List<Tojo> removable = this.transpiledTojos.value().select(
-                row -> row.get(AssembleMojo.ATTR_XMIR2)
-                    .equals(exist.get(AssembleMojo.ATTR_XMIR2))
-            );
-            for (final Tojo remove : removable) {
-                final File file = new File(remove.get(Tojos.KEY));
-                if (file.delete()) {
-                    count += 1;
-                }
-            }
+            count += this.transpiledTojos.remove(exist.get(AssembleMojo.ATTR_XMIR2));
         }
         return count;
     }

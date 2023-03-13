@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,11 +43,11 @@ private static boolean online() {
 [
   'target/eo/foreign.csv',
   'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
-  'target/eo/01-parse/org/eolang/examples/app.xmir',
-  'target/eo/02-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
-  'target/eo/03-optimize/org/eolang/examples/app.xmir',
-  'target/eo/05-pre/org/eolang/examples/app/00-classes.xml',
-  'target/eo/06-transpile/org/eolang/examples/app.xmir',
+  'target/eo/1-parse/org/eolang/examples/app.xmir',
+  'target/eo/2-optimization-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
+  'target/eo/2-optimize/org/eolang/examples/app.xmir',
+  'target/eo/5-pre/org/eolang/examples/app/01-classes.xml',
+  'target/eo/6-transpile/org/eolang/examples/app.xmir',
   'target/eo/sodg/org/eolang/error.sodg',
   'target/eo/sodg/org/eolang/error.sodg.xe',
   'target/eo/sodg/org/eolang/error.sodg.graph.xml',
@@ -57,13 +57,12 @@ private static boolean online() {
 [
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
   'target/eo/placed.json',
-  'target/eo/04-pull/org/eolang/array.eo',
+  'target/eo/3-pull/org/eolang/tuple.eo',
 ].each { assert new File(basedir, it).exists() || !online() }
 
 String log = new File(basedir, 'build.log').text
 
 [
-  '--- eo-maven-plugin:',
   'org.eolang:eo-runtime:',
   ' unpacked to ',
   '6th Fibonacci number is 8',

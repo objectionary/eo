@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ public final class EOram_sliceTest {
         "10, 5, hello, 5, 5, hello",
         "13, 0, hello world, 6, 5, world"
     })
-    void ramSlice(
+    void makesRamSlice(
         final long total,
         final int wrt,
         final String data,

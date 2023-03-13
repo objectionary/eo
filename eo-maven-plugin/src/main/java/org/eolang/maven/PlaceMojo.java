@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,27 +61,27 @@ public final class PlaceMojo extends SafeMojo {
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_PLD_RELATED = "related";
+    static final String ATTR_PLD_RELATED = "related";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_PLD_KIND = "kind";
+    static final String ATTR_PLD_KIND = "kind";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_PLD_HASH = "hash";
+    static final String ATTR_PLD_HASH = "hash";
 
     /**
      * Where the binary is coming from (JAR name).
      */
-    public static final String ATTR_PLD_ORIGIN = "dependency";
+    static final String ATTR_PLD_DEP = "dependency";
 
     /**
      * Attr in CSV.
      */
-    public static final String ATTR_PLD_UNPLACED = "unplaced";
+    static final String ATTR_PLD_UNPLACED = "unplaced";
 
     /**
      * Output.
@@ -190,7 +190,7 @@ public final class PlaceMojo extends SafeMojo {
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
                 );
                 continue;
             }
@@ -201,7 +201,7 @@ public final class PlaceMojo extends SafeMojo {
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_ORIGIN)
+                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
@@ -214,7 +214,7 @@ public final class PlaceMojo extends SafeMojo {
                         this.outputDir.toString().length() + 1
                     )
                 )
-                .set(PlaceMojo.ATTR_PLD_ORIGIN, dep)
+                .set(PlaceMojo.ATTR_PLD_DEP, dep)
                 .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
             ++copied;
         }

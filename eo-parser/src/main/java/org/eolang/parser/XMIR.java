@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2022 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,10 @@ package org.eolang.parser;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 
 /**
  * Prints XMIR to EO.
@@ -41,9 +44,17 @@ import com.jcabi.xml.XSLDocument;
  *
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
- * @link https://xml.jcabi.com
+ * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  */
 public final class XMIR {
+
+    /**
+     * The sheet for transformations.
+     */
+    private static final XSL SHEET = new XSLDocument(
+        XMIR.class.getResourceAsStream("xmir-to-eo.xsl"),
+        "xmir-to-eo"
+    ).with(new ClasspathSources());
 
     /**
      * The XML content.
@@ -72,10 +83,9 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        return new XSLDocument(
-            this.getClass().getResourceAsStream("xmir-to-eo.xsl"),
-            "xmir-to-eo"
-        ).with(new ClasspathSources()).applyTo(this.xml);
+        return XMIR.SHEET.applyTo(
+            new Xsline(new TrDefault<>(new StUnhex())).pass(this.xml)
+        );
     }
 
 }
