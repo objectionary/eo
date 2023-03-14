@@ -4,7 +4,7 @@ The purpose of `custom-goals` integration test is to check partial compilation
 of EO programs. We have to be sure that the plugin correctly performs particular
 set of goals in order to compile a program. We just check that for a
 particular set of goals the particular set of artifacts and folders will be
-compiled and create. The idea to use only specific goals of the plugin rather
+compiled and created. The idea is to use only specific goals of the plugin rather
 than entire compilation process. The full list of steps that will be performed you
 can check in the [pom.xml](pom.xml) in `eo-maven-plugin` description:
 
