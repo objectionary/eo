@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.maven.util.Home;
@@ -39,24 +40,30 @@ import org.junit.jupiter.api.io.TempDir;
 final class MarkMojoTest {
 
     @Test
-    void extendsForeignWithNewObjects(@TempDir final Path temp) throws Exception {
-        final Path bins = temp.resolve(ResolveMojo.DIR);
-        new Home(bins).save(
-            "hi",
-            Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
-        );
-        final Path foreign = temp.resolve("placed.json");
-        new Moja<>(MarkMojo.class)
-            .with("targetDir", temp.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "csv")
-            .execute();
+    void extendsForeignWithNewObjects(@TempDir final Path temp) throws IOException {
+        MarkMojoTest.source(temp);
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            Catalogs.INSTANCE.make(foreign).select(t -> true)
-                .iterator().next()
-                .get(AssembleMojo.ATTR_VERSION),
+            maven.foreign()
+                .select(all -> true)
+                .iterator()
+                .next().get(AssembleMojo.ATTR_VERSION),
             Matchers.equalTo("0.1.8")
         );
+    }
+
+    @Test
+    void updatesVersionIfItExists() {
+
+    }
+
+    private static void source(final Path temp) throws IOException {
+        new Home(temp.resolve("target").resolve(ResolveMojo.DIR))
+            .save(
+                "hi",
+                Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
+            );
     }
 
 }
