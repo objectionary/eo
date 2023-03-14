@@ -75,10 +75,6 @@ final class MarkMojoTest {
 
     private static void source(final Path temp) throws IOException {
         new Home(temp.resolve("target").resolve(ResolveMojo.DIR))
-            .save(
-                "hi",
-                Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR))
-            );
+            .save("hi", Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR)));
     }
-
 }
