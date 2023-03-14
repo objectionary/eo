@@ -50,7 +50,7 @@ import org.eolang.maven.util.Walk;
 public final class MarkMojo extends SafeMojo {
 
     @Override
-    @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
+    @SuppressWarnings({"PMD.GuardLogStatement", "PMD.PrematureDeclaration"})
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
@@ -91,9 +91,7 @@ public final class MarkMojo extends SafeMojo {
         for (final Path src : sources) {
             if (src.toString().endsWith(".eo")) {
                 final Tojo tojo = this.scopedTojos().add(unplace.make(src));
-                if (!tojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    tojo.set(AssembleMojo.ATTR_VERSION, version);
-                }
+                tojo.set(AssembleMojo.ATTR_VERSION, version);
                 ++done;
             }
         }

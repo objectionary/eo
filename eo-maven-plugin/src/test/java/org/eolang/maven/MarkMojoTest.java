@@ -54,8 +54,23 @@ final class MarkMojoTest {
     }
 
     @Test
-    void updatesVersionIfItExists() {
-
+    void updatesVersionIfItExists(@TempDir final Path temp) throws IOException {
+        MarkMojoTest.source(temp);
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreign().add("foo.bar").set(AssembleMojo.ATTR_VERSION, "*.*.*");
+        maven.execute(MarkMojo.class);
+        MatcherAssert.assertThat(
+            maven.foreign()
+                .select(all -> true)
+                .iterator()
+                .next()
+                .get(AssembleMojo.ATTR_VERSION),
+            Matchers.equalTo("0.1.8")
+        );
+        MatcherAssert.assertThat(
+            maven.foreign().select(all -> true).size(),
+            Matchers.equalTo(1)
+        );
     }
 
     private static void source(final Path temp) throws IOException {
