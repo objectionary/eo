@@ -48,7 +48,7 @@ import org.eolang.maven.util.Walk;
  * copy to target/classes.
  *
  * @since 0.11
- * @see <a herf="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
+ * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  */
 @Mojo(
     name = "place",
@@ -152,9 +152,14 @@ public final class PlaceMojo extends SafeMojo {
      * @param dep The name of dep
      * @return How many binaries placed
      * @throws IOException If fails
-     * @checkstyle ExecutableStatementCountCheck (200 lines)
-     * @checkstyle CyclomaticComplexityCheck (200 lines)
+     * @checkstyle ExecutableStatementCountCheck (300 lines)
+     * @checkstyle CyclomaticComplexityCheck (300 lines)
+     * @checkstyle NPathComplexityCheck (300 lines)
+     * @todo #1320:30min Refactor PlaceMojo#place method in order to reduce complexity.
+     *  When the method will be refactored we have to remove all warning suppressing from
+     *  checkstyle and PMD.
      */
+    @SuppressWarnings("PMD.NPathComplexity")
     private int place(final Path home, final String dep) throws IOException {
         final Path dir = home.resolve(dep);
         final Collection<Path> binaries = new Walk(dir)
@@ -204,6 +209,9 @@ public final class PlaceMojo extends SafeMojo {
                     before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
+            if (!before.isEmpty() && Files.exists(target) && PlaceMojo.isNotUnplaced(before)) {
+                continue;
+            }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             this.placedTojos.value().add(target.toString())
                 .set(PlaceMojo.ATTR_PLD_KIND, "class")
@@ -230,5 +238,16 @@ public final class PlaceMojo extends SafeMojo {
             );
         }
         return copied;
+    }
+
+    /**
+     * Check whether tojos was not unplaced.
+     * @param before Tojos.
+     * @return True if not unplaced.
+     */
+    private static boolean isNotUnplaced(final Iterable<? extends Tojo> before) {
+        final Tojo tojo = before.iterator().next();
+        return tojo.exists(PlaceMojo.ATTR_PLD_UNPLACED)
+            && "false".equals(tojo.get(PlaceMojo.ATTR_PLD_UNPLACED));
     }
 }
