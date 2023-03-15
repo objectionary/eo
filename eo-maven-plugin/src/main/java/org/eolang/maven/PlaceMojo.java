@@ -32,7 +32,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -166,6 +170,7 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
+        final Map<String, Tojo> cache = this.placedCache();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
@@ -177,10 +182,9 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = this.placedTojos.value().select(
-                row -> row.get(Tojos.KEY).equals(target.toString())
-                    && "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
-            );
+            final Collection<Tojo> before = Stream.of(cache.get(target.toString()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
             if (!before.isEmpty() && !Files.exists(target)) {
                 Logger.info(
                     this,
@@ -213,7 +217,8 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
-            this.placedTojos.value().add(target.toString())
+            final String id = target.toString();
+            final Tojo tojo = this.placedTojos.value().add(id)
                 .set(PlaceMojo.ATTR_PLD_KIND, "class")
                 .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
                 .set(
@@ -224,6 +229,7 @@ public final class PlaceMojo extends SafeMojo {
                 )
                 .set(PlaceMojo.ATTR_PLD_DEP, dep)
                 .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+            cache.putIfAbsent(id, tojo);
             ++copied;
         }
         if (copied > 0) {
@@ -241,6 +247,25 @@ public final class PlaceMojo extends SafeMojo {
     }
 
     /**
+     * Collect all binaries into a fast map for efficient search.
+     * @return Cached placed tojos.
+     * @todo #1894:30min Replace PlaceMojo#placedCache crutch with an appropriate solution from
+     *  Tojos library. The original problem is that Tojos has not so optimal reading mechanism
+     *  and it's not efficient to read row by row from tojos. You can check the progress
+     *  <a href="https://github.com/yegor256/tojos/issues/60">here</a>.
+     */
+    private Map<String, Tojo> placedCache() {
+        return this.placedTojos.value()
+            .select(row -> "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND)))
+            .stream().collect(
+                Collectors.toMap(
+                    row -> row.get(Tojos.KEY),
+                    row -> row
+                )
+            );
+    }
+
+    /**
      * Check whether tojos was not unplaced.
      * @param before Tojos.
      * @return True if not unplaced.
@@ -250,4 +275,5 @@ public final class PlaceMojo extends SafeMojo {
         return tojo.exists(PlaceMojo.ATTR_PLD_UNPLACED)
             && "false".equals(tojo.get(PlaceMojo.ATTR_PLD_UNPLACED));
     }
+
 }
