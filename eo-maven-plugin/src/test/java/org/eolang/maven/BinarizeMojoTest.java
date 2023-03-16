@@ -27,10 +27,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link BinarizeMojo}.
@@ -97,6 +100,15 @@ final class BinarizeMojoTest {
                 "pub fn foo(uni: &mut Universe, v: u32) {",
                 "print!(\"Hello world 2\");"
                 )
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/add_rust/", glob = "**.yaml")
+    void createsDependenciesSection(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
         );
     }
 }
