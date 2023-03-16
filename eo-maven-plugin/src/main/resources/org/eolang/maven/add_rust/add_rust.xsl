@@ -25,10 +25,22 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add_rust" version="2.0">
   <xsl:template match="program">
     <xsl:copy>
-      <xsl:attribute name="rust">
-        <xsl:value-of>content</xsl:value-of>
-      </xsl:attribute>
       <xsl:apply-templates select="node()|@*"/>
+      <rusts>
+        <xsl:comment>"Rust inserts"</xsl:comment>
+        <xsl:for-each select="//o">
+          <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+            <rust>
+              <xsl:attribute name="code">
+                <xsl:value-of select="text()"/>
+              </xsl:attribute>
+              <xsl:attribute name="loc">
+                <xsl:value-of select="../attribute(loc)"/>
+              </xsl:attribute>
+            </rust>
+          </xsl:if>
+        </xsl:for-each>
+      </rusts>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

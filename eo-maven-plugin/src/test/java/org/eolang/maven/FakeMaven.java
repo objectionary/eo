@@ -201,6 +201,7 @@ public final class FakeMaven {
         this.placed()
             .add(binary)
             .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
+            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
             .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
         return this;
     }
