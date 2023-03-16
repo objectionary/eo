@@ -37,6 +37,17 @@ SOFTWARE.
               <xsl:attribute name="loc">
                 <xsl:value-of select="../attribute(loc)"/>
               </xsl:attribute>
+              <dependencies>
+                <xsl:for-each select="../o/o">
+                  <xsl:if test="../attribute(base) = 'org.eolang.tuple' and attribute(base) = 'org.eolang.string' and ../../attribute(base) = '.rust'">
+                    <dependeny>
+                      <xsl:attribute name="name">
+                        <xsl:value-of select="text()"/>
+                      </xsl:attribute>
+                    </dependeny>
+                  </xsl:if>
+                </xsl:for-each>
+              </dependencies>
             </rust>
           </xsl:if>
         </xsl:for-each>
