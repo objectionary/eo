@@ -40,11 +40,11 @@ SOFTWARE.
               <dependencies>
                 <xsl:for-each select="../o/o">
                   <xsl:if test="../attribute(base) = 'org.eolang.tuple' and attribute(base) = 'org.eolang.string' and ../../attribute(base) = '.rust'">
-                    <dependeny>
+                    <dependency>
                       <xsl:attribute name="name">
                         <xsl:value-of select="text()"/>
                       </xsl:attribute>
-                    </dependeny>
+                    </dependency>
                   </xsl:if>
                 </xsl:for-each>
               </dependencies>
