@@ -79,7 +79,7 @@ public final class FtCached implements Footprint {
      * @param cache Cache root
      * @param origin Origin
      */
-    FtCached(
+    public FtCached(
         final CacheVersion ver,
         final Path cache,
         final Footprint origin
@@ -108,11 +108,15 @@ public final class FtCached implements Footprint {
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
         final String text;
-        if (this.version.cacheable() && this.isCached(program, ext)) {
-            text = this.load(program, ext);
+        if (this.version.cacheable()) {
+            if (this.isCached(program, ext)) {
+                text = this.load(program, ext);
+            } else {
+                text = new IoChecked<>(content).value();
+                new Home(this.cache).save(text, this.path(program, ext));
+            }
         } else {
             text = new IoChecked<>(content).value();
-            new Home(this.cache).save(text, this.path(program, ext));
         }
         this.origin.save(program, ext, () -> text);
     }

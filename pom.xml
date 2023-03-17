@@ -92,6 +92,9 @@ SOFTWARE.
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
     <stack-size>8M</stack-size>
+    <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
+    <sonar.organization>objectionary</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -124,7 +127,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.20.1</version>
+        <version>0.21.1</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>

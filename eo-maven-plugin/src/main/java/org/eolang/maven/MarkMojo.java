@@ -24,7 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
+import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,20 +50,16 @@ import org.eolang.maven.util.Walk;
 public final class MarkMojo extends SafeMojo {
 
     @Override
-    @SuppressWarnings({ "PMD.GuardLogStatement", "PMD.PrematureDeclaration" })
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
             int found = 0;
             for (final String dep : deps) {
-                final Path dir = home.resolve(dep);
-                final Path sub = dir.resolve(CopyMojo.DIR);
-                if (!Files.exists(sub)) {
-                    continue;
+                final Path sub = home.resolve(dep).resolve(CopyMojo.DIR);
+                if (Files.exists(sub)) {
+                    found += this.scan(sub, dep.split(Pattern.quote(File.separator))[3]);
                 }
-                final String ver = dep.split(Pattern.quote(File.separator))[3];
-                found += this.scan(sub, ver);
             }
             Logger.info(
                 this, "New %d objects found in %d unpacked dependencies",
@@ -79,24 +75,17 @@ public final class MarkMojo extends SafeMojo {
      * @param version The version of the JAR
      * @return How many registered
      * @throws IOException If fails
-     * @todo #1062:30min The mojo doesn't update program version if it exists.
-     *  This causes versions like `*.*.*` and `0.0.0` are not updated and remain
-     *  in foreign catalog. This needs to be updated: version must be overridden to
-     *  correct value.
      */
-    private int scan(final Path dir, final String version) throws IOException {
+    private long scan(final Path dir, final String version) throws IOException {
         final Unplace unplace = new Unplace(dir);
         final Collection<Path> sources = new Walk(dir);
-        int done = 0;
-        for (final Path src : sources) {
-            if (src.toString().endsWith(".eo")) {
-                final Tojo tojo = this.scopedTojos().add(unplace.make(src));
-                if (!tojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    tojo.set(AssembleMojo.ATTR_VERSION, version);
-                }
-                ++done;
-            }
-        }
+        final Tojos scoped = this.scopedTojos();
+        final long done = sources.stream()
+            .filter(src -> src.toString().endsWith(".eo"))
+            .map(unplace::make)
+            .map(scoped::add)
+            .peek(tojo -> tojo.set(AssembleMojo.ATTR_VERSION, version))
+            .count();
         Logger.info(
             this, "Found %d sources in %s, %d program(s) registered with version %s",
             sources.size(), new Rel(dir), done, version

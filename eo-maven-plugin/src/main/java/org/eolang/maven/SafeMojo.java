@@ -135,8 +135,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    protected String placedFormat = "csv";
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
+    protected String placedFormat = "json";
 
     /**
      * The path to a text file where paths of generated java files per EO program.

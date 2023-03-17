@@ -38,8 +38,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFallbackSwap;
@@ -120,7 +120,7 @@ public final class ProbeMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && !row.exists(AssembleMojo.ATTR_PROBED)
         );
-        final CommitHash hash = new ChResolve(
+        final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
         if (this.objectionary == null) {
