@@ -38,7 +38,7 @@ SOFTWARE.
                 <xsl:value-of select="../attribute(loc)"/>
               </xsl:attribute>
               <dependencies>
-                <xsl:for-each select="../o/o">
+                <xsl:for-each select="following-sibling::o/o">
                   <xsl:if test="parent::o[@base = 'org.eolang.tuple'] and @base = 'org.eolang.string'">
                     <dependency>
                       <xsl:attribute name="name">
