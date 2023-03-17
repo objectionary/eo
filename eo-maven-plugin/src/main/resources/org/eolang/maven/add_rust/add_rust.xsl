@@ -23,6 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add_rust" version="2.0">
+  <!--
+  Creates <rusts> section with <rust> inserts.
+  -->
   <xsl:template match="program">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
