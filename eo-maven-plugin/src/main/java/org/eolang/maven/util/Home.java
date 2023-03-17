@@ -114,8 +114,7 @@ public final class Home {
      * @throws IllegalArgumentException If give path is absolute
      */
     public void save(final Input input, final Path path) throws IOException {
-        this.checkRelative(path);
-        final Path target = this.absolute(path);
+        final Path target = this.absolute(this.onlyRelative(path));
         if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
                 this, "Directory created: %s",
@@ -154,8 +153,7 @@ public final class Home {
      * @throws IllegalArgumentException If give path is absolute
      */
     public boolean exists(final Path path) {
-        this.checkRelative(path);
-        return Files.exists(this.absolute(path));
+        return Files.exists(this.absolute(this.onlyRelative(path)));
     }
 
     /**
@@ -168,8 +166,7 @@ public final class Home {
      * @throws IllegalArgumentException If give path is absolute
      */
     public Bytes load(final Path path) throws IOException {
-        this.checkRelative(path);
-        return new BytesOf(Files.readAllBytes(this.absolute(path)));
+        return new BytesOf(Files.readAllBytes(this.absolute(this.onlyRelative(path))));
     }
 
     /**
@@ -185,9 +182,10 @@ public final class Home {
     /**
      * Verifies that given path is relative and throws exception if not.
      * @param path Path to be verified
+     * @returns Given path if it's relative
      * @throws IllegalArgumentException If given path is Absolute
      */
-    private void checkRelative(final Path path) {
+    private Path onlyRelative(final Path path) {
         if (path.isAbsolute()) {
             throw new IllegalArgumentException(
                 String.format(
@@ -197,5 +195,6 @@ public final class Home {
                 )
             );
         }
+        return path;
     }
 }
