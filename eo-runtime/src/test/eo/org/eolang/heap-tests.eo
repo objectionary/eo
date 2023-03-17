@@ -75,7 +75,8 @@
   assert-that > @
     try
       []
-        h.malloc 10
+        h.malloc > @
+          10
       [e]
         e > @
       nop
