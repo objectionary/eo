@@ -3,5 +3,10 @@
   "extends": [
     "config:base"
   ],
-  "ignoreDeps": ["maven-compiler-plugin"]
+  "packageRules": [
+    {
+      "matchPackageNames": ["maven-compiler-plugin"],
+      "allowedVersions": "3.8.1"
+    }
+  ]
 }

@@ -96,7 +96,7 @@ final class PlaceMojoTest {
         final String binary = "org/eolang/f/x.a.class";
         PlaceMojoTest.saveBinary(temp, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, binary);
-        final long before = PlaceMojoTest.pathToAlreadyPlacedBinary(
+        final long before = PlaceMojoTest.pathToPlacedBinary(
             temp,
             binary
         ).toFile().lastModified();
@@ -120,13 +120,13 @@ final class PlaceMojoTest {
         final String content = "some new content";
         PlaceMojoTest.saveBinary(temp, content, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, "old content", binary);
-        final Path path = PlaceMojoTest.pathToAlreadyPlacedBinary(temp, binary);
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withPlacedBinary(path.toString())
-            .execute(PlaceMojo.class)
-            .result();
+        final Path path = PlaceMojoTest.pathToPlacedBinary(temp, binary);
+        final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path.toString());
+        maven.placed().select(all -> true).forEach(
+            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")
+        );
         MatcherAssert.assertThat(
-            res,
+            maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
@@ -168,11 +168,11 @@ final class PlaceMojoTest {
             .result();
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, first))
+            Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, first))
         );
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(PlaceMojoTest.pathToAlreadyPlacedBinary(temp, second))
+            Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, second))
         );
     }
 
@@ -216,6 +216,42 @@ final class PlaceMojoTest {
             maven.placed()
                 .select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).isEmpty(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotPlacesAgainIfWasNotUnplaced(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        final String binary = "some.class";
+        final String old = "some old content";
+        PlaceMojoTest.saveBinary(temp, old, binary);
+        maven.execute(PlaceMojo.class).result();
+        maven.placed().select(all -> true).forEach(
+            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
+        );
+        PlaceMojoTest.saveBinary(temp, "new content", binary);
+        maven.execute(PlaceMojo.class).result();
+        MatcherAssert.assertThat(
+            new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(old)
+        );
+    }
+
+    @Test
+    void placesAgainIfWasUnplaced(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp);
+        final String binary = "some.class";
+        PlaceMojoTest.saveBinary(temp, "with old content", binary);
+        maven.execute(PlaceMojo.class).result();
+        final String updated = "with some new content";
+        PlaceMojoTest.saveBinary(temp, updated, binary);
+        maven.placed().select(all -> true).forEach(
+            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")
+        );
+        maven.execute(PlaceMojo.class).result();
+        MatcherAssert.assertThat(
+            new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(updated)
         );
     }
 
@@ -289,7 +325,7 @@ final class PlaceMojoTest {
      * @param binary Binary name.
      * @return Path to the placed binary.
      */
-    private static Path pathToAlreadyPlacedBinary(final Path temp, final String binary) {
+    private static Path pathToPlacedBinary(final Path temp, final String binary) {
         final Home home = new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
         return home.absolute(Paths.get(binary));
     }

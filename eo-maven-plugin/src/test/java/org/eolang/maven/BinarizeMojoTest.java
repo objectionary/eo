@@ -47,14 +47,56 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String rust = "target/binarize/foo/x/main.rs";
+        final String rust = "target/binarize/codes/Φ_org_eolang_custom_creates_object_r.rs";
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(rust)).asString(),
-            Matchers.containsString("content")
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                    "use reo::data::Data;",
+                    "use rand::rand;",
+                    "pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {",
+                    "  print!(\"Hello world\");",
+                    "  let i = copy!(find!(\"org.eolang.int\"));",
+                    "  uni.data(i, Data::from_int(random::<i64>()))?;",
+                    "  Ok(i)",
+                    "}"
+            )
         );
     }
 
+    @Test
+    void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo");
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withProgram(src)
+            .execute(new FakeMaven.Binarize())
+            .result();
+        final String one = "target/binarize/codes/Φ_org_eolang_custom_hello_world_1_r.rs";
+        final String two = "target/binarize/codes/Φ_org_eolang_custom_hello_world_2_r.rs";
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(one)
+        );
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(two)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(one)).asString(),
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "print!(\"Hello world 1\");"
+            )
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(two)).asString(),
+            Matchers.stringContainsInOrder(
+                "use reo::universe::Universe;",
+                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "print!(\"Hello world 2\");"
+                )
+        );
+    }
 }
