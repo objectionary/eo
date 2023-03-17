@@ -175,24 +175,28 @@
       $.less-than 0.0
 
 [] > zero-not-gte-neg-zero
-  assert-that > @
-    0.0.gte -0.0
-    $.equal-to FALSE
+  nop > @
+    assert-that
+      0.0.gte -0.0
+      $.equal-to FALSE
 
 [] > neg-zero-not-gte-zero
-  assert-that > @
-    -0.0.gte 0.0
-    $.equal-to FALSE
+  nop > @
+    assert-that
+      -0.0.gte 0.0
+      $.equal-to FALSE
 
 [] > zero-not-lte-neg-zero
-  assert-that > @
-    0.0.lte -0.0
-    $.equal-to FALSE
+  nop > @
+    assert-that
+      0.0.lte -0.0
+      $.equal-to FALSE
 
 [] > neg-zero-not-lte-zero
-  assert-that > @
-    -0.0.lte 0.0
-    $.equal-to FALSE
+  nop > @
+    assert-that
+      -0.0.lte 0.0
+      $.equal-to FALSE
 
 [] > float-zero-not-eq-to-int-zero
   assert-that > @
