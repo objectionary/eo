@@ -33,25 +33,31 @@
   # and returns a pointer to it.
   # The "length" attribute of the pointer won't be bound.
   [s] > malloc
+    memory 0 > next
     plus. > new-next!
       s
-      next
-    seq > @
-      QQ.io.stdout
-        QQ.txt.sprintf
-          "new-next = %d\n"
+      ^.malloc.next
+    if. > @
+      gt.
+        new-next
+        size
+      error
+        "Allocation failed: bad alloc (not enough memory in the heap)"
+      seq
+        write.
+          ^.malloc.next
           new-next
-      new-next
-
-  memory 0 > next
-  memory 0 > to-delete
+        0.plus
+          ^.malloc.next
 
   # Freed a block in memory, which is referred by the
   # given pointer, which was earlier obtained with malloc().
   # Returns TRUE if works. If the pointer provided wasn't
   # previously allocated, the result will be [].
   [p] > free
-    TRUE > @
+    seq > @
+      p
+      TRUE
 
   # Pointer inside the heap
   [address length] > pointer
