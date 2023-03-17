@@ -412,9 +412,10 @@
 
 [] > positive-infinity-minus-multiple-numbers-with-nan
   nan > not-a-number!
-  assert-that > @
-    (positive-infinity.minus 42 not-a-number 30).as-bytes
-    $.equal-to not-a-number.as-bytes
+  nop > @
+    assert-that
+      (positive-infinity.minus 42 not-a-number 30).as-bytes
+      $.equal-to not-a-number.as-bytes
 
 [] > positive-infinity-minus-multiple-numbers-with-negative-infinity
   positive-infinity > pos-inf!
