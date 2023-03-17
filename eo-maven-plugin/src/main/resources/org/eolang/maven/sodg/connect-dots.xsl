@@ -131,6 +131,23 @@ SOFTWARE.
         <xsl:text>This is a dot-notation</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var($v2)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(o[1]/@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>ρ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
+      <xsl:with-param name="comment">
+        <xsl:text>This is a dot-notation</xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore them -->
