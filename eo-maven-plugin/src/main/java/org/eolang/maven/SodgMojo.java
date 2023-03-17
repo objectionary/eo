@@ -24,10 +24,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.ClasspathSources;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
@@ -36,7 +35,6 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
-import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
@@ -50,6 +48,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,13 +65,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.StXPath;
@@ -124,18 +122,9 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_XEMBLY = new TrFast(
         new TrDefault<Shift>().with(
-            new StXSL(
-                new XSLDocument(
-                    new UncheckedText(
-                        new TextOf(
-                            new ResourceOf(
-                                "org/eolang/maven/sodg-to/to-xembly.xsl"
-                            )
-                        )
-                    ).asString(),
-                    new ClasspathSources(),
-                    "to-xembly.xsl"
-                ).with("testing", "no")
+            new StClasspath(
+                "/org/eolang/maven/sodg-to/to-xembly.xsl",
+                "testing no"
             )
         ),
         SodgMojo.class
@@ -222,7 +211,7 @@ public final class SodgMojo extends SafeMojo {
                                     final String loc = xml.xpath("@loc").get(0);
                                     return new Directives().attr(
                                         "lambda",
-                                        SodgMojo.locToHex(
+                                        SodgMojo.utfToHex(
                                             loc.substring(loc.indexOf('.') + 1)
                                         )
                                     );
@@ -253,6 +242,30 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/put-data.xsl",
                         "/org/eolang/maven/sodg/put-atoms.xsl"
                     ).back(),
+                    new TrDefault<>(
+                        new StClasspath(
+                            "/org/eolang/maven/sodg/add-meta.xsl",
+                            "name version",
+                            String.format(
+                                "value %s",
+                                SodgMojo.utfToHex(
+                                    Manifests.read("EO-Version")
+                                )
+                            )
+                        ),
+                        new StClasspath(
+                            "/org/eolang/maven/sodg/add-meta.xsl",
+                            "name time",
+                            String.format(
+                                "value %s",
+                                SodgMojo.utfToHex(
+                                    ZonedDateTime.now(ZoneOffset.UTC).format(
+                                        DateTimeFormatter.ISO_INSTANT
+                                    )
+                                )
+                            )
+                        )
+                    ),
                     new TrClasspath<>(
                         "/org/eolang/maven/sodg/focus.xsl",
                         "/org/eolang/maven/sodg/add-license.xsl"
@@ -529,13 +542,13 @@ public final class SodgMojo extends SafeMojo {
     }
 
     /**
-     * Lambda to HEX.
-     * @param loc The lambda
+     * UTF-8 string to HEX.
+     * @param txt The string
      * @return Hexadecimal value as string.
      */
-    private static String locToHex(final String loc) {
+    private static String utfToHex(final String txt) {
         final StringJoiner out = new StringJoiner("-");
-        for (final byte bty : loc.getBytes(StandardCharsets.UTF_8)) {
+        for (final byte bty : txt.getBytes(StandardCharsets.UTF_8)) {
             out.add(String.format("%02X", bty));
         }
         return out.toString();

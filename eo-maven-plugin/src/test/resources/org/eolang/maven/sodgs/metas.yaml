@@ -1,0 +1,8 @@
+locators:
+  - .+version
+  - .+time
+eo: |
+  +package foo.bar
+  
+  [x] > test
+    42 > y
