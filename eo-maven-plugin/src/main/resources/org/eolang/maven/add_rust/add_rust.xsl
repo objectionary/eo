@@ -39,7 +39,7 @@ SOFTWARE.
               </xsl:attribute>
               <dependencies>
                 <xsl:for-each select="../o/o">
-                  <xsl:if test="../attribute(base) = 'org.eolang.tuple' and attribute(base) = 'org.eolang.string'">
+                  <xsl:if test="parent::o[@base = 'org.eolang.tuple'] and @base = 'org.eolang.string'">
                     <dependency>
                       <xsl:attribute name="name">
                         <xsl:value-of select="text()"/>
