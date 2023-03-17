@@ -167,7 +167,6 @@ public final class SodgMojo extends SafeMojo {
                     "/org/eolang/maven/sodg-to/catch-duplicate-vertices.xsl",
                     "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
                     "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
-                    "/org/eolang/maven/sodg-to/catch-crowded-betas.xsl",
                     "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
                     "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
                 ).back(),

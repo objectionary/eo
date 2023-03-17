@@ -221,8 +221,9 @@ final class SodgMojoTest {
         @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
         private void matches(final String item) {
             String vertex = "ν0";
-            for (final String part : item.split(" ")) {
-                String sub = part;
+            final String[] parts = item.split(" ");
+            for (int pos = 0; pos < parts.length; ++pos) {
+                String sub = parts[pos];
                 boolean inverse = false;
                 final XML node = this.graph.nodes(
                     String.format("/graph/v[@id='%s']", vertex)
@@ -241,16 +242,16 @@ final class SodgMojoTest {
                     if (opts.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Can't find path '%s' while staying at %s",
-                                sub, vertex
+                                "Can't find path '%s' (#%d) while staying at %s",
+                                sub, pos, vertex
                             )
                         );
                     }
                     if (!opts.isEmpty() && inverse) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "The path '%s' must not exist at %s, but it does",
-                                sub, vertex
+                                "The path '%s' (#%d) must not exist at %s, but it does",
+                                sub, pos, vertex
                             )
                         );
                     }
@@ -266,8 +267,8 @@ final class SodgMojoTest {
                     if (inputs.isEmpty() && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no '%s' edge coming into %s",
-                                sub.substring(1), vertex
+                                "There is no '%s' (#%d) edge coming into %s",
+                                sub.substring(1), pos, vertex
                             )
                         );
                     }
@@ -277,8 +278,8 @@ final class SodgMojoTest {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no data (%s) at %s",
-                                sub, vertex
+                                "There is no data (%s) at %s (#%d)",
+                                sub, vertex, pos
                             )
                         );
                     }
@@ -291,8 +292,8 @@ final class SodgMojoTest {
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Data '%s' at '%s' is not equal to '%s'",
-                                node.xpath("data/text()").get(0), vertex, data
+                                "Data '%s' at '%s' (#%d) is not equal to '%s'",
+                                node.xpath("data/text()").get(0), vertex, pos, data
                             )
                         );
                     }
@@ -302,8 +303,8 @@ final class SodgMojoTest {
                     if (node.nodes("data").isEmpty()) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "There is no lambda (%s) at %s",
-                                sub, vertex
+                                "There is no lambda (%s) at %s (#%d)",
+                                sub, vertex, pos
                             )
                         );
                     }
@@ -320,8 +321,8 @@ final class SodgMojoTest {
                     if (!matches) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Lambda '%s' at '%s' is not equal to '%s' (%s)",
-                                node.xpath("data/text()").get(0), vertex, data, hex
+                                "Lambda '%s' at '%s' (#%d) is not equal to '%s' (%s)",
+                                node.xpath("data/text()").get(0), vertex, pos, data, hex
                             )
                         );
                     }
@@ -333,8 +334,8 @@ final class SodgMojoTest {
                     if (!matches && !inverse) {
                         throw new IllegalArgumentException(
                             String.format(
-                                "Current vertex '%s' is not '%s', as expected",
-                                vertex, expected
+                                "Current vertex '%s' is not '%s' (#%d), as expected",
+                                vertex, expected, pos
                             )
                         );
                     }
@@ -342,8 +343,8 @@ final class SodgMojoTest {
                 }
                 throw new IllegalArgumentException(
                     String.format(
-                        "Can't understand path element '%s' in '%s'",
-                        sub, item
+                        "Can't understand path element '%s' (#%d) in '%s'",
+                        sub, pos, item
                     )
                 );
             }
