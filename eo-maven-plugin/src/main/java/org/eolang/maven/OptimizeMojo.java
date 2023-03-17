@@ -264,7 +264,7 @@ public final class OptimizeMojo extends SafeMojo implements CompilationStep {
         );
         new Home(dir).save(
             xml.toString(),
-            target
+            dir.relativize(target)
         );
         Logger.debug(
             this, "Optimized %s (program:%s) to %s",

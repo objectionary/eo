@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
@@ -52,13 +51,6 @@ public final class Home {
      * Current working directory.
      */
     private final Path cwd;
-
-    /**
-     * Ctor.
-     */
-    public Home() {
-        this(Paths.get(""));
-    }
 
     /**
      * Ctor.
@@ -119,8 +111,10 @@ public final class Home {
      * @param input Input
      * @param path Cwd-relative path to file
      * @throws IOException If fails
+     * @throws IllegalArgumentException If give path is absolute
      */
     public void save(final Input input, final Path path) throws IOException {
+        this.checkRelative(path);
         final Path target = this.absolute(path);
         if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
@@ -157,8 +151,10 @@ public final class Home {
      *
      * @param path Cwd-relative path to file
      * @return True if exists
+     * @throws IllegalArgumentException If give path is absolute
      */
     public boolean exists(final Path path) {
+        this.checkRelative(path);
         return Files.exists(this.absolute(path));
     }
 
@@ -169,8 +165,10 @@ public final class Home {
      * @return Bytes of file
      * @throws IOException if method can't find the file by path or
      *  if some exception happens during reading the file
+     * @throws IllegalArgumentException If give path is absolute
      */
     public Bytes load(final Path path) throws IOException {
+        this.checkRelative(path);
         return new BytesOf(Files.readAllBytes(this.absolute(path)));
     }
 
@@ -182,5 +180,22 @@ public final class Home {
      */
     public Path absolute(final Path path) {
         return this.cwd.resolve(path);
+    }
+
+    /**
+     * Verifies that given path is relative and throws exception if not.
+     * @param path Path to be verified
+     * @throws IllegalArgumentException If given path is Absolute
+     */
+    private void checkRelative(final Path path) {
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Path must be relative to base %s but absolute given: %s",
+                    this.cwd,
+                    path
+                )
+            );
+        }
     }
 }
