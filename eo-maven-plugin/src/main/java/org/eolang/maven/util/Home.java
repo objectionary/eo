@@ -42,8 +42,6 @@ import org.cactoos.scalar.LengthOf;
  * Base location for files.
  *
  * @since 0.27
- * @todo #1352:30min Prohibit absolute paths in methods `save`, `load`, `exists`.
- *  Throw an exception in case absolut path is given for these methods.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Home {
@@ -182,7 +180,7 @@ public final class Home {
     /**
      * Verifies that given path is relative and throws exception if not.
      * @param path Path to be verified
-     * @returns Given path if it's relative
+     * @return Given path if it's relative
      * @throws IllegalArgumentException If given path is Absolute
      */
     private Path onlyRelative(final Path path) {
