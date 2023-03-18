@@ -32,32 +32,13 @@
   # Allocates a block in memory of "s" bytes,
   # and returns a pointer to it.
   # The "length" attribute of the pointer won't be bound.
-  [s] > malloc
-    memory 0 > next
-    plus. > new-next!
-      s
-      ^.malloc.next
-    if. > @
-      gt.
-        new-next
-        size
-      error
-        "Allocation failed: bad alloc (not enough memory in the heap)"
-      seq
-        write.
-          ^.malloc.next
-          new-next
-        0.plus
-          ^.malloc.next
+  [s] > malloc /pointer
 
   # Freed a block in memory, which is referred by the
   # given pointer, which was earlier obtained with malloc().
   # Returns TRUE if works. If the pointer provided wasn't
   # previously allocated, the result will be [].
-  [p] > free
-    seq > @
-      p
-      TRUE
+  [p] > free /bool
 
   # Pointer inside the heap
   [address length] > pointer
