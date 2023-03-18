@@ -23,6 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add_rust" version="2.0">
+  <!--
+  Creates <rusts> section with <rust> inserts.
+  -->
   <xsl:template match="program">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
@@ -37,6 +40,17 @@ SOFTWARE.
               <xsl:attribute name="loc">
                 <xsl:value-of select="../attribute(loc)"/>
               </xsl:attribute>
+              <dependencies>
+                <xsl:for-each select="following-sibling::o/o">
+                  <xsl:if test="parent::o[@base = 'org.eolang.tuple'] and @base = 'org.eolang.string'">
+                    <dependency>
+                      <xsl:attribute name="name">
+                        <xsl:value-of select="text()"/>
+                      </xsl:attribute>
+                    </dependency>
+                  </xsl:if>
+                </xsl:for-each>
+              </dependencies>
             </rust>
           </xsl:if>
         </xsl:for-each>

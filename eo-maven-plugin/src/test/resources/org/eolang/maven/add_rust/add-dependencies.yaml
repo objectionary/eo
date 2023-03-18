@@ -1,0 +1,50 @@
+sheets:
+  - /org/eolang/maven/add_rust/add_rust.xsl
+document:
+  <program>
+     <objects>
+        <o abstract=""
+            loc="Φ.org.eolang.creates-object"
+            name="creates-object"
+            original-name="creates-object"
+            pos="0">
+           <o base=".rust"
+               loc="Φ.org.eolang.creates-object.r"
+               name="r"
+               pos="4">
+              <o base=".eolang"
+                  loc="Φ.org.eolang.creates-object.r.ρ"
+                  pos="2">
+                 <o base=".org"
+                     loc="Φ.org.eolang.creates-object.r.ρ.ρ"
+                     pos="2">
+                    <o base="Q"
+                        loc="Φ.org.eolang.creates-object.r.ρ.ρ.ρ"
+                        pos="2"/>
+                 </o>
+              </o>
+              <o base="org.eolang.string"
+                  data="bytes"
+                  loc="Φ.org.eolang.creates-object.r.α0"
+                  pos="4">75 73 65 20 72 65 6F 3A 3A 75 6E 69 76 65 72 73 65 3A 3A 55 6E 69 76 65 72 73 65 3B 0A 75 73 65 20 72 65 6F 3A 3A 64 61 74 61 3A 3A 44 61 74 61 3B 0A 75 73 65 20 72 61 6E 64 3A 3A 72 61 6E 64 3B 0A 20 70 75 62 20 66 6E 20 66 6F 6F 28 75 6E 69 3A 20 26 6D 75 74 20 55 6E 69 76 65 72 73 65 2C 20 76 3A 20 75 33 32 29 20 2D 3E 20 52 65 73 75 6C 74 3C 75 33 32 3E 20 7B 0A 20 20 6C 65 74 20 69 20 3D 20 63 6F 70 79 21 28 66 69 6E 64 21 28 22 6F 72 67 2E 65 6F 6C 61 6E 67 2E 69 6E 74 22 29 29 3B 0A 20 20 75 6E 69 2E 64 61 74 61 28 69 2C 20 44 61 74 61 3A 3A 66 72 6F 6D 5F 69 6E 74 28 72 61 6E 64 6F 6D 3A 3A 3C 69 36 34 3E 28 29 29 29 3F 3B 0A 20 20 4F 6B 28 69 29 0A 7D</o>
+              <o base="org.eolang.tuple"
+                  data="tuple"
+                  loc="Φ.org.eolang.creates-object.r.α1"
+                  pos="4">
+                 <o base="org.eolang.string"
+                     data="bytes"
+                     loc="Φ.org.eolang.creates-object.r.α1.α0"
+                     pos="6">72 65 6F 3A 20 30 2E 30 2E 32</o>
+                 <o base="org.eolang.string"
+                     data="bytes"
+                     loc="Φ.org.eolang.creates-object.r.α1.α1"
+                     pos="6">72 61 6E 64 3A 20 30 2E 35 2E 35</o>
+              </o>
+           </o>
+        </o>
+     </objects>
+  </program>
+asserts:
+  - /program/rusts/rust[@loc='Φ.org.eolang.creates-object.r']
+  - /program/rusts/rust/dependencies/dependency[@name='72 65 6F 3A 20 30 2E 30 2E 32']
+  - /program/rusts/rust/dependencies/dependency[@name='72 61 6E 64 3A 20 30 2E 35 2E 35']
