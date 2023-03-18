@@ -160,6 +160,8 @@ SOFTWARE.
             <index>true</index>
             <manifestEntries>
               <EO-Version>${project.version}</EO-Version>
+              <EO-Revision>${buildNumber}</EO-Revision>
+              <EO-Dob>${timestamp}</EO-Dob>
             </manifestEntries>
           </archive>
         </configuration>

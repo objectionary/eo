@@ -9,7 +9,7 @@
     use rand::rand;
 
     pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
-      print("Hello world");
+      print!("Hello world");
       let i = copy!(find!("org.eolang.int"));
       uni.data(i, Data::from_int(random::<i64>()))?;
       Ok(i)
@@ -19,3 +19,4 @@
       "reo: 0.0.2"
       "rand: 0.5.5"
   TRUE > @
+

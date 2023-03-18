@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
-  <xsl:import href="/org/eolang/maven/license.xsl"/>
+  <xsl:param name="disclaimer"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
@@ -649,7 +649,11 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="/program" mode="license">
-    <xsl:call-template name="license"/>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>/* </xsl:text>
+    <xsl:value-of select="$disclaimer"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
