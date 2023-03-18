@@ -121,7 +121,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             for (final XML node: nodes) {
                 final String filename = String.format(
                     "%s%s",
-                    node.xpath("@loc").get(0).replaceAll("[-.]", "_"),
+                    name(node.xpath("@loc").get(0)),
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
@@ -184,4 +184,24 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         }
         return result;
     }
+
+    /**
+     * Uniquely converts the loc into the name for jni function.
+     * @param loc Location attribute of the rust insert.
+     * @return Name for function.
+     */
+    private static String name (final String loc) {
+        StringBuilder out = new StringBuilder( 1 + 4 * loc.length());
+        out.append('f');
+        for (char chr: loc.toCharArray()) {
+            out.append(
+                String.format(
+                    "%04x",
+                    (int) chr
+                )
+            );
+        }
+        return out.toString();
+    }
+
 }
