@@ -488,7 +488,7 @@ public final class SodgMojo extends SafeMojo {
             }
             final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
             new Home(sibling.getParent()).save(
-                String.format("/* %s */\n\n%s", new Disclaimer(), dot),
+                String.format("/%s %s %1$s/\n\n%s", "*", new Disclaimer(), dot),
                 sibling.getParent().relativize(sibling)
             );
         }
