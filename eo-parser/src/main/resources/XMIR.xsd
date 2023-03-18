@@ -103,6 +103,8 @@ SOFTWARE.
     <xs:attribute name="name" type="xs:string" use="required"/>
     <xs:attribute name="time" type="xs:dateTime" use="required"/>
     <xs:attribute name="version" type="xs:string" use="required"/>
+    <xs:attribute name="revision" type="xs:string" use="required"/>
+    <xs:attribute name="dob" type="xs:dateTime" use="required"/>
     <xs:attribute name="source" type="xs:string"/>
   </xs:complexType>
   <xs:element name="program" type="program"/>
