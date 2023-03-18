@@ -32,7 +32,6 @@
 #  two parameters: position and size, same as in ram.slice
 #  object. And will allow us to make a chain of slice objects.
 [size] > ram
-
   # Write bytes from position.
   [position data] > write /true
 
@@ -40,7 +39,6 @@
   [position size] > slice /ram-slice
 
   [position size] > ram-slice
-
     [] > @ /bytes
 
     [data] > write /bytes
