@@ -28,15 +28,16 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrBulk;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -75,23 +76,24 @@ public final class TranspileMojo extends SafeMojo implements CompilationStep {
     /**
      * Parsing train with XSLs.
      */
-    static final Train<Shift> TRAIN = new TrBulk<>(
+    static final Train<Shift> TRAIN = new TrJoined<>(
         new TrClasspath<>(
-            new ParsingTrain()
-                .empty()
-                .with(new StUnhex())
-        ),
-        Arrays.asList(
+            new ParsingTrain().empty().with(new StUnhex()),
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
             "/org/eolang/maven/pre/junit.xsl",
             "/org/eolang/maven/pre/rename-junit-inners.xsl",
             "/org/eolang/maven/pre/attrs.xsl",
             "/org/eolang/maven/pre/varargs.xsl",
-            "/org/eolang/maven/pre/data.xsl",
-            "/org/eolang/maven/pre/to-java.xsl"
+            "/org/eolang/maven/pre/data.xsl"
+        ).back(),
+        new TrDefault<>(
+            new StClasspath(
+                "/org/eolang/maven/pre/to-java.xsl",
+                String.format("disclaimer %s", new Disclaimer())
+            )
         )
-    ).back().back();
+    );
 
     /**
      * The directory where to put pre-transpile files.

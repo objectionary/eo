@@ -223,8 +223,7 @@ public final class SodgMojo extends SafeMojo {
                     Level.FINEST
                 ),
                 new TrClasspath<>(
-                    "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl"
+                    "/org/eolang/maven/sodg/focus.xsl"
                 ).back()
             ),
             SodgMojo.class
@@ -411,7 +410,10 @@ public final class SodgMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "SODGs:\n%s", instructions);
         }
-        new Home(sodg.getParent()).save(instructions, sodg.getParent().relativize(sodg));
+        new Home(sodg.getParent()).save(
+            String.format("# %s\n\n%s", new Disclaimer(), instructions),
+            sodg.getParent().relativize(sodg)
+        );
         if (this.generateSodgXmlFiles) {
             final Path sibling = sodg.resolveSibling(String.format("%s.xml", sodg.getFileName()));
             new Home(sibling.getParent()).save(
@@ -425,7 +427,7 @@ public final class SodgMojo extends SafeMojo {
                 .xpath("/xembly/text()").get(0);
             final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
             new Home(sibling.getParent()).save(
-                xembly,
+                String.format("# %s\n\n%s\n", new Disclaimer(), xembly),
                 sibling.getParent().relativize(sibling)
             );
             this.makeGraph(xembly, sodg);
@@ -486,7 +488,7 @@ public final class SodgMojo extends SafeMojo {
             }
             final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
             new Home(sibling.getParent()).save(
-                dot,
+                String.format("/* %s */\n\n%s", new Disclaimer(), dot),
                 sibling.getParent().relativize(sibling)
             );
         }
