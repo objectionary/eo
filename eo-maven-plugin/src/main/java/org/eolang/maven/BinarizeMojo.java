@@ -190,10 +190,10 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
      * @param loc Location attribute of the rust insert.
      * @return Name for function.
      */
-    private static String name (final String loc) {
-        StringBuilder out = new StringBuilder( 1 + 4 * loc.length());
+    private static String name(final String loc) {
+        final StringBuilder out = new StringBuilder(1 + 4 * loc.length());
         out.append('f');
-        for (char chr: loc.toCharArray()) {
+        for (final char chr: loc.toCharArray()) {
             out.append(
                 String.format(
                     "%04x",
