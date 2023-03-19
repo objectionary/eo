@@ -58,7 +58,7 @@
       p2
     $.equal-to FALSE
 
-[] > mallocs-does-not-overlap
+[] > mallocs-do-not-overlap
   heap 1024 > h!
   h.malloc 64 > p1!
   h.malloc 32 > p2!
