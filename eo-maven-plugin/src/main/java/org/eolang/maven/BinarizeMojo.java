@@ -59,7 +59,6 @@ import org.eolang.parser.ParsingTrain;
  *  BinarizeMojo firstly put the code into rust section in xmir.
  *  Then it must be compiled to shared library. It can be
  *  implemented via cargo.
- *
  */
 @Mojo(
     name = "binarize",
