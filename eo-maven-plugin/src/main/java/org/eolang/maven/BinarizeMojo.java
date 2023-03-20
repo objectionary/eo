@@ -55,11 +55,6 @@ import org.eolang.parser.ParsingTrain;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  *
- *  @todo #1876:90m Expand add-rust.xsl. Now
- *   it creates a section 'program/rusts' with nodes
- *  'rust' with attribute 'code'. It is also necessary
- *   to add dependencies to every 'rust'
- *
  * @todo #1864:90m Extract rust code from rust section
  *  BinarizeMojo firstly put the code into rust section in xmir.
  *  Then it must be compiled to shared library. It can be
