@@ -94,7 +94,7 @@ final class PullMojoTest {
                     new ResourceOf("org/eolang/maven/simple-io.eo")
                 )
             ),
-            program
+            temp.relativize(program)
         );
         Catalogs.INSTANCE.make(temp.resolve("eo-foreign.json"), "json")
             .add("foo.src")
@@ -144,9 +144,9 @@ final class PullMojoTest {
 
     @Test
     void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
-        new Home().save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            temp.resolve("tags.txt")
+            Paths.get("tags.txt")
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");
