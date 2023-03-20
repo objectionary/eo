@@ -194,7 +194,7 @@ final class ResolveMojoTest {
             IllegalStateException.class,
             () -> maven
                 .withProgram(
-                    "+rt jvm org.eolang:eo-foreign:0.22.1",
+                    "+rt jvm org.eolang:eo-foreign:0.22.1\n",
                     "[] > foo /int"
                 )
                 .with("ignoreTransitive", false)

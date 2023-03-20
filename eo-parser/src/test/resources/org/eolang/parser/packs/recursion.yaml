@@ -1,11 +1,12 @@
 tests:
   - /program/errors[count(*)=0]
-  - //o[@name='f' and @line='5']
-  - //o[@base='f' and @ref='5']
+  - //o[@name='f' and @line='6']
+  - //o[@base='f' and @ref='6']
 eo: |
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0
+  
   [args...] > main
     [n] > f
       f 5 > @

@@ -201,7 +201,7 @@ public final class Main {
     }
 
     /**
-     * Read the version from resources and prints it.
+     * Read the version from resources and return it.
      * @return Version string
      * @throws IOException If fails
      */

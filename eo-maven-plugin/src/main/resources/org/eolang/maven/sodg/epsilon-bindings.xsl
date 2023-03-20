@@ -34,7 +34,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(o) and not(@data) and not(@abstract)]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(@level) and not(starts-with(@base, '.')) and not(o) and not(@data) and not(@abstract)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">
@@ -45,7 +45,14 @@ SOFTWARE.
           <xsl:value-of select="eo:var(eo:base-to-loc(.))"/>
         </xsl:sequence>
         <xsl:sequence>
-          <xsl:text>ε</xsl:text>
+          <xsl:choose>
+            <xsl:when test="@base = '$'">
+              <xsl:text>ξ</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>ε</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:sequence>
       </xsl:with-param>
       <xsl:with-param name="comment">

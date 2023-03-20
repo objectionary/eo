@@ -13,4 +13,4 @@ document:
 asserts:
   - //sodg[count(i)=2]
   - //i[@name='BIND' and a='$Φ.x' and a='$Φ.foo' and a='ε']
-  - //i[@name='BIND' and a='$Φ.y.z.a' and a='$Φ.y' and a='ε']
+  - //i[@name='BIND' and a='$Φ.y.z.a' and a='$Φ.y' and a='ξ']
