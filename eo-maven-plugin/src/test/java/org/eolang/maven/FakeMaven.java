@@ -50,6 +50,7 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 
 /**
@@ -197,12 +198,13 @@ public final class FakeMaven {
      * @param binary Binary as class file or jar.
      * @return The same maven instance.
      */
-    FakeMaven withPlacedBinary(final String binary) {
+    FakeMaven withPlacedBinary(final Path binary) {
         this.placed()
-            .add(binary)
-            .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
-            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
-            .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
+            .placeClass(binary, "", "test.jar");
+//            .add(binary)
+//            .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
+//            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
+//            .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
         return this;
     }
 
@@ -287,8 +289,8 @@ public final class FakeMaven {
      *
      * @return TjSmart of the current placed.json file.
      */
-    TjSmart placed() {
-        return new TjSmart(
+    PlacedTojos placed() {
+        return new PlacedTojos(
             Catalogs.INSTANCE.make(this.workspace.absolute(Paths.get("placed.json")))
         );
     }

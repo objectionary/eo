@@ -35,7 +35,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.FileHash;
+import org.eolang.maven.tojos.PlacedTojo;
+import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -86,7 +87,7 @@ final class UnplaceMojoTest {
         UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
         UnplaceMojoTest.placeJar(temp, UnplaceMojoTest.DEFAULT_JAR);
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<Tojo> tojos = Catalogs.INSTANCE.make(placed).select(all -> true);
+        final List<PlacedTojo> tojos = new PlacedTojos(placed).all();
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
@@ -95,7 +96,7 @@ final class UnplaceMojoTest {
             Matchers.equalTo(5)
         );
         MatcherAssert.assertThat(
-            tojos.stream().allMatch(tojo -> tojo.get(PlaceMojo.ATTR_PLD_UNPLACED).equals("true")),
+            tojos.stream().allMatch(tojo -> tojo.unplaced().equals("true")),
             Matchers.is(true)
         );
     }
@@ -108,7 +109,7 @@ final class UnplaceMojoTest {
         final String other = "other-jar";
         UnplaceMojoTest.placeJar(temp, other);
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final List<Tojo> tojos = Catalogs.INSTANCE.make(placed).select(all -> true);
+        final List<PlacedTojo> tojos = new PlacedTojos(placed).all();
         new FakeMaven(temp)
             .with("placed", placed.toFile())
             .execute(UnplaceMojo.class);
@@ -118,8 +119,8 @@ final class UnplaceMojoTest {
         );
         MatcherAssert.assertThat(
             tojos.stream()
-                .filter(tojo -> tojo.get(Tojos.KEY).equals(other))
-                .allMatch(tojo -> tojo.get(PlaceMojo.ATTR_PLD_UNPLACED).equals("false")),
+                .filter(tojo -> tojo.id().equals(other))
+                .allMatch(tojo -> tojo.unplaced().equals("false")),
             Matchers.is(true)
         );
     }
@@ -196,13 +197,13 @@ final class UnplaceMojoTest {
      */
     private static Path placeClass(final Path temp, final Path clazz) {
         final Path placed = UnplaceMojoTest.placedFile(temp);
-        Catalogs.INSTANCE.make(placed)
-            .add(clazz.toString())
-            .set(PlaceMojo.ATTR_PLD_KIND, "class")
-            .set(PlaceMojo.ATTR_PLD_RELATED, temp.relativize(clazz).toString())
-            .set(PlaceMojo.ATTR_PLD_DEP, UnplaceMojoTest.DEFAULT_JAR)
-            .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(clazz))
-            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+        new PlacedTojos(
+            () -> Catalogs.INSTANCE.make(placed)
+        ).placeClass(
+            clazz,
+            temp.relativize(clazz).toString(),
+            UnplaceMojoTest.DEFAULT_JAR
+        );
         return placed;
     }
 
@@ -213,11 +214,9 @@ final class UnplaceMojoTest {
      * @return Path to the placed tojos file.
      */
     private static void placeJar(final Path temp, final String name) {
-        Catalogs.INSTANCE.make(UnplaceMojoTest.placedFile(temp))
-            .add(name)
-            .set(PlaceMojo.ATTR_PLD_KIND, "jar")
-            .set(PlaceMojo.ATTR_PLD_DEP, String.format("%s.jar", name))
-            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+        new PlacedTojos(
+            () -> Catalogs.INSTANCE.make(UnplaceMojoTest.placedFile(temp))
+        ).placeJar(name);
     }
 
     /**

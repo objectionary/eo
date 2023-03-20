@@ -6,8 +6,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.Catalogs;
+import org.eolang.maven.PlaceMojo;
 import org.eolang.maven.util.FileHash;
 
 /**
@@ -22,6 +27,18 @@ public class PlacedTojos implements Closeable {
      */
     private final Unchecked<? extends Tojos> all;
 
+    public PlacedTojos(final Path file) {
+        this(Catalogs.INSTANCE.make(file));
+    }
+
+    public PlacedTojos(final Tojos tojos) {
+        this(new Sticky<>(() -> tojos));
+    }
+
+    public PlacedTojos(final Supplier<? extends Tojos> tojos) {
+        this(new Sticky<>(tojos::get));
+    }
+
     public PlacedTojos(final Sticky<? extends Tojos> tojos) {
         this(new Unchecked<>(tojos));
     }
@@ -35,37 +52,56 @@ public class PlacedTojos implements Closeable {
         this.all.value().close();
     }
 
-    public Collection<Tojo> dependencyJar(final String dep) {
+    public Collection<Tojo> findJar(final String dep) {
         return this.all.value().select(
             row -> row.get(Tojos.KEY).equals(dep)
                 && "jar".equals(row.get(Attribute.KIND.key()))
         );
     }
 
-    public Collection<Tojo> allClasses() {
-        return this.all.value().select(row -> "class".equals(row.get(Attribute.KIND.key())));
+    public Collection<PlacedTojo> classes() {
+        return this.all.value()
+            .select(row -> "class".equals(row.get(Attribute.KIND.key())))
+            .stream().map(PlacedTojo::new).collect(Collectors.toList());
     }
 
-    public Collection<Tojo> allJars() {
-        return this.all.value().select(row -> "jar".equals(row.get(Attribute.KIND.key())));
+    public Collection<PlacedTojo> jars() {
+        return this.all.value().select(row -> "jar".equals(row.get(Attribute.KIND.key())))
+            .stream().map(PlacedTojo::new).collect(Collectors.toList());
     }
 
     public void addDependency(final String dep) {
-        this.all.value().add(dep).set(Attribute.KIND.key(), "jar");
+        this.all.value().add(dep)
+            .set(Attribute.KIND.key(), "jar");
     }
 
-    public Tojo addClass(final Path target, final String related, final String dep) {
+    public PlacedTojo placeClass(final Path target, final String related, final String dep) {
         final String id = target.toString();
-        return this.all.value().add(id)
-            .set(Attribute.KIND.key(), "class")
-            .set(Attribute.HASH.key(), new FileHash(target))
-            .set(Attribute.RELATED.key(), related)
-            .set(Attribute.DEPENDENCY.key(), dep)
+        return new PlacedTojo(
+            this.all.value().add(id)
+                .set(Attribute.KIND.key(), "class")
+                .set(Attribute.HASH.key(), new FileHash(target))
+                .set(Attribute.RELATED.key(), related)
+                .set(Attribute.DEPENDENCY.key(), dep)
+                .set(Attribute.UNPLACED.key(), "false")
+        );
+    }
+
+    public void placeJar(final String name) {
+        this.all.value().add(name)
+            .set(Attribute.KIND.key(), "jar")
+            .set(Attribute.DEPENDENCY.key(), String.format("%s.jar", name))
             .set(Attribute.UNPLACED.key(), "false");
     }
 
     public boolean isEmpty() {
         return this.all.value().select(row -> true).isEmpty();
+    }
+
+    public void unplaceAll() {
+        this.all.value().select(placed -> true).forEach(
+            tojo -> tojo.set(Attribute.UNPLACED.key(), "true")
+        );
     }
 
     /**
@@ -79,8 +115,14 @@ public class PlacedTojos implements Closeable {
             && "false".equals(tojo.get(Attribute.UNPLACED.key()));
     }
 
+    public List<PlacedTojo> all() {
+        return this.all.value().select(tojos -> true)
+            .stream()
+            .map(PlacedTojo::new)
+            .collect(Collectors.toList());
+    }
 
-    private enum Attribute {
+    enum Attribute {
 
         ID("id"),
         KIND("kind"),
