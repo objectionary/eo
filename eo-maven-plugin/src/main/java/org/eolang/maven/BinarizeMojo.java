@@ -191,8 +191,8 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
      * @return Name for function.
      */
     private static String name(final String loc) {
-        final StringBuilder out = new StringBuilder(1 + 4 * loc.length());
-        out.append('f');
+        final StringBuilder out = new StringBuilder(1 + 5 * loc.length());
+        out.append('f').append(loc.replaceAll("[^a-zA-Z0-9]", "_"));
         for (final char chr: loc.toCharArray()) {
             out.append(
                 String.format(
