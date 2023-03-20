@@ -1,18 +1,38 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2023 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.eolang.maven.tojos;
 
-import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.Catalogs;
-import org.eolang.maven.PlaceMojo;
 import org.eolang.maven.util.FileHash;
 
 /**
@@ -20,29 +40,41 @@ import org.eolang.maven.util.FileHash;
  *
  * @since 0.30
  */
-public class PlacedTojos implements Closeable {
+public final class PlacedTojos implements Closeable {
 
     /**
      * All tojos.
      */
     private final Unchecked<? extends Tojos> all;
 
+    /**
+     * Ctor.
+     * @param file Path to the tojos file.
+     */
     public PlacedTojos(final Path file) {
         this(Catalogs.INSTANCE.make(file));
     }
 
-    public PlacedTojos(final Tojos tojos) {
-        this(new Sticky<>(() -> tojos));
-    }
-
-    public PlacedTojos(final Supplier<? extends Tojos> tojos) {
-        this(new Sticky<>(tojos::get));
-    }
-
+    /**
+     * Ctor.
+     * @param tojos Tojos source.
+     */
     public PlacedTojos(final Sticky<? extends Tojos> tojos) {
         this(new Unchecked<>(tojos));
     }
 
+    /**
+     * Ctor.
+     * @param tojos Tojos.
+     */
+    private PlacedTojos(final Tojos tojos) {
+        this(new Sticky<>(() -> tojos));
+    }
+
+    /**
+     * The main ctor.
+     * @param tojos Tojos unchecked source.
+     */
     private PlacedTojos(final Unchecked<? extends Tojos> tojos) {
         this.all = tojos;
     }
@@ -52,33 +84,63 @@ public class PlacedTojos implements Closeable {
         this.all.value().close();
     }
 
-    public Collection<Tojo> findJar(final String dep) {
-        return this.all.value().select(
-            row -> row.get(Tojos.KEY).equals(dep)
-                && "jar".equals(row.get(Attribute.KIND.key()))
-        );
-    }
-
+    /**
+     * Get all classes.
+     * @return All classes.
+     */
     public Collection<PlacedTojo> classes() {
-        return this.all.value()
-            .select(row -> "class".equals(row.get(Attribute.KIND.key())))
-            .stream().map(PlacedTojo::new).collect(Collectors.toList());
+        return this.allBinaries().stream()
+            .filter(PlacedTojo::isClass)
+            .collect(Collectors.toList());
     }
 
+    /**
+     * Get all jars.
+     * @return All jars.
+     */
     public Collection<PlacedTojo> jars() {
-        return this.all.value().select(row -> "jar".equals(row.get(Attribute.KIND.key())))
-            .stream().map(PlacedTojo::new).collect(Collectors.toList());
+        return this.allBinaries().stream()
+            .filter(PlacedTojo::isJar)
+            .collect(Collectors.toList());
     }
 
-    public void addDependency(final String dep) {
-        this.all.value().add(dep)
-            .set(Attribute.KIND.key(), "jar");
+    /**
+     * Get all binaries.
+     * @return All binaries jars with classes.
+     */
+    public List<PlacedTojo> allBinaries() {
+        return this.all.value()
+            .select(tojos -> true)
+            .stream()
+            .map(PlacedTojo::new)
+            .collect(Collectors.toList());
     }
 
-    public PlacedTojo placeClass(final Path target, final String related, final String dep) {
-        final String id = target.toString();
+    /**
+     * Find jar by dependency identifier.
+     * @param dep Dependency identifier.
+     * @return Placed jar.
+     */
+    public Collection<PlacedTojo> findJar(final String dep) {
+        return this.jars().stream()
+            .filter(tojo -> tojo.identifier().equals(dep))
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Place class into placed tojos file.
+     * @param target Path to the class.
+     * @param related Related.
+     * @param dep Dependency.
+     * @return Placed class.
+     */
+    public PlacedTojo placeClass(
+        final Path target,
+        final String related,
+        final String dep
+    ) {
         return new PlacedTojo(
-            this.all.value().add(id)
+            this.all.value().add(target.toString())
                 .set(Attribute.KIND.key(), "class")
                 .set(Attribute.HASH.key(), new FileHash(target))
                 .set(Attribute.RELATED.key(), related)
@@ -87,6 +149,10 @@ public class PlacedTojos implements Closeable {
         );
     }
 
+    /**
+     * Place jar into placed tojos file.
+     * @param name Name of the jar.
+     */
     public void placeJar(final String name) {
         this.all.value().add(name)
             .set(Attribute.KIND.key(), "jar")
@@ -94,50 +160,75 @@ public class PlacedTojos implements Closeable {
             .set(Attribute.UNPLACED.key(), "false");
     }
 
+    /**
+     * Unplace all tojos.
+     */
+    public void unplaceAll() {
+        this.allBinaries().forEach(PlacedTojo::unplace);
+    }
+
+    /**
+     * Check whether tojos is empty.
+     * @return True if empty.
+     */
     public boolean isEmpty() {
         return this.all.value().select(row -> true).isEmpty();
     }
 
-    public void unplaceAll() {
-        this.all.value().select(placed -> true).forEach(
-            tojo -> tojo.set(Attribute.UNPLACED.key(), "true")
-        );
-    }
-
     /**
-     * Check whether tojos was not unplaced.
-     * @param before Tojos.
-     * @return True if not unplaced.
+     * Placed tojo attributes.
+     *
+     * @since 0.30
      */
-    public static boolean isNotUnplaced(final Iterable<? extends Tojo> before) {
-        final Tojo tojo = before.iterator().next();
-        return tojo.exists(Attribute.UNPLACED.key())
-            && "false".equals(tojo.get(Attribute.UNPLACED.key()));
-    }
-
-    public List<PlacedTojo> all() {
-        return this.all.value().select(tojos -> true)
-            .stream()
-            .map(PlacedTojo::new)
-            .collect(Collectors.toList());
-    }
-
     enum Attribute {
 
+        /**
+         * Tojo id.
+         */
         ID("id"),
-        KIND("kind"),
-        DEPENDENCY("dependency"),
-        HASH("hash"),
-        RELATED("related"),
-        UNPLACED("unplaced"),
-        ;
 
+        /**
+         * Tojo kind.
+         */
+        KIND("kind"),
+
+        /**
+         * Tojo dependency.
+         */
+        DEPENDENCY("dependency"),
+
+        /**
+         * Tojo hash.
+         */
+        HASH("hash"),
+
+        /**
+         * Tojo related.
+         */
+        RELATED("related"),
+
+        /**
+         * Tojo unplaced.
+         */
+        UNPLACED("unplaced");
+
+        /**
+         * Tojo attribute inside placed tojo.
+         */
         private final String key;
 
-        Attribute(final String key) {
-            this.key = key;
+        /**
+         * Ctor.
+         * @param attribute Key in a file.
+         */
+        Attribute(final String attribute) {
+            this.key = attribute;
         }
 
+        /**
+         * Get attribute key.
+         * @return Key.
+         */
         String key() {
             return this.key;
         }

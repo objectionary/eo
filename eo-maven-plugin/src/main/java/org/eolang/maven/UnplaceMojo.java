@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -97,7 +96,7 @@ public final class UnplaceMojo extends SafeMojo {
             .map(PlacedTojo::dependency)
             .collect(Collectors.toSet());
         this.placedTojos.jars().stream()
-            .filter(dep -> used.contains(dep.id()))
+            .filter(dep -> used.contains(dep.identifier()))
             .forEach(PlacedTojo::unplace);
     }
 
@@ -145,7 +144,7 @@ public final class UnplaceMojo extends SafeMojo {
         int unplaced = 0;
         for (final PlacedTojo tojo : all) {
             final String related = tojo.related();
-            final Path path = Paths.get(tojo.id());
+            final Path path = Paths.get(tojo.identifier());
             final String hash = new FileHash(path).toString();
             if (!tojo.sameHash(hash)) {
                 if (hash.isEmpty()) {
@@ -200,7 +199,7 @@ public final class UnplaceMojo extends SafeMojo {
         int remained = 0;
         for (final PlacedTojo tojo : tojos) {
             final String related = tojo.related();
-            final Path path = Paths.get(tojo.id());
+            final Path path = Paths.get(tojo.identifier());
             if (!this.keepBinaries.isEmpty()
                 && UnplaceMojo.inside(related, this.keepBinaries)) {
                 remained += 1;

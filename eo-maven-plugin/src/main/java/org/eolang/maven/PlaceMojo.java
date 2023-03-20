@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,7 +41,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -97,12 +94,12 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.placedTojos.findJar(dep);
+                final Collection<PlacedTojo> before = this.placedTojos.findJar(dep);
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.addDependency(dep);
+                this.placedTojos.placeJar(dep);
             }
             if (copied == 0) {
                 Logger.debug(
@@ -186,7 +183,7 @@ public final class PlaceMojo extends SafeMojo {
                     before.iterator().next().dependency()
                 );
             }
-            if (!before.isEmpty() && Files.exists(target) && PlacedTojos.isNotUnplaced(before)) {
+            if (!before.isEmpty() && Files.exists(target) && !before.iterator().next().unplaced()) {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
@@ -224,10 +221,9 @@ public final class PlaceMojo extends SafeMojo {
     private Map<String, PlacedTojo> placedCache() {
         return this.placedTojos.classes()
             .stream()
-            .map(PlacedTojo::new)
             .collect(
                 Collectors.toMap(
-                    row -> row.get(Tojos.KEY),
+                    PlacedTojo::identifier,
                     row -> row
                 )
             );

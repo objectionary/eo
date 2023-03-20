@@ -199,12 +199,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      */
     FakeMaven withPlacedBinary(final Path binary) {
-        this.placed()
-            .placeClass(binary, "", "test.jar");
-//            .add(binary)
-//            .set(PlaceMojo.ATTR_PLD_DEP, "test.jar")
-//            .set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
-//            .set(PlaceMojo.ATTR_PLD_KIND, binary.substring(binary.lastIndexOf('.') + 1));
+        this.placed().placeClass(binary, "", "test.jar");
         return this;
     }
 
@@ -290,9 +285,7 @@ public final class FakeMaven {
      * @return TjSmart of the current placed.json file.
      */
     PlacedTojos placed() {
-        return new PlacedTojos(
-            Catalogs.INSTANCE.make(this.workspace.absolute(Paths.get("placed.json")))
-        );
+        return new PlacedTojos(this.workspace.absolute(Paths.get("placed.json")));
     }
 
     /**

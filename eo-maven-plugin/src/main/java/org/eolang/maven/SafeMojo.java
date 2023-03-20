@@ -189,7 +189,7 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
-     * Placed tojos
+     * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
