@@ -42,7 +42,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.FileHash;
+import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -121,15 +121,12 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.placedTojos.value().select(
-                    row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
-                );
+                final Collection<Tojo> before = this.placedTojos.dependencyJar(dep);
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_PLD_KIND, "jar");
+                this.placedTojos.addDependency(dep);
             }
             if (copied == 0) {
                 Logger.debug(
@@ -213,22 +210,16 @@ public final class PlaceMojo extends SafeMojo {
                     before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target) && PlaceMojo.isNotUnplaced(before)) {
+            if (!before.isEmpty() && Files.exists(target) && PlacedTojos.isNotUnplaced(before)) {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             final String id = target.toString();
-            final Tojo tojo = this.placedTojos.value().add(id)
-                .set(PlaceMojo.ATTR_PLD_KIND, "class")
-                .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
-                .set(
-                    PlaceMojo.ATTR_PLD_RELATED,
-                    target.toString().substring(
-                        this.outputDir.toString().length() + 1
-                    )
-                )
-                .set(PlaceMojo.ATTR_PLD_DEP, dep)
-                .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+            final Tojo tojo = this.placedTojos.addClass(
+                target,
+                target.toString().substring(this.outputDir.toString().length() + 1),
+                dep
+            );
             cache.putIfAbsent(id, tojo);
             ++copied;
         }
@@ -255,25 +246,13 @@ public final class PlaceMojo extends SafeMojo {
      *  <a href="https://github.com/yegor256/tojos/issues/60">here</a>.
      */
     private Map<String, Tojo> placedCache() {
-        return this.placedTojos.value()
-            .select(row -> "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND)))
-            .stream().collect(
+        return this.placedTojos.allClasses()
+            .stream()
+            .collect(
                 Collectors.toMap(
                     row -> row.get(Tojos.KEY),
                     row -> row
                 )
             );
     }
-
-    /**
-     * Check whether tojos was not unplaced.
-     * @param before Tojos.
-     * @return True if not unplaced.
-     */
-    private static boolean isNotUnplaced(final Iterable<? extends Tojo> before) {
-        final Tojo tojo = before.iterator().next();
-        return tojo.exists(PlaceMojo.ATTR_PLD_UNPLACED)
-            && "false".equals(tojo.get(PlaceMojo.ATTR_PLD_UNPLACED));
-    }
-
 }

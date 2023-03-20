@@ -32,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -77,7 +76,7 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placedTojos.value().select(all -> true).isEmpty()) {
+        if (this.placedTojos.isEmpty()) {
             Logger.info(
                 this,
                 "The list of placed binaries is absent: %s",
@@ -93,12 +92,12 @@ public final class UnplaceMojo extends SafeMojo {
      * Mark dependencies as unplaced if all related binaries are unplaced.
      */
     private void unplaceJars() {
-        final Set<String> used = this.classes()
+        final Set<String> used = this.placedTojos.allClasses()
             .stream()
             .filter(tojo -> tojo.exists(PlaceMojo.ATTR_PLD_DEP))
             .map(tojo -> tojo.get(PlaceMojo.ATTR_PLD_DEP))
             .collect(Collectors.toSet());
-        this.binaries("jar").stream()
+        this.placedTojos.allJars().stream()
             .filter(dep -> used.contains(dep.get(Tojos.KEY)))
             .forEach(dep -> dep.set(PlaceMojo.ATTR_PLD_UNPLACED, "true"));
     }
@@ -108,7 +107,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void unplaceClasses() throws IOException {
-        final Collection<Tojo> classes = this.classes();
+        final Collection<Tojo> classes = this.placedTojos.allClasses();
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(classes);
@@ -279,24 +278,4 @@ public final class UnplaceMojo extends SafeMojo {
         }
         return deleted;
     }
-
-    /**
-     * Retrieve tojos class binaries.
-     * @return List of tojos
-     */
-    private List<Tojo> classes() {
-        return this.binaries("class");
-    }
-
-    /**
-     * Retrieve tojos binaries of the given kind (jar, class, etc).
-     * @param kind Kind of binary
-     * @return List of tojos
-     */
-    private List<Tojo> binaries(final String kind) {
-        return this.placedTojos.value().select(
-            t -> kind.equals(t.get(PlaceMojo.ATTR_PLD_KIND))
-        );
-    }
-
 }
