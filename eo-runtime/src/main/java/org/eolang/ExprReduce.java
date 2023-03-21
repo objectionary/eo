@@ -84,6 +84,14 @@ public final class ExprReduce<T> implements Expr {
     @Override
     public Phi get(final Phi rho) {
         final Optional<T> acc = this.arguments.get(rho, this.param).stream().reduce(this.reduction);
+        if (!acc.isPresent()) {
+            throw new IllegalStateException(
+                String.format(
+                    "Unable to reduce expression for %s",
+                    rho
+                )
+            );
+        }
         return new Data.ToPhi(acc.get());
     }
 

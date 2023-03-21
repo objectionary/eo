@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -267,7 +268,7 @@ public final class UnplaceMojo extends SafeMojo {
             Files.delete(file);
             deleted = true;
         }
-        while (!Files.newDirectoryStream(dir).iterator().hasNext()) {
+        while (UnplaceMojo.isEmpty(dir)) {
             final Path curdir = dir;
             dir = curdir.getParent();
             Files.delete(curdir);
@@ -299,4 +300,19 @@ public final class UnplaceMojo extends SafeMojo {
         );
     }
 
+    /**
+     * Check if folder is empty.
+     * @param path Folder to be checked
+     * @return True if folder is empty and False otherwise
+     * @throws IOException In case of I/O issues
+     */
+    private static boolean isEmpty(final Path path) throws IOException {
+        boolean empty = false;
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
+                empty = !directory.iterator().hasNext();
+            }
+        }
+        return empty;
+    }
 }

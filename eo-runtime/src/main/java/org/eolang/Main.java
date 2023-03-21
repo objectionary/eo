@@ -214,7 +214,7 @@ public final class Main {
                 )
             )
         ) {
-            return input.lines().findFirst().get();
+            return input.lines().findFirst().orElse("N/A");
         }
     }
 

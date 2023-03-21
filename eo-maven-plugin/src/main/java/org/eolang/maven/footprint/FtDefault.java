@@ -41,6 +41,7 @@ import org.eolang.maven.util.Home;
  * Program footprint of EO compilation process.
  * <p>The footprint consists of file in {@link #main} folder</p>
  * @since 1.0
+ * @checkstyle NoJavadocForOverriddenMethodsCheck (100 lines)
  */
 public final class FtDefault implements Footprint {
 
@@ -75,6 +76,18 @@ public final class FtDefault implements Footprint {
         );
     }
 
+    /**
+     * Get list of saved regular files with ext.
+     *
+     * @param ext File extension
+     * @return List of files
+     * @throws IOException In case of IO issues
+     * @todo #1897:30m Close `Stream` object in `FtDefault`.
+     *  Connections, streams, files, and other classes that implement the
+     *  Closeable interface or its super-interface,
+     *  AutoCloseable, needs to be closed after use.
+     *  Use try-with-resources or close this "Stream" in a "finally" clause.. (line 90)
+     */
     @Override
     public List<Path> list(final String ext) throws IOException {
         final List<Path> res;

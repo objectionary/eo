@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
 
 /**
@@ -62,15 +63,17 @@ final class DepDirs extends ListEnvelope<String> {
         final List<String> names = new LinkedList<>();
         if (Files.exists(dir)) {
             final String home = dir.toAbsolutePath().toString();
-            names.addAll(
-                Files.find(dir, 4, (t, u) -> true)
-                    .filter(file -> file.toFile().isDirectory())
-                    .map(file -> file.toAbsolutePath().toString())
-                    .filter(name -> !name.equals(home))
-                    .map(name -> name.substring(home.length() + 1))
-                    .filter(name -> name.split(Pattern.quote(File.separator)).length == 4)
-                    .collect(Collectors.toList())
-            );
+            try (Stream<Path> paths = Files.find(dir, 4, (t, u) -> true)) {
+                names.addAll(
+                    paths
+                        .filter(file -> file.toFile().isDirectory())
+                        .map(file -> file.toAbsolutePath().toString())
+                        .filter(name -> !name.equals(home))
+                        .map(name -> name.substring(home.length() + 1))
+                        .filter(name -> name.split(Pattern.quote(File.separator)).length == 4)
+                        .collect(Collectors.toList())
+                );
+            }
         }
         return names;
     }

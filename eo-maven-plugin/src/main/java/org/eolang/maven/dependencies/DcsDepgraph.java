@@ -51,6 +51,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  *
  * @see <a href="https://github.com/ferstl/depgraph-maven-plugin">here</a>
  * @since 0.28.11
+ * @checkstyle NoJavadocForOverriddenMethodsCheck (200 lines)
  */
 public final class DcsDepgraph implements Iterable<Dependency> {
 
@@ -187,6 +188,14 @@ public final class DcsDepgraph implements Iterable<Dependency> {
             this.file = path;
         }
 
+        /**
+         * Returns an iterator over elements of type {@code T}.
+         *
+         * @return Iterator.
+         * @todo #1897:30m Close `JsonReader` object in `DcsJson`.
+         *  SonarCloud mandates readers to be closed.
+         *  Use try-with-resources or close this "JsonReader" in a "finally" clause. (line 203)
+         */
         @Override
         public Iterator<Dependency> iterator() {
             try {

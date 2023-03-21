@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import javax.annotation.Nonnull;
 import org.apache.maven.model.Dependency;
 
 /**
@@ -69,12 +70,12 @@ public final class Coordinates implements Comparable<Coordinates> {
     }
 
     @Override
-    public int compareTo(final Coordinates other) {
+    public int compareTo(@Nonnull final Coordinates other) {
         return this.toString().compareTo(other.toString());
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nonnull final Object other) {
         return this.toString().equals(other.toString());
     }
 

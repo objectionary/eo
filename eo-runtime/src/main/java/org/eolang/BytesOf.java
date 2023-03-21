@@ -142,7 +142,7 @@ public final class BytesOf implements Bytes {
                 } else {
                     byte dst = (byte) (bytes[source] << mod);
                     if (source + 1 < bytes.length) {
-                        dst |= bytes[source + 1] >>> (Byte.SIZE - mod) & carry;
+                        dst |= bytes[source + 1] >>> (Byte.SIZE - mod) & carry & 0xFF;
                     }
                     bytes[index] = dst;
                 }
@@ -156,7 +156,7 @@ public final class BytesOf implements Bytes {
                 } else {
                     byte dst = (byte) ((0xff & bytes[source]) >>> mod);
                     if (source - 1 >= 0) {
-                        dst |= bytes[source - 1] << (Byte.SIZE - mod) & carry;
+                        dst |= bytes[source - 1] << (Byte.SIZE - mod) & carry & 0xFF;
                     }
                     bytes[index] = dst;
                 }
@@ -176,7 +176,7 @@ public final class BytesOf implements Bytes {
                 final int zeros = BytesOf.numberOfLeadingZeros(
                     bytes[index]
                 );
-                bytes[index] = (byte) (bytes[index] ^ (-1 << (Byte.SIZE - zeros)));
+                bytes[index] = (byte) (bytes[index] & 0xFF ^ (-1 << (Byte.SIZE - zeros)));
                 if (zeros != Byte.SIZE) {
                     break;
                 }

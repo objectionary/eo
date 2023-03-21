@@ -118,6 +118,11 @@ public final class Walk extends ListEnvelope<Path> {
      * @param dir The dir
      * @return List
      * @throws IOException If fails
+     * @todo #1897:30m Close `Stream` object in `Walk`.
+     *  Connections, streams, files, and other classes that implement the
+     *  Closeable interface or its super-interface,
+     *  AutoCloseable, needs to be closed after use.
+     *  Use try-with-resources or close this "Stream" in a "finally" clause.. (line 131)
      */
     private static List<Path> list(final Path dir) throws IOException {
         final List<Path> files = new LinkedList<>();

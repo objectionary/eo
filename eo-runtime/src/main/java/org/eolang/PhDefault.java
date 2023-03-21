@@ -285,6 +285,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     /**
+     * Clean up resources.
+     * This includes call of {@link ThreadLocal#remove()} method to prevent
+     * memory leaks.
+     */
+    public static void cleanUp() {
+        PhDefault.TERMS.remove();
+        PhDefault.NESTING.remove();
+    }
+
+    /**
      * Add new attribute.
      *
      * This method can only be called from child classes, in their

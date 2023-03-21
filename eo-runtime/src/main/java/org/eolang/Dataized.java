@@ -126,4 +126,15 @@ public final class Dataized {
     public <T> T take(final Class<T> type) {
         return type.cast(this.take());
     }
+
+    /**
+     * Clean up resources.
+     * This includes call of {@link ThreadLocal#remove()} method to prevent
+     * memory leaks.
+     */
+    public static void cleanUp() {
+        Dataized.LEVEL.remove();
+        Dataized.MAX_LEVEL.remove();
+    }
+
 }
