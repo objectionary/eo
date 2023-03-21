@@ -127,6 +127,12 @@ final class HomeTest {
         );
     }
 
+    /**
+     * @todo #1907:30m Enable HomeTest.throwsExceptionOnAbsolute().
+     *  The test fails on Windows with no error thrown. It means
+     *  that this test didn't throw IllegalArgumentException when we are
+     *  trying to check existence of file in temporary directory.
+     */
     @Test
     @Disabled
     void throwsExceptionOnAbsolute(@TempDir final Path temp) {
