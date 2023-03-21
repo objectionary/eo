@@ -22,25 +22,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-crowded-epsilons" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-duplicate-vertices" version="2.0">
   <!--
-  Here we catch vertices that have "epsilon" departing edges and
-  some other edges in addition to them. We don't want this to happen,
-  since "epsilon" must always be alone.
+  Here we go through all vertices and confirm that they don't have
+  duplicate IDs.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/graph/v">
+  <xsl:template match="/graph/v[count(@id=/graph/v/@id) &gt; 1]">
     <xsl:variable name="v" select="."/>
-    <xsl:if test="$v/e[@title='ε'] and $v/e[@title!='ε']">
-      <xsl:message terminate="yes">
-        <xsl:text>The edge departing from '</xsl:text>
-        <xsl:value-of select="$v/@id"/>
-        <xsl:text>' must be alone, since it's labeled as 'ε'</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
+    <xsl:message terminate="yes">
+      <xsl:text>The vertex </xsl:text>
+      <xsl:value-of select="$v/@id"/>
+      <xsl:text> is a duplicate</xsl:text>
+    </xsl:message>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#default">
     <xsl:copy>

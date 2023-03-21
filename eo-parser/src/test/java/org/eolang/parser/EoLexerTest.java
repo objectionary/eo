@@ -50,6 +50,33 @@ final class EoLexerTest {
     }
 
     @Test
+    void ensuresGrammarFile() throws IOException {
+        final EoLexer lexer = new EoLexer(
+            new TextOf("")
+        );
+        MatcherAssert.assertThat(
+            lexer.getGrammarFileName(),
+            Matchers.is(
+                "Program.g4"
+            )
+        );
+    }
+
+    @Test
+    void emitsTabWhenEmptyLine() throws IOException {
+        final EoLexer lexer = new EoLexer(
+            new TextOf("\n\n  ")
+        );
+        lexer.nextToken();
+        MatcherAssert.assertThat(
+            lexer.nextToken().getType(),
+            Matchers.is(
+                ProgramParser.TAB
+            )
+        );
+    }
+
+    @Test
     void emitsUntab() throws IOException {
         final EoLexer lexer = new EoLexer(
             new TextOf("\n  \n")

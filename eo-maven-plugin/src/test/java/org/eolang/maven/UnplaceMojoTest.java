@@ -27,6 +27,7 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
@@ -235,11 +236,13 @@ final class UnplaceMojoTest {
      * @throws IOException If fails.
      */
     private static Path clazz(final Path temp) throws IOException {
-        final Path path = temp.resolve(
-            String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt())
+        final Path path =
+            Paths.get(String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt()));
+        new Home(temp).save(
+            () -> UUID.randomUUID().toString(),
+            path
         );
-        new Home().save(() -> UUID.randomUUID().toString(), path);
-        return path;
+        return temp.resolve(path);
     }
 
     /**

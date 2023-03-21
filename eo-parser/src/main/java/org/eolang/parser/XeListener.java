@@ -94,6 +94,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         this.dirs.add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
+            .attr("revision", Manifests.read("EO-Revision"))
+            .attr("dob", Manifests.read("EO-Dob"))
             .attr(
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(

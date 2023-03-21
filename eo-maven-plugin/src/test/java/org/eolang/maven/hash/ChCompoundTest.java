@@ -26,6 +26,7 @@ package org.eolang.maven.hash;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.OnlineCondition;
 import org.eolang.maven.util.Home;
@@ -70,7 +71,10 @@ final class ChCompoundTest {
     @Test
     void getsCommitHashValueFromFile(@TempDir final Path temp) throws IOException {
         final Path file = temp.resolve("tags.txt");
-        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), file);
+        new Home(temp).save(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            Paths.get("tags.txt")
+        );
         MatcherAssert.assertThat(
             new ChCompound(
                 file,
