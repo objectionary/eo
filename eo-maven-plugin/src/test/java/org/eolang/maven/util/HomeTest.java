@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.util;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,10 +44,6 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Test for {@link Home}.
  *
  * @since 0.22
- * @todo #1907:30m Enable HomeTest.throwsExceptionOnAbsolute().
- *  The test fails on Windows with no error thrown. It means
- *  that this test didn't throw IllegalArgumentException when we are
- *  trying to check existence of file in temporary directory.
  */
 final class HomeTest {
 
@@ -133,7 +128,6 @@ final class HomeTest {
 
     @Test
     void throwsExceptionOnAbsolute(@TempDir final Path temp) {
-        Logger.info(this, String.format("+++++ Tmp path: %s", temp.toString()));
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new Home(temp).exists(Paths.get("/tmp/file.txt"))
