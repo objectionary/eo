@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.util;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +36,6 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -132,8 +132,8 @@ final class HomeTest {
     }
 
     @Test
-    @Disabled
     void throwsExceptionOnAbsolute(@TempDir final Path temp) {
+        Logger.info(this, String.format("+++++ Tmp path: %s", temp.toString()));
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new Home(temp).exists(Paths.get("/tmp/file.txt"))
