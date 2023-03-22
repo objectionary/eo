@@ -185,7 +185,6 @@ public final class PlaceMojo extends SafeMojo {
                 .stream()
                 .filter(this::isNotEoSource)
                 .filter(this::isNotAlreadyPlaced)
-                .filter(this::isUnplaced)
                 .peek(this::logInfoAboutClass)
                 .peek(this::placeClass)
                 .count();
@@ -222,7 +221,8 @@ public final class PlaceMojo extends SafeMojo {
             );
             final Optional<PlacedTojo> tojo = PlaceMojo.this.cached.find(target);
             final boolean res;
-            if (tojo.isPresent() && Files.exists(target) && this.sameLength(target, file)) {
+            if (tojo.isPresent() && Files.exists(target)
+                && (this.sameLength(target, file) || !tojo.get().unplaced())) {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
@@ -235,19 +235,6 @@ public final class PlaceMojo extends SafeMojo {
                 res = true;
             }
             return res;
-        }
-
-        /**
-         * Check if the file is not already placed.
-         * @param file The file to check.
-         * @return True if the file is not already placed.
-         */
-        private boolean isUnplaced(final Path file) {
-            final Path target = PlaceMojo.this.outputDir.toPath().resolve(
-                this.dir.relativize(file)
-            );
-            final Optional<PlacedTojo> tojo = PlaceMojo.this.cached.find(target);
-            return !(tojo.isPresent() && Files.exists(target) && !tojo.get().unplaced());
         }
 
         /**
