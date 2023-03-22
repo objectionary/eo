@@ -30,17 +30,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
+import org.eolang.maven.tojos.PlacedTojosCached;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -86,6 +84,13 @@ public final class PlaceMojo extends SafeMojo {
      */
     @Parameter
     private Set<String> excludeBinaries = new SetOf<>();
+
+    /**
+     * Placed cached tojos.
+     * @since 0.30
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private final PlacedTojosCached placedTojosCached = new PlacedTojosCached(this.placedTojos);
 
     @Override
     public void exec() throws IOException {
@@ -140,7 +145,6 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Map<String, PlacedTojo> cache = this.placedCache();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
@@ -152,10 +156,8 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<PlacedTojo> before = Stream.of(cache.get(target.toString()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-            if (!before.isEmpty() && !Files.exists(target)) {
+            final Optional<PlacedTojo> before = this.placedTojosCached.find(target);
+            if (before.isPresent() && !Files.exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
@@ -163,37 +165,35 @@ public final class PlaceMojo extends SafeMojo {
                     new Rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().dependency()
+                    before.get().dependency()
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().dependency()
+                    before.get().dependency()
                 );
             }
-            if (!before.isEmpty() && Files.exists(target) && !before.iterator().next().unplaced()) {
+            if (before.isPresent() && Files.exists(target) && !before.get().unplaced()) {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
-            final String id = target.toString();
-            final PlacedTojo tojo = this.placedTojos.placeClass(
+            this.placedTojosCached.placeClass(
                 target,
                 target.toString().substring(this.outputDir.toString().length() + 1),
                 dep
             );
-            cache.putIfAbsent(id, tojo);
             ++copied;
         }
         if (copied > 0) {
@@ -208,24 +208,5 @@ public final class PlaceMojo extends SafeMojo {
             );
         }
         return copied;
-    }
-
-    /**
-     * Collect all binaries into a fast map for efficient search.
-     * @return Cached placed tojos.
-     * @todo #1894:30min Replace PlaceMojo#placedCache crutch with an appropriate solution from
-     *  Tojos library. The original problem is that Tojos has not so optimal reading mechanism
-     *  and it's not efficient to read row by row from tojos. You can check the progress
-     *  <a href="https://github.com/yegor256/tojos/issues/60">here</a>.
-     */
-    private Map<String, PlacedTojo> placedCache() {
-        return this.placedTojos.classes()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    PlacedTojo::identifier,
-                    row -> row
-                )
-            );
     }
 }
