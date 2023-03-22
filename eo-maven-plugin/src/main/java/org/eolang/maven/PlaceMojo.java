@@ -98,15 +98,9 @@ public final class PlaceMojo extends SafeMojo {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
-            int copied = 0;
-            for (final String dep : deps) {
-                final Collection<PlacedTojo> before = this.placedTojos.findJar(dep);
-                if (!before.isEmpty()) {
-                    Logger.info(this, "Found placed binaries from %s", dep);
-                }
-                copied += this.place(home, dep);
-                this.placedTojos.placeJar(dep);
-            }
+            final long copied = deps.stream()
+                .mapToLong(dep -> this.placeDep(home, dep))
+                .sum();
             if (copied == 0) {
                 Logger.debug(
                     this, "No binary files placed from %d dependencies",
@@ -131,7 +125,6 @@ public final class PlaceMojo extends SafeMojo {
      * @param home Home to read from
      * @param dep The name of dep
      * @return How many binaries placed
-     * @throws IOException If fails
      * @checkstyle ExecutableStatementCountCheck (300 lines)
      * @checkstyle CyclomaticComplexityCheck (300 lines)
      * @checkstyle NPathComplexityCheck (300 lines)
@@ -140,48 +133,22 @@ public final class PlaceMojo extends SafeMojo {
      *  checkstyle and PMD.
      */
     @SuppressWarnings("PMD.NPathComplexity")
-    private int place(final Path home, final String dep) throws IOException {
+    private long placeDep(final Path home, final String dep) {
+        if (this.placedTojos.findJar(dep).isPresent()) {
+            Logger.info(this, "Found placed binaries from %s", dep);
+        }
         final Path dir = home.resolve(dep);
-        final Collection<Path> binaries = new Walk(dir)
+        final long copied = new Walk(dir)
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries)
             .stream()
             .filter(file -> this.isNotEoSource(dir, file))
             .filter(file -> this.isNotAlreadyPlaced(dir, file))
             .filter(file -> this.isUnplaced(dir, file))
-            .collect(Collectors.toList());
-        int copied = 0;
-        for (final Path file : binaries) {
-            final Path path = dir.relativize(file);
-            final Path target = this.outputDir.toPath().resolve(path);
-            final Optional<PlacedTojo> before = this.placedTojosCached.find(target);
-            if (before.isPresent()) {
-                if (!Files.exists(target)) {
-                    Logger.info(
-                        this,
-                        "The file %s has been placed to %s, but now it's gone, replacing",
-                        new Rel(file),
-                        new Rel(target)
-                    );
-                }
-                if (Files.exists(target) && !PlaceMojo.sameLength(target, file)) {
-                    Logger.debug(
-                        this,
-                        "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                        new Rel(file), file.toFile().length(),
-                        new Rel(target), target.toFile().length(),
-                        before.get().dependency()
-                    );
-                }
-            }
-            new Home(this.outputDir).save(new InputOf(file), path);
-            this.placedTojosCached.placeClass(
-                target,
-                target.toString().substring(this.outputDir.toString().length() + 1),
-                dep
-            );
-            ++copied;
-        }
+            .peek(file -> this.log(dir, file))
+            .peek(file -> this.place(dir, file, dep))
+            .count();
+        this.placedTojos.placeJar(dep);
         if (copied > 0) {
             Logger.info(
                 this, "Placed %d binary file(s) out of %d, found in %s",
@@ -194,6 +161,51 @@ public final class PlaceMojo extends SafeMojo {
             );
         }
         return copied;
+    }
+
+    private void place(final Path dir, final Path file, final String dep) {
+        try {
+            final Path path = dir.relativize(file);
+            final Path target = this.outputDir.toPath().resolve(path);
+            new Home(this.outputDir).save(new InputOf(file), path);
+            this.placedTojosCached.placeClass(
+                target,
+                target.toString().substring(this.outputDir.toString().length() + 1),
+                dep
+            );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format(
+                    "Failed to place %s to %s",
+                    file, this.outputDir
+                ),
+                ex
+            );
+        }
+    }
+
+    private void log(final Path dir, final Path file) {
+        final Path target = this.outputDir.toPath().resolve(dir.relativize(file));
+        final Optional<PlacedTojo> before = this.placedTojosCached.find(target);
+        if (before.isPresent()) {
+            if (!Files.exists(target)) {
+                Logger.info(
+                    this,
+                    "The file %s has been placed to %s, but now it's gone, replacing",
+                    new Rel(file),
+                    new Rel(target)
+                );
+            }
+            if (Files.exists(target) && !PlaceMojo.sameLength(target, file)) {
+                Logger.debug(
+                    this,
+                    "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
+                    new Rel(file), file.toFile().length(),
+                    new Rel(target), target.toFile().length(),
+                    before.get().dependency()
+                );
+            }
+        }
     }
 
     private boolean isUnplaced(final Path dir, final Path file) {
