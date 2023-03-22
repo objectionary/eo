@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,7 +40,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.FileHash;
+import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -61,31 +59,6 @@ import org.eolang.maven.util.Walk;
 )
 @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidDuplicateLiterals"})
 public final class PlaceMojo extends SafeMojo {
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_RELATED = "related";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_KIND = "kind";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_HASH = "hash";
-
-    /**
-     * Where the binary is coming from (JAR name).
-     */
-    static final String ATTR_PLD_DEP = "dependency";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_UNPLACED = "unplaced";
 
     /**
      * Output.
@@ -121,15 +94,12 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.placedTojos.value().select(
-                    row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
-                );
+                final Collection<PlacedTojo> before = this.placedTojos.findJar(dep);
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_PLD_KIND, "jar");
+                this.placedTojos.placeJar(dep);
             }
             if (copied == 0) {
                 Logger.debug(
@@ -170,7 +140,7 @@ public final class PlaceMojo extends SafeMojo {
             .includes(this.includeBinaries)
             .excludes(this.excludeBinaries);
         int copied = 0;
-        final Map<String, Tojo> cache = this.placedCache();
+        final Map<String, PlacedTojo> cache = this.placedCache();
         for (final Path file : binaries) {
             final String path = file.toString().substring(dir.toString().length() + 1);
             if (path.startsWith(CopyMojo.DIR)) {
@@ -182,7 +152,7 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = Stream.of(cache.get(target.toString()))
+            final Collection<PlacedTojo> before = Stream.of(cache.get(target.toString()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
             if (!before.isEmpty() && !Files.exists(target)) {
@@ -199,7 +169,7 @@ public final class PlaceMojo extends SafeMojo {
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
+                    before.iterator().next().dependency()
                 );
                 continue;
             }
@@ -210,25 +180,19 @@ public final class PlaceMojo extends SafeMojo {
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
+                    before.iterator().next().dependency()
                 );
             }
-            if (!before.isEmpty() && Files.exists(target) && PlaceMojo.isNotUnplaced(before)) {
+            if (!before.isEmpty() && Files.exists(target) && !before.iterator().next().unplaced()) {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
             final String id = target.toString();
-            final Tojo tojo = this.placedTojos.value().add(id)
-                .set(PlaceMojo.ATTR_PLD_KIND, "class")
-                .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
-                .set(
-                    PlaceMojo.ATTR_PLD_RELATED,
-                    target.toString().substring(
-                        this.outputDir.toString().length() + 1
-                    )
-                )
-                .set(PlaceMojo.ATTR_PLD_DEP, dep)
-                .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+            final PlacedTojo tojo = this.placedTojos.placeClass(
+                target,
+                target.toString().substring(this.outputDir.toString().length() + 1),
+                dep
+            );
             cache.putIfAbsent(id, tojo);
             ++copied;
         }
@@ -254,26 +218,14 @@ public final class PlaceMojo extends SafeMojo {
      *  and it's not efficient to read row by row from tojos. You can check the progress
      *  <a href="https://github.com/yegor256/tojos/issues/60">here</a>.
      */
-    private Map<String, Tojo> placedCache() {
-        return this.placedTojos.value()
-            .select(row -> "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND)))
-            .stream().collect(
+    private Map<String, PlacedTojo> placedCache() {
+        return this.placedTojos.classes()
+            .stream()
+            .collect(
                 Collectors.toMap(
-                    row -> row.get(Tojos.KEY),
+                    PlacedTojo::identifier,
                     row -> row
                 )
             );
     }
-
-    /**
-     * Check whether tojos was not unplaced.
-     * @param before Tojos.
-     * @return True if not unplaced.
-     */
-    private static boolean isNotUnplaced(final Iterable<? extends Tojo> before) {
-        final Tojo tojo = before.iterator().next();
-        return tojo.exists(PlaceMojo.ATTR_PLD_UNPLACED)
-            && "false".equals(tojo.get(PlaceMojo.ATTR_PLD_UNPLACED));
-    }
-
 }

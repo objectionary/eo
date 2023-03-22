@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
@@ -33,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -41,6 +38,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.util.FileHash;
 import org.eolang.maven.util.Rel;
 
@@ -78,7 +76,7 @@ public final class UnplaceMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.placedTojos.value().select(all -> true).isEmpty()) {
+        if (this.placedTojos.isEmpty()) {
             Logger.info(
                 this,
                 "The list of placed binaries is absent: %s",
@@ -94,14 +92,13 @@ public final class UnplaceMojo extends SafeMojo {
      * Mark dependencies as unplaced if all related binaries are unplaced.
      */
     private void unplaceJars() {
-        final Set<String> used = this.classes()
+        final Set<String> used = this.placedTojos.classes()
             .stream()
-            .filter(tojo -> tojo.exists(PlaceMojo.ATTR_PLD_DEP))
-            .map(tojo -> tojo.get(PlaceMojo.ATTR_PLD_DEP))
+            .map(PlacedTojo::dependency)
             .collect(Collectors.toSet());
-        this.binaries("jar").stream()
-            .filter(dep -> used.contains(dep.get(Tojos.KEY)))
-            .forEach(dep -> dep.set(PlaceMojo.ATTR_PLD_UNPLACED, "true"));
+        this.placedTojos.jars().stream()
+            .filter(dep -> used.contains(dep.identifier()))
+            .forEach(PlacedTojo::unplace);
     }
 
     /**
@@ -109,7 +106,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @throws IOException If fails
      */
     private void unplaceClasses() throws IOException {
-        final Collection<Tojo> classes = this.classes();
+        final Collection<PlacedTojo> classes = this.placedTojos.classes();
         int deleted = 0;
         if (!this.keepBinaries.isEmpty()) {
             deleted += this.keepThem(classes);
@@ -144,31 +141,31 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
-    private int killThem(final Iterable<? extends Tojo> all) throws IOException {
+    private int killThem(final Iterable<PlacedTojo> all) throws IOException {
         int unplaced = 0;
-        for (final Tojo tojo : all) {
-            final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
-            final Path path = Paths.get(tojo.get(Tojos.KEY));
+        for (final PlacedTojo tojo : all) {
+            final String related = tojo.related();
+            final Path path = Paths.get(tojo.identifier());
             final String hash = new FileHash(path).toString();
-            if (!tojo.get(PlaceMojo.ATTR_PLD_HASH).equals(hash)) {
+            if (!tojo.sameHash(hash)) {
                 if (hash.isEmpty()) {
                     Logger.debug(
                         this, "The binary %s of %s is gone, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                        related, tojo.dependency()
                     );
                     continue;
                 }
                 if (!UnplaceMojo.inside(related, this.removeBinaries)) {
                     Logger.warn(
                         this, "The binary %s of %s looks different, won't unplace",
-                        related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                        related, tojo.dependency()
                     );
                     continue;
                 }
                 Logger.info(
                     this,
                     "The binary %s of %s looks different, but its unplacing is mandatory as 'mandatoryUnplace' option specifies",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                    related, tojo.dependency()
                 );
             }
             if (UnplaceMojo.inside(related, this.keepBinaries)
@@ -177,15 +174,15 @@ public final class UnplaceMojo extends SafeMojo {
             }
             if (UnplaceMojo.delete(path)) {
                 unplaced += 1;
-                tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true");
+                tojo.unplace();
                 Logger.debug(
                     this, "Binary %s of %s deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                    new Rel(path), tojo.dependency()
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                    new Rel(path), tojo.dependency()
                 );
             }
         }
@@ -198,12 +195,12 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
-    private int keepThem(final Iterable<Tojo> tojos) throws IOException {
+    private int keepThem(final Iterable<? extends PlacedTojo> tojos) throws IOException {
         int deleted = 0;
         int remained = 0;
-        for (final Tojo tojo : tojos) {
-            final String related = tojo.get(PlaceMojo.ATTR_PLD_RELATED);
-            final Path path = Paths.get(tojo.get(Tojos.KEY));
+        for (final PlacedTojo tojo : tojos) {
+            final String related = tojo.related();
+            final Path path = Paths.get(tojo.identifier());
             if (!this.keepBinaries.isEmpty()
                 && UnplaceMojo.inside(related, this.keepBinaries)) {
                 remained += 1;
@@ -214,12 +211,12 @@ public final class UnplaceMojo extends SafeMojo {
                 Logger.debug(
                     this,
                     "The binary %s of %s is removed since it doesn't match 'selectivelyPlace' list of globs",
-                    related, tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                    related, tojo.dependency()
                 );
             } else {
                 Logger.debug(
                     this, "Binary %s of %s already deleted",
-                    new Rel(path), tojo.get(PlaceMojo.ATTR_PLD_DEP)
+                    new Rel(path), tojo.dependency()
                 );
             }
         }
@@ -279,25 +276,6 @@ public final class UnplaceMojo extends SafeMojo {
             );
         }
         return deleted;
-    }
-
-    /**
-     * Retrieve tojos class binaries.
-     * @return List of tojos
-     */
-    private List<Tojo> classes() {
-        return this.binaries("class");
-    }
-
-    /**
-     * Retrieve tojos binaries of the given kind (jar, class, etc).
-     * @param kind Kind of binary
-     * @return List of tojos
-     */
-    private List<Tojo> binaries(final String kind) {
-        return this.placedTojos.value().select(
-            t -> kind.equals(t.get(PlaceMojo.ATTR_PLD_KIND))
-        );
     }
 
     /**

@@ -103,7 +103,7 @@ final class PlaceMojoTest {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withPlacedBinary(
-                    temp.resolve(PlaceMojoTest.TARGET_CLASSES).resolve(binary).toString()
+                    temp.resolve(PlaceMojoTest.TARGET_CLASSES).resolve(binary)
                 )
                 .execute(PlaceMojo.class)
                 .result()
@@ -121,10 +121,8 @@ final class PlaceMojoTest {
         PlaceMojoTest.saveBinary(temp, content, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, "old content", binary);
         final Path path = PlaceMojoTest.pathToPlacedBinary(temp, binary);
-        final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path.toString());
-        maven.placed().select(all -> true).forEach(
-            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")
-        );
+        final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
+        maven.placed().unplaceAll();
         MatcherAssert.assertThat(
             maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
@@ -196,7 +194,7 @@ final class PlaceMojoTest {
             new ContainsFile("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
-            maven.placed().select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).size(),
+            maven.placed().jars().size(),
             Matchers.is(1)
         );
     }
@@ -213,8 +211,7 @@ final class PlaceMojoTest {
             Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(
-            maven.placed()
-                .select(tojo -> "jar".equals(tojo.get(PlaceMojo.ATTR_PLD_KIND))).isEmpty(),
+            maven.placed().jars().isEmpty(),
             Matchers.is(true)
         );
     }
@@ -226,9 +223,6 @@ final class PlaceMojoTest {
         final String old = "some old content";
         PlaceMojoTest.saveBinary(temp, old, binary);
         maven.execute(PlaceMojo.class).result();
-        maven.placed().select(all -> true).forEach(
-            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "false")
-        );
         PlaceMojoTest.saveBinary(temp, "new content", binary);
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
@@ -245,9 +239,7 @@ final class PlaceMojoTest {
         maven.execute(PlaceMojo.class).result();
         final String updated = "with some new content";
         PlaceMojoTest.saveBinary(temp, updated, binary);
-        maven.placed().select(all -> true).forEach(
-            tojo -> tojo.set(PlaceMojo.ATTR_PLD_UNPLACED, "true")
-        );
+        maven.placed().unplaceAll();
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
             new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
