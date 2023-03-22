@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -149,6 +147,8 @@ public final class PlaceMojo extends SafeMojo {
             .excludes(this.excludeBinaries)
             .stream()
             .filter(file -> this.isNotEoSource(dir, file))
+            .filter(file -> this.isNotAlreadyPlaced(dir, file))
+            .filter(file -> this.isUnplaced(dir, file))
             .collect(Collectors.toList());
         int copied = 0;
         for (final Path file : binaries) {
@@ -164,16 +164,6 @@ public final class PlaceMojo extends SafeMojo {
                         new Rel(target)
                     );
                 }
-                if (Files.exists(target) && PlaceMojo.sameLength(target, file)) {
-                    Logger.debug(
-                        this,
-                        "The same file %s is already placed to %s maybe by %s, skipping",
-                        new Rel(file),
-                        new Rel(target),
-                        before.get().dependency()
-                    );
-                    continue;
-                }
                 if (Files.exists(target) && !PlaceMojo.sameLength(target, file)) {
                     Logger.debug(
                         this,
@@ -183,43 +173,8 @@ public final class PlaceMojo extends SafeMojo {
                         before.get().dependency()
                     );
                 }
-                if (Files.exists(target) && !before.get().unplaced()) {
-                    continue;
-                }
-
-            final Optional<PlacedTojo> before = this.placedTojosCached.find(target);
-            if (before.isPresent() && !Files.exists(target)) {
-                Logger.info(
-                    this,
-                    "The file %s has been placed to %s, but now it's gone, re-placing",
-                    new Rel(file),
-                    new Rel(target)
-                );
             }
-            if (before.isPresent() && Files.exists(target)
-                && target.toFile().length() == file.toFile().length()) {
-                Logger.debug(
-                    this,
-                    "The same file %s is already placed to %s maybe by %s, skipping",
-                    new Rel(file), new Rel(target),
-                    before.get().dependency()
-                );
-                continue;
-            }
-            if (before.isPresent() && Files.exists(target)
-                && target.toFile().length() != file.toFile().length()) {
-                Logger.debug(
-                    this,
-                    "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    new Rel(file), file.toFile().length(),
-                    new Rel(target), target.toFile().length(),
-                    before.get().dependency()
-                );
-            }
-            if (before.isPresent() && Files.exists(target) && !before.get().unplaced()) {
-                continue;
-            }
-                new Home(this.outputDir).save(new InputOf(file), path);
+            new Home(this.outputDir).save(new InputOf(file), path);
             this.placedTojosCached.placeClass(
                 target,
                 target.toString().substring(this.outputDir.toString().length() + 1),
@@ -239,6 +194,31 @@ public final class PlaceMojo extends SafeMojo {
             );
         }
         return copied;
+    }
+
+    private boolean isUnplaced(final Path dir, final Path file) {
+        final Path target = this.outputDir.toPath().resolve(dir.relativize(file));
+        final Optional<PlacedTojo> tojo = this.placedTojosCached.find(target);
+        return !(tojo.isPresent() && Files.exists(target) && !tojo.get().unplaced());
+    }
+
+    private boolean isNotAlreadyPlaced(final Path dir, final Path file) {
+        final Path target = this.outputDir.toPath().resolve(dir.relativize(file));
+        final Optional<PlacedTojo> tojo = this.placedTojosCached.find(target);
+        final boolean res;
+        if (tojo.isPresent() && Files.exists(target) && PlaceMojo.sameLength(target, file)) {
+            Logger.debug(
+                this,
+                "The same file %s is already placed to %s maybe by %s, skipping",
+                new Rel(file),
+                new Rel(target),
+                tojo.get().dependency()
+            );
+            res = false;
+        } else {
+            res = true;
+        }
+        return res;
     }
 
     private boolean isNotEoSource(final Path dir, final Path file) {
