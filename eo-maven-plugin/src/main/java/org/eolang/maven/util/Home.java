@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
@@ -184,9 +185,9 @@ public final class Home {
      * @throws IllegalArgumentException If given path is Absolute
      */
     private Path onlyRelative(final Path path) {
-        Path ospath = path;
+        Path ospath = Paths.get(path.toString());
         if (System.getProperty("os.name").startsWith("Windows") && path.toString().contains(":")) {
-            ospath = path.relativize(path.getRoot());
+            ospath = path.getRoot().relativize(path);
         }
         if (ospath.isAbsolute()) {
             throw new IllegalArgumentException(
