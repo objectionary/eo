@@ -185,11 +185,7 @@ public final class Home {
      * @throws IllegalArgumentException If given path is Absolute
      */
     private Path onlyRelative(final Path path) {
-        Path ospath = Paths.get(path.toString());
-        if (System.getProperty("os.name").startsWith("Windows") && path.toString().contains(":")) {
-            ospath = path.getRoot().relativize(path);
-        }
-        if (ospath.isAbsolute()) {
+        if (path.isAbsolute() || path.toString().contains(":")) {
             throw new IllegalArgumentException(
                 String.format(
                     "Path must be relative to base %s but absolute given: %s",
