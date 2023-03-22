@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -152,10 +153,8 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<PlacedTojo> before = Stream.of(cache.get(target.toString()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-            if (!before.isEmpty() && !Files.exists(target)) {
+            final Optional<PlacedTojo> before = Optional.ofNullable(cache.get(target.toString()));
+            if (before.isPresent() && !Files.exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
@@ -163,27 +162,35 @@ public final class PlaceMojo extends SafeMojo {
                     new Rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && !Files.exists(target)) {
+                Logger.info(
+                    this,
+                    "The file %s has been placed to %s, but now it's gone, re-placing",
+                    new Rel(file),
+                    new Rel(target)
+                );
+            }
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().dependency()
+                    before.get().dependency()
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().dependency()
+                    before.get().dependency()
                 );
             }
-            if (!before.isEmpty() && Files.exists(target) && !before.iterator().next().unplaced()) {
+            if (before.isPresent() && Files.exists(target) && !before.get().unplaced()) {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
