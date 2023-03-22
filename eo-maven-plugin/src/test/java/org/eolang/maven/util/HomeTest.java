@@ -49,6 +49,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  *  The test fails on Windows with no error thrown. It means
  *  that this test didn't throw IllegalArgumentException when we are
  *  trying to check existence of file in temporary directory.
+ *  Possible reason is Home.onlyRelative() method.
  */
 final class HomeTest {
 
