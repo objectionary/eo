@@ -40,7 +40,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class BinarizeMojoTest {
 
     @Test
@@ -50,7 +49,10 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String rust = "target/binarize/codes/Φ_org_eolang_custom_creates_object_r.rs";
+        final String rust = String.format(
+            "target/binarize/codes/%s.rs",
+            "f__org_eolang_custom_creates_object_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+        );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
         );
@@ -77,8 +79,14 @@ final class BinarizeMojoTest {
             .withProgram(src)
             .execute(new FakeMaven.Binarize())
             .result();
-        final String one = "target/binarize/codes/Φ_org_eolang_custom_hello_world_1_r.rs";
-        final String two = "target/binarize/codes/Φ_org_eolang_custom_hello_world_2_r.rs";
+        final String one = String.format(
+            "target/binarize/codes/%s.rs",
+            "f__org_eolang_custom_hello_world_1_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0031002e0072"
+        );
+        final String two = String.format(
+            "target/binarize/codes/%s.rs",
+            "f__org_eolang_custom_hello_world_2_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0032002e0072"
+        );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
         );
@@ -98,7 +106,7 @@ final class BinarizeMojoTest {
             Matchers.stringContainsInOrder(
                 "use reo::universe::Universe;",
                 "pub fn foo(uni: &mut Universe, v: u32) {",
-                "print!(\"Hello world 2\");"
+                "print!(\"Hello 大 2\");"
                 )
         );
     }
