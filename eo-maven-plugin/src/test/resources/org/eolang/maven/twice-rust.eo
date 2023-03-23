@@ -21,7 +21,7 @@
     use reo::universe::Universe;
 
     pub fn foo(uni: &mut Universe, v: u32) {
-      print!("Hello world 2");
+      print!("Hello 大 2");
     }
     """
     *
