@@ -90,7 +90,7 @@ public final class PlaceMojo extends SafeMojo {
      * @since 0.30
      * @checkstyle MemberNameCheck (7 lines)
      */
-    private final PlacedTojosCache cached = new PlacedTojosCache(this.placedTojos);
+    private PlacedTojosCache placedCache = new PlacedTojosCache(this.placedTojos);
 
     @Override
     public void exec() throws IOException {
@@ -131,7 +131,7 @@ public final class PlaceMojo extends SafeMojo {
             Logger.info(this, "Found placed binaries from %s", dep);
         }
         final Path dir = home.resolve(dep);
-        final long copied = new BinaryDependency(dir, dep).place();
+        final long copied = new BinariesDependency(dir, dep).place();
         this.placedTojos.placeJar(dep);
         if (copied > 0) {
             Logger.info(
@@ -152,7 +152,7 @@ public final class PlaceMojo extends SafeMojo {
      *
      * @since 0.30
      */
-    private final class BinaryDependency {
+    private final class BinariesDependency {
 
         /**
          * Directory to read from.
@@ -169,7 +169,7 @@ public final class PlaceMojo extends SafeMojo {
          * @param directory The directory to read from
          * @param dependency The name of dependency
          */
-        private BinaryDependency(final Path directory, final String dependency) {
+        private BinariesDependency(final Path directory, final String dependency) {
             this.dir = directory;
             this.dep = dependency;
         }
@@ -185,8 +185,8 @@ public final class PlaceMojo extends SafeMojo {
                 .stream()
                 .filter(this::isNotEoSource)
                 .filter(this::isNotAlreadyPlaced)
-                .peek(this::logInfoAboutClass)
-                .peek(this::placeClass)
+                .peek(this::printLogInfoAboutBinary)
+                .peek(this::placeBinary)
                 .count();
         }
 
@@ -219,7 +219,7 @@ public final class PlaceMojo extends SafeMojo {
             final Path target = PlaceMojo.this.outputDir.toPath().resolve(
                 this.dir.relativize(file)
             );
-            final Optional<PlacedTojo> tojo = PlaceMojo.this.cached.find(target);
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
             final boolean res;
             if (tojo.isPresent() && Files.exists(target)
                 && (this.sameLength(target, file) || !tojo.get().unplaced())) {
@@ -241,11 +241,11 @@ public final class PlaceMojo extends SafeMojo {
          * Print log info about placing class.
          * @param file The file to place.
          */
-        private void logInfoAboutClass(final Path file) {
+        private void printLogInfoAboutBinary(final Path file) {
             final Path target = PlaceMojo.this.outputDir.toPath().resolve(
                 this.dir.relativize(file)
             );
-            final Optional<PlacedTojo> tojo = PlaceMojo.this.cached.find(target);
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
             if (tojo.isPresent()) {
                 if (!Files.exists(target)) {
                     Logger.info(
@@ -271,12 +271,12 @@ public final class PlaceMojo extends SafeMojo {
          * Place class.
          * @param file File to place
          */
-        private void placeClass(final Path file) {
+        private void placeBinary(final Path file) {
+            final Path path = this.dir.relativize(file);
             try {
-                final Path path = this.dir.relativize(file);
                 final Path target = PlaceMojo.this.outputDir.toPath().resolve(path);
                 new Home(PlaceMojo.this.outputDir).save(new InputOf(file), path);
-                PlaceMojo.this.cached.placeClass(
+                PlaceMojo.this.placedCache.placeClass(
                     target,
                     PlaceMojo.this.outputDir.toPath().relativize(target).toString(),
                     this.dep
@@ -284,8 +284,8 @@ public final class PlaceMojo extends SafeMojo {
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     String.format(
-                        "Failed to place %s to %s",
-                        file, PlaceMojo.this.outputDir
+                        "Failed to place %s to home %s with path %s",
+                        file, PlaceMojo.this.outputDir, path
                     ), ex
                 );
             }
