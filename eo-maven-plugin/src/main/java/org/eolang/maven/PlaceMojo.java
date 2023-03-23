@@ -38,7 +38,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.tojos.PlacedTojosCached;
+import org.eolang.maven.tojos.PlacedTojosCache;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -90,7 +90,7 @@ public final class PlaceMojo extends SafeMojo {
      * @since 0.30
      * @checkstyle MemberNameCheck (7 lines)
      */
-    private final PlacedTojosCached cached = new PlacedTojosCached(this.placedTojos);
+    private final PlacedTojosCache cached = new PlacedTojosCache(this.placedTojos);
 
     @Override
     public void exec() throws IOException {
