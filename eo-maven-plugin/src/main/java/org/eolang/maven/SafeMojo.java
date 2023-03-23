@@ -106,7 +106,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.targetDir",
         required = true,
-        defaultValue = "${project.build.directory}"
+        defaultValue = "${project.build.directory}/eo"
     )
     protected File targetDir;
 
