@@ -36,7 +36,7 @@ import org.cactoos.scalar.Unchecked;
  * the class will be removed.
  * @since 0.30
  */
-public final class PlacedTojosCached {
+public final class PlacedTojosCache {
 
     /**
      * Delegate.
@@ -52,9 +52,9 @@ public final class PlacedTojosCached {
      * Ctor.
      * @param tojos Placed tojos.
      */
-    public PlacedTojosCached(final PlacedTojos tojos) {
+    public PlacedTojosCache(final PlacedTojos tojos) {
         this.origin = tojos;
-        this.cache = new Unchecked<>(new Sticky<>(() -> PlacedTojosCached.placedCache(tojos)));
+        this.cache = new Unchecked<>(new Sticky<>(() -> PlacedTojosCache.placedCache(tojos)));
     }
 
     /**

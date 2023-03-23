@@ -38,7 +38,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.tojos.PlacedTojosCached;
+import org.eolang.maven.tojos.PlacedTojosCache;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -90,7 +90,7 @@ public final class PlaceMojo extends SafeMojo {
      * @since 0.30
      * @checkstyle MemberNameCheck (7 lines)
      */
-    private final PlacedTojosCached placedTojosCached = new PlacedTojosCached(this.placedTojos);
+    private final PlacedTojosCache placedTojosCache = new PlacedTojosCache(this.placedTojos);
 
     @Override
     public void exec() throws IOException {
@@ -156,7 +156,7 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Optional<PlacedTojo> before = this.placedTojosCached.find(target);
+            final Optional<PlacedTojo> before = this.placedTojosCache.find(target);
             if (before.isPresent() && !Files.exists(target)) {
                 Logger.info(
                     this,
@@ -189,7 +189,7 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
-            this.placedTojosCached.placeClass(
+            this.placedTojosCache.placeClass(
                 target,
                 target.toString().substring(this.outputDir.toString().length() + 1),
                 dep
