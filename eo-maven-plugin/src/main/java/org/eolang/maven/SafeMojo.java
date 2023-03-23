@@ -170,7 +170,7 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
-     * to the log.
+     * to the log
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      * @since 0.29.0
