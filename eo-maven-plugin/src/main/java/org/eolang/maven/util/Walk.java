@@ -51,7 +51,6 @@ public final class Walk extends ListEnvelope<Path> {
      * Ctor.
      *
      * @param dir The directory
-     * @throws IOException If fails
      */
     public Walk(final Path dir) {
         this(dir, Walk.list(dir));
@@ -117,7 +116,6 @@ public final class Walk extends ListEnvelope<Path> {
      * List them all.
      * @param dir The dir
      * @return List
-     * @throws IOException If fails
      */
     private static List<Path> list(final Path dir) {
         try {
