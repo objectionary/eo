@@ -1,0 +1,6 @@
+line: 1
+eo: |
+  [args] > name_with_underscore_is_bad
+    stdout
+      sprintf
+        "hello"
