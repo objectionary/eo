@@ -1,0 +1,30 @@
++package org.eolang.custom
++version 0.0.0
+
+[] > hello-world-1
+  QQ.rust > r
+    """
+    use reo::universe::Universe;
+
+    pub fn foo(uni: &mut Universe, v: u32) {
+      print!("Hello world 1");
+    }
+    """
+    *
+      "reo: 0.0.2"
+      "rand: 0.5.5"
+  TRUE > @
+
+[] > hello-world-2
+  QQ.rust > r
+    """
+    use reo::universe::Universe;
+
+    pub fn foo(uni: &mut Universe, v: u32) {
+      print!("Hello 大 2");
+    }
+    """
+    *
+      "reo: 0.0.2"
+      "rand: 0.5.5"
+  TRUE > @

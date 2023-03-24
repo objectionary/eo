@@ -7,5 +7,4 @@ document:
     </i>
   </sodg>
 asserts:
-  - /text[contains(., 'This file was auto-generated')]
   - /text[contains(., 'ADD(xyz);')]

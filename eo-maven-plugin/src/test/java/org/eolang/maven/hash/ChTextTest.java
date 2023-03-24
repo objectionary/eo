@@ -51,7 +51,10 @@ class ChTextTest {
     @BeforeAll
     static void setUp(@TempDir final Path dir) throws IOException {
         ChTextTest.file = dir.resolve("tags.txt");
-        new Home().save(new ResourceOf("org/eolang/maven/commits/tags.txt"), ChTextTest.file);
+        new Home(dir).save(
+            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            dir.relativize(ChTextTest.file)
+        );
     }
 
     @ParameterizedTest

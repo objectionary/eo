@@ -35,6 +35,7 @@ import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,26 +45,32 @@ import org.junit.jupiter.params.provider.ValueSource;
  * Test for {@link Home}.
  *
  * @since 0.22
+ * @todo #1907:30m Enable HomeTest.throwsExceptionOnAbsolute().
+ *  The test fails on Windows with no error thrown. It means
+ *  that this test didn't throw IllegalArgumentException when we are
+ *  trying to check existence of file in temporary directory.
+ *  Possible reason is Home.onlyRelative() method.
  */
 final class HomeTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {
-        final Path resolve = temp.resolve("1.txt");
+        final Path resolve = Paths.get("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
         new Home(temp).save(content, resolve);
         MatcherAssert.assertThat(
-            new UncheckedText(new TextOf(resolve)).asString(),
+            new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
         );
     }
 
     @Test
     void exists(@TempDir final Path temp) throws IOException {
-        Files.write(temp.resolve("file.txt"), "any content".getBytes());
+        final Path path = Paths.get("file.txt");
+        Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home(temp).exists(Paths.get("file.txt")),
+            new Home(temp).exists(path),
             Matchers.is(true)
         );
     }
@@ -109,7 +116,7 @@ final class HomeTest {
     void loadsBytesFromExistingFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home(temp);
         final String content = "bar";
-        final Path subfolder = temp.resolve("subfolder").resolve("foo.txt");
+        final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
             new TextOf(home.load(subfolder)),
@@ -121,7 +128,16 @@ final class HomeTest {
     void loadsFromAbsentFile(@TempDir final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
-            () -> new Home(temp).load(temp.resolve("nonexistent"))
+            () -> new Home(temp).load(Paths.get("nonexistent"))
+        );
+    }
+
+    @Test
+    @Disabled
+    void throwsExceptionOnAbsolute(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Home(temp).exists(Paths.get("/tmp/file.txt"))
         );
     }
 }

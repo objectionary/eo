@@ -27,7 +27,6 @@ SOFTWARE.
   Here we remove all the noise from XMIR, which we don't need
   during the further processing.
   -->
-  <xsl:import href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/listing">
     <!-- remove it -->

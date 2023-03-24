@@ -29,7 +29,7 @@ SOFTWARE.
   <o> elements.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base='^' or @base='&amp;']">
+  <xsl:template match="o[not(@level) and @base='^' or @base='&amp;']">
     <xsl:copy>
       <xsl:apply-templates select="node()|@* except @base"/>
       <xsl:attribute name="base">

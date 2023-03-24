@@ -2,9 +2,10 @@ xsls: []
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
-  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='2']
+  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='3']
 eo: |
   +package test
+  
   [a bя xты-друг] > iПрИвЕт_кАк-дЕла123_你好
     process. > @
       a

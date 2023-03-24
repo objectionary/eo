@@ -80,7 +80,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-manifests</artifactId>
-      <version>1.2.1</version>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -160,6 +160,8 @@ SOFTWARE.
             <index>true</index>
             <manifestEntries>
               <EO-Version>${project.version}</EO-Version>
+              <EO-Revision>${buildNumber}</EO-Revision>
+              <EO-Dob>${timestamp}</EO-Dob>
             </manifestEntries>
           </archive>
         </configuration>

@@ -218,7 +218,7 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram(
-                    "+package f",
+                    "+package f\n",
                     "+alias THIS-IS-WRONG org.eolang.io.stdout",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
@@ -241,7 +241,7 @@ final class OptimizeMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
@@ -255,7 +255,7 @@ final class OptimizeMojoTest {
             new XMLDocument(
                 new FakeMaven(temp)
                     .withProgram(
-                        "+package f",
+                        "+package f\n",
                         "[args] > main",
                         "  seq > @",
                         "    TRUE > x",
@@ -286,7 +286,7 @@ final class OptimizeMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram(
-                    "+package f",
+                    "+package f\n",
                     "[args] > main",
                     "  seq > @",
                     "    TRUE > x",
@@ -302,7 +302,7 @@ final class OptimizeMojoTest {
             .withProgram(
                 "+architect yegor256@gmail.com",
                 "+junit",
-                "+package org.eolang.examples",
+                "+package org.eolang.examples\n",
                 "[] > main",
                 "  [] > @",
                 "    hello > test"

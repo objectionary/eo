@@ -24,21 +24,21 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.util.FileHash;
+import org.eolang.maven.tojos.PlacedTojo;
+import org.eolang.maven.tojos.PlacedTojosCache;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -48,7 +48,7 @@ import org.eolang.maven.util.Walk;
  * copy to target/classes.
  *
  * @since 0.11
- * @see <a herf="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
+ * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  */
 @Mojo(
     name = "place",
@@ -57,31 +57,6 @@ import org.eolang.maven.util.Walk;
 )
 @SuppressWarnings({"PMD.ImmutableField", "PMD.AvoidDuplicateLiterals"})
 public final class PlaceMojo extends SafeMojo {
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_RELATED = "related";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_KIND = "kind";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_HASH = "hash";
-
-    /**
-     * Where the binary is coming from (JAR name).
-     */
-    static final String ATTR_PLD_DEP = "dependency";
-
-    /**
-     * Attr in CSV.
-     */
-    static final String ATTR_PLD_UNPLACED = "unplaced";
 
     /**
      * Output.
@@ -110,6 +85,13 @@ public final class PlaceMojo extends SafeMojo {
     @Parameter
     private Set<String> excludeBinaries = new SetOf<>();
 
+    /**
+     * Placed cached tojos.
+     * @since 0.30
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private final PlacedTojosCache placedTojosCache = new PlacedTojosCache(this.placedTojos);
+
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
@@ -117,15 +99,12 @@ public final class PlaceMojo extends SafeMojo {
             final Collection<String> deps = new DepDirs(home);
             int copied = 0;
             for (final String dep : deps) {
-                final Collection<Tojo> before = this.placedTojos.value().select(
-                    row -> row.get(Tojos.KEY).equals(dep)
-                        && "jar".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
-                );
+                final Collection<PlacedTojo> before = this.placedTojos.findJar(dep);
                 if (!before.isEmpty()) {
                     Logger.info(this, "Found placed binaries from %s", dep);
                 }
                 copied += this.place(home, dep);
-                this.placedTojos.value().add(dep).set(PlaceMojo.ATTR_PLD_KIND, "jar");
+                this.placedTojos.placeJar(dep);
             }
             if (copied == 0) {
                 Logger.debug(
@@ -152,9 +131,14 @@ public final class PlaceMojo extends SafeMojo {
      * @param dep The name of dep
      * @return How many binaries placed
      * @throws IOException If fails
-     * @checkstyle ExecutableStatementCountCheck (200 lines)
-     * @checkstyle CyclomaticComplexityCheck (200 lines)
+     * @checkstyle ExecutableStatementCountCheck (300 lines)
+     * @checkstyle CyclomaticComplexityCheck (300 lines)
+     * @checkstyle NPathComplexityCheck (300 lines)
+     * @todo #1320:30min Refactor PlaceMojo#place method in order to reduce complexity.
+     *  When the method will be refactored we have to remove all warning suppressing from
+     *  checkstyle and PMD.
      */
+    @SuppressWarnings("PMD.NPathComplexity")
     private int place(final Path home, final String dep) throws IOException {
         final Path dir = home.resolve(dep);
         final Collection<Path> binaries = new Walk(dir)
@@ -172,11 +156,8 @@ public final class PlaceMojo extends SafeMojo {
                 continue;
             }
             final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<Tojo> before = this.placedTojos.value().select(
-                row -> row.get(Tojos.KEY).equals(target.toString())
-                    && "class".equals(row.get(PlaceMojo.ATTR_PLD_KIND))
-            );
-            if (!before.isEmpty() && !Files.exists(target)) {
+            final Optional<PlacedTojo> before = this.placedTojosCache.find(target);
+            if (before.isPresent() && !Files.exists(target)) {
                 Logger.info(
                     this,
                     "The file %s has been placed to %s, but now it's gone, re-placing",
@@ -184,38 +165,35 @@ public final class PlaceMojo extends SafeMojo {
                     new Rel(target)
                 );
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() == file.toFile().length()) {
                 Logger.debug(
                     this,
                     "The same file %s is already placed to %s maybe by %s, skipping",
                     new Rel(file), new Rel(target),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
+                    before.get().dependency()
                 );
                 continue;
             }
-            if (!before.isEmpty() && Files.exists(target)
+            if (before.isPresent() && Files.exists(target)
                 && target.toFile().length() != file.toFile().length()) {
                 Logger.debug(
                     this,
                     "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
                     new Rel(file), file.toFile().length(),
                     new Rel(target), target.toFile().length(),
-                    before.iterator().next().get(PlaceMojo.ATTR_PLD_DEP)
+                    before.get().dependency()
                 );
             }
+            if (before.isPresent() && Files.exists(target) && !before.get().unplaced()) {
+                continue;
+            }
             new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
-            this.placedTojos.value().add(target.toString())
-                .set(PlaceMojo.ATTR_PLD_KIND, "class")
-                .set(PlaceMojo.ATTR_PLD_HASH, new FileHash(target))
-                .set(
-                    PlaceMojo.ATTR_PLD_RELATED,
-                    target.toString().substring(
-                        this.outputDir.toString().length() + 1
-                    )
-                )
-                .set(PlaceMojo.ATTR_PLD_DEP, dep)
-                .set(PlaceMojo.ATTR_PLD_UNPLACED, "false");
+            this.placedTojosCache.placeClass(
+                target,
+                target.toString().substring(this.outputDir.toString().length() + 1),
+                dep
+            );
             ++copied;
         }
         if (copied > 0) {

@@ -12,6 +12,7 @@ tests:
   - //o[@base='ω2c' and @name='c']
 eo: |
   +junit
+  
   [] > a
     [] > b
       [] > c
