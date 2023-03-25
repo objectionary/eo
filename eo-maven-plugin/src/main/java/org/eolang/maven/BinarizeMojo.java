@@ -40,6 +40,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -54,11 +56,6 @@ import org.eolang.parser.ParsingTrain;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- *
- * @todo #1864:90m Extract rust code from rust section
- *  BinarizeMojo firstly put the code into rust section in xmir.
- *  Then it must be compiled to shared library. It can be
- *  implemented via cargo.
  */
 @Mojo(
     name = "binarize",
@@ -109,6 +106,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
+        final RustProject project = new RustProject(targetDir.toPath().resolve("Lib"));
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
@@ -132,8 +130,17 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
                     filename,
                     input.xpath("/program/@name").get(0)
                 );
+                project.add(
+                    name(node.xpath("@loc").get(0)),
+                    unhex(node.xpath("@code").get(0)),
+                    node.xpath("./dependencies/dependency/@name")
+                        .stream()
+                        .map(BinarizeMojo::unhex)
+                        .collect(Collectors.toList())
+                );
             }
         }
+        project.build();
     }
 
     /**
@@ -187,7 +194,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
      */
     private static String name(final String loc) {
         final StringBuilder out = new StringBuilder(1 + 5 * loc.length());
-        out.append('f').append(loc.replaceAll("[^a-zA-Z0-9]", "_"));
+        out.append('f').append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
         for (final char chr: loc.toCharArray()) {
             out.append(
                 String.format(

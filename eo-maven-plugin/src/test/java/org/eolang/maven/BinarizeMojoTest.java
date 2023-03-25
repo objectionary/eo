@@ -51,7 +51,7 @@ final class BinarizeMojoTest {
             .result();
         final String rust = String.format(
             "target/binarize/codes/%s.rs",
-            "f__org_eolang_custom_creates_object_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
@@ -59,13 +59,11 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
-                "use reo::universe::Universe;",
-                    "use reo::data::Data;",
-                    "use rand::rand;",
-                    "pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {",
+                "use rand::Rng;",
+                    " pub fn foo() -> Result<u32, u32> {",
+                    "  let mut rng = rand::thread_rng();",
                     "  print!(\"Hello world\");",
-                    "  let i = copy!(find!(\"org.eolang.int\"));",
-                    "  uni.data(i, Data::from_int(random::<i64>()))?;",
+                    "  let i = rng.gen::<u32>();",
                     "  Ok(i)",
                     "}"
             )
@@ -81,11 +79,11 @@ final class BinarizeMojoTest {
             .result();
         final String one = String.format(
             "target/binarize/codes/%s.rs",
-            "f__org_eolang_custom_hello_world_1_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0031002e0072"
+            "fooorgoeolangocustomohellooworldo1or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0031002e0072"
         );
         final String two = String.format(
             "target/binarize/codes/%s.rs",
-            "f__org_eolang_custom_hello_world_2_r03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0032002e0072"
+            "fooorgoeolangocustomohellooworldo2or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0032002e0072"
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
@@ -97,15 +95,14 @@ final class BinarizeMojoTest {
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "use reo::universe::Universe;",
-                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "pub fn foo() -> Result<u32, u32> {",
                 "print!(\"Hello world 1\");"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "use reo::universe::Universe;",
-                "pub fn foo(uni: &mut Universe, v: u32) {",
+                "pub fn foo() -> Result<u32, u32> {",
                 "print!(\"Hello 大 2\");"
                 )
         );
@@ -117,6 +114,40 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withProgram(src)
+            .execute(new FakeMaven.Binarize())
+            .result();
+        final String cargo = "target/Lib/Cargo.toml";
+        final String lib = "target/Lib/src/lib.rs";
+        final String module = String.format(
+            "target/Lib/src/%s.rs",
+            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+        );
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(cargo)
+        );
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(lib)
+        );
+        MatcherAssert.assertThat(
+            res, Matchers.hasKey(module)
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(cargo)).asString(),
+            Matchers.stringContainsInOrder(
+                "[lib]",
+                "crate-type = [\"cdylib\"]",
+                "[dependencies]",
+                "jni = \"0.21.1\"",
+                "rand= \"0.5.5\""
+            )
         );
     }
 }
