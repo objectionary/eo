@@ -37,13 +37,13 @@ import org.eolang.maven.footprint.FtDefault;
 
 /**
  * To create the cargo project.
+ * @since 1.0
  * @todo #1877:90min Transform source rust file by changing name of
  *  function in it to jni standard. It also necessary to add required
  *  headers and imports related to jni.
  * @todo #1877:90min Build the rust project via 'cargo build' command.
  *  Thins command must be called from right directory. Think of correct
  *  compilation errors handling.
- * @since 1.0
  */
 public class RustProject {
     /**
