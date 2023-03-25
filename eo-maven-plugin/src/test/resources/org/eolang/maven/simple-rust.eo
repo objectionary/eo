@@ -4,19 +4,16 @@
 [] > creates-object
   QQ.rust > r
     """
-    use reo::universe::Universe;
-    use reo::data::Data;
-    use rand::rand;
+    use rand::Rng;
 
-    pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
+    pub fn foo() -> Result<u32, u32> {
+      let mut rng = rand::thread_rng();
       print!("Hello world");
-      let i = copy!(find!("org.eolang.int"));
-      uni.data(i, Data::from_int(random::<i64>()))?;
+      let i = rng.gen::<u32>();
       Ok(i)
     }
     """
     *
-      "reo: 0.0.2"
-      "rand: 0.5.5"
+      "rand= \"0.5.5\""
   TRUE > @
 
