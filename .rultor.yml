@@ -11,6 +11,12 @@ install: |
   sudo pip3 install pygments
   javac -version
   pdd --file=/dev/null
+  sudo gem install pdd
+  sudo gem install texsc:0.6.0
+  sudo gem install texqc:0.6.0
+  sudo tlmgr option repository ctan
+  sudo tlmgr --verify-repo=none update --self
+  sudo tlmgr --verify-repo=none install acmart cjk ffcode href-ul datetime fmtcount libertine paralist makecell footmisc currfile enumitem wrapfig lastpage biblatex titling svg trimspaces catchfile transparent textpos fvextra xstring framed environ totpages hyperxmp ifmtarg ncctools comment anyfontsize fdsymbol algpseudocodex algorithmicx stmaryrd preprint cyrillic cm-super babel-russian hyphen-russian lh to-be-determined cancel iexec csquotes
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
