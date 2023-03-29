@@ -14,7 +14,6 @@ install: |
   sudo gem install pdd
   sudo gem install texsc:0.6.0
   sudo gem install texqc:0.6.0
-  sudo tlmgr --verify-repo=none update ffcode iexec
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
