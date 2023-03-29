@@ -106,7 +106,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
-        final RustProject project = new RustProject(targetDir.toPath().resolve("Lib"));
+        final RustProject project = RustProject.init(targetDir.toPath().resolve("Lib"));
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);

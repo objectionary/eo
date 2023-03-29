@@ -45,7 +45,7 @@ import org.eolang.maven.footprint.FtDefault;
  *  Thins command must be called from right directory. Think of correct
  *  compilation errors handling.
  */
-public class RustProject {
+public final class RustProject {
     /**
      * Path to cargo project.
      */
@@ -65,30 +65,39 @@ public class RustProject {
      * Ctor.
      * Creates a raw cargo project.
      * @param target Destination path.
-     * @throws IOException If any issues with I/O
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public RustProject(final Path target) throws IOException {
+    private RustProject(final Path target) {
         this.footprint = new FtDefault(target);
         this.dest = target;
         this.dependencies = new HashSet<>();
-        this.footprint.save(
+    }
+
+    /**
+     * Inits RustProject.
+     * @param target Destination path.
+     * @return Created RustProject.
+     * @throws IOException If any issues with I/O
+     */
+    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
+    public static RustProject init(final Path target) throws IOException {
+        final RustProject project = new RustProject(target);
+        project.footprint.save(
             "Cargo",
             "toml",
             () ->
                 String.join(
                     System.lineSeparator(),
                     "[package]",
-                        "name = \"common\"",
-                        "version = \"0.1.0\"",
-                        "edition = \"2021\"",
-                        "[lib]",
-                        "crate-type = [\"cdylib\"]",
-                        "[dependencies]",
-                        "jni = \"0.21.1\""
-                   )
+                    "name = \"common\"",
+                    "version = \"0.1.0\"",
+                    "edition = \"2021\"",
+                    "[lib]",
+                    "crate-type = [\"cdylib\"]",
+                    "[dependencies]",
+                    "jni = \"0.21.1\""
+                )
         );
-        this.footprint.save(
+        project.footprint.save(
             String.format(
                 "src%clib",
                 File.separatorChar
@@ -96,6 +105,7 @@ public class RustProject {
             "rs",
             () -> ""
         );
+        return project;
     }
 
     /**
