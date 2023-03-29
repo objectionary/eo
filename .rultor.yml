@@ -17,7 +17,7 @@ install: |
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
-    cd paper; latexmk -pdf
+    # cd paper; latexmk -pdf
 release:
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
