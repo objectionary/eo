@@ -1,7 +1,7 @@
 architect:
   - yegor256
 docker:
-  image: yegor256/rultor-image:1.18.0
+  image: yegor256/rultor-image:1.19.0
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
@@ -14,9 +14,6 @@ install: |
   sudo gem install pdd
   sudo gem install texsc:0.6.0
   sudo gem install texqc:0.6.0
-  sudo tlmgr option repository ctan
-  sudo tlmgr --verify-repo=none update --self
-  sudo tlmgr --verify-repo=none install acmart cjk ffcode href-ul datetime fmtcount libertine paralist makecell footmisc currfile enumitem wrapfig lastpage biblatex titling svg trimspaces catchfile transparent textpos fvextra xstring framed environ totpages hyperxmp ifmtarg ncctools comment anyfontsize fdsymbol algpseudocodex algorithmicx stmaryrd preprint cyrillic cm-super babel-russian hyphen-russian lh to-be-determined cancel iexec csquotes pgfopts
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
