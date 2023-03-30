@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -121,10 +122,10 @@ public final class PlacedTojos implements Closeable {
      * @param dep Dependency identifier.
      * @return Placed jar.
      */
-    public Collection<PlacedTojo> findJar(final String dep) {
+    public Optional<PlacedTojo> findJar(final String dep) {
         return this.jars().stream()
             .filter(tojo -> tojo.identifier().equals(dep))
-            .collect(Collectors.toList());
+            .findFirst();
     }
 
     /**

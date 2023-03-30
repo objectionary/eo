@@ -28,19 +28,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
+import org.eolang.maven.tojos.PlacedTojosCache;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
@@ -87,20 +85,21 @@ public final class PlaceMojo extends SafeMojo {
     @Parameter
     private Set<String> excludeBinaries = new SetOf<>();
 
+    /**
+     * Placed cached tojos.
+     * @since 0.30
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private PlacedTojosCache placedCache = new PlacedTojosCache(this.placedTojos);
+
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
-            int copied = 0;
-            for (final String dep : deps) {
-                final Collection<PlacedTojo> before = this.placedTojos.findJar(dep);
-                if (!before.isEmpty()) {
-                    Logger.info(this, "Found placed binaries from %s", dep);
-                }
-                copied += this.place(home, dep);
-                this.placedTojos.placeJar(dep);
-            }
+            final long copied = deps.stream()
+                .mapToLong(dep -> this.placeDependency(home, dep))
+                .sum();
             if (copied == 0) {
                 Logger.debug(
                     this, "No binary files placed from %d dependencies",
@@ -125,77 +124,15 @@ public final class PlaceMojo extends SafeMojo {
      * @param home Home to read from
      * @param dep The name of dep
      * @return How many binaries placed
-     * @throws IOException If fails
-     * @checkstyle ExecutableStatementCountCheck (300 lines)
-     * @checkstyle CyclomaticComplexityCheck (300 lines)
-     * @checkstyle NPathComplexityCheck (300 lines)
-     * @todo #1320:30min Refactor PlaceMojo#place method in order to reduce complexity.
-     *  When the method will be refactored we have to remove all warning suppressing from
-     *  checkstyle and PMD.
+     * @since 0.30
      */
-    @SuppressWarnings("PMD.NPathComplexity")
-    private int place(final Path home, final String dep) throws IOException {
-        final Path dir = home.resolve(dep);
-        final Collection<Path> binaries = new Walk(dir)
-            .includes(this.includeBinaries)
-            .excludes(this.excludeBinaries);
-        int copied = 0;
-        final Map<String, PlacedTojo> cache = this.placedCache();
-        for (final Path file : binaries) {
-            final String path = file.toString().substring(dir.toString().length() + 1);
-            if (path.startsWith(CopyMojo.DIR)) {
-                Logger.debug(
-                    this,
-                    "File %s is not a binary, but a source, won't place it",
-                    new Rel(file)
-                );
-                continue;
-            }
-            final Path target = this.outputDir.toPath().resolve(path);
-            final Collection<PlacedTojo> before = Stream.of(cache.get(target.toString()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-            if (!before.isEmpty() && !Files.exists(target)) {
-                Logger.info(
-                    this,
-                    "The file %s has been placed to %s, but now it's gone, re-placing",
-                    new Rel(file),
-                    new Rel(target)
-                );
-            }
-            if (!before.isEmpty() && Files.exists(target)
-                && target.toFile().length() == file.toFile().length()) {
-                Logger.debug(
-                    this,
-                    "The same file %s is already placed to %s maybe by %s, skipping",
-                    new Rel(file), new Rel(target),
-                    before.iterator().next().dependency()
-                );
-                continue;
-            }
-            if (!before.isEmpty() && Files.exists(target)
-                && target.toFile().length() != file.toFile().length()) {
-                Logger.debug(
-                    this,
-                    "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                    new Rel(file), file.toFile().length(),
-                    new Rel(target), target.toFile().length(),
-                    before.iterator().next().dependency()
-                );
-            }
-            if (!before.isEmpty() && Files.exists(target) && !before.iterator().next().unplaced()) {
-                continue;
-            }
-            new Home(this.outputDir.toPath()).save(new InputOf(file), Paths.get(path));
-            final String id = target.toString();
-            final PlacedTojo tojo = this.placedTojos.placeClass(
-                target,
-                target.toString().substring(this.outputDir.toString().length() + 1),
-                dep
-            );
-            cache.putIfAbsent(id, tojo);
-            ++copied;
+    private long placeDependency(final Path home, final String dep) {
+        if (this.placedTojos.findJar(dep).isPresent()) {
+            Logger.info(this, "Found placed binaries from %s", dep);
         }
+        final Path dir = home.resolve(dep);
+        final long copied = new BinariesDependency(dir, dep).place();
+        this.placedTojos.placeJar(dep);
         if (copied > 0) {
             Logger.info(
                 this, "Placed %d binary file(s) out of %d, found in %s",
@@ -211,21 +148,158 @@ public final class PlaceMojo extends SafeMojo {
     }
 
     /**
-     * Collect all binaries into a fast map for efficient search.
-     * @return Cached placed tojos.
-     * @todo #1894:30min Replace PlaceMojo#placedCache crutch with an appropriate solution from
-     *  Tojos library. The original problem is that Tojos has not so optimal reading mechanism
-     *  and it's not efficient to read row by row from tojos. You can check the progress
-     *  <a href="https://github.com/yegor256/tojos/issues/60">here</a>.
+     * Dependency which binaries we are going to place.
+     *
+     * @since 0.30
      */
-    private Map<String, PlacedTojo> placedCache() {
-        return this.placedTojos.classes()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    PlacedTojo::identifier,
-                    row -> row
-                )
+    private final class BinariesDependency {
+
+        /**
+         * Directory to read from.
+         */
+        private final Path dir;
+
+        /**
+         * Dependency name.
+         */
+        private final String dep;
+
+        /**
+         * Ctor.
+         * @param directory The directory to read from
+         * @param dependency The name of dependency
+         */
+        private BinariesDependency(final Path directory, final String dependency) {
+            this.dir = directory;
+            this.dep = dependency;
+        }
+
+        /**
+         * Place all binaries from this dependency.
+         * @return How many binaries placed
+         */
+        private long place() {
+            return new Walk(this.dir)
+                .includes(PlaceMojo.this.includeBinaries)
+                .excludes(PlaceMojo.this.excludeBinaries)
+                .stream()
+                .filter(this::isNotEoSource)
+                .filter(this::isNotAlreadyPlaced)
+                .peek(this::printLogInfoAboutBinary)
+                .peek(this::placeBinary)
+                .count();
+        }
+
+        /**
+         * Check if the file is not a source file.
+         * @param file The file to check.
+         * @return True if the file is not a source file.
+         */
+        private boolean isNotEoSource(final Path file) {
+            final boolean res;
+            if (this.dir.relativize(file).startsWith(CopyMojo.DIR)) {
+                Logger.debug(
+                    this,
+                    "File %s is not a binary, but a source, won't place it",
+                    new Rel(file)
+                );
+                res = false;
+            } else {
+                res = true;
+            }
+            return res;
+        }
+
+        /**
+         * Check if the file is not already placed.
+         * @param file The file to check.
+         * @return True if the file is not already placed.
+         */
+        private boolean isNotAlreadyPlaced(final Path file) {
+            final Path target = PlaceMojo.this.outputDir.toPath().resolve(
+                this.dir.relativize(file)
             );
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
+            final boolean res;
+            if (tojo.isPresent() && Files.exists(target)
+                && (this.sameLength(target, file) || !tojo.get().unplaced())) {
+                Logger.debug(
+                    this,
+                    "The same file %s is already placed to %s maybe by %s, skipping",
+                    new Rel(file),
+                    new Rel(target),
+                    tojo.get().dependency()
+                );
+                res = false;
+            } else {
+                res = true;
+            }
+            return res;
+        }
+
+        /**
+         * Print log info about placing class.
+         * @param file The file to place.
+         */
+        private void printLogInfoAboutBinary(final Path file) {
+            final Path target = PlaceMojo.this.outputDir.toPath().resolve(
+                this.dir.relativize(file)
+            );
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
+            if (tojo.isPresent()) {
+                if (!Files.exists(target)) {
+                    Logger.info(
+                        this,
+                        "The file %s has been placed to %s, but now it's gone, replacing",
+                        new Rel(file),
+                        new Rel(target)
+                    );
+                }
+                if (Files.exists(target) && !this.sameLength(target, file)) {
+                    Logger.debug(
+                        this,
+                        "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
+                        new Rel(file), file.toFile().length(),
+                        new Rel(target), target.toFile().length(),
+                        tojo.get().dependency()
+                    );
+                }
+            }
+        }
+
+        /**
+         * Place class.
+         * @param file File to place
+         */
+        private void placeBinary(final Path file) {
+            final Path path = this.dir.relativize(file);
+            try {
+                final Path target = PlaceMojo.this.outputDir.toPath().resolve(path);
+                new Home(PlaceMojo.this.outputDir).save(new InputOf(file), path);
+                PlaceMojo.this.placedCache.placeClass(
+                    target,
+                    PlaceMojo.this.outputDir.toPath().relativize(target).toString(),
+                    this.dep
+                );
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Failed to place %s to home %s with path %s",
+                        file, PlaceMojo.this.outputDir, path
+                    ), ex
+                );
+            }
+        }
+
+        /**
+         * Check if two files have the same length.
+         * @param first First file
+         * @param second Second file
+         * @return True if they have the same length
+         * @checkstyle NonStaticMethodCheck (2 lines)
+         */
+        private boolean sameLength(final Path first, final Path second) {
+            return new Unchecked<>(() -> Files.size(first) == Files.size(second)).value();
+        }
     }
 }

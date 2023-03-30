@@ -59,11 +59,6 @@ import org.eolang.parser.ParsingTrain;
  *  BinarizeMojo firstly put the code into rust section in xmir.
  *  Then it must be compiled to shared library. It can be
  *  implemented via cargo.
- *
- * @todo #1876:90m EO to rust Naming convention.
- *  Come up with such a method of converting "loc" into a name
- *  into the legal name of the "rust" function to eliminate
- *  the possibility of a collision.
  */
 @Mojo(
     name = "binarize",
@@ -121,7 +116,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             for (final XML node: nodes) {
                 final String filename = String.format(
                     "%s%s",
-                    node.xpath("@loc").get(0).replaceAll("[-.]", "_"),
+                    name(node.xpath("@loc").get(0)),
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
@@ -184,4 +179,24 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         }
         return result;
     }
+
+    /**
+     * Uniquely converts the loc into the name for jni function.
+     * @param loc Location attribute of the rust insert.
+     * @return Name for function.
+     */
+    private static String name(final String loc) {
+        final StringBuilder out = new StringBuilder(1 + 5 * loc.length());
+        out.append('f').append(loc.replaceAll("[^a-zA-Z0-9]", "_"));
+        for (final char chr: loc.toCharArray()) {
+            out.append(
+                String.format(
+                    "%04x",
+                    (int) chr
+                )
+            );
+        }
+        return out.toString();
+    }
+
 }

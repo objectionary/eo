@@ -51,9 +51,8 @@ public final class Walk extends ListEnvelope<Path> {
      * Ctor.
      *
      * @param dir The directory
-     * @throws IOException If fails
      */
-    public Walk(final Path dir) throws IOException {
+    public Walk(final Path dir) {
         this(dir, Walk.list(dir));
     }
 
@@ -124,16 +123,23 @@ public final class Walk extends ListEnvelope<Path> {
      *  AutoCloseable, needs to be closed after use.
      *  Use try-with-resources or close this "Stream" in a "finally" clause.. (line 131)
      */
-    private static List<Path> list(final Path dir) throws IOException {
-        final List<Path> files = new LinkedList<>();
-        if (Files.exists(dir)) {
-            files.addAll(
-                Files.walk(dir)
-                    .filter(file -> !file.toFile().isDirectory())
-                    .collect(Collectors.toList())
+    private static List<Path> list(final Path dir) {
+        try {
+            final List<Path> files = new LinkedList<>();
+            if (Files.exists(dir)) {
+                files.addAll(
+                    Files.walk(dir)
+                        .filter(file -> !file.toFile().isDirectory())
+                        .collect(Collectors.toList())
+                );
+            }
+            return files;
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format("Can't read files in %s folder during a walk", dir),
+                ex
             );
         }
-        return files;
     }
 
     /**
