@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.RustProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +45,7 @@ import org.eolang.maven.footprint.FtDefault;
  *  Thins command must be called from right directory. Think of correct
  *  compilation errors handling.
  */
-public final class RustProject {
+public final class Project {
     /**
      * Path to cargo project.
      */
@@ -61,15 +61,18 @@ public final class RustProject {
      */
     private final Set<String> dependencies;
 
+    private final Cargo cargo;
+
     /**
      * Ctor.
      * Creates a raw cargo project.
      * @param target Destination path.
      */
-    private RustProject(final Path target) {
+    private Project(final Path target) {
         this.footprint = new FtDefault(target);
         this.dest = target;
         this.dependencies = new HashSet<>();
+        this.cargo = new Cargo("common");
     }
 
     /**
@@ -79,24 +82,8 @@ public final class RustProject {
      * @throws IOException If any issues with I/O
      */
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-    public static RustProject init(final Path target) throws IOException {
-        final RustProject project = new RustProject(target);
-        project.footprint.save(
-            "Cargo",
-            "toml",
-            () ->
-                String.join(
-                    System.lineSeparator(),
-                    "[package]",
-                    "name = \"common\"",
-                    "version = \"0.1.0\"",
-                    "edition = \"2021\"",
-                    "[lib]",
-                    "crate-type = [\"cdylib\"]",
-                    "[dependencies]",
-                    "jni = \"0.21.1\""
-                )
-        );
+    public static Project init(final Path target) throws IOException {
+        final Project project = new Project(target);
         project.footprint.save(
             String.format(
                 "src%clib",
@@ -146,7 +133,11 @@ public final class RustProject {
                     )
                 )
         );
-        this.dependencies.addAll(crates);
+        for (final String crate: crates){
+            String[] split = crate.split("[=:]");
+            System.out.printf("crate = %s\n", crate);
+            this.cargo.add(split[0], split[1].replace("\"", "").trim());
+        }
     }
 
     /**
@@ -155,11 +146,7 @@ public final class RustProject {
      * @throws IOException If any issues with I/O.
      */
     public Path build() throws IOException {
-        Files.write(
-            this.dest.resolve("Cargo.toml"),
-            String.join(System.lineSeparator(), this.dependencies).getBytes(),
-            StandardOpenOption.APPEND
-        );
+        this.cargo.save(dest.resolve("Cargo.toml").toFile());
         return this.dest;
     }
 }

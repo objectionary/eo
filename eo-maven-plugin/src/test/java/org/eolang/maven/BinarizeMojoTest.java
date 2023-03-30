@@ -145,8 +145,8 @@ final class BinarizeMojoTest {
                 "[lib]",
                 "crate-type = [\"cdylib\"]",
                 "[dependencies]",
-                "jni = \"0.21.1\"",
-                "rand= \"0.5.5\""
+                "rand = \"0.5.5\"",
+                "jni = \"0.21.1\""
             )
         );
     }
