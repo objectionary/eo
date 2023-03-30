@@ -113,8 +113,7 @@ SOFTWARE.
           <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <hash>master</hash>
-          <!-- @todo #1584:90min Set failOnWarning to 'true'. It's not a good idea to allow deploy artifacts with warnings. It's only temporary solution. -->
-          <failOnWarning>false</failOnWarning>
+          <failOnWarning>true</failOnWarning>
         </configuration>
         <executions>
           <execution>

@@ -23,10 +23,6 @@
  */
 package org.eolang.maven.dependencies;
 
-import java.util.Collections;
-import org.apache.maven.model.Dependency;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.OnlineCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,38 +38,24 @@ final class DcsWithRuntimeTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    void addsHardcodedVersionOfRuntimeDependency() throws Exception {
-        final DcsWithRuntime dependencies = new DcsWithRuntime(
-            DcsWithRuntimeTest.dependencies(),
-            new Unchecked<>(DcsWithRuntimeTest::dependency)
-        );
+    void addsHardcodedVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            new LengthOf(dependencies).value(),
-            Matchers.equalTo(2L)
+            new DcsWithRuntime(
+                new DcsFake(5),
+                DcsFake.runtimeDep()
+            ),
+            Matchers.iterableWithSize(6)
         );
     }
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    void addsRemoteVersionOfRuntimeDependency() throws Exception {
-        final DcsWithRuntime dependencies = new DcsWithRuntime(
-            DcsWithRuntimeTest.dependencies()
-        );
+    void addsRemoteVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            new LengthOf(dependencies).value(),
-            Matchers.equalTo(2L)
+            new DcsWithRuntime(
+                new DcsFake(2)
+            ),
+            Matchers.iterableWithSize(3)
         );
-    }
-
-    private static Iterable<Dependency> dependencies() {
-        return Collections.singleton(DcsWithRuntimeTest.dependency());
-    }
-
-    private static Dependency dependency() {
-        final Dependency dependency = new Dependency();
-        dependency.setGroupId("org.eolang");
-        dependency.setArtifactId("eo-collections");
-        dependency.setVersion("0.1.0");
-        return dependency;
     }
 }

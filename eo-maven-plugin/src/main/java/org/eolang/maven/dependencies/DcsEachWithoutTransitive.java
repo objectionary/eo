@@ -36,8 +36,6 @@ import org.eolang.maven.ResolveMojo;
  * Dependencies without transitive dependencies.
  *
  * @since 0.29.0
- * @todo #1589:30min Add fine grained tests for DcsEachWithoutTransitive. It's important to add new
- *  unit tests for different cases including dome garbage inputs.
  */
 public final class DcsEachWithoutTransitive implements Iterable<Dependency> {
 
