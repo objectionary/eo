@@ -230,7 +230,7 @@ data
   HEX
   ;
 
-COMMENT: HASH ~[\r\n]*;
+COMMENT: HASH | (HASH ~[\r\n]* ~[\r\n\p{Space}]);
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 ROOT: 'Q';
