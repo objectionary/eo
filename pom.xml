@@ -330,11 +330,10 @@ SOFTWARE.
           </plugin>
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
-            <artifactId>test-naming-conventions</artifactId>
-            <version>0.1.8</version>
+            <artifactId>jtcop-maven-plugin</artifactId>
+            <version>0.1.9</version>
             <executions>
               <execution>
-                <id>check-tests-names</id>
                 <goals>
                   <goal>check</goal>
                 </goals>
