@@ -105,11 +105,6 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Tojo ATTR.
      */
-    public static final String ATTR_TRANSPILED = "transpiled";
-
-    /**
-     * Tojo ATTR.
-     */
     public static final String ATTR_HASH = "hash";
 
     /**
