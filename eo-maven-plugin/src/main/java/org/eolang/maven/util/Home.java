@@ -24,6 +24,7 @@
 package org.eolang.maven.util;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -49,6 +50,15 @@ public final class Home {
      * Current working directory.
      */
     private final Path cwd;
+
+    /**
+     * Ctor.
+     *
+     * @param file File
+     */
+    public Home(final File file) {
+        this(file.toPath());
+    }
 
     /**
      * Ctor.
