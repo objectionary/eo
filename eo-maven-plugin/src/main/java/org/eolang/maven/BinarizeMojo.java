@@ -48,7 +48,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.maven.RustProject.Project;
+import org.eolang.maven.rust_project.Project;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
 
@@ -107,7 +107,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
                 && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
-        final Project project = Project.init(targetDir.toPath().resolve("Lib"));
+        final Project project = new Project(targetDir.toPath().resolve("Lib"));
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);

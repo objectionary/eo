@@ -21,14 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.RustProject;
+package org.eolang.maven.rust_project;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,42 +54,25 @@ public final class Project {
     private final Footprint footprint;
 
     /**
+     * Content for Cargo.toml file.
+     */
+    private final Cargo cargo;
+
+    /**
      * Collection of dependencies of the project.
      */
-    private final Set<String> dependencies;
-
-    private final Cargo cargo;
+    private final Set<String> modules;
 
     /**
      * Ctor.
      * Creates a raw cargo project.
      * @param target Destination path.
      */
-    private Project(final Path target) {
+    public Project(final Path target) {
         this.footprint = new FtDefault(target);
         this.dest = target;
-        this.dependencies = new HashSet<>();
         this.cargo = new Cargo("common");
-    }
-
-    /**
-     * Inits RustProject.
-     * @param target Destination path.
-     * @return Created RustProject.
-     * @throws IOException If any issues with I/O
-     */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-    public static Project init(final Path target) throws IOException {
-        final Project project = new Project(target);
-        project.footprint.save(
-            String.format(
-                "src%clib",
-                File.separatorChar
-            ),
-            "rs",
-            () -> ""
-        );
-        return project;
+        this.modules = new HashSet<>();
     }
 
     /**
@@ -104,14 +84,8 @@ public final class Project {
      */
     public void add(final String name, final String raw, final List<String> crates)
         throws IOException {
-        Files.write(
-            this.dest.resolve(Paths.get("src")).resolve("lib.rs"),
-            String.format(
-                "pub mod %s;%s",
-                name,
-                System.lineSeparator()
-            ).getBytes(),
-            StandardOpenOption.APPEND
+        this.modules.add(
+            String.format("pub mod %s;", name)
         );
         this.footprint.save(
             String.format(
@@ -127,15 +101,14 @@ public final class Project {
                         System.lineSeparator()
                         ),
                     String.format(
-                        "%spub fn %s() -> Result<u32> {",
+                        "%spub fn %s() -> Result<u32, u32> {",
                         System.lineSeparator(),
                         name
                     )
                 )
         );
-        for (final String crate: crates){
-            String[] split = crate.split("[=:]");
-            System.out.printf("crate = %s\n", crate);
+        for (final String crate: crates) {
+            final String[] split = crate.split("[=:]");
             this.cargo.add(split[0], split[1].replace("\"", "").trim());
         }
     }
@@ -146,7 +119,15 @@ public final class Project {
      * @throws IOException If any issues with I/O.
      */
     public Path build() throws IOException {
-        this.cargo.save(dest.resolve("Cargo.toml").toFile());
+        this.footprint.save(
+            String.format(
+                "src%clib",
+                File.separatorChar
+            ),
+            "rs",
+            () -> String.join(System.lineSeparator(), this.modules)
+        );
+        this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
         return this.dest;
     }
 }
