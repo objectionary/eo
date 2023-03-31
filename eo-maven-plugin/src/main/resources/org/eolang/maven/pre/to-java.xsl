@@ -509,6 +509,10 @@ SOFTWARE.
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@pos"/>
+      <xsl:text>, </xsl:text>
+      <xsl:text>"</xsl:text>
+      <xsl:value-of select="@loc"/>
+      <xsl:text>"</xsl:text>
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
