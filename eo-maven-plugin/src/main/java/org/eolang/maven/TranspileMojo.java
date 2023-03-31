@@ -130,10 +130,7 @@ public final class TranspileMojo extends SafeMojo implements CompilationStep {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
-        );
+        final Collection<Tojo> sources = this.tojos.scoped(this.scope);
         int saved = 0;
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
@@ -224,12 +221,8 @@ public final class TranspileMojo extends SafeMojo implements CompilationStep {
      * @return Count of removed files
      */
     private int removeTranspiled(final Path src) {
-        final Collection<Tojo> existed = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_EO).equals(src.toString())
-        );
         int count = 0;
-        for (final Tojo exist : existed) {
+        for (final Tojo exist : this.tojos.forEo(src.toString())) {
             count += this.transpiledTojos.remove(exist.get(AssembleMojo.ATTR_XMIR2));
         }
         return count;

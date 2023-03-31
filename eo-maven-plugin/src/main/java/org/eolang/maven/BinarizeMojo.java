@@ -103,10 +103,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
-        );
+        final Collection<Tojo> sources = this.tojos.scoped(this.scope);
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
