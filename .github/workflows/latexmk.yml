@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: yegor256/latexmk-action@0.7.1
+      - uses: yegor256/latexmk-action@0.8.0
         with:
           path: paper
           opts: -pdf
