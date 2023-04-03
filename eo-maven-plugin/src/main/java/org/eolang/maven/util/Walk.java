@@ -117,21 +117,12 @@ public final class Walk extends ListEnvelope<Path> {
      * @param dir The dir
      * @return List
      * @throws IOException If fails
-     * @todo #1897:30m Close `Stream` object in `Walk`.
-     *  Connections, streams, files, and other classes that implement the
-     *  Closeable interface or its super-interface,
-     *  AutoCloseable, needs to be closed after use.
-     *  Use try-with-resources or close this "Stream" in a "finally" clause.. (line 131)
      */
     private static List<Path> list(final Path dir) {
         try {
             final List<Path> files = new LinkedList<>();
             if (Files.exists(dir)) {
-                files.addAll(
-                    Files.walk(dir)
-                        .filter(file -> !file.toFile().isDirectory())
-                        .collect(Collectors.toList())
-                );
+                files.addAll(Walk.regular(dir));
             }
             return files;
         } catch (final IOException ex) {
@@ -139,6 +130,19 @@ public final class Walk extends ListEnvelope<Path> {
                 String.format("Can't read files in %s folder during a walk", dir),
                 ex
             );
+        }
+    }
+
+    /**
+     * Get regular files from directory.
+     * @param dir The dir.
+     * @return Collection of files.
+     * @throws IOException If fails.
+     */
+    private static Collection<Path> regular(final Path dir) throws IOException {
+        try (final Stream<Path> walk = Files.walk(dir)) {
+            return walk.filter(file -> !file.toFile().isDirectory())
+                .collect(Collectors.toList());
         }
     }
 
