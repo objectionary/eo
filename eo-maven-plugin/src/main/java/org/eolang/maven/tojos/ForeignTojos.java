@@ -146,6 +146,9 @@ public final class ForeignTojos implements Closeable {
 
         /**
          * Tojo xmir2 file.
+         * @todo #1969:30min Add more meaningful name for the xmir2 attribute.
+         *  I believe that instead of xmir2 we have to invent something more meaningful and
+         *  change all related methods and parameters that use xmir2 abbreviation.
          */
         XMIR_2("xmir2"),
 
