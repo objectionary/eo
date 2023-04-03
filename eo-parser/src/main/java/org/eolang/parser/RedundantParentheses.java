@@ -28,6 +28,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * The class that checks redundant parentheses for object expression.
@@ -35,6 +36,11 @@ import java.util.function.Predicate;
  * @since 0.28.12
  */
 final class RedundantParentheses implements Predicate<String> {
+
+    /**
+     * Pattern for string literals.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(?ms)\"\"\".*?\"\"\"|\".*?\"");
 
     /**
      * The callback that will be called in case if redundant parentheses is found.
@@ -113,9 +119,7 @@ final class RedundantParentheses implements Predicate<String> {
      *  Refactor this repetition that can lead to a stack overflow for large inputs. (line 113)
      */
     private static char[] expressionChars(final String expression) {
-        return expression.replaceAll(
-            "(?ms)\"\"\".*?\"\"\"|\".*?\"",
-            "literal"
-        ).toCharArray();
+        return RedundantParentheses
+            .PATTERN.matcher(expression).replaceAll("literal").toCharArray();
     }
 }
