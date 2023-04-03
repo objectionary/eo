@@ -140,7 +140,7 @@ public final class Walk extends ListEnvelope<Path> {
      * @throws IOException If fails.
      */
     private static Collection<Path> regular(final Path dir) throws IOException {
-        try (final Stream<Path> walk = Files.walk(dir)) {
+        try (Stream<Path> walk = Files.walk(dir)) {
             return walk.filter(file -> !file.toFile().isDirectory())
                 .collect(Collectors.toList());
         }
