@@ -114,7 +114,7 @@ final class RedundantParentheses implements Predicate<String> {
      */
     private static char[] expressionChars(final String expression) {
         return expression.replaceAll(
-            "\"(.|\\s)*?\"|\"\"\"(.|\\s)*?\"\"\"",
+            "(?ms)\"\"\".*?\"\"\"|\".*?\"",
             "literal"
         ).toCharArray();
     }
