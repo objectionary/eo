@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,7 +92,7 @@ final class TranspiledTojosTest {
 
     @Test
     void adds() {
-        this.tojos.add(this.transpiled.get(0), "first.xmir2");
+        this.tojos.add(this.transpiled.get(0), Paths.get("first.xmir2"));
         MatcherAssert.assertThat(
             this.original.select(all -> true),
             Matchers.hasSize(1)
@@ -100,9 +101,9 @@ final class TranspiledTojosTest {
 
     @Test
     void removesExistingTranspiledFiles() {
-        final String first = "1.xmir2";
-        final String second = "2.xmir2";
-        this.tojos.add(this.transpiled.get(0), "0.xmir2");
+        final Path first = Paths.get("1.xmir2");
+        final Path second = Paths.get("2.xmir2");
+        this.tojos.add(this.transpiled.get(0), Paths.get("0.xmir2"));
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(
@@ -126,7 +127,7 @@ final class TranspiledTojosTest {
     @Test
     void removesAbsent() {
         MatcherAssert.assertThat(
-            this.tojos.remove("absent.xmir"),
+            this.tojos.remove(Paths.get("absent.xmir")),
             Matchers.equalTo(0L)
         );
         MatcherAssert.assertThat(

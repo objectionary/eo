@@ -49,6 +49,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.rust_project.Project;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
 
@@ -103,10 +104,10 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.scoped(this.scope);
+        final Collection<ForeignTojo> sources = this.tojos.scoped(this.scope);
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
-        for (final Tojo tojo : sources) {
-            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        for (final ForeignTojo tojo : sources) {
+            final Path file = tojo.xmir2();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {

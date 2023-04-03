@@ -77,19 +77,19 @@ public final class TranspiledTojos implements Closeable {
     /**
      * Add transpiled file to the list.
      * @param transpiled Transpiled file.
-     * @param xmir Xmir2 file.
+     * @param xmir2 Xmir2 file.
      */
-    public void add(final Path transpiled, final String xmir) {
-        this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), xmir);
+    public void add(final Path transpiled, final Path xmir2) {
+        this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), xmir2);
     }
 
     /**
      * Remove all transpiled files by xmir.
-     * @param xmir Xmir2 file.
+     * @param xmir2 Xmir2 file.
      * @return Number of removed files.
      */
-    public long remove(final String xmir) {
-        return this.findByXmir(xmir)
+    public long remove(final Path xmir2) {
+        return this.findByXmir(xmir2)
             .stream()
             .map(row -> row.get(Attribute.ID.key()))
             .map(File::new)
@@ -99,11 +99,13 @@ public final class TranspiledTojos implements Closeable {
 
     /**
      * Find all tojos by xmir.
-     * @param xmir Xmir2 file.
+     * @param xmir2 Xmir2 file.
      * @return List of tojos.
      */
-    private List<Tojo> findByXmir(final String xmir) {
-        return this.all.value().select(row -> row.get(Attribute.XMIR2.key()).equals(xmir));
+    private List<Tojo> findByXmir(final Path xmir2) {
+        return this.all.value().select(
+            row -> row.get(Attribute.XMIR2.key()).equals(xmir2.toString())
+        );
     }
 
     /**

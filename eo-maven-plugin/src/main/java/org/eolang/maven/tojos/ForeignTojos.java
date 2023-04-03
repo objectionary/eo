@@ -4,7 +4,9 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -22,18 +24,22 @@ public class ForeignTojos implements Closeable {
         this.tojos.value().close();
     }
 
-    public Collection<Tojo> scoped(final String scope) {
+    public Collection<ForeignTojo> scoped(final String scope) {
         return this.tojos.value().select(
-            row -> row.exists(Attribute.XMIR_2.key())
-                && row.get(Attribute.SCOPE.key()).equals(scope)
-        );
+                row -> row.exists(Attribute.XMIR_2.key())
+                    && row.get(Attribute.SCOPE.key()).equals(scope)
+            ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
     }
 
-    public Collection<Tojo> forEo(final String eo) {
+    public Collection<ForeignTojo> forEo(final Path eo) {
         return this.tojos.value().select(
-            row -> row.exists(Attribute.XMIR_2.key())
-                && row.get(Attribute.EO.key()).equals(eo)
-        );
+                row -> row.exists(Attribute.XMIR_2.key())
+                    && row.get(Attribute.EO.key()).equals(eo.toString())
+            ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
     }
 
     public int size() {
