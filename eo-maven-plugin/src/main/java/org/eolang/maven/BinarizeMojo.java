@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
@@ -107,7 +106,7 @@ public final class BinarizeMojo extends SafeMojo implements CompilationStep {
         final Collection<ForeignTojo> sources = this.tojos.scoped(this.scope);
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
         for (final ForeignTojo tojo : sources) {
-            final Path file = tojo.xmir2();
+            final Path file = tojo.xmirSecond();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
