@@ -185,11 +185,11 @@
 
 [] > gets-lengths-of-empty-tuple-keyword
   assert-that > @
-    tuple.empty.length
+    *.length
     $.equal-to 0
 
 [] > tuple-fluent-with-indented-keyword
-  tuple.empty
+  *
   .with 1
   .with 2
   .with 3 > a
