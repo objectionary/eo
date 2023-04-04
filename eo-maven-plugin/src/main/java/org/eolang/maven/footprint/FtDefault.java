@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -92,10 +93,11 @@ public final class FtDefault implements Footprint {
     public List<Path> list(final String ext) throws IOException {
         final List<Path> res;
         if (Files.exists(this.main)) {
-            res = Files.walk(this.main)
-                .filter(Files::isRegularFile)
-                .filter(path -> path.toString().endsWith(ext))
-                .collect(Collectors.toList());
+            try (Stream<Path> walk = Files.walk(this.main)) {
+                res = walk.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(ext))
+                    .collect(Collectors.toList());
+            }
         } else {
             res = Collections.emptyList();
         }
