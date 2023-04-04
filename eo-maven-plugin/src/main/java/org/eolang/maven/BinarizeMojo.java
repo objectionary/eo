@@ -65,7 +65,7 @@ import org.eolang.parser.ParsingTrain;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class BinarizeMojo extends SafeMojo implements CompilationStep {
+public final class BinarizeMojo extends SafeMojo {
 
     /**
      * The directory where to binarize to.

@@ -66,7 +66,7 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo implements CompilationStep {
+public final class ParseMojo extends SafeMojo {
 
     /**
      * Zero version.
