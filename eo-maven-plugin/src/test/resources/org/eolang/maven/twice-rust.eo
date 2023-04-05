@@ -6,8 +6,9 @@
     """
     use reo::universe::Universe;
 
-    pub fn foo() -> Result<u32, u32> {
+    pub fn foo() -> i32 {
       print!("Hello world 1");
+      0
     }
     """
     *
@@ -17,8 +18,9 @@
 [] > hello-world-2
   QQ.rust > r
     """
-    pub fn foo() -> Result<u32, u32> {
+    pub fn foo() -> i32 {
       print!("Hello 大 2");
+      0
     }
     """
     *
