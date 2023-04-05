@@ -185,6 +185,33 @@
       positive-infinity.times 0.0
     $.equal-to nan.as-bytes
 
+[] > positive-infinity-times-float-zero-bug-search
+  as-bytes. > x!
+    positive-infinity.times 0.0
+  assert-that > @
+    x
+    $.equal-to
+      as-bytes.
+        positive-infinity.times
+          0.0
+
+[] > float-equal-to-nan-and-infinites-is-false
+  assert-that > @
+    and.
+      (0.0.eq nan).eq FALSE
+      (0.0.eq positive-infinity).eq FALSE
+      (0.0.eq negative-infinity).eq FALSE
+      (42.5.eq nan).eq FALSE
+      (42.5.eq positive-infinity).eq FALSE
+      (42.5.eq negative-infinity).eq FALSE
+      (0.0.eq nan).eq FALSE
+      (0.0.eq positive-infinity).eq FALSE
+      (0.0.eq negative-infinity).eq FALSE
+      (42.5.eq nan).eq FALSE
+      (42.5.eq positive-infinity).eq FALSE
+      (42.5.eq negative-infinity).eq FALSE
+    $.equal-to TRUE
+
 [] > positive-infinity-times-neg-float-zero
   nop > @
     assert-that

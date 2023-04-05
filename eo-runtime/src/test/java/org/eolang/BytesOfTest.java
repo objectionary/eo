@@ -75,6 +75,22 @@ final class BytesOfTest {
     }
 
     @Test
+    void checksPositiveInfinity(){
+        MatcherAssert.assertThat(
+            new BytesOf(1.0d / 0.0d).asNumber(Double.class),
+            Matchers.equalTo(Double.POSITIVE_INFINITY)
+        );
+    }
+
+    @Test
+    void checksNegativeInfinity(){
+        MatcherAssert.assertThat(
+            new BytesOf(-1.0d / 0.0d).asNumber(Double.class),
+            Matchers.equalTo(Double.NEGATIVE_INFINITY)
+        );
+    }
+
+    @Test
     void checksXor() {
         final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
