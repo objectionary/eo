@@ -30,7 +30,7 @@ import org.eolang.maven.footprint.Footprint;
 /**
  * Special class for converting a rust inserts
  * into a separate module of Cargo Project.
- * @since 1.0
+ * @since 0.1
  */
 public class Module {
     /**
