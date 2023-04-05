@@ -87,26 +87,7 @@ public final class Project {
         this.modules.add(
             String.format("pub mod %s;", name)
         );
-        this.footprint.save(
-            String.format(
-                "src%c%s",
-                File.separatorChar,
-                name
-            ),
-            "rs",
-            () ->
-                raw.replaceFirst(
-                    String.format(
-                        "%s[ ]*pub[ ]+fn[ ]+foo\\(\\)[ ]+->[ ]*Result<u32,[ ]*u32>[ ]*\\{",
-                        System.lineSeparator()
-                        ),
-                    String.format(
-                        "%spub fn %s() -> Result<u32, u32> {",
-                        System.lineSeparator(),
-                        name
-                    )
-                )
-        );
+        new Module(raw, name).save(this.footprint);
         for (final String crate: crates) {
             final String[] split = crate.split("[=:]");
             this.cargo.add(split[0], split[1].replace("\"", "").trim());
