@@ -39,9 +39,6 @@ import org.eolang.maven.footprint.FtDefault;
 /**
  * To create the cargo project.
  * @since 1.0
- * @todo #1877:90min Build the rust project via 'cargo build' command.
- *  Thins command must be called from right directory. Think of correct
- *  compilation errors handling.
  */
 public final class Project {
     /**
