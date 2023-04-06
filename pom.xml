@@ -91,7 +91,7 @@ SOFTWARE.
     <!-- This is required for later correct replacement of argLine -->
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
-    <stack-size>16M</stack-size>
+    <stack-size>8M</stack-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -330,11 +330,10 @@ SOFTWARE.
           </plugin>
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
-            <artifactId>test-naming-conventions</artifactId>
-            <version>0.1.8</version>
+            <artifactId>jtcop-maven-plugin</artifactId>
+            <version>0.1.9</version>
             <executions>
               <execution>
-                <id>check-tests-names</id>
                 <goals>
                   <goal>check</goal>
                 </goals>

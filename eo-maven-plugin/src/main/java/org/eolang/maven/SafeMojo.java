@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
@@ -35,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -47,6 +45,7 @@ import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.tojos.PlacedTojos;
+import org.eolang.maven.tojos.ScopedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -275,33 +274,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final Tojos scopedTojos() {
-        final Tojos unscoped = this.tojos.value();
-        return new Tojos() {
-            @Override
-            public void close() throws IOException {
-                unscoped.close();
-            }
-
-            @Override
-            public Tojo add(final String name) {
-                final Tojo tojo = unscoped.add(name);
-                if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
-                    tojo.set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
-                }
-                return tojo;
-            }
-
-            @Override
-            public List<Tojo> select(final Predicate<Tojo> filter) {
-                return unscoped.select(
-                    t -> filter.test(t)
-                        && (
-                        t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                            || "test".equals(SafeMojo.this.scope)
-                    )
-                );
-            }
-        };
+        return new ScopedTojos(this.tojos.value(), this.scope);
     }
 
     /**
