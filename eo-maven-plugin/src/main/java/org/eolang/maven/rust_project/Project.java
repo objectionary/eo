@@ -23,12 +23,18 @@
  */
 package org.eolang.maven.rust_project;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.io.CharStreams;
+import com.jcabi.log.Logger;
+import org.apache.commons.codec.Charsets;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtDefault;
 
@@ -106,6 +112,25 @@ public final class Project {
             () -> String.join(System.lineSeparator(), this.modules)
         );
         this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
+        ProcessBuilder builder = new ProcessBuilder("cargo" , "build")
+            .directory(dest.toFile());
+        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
+        Logger.info(this, "building rust project..");
+        Process building = builder.start();
+        try {
+            building.waitFor();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (building.exitValue() != 0) {
+            Logger.error(this, "There was an error in compilation");
+            throw new BuildFailureException(
+                String.format(
+                    "Failed to build cargo project with dest = %s",
+                    this.dest.toAbsolutePath()
+                )
+            );
+        }
         return this.dest;
     }
 }

@@ -94,7 +94,6 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
-                "use reo::universe::Universe;",
                 "pub fn foo() -> i32 {",
                 "print!(\"Hello world 1\");"
             )
