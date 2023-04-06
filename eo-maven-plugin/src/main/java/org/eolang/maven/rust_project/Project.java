@@ -114,8 +114,7 @@ public final class Project {
         this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
         ProcessBuilder builder = new ProcessBuilder("cargo" , "build")
             .directory(dest.toFile());
-        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
-        Logger.info(this, "building rust project..");
+        Logger.info(this, "Building rust project..");
         Process building = builder.start();
         try {
             building.waitFor();
@@ -124,6 +123,11 @@ public final class Project {
         }
         if (building.exitValue() != 0) {
             Logger.error(this, "There was an error in compilation");
+            Logger.error(
+                this,
+                CharStreams.toString(new InputStreamReader(
+                    building.getErrorStream(), Charsets.UTF_8))
+            );
             throw new BuildFailureException(
                 String.format(
                     "Failed to build cargo project with dest = %s",

@@ -23,16 +23,21 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.rust_project.BuildFailureException;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -40,6 +45,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
+@Execution(ExecutionMode.CONCURRENT)
 final class BinarizeMojoTest {
 
     @Test
@@ -148,6 +154,17 @@ final class BinarizeMojoTest {
                 "rand = \"0.5.5\"",
                 "jni = \"0.21.1\""
             )
+        );
+    }
+
+    @Test
+    void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
+        final FakeMaven fakeMaven = new FakeMaven(temp)
+            .withProgram(src);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> fakeMaven.execute(new FakeMaven.Binarize())
         );
     }
 }
