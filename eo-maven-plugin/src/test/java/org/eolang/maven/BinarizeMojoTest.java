@@ -50,8 +50,11 @@ final class BinarizeMojoTest {
     @Test
     void binarizesSimpleEoProgram(@TempDir final Path temp) throws Exception {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(src)
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp).withProgram(src);
+        }
+        final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
             .result();
         final String rust = String.format(
@@ -78,8 +81,11 @@ final class BinarizeMojoTest {
     @Test
     void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo");
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(src)
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp).withProgram(src);
+        }
+        final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
             .result();
         final String one = String.format(
@@ -124,9 +130,13 @@ final class BinarizeMojoTest {
     @Test
     void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(src)
-            .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"))
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(src)
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+        }
+        final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
             .result();
         final String cargo = "target/Lib/Cargo.toml";
@@ -159,8 +169,11 @@ final class BinarizeMojoTest {
     @Test
     void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(src);
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(src);
+        }
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.execute(new FakeMaven.Binarize())
