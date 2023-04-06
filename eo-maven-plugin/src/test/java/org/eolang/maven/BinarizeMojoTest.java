@@ -122,6 +122,7 @@ final class BinarizeMojoTest {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(src)
+            .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"))
             .execute(new FakeMaven.Binarize())
             .result();
         final String cargo = "target/Lib/Cargo.toml";
