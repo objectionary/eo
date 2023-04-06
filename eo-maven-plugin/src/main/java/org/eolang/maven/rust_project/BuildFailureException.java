@@ -25,6 +25,7 @@ package org.eolang.maven.rust_project;
 
 /**
  * If cargo project building failed.
+ * @since 1.0
  */
 public class BuildFailureException extends RuntimeException {
 
