@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +junit
 +package org.eolang
-+version 0.29.2
++version 0.29.3
 
 [] > allocates-and-uses
   "Hello, друг!" > txt
@@ -42,16 +42,46 @@
       data
     $.equal-to txt
 
-[] > malloc-and-free
-  heap 1024 > h
-  h.malloc 64 > p1
-  h.malloc 32 > p2
+[] > malloc-returns-different-pointers
+  heap 1024 > h!
+  h.malloc 64 > p1!
+  h.malloc 32 > p2!
   assert-that > @
-    and.
-      p1.lt p2
-      h.free p1
-      h.free p2
+    eq.
+      seq
+        QQ.io.stdout
+          QQ.txt.sprintf
+            "p1 = %d\np2 = %d\n"
+            p1
+            p2
+        p1
+      p2
+    $.equal-to FALSE
+
+[] > mallocs-do-not-overlap
+  heap 1024 > h!
+  h.malloc 64 > p1!
+  h.malloc 32 > p2!
+  assert-that > @
+    or.
+      p2.gte
+        p1.plus 64
+      p2.lte
+        p1.minus 32
     $.equal-to TRUE
+
+[] > malloc-return-error
+  heap 2 > h!
+  assert-that > @
+    try
+      []
+        h.malloc > @
+          10
+      [e]
+        e > @
+      nop
+    $.equal-to
+      "Allocation failed: bad alloc (not enough memory in the heap)"
 
 [] > write-and-read-without-error
   heap 1024 > h

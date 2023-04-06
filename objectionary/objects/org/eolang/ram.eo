@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.2
-+version 0.29.2
++rt jvm org.eolang:eo-runtime:0.29.3
++version 0.29.3
 
 # Random-access memory (RAM).
 # @todo #684:30min We need to add ram.ram-slice.slice object
@@ -32,7 +32,6 @@
 #  two parameters: position and size, same as in ram.slice
 #  object. And will allow us to make a chain of slice objects.
 [size] > ram
-
   # Write bytes from position.
   [position data] > write /true
 
@@ -40,7 +39,6 @@
   [position size] > slice /ram-slice
 
   [position size] > ram-slice
-
     [] > @ /bytes
 
     [data] > write /bytes
