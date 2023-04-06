@@ -35,4 +35,13 @@ public class BuildFailureException extends RuntimeException {
     public BuildFailureException(final String message) {
         super(message);
     }
+
+    /**
+     * Ctor.
+     * @param message The detail message.
+     * @param root Root cause exception.
+     */
+    public BuildFailureException(final String message, final Throwable root) {
+        super(message, root);
+    }
 }

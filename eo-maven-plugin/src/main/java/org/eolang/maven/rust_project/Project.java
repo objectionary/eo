@@ -116,12 +116,13 @@ public final class Project {
         final Process building = builder.start();
         try {
             building.waitFor();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException exception) {
             throw new BuildFailureException(
                 String.format(
                     "Interrupted while building %s",
                     this.dest.toAbsolutePath()
-                )
+                ),
+                exception
             );
         }
         if (building.exitValue() != 0) {
