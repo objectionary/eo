@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.rust_project.BuildFailureException;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -160,11 +159,11 @@ final class BinarizeMojoTest {
     @Test
     void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
-        final FakeMaven fakeMaven = new FakeMaven(temp)
+        final FakeMaven maven = new FakeMaven(temp)
             .withProgram(src);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> fakeMaven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize())
         );
     }
 }

@@ -23,7 +23,8 @@
  */
 package org.eolang.maven.rust_project;
 
-import java.io.BufferedReader;
+import com.google.common.io.CharStreams;
+import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,9 +32,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.io.CharStreams;
-import com.jcabi.log.Logger;
 import org.apache.commons.codec.Charsets;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtDefault;
@@ -112,21 +110,30 @@ public final class Project {
             () -> String.join(System.lineSeparator(), this.modules)
         );
         this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
-        ProcessBuilder builder = new ProcessBuilder("cargo" , "build")
-            .directory(dest.toFile());
+        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
+            .directory(this.dest.toFile());
         Logger.info(this, "Building rust project..");
-        Process building = builder.start();
+        final Process building = builder.start();
         try {
             building.waitFor();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new BuildFailureException(
+                String.format(
+                    "Interrupted while building %s",
+                    this.dest.toAbsolutePath()
+                )
+            );
         }
         if (building.exitValue() != 0) {
             Logger.error(this, "There was an error in compilation");
             Logger.error(
                 this,
-                CharStreams.toString(new InputStreamReader(
-                    building.getErrorStream(), Charsets.UTF_8))
+                CharStreams.toString(
+                    new InputStreamReader(
+                    building.getErrorStream(),
+                    Charsets.UTF_8
+                    )
+                )
             );
             throw new BuildFailureException(
                 String.format(
