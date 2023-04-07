@@ -60,7 +60,7 @@ import org.eolang.parser.StUnhex;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class TranspileMojo extends SafeMojo implements CompilationStep {
+public final class TranspileMojo extends SafeMojo {
 
     /**
      * The directory where to transpile to.

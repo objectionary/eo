@@ -202,9 +202,12 @@ public final class DcsDepgraph implements Iterable<Dependency> {
                 final Collection<Dependency> all = new ArrayList<>(0);
                 if (Files.exists(this.file)) {
                     Logger.debug(this, String.format("Dependencies file: %s", this.file));
-                    final JsonReader reader = Json.createReader(Files.newBufferedReader(this.file));
-                    final JsonArray artifacts = reader.readObject()
-                        .getJsonArray("artifacts");
+                    final JsonArray artifacts;
+                    try (JsonReader reader =
+                        Json.createReader(Files.newBufferedReader(this.file))
+                    ) {
+                        artifacts = reader.readObject().getJsonArray("artifacts");
+                    }
                     for (final JsonValue artifact : artifacts) {
                         final JsonObject obj = artifact.asJsonObject();
                         final String group = obj.getString("groupId");

@@ -60,11 +60,11 @@ final class BinarizeMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                    " pub fn foo() -> Result<u32, u32> {",
+                    " pub fn foo() -> i32 {",
                     "  let mut rng = rand::thread_rng();",
                     "  print!(\"Hello world\");",
-                    "  let i = rng.gen::<u32>();",
-                    "  Ok(i)",
+                    "  let i = rng.gen::<i32>();",
+                    "  i",
                     "}"
             )
         );
@@ -95,14 +95,14 @@ final class BinarizeMojoTest {
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "use reo::universe::Universe;",
-                "pub fn foo() -> Result<u32, u32> {",
+                "pub fn foo() -> i32 {",
                 "print!(\"Hello world 1\");"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo() -> Result<u32, u32> {",
+                "pub fn foo() -> i32 {",
                 "print!(\"Hello 大 2\");"
                 )
         );

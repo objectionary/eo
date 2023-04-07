@@ -21,16 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
 /**
- * The compilation step may generate artifacts or files on the filesystem.
- *
- * @since 0.30
- * @todo #1842:90min We can add method 'outputDirectory()' in order to replace hardcoded static
- *  variables like ParseMojo.DIR, ResolveMojo.DIR, OptimizeMojo.DIR, CopyMojo.DIR,
- *  TranspileMojo.DIR, etc. The CompilationStep interface could also define other common behaviors
- *  shared among different Mojos.
+ * Creating rust project tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.rust_project.Project}.
  */
-interface CompilationStep {
-}
+package org.eolang.maven.rust_project;

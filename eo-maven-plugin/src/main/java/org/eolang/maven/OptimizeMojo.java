@@ -58,7 +58,7 @@ import org.eolang.parser.ParsingTrain;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class OptimizeMojo extends SafeMojo implements CompilationStep {
+public final class OptimizeMojo extends SafeMojo {
 
     /**
      * The directory where to transpile to.

@@ -58,7 +58,7 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo implements CompilationStep {
+public final class PullMojo extends SafeMojo {
 
     /**
      * The directory where to process to.
