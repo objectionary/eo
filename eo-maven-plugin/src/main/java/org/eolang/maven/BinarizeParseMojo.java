@@ -194,8 +194,12 @@ public final class BinarizeParseMojo extends SafeMojo {
      * @return Name for function.
      */
     private static String name(final String loc) {
-        final StringBuilder out = new StringBuilder(1 + 5 * loc.length());
-        out.append('f').append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
+        final String prefix = "f";
+        final int word = 4;
+        final StringBuilder out = new StringBuilder(
+            prefix.length() + loc.length() + word * loc.length()
+        );
+        out.append(prefix).append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
         for (final char chr: loc.toCharArray()) {
             out.append(
                 String.format(
