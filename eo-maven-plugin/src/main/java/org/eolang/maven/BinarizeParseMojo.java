@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.google.common.io.CharStreams;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -35,7 +34,6 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,33 +42,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.maven.rust_project.BuildFailureException;
 import org.eolang.maven.rust_project.Project;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
 
 /**
- * Compile binaries.
+ * Parse rust inserts.
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  */
 @Mojo(
-    name = "binarize",
+    name = "binarize_parse",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.LongVariable")
-public final class BinarizeMojo extends SafeMojo {
+public final class BinarizeParseMojo extends SafeMojo {
 
     /**
      * The directory where to binarize to.
@@ -108,42 +103,45 @@ public final class BinarizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-
-        final Path dest = targetDir.toPath().resolve("Lib");
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(dest.toFile());
-        Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
-        try {
-            building.waitFor();
-        } catch (final InterruptedException exception) {
-            throw new BuildFailureException(
-                String.format(
-                    "Interrupted while building %s",
-                    dest.toAbsolutePath()
-                ),
-                exception
-            );
+        final Collection<Tojo> sources = this.tojos.value().select(
+            row -> row.exists(AssembleMojo.ATTR_XMIR2)
+                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
+        );
+        final Project project = new Project(targetDir.toPath().resolve("Lib"));
+        for (final Tojo tojo : sources) {
+            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final XML input = new XMLDocument(file);
+            final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
+            for (final XML node: nodes) {
+                final String filename = String.format(
+                    "%s%s",
+                    name(node.xpath("@loc").get(0)),
+                    ".rs"
+                );
+                final Path target = BinarizeMojo.DIR
+                    .resolve(BinarizeMojo.CODES)
+                    .resolve(filename);
+                new Home(this.targetDir.toPath()).save(
+                    unhex(node.xpath("@code").get(0)),
+                    target
+                );
+                Logger.info(
+                    this,
+                    "Binarized %s from %s",
+                    filename,
+                    input.xpath("/program/@name").get(0)
+                );
+                project.add(
+                    name(node.xpath("@loc").get(0)),
+                    unhex(node.xpath("@code").get(0)),
+                    node.xpath("./dependencies/dependency/@name")
+                        .stream()
+                        .map(BinarizeParseMojo::unhex)
+                        .collect(Collectors.toList())
+                );
+            }
         }
-        if (building.exitValue() != 0) {
-            Logger.error(this, "There was an error in compilation");
-            Logger.error(
-                this,
-                CharStreams.toString(
-                    new InputStreamReader(
-                        building.getErrorStream(),
-                        Charsets.UTF_8
-                    )
-                )
-            );
-            throw new BuildFailureException(
-                String.format(
-                    "Failed to build cargo project with dest = %s",
-                    dest.toAbsolutePath()
-                )
-            );
-        }
+        project.save();
     }
 
     /**
