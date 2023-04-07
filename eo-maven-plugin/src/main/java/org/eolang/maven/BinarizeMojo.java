@@ -141,7 +141,7 @@ public final class BinarizeMojo extends SafeMojo {
                 );
             }
         }
-        project.build();
+        project.save().build();
     }
 
     /**

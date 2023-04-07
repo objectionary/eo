@@ -92,12 +92,7 @@ public final class Project {
         }
     }
 
-    /**
-     * Compile a project.
-     * @return Path to project.
-     * @throws IOException If any issues with I/O.
-     */
-    public Path build() throws IOException {
+    public Project save() throws IOException {
         this.footprint.save(
             String.format(
                 "src%clib",
@@ -107,6 +102,15 @@ public final class Project {
             () -> String.join(System.lineSeparator(), this.modules)
         );
         this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
+        return this;
+    }
+
+    /**
+     * Compile a project.
+     * @return Path to project.
+     * @throws IOException If any issues with I/O.
+     */
+    public Path build() throws IOException {
         final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
             .directory(this.dest.toFile());
         Logger.info(this, "Building rust project..");
