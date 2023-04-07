@@ -40,7 +40,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Test case for {@link BinarizeMojo}.
+ * Test case fo {@link BinarizeMojo}.
  *
  * @since 0.1
  */
