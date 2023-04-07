@@ -48,14 +48,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class BinarizeMojoTest {
 
     @Test
-    void binarizesSimpleEoProgram(@TempDir final Path temp) throws Exception {
+    void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
         }
         final Map<String, Path> res = maven
-            .execute(new FakeMaven.Binarize())
+            .execute(new FakeMaven.BinarizeParse())
             .result();
         final String rust = String.format(
             "target/binarize/codes/%s.rs",
@@ -86,7 +86,7 @@ final class BinarizeMojoTest {
             maven = new FakeMaven(temp).withProgram(src);
         }
         final Map<String, Path> res = maven
-            .execute(new FakeMaven.Binarize())
+            .execute(new FakeMaven.BinarizeParse())
             .result();
         final String one = String.format(
             "target/binarize/codes/%s.rs",
@@ -137,7 +137,7 @@ final class BinarizeMojoTest {
                 .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
         }
         final Map<String, Path> res = maven
-            .execute(new FakeMaven.Binarize())
+            .execute(new FakeMaven.BinarizeParse())
             .result();
         final String cargo = "target/Lib/Cargo.toml";
         final String lib = "target/Lib/src/lib.rs";

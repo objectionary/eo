@@ -23,16 +23,12 @@
  */
 package org.eolang.maven.rust_project;
 
-import com.google.common.io.CharStreams;
-import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.codec.Charsets;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtDefault;
 
@@ -92,7 +88,12 @@ public final class Project {
         }
     }
 
-    public Project save() throws IOException {
+    /**
+     * Saves the project to file system.
+     * @return Path to project.
+     * @throws IOException If any issues with I/O.
+     */
+    public Path save() throws IOException {
         this.footprint.save(
             String.format(
                 "src%clib",
@@ -102,48 +103,6 @@ public final class Project {
             () -> String.join(System.lineSeparator(), this.modules)
         );
         this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
-        return this;
-    }
-
-    /**
-     * Compile a project.
-     * @return Path to project.
-     * @throws IOException If any issues with I/O.
-     */
-    public Path build() throws IOException {
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(this.dest.toFile());
-        Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
-        try {
-            building.waitFor();
-        } catch (final InterruptedException exception) {
-            throw new BuildFailureException(
-                String.format(
-                    "Interrupted while building %s",
-                    this.dest.toAbsolutePath()
-                ),
-                exception
-            );
-        }
-        if (building.exitValue() != 0) {
-            Logger.error(this, "There was an error in compilation");
-            Logger.error(
-                this,
-                CharStreams.toString(
-                    new InputStreamReader(
-                    building.getErrorStream(),
-                    Charsets.UTF_8
-                    )
-                )
-            );
-            throw new BuildFailureException(
-                String.format(
-                    "Failed to build cargo project with dest = %s",
-                    this.dest.toAbsolutePath()
-                )
-            );
-        }
         return this.dest;
     }
 }
