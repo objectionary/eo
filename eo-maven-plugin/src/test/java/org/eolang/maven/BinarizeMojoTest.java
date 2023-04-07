@@ -167,6 +167,19 @@ final class BinarizeMojoTest {
     }
 
     @Test
+    void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+        }
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(new FakeMaven.Binarize())
+        );
+    }
+
+    @Test
     void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
         final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
         final FakeMaven maven;
