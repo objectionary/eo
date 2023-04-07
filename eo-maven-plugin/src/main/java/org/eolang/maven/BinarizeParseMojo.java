@@ -119,7 +119,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
-                    .resolve(BinarizeMojo.CODES)
+                    .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
                     unhex(node.xpath("@code").get(0)),
@@ -148,7 +148,6 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Creates a "rust" section in xml file and returns the resulting XML.
      * @param input The .xmir file
      * @return The content of rust section
-     * @throws IOException If any issues with I/O
      */
     private XML addRust(
         final XML input
@@ -156,7 +155,7 @@ public final class BinarizeParseMojo extends SafeMojo {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
-            BinarizeMojo.TRAIN,
+            BinarizeParseMojo.TRAIN,
             place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
         return new Xsline(trn).pass(input);
@@ -196,8 +195,9 @@ public final class BinarizeParseMojo extends SafeMojo {
     private static String name(final String loc) {
         final String prefix = "f";
         final int word = 4;
+        final int capacity = prefix.length() + loc.length() + word * loc.length();
         final StringBuilder out = new StringBuilder(
-            prefix.length() + loc.length() + word * loc.length()
+            capacity
         );
         out.append(prefix).append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
         for (final char chr: loc.toCharArray()) {

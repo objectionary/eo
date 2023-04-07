@@ -25,23 +25,17 @@ package org.eolang.maven;
 
 import com.google.common.io.CharStreams;
 import com.jcabi.log.Logger;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrBulk;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.Train;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import org.apache.commons.codec.Charsets;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.rust_project.BuildFailureException;
-import org.eolang.parser.ParsingTrain;
 
 /**
  * Compile binaries.
@@ -62,24 +56,6 @@ public final class BinarizeMojo extends SafeMojo {
      * The directory where to binarize to.
      */
     public static final Path DIR = Paths.get("binarize");
-
-    /**
-     * The directory with generated .rs files.
-     */
-    public static final Path CODES = Paths.get("codes");
-
-    /**
-     * Parsing train with XSLs.
-     */
-    static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(
-            new ParsingTrain()
-                .empty()
-        ),
-        Arrays.asList(
-            "/org/eolang/maven/add_rust/add_rust.xsl"
-        )
-    ).back().back();
 
     /**
      * Target directory.
