@@ -71,12 +71,12 @@ public final class Coordinates implements Comparable<Coordinates> {
 
     @Override
     public int compareTo(@Nonnull final Coordinates other) {
-        return this.toString().compareTo(other.toString());
+        return this.toString().compareTo(String.valueOf(other));
     }
 
     @Override
     public boolean equals(@Nonnull final Object other) {
-        return this.toString().equals(other.toString());
+        return this.toString().equals(String.valueOf(other));
     }
 
     @Override

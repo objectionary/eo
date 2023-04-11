@@ -35,12 +35,6 @@ import org.eolang.maven.footprint.FtDefault;
 /**
  * To create the cargo project.
  * @since 1.0
- * @todo #1877:90min Transform source rust file by changing name of
- *  function in it to jni standard. It also necessary to add required
- *  headers and imports related to jni.
- * @todo #1877:90min Build the rust project via 'cargo build' command.
- *  Thins command must be called from right directory. Think of correct
- *  compilation errors handling.
  */
 public final class Project {
     /**
@@ -87,26 +81,7 @@ public final class Project {
         this.modules.add(
             String.format("pub mod %s;", name)
         );
-        this.footprint.save(
-            String.format(
-                "src%c%s",
-                File.separatorChar,
-                name
-            ),
-            "rs",
-            () ->
-                raw.replaceFirst(
-                    String.format(
-                        "%s[ ]*pub[ ]+fn[ ]+foo\\(\\)[ ]+->[ ]*Result<u32,[ ]*u32>[ ]*\\{",
-                        System.lineSeparator()
-                        ),
-                    String.format(
-                        "%spub fn %s() -> Result<u32, u32> {",
-                        System.lineSeparator(),
-                        name
-                    )
-                )
-        );
+        new Module(raw, name).save(this.footprint);
         for (final String crate: crates) {
             final String[] split = crate.split("[=:]");
             this.cargo.add(split[0], split[1].replace("\"", "").trim());
@@ -114,11 +89,11 @@ public final class Project {
     }
 
     /**
-     * Compile a project.
+     * Saves the project to file system.
      * @return Path to project.
      * @throws IOException If any issues with I/O.
      */
-    public Path build() throws IOException {
+    public Path save() throws IOException {
         this.footprint.save(
             String.format(
                 "src%clib",

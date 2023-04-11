@@ -1,10 +1,11 @@
 +package org.eolang.custom
 +version 0.0.0
 
-[] > creates-object
+[] > incorrect-code
   QQ.rust > r
     """
     use rand::Rng;
+    use nonexistent::fun
 
     pub fn foo() -> i32 {
       let mut rng = rand::thread_rng();
@@ -15,5 +16,6 @@
     """
     *
       "rand= \"0.5.5\""
+      "nonexistent = -5"
   TRUE > @
 
