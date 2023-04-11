@@ -92,6 +92,49 @@ final class PlaceMojoTest {
     }
 
     @Test
+    void placesOnlyClassesFromPackageThatHaveSources(@TempDir final Path temp) throws IOException {
+        final String sources = String.format("%s/org/eolang/txt/x.eo", CopyMojo.DIR);
+        final String first = "EOorg/EOeolang/EOtxt/x.java";
+        final String second = "EOorg/EOeolang/EOtxt/y&z.java";
+        final String another = "EOorg/EOeolang/EObool.java";
+        final String unexpected = "EOfoo/x.foo";
+        PlaceMojoTest.saveBinary(temp, sources);
+        PlaceMojoTest.saveBinary(temp, first);
+        PlaceMojoTest.saveBinary(temp, second);
+        PlaceMojoTest.saveBinary(temp, unexpected);
+        PlaceMojoTest.saveBinary(temp, another);
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .with("placeBinariesThatHaveSources", true)
+                .execute(PlaceMojo.class)
+                .result(),
+            Matchers.allOf(
+                Matchers.not(
+                    Matchers.hasKey(String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, sources))
+                ),
+                Matchers.not(
+                    Matchers.hasKey(
+                        String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, unexpected)
+                    )
+                ),
+                Matchers.not(
+                    Matchers.hasKey(
+                        String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, another)
+                    )
+                ),
+                Matchers.hasKey(
+                    String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, first)
+                )
+                ,
+                Matchers.hasKey(
+                    String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, second)
+                )
+
+            )
+        );
+    }
+
+    @Test
     void skipsAlreadyPlacedBinaries(@TempDir final Path temp) throws IOException {
         final String binary = "org/eolang/f/x.a.class";
         PlaceMojoTest.saveBinary(temp, binary);

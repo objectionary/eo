@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -84,6 +85,14 @@ public final class PlaceMojo extends SafeMojo {
      */
     @Parameter
     private Set<String> excludeBinaries = new SetOf<>();
+
+    /**
+     * Place only binaries that have sources.
+     * @since 0.31
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private boolean placeBinariesThatHaveSources;
 
     /**
      * Placed cached tojos.
@@ -185,6 +194,7 @@ public final class PlaceMojo extends SafeMojo {
                 .stream()
                 .filter(this::isNotEoSource)
                 .filter(this::isNotAlreadyPlaced)
+                .filter(this::hasEoSource)
                 .peek(this::printLogInfoAboutBinary)
                 .peek(this::placeBinary)
                 .count();
@@ -208,6 +218,20 @@ public final class PlaceMojo extends SafeMojo {
                 res = true;
             }
             return res;
+        }
+
+        private boolean hasEoSource(final Path file) {
+            final boolean result;
+            if (PlaceMojo.this.placeBinariesThatHaveSources) {
+                final Path sources = this.dir.resolve(CopyMojo.DIR)
+                    .resolve(this.dir.relativize(file.getParent())
+                        .toString().replace("EO", ""));
+                result = Files.exists(sources) && Files.isDirectory(sources)
+                    && Arrays.stream(sources.toFile().listFiles()).filter(File::isFile).count() > 0;
+            } else {
+                result = true;
+            }
+            return result;
         }
 
         /**

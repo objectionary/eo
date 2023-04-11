@@ -247,6 +247,14 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(defaultValue = "${plugin}", readonly = true)
     private PluginDescriptor plugin;
 
+    /**
+     * Place only binaries that have sources.
+     * @since 0.31
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    private boolean placeBinariesThatHaveSources;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
