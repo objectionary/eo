@@ -185,17 +185,7 @@
       positive-infinity.times 0.0
     $.equal-to nan.as-bytes
 
-[] > positive-infinity-times-float-zero-bug-search
-  as-bytes. > x!
-    positive-infinity.times 0.0
-  assert-that > @
-    x
-    $.equal-to
-      as-bytes.
-        positive-infinity.times
-          0.0
-
-[] > float-equal-to-nan-and-infinites-is-false
+[] > float-equal-to-nan-and-infinites-is-false-highload
   assert-that > @
     and.
       (0.0.eq nan).eq FALSE
