@@ -47,7 +47,7 @@ final class BinarizeMojoTest {
      * @throws Exception If fails.
      * @todo #1829:30min BinarizeMojoTest.binarizesWithoutErrors() fails sometimes.
      *  Apparently, the test was merged without appropriate checks verification.
-     *  The test should be fixed and enabled.
+     *  The test should be fixed and then enabled.
      */
     @Test
     @Disabled
