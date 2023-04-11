@@ -149,7 +149,6 @@ public final class ResolveMojo extends SafeMojo {
             this.central = new Central(this.project, this.session, this.manager);
         }
         final Collection<Dependency> deps = this.deps();
-        System.out.println("DEPENDENCIES TO DOWNLOAD: " + deps);
         for (final Dependency dep : deps) {
             String classifier = dep.getClassifier();
             if (classifier == null || classifier.isEmpty()) {

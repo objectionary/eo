@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -87,11 +88,12 @@ public final class PlaceMojo extends SafeMojo {
     private Set<String> excludeBinaries = new SetOf<>();
 
     /**
-     * Place only binaries that have sources.
+     * Place only binaries that have EO sources inside jar.
      * @since 0.31
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
+    @SuppressWarnings("PMD.LongVariable")
     private boolean placeBinariesThatHaveSources;
 
     /**
@@ -220,15 +222,39 @@ public final class PlaceMojo extends SafeMojo {
             return res;
         }
 
+        /**
+         * Check whether the binary file has corresponding EO sources in the jar.
+         * The method checks ONLY EO binaries and classes. All other java files or classes in jar
+         * will be included anyway.
+         * Let's consider the next filesystem structure.
+         * Source file:
+         * - "EO-SOURCE/org/eolang/txt/x.eo" -
+         *
+         * Correct:
+         * - "EOorg/EOeolang/EOtxt/x.class" - is correct since has corresponding EO source folder
+         * - "EOorg/EOeolang/EOtxt/y&z.class" - is correct since has corresponding EO source folder
+         * - "com/sun/jna/Callback.class" - is correct since binary file is not in EOorg folder
+         *
+         * Is incorrect (since has no corresponding EO source folder):
+         * - "EOorg/EOeolang/EObool.class"
+         * - "EOorg/x.class"
+         *
+         * The filter is disabled by default, works only if the parameter
+         * "placeBinariesThatHaveSources" is set to true.
+         *
+         * @param file The file to check.
+         * @return True if the file has corresponding EO sources.
+         */
         private boolean hasEoSource(final Path file) {
             final boolean result;
-            if (PlaceMojo.this.placeBinariesThatHaveSources
-                && file.toString().contains("EOorg")) {
+            if (PlaceMojo.this.placeBinariesThatHaveSources && file.toString().contains("EOorg")) {
                 final Path sources = this.dir.resolve(CopyMojo.DIR)
-                    .resolve(this.dir.relativize(file.getParent())
-                        .toString().replace("EO", ""));
-                result = Files.exists(sources) && Files.isDirectory(sources)
-                    && Arrays.stream(sources.toFile().listFiles()).filter(File::isFile).count() > 0;
+                    .resolve(this.dir.relativize(file.getParent()).toString().replace("EO", ""));
+                result = Files.exists(sources)
+                    && Files.isDirectory(sources)
+                    && Arrays.stream(sources.toFile().listFiles())
+                    .filter(Objects::nonNull)
+                    .filter(File::isFile).count() > 0;
             } else {
                 result = true;
             }

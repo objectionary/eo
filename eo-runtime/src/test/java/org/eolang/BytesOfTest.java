@@ -75,7 +75,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void checksPositiveInfinity(){
+    void checksPositiveInfinity() {
         MatcherAssert.assertThat(
             new BytesOf(1.0d / 0.0d).asNumber(Double.class),
             Matchers.equalTo(Double.POSITIVE_INFINITY)
@@ -83,7 +83,7 @@ final class BytesOfTest {
     }
 
     @Test
-    void checksNegativeInfinity(){
+    void checksNegativeInfinity() {
         MatcherAssert.assertThat(
             new BytesOf(-1.0d / 0.0d).asNumber(Double.class),
             Matchers.equalTo(Double.NEGATIVE_INFINITY)

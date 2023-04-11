@@ -73,7 +73,6 @@ public final class PlacedTojosCache {
      * @param dep Dependency.
      */
     public void placeClass(final Path target, final String related, final String dep) {
-        System.out.printf("PLACED CLASS: %s\t%s\t%s\n", target, related, dep);
         final PlacedTojo tojo = this.origin.placeClass(target, related, dep);
         this.cache.value().putIfAbsent(target.toString(), tojo);
     }
