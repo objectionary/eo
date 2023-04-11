@@ -94,15 +94,17 @@ final class PlaceMojoTest {
     @Test
     void placesOnlyClassesFromPackageThatHaveSources(@TempDir final Path temp) throws IOException {
         final String sources = String.format("%s/org/eolang/txt/x.eo", CopyMojo.DIR);
-        final String first = "EOorg/EOeolang/EOtxt/x.java";
-        final String second = "EOorg/EOeolang/EOtxt/y&z.java";
-        final String another = "EOorg/EOeolang/EObool.java";
-        final String unexpected = "EOfoo/x.foo";
+        final String first = "EOorg/EOeolang/EOtxt/x.class";
+        final String second = "EOorg/EOeolang/EOtxt/y&z.class";
+        final String another = "EOorg/EOeolang/EObool.class";
+        final String unexpected = "EOorg/x.class";
+        final String kek = "com/sun/jna/Callback.class";
         PlaceMojoTest.saveBinary(temp, sources);
         PlaceMojoTest.saveBinary(temp, first);
         PlaceMojoTest.saveBinary(temp, second);
         PlaceMojoTest.saveBinary(temp, unexpected);
         PlaceMojoTest.saveBinary(temp, another);
+        PlaceMojoTest.saveBinary(temp, kek);
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .with("placeBinariesThatHaveSources", true)
@@ -123,13 +125,15 @@ final class PlaceMojoTest {
                     )
                 ),
                 Matchers.hasKey(
+                    String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, kek)
+                ),
+                Matchers.hasKey(
                     String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, first)
                 )
                 ,
                 Matchers.hasKey(
                     String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, second)
                 )
-
             )
         );
     }

@@ -222,7 +222,8 @@ public final class PlaceMojo extends SafeMojo {
 
         private boolean hasEoSource(final Path file) {
             final boolean result;
-            if (PlaceMojo.this.placeBinariesThatHaveSources) {
+            if (PlaceMojo.this.placeBinariesThatHaveSources
+                && file.toString().contains("EOorg")) {
                 final Path sources = this.dir.resolve(CopyMojo.DIR)
                     .resolve(this.dir.relativize(file.getParent())
                         .toString().replace("EO", ""));
