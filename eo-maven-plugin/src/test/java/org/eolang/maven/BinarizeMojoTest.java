@@ -41,7 +41,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 final class BinarizeMojoTest {
 
     /**
-     * BinarizeMojo can binarize without errors.
+     * BinarizeMojo binarizes without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
      */
