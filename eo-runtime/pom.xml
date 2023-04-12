@@ -133,6 +133,7 @@ SOFTWARE.
                 <glob>EOorg/EOeolang/EOfs/**</glob>
               </removeBinaries>
               <withRuntimeDependency>false</withRuntimeDependency>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
           <execution>
@@ -153,6 +154,7 @@ SOFTWARE.
                 ${project.basedir}/target/generated-test-sources
               </generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
         </executions>

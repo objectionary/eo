@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
@@ -82,20 +83,16 @@ public final class FtDefault implements Footprint {
      * @param ext File extension
      * @return List of files
      * @throws IOException In case of IO issues
-     * @todo #1897:30m Close `Stream` object in `FtDefault`.
-     *  Connections, streams, files, and other classes that implement the
-     *  Closeable interface or its super-interface,
-     *  AutoCloseable, needs to be closed after use.
-     *  Use try-with-resources or close this "Stream" in a "finally" clause.. (line 90)
      */
     @Override
     public List<Path> list(final String ext) throws IOException {
         final List<Path> res;
         if (Files.exists(this.main)) {
-            res = Files.walk(this.main)
-                .filter(Files::isRegularFile)
-                .filter(path -> path.toString().endsWith(ext))
-                .collect(Collectors.toList());
+            try (Stream<Path> walk = Files.walk(this.main)) {
+                res = walk.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(ext))
+                    .collect(Collectors.toList());
+            }
         } else {
             res = Collections.emptyList();
         }

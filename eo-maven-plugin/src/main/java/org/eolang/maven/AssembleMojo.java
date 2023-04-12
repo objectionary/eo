@@ -48,7 +48,7 @@ import org.eolang.maven.objectionary.Objectionary;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.UnusedPrivateField")
+@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.TooManyFields"})
 public final class AssembleMojo extends SafeMojo {
 
     /**
@@ -246,6 +246,15 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
     private PluginDescriptor plugin;
+
+    /**
+     * Place only binaries that have EO sources inside jar.
+     * @since 0.31
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean placeBinariesThatHaveSources;
 
     @Override
     public void exec() throws IOException {

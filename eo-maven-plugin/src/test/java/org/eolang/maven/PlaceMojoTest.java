@@ -27,8 +27,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.ArrayUtils;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -86,7 +89,49 @@ final class PlaceMojoTest {
                 .execute(PlaceMojo.class)
                 .result(),
             Matchers.not(
-                Matchers.hasKey(String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, expected))
+                Matchers.hasKey(PlaceMojoTest.expectedTargetClass(expected))
+            )
+        );
+    }
+
+    @Test
+    void placesOnlyClassesFromPackageThatHaveSources(@TempDir final Path temp) throws IOException {
+        final String sources = String.format("%s/org/eolang/txt/x.eo", CopyMojo.DIR);
+        final String[] expected = {
+            "EOorg/EOeolang/EOtxt/x.class",
+            "EOorg/EOeolang/EOtxt/y&z.class",
+            "com/sun/jna/Callback.class",
+        };
+        final String[] unexpected = {
+            "EOorg/EOeolang/EObool.class",
+            "EOorg/x.class",
+        };
+        PlaceMojoTest.saveBinary(temp, sources);
+        for (final String binary : ArrayUtils.addAll(expected, unexpected)) {
+            PlaceMojoTest.saveBinary(temp, binary);
+        }
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .with("placeBinariesThatHaveSources", true)
+                .execute(PlaceMojo.class)
+                .result(),
+            Matchers.allOf(
+                Matchers.not(
+                    Matchers.hasKey(PlaceMojoTest.expectedTargetClass(sources))
+                ),
+                Matchers.allOf(
+                    Arrays.stream(unexpected)
+                        .map(PlaceMojoTest::expectedTargetClass)
+                        .map(Matchers::hasKey)
+                        .map(Matchers::not)
+                        .collect(Collectors.toList())
+                ),
+                Matchers.allOf(
+                    Arrays.stream(expected)
+                        .map(PlaceMojoTest::expectedTargetClass)
+                        .map(Matchers::hasKey)
+                        .collect(Collectors.toList())
+                )
             )
         );
     }
@@ -320,5 +365,14 @@ final class PlaceMojoTest {
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
         final Home home = new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
         return home.absolute(Paths.get(binary));
+    }
+
+    /**
+     * Expected target class.
+     * @param expected Expected class.
+     * @return Expected target class.
+     */
+    private static String expectedTargetClass(final String expected) {
+        return String.format("%s/%s", PlaceMojoTest.TARGET_CLASSES, expected);
     }
 }
