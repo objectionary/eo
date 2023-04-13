@@ -51,13 +51,13 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
     static {
-        final String ext;
+        final String lib;
         if (SystemUtils.IS_OS_WINDOWS) {
-            ext = "dll";
+            lib = "common.dll";
         } else if (SystemUtils.IS_OS_LINUX) {
-            ext = "so";
+            lib = "libcommon.so";
         } else if (SystemUtils.IS_OS_MAC) {
-            ext = "dylib";
+            lib = "libcommon.dylib";
         } else {
             throw new NotImplementedException(
                 "other os are not implemented"
@@ -69,7 +69,7 @@ public class EOrust extends PhDefault {
                 .resolve("Lib")
                 .resolve("target")
                 .resolve("debug")
-                .resolve("libcommon.".concat(ext))
+                .resolve(lib)
                 .toAbsolutePath()
                 .toString()
         );
