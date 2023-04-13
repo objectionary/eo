@@ -25,19 +25,18 @@ package org.eolang.maven.dependencies;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import org.apache.maven.model.Dependency;
-import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Coordinates;
 import org.eolang.maven.ParseMojo;
+import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -50,7 +49,7 @@ public final class DcsDefault implements Iterable<Dependency> {
     /**
      * List of tojos.
      */
-    private final Tojos tojos;
+    private final ForeignTojos tojos;
 
     /**
      * Discover self too.
@@ -68,60 +67,55 @@ public final class DcsDefault implements Iterable<Dependency> {
      * @param self Self
      * @param skip Skip
      */
-    public DcsDefault(final Tojos tjs, final boolean self,
-        final boolean skip) {
-        this.tojos = tjs;
+    public DcsDefault(
+        final Tojos tjs,
+        final boolean self,
+        final boolean skip
+    ) {
+        this.tojos = new ForeignTojos(() -> tjs);
         this.discover = self;
         this.skip = skip;
     }
 
     @Override
     public Iterator<Dependency> iterator() {
-        final Collection<Tojo> list = this.tojos.select(
-            t -> t.exists(AssembleMojo.ATTR_XMIR)
-                && t.exists(AssembleMojo.ATTR_VERSION)
-                && !t.exists(AssembleMojo.ATTR_JAR)
-        );
+        final Collection<ForeignTojo> list = this.tojos.dependencies();
         Logger.debug(
             this, "%d suitable tojo(s) found out of %d",
-            list.size(), this.tojos.select(t -> true).size()
+            list.size(), this.tojos.size()
         );
         final Collection<Dependency> deps = new HashSet<>(0);
-        for (final Tojo tojo : list) {
-            if (ParseMojo.ZERO.equals(tojo.get(AssembleMojo.ATTR_VERSION))
+        for (final ForeignTojo tojo : list) {
+            if (ParseMojo.ZERO.equals(tojo.version())
                 && !this.discover) {
                 Logger.debug(
-                    this, "Program %s/%s skipped due to its zero version",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
+                    this,
+                    "Program %s skipped due to its zero version",
+                    tojo.shortDescription()
                 );
                 continue;
             }
-            final Optional<Dependency> opt = DcsDefault.artifact(
-                Paths.get(tojo.get(AssembleMojo.ATTR_XMIR))
-            );
+            final Optional<Dependency> opt = DcsDefault.artifact(tojo.xmir());
             if (!opt.isPresent()) {
-                Logger.debug(
-                    this, "No dependencies for %s/%s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION)
-                );
+                Logger.debug(this, "No dependencies for %s", tojo.shortDescription());
                 continue;
             }
             final Dependency dep = opt.get();
             if (this.skip && ParseMojo.ZERO.equals(dep.getVersion())) {
                 Logger.debug(
-                    this, "Zero-version dependency for %s/%s skipped: %s",
-                    tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
+                    this, "Zero-version dependency for %s skipped: %s",
+                    tojo.shortDescription(),
                     new Coordinates(dep)
                 );
                 continue;
             }
             Logger.info(
-                this, "Dependency found for %s/%s: %s",
-                tojo.get(Tojos.KEY), tojo.get(AssembleMojo.ATTR_VERSION),
+                this, "Dependency found for %s: %s",
+                tojo.shortDescription(),
                 new Coordinates(dep)
             );
             deps.add(dep);
-            tojo.set(AssembleMojo.ATTR_JAR, new Coordinates(dep));
+            tojo.withJar(new Coordinates(dep));
         }
         return deps.iterator();
     }

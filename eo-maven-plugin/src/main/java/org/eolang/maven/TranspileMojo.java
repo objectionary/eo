@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
@@ -37,13 +36,13 @@ import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
@@ -130,13 +129,10 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
-        );
+        final Collection<ForeignTojo> sources = this.tojos.scoped(this.scope);
         int saved = 0;
-        for (final Tojo tojo : sources) {
-            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        for (final ForeignTojo tojo : sources) {
+            final Path file = tojo.xmirSecond();
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
             final Place place = new Place(name);
@@ -144,7 +140,7 @@ public final class TranspileMojo extends SafeMojo {
                 this.targetDir.toPath().resolve(TranspileMojo.DIR),
                 TranspileMojo.EXT
             );
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
+            final Path src = tojo.eolangObject();
             if (
                 target.toFile().exists()
                     && target.toFile().lastModified() >= file.toFile().lastModified()
@@ -156,7 +152,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
             } else {
                 final List<Path> paths = this.transpile(src, input, target);
-                paths.forEach(p -> this.transpiledTojos.add(p, tojo.get(AssembleMojo.ATTR_XMIR2)));
+                paths.forEach(p -> this.transpiledTojos.add(p, file));
                 saved += paths.size();
             }
         }
@@ -194,7 +190,7 @@ public final class TranspileMojo extends SafeMojo {
         final Path target
     ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
-        final int removed = this.removeTranspiled(src);
+        final long removed = this.removeTranspiled(src);
         if (removed > 0) {
             Logger.debug(
                 this,
@@ -223,15 +219,10 @@ public final class TranspileMojo extends SafeMojo {
      * @param src The eo path
      * @return Count of removed files
      */
-    private int removeTranspiled(final Path src) {
-        final Collection<Tojo> existed = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_EO).equals(src.toString())
-        );
-        int count = 0;
-        for (final Tojo exist : existed) {
-            count += this.transpiledTojos.remove(exist.get(AssembleMojo.ATTR_XMIR2));
-        }
-        return count;
+    private long removeTranspiled(final Path src) {
+        return this.tojos.forEo(src).stream()
+            .map(ForeignTojo::xmirSecond)
+            .mapToLong(this.transpiledTojos::remove)
+            .sum();
     }
 }
