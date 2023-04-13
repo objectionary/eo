@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
- * @todo #1326 Generate this file at compile phase
+ * @todo #1326:90min Generate this file at compile phase
  *  instead of keep it here. It allows to call any
  *  rust insert depending on its location.
  * @checkstyle MethodNameCheck (100 lines)
