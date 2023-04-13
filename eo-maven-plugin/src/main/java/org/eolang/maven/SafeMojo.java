@@ -43,7 +43,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.ScopedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
@@ -181,10 +181,8 @@ abstract class SafeMojo extends AbstractMojo {
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> tojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
-        )
+    protected final ForeignTojos tojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
     );
 
     /**
@@ -256,7 +254,7 @@ abstract class SafeMojo extends AbstractMojo {
                 );
             } finally {
                 if (this.foreign != null) {
-                    SafeMojo.closeTojos(this.tojos.value());
+                    SafeMojo.closeTojos(this.tojos);
                 }
                 if (this.placed != null) {
                     SafeMojo.closeTojos(this.placedTojos);

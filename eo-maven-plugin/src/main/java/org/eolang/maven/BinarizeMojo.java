@@ -79,6 +79,7 @@ public final class BinarizeMojo extends SafeMojo {
         try {
             building.waitFor();
         } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
             throw new BuildFailureException(
                 String.format(
                     "Interrupted while building %s",
