@@ -44,7 +44,7 @@ public final class ForeignTojo {
      * Ctor.
      * @param original The delegate.
      */
-    ForeignTojo(final Tojo original) {
+    public ForeignTojo(final Tojo original) {
         this.delegate = original;
     }
 

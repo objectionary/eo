@@ -28,6 +28,7 @@ import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.eolang.maven.AssembleMojo;
 
 /**
@@ -60,7 +61,6 @@ public final class ScopedTojos implements Tojos {
         this.scope = scope;
     }
 
-    @Override
     public Tojo add(final String name) {
         final Tojo tojo = this.unscoped.add(name);
         if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
@@ -69,7 +69,6 @@ public final class ScopedTojos implements Tojos {
         return tojo;
     }
 
-    @Override
     public List<Tojo> select(final Predicate<Tojo> filter) {
         return this.unscoped.select(
             t -> filter.test(t)
@@ -78,7 +77,10 @@ public final class ScopedTojos implements Tojos {
         );
     }
 
-    @Override
+    public ForeignTojos toForeignTojos() {
+        return new ForeignTojos(() -> this);
+    }
+
     public void close() throws IOException {
         this.unscoped.close();
     }

@@ -122,7 +122,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * Foreign tojo attributes.
      */
-    enum Attribute {
+    public enum Attribute {
 
         /**
          * Tojo id.
@@ -209,7 +209,7 @@ public final class ForeignTojos implements Closeable {
          * Get the attribute name.
          * @return The attribute name.
          */
-        String key() {
+        public String key() {
             return this.key;
         }
     }

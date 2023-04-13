@@ -271,7 +271,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final Tojos scopedTojos() {
+    protected final ScopedTojos scopedTojos() {
         return new ScopedTojos(this.tojos.value(), this.scope);
     }
 

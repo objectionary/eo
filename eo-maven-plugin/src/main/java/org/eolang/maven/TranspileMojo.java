@@ -38,11 +38,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
@@ -129,7 +131,9 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<ForeignTojo> sources = this.tojos.scoped(this.scope);
+        final Collection<ForeignTojo> sources = this.scopedTojos().select(
+            row -> row.exists(ForeignTojos.Attribute.XMIR_2.key())
+        ).stream().map(ForeignTojo::new).collect(Collectors.toList());
         int saved = 0;
         for (final ForeignTojo tojo : sources) {
             final Path file = tojo.xmirSecond();
@@ -220,7 +224,9 @@ public final class TranspileMojo extends SafeMojo {
      * @return Count of removed files
      */
     private long removeTranspiled(final Path src) {
-        return this.tojos.forEo(src).stream()
+        return this.scopedTojos()
+            .toForeignTojos()
+            .forEo(src).stream()
             .map(ForeignTojo::xmirSecond)
             .mapToLong(this.transpiledTojos::remove)
             .sum();
