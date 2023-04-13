@@ -225,7 +225,6 @@ public final class TranspileMojo extends SafeMojo {
      */
     private long removeTranspiled(final Path src) {
         return this.scopedTojos()
-            .toForeignTojos()
             .forEo(src).stream()
             .map(ForeignTojo::xmirSecond)
             .mapToLong(this.transpiledTojos::remove)
