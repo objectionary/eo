@@ -23,7 +23,7 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (8 lines)
  */
 package EOorg.EOeolang;
 
@@ -41,6 +41,9 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
+ * @todo #1326 Generate this file at compile phase
+ *  instead of keep it here. It allows to call any
+ *  rust insert depending on its location.
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
