@@ -183,10 +183,21 @@
       list
         * 1 2 3
 
-[] > gets-lengths-of-empty-tuple-keyword
+[] > gets-lengths-of-empty-tuple-asterisk
   assert-that > @
     *.length
     $.equal-to 0
+
+[] > gets-lengths-of-empty-tuple
+  assert-that > @
+    tuple.length
+    $.equal-to 0
+
+[] > creates-empty-tuple-with-number
+  tuple.with 3 > a
+  assert-that > @
+    a.at 0
+    $.equal-to 3
 
 [] > tuple-fluent-with-indented-keyword
   *
