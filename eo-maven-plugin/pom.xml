@@ -250,13 +250,11 @@ SOFTWARE.
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>31.1-jre</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.moandjiezana.toml</groupId>
       <artifactId>toml4j</artifactId>
       <version>0.7.2</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
