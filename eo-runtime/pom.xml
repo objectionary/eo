@@ -89,6 +89,12 @@ SOFTWARE.
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -103,6 +109,7 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
         </configuration>
       </plugin>
       <plugin>
@@ -143,6 +150,7 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>
