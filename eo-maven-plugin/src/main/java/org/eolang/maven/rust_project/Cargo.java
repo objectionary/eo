@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.rust_project;
 
-import com.google.common.collect.ImmutableMap;
 import com.moandjiezana.toml.TomlWriter;
 import java.io.File;
 import java.io.IOException;
@@ -60,13 +59,21 @@ public class Cargo {
      * @param name Name of lib.
      */
     public Cargo(final String name) {
-        this.pack = ImmutableMap.of(
-            "name", name,
-            "version", "0.1.0",
-            "edition", "2021"
+        this.pack = Stream.of(
+            new AbstractMap.SimpleEntry<>("name", name),
+            new AbstractMap.SimpleEntry<>("version", "0.1.0"),
+            new AbstractMap.SimpleEntry<>("edition", "2021")
+        ).collect(
+            Collectors.toMap(
+                AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue
+            )
         );
-        this.lib = ImmutableMap.of(
-            "crate-type", Collections.singleton("cdylib")
+        this.lib = Stream.of(
+            new AbstractMap.SimpleEntry<>("crate-type", Collections.singleton("cdylib"))
+        ).collect(
+            Collectors.toMap(
+                AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue
+            )
         );
         this.dependencies = Stream.of(
             new AbstractMap.SimpleEntry<>("jni", "0.21.1")
