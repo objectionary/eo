@@ -109,6 +109,7 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
+          <!-- Activate the use of TCP in order to save native stdout -->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
         </configuration>
       </plugin>
