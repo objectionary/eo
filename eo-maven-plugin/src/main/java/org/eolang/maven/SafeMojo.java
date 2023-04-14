@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +44,6 @@ import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
-import org.eolang.maven.tojos.ScopedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -182,7 +180,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final ForeignTojos tojos = new ForeignTojos(
-        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
+        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+        this.scope
     );
 
     /**
@@ -271,8 +270,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final Tojos scopedTojos() {
-        return new ScopedTojos(this.tojos.value(), this.scope);
+    protected final ForeignTojos scopedTojos() {
+        return this.tojos;
     }
 
     /**

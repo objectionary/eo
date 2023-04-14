@@ -103,9 +103,8 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.value().select(
+        final Collection<Tojo> sources = this.scopedTojos().select(
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
         );
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
         for (final Tojo tojo : sources) {

@@ -23,22 +23,25 @@
  */
 package org.eolang.maven.tojos;
 
+import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.AssembleMojo;
 
 /**
  * Foreign tojos.
  *
  * @since 0.30
  */
-public final class ForeignTojos implements Closeable {
+public final class ForeignTojos implements Tojos {
 
     /**
      * The delegate.
@@ -46,11 +49,18 @@ public final class ForeignTojos implements Closeable {
     private final Unchecked<Tojos> tojos;
 
     /**
+     * Scope.
+     */
+    private final String scope;
+
+    /**
      * Ctor.
      * @param scalar Scalar
+     * @param scope Scope
      */
-    public ForeignTojos(final Scalar<Tojos> scalar) {
+    public ForeignTojos(final Scalar<Tojos> scalar, final String scope) {
         this.tojos = new Unchecked<>(new Sticky<>(scalar));
+        this.scope = scope;
     }
 
     @Override
@@ -73,19 +83,22 @@ public final class ForeignTojos implements Closeable {
             .collect(Collectors.toList());
     }
 
-    /**
-     * Get the tojos for the given scope.
-     * @param scope The scope.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> scoped(final String scope) {
-        return this.tojos.value()
-            .select(
-                row -> row.exists(Attribute.XMIR_2.key())
-                    && row.get(Attribute.SCOPE.key()).equals(scope)
-            ).stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+    @Override
+    public Tojo add(final String name) {
+        final Tojo tojo = this.tojos.value().add(name);
+        if (!tojo.exists(Attribute.SCOPE.key())) {
+            tojo.set(Attribute.SCOPE.key(), this.scope);
+        }
+        return tojo;
+    }
+
+    @Override
+    public List<Tojo> select(final Predicate<Tojo> filter) {
+        return this.tojos.value().select(
+            t -> filter.test(t)
+                && (t.get(AssembleMojo.ATTR_SCOPE).equals(this.scope) || "test".equals(this.scope)
+            )
+        );
     }
 
     /**
@@ -122,7 +135,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * Foreign tojo attributes.
      */
-    enum Attribute {
+    public enum Attribute {
 
         /**
          * Tojo id.
@@ -209,7 +222,7 @@ public final class ForeignTojos implements Closeable {
          * Get the attribute name.
          * @return The attribute name.
          */
-        String key() {
+        public String key() {
             return this.key;
         }
     }

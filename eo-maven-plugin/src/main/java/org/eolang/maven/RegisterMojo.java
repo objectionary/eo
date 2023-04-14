@@ -110,7 +110,7 @@ public final class RegisterMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
-        final int before = this.tojos.size();
+        final int before = this.scopedTojos().size();
         if (before > 0) {
             Logger.info(this, "There are %d EO sources registered already", before);
         }
