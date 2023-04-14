@@ -60,7 +60,10 @@ public class EOrust extends PhDefault {
             lib = "libcommon.dylib";
         } else {
             throw new NotImplementedException(
-                "other os are not implemented"
+                String.format(
+                    "Rust inserts are not supported by %s os. Only windows, linux and macos are allowed.",
+                    System.getProperty("os.name")
+                )
             );
         }
         System.load(
