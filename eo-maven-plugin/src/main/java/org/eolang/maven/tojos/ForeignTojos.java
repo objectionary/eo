@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.AssembleMojo;
 
 /**
  * Foreign tojos.
@@ -83,6 +82,16 @@ public final class ForeignTojos implements Tojos {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Add a foreign tojo.
+     * Similar to {@link ForeignTojos#add(String)}, but returns {@link ForeignTojo}.
+     * @param name The name of the tojo.
+     * @return The tojo.
+     */
+    public ForeignTojo addForeign(final String name) {
+        return new ForeignTojo(this.add(name));
+    }
+
     @Override
     public Tojo add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
@@ -96,7 +105,7 @@ public final class ForeignTojos implements Tojos {
     public List<Tojo> select(final Predicate<Tojo> filter) {
         return this.tojos.value().select(
             t -> filter.test(t)
-                && (t.get(AssembleMojo.ATTR_SCOPE).equals(this.scope) || "test".equals(this.scope)
+                && (t.get(Attribute.SCOPE.key()).equals(this.scope) || "test".equals(this.scope)
             )
         );
     }
@@ -111,6 +120,16 @@ public final class ForeignTojos implements Tojos {
             .select(
                 row -> row.exists(Attribute.XMIR_2.key())
                     && row.get(Attribute.EO.key()).equals(eobj.toString())
+            ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+
+    public Collection<ForeignTojo> isNotDiscoveredYet() {
+        return tojos.value()
+            .select(
+                row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
             ).stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());

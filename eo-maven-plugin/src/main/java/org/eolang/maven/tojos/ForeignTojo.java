@@ -26,6 +26,7 @@ package org.eolang.maven.tojos;
 import com.yegor256.tojos.Tojo;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Coordinates;
 
 /**
@@ -98,5 +99,24 @@ public final class ForeignTojo {
      */
     public void withJar(final Coordinates coordinates) {
         this.delegate.set(ForeignTojos.Attribute.JAR.key(), coordinates.toString());
+    }
+
+    /**
+     * Set the discovered size.
+     * @param size The size.
+     */
+    public void discovered(final int size) {
+        this.delegate.set(ForeignTojos.Attribute.DISCOVERED.key(), Integer.valueOf(size));
+    }
+
+    /**
+     * Set the discovered at.
+     * @param path The path where was discovered.
+     */
+    public void discoveredAt(final Path path) {
+        if (!this.delegate.exists(ForeignTojos.Attribute.VERSION.key())) {
+            this.delegate.set(ForeignTojos.Attribute.VERSION.key(), "*.*.*");
+        }
+        this.delegate.set(ForeignTojos.Attribute.DISCOVERED_AT.key(), path);
     }
 }
