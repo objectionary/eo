@@ -133,9 +133,12 @@ public final class ForeignTojos implements Tojos {
             .collect(Collectors.toList());
     }
 
-
+    /**
+     * Get the tojos that are not discovered yet.
+     * @return The tojos.
+     */
     public Collection<ForeignTojo> isNotDiscoveredYet() {
-        return tojos.value()
+        return this.tojos.value()
             .select(
                 row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
             ).stream()

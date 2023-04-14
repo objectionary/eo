@@ -95,6 +95,7 @@ public final class ForeignTojo {
     /**
      * Set the jar.
      * @param coordinates The coordinates of jar.
+     * @return The tojo itself.
      */
     public ForeignTojo withJar(final Coordinates coordinates) {
         this.delegate.set(ForeignTojos.Attribute.JAR.key(), coordinates.toString());
@@ -104,6 +105,7 @@ public final class ForeignTojo {
     /**
      * Set the discovered size.
      * @param size The size.
+     * @return The tojo itself.
      */
     public ForeignTojo withDiscovered(final int size) {
         this.delegate.set(ForeignTojos.Attribute.DISCOVERED.key(), Integer.valueOf(size));
@@ -113,6 +115,7 @@ public final class ForeignTojo {
     /**
      * Set the discovered at.
      * @param path The path where was discovered.
+     * @return The tojo itself.
      */
     public ForeignTojo withDiscoveredAt(final Path path) {
         if (!this.delegate.exists(ForeignTojos.Attribute.VERSION.key())) {
