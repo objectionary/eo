@@ -109,7 +109,9 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
-          <!-- Activate the use of TCP in order to save native stdout -->
+          <!-- Default surefire plugin corrupts native stdout. It means the text that was
+          printed in native method will not be printed in 'mvn clean install'. This configuration
+           switches surefire communication channel from default to TCP/IP and solves the bug. -->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
         </configuration>
       </plugin>
