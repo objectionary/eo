@@ -189,7 +189,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     /**
      * Uniquely converts the loc into the name for jni function.
      * @param loc Location attribute of the rust insert.
-     * @return Name for function.
+     * @return Name of function.
      */
     private static String name(final String loc) {
         final String prefix = "f";
