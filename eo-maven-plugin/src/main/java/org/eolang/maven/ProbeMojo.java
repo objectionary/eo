@@ -148,7 +148,7 @@ public final class ProbeMojo extends SafeMojo {
                 }
                 ++count;
                 final ForeignTojo ftojo = this.scopedTojos().addForeign(name);
-                ftojo.discoveredAt(src);
+                ftojo.withDiscoveredAt(src);
                 probed.add(name);
             }
             tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());

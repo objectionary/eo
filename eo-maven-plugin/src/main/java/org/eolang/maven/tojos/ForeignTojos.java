@@ -55,6 +55,14 @@ public final class ForeignTojos implements Tojos {
     /**
      * Ctor.
      * @param scalar Scalar
+     */
+    public ForeignTojos(final Scalar<Tojos> scalar) {
+        this(scalar, "compile");
+    }
+
+    /**
+     * Ctor.
+     * @param scalar Scalar
      * @param scope Scope
      */
     public ForeignTojos(final Scalar<Tojos> scalar, final String scope) {
