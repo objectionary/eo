@@ -184,6 +184,18 @@ public final class ForeignTojos implements Tojos {
     }
 
     /**
+     * Get the tojos that have not probed yet.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> unprobed() {
+        return this.select(
+                row -> row.exists(AssembleMojo.ATTR_XMIR2) && !row.exists(AssembleMojo.ATTR_PROBED)
+            ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Get the size of the tojos.
      * @return The size of the tojos.
      */

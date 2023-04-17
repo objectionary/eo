@@ -108,7 +108,7 @@ public final class ForeignTojo {
      * The tojo hash.
      * @return The hash.
      */
-    public String hash(){
+    public String hash() {
         return this.delegate.get(ForeignTojos.Attribute.HASH.key());
     }
 
@@ -117,7 +117,7 @@ public final class ForeignTojo {
      *
      * @return True if optimization is required, false otherwise.
      */
-    public boolean optimizationRequired(){
+    public boolean optimizationRequired() {
         final Path src = this.xmir();
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.XMIR_2.key())) {
@@ -137,7 +137,7 @@ public final class ForeignTojo {
      * Checks if tojo has hash.
      * @return True if has hash, false otherwise.
      */
-    public boolean hasHash(){
+    public boolean hasHash() {
         return this.delegate.exists(ForeignTojos.Attribute.HASH.key());
     }
 
@@ -199,7 +199,7 @@ public final class ForeignTojo {
      * @param eopath The eo path.
      * @return The tojo itself.
      */
-    public ForeignTojo withEo(final Path eopath){
+    public ForeignTojo withEo(final Path eopath) {
         this.delegate.set(ForeignTojos.Attribute.EO.key(), eopath.toString());
         return this;
     }
@@ -209,8 +209,18 @@ public final class ForeignTojo {
      * @param hash The hash.
      * @return The tojo itself.
      */
-    public ForeignTojo withHash(final CommitHash hash){
+    public ForeignTojo withHash(final CommitHash hash) {
         this.delegate.set(ForeignTojos.Attribute.HASH.key(), hash.value());
+        return this;
+    }
+
+    /**
+     * Set the number of probed objects.
+     * @param count The number of probed objects.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withProbed(final int count) {
+        this.delegate.set(ForeignTojos.Attribute.PROBED.key(), Integer.toString(count));
         return this;
     }
 }
