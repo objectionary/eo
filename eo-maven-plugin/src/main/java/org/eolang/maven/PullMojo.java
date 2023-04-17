@@ -44,6 +44,7 @@ import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
@@ -124,10 +125,6 @@ public final class PullMojo extends SafeMojo {
             );
             return;
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> !row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
-        );
         final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
@@ -145,22 +142,15 @@ public final class PullMojo extends SafeMojo {
                 this.forceUpdate()
             );
         }
-        if (!tojos.isEmpty()) {
-            for (final Tojo tojo : tojos) {
-                tojo.set(
-                    AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
-                );
-                tojo.set(
-                    AssembleMojo.ATTR_HASH,
-                    new ChNarrow(hash).value()
-                );
-            }
-            Logger.info(
-                this, "%d program(s) pulled from %s",
-                tojos.size(), this.objectionary
-            );
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutEoAndXmir();
+        for (final ForeignTojo tojo : tojos) {
+            tojo.withEo(this.pull(tojo.id()).toAbsolutePath())
+                .withHash(new ChNarrow(hash));
         }
+        Logger.info(
+            this, "%d program(s) pulled from %s",
+            tojos.size(), this.objectionary
+        );
     }
 
     /**

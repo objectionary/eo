@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Coordinates;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -190,6 +191,26 @@ public final class ForeignTojo {
      */
     public ForeignTojo withXmirSecond(final Path xmir) {
         this.delegate.set(ForeignTojos.Attribute.XMIR_2.key(), xmir.toString());
+        return this;
+    }
+
+    /**
+     * Set the eo path.
+     * @param eopath The eo path.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withEo(final Path eopath){
+        this.delegate.set(ForeignTojos.Attribute.EO.key(), eopath.toString());
+        return this;
+    }
+
+    /**
+     * Set the hash.
+     * @param hash The hash.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withHash(final CommitHash hash){
+        this.delegate.set(ForeignTojos.Attribute.HASH.key(), hash.value());
         return this;
     }
 }
