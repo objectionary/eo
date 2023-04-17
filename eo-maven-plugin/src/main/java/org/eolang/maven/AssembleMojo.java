@@ -86,11 +86,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_SCOPE = "scope";
 
     /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_HASH = "hash";
-
-    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */

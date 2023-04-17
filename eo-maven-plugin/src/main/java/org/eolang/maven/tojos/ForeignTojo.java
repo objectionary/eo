@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Coordinates;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.util.Rel;
@@ -37,6 +36,7 @@ import org.eolang.maven.util.Rel;
  *
  * @since 0.30
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class ForeignTojo {
 
     /**
@@ -56,7 +56,7 @@ public final class ForeignTojo {
      * The id of the tojo.
      * @return The id of the tojo.
      */
-    public String id() {
+    public String identifier() {
         return this.delegate.get(ForeignTojos.Attribute.ID.key());
     }
 
@@ -126,6 +126,26 @@ public final class ForeignTojo {
                 Logger.debug(
                     this, "Already optimized %s to %s",
                     new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Check if the given tojo has not been parsed.
+     *
+     * @return True if the tojo has not been parsed.
+     */
+    public boolean isNotParsed() {
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.XMIR.key())) {
+            final Path xmir = this.xmir();
+            if (xmir.toFile().lastModified() >= this.eolangObject().toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already parsed %s to %s (it's newer than the source)",
+                    this.identifier(), new Rel(xmir)
                 );
                 res = false;
             }
@@ -221,6 +241,16 @@ public final class ForeignTojo {
      */
     public ForeignTojo withProbed(final int count) {
         this.delegate.set(ForeignTojos.Attribute.PROBED.key(), Integer.toString(count));
+        return this;
+    }
+
+    /**
+     * Set the xmir.
+     * @param xmir The xmir.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withXmir(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.XMIR.key(), xmir.toString());
         return this;
     }
 }

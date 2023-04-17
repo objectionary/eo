@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Path;
@@ -144,7 +142,7 @@ public final class PullMojo extends SafeMojo {
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutEoAndXmir();
         for (final ForeignTojo tojo : tojos) {
-            tojo.withEo(this.pull(tojo.id()).toAbsolutePath())
+            tojo.withEo(this.pull(tojo.identifier()).toAbsolutePath())
                 .withHash(new ChNarrow(hash));
         }
         Logger.info(

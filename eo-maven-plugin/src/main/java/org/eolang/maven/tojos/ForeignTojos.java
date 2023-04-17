@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.AssembleMojo;
 
 /**
  * Foreign tojos.
  *
  * @since 0.30
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class ForeignTojos implements Tojos {
 
     /**
@@ -152,9 +152,19 @@ public final class ForeignTojos implements Tojos {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withXmir() {
-        return this.tojos.value().select(
-                row -> row.exists(Attribute.XMIR.key())
-            ).stream()
+        return this.tojos.value().select(row -> row.exists(Attribute.XMIR.key()))
+            .stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that have corresponding eo file.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withEo() {
+        return this.select(row -> row.exists(Attribute.EO.key()))
+            .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
     }
@@ -164,9 +174,8 @@ public final class ForeignTojos implements Tojos {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withSecondXmir() {
-        return this.tojos.value().select(
-                row -> row.exists(Attribute.XMIR_2.key())
-            ).stream()
+        return this.tojos.value().select(row -> row.exists(Attribute.XMIR_2.key()))
+            .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
     }
@@ -177,8 +186,9 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> withoutEoAndXmir() {
         return this.select(
-                row -> !row.exists(AssembleMojo.ATTR_EO) && !row.exists(AssembleMojo.ATTR_XMIR)
-            ).stream()
+            row -> !row.exists(Attribute.EO.key())
+                && !row.exists(Attribute.XMIR.key()))
+            .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
     }
@@ -189,8 +199,9 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> unprobed() {
         return this.select(
-                row -> row.exists(AssembleMojo.ATTR_XMIR2) && !row.exists(AssembleMojo.ATTR_PROBED)
-            ).stream()
+            row -> row.exists(Attribute.XMIR_2.key())
+                && !row.exists(Attribute.PROBED.key()))
+            .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
     }

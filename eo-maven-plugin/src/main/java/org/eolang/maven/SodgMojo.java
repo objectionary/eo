@@ -361,7 +361,7 @@ public final class SodgMojo extends SafeMojo {
             .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
         for (final ForeignTojo tojo : tojos) {
-            final String name = tojo.id();
+            final String name = tojo.identifier();
             if (this.exclude(name, includes, excludes)) {
                 continue;
             }

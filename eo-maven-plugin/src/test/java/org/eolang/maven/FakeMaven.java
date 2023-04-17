@@ -149,8 +149,8 @@ public final class FakeMaven {
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         for (final Tojo tojo : this.foreign().select(all -> true)) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry :
-                this.attributes.entrySet()) {
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
+                : this.attributes.entrySet()) {
                 tojo.set(entry.getKey().key(), entry.getValue());
             }
         }
