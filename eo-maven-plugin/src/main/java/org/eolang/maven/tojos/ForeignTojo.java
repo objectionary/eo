@@ -49,6 +49,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The id of the tojo.
+     * @return The id of the tojo.
+     */
+    public String id() {
+        return this.delegate.get(ForeignTojos.Attribute.ID.key());
+    }
+
+    /**
      * The tojo xmir.
      * @return The xmir.
      */
@@ -122,6 +130,16 @@ public final class ForeignTojo {
             this.delegate.set(ForeignTojos.Attribute.VERSION.key(), "*.*.*");
         }
         this.delegate.set(ForeignTojos.Attribute.DISCOVERED_AT.key(), path);
+        return this;
+    }
+
+    /**
+     * Set sodg.
+     * @param sodg Sodg.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withSodg(final Path sodg){
+        this.delegate.set(ForeignTojos.Attribute.SCOPE.key(), sodg.toString());
         return this;
     }
 }

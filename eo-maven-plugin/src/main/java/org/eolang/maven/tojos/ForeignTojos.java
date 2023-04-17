@@ -146,6 +146,14 @@ public final class ForeignTojos implements Tojos {
             .collect(Collectors.toList());
     }
 
+    public Collection<ForeignTojo> withSecondXmir() {
+        return this.tojos.value().select(
+                row -> row.exists(Attribute.XMIR_2.key())
+            ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
     /**
      * Get the size of the tojos.
      * @return The size of the tojos.
