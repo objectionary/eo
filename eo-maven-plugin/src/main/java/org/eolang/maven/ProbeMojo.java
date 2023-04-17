@@ -46,6 +46,7 @@ import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
 
@@ -146,11 +147,8 @@ public final class ProbeMojo extends SafeMojo {
                     continue;
                 }
                 ++count;
-                final Tojo ftojo = this.scopedTojos().add(name);
-                if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
-                }
-                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
+                final ForeignTojo ftojo = this.scopedTojos().addForeign(name);
+                ftojo.withDiscoveredAt(src);
                 probed.add(name);
             }
             tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());

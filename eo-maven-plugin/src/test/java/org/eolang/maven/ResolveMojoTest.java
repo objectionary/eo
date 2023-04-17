@@ -30,6 +30,7 @@ import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -77,21 +78,16 @@ final class ResolveMojoTest {
 
     @Test
     void resolvesWithoutAnyDependencies(@TempDir final Path temp) throws IOException {
-        final Path foo = Paths.get("src").resolve("sum.eo");
-        final Home home = new Home(temp);
-        home.save(
-            "[a b] > sum\n  plus. > @\n    a\n    b",
-            foo
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "[a b] > sum",
+            "  plus. > @",
+            "    a",
+            "    b"
         );
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("sum")
-            .set(AssembleMojo.ATTR_DISCOVERED, "0")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
-            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        final Path target = temp.resolve("target");
-        this.resolve(new DummyCentral(), foreign, target);
+        new ForeignTojos(() -> Catalogs.INSTANCE.make(maven.foreignPath(), "json"))
+            .addForeign("sum")
+            .withDiscovered(0);
+        maven.execute(new FakeMaven.Resolve());
         final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
