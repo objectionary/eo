@@ -37,6 +37,7 @@ import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -97,7 +98,7 @@ final class ParseMojoTest {
         MatcherAssert.assertThat(
             new TextOf(
                 maven.withProgram("invalid content")
-                    .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+                    .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
                     .with("cache", cache)
                     .execute(new FakeMaven.Parse())
                     .result()

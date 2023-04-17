@@ -50,6 +50,7 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 
@@ -76,7 +77,7 @@ public final class FakeMaven {
     /**
      * Attributes for eo.foreign.*.
      */
-    private final Map<String, Object> attributes;
+    private final Map<ForeignTojos.Attribute, Object> attributes;
 
     /**
      * Current program number.
@@ -148,8 +149,9 @@ public final class FakeMaven {
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         for (final Tojo tojo : this.foreign().select(all -> true)) {
-            for (final Map.Entry<String, Object> entry : this.attributes.entrySet()) {
-                tojo.set(entry.getKey(), entry.getValue());
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry :
+                this.attributes.entrySet()) {
+                tojo.set(entry.getKey().key(), entry.getValue());
             }
         }
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
@@ -250,7 +252,7 @@ public final class FakeMaven {
      * @param value Attribute value.
      * @return The same maven instance.
      */
-    FakeMaven withTojoAttribute(final String attribute, final Object value) {
+    FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
         this.attributes.put(attribute, value);
         return this;
     }
