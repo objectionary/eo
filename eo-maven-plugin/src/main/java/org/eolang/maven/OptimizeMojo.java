@@ -130,7 +130,7 @@ public final class OptimizeMojo extends SafeMojo {
                 new Mapped<>(
                     tojo -> this.task(tojo, common),
                     new Filtered<>(
-                        ForeignTojo::optimizationRequired,
+                        ForeignTojo::notOptimized,
                         sources
                     )
                 )

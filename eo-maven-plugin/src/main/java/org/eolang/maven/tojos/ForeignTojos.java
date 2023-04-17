@@ -138,7 +138,7 @@ public final class ForeignTojos implements Tojos {
      * Get the tojos that are not discovered yet.
      * @return The tojos.
      */
-    public Collection<ForeignTojo> isNotDiscoveredYet() {
+    public Collection<ForeignTojo> notDiscovered() {
         return this.tojos.value()
             .select(
                 row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
@@ -184,7 +184,7 @@ public final class ForeignTojos implements Tojos {
      * Get the tojos that do not have corresponding eo and xmir.
      * @return The tojos.
      */
-    public Collection<ForeignTojo> withoutEoAndXmir() {
+    public Collection<ForeignTojo> withoutSources() {
         return this.select(
             row -> !row.exists(Attribute.EO.key())
                 && !row.exists(Attribute.XMIR.key()))

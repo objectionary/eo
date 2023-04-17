@@ -54,7 +54,7 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<ForeignTojo> tojos = this.scopedTojos().isNotDiscoveredYet();
+        final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>(1);
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.xmirSecond();

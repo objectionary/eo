@@ -121,7 +121,7 @@ public final class ParseMojo extends SafeMojo {
                         return 1;
                     },
                     new Filtered<>(
-                        ForeignTojo::isNotParsed,
+                        ForeignTojo::notParsed,
                         this.scopedTojos().withEo()
                     )
                 )

@@ -140,9 +140,9 @@ public final class PullMojo extends SafeMojo {
                 this.forceUpdate()
             );
         }
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutEoAndXmir();
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
-            tojo.withEo(this.pull(tojo.identifier()).toAbsolutePath())
+            tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
                 .withHash(new ChNarrow(hash));
         }
         Logger.info(

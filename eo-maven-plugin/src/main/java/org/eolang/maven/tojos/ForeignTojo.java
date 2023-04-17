@@ -117,7 +117,7 @@ public final class ForeignTojo {
      *
      * @return True if optimization is required, false otherwise.
      */
-    public boolean optimizationRequired() {
+    public boolean notOptimized() {
         final Path src = this.xmir();
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.XMIR_2.key())) {
@@ -138,7 +138,7 @@ public final class ForeignTojo {
      *
      * @return True if the tojo has not been parsed.
      */
-    public boolean isNotParsed() {
+    public boolean notParsed() {
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.XMIR.key())) {
             final Path xmir = this.xmir();
@@ -216,11 +216,11 @@ public final class ForeignTojo {
 
     /**
      * Set the eo path.
-     * @param eopath The eo path.
+     * @param source The eo path.
      * @return The tojo itself.
      */
-    public ForeignTojo withEo(final Path eopath) {
-        this.delegate.set(ForeignTojos.Attribute.EO.key(), eopath.toString());
+    public ForeignTojo withSource(final Path source) {
+        this.delegate.set(ForeignTojos.Attribute.EO.key(), source.toString());
         return this;
     }
 
