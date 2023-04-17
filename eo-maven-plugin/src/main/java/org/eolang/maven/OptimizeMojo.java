@@ -44,6 +44,8 @@ import org.eolang.maven.optimization.OptCached;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
+import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
@@ -122,9 +124,7 @@ public final class OptimizeMojo extends SafeMojo {
     @Override
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR)
-        );
+        final Collection<ForeignTojo> sources = this.scopedTojos().withXmir();
         final Optimization common = this.optimization();
         final int total = new SumOf(
             new Threads<>(
@@ -132,7 +132,7 @@ public final class OptimizeMojo extends SafeMojo {
                 new Mapped<>(
                     tojo -> this.task(tojo, common),
                     new Filtered<>(
-                        this::isOptimizationRequired,
+                        ForeignTojo::optimizationRequired,
                         sources
                     )
                 )
@@ -157,10 +157,10 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization task.
      */
     private Scalar<Integer> task(
-        final Tojo tojo,
+        final ForeignTojo tojo,
         final Optimization common
     ) {
-        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
+        final Path src = tojo.xmir();
         Logger.debug(
             this, "Adding optimization task for %s",
             src
@@ -169,35 +169,10 @@ public final class OptimizeMojo extends SafeMojo {
             final XML optimized = this.optimization(tojo, common)
                 .apply(new XMLDocument(src));
             if (this.shouldPass(optimized)) {
-                tojo.set(
-                    AssembleMojo.ATTR_XMIR2,
-                    this.make(optimized, src).toAbsolutePath().toString()
-                );
+                tojo.withXmirSecond(this.make(optimized, src).toAbsolutePath());
             }
             return 1;
         };
-    }
-
-    /**
-     * Checks if tojo was already optimized.
-     *
-     * @param tojo Tojo to check
-     * @return True if optimization is required, false otherwise.
-     */
-    private boolean isOptimizationRequired(final Tojo tojo) {
-        final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-        boolean res = true;
-        if (tojo.exists(AssembleMojo.ATTR_XMIR2)) {
-            final Path tgt = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
-            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already optimized %s to %s",
-                    new Rel(src), new Rel(tgt)
-                );
-                res = false;
-            }
-        }
-        return res;
     }
 
     /**
@@ -230,19 +205,18 @@ public final class OptimizeMojo extends SafeMojo {
      * Optimization for specific tojo.
      *
      * @param tojo Tojo
-     * @param opt Optimization
+     * @param common Optimization
      * @return Optimization for specific Tojo
      */
-    private Optimization optimization(final Tojo tojo, final Optimization opt) {
+    private Optimization optimization(final ForeignTojo tojo, final Optimization common) {
         final Optimization res;
-        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+        if (tojo.hasHash()) {
             res = new OptCached(
-                opt,
-                this.cache.resolve(OptimizeMojo.OPTIMIZED)
-                    .resolve(tojo.get(AssembleMojo.ATTR_HASH))
+                common,
+                this.cache.resolve(OptimizeMojo.OPTIMIZED).resolve(tojo.hash())
             );
         } else {
-            res = opt;
+            res = common;
         }
         return res;
     }

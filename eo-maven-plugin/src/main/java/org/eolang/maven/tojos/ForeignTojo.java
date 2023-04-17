@@ -23,10 +23,13 @@
  */
 package org.eolang.maven.tojos;
 
+import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Coordinates;
+import org.eolang.maven.util.Rel;
 
 /**
  * Foreign tojo.
@@ -101,6 +104,43 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo hash.
+     * @return The hash.
+     */
+    public String hash(){
+        return this.delegate.get(ForeignTojos.Attribute.HASH.key());
+    }
+
+    /**
+     * Checks if tojo was already optimized.
+     *
+     * @return True if optimization is required, false otherwise.
+     */
+    public boolean optimizationRequired(){
+        final Path src = this.xmir();
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.XMIR_2.key())) {
+            final Path tgt = this.xmirSecond();
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already optimized %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Checks if tojo has hash.
+     * @return True if has hash, false otherwise.
+     */
+    public boolean hasHash(){
+        return this.delegate.exists(ForeignTojos.Attribute.HASH.key());
+    }
+
+    /**
      * Set the jar.
      * @param coordinates The coordinates of jar.
      * @return The tojo itself.
@@ -138,8 +178,18 @@ public final class ForeignTojo {
      * @param sodg Sodg.
      * @return The tojo itself.
      */
-    public ForeignTojo withSodg(final Path sodg){
+    public ForeignTojo withSodg(final Path sodg) {
         this.delegate.set(ForeignTojos.Attribute.SCOPE.key(), sodg.toString());
+        return this;
+    }
+
+    /**
+     * Set the xmir2.
+     * @param xmir The xmir2.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withXmirSecond(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.XMIR_2.key(), xmir.toString());
         return this;
     }
 }
