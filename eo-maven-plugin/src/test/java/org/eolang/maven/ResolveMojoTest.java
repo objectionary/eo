@@ -85,7 +85,7 @@ final class ResolveMojoTest {
             "    b"
         );
         new ForeignTojos(() -> Catalogs.INSTANCE.make(maven.foreignPath(), "json"))
-            .addForeign("sum")
+            .add("sum")
             .withDiscovered(0);
         maven.execute(new FakeMaven.Resolve());
         final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");

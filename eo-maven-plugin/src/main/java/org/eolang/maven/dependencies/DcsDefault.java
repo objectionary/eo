@@ -90,27 +90,27 @@ public final class DcsDefault implements Iterable<Dependency> {
                 Logger.debug(
                     this,
                     "Program %s skipped due to its zero version",
-                    tojo.shortDescription()
+                    tojo.description()
                 );
                 continue;
             }
             final Optional<Dependency> opt = DcsDefault.artifact(tojo.xmir());
             if (!opt.isPresent()) {
-                Logger.debug(this, "No dependencies for %s", tojo.shortDescription());
+                Logger.debug(this, "No dependencies for %s", tojo.description());
                 continue;
             }
             final Dependency dep = opt.get();
             if (this.skip && ParseMojo.ZERO.equals(dep.getVersion())) {
                 Logger.debug(
                     this, "Zero-version dependency for %s skipped: %s",
-                    tojo.shortDescription(),
+                    tojo.description(),
                     new Coordinates(dep)
                 );
                 continue;
             }
             Logger.info(
                 this, "Dependency found for %s: %s",
-                tojo.shortDescription(),
+                tojo.description(),
                 new Coordinates(dep)
             );
             deps.add(dep);

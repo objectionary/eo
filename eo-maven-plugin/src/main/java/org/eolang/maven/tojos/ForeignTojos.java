@@ -25,11 +25,11 @@ package org.eolang.maven.tojos;
 
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.cactoos.Scalar;
@@ -42,7 +42,7 @@ import org.cactoos.scalar.Unchecked;
  * @since 0.30
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class ForeignTojos implements Tojos {
+public final class ForeignTojos implements Closeable {
 
     /**
      * The delegate.
@@ -78,61 +78,16 @@ public final class ForeignTojos implements Tojos {
     }
 
     /**
-     * Get the tojos that doesn't have dependency.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> dependencies() {
-        return this.tojos.value()
-            .select(
-                t -> t.exists(Attribute.XMIR.key())
-                    && t.exists(Attribute.VERSION.key())
-                    && !t.exists(Attribute.JAR.key())
-            ).stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
-    }
-
-    /**
      * Add a foreign tojo.
-     * Similar to {@link ForeignTojos#add(String)}, but returns {@link ForeignTojo}.
      * @param name The name of the tojo.
      * @return The tojo.
      */
-    public ForeignTojo addForeign(final String name) {
-        return new ForeignTojo(this.add(name));
-    }
-
-    @Override
-    public Tojo add(final String name) {
+    public ForeignTojo add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
         if (!tojo.exists(Attribute.SCOPE.key())) {
             tojo.set(Attribute.SCOPE.key(), this.scope);
         }
-        return tojo;
-    }
-
-    @Override
-    public List<Tojo> select(final Predicate<Tojo> filter) {
-        return this.tojos.value().select(
-            t -> filter.test(t)
-                && (t.get(Attribute.SCOPE.key()).equals(this.scope) || "test".equals(this.scope)
-            )
-        );
-    }
-
-    /**
-     * Get the tojos for the given eo.
-     * @param eobj The eo object path.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> forEo(final Path eobj) {
-        return this.tojos.value()
-            .select(
-                row -> row.exists(Attribute.XMIR_2.key())
-                    && row.get(Attribute.EO.key()).equals(eobj.toString())
-            ).stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+        return new ForeignTojo(tojo);
     }
 
     /**
@@ -140,12 +95,9 @@ public final class ForeignTojos implements Tojos {
      * @return The tojos.
      */
     public Collection<ForeignTojo> notDiscovered() {
-        return this.tojos.value()
-            .select(
-                row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
-            ).stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+        return this.select(
+            row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
+        );
     }
 
     /**
@@ -153,32 +105,39 @@ public final class ForeignTojos implements Tojos {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withXmir() {
-        return this.tojos.value().select(row -> row.exists(Attribute.XMIR.key()))
-            .stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+        return this.select(row -> row.exists(Attribute.XMIR.key()));
+    }
+
+    /**
+     * Get the tojos that doesn't have dependency.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> dependencies() {
+        return this.select(
+            t -> t.exists(Attribute.XMIR.key())
+                && t.exists(Attribute.VERSION.key())
+                && !t.exists(Attribute.JAR.key())
+        );
+    }
+
+    /**
+     * Get the tojos for the given eo.
+     * @param source The eo object path.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withSource(final Path source) {
+        return this.select(
+            row -> row.exists(Attribute.XMIR_2.key())
+                && row.get(Attribute.EO.key()).equals(source.toString())
+        );
     }
 
     /**
      * Get the tojos that have corresponding eo file.
      * @return The tojos.
      */
-    public Collection<ForeignTojo> withEo() {
-        return this.select(row -> row.exists(Attribute.EO.key()))
-            .stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Get the tojos that have corresponding xmir_2.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> withSecondXmir() {
-        return this.tojos.value().select(row -> row.exists(Attribute.XMIR_2.key()))
-            .stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+    public Collection<ForeignTojo> withSources() {
+        return this.select(row -> row.exists(Attribute.EO.key()));
     }
 
     /**
@@ -187,11 +146,17 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> withoutSources() {
         return this.select(
-                row -> !row.exists(Attribute.EO.key())
-                    && !row.exists(Attribute.XMIR.key()))
-            .stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+            row -> !row.exists(Attribute.EO.key())
+                && !row.exists(Attribute.XMIR.key())
+        );
+    }
+
+    /**
+     * Get the tojos that have corresponding xmir_2.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withSecondXmir() {
+        return this.select(row -> row.exists(Attribute.XMIR_2.key()));
     }
 
     /**
@@ -200,11 +165,9 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> unprobed() {
         return this.select(
-                row -> row.exists(Attribute.XMIR_2.key())
-                    && !row.exists(Attribute.PROBED.key()))
-            .stream()
-            .map(ForeignTojo::new)
-            .collect(Collectors.toList());
+            row -> row.exists(Attribute.XMIR_2.key())
+                && !row.exists(Attribute.PROBED.key())
+        );
     }
 
     /**
@@ -221,7 +184,7 @@ public final class ForeignTojos implements Tojos {
      * @return The size of the tojos.
      */
     public int size() {
-        return this.tojos.value().select(all -> true).size();
+        return this.select(all -> true).size();
     }
 
     /**
@@ -247,6 +210,19 @@ public final class ForeignTojos implements Tojos {
             );
         }
         return String.join("/", parts);
+    }
+
+    /**
+     * Select tojos.
+     * @param filter Filter.
+     * @return Selected tojos.
+     */
+    private Collection<ForeignTojo> select(final Predicate<? super Tojo> filter) {
+        final Predicate<Tojo> scoped = t -> t.get(Attribute.SCOPE.key()).equals(this.scope);
+        final Predicate<Tojo> test = t -> "test".equals(this.scope);
+        return this.tojos.value()
+            .select(t -> filter.test(t) && (scoped.test(t) || test.test(t)))
+            .stream().map(ForeignTojo::new).collect(Collectors.toList());
     }
 
     /**

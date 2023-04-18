@@ -122,13 +122,13 @@ public final class ParseMojo extends SafeMojo {
                     },
                     new Filtered<>(
                         ForeignTojo::notParsed,
-                        this.scopedTojos().withEo()
+                        this.scopedTojos().withSources()
                     )
                 )
             )
         ).intValue();
         if (0 == total) {
-            if (this.scopedTojos().withEo().isEmpty()) {
+            if (this.scopedTojos().withSources().isEmpty()) {
                 Logger.info(this, "No .eo sources need to be parsed to XMIRs");
             } else {
                 Logger.info(this, "No .eo sources parsed to XMIRs");
@@ -146,7 +146,7 @@ public final class ParseMojo extends SafeMojo {
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
     private void parse(final ForeignTojo tojo) throws IOException {
-        final Path source = tojo.eolangObject();
+        final Path source = tojo.source();
         final String name = tojo.identifier();
         Footprint footprint = new FtDefault(
             this.targetDir.toPath().resolve(ParseMojo.DIR)
