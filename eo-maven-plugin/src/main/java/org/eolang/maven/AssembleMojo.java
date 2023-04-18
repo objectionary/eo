@@ -70,11 +70,6 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Tojo ATTR.
      */
-    public static final String ATTR_XMIR2 = "xmir2";
-
-    /**
-     * Tojo ATTR.
-     */
     public static final String ATTR_SCOPE = "scope";
 
     /**

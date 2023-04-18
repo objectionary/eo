@@ -49,6 +49,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.rust_project.Project;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
 
@@ -103,25 +104,22 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-        );
-        final Project project = new Project(targetDir.toPath().resolve("Lib"));
-        for (final Tojo tojo : sources) {
-            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
+        for (final ForeignTojo tojo : this.scopedTojos().withSecondXmir()) {
+            final Path file = tojo.xmirSecond();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
                 final String filename = String.format(
                     "%s%s",
-                    name(node.xpath("@loc").get(0)),
+                    BinarizeParseMojo.name(node.xpath("@loc").get(0)),
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
                     .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
-                    unhex(node.xpath("@code").get(0)),
+                    BinarizeParseMojo.unhex(node.xpath("@code").get(0)),
                     target
                 );
                 Logger.info(
