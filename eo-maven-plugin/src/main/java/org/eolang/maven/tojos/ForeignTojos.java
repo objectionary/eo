@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.AssembleMojo;
 
 /**
  * Foreign tojos.
@@ -206,6 +205,15 @@ public final class ForeignTojos implements Tojos {
             .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Check if the tojos contains a foreign tojo with name.
+     * @param name The name of the tojo.
+     * @return True if the tojo exists.
+     */
+    public boolean contains(final String name) {
+        return this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
     }
 
     /**

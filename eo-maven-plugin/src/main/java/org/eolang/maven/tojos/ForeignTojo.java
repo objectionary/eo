@@ -253,4 +253,9 @@ public final class ForeignTojo {
         this.delegate.set(ForeignTojos.Attribute.XMIR.key(), xmir.toString());
         return this;
     }
+
+    public ForeignTojo withVersion(final String zero) {
+        this.delegate.set(ForeignTojos.Attribute.VERSION.key(), zero);
+        return this;
+    }
 }
