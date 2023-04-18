@@ -25,7 +25,6 @@ package org.eolang.maven.dependencies;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojos;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -68,11 +67,11 @@ public final class DcsDefault implements Iterable<Dependency> {
      * @param skip Skip
      */
     public DcsDefault(
-        final Tojos tjs,
+        final ForeignTojos tjs,
         final boolean self,
         final boolean skip
     ) {
-        this.tojos = new ForeignTojos(() -> tjs);
+        this.tojos = tjs;
         this.discover = self;
         this.skip = skip;
     }

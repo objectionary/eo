@@ -37,6 +37,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.tojos.ForeignTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -75,22 +76,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
-     * Absolute location of SODG file.
-     */
-    public static final String ATTR_SODG = "sodg";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_DISCOVERED = "discovered";
-
-    /**
-     * Where this object was discovered.
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    public static final String ATTR_DISCOVERED_AT = "discovered-at";
-
-    /**
      * Tojo ATTR.
      */
     public static final String ATTR_PROBED = "probed";
@@ -99,11 +84,6 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_HASH = "hash";
 
     /**
      * Output.
@@ -299,7 +279,7 @@ public final class AssembleMojo extends SafeMojo {
             AssembleMojo.ATTR_EO,
             AssembleMojo.ATTR_XMIR,
             AssembleMojo.ATTR_XMIR2,
-            AssembleMojo.ATTR_DISCOVERED,
+            ForeignTojos.Attribute.DISCOVERED.key(),
             AssembleMojo.ATTR_PROBED,
         };
         final Collection<String> parts = new LinkedList<>();

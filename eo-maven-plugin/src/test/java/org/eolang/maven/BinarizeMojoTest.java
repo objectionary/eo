@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
@@ -45,12 +44,8 @@ final class BinarizeMojoTest {
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
-     * @todo #1829:30min BinarizeMojoTest.binarizesWithoutErrors() fails sometimes.
-     *  Apparently, the test was merged without appropriate checks verification.
-     *  The test should be fixed and then enabled.
      */
     @Test
-    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {

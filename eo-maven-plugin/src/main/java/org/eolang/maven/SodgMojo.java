@@ -27,8 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
@@ -47,7 +45,6 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -69,6 +66,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.StXPath;
@@ -352,9 +350,7 @@ public final class SodgMojo extends SafeMojo {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-        );
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withSecondXmir();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
@@ -364,13 +360,13 @@ public final class SodgMojo extends SafeMojo {
         final Set<Pattern> excludes = this.sodgExcludes.stream()
             .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
-        for (final Tojo tojo : tojos) {
-            final String name = tojo.get(Tojos.KEY);
+        for (final ForeignTojo tojo : tojos) {
+            final String name = tojo.identifier();
             if (this.exclude(name, includes, excludes)) {
                 continue;
             }
             final Path sodg = new Place(name).make(home, "sodg");
-            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final Path xmir = tojo.xmirSecond();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
@@ -380,7 +376,7 @@ public final class SodgMojo extends SafeMojo {
             }
             final int extra = this.render(xmir, sodg);
             instructions += extra;
-            tojo.set(AssembleMojo.ATTR_SODG, sodg.toAbsolutePath().toString());
+            tojo.withSodg(sodg.toAbsolutePath());
             Logger.info(
                 this, "SODG for %s saved to %s (%d instructions)",
                 name, new Rel(sodg), extra

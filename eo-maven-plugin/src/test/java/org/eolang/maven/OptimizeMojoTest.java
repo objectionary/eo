@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -125,7 +126,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
@@ -150,7 +151,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)

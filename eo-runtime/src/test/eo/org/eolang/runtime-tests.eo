@@ -307,9 +307,6 @@
       foo.y.<
     $.equal-to TRUE
 
-# @todo #1502:30min For some reason this test doesn't work any more,
-#  after I changed the algorithm inside WHILE atom. Can't figure out
-#  why it doesn't work, let's find out and enable this test back again.
 [] > compares-two-foreign-objects
   nop > @
     assert-that
