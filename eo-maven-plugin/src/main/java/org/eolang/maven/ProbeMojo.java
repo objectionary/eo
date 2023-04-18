@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -117,10 +116,6 @@ public final class ProbeMojo extends SafeMojo {
             );
             return;
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && !row.exists(AssembleMojo.ATTR_PROBED)
-        );
         final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
@@ -135,8 +130,9 @@ public final class ProbeMojo extends SafeMojo {
             );
         }
         final Collection<String> probed = new HashSet<>(1);
-        for (final Tojo tojo : tojos) {
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
+        for (final ForeignTojo tojo : tojos) {
+            final Path src = tojo.xmirSecond();
             final Collection<String> names = this.probes(src);
             if (!names.isEmpty()) {
                 Logger.info(this, "Probing object(s): %s", names);
@@ -147,12 +143,12 @@ public final class ProbeMojo extends SafeMojo {
                     continue;
                 }
                 ++count;
-                final ForeignTojo ftojo = this.scopedTojos().addForeign(name);
-                ftojo.withDiscoveredAt(src);
+                this.scopedTojos()
+                    .addForeign(name)
+                    .withDiscoveredAt(src);
                 probed.add(name);
             }
-            tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());
-            tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
+            tojo.withHash(new ChNarrow(hash)).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().select(row -> true).isEmpty()) {

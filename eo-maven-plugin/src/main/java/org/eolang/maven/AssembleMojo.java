@@ -76,11 +76,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
-     * Absolute location of SODG file.
-     */
-    public static final String ATTR_SODG = "sodg";
-
-    /**
      * Tojo ATTR.
      */
     public static final String ATTR_PROBED = "probed";
@@ -89,11 +84,6 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_HASH = "hash";
 
     /**
      * Output.

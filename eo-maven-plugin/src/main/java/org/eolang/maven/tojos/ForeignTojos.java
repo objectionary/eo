@@ -40,6 +40,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.30
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class ForeignTojos implements Tojos {
 
     /**
@@ -137,11 +138,70 @@ public final class ForeignTojos implements Tojos {
      * Get the tojos that are not discovered yet.
      * @return The tojos.
      */
-    public Collection<ForeignTojo> isNotDiscoveredYet() {
+    public Collection<ForeignTojo> notDiscovered() {
         return this.tojos.value()
             .select(
                 row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
             ).stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that have corresponding xmir.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withXmir() {
+        return this.tojos.value().select(row -> row.exists(Attribute.XMIR.key()))
+            .stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that have corresponding eo file.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withEo() {
+        return this.select(row -> row.exists(Attribute.EO.key()))
+            .stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that have corresponding xmir_2.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withSecondXmir() {
+        return this.tojos.value().select(row -> row.exists(Attribute.XMIR_2.key()))
+            .stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that do not have corresponding eo and xmir.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withoutSources() {
+        return this.select(
+            row -> !row.exists(Attribute.EO.key())
+                && !row.exists(Attribute.XMIR.key()))
+            .stream()
+            .map(ForeignTojo::new)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Get the tojos that have not probed yet.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> unprobed() {
+        return this.select(
+            row -> row.exists(Attribute.XMIR_2.key())
+                && !row.exists(Attribute.PROBED.key()))
+            .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
     }
