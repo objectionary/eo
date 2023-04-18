@@ -28,8 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -37,7 +35,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.tojos.ForeignTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -56,6 +53,11 @@ import org.eolang.maven.tojos.ForeignTojos;
 public final class AssembleMojo extends SafeMojo {
 
     /**
+     * The intermediate representation extension.
+     */
+    public static final String IR_EXTENSION = "xmir";
+
+    /**
      * Tojo ATTR.
      */
     public static final String ATTR_EO = "eo";
@@ -64,11 +66,6 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_VERSION = "version";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_XMIR = "xmir";
 
     /**
      * Tojo ATTR.
