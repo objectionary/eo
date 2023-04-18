@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  * @since 0.29
  * @todo #1326:90min Generate this file at compile phase
  *  instead of keep it here. It allows to call any
- *  rust insert depending on its location.
+ *  rust insert depending on its attributes.
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
