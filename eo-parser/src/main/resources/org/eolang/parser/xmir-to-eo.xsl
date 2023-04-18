@@ -26,12 +26,6 @@ SOFTWARE.
   <!--
   This one maps XMIR to EO original syntax. It's used
   in XMIR.java class.
-
-  @todo #1110:30m Add XST transformation to convert
-   "$bytes.as-$type" to "$type". I.e
-   "01-.as-bool" becomes "TRUE". Remove analogous conversions
-   from this stylesheet, and only generate "$bytes.as-$type"
-   in order to covert byte-array value back to literal.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>

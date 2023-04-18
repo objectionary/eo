@@ -177,7 +177,7 @@ public final class Main {
         final String path = new JavaPath(opts.get(0)).toString();
         final Phi app;
         try {
-            Main.LOGGER.info(String.format("Loading class %s", path));
+            Main.LOGGER.fine(String.format("Loading class %s...", path));
             app = Phi.class.cast(
                 Class.forName(path).getConstructor(Phi.class)
                 .newInstance(Phi.Φ)
@@ -201,7 +201,7 @@ public final class Main {
     }
 
     /**
-     * Read the version from resources and prints it.
+     * Read the version from resources and return it.
      * @return Version string
      * @throws IOException If fails
      */
@@ -214,7 +214,7 @@ public final class Main {
                 )
             )
         ) {
-            return input.lines().findFirst().get();
+            return input.lines().findFirst().orElse("N/A");
         }
     }
 

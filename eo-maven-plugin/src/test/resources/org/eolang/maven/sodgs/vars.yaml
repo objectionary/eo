@@ -1,0 +1,14 @@
+locators:
+  - .foo .x .a .π
+  - .foo .x .y .ε .b .π
+  - .foo .x .y .ε .z .ε .c .ε .β .a .ε .β .ρ .ε .β .ρ .ξ .d
+eo: |
+  +package foo
+  
+  [] > x
+    42 > a
+    [] > y
+      33 > b
+      [] > z
+        a > c
+        b > d

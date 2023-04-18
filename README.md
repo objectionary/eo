@@ -22,7 +22,7 @@ ISO 639-1 code of [Esperanto](https://en.wikipedia.org/wiki/Esperanto))
 is an object-oriented programming language based on
 [𝜑-calculus](https://arxiv.org/abs/2111.13384).
 We're aware of popular semi-OOP languages and we don't think
-they are good enough, including
+they are good enough, including:
 [Java](https://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29),
 [C++](https://en.wikipedia.org/wiki/C%2B%2B),

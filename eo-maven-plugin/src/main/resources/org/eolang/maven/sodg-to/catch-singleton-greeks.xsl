@@ -22,14 +22,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-license" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="catch-singleton-greeks" version="2.0">
   <!--
-  Here we add a license.
+  Here we catch vertices that have "epsilon" departing edges and
+  some other edges in addition to them. We don't want this to happen,
+  since "epsilon" must always be alone.
   -->
-  <xsl:import href="/org/eolang/maven/license.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="sodg">
-    <xsl:call-template name="license-xml"/>
+  <xsl:variable name="greeks" select="('ε', 'γ')"/>
+  <xsl:template match="/graph/v">
+    <xsl:variable name="v" select="."/>
+    <xsl:for-each select="$greeks">
+      <xsl:variable name="letter" select="."/>
+      <xsl:if test="$v/e[@title=$letter] and $v/e[@title!=$letter]">
+        <xsl:message terminate="yes">
+          <xsl:text>The edge departing from '</xsl:text>
+          <xsl:value-of select="$v/@id"/>
+          <xsl:text>' must be alone, since it's labeled as '</xsl:text>
+          <xsl:value-of select="$letter"/>
+          <xsl:text>'</xsl:text>
+        </xsl:message>
+      </xsl:if>
+    </xsl:for-each>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

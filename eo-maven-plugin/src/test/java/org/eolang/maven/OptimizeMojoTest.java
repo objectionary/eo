@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -125,7 +126,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
@@ -150,7 +151,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)
@@ -218,7 +219,7 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram(
-                    "+package f",
+                    "+package f\n",
                     "+alias THIS-IS-WRONG org.eolang.io.stdout",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
@@ -241,7 +242,7 @@ final class OptimizeMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
@@ -255,7 +256,7 @@ final class OptimizeMojoTest {
             new XMLDocument(
                 new FakeMaven(temp)
                     .withProgram(
-                        "+package f",
+                        "+package f\n",
                         "[args] > main",
                         "  seq > @",
                         "    TRUE > x",
@@ -286,7 +287,7 @@ final class OptimizeMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram(
-                    "+package f",
+                    "+package f\n",
                     "[args] > main",
                     "  seq > @",
                     "    TRUE > x",
@@ -302,7 +303,7 @@ final class OptimizeMojoTest {
             .withProgram(
                 "+architect yegor256@gmail.com",
                 "+junit",
-                "+package org.eolang.examples",
+                "+package org.eolang.examples\n",
                 "[] > main",
                 "  [] > @",
                 "    hello > test"

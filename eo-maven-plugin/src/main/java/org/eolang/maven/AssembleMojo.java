@@ -32,22 +32,27 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.tojos.ForeignTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
+ * @todo #1969:90min Remove all ATTR_* constants from AssembleMojo class.
+ *  We have to replace all hardcoded ATTR_* attributes with corresponding methods from ForeignTojos
+ *  and ForeignTojo classes. It will increase maintainability of the code.
  */
 @Mojo(
     name = "assemble",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.UnusedPrivateField")
+@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.TooManyFields"})
 public final class AssembleMojo extends SafeMojo {
 
     /**
@@ -71,27 +76,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_XMIR2 = "xmir2";
 
     /**
-     * Absolute location of SODG file.
-     */
-    public static final String ATTR_SODG = "sodg";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_JAR = "jar";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_DISCOVERED = "discovered";
-
-    /**
-     * Where this object was discovered.
-     */
-    @SuppressWarnings("PMD.LongVariable")
-    public static final String ATTR_DISCOVERED_AT = "discovered-at";
-
-    /**
      * Tojo ATTR.
      */
     public static final String ATTR_PROBED = "probed";
@@ -100,16 +84,6 @@ public final class AssembleMojo extends SafeMojo {
      * Tojo ATTR.
      */
     public static final String ATTR_SCOPE = "scope";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_TRANSPILED = "transpiled";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_HASH = "hash";
 
     /**
      * Output.
@@ -235,6 +209,26 @@ public final class AssembleMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean unrollExitError = true;
 
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * It is the predefined maven property as  MavenProject, MavenSession, MojoExecution, etc.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
+
+    /**
+     * Place only binaries that have EO sources inside jar.
+     * @since 0.31
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean placeBinariesThatHaveSources;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
@@ -285,7 +279,7 @@ public final class AssembleMojo extends SafeMojo {
             AssembleMojo.ATTR_EO,
             AssembleMojo.ATTR_XMIR,
             AssembleMojo.ATTR_XMIR2,
-            AssembleMojo.ATTR_DISCOVERED,
+            ForeignTojos.Attribute.DISCOVERED.key(),
             AssembleMojo.ATTR_PROBED,
         };
         final Collection<String> parts = new LinkedList<>();

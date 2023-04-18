@@ -25,6 +25,7 @@ package org.eolang.maven.dependencies;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.maven.util.Home;
@@ -60,11 +61,11 @@ final class DcsJsonTest {
     private Path file(final Path tmp, final String name) {
         try {
             final Path res = tmp.resolve(name);
-            new Home().save(
+            new Home(tmp).save(
                 new ResourceOf(
                     String.format("org/eolang/maven/dependencies/%s", name)
                 ),
-                res
+                Paths.get(name)
             );
             return res;
         } catch (final IOException ex) {

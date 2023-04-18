@@ -90,6 +90,7 @@ class CleanMojoTest {
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
                 new OyFake()

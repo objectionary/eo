@@ -1,0 +1,10 @@
+locators:
+  - .foo .a .b .ε .x
+  - .foo .a .b .ε .φ .ε .ρ
+  - .foo .a .b .ε .φ .ε .β .test .ε >x .ρ .ρ >a
+eo: |
+  +package foo
+  
+  [] > a
+    [x] > b
+      x.test > @

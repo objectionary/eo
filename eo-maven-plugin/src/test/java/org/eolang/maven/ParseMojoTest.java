@@ -32,10 +32,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -89,14 +91,14 @@ final class ParseMojoTest {
         ).asString();
         final String hash = new ChNarrow(new ChRemote("0.25.0")).value();
         new FtCached(
-            hash,
+            new CacheVersion(FakeMaven.pluginVersion(), hash),
             cache.resolve(ParseMojo.PARSED),
             new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
         MatcherAssert.assertThat(
             new TextOf(
                 maven.withProgram("invalid content")
-                    .withTojoAttribute(AssembleMojo.ATTR_HASH, hash)
+                    .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
                     .with("cache", cache)
                     .execute(new FakeMaven.Parse())
                     .result()

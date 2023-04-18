@@ -50,20 +50,21 @@ final class HomeTest {
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {
-        final Path resolve = temp.resolve("1.txt");
+        final Path resolve = Paths.get("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
         new Home(temp).save(content, resolve);
         MatcherAssert.assertThat(
-            new UncheckedText(new TextOf(resolve)).asString(),
+            new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
         );
     }
 
     @Test
     void exists(@TempDir final Path temp) throws IOException {
-        Files.write(temp.resolve("file.txt"), "any content".getBytes());
+        final Path path = Paths.get("file.txt");
+        Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home(temp).exists(Paths.get("file.txt")),
+            new Home(temp).exists(path),
             Matchers.is(true)
         );
     }
@@ -109,7 +110,7 @@ final class HomeTest {
     void loadsBytesFromExistingFile(@TempDir final Path temp) throws IOException {
         final Home home = new Home(temp);
         final String content = "bar";
-        final Path subfolder = temp.resolve("subfolder").resolve("foo.txt");
+        final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
             new TextOf(home.load(subfolder)),
@@ -121,7 +122,15 @@ final class HomeTest {
     void loadsFromAbsentFile(@TempDir final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
-            () -> new Home(temp).load(temp.resolve("nonexistent"))
+            () -> new Home(temp).load(Paths.get("nonexistent"))
+        );
+    }
+
+    @Test
+    void throwsExceptionOnAbsolute(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Home(temp).exists(temp.toAbsolutePath())
         );
     }
 }

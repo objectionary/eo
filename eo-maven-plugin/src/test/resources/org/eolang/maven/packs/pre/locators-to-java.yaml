@@ -1,0 +1,25 @@
+xsls:
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/set-locators.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //java[contains(text(), 'new PhLocated(ret, 2, 2, "Φ.foo.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, 4, 4, "Φ.foo.other.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, 4, 6, "Φ.foo.other.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, 4, 12, "Φ.foo.other.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, 7, 2, "Φ.bar.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, 7, 4, "Φ.bar.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, 7, 10, "Φ.bar.φ.α0")')]
+eo: |
+  [] > foo
+    42 > @
+    [y] > other
+      43.plus y > @
+
+  [] > bar
+    42.plus 43 > @

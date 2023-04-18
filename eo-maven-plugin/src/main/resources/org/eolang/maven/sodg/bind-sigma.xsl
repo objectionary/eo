@@ -22,10 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="bind-rho-and-sigma" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="bind-sigma" version="2.0">
   <!--
   Here we BIND all object formations to their parents using \rho and \sigma.
-  We don't bind "data" objects, through.
+  We don't bind "data" and "lambda" objects, through.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -35,47 +35,34 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[starts-with(@base, '.')]" mode="sodg" priority="2">
+  <xsl:template match="o[not(@level) and @abstract]" mode="sodg" priority="1">
+    <xsl:variable name="o" select="."/>
     <xsl:if test="not(@loc)">
       <xsl:message terminate="yes">
         <xsl:text>The object doesn't have @loc, how come?</xsl:text>
       </xsl:message>
     </xsl:if>
-    <xsl:call-template name="bind">
-      <xsl:with-param name="kid" select="@loc"/>
-      <xsl:with-param name="parent" select="o[1]/@loc"/>
+    <xsl:call-template name="i">
+      <xsl:with-param name="name" select="'BIND'"/>
+      <xsl:with-param name="args" as="item()*">
+        <xsl:sequence>
+          <xsl:value-of select="eo:var(@loc)"/>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:choose>
+            <xsl:when test="@parent">
+              <xsl:value-of select="eo:var(//o[@name=$o/@parent]/@loc)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="eo:var(ancestor::*[@abstract or name()='objects'][1]/@loc)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:sequence>
+        <xsl:sequence>
+          <xsl:text>σ</xsl:text>
+        </xsl:sequence>
+      </xsl:with-param>
     </xsl:call-template>
-  </xsl:template>
-  <xsl:template match="o[o or @abstract or (not(@base) and @name)]" mode="sodg" priority="1">
-    <xsl:if test="not(@loc)">
-      <xsl:message terminate="yes">
-        <xsl:text>The object doesn't have @loc, how come?</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:call-template name="bind">
-      <xsl:with-param name="kid" select="@loc"/>
-      <xsl:with-param name="parent" select="ancestor::*[@abstract or name()='objects'][1]/@loc"/>
-    </xsl:call-template>
-  </xsl:template>
-  <xsl:template name="bind">
-    <xsl:param name="kid" as="xs:string"/>
-    <xsl:param name="parent" as="xs:string"/>
-    <xsl:for-each select="('ρ', 'σ')">
-      <xsl:call-template name="i">
-        <xsl:with-param name="name" select="'BIND'"/>
-        <xsl:with-param name="args" as="item()*">
-          <xsl:sequence>
-            <xsl:value-of select="eo:var($kid)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="eo:var($parent)"/>
-          </xsl:sequence>
-          <xsl:sequence>
-            <xsl:value-of select="."/>
-          </xsl:sequence>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:for-each>
   </xsl:template>
   <xsl:template match="o" mode="sodg">
     <!-- ignore it -->

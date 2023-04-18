@@ -92,6 +92,9 @@ SOFTWARE.
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
     <stack-size>8M</stack-size>
+    <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
+    <sonar.organization>objectionary</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -124,7 +127,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>xsline</artifactId>
-        <version>0.20.1</version>
+        <version>0.21.1</version>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -154,7 +157,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
-        <version>2.0.0</version>
+        <version>2.0.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -168,9 +171,14 @@ SOFTWARE.
         <version>0.22.0</version>
       </dependency>
       <dependency>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-manifests</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>12.0</version>
+        <version>12.1</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -186,7 +194,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.6</version>
+        <version>2.0.7</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -240,7 +248,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.15</version>
+            <version>3.0.17</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -269,7 +277,7 @@ SOFTWARE.
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.8.1</version>
           <configuration combine.self="override">
             <source>8</source>
             <target>8</target>
@@ -322,11 +330,10 @@ SOFTWARE.
           </plugin>
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
-            <artifactId>test-naming-conventions</artifactId>
-            <version>0.1.8</version>
+            <artifactId>jtcop-maven-plugin</artifactId>
+            <version>0.1.9</version>
             <executions>
               <execution>
-                <id>check-tests-names</id>
                 <goals>
                   <goal>check</goal>
                 </goals>

@@ -1,0 +1,11 @@
+defaults: true
+xsls:
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+tests:
+  - //o[@base='org.eolang.foo']/o[not(@abstract) and @base='t0$a0']
+  - //o[@abstract and @name='t0$a0']/o[@base='x' and @name='@']
+eo: |
+  foo > a
+    [x]
+      x > @

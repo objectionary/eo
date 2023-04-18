@@ -1,0 +1,19 @@
+sheets:
+  - /org/eolang/maven/sodg/unroll-refs.xsl
+document:
+  <program>
+    <objects loc="Φ">
+      <o loc="Φ.x" abstract="">
+        <o base="a" loc="Φ.x.a" name="xx" ref="55"/>
+        <o base="b" loc="Φ.x.yy" name="yy" ref="66"/>
+        <o name="b" loc="Φ.x.b" line="66"/>
+        <o level="2" loc="Φ.x.a.b" name="a" line="55"/>
+      </o>
+    </objects>
+  </program>
+asserts:
+  - //o[@base='$' and @loc='Φ.x.a.ρ.ρ.ρ' and not(@name)]
+  - //o[@base='.^' and @loc='Φ.x.a.ρ.ρ' and not(@name)]
+  - //o[@base='.^' and @loc='Φ.x.a.ρ' and not(@name)]
+  - //o[@base='.a' and @loc='Φ.x.a' and @name='xx']
+  - //o[@base='b' and @loc='Φ.x.yy' and @name='yy']

@@ -30,58 +30,59 @@ import java.nio.file.Path;
  * parameters.
  *
  * @since 0.28.14
- * @todo #1569:30min Now, this class is a configurable. This is not
- *  a good practice. More technically, encapsulated properties must not
- *  be used to change the behavior of an object.
- *  Need to use composable decorators to make this class
- *  not configurable.
- * @todo #1569:30min Need to rename this class to a more correct one.
- *  The correct one name will consist of prefix "Ch" and a noun or
- *  adjective.
  */
-public final class ChResolve implements CommitHash {
+public final class ChCompound implements CommitHash {
 
     /**
-     * Read hashes from local file.
+     * CommitHash that was chosen.
      */
-    private final Path file;
-
-    /**
-     * Return hash by pattern.
-     * -DofflineHash=0.*.*:abc2sd3
-     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     */
-    private final String hash;
-
-    /**
-     * The Git hash to pull objects from, in objectionary.
-     */
-    private final String tag;
+    private final CommitHash delegate;
 
     /**
      * Ctor.
      *
-     * @param data Hash from file
-     * @param text Hash by pattern
-     * @param label The Git hash to pull objects from
+     * @param file Hash from file
+     * @param hash Hash by pattern
+     * @param tag The Git hash to pull objects from
      */
-    public ChResolve(final Path data, final String text, final String label) {
-        this.file = data;
-        this.hash = text;
-        this.tag = label;
+    public ChCompound(final Path file, final String hash, final String tag) {
+        this(ChCompound.chooseCh(file, hash, tag));
+    }
+
+    /**
+     * Ctor.
+     * @param origin The delegate.
+     */
+    private ChCompound(final CommitHash origin) {
+        this.delegate = origin;
     }
 
     @Override
     public String value() {
+        return this.delegate.value();
+    }
+
+    /**
+     * Choose the right {@link CommitHash} implementation.
+     * @param file Hash from file
+     * @param hash Hash by pattern
+     * @param tag The Git tag to pull objects from
+     * @return The right {@link CommitHash} implementation.
+     */
+    private static CommitHash chooseCh(
+        final Path file,
+        final String hash,
+        final String tag
+    ) {
         final CommitHash ret;
-        if (this.file == null && this.hash == null) {
-            ret = new ChRemote(this.tag);
-        } else if (this.hash == null) {
-            ret = new ChText(this.file, this.tag);
+        if (file == null && hash == null) {
+            ret = new ChRemote(tag);
+        } else if (hash == null) {
+            ret = new ChText(file, tag);
         } else {
-            ret = new ChPattern(this.hash, this.tag);
+            ret = new ChPattern(hash, tag);
         }
-        return new ChCached(ret).value();
+        return new ChCached(ret);
     }
 
 }

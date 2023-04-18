@@ -81,7 +81,9 @@ public final class CheckPack {
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
         Train<Shift> train = new ParsingTrain();
         if (xsls != null) {
-            train = train.empty();
+            if (!map.containsKey("defaults")) {
+                train = train.empty();
+            }
             for (final String xsl : xsls) {
                 train = train.with(new StClasspath(xsl));
             }

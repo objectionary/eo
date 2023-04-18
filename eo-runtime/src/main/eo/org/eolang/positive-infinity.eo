@@ -59,70 +59,137 @@
         nan.as-bytes
 
   # Multiplication of $ and x
-  # @todo #1806:30min. Make positive-infinity.times and negative-infinity.times
-  #  worked with multiple arguments without using objects from eo-collections.
-  #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > times
-    x.at 0 > first!
+    negative-infinity > neg-inf!
+    0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
-    [num] > check-nan
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
+    [num] > is-nan
       not. > @
         num.eq num
 
-    if. > @
-      or.
-        check-nan first
-        first.eq 0.0
-        first.eq 0
-      nan
-      if.
-        eq.
-          first
-          negative-infinity
-        first
-        ^
+    [term] > is-nan-or-zero
+      or. > @
+        is-nan
+          term > t!
+        t.eq -0.0
+        t.eq 0.0
+        t.eq 0
 
-  # Sum of $ and x
-  [x...] > plus
-    negative-infinity.as-bytes > neg-inf-as-bytes!
+    [term] > is-term-gt-zero
+      try > @
+        []
+          term.gt 0 > @
+        [e]
+          term.gt 0.0 > @
+        FALSE
 
-    [acc index terms check-term] > plus-rec
+    [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
+      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 1 > index!
+      acc-index-terms.at 2 > terms
+      infs.at 0 > pos-inf
+      infs.at 1 > neg-inf
+
       if. > @
         index.eq terms.length
         acc
         if.
-          check-term
+          is-nan-or-zero
+            terms.at index > term!
+          nan
+          []
+            if. > @
+              acc.gt 0.0
+              times-rec
+                *
+                  if.
+                    is-term-gt-zero term > term-gt-zero
+                    acc
+                    neg-inf
+                  index.plus 1 > next-index
+                  terms
+                infs
+                is-nan-or-zero
+                is-term-gt-zero
+              times-rec
+                *
+                  if.
+                    term-gt-zero
+                    acc
+                    pos-inf
+                  next-index
+                  terms
+                infs
+                is-nan-or-zero
+                is-term-gt-zero
+
+    if. > @
+      eq.
+        x.length > terms-count!
+        zero
+      ^
+      if.
+        terms-count.gt 1
+        times-rec
+          * ^ zero x
+          * ^ neg-inf
+          is-nan-or-zero
+          is-term-gt-zero
+        if.
+          is-nan-or-zero
+            x.at zero > first!
+          nan
+          if.
+            is-term-gt-zero first
+            ^
+            neg-inf
+
+  # Sum of $ and x
+  [x...] > plus
+    negative-infinity.as-bytes > neg-inf-as-bytes!
+    0 > zero!
+
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
+      not. > @
+        num.eq num
+
+    [term] > is-nan-or-neg-inf
+      or. > @
+        is-nan
+          term > t!
+        t.as-bytes.eq neg-inf-as-bytes
+
+    [acc index terms is-nan-or-neg-inf] > plus-rec
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          is-nan-or-neg-inf
             terms.at index
           nan
           plus-rec
             acc
             index.plus 1
             terms
-            check-term
-
-    [term] > check-term
-      term > t!
-      or. > @
-        not.
-          t.eq t
-        t.as-bytes.eq neg-inf-as-bytes
+            is-nan-or-neg-inf
 
     if. > @
       eq.
         x.length > terms-count!
-        0
+        zero
       ^
       if.
         terms-count.gt 1
         plus-rec
           ^
-          0
+          zero
           x
-          check-term
+          is-nan-or-neg-inf
         if.
-          check-term
-            x.at 0
+          is-nan-or-neg-inf
+            x.at zero
           nan
           ^
 
@@ -131,48 +198,50 @@
     negative-infinity > @
 
   # Difference between $ and x
-  # @todo #1806:30min. Make positive-infinity.minus and negative-infinity.minus
-  #  worked with multiple arguments without using objects from eo-collections.
-  #  See positive-infinity.plus and negative-infinity.plus as an example
   [x...] > minus
     ^.as-bytes > pos-inf-as-bytes!
+    0 > zero!
 
-    [acc index terms check-term] > minus-rec
+    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
+      not. > @
+        num.eq num
+
+    [term] > is-nan-or-pos-inf
+      or. > @
+        is-nan
+          term > t!
+        t.as-bytes.eq pos-inf-as-bytes
+
+    [acc index terms is-nan-or-pos-inf] > minus-rec
       if. > @
         index.eq terms.length
         acc
         if.
-          check-term
+          is-nan-or-pos-inf
             terms.at index
           nan
           minus-rec
             acc
             index.plus 1
             terms
-            check-term
-
-    [term] > check-term
-      term > t!
-      or. > @
-        not.
-          t.eq t
-        t.as-bytes.eq pos-inf-as-bytes
+            is-nan-or-pos-inf
 
     if. > @
       eq.
         x.length > terms-count!
-        0
+        zero
       ^
       if.
         terms-count.gt 1
         minus-rec
           ^
-          0
+          zero
           x
-          check-term
+          is-nan-or-pos-inf
         if.
-          check-term
-            x.at 0
+          is-nan-or-pos-inf
+            x.at zero
           nan
           ^
 

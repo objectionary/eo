@@ -87,9 +87,14 @@ public final class PhConst implements Phi {
 
     @Override
     public Attr attr(final String name) {
-        return this.cached.computeIfAbsent(
-            name, x -> new AtConst(this.origin.attr(name), this)
-        );
+        final Attr ret;
+        if (this.cached.containsKey(name)) {
+            ret = this.cached.get(name);
+        } else {
+            ret = new AtConst(this.origin.attr(name), this);
+            this.cached.put(name, ret);
+        }
+        return ret;
     }
 
     @Override

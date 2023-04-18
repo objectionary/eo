@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +33,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Predicate;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -45,7 +42,9 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.tojos.ForeignTojos;
+import org.eolang.maven.tojos.PlacedTojos;
+import org.eolang.maven.tojos.TranspiledTojos;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -84,7 +83,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.foreign",
         required = true,
-        defaultValue = "${project.build.directory}/eo/foreign.csv"
+        defaultValue = "${project.build.directory}/eo-foreign.csv"
     )
     protected File foreign;
 
@@ -125,7 +124,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.placed",
         required = true,
-        defaultValue = "${project.build.directory}/eo/placed.csv"
+        defaultValue = "${project.build.directory}/eo-placed.csv"
     )
     protected File placed;
 
@@ -134,8 +133,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "csv")
-    protected String placedFormat = "csv";
+    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
+    protected String placedFormat = "json";
 
     /**
      * The path to a text file where paths of generated java files per EO program.
@@ -146,7 +145,7 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(
         property = "eo.transpiled",
         required = true,
-        defaultValue = "${project.build.directory}/eo/transpiled.csv"
+        defaultValue = "${project.build.directory}/eo-transpiled.csv"
     )
     protected File transpiled;
 
@@ -180,21 +179,18 @@ abstract class SafeMojo extends AbstractMojo {
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> tojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat)
-        )
+    protected final ForeignTojos tojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+        this.scope
     );
 
     /**
-     * Cached placed tojos.
+     * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> placedTojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
-        )
+    protected final PlacedTojos placedTojos = new PlacedTojos(
+        new Sticky<>(() -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat))
     );
 
     /**
@@ -202,10 +198,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Unchecked<Tojos> transpiledTojos = new Unchecked<>(
-        new Sticky<>(
-            () -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat)
-        )
+    protected final TranspiledTojos transpiledTojos = new TranspiledTojos(
+        new Sticky<>(() -> Catalogs.INSTANCE.make(this.transpiled.toPath(), this.transpiledFormat))
     );
 
     /**
@@ -259,13 +253,13 @@ abstract class SafeMojo extends AbstractMojo {
                 );
             } finally {
                 if (this.foreign != null) {
-                    SafeMojo.closeTojos(this.tojos.value());
+                    SafeMojo.closeTojos(this.tojos);
                 }
                 if (this.placed != null) {
-                    SafeMojo.closeTojos(this.placedTojos.value());
+                    SafeMojo.closeTojos(this.placedTojos);
                 }
                 if (this.transpiled != null) {
-                    SafeMojo.closeTojos(this.transpiledTojos.value());
+                    SafeMojo.closeTojos(this.transpiledTojos);
                 }
             }
         }
@@ -276,34 +270,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Tojos to use
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
-    protected final Tojos scopedTojos() {
-        final Tojos unscoped = this.tojos.value();
-        return new Tojos() {
-            @Override
-            public void close() throws IOException {
-                unscoped.close();
-            }
-
-            @Override
-            public Tojo add(final String name) {
-                final Tojo tojo = unscoped.add(name);
-                if (!tojo.exists(AssembleMojo.ATTR_SCOPE)) {
-                    tojo.set(AssembleMojo.ATTR_SCOPE, SafeMojo.this.scope);
-                }
-                return tojo;
-            }
-
-            @Override
-            public List<Tojo> select(final Predicate<Tojo> filter) {
-                return unscoped.select(
-                    t -> filter.test(t)
-                        && (
-                        t.get(AssembleMojo.ATTR_SCOPE).equals(SafeMojo.this.scope)
-                            || "test".equals(SafeMojo.this.scope)
-                    )
-                );
-            }
-        };
+    protected final ForeignTojos scopedTojos() {
+        return this.tojos;
     }
 
     /**

@@ -32,7 +32,7 @@ import java.util.LinkedList;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.hash.ChResolve;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
@@ -94,7 +94,7 @@ final class PullMojoTest {
                     new ResourceOf("org/eolang/maven/simple-io.eo")
                 )
             ),
-            program
+            temp.relativize(program)
         );
         Catalogs.INSTANCE.make(temp.resolve("eo-foreign.json"), "json")
             .add("foo.src")
@@ -115,7 +115,7 @@ final class PullMojoTest {
             .with("foreign", foreign)
             .execute();
         final Objectionary objectionary = new OyRemote(
-            new ChResolve(null, null, "master")
+            new ChCompound(null, null, "master")
         );
         new Moja<>(ProbeMojo.class)
             .with("targetDir", target)
@@ -144,9 +144,9 @@ final class PullMojoTest {
 
     @Test
     void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
-        new Home().save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            temp.resolve("tags.txt")
+            Paths.get("tags.txt")
         );
         final Path target = temp.resolve("target");
         final Path foreign = temp.resolve("eo-foreign.json");

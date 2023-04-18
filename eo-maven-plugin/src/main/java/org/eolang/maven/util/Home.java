@@ -24,11 +24,11 @@
 package org.eolang.maven.util;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
@@ -43,8 +43,6 @@ import org.cactoos.scalar.LengthOf;
  * Base location for files.
  *
  * @since 0.27
- * @todo #1352:30min Prohibit absolute paths in methods `save`, `load`, `exists`.
- *  Throw an exception in case absolut path is given for these methods.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class Home {
@@ -55,9 +53,11 @@ public final class Home {
 
     /**
      * Ctor.
+     *
+     * @param file File
      */
-    public Home() {
-        this(Paths.get(""));
+    public Home(final File file) {
+        this(file.toPath());
     }
 
     /**
@@ -119,9 +119,10 @@ public final class Home {
      * @param input Input
      * @param path Cwd-relative path to file
      * @throws IOException If fails
+     * @throws IllegalArgumentException If give path is absolute
      */
     public void save(final Input input, final Path path) throws IOException {
-        final Path target = this.absolute(path);
+        final Path target = this.absolute(this.onlyRelative(path));
         if (target.toFile().getParentFile().mkdirs()) {
             Logger.debug(
                 this, "Directory created: %s",
@@ -157,9 +158,10 @@ public final class Home {
      *
      * @param path Cwd-relative path to file
      * @return True if exists
+     * @throws IllegalArgumentException If give path is absolute
      */
     public boolean exists(final Path path) {
-        return Files.exists(this.absolute(path));
+        return Files.exists(this.absolute(this.onlyRelative(path)));
     }
 
     /**
@@ -169,9 +171,10 @@ public final class Home {
      * @return Bytes of file
      * @throws IOException if method can't find the file by path or
      *  if some exception happens during reading the file
+     * @throws IllegalArgumentException If give path is absolute
      */
     public Bytes load(final Path path) throws IOException {
-        return new BytesOf(Files.readAllBytes(this.absolute(path)));
+        return new BytesOf(Files.readAllBytes(this.absolute(this.onlyRelative(path))));
     }
 
     /**
@@ -182,5 +185,24 @@ public final class Home {
      */
     public Path absolute(final Path path) {
         return this.cwd.resolve(path);
+    }
+
+    /**
+     * Verifies that given path is relative and throws exception if not.
+     * @param path Path to be verified
+     * @return Given path if it's relative
+     * @throws IllegalArgumentException If given path is Absolute
+     */
+    private Path onlyRelative(final Path path) {
+        if (path.isAbsolute()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Path must be relative to base %s but absolute given: %s",
+                    this.cwd,
+                    path
+                )
+            );
+        }
+        return path;
     }
 }

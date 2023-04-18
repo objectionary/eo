@@ -25,13 +25,11 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -43,9 +41,11 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
@@ -64,7 +64,7 @@ import org.xembly.Xembler;
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 @SuppressWarnings("PMD.ImmutableField")
-public final class ParseMojo extends SafeMojo implements CompilationStep {
+public final class ParseMojo extends SafeMojo {
 
     /**
      * Zero version.
@@ -100,6 +100,16 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
         defaultValue = "true")
     private boolean failOnError = true;
 
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
+
     @Override
     public void exec() throws IOException {
         final int total = new SumOf(
@@ -111,16 +121,14 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
                         return 1;
                     },
                     new Filtered<>(
-                        this::isNotParsed,
-                        this.scopedTojos().select(row -> row.exists(AssembleMojo.ATTR_EO))
+                        ForeignTojo::notParsed,
+                        this.scopedTojos().withEo()
                     )
                 )
             )
         ).intValue();
         if (0 == total) {
-            if (((Collection<Tojo>) this.scopedTojos().select(
-                row -> row.exists(AssembleMojo.ATTR_EO)
-            )).isEmpty()) {
+            if (this.scopedTojos().withEo().isEmpty()) {
                 Logger.info(this, "No .eo sources need to be parsed to XMIRs");
             } else {
                 Logger.info(this, "No .eo sources parsed to XMIRs");
@@ -131,44 +139,21 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
     }
 
     /**
-     * Check if the given tojo has not been parsed.
-     *
-     * @param tojo Tojo.
-     * @return True if the tojo has not been parsed.
-     */
-    private boolean isNotParsed(final Tojo tojo) {
-        boolean res = true;
-        if (tojo.exists(AssembleMojo.ATTR_XMIR)) {
-            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR));
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-            if (xmir.toFile().lastModified() >= src.toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already parsed %s to %s (it's newer than the source)",
-                    tojo.get(Tojos.KEY), new Rel(xmir)
-                );
-                res = false;
-            }
-        }
-        return res;
-    }
-
-    /**
      * Parse EO file to XML.
      *
      * @param tojo The tojo
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private void parse(final Tojo tojo) throws IOException {
-        final Path source = Paths.get(tojo.get(AssembleMojo.ATTR_EO));
-        final String name = tojo.get(Tojos.KEY);
-        Footprint footprint;
-        footprint = new FtDefault(
+    private void parse(final ForeignTojo tojo) throws IOException {
+        final Path source = tojo.eolangObject();
+        final String name = tojo.identifier();
+        Footprint footprint = new FtDefault(
             this.targetDir.toPath().resolve(ParseMojo.DIR)
         );
-        if (tojo.exists(AssembleMojo.ATTR_HASH)) {
+        if (tojo.hasHash()) {
             footprint = new FtCached(
-                tojo.get(AssembleMojo.ATTR_HASH),
+                new CacheVersion(this.plugin.getVersion(), tojo.hash()),
                 this.cache.resolve(ParseMojo.PARSED),
                 footprint
             );
@@ -176,7 +161,7 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
         try {
             footprint.save(
                 name,
-                AssembleMojo.ATTR_XMIR,
+                "xmir",
                 () -> {
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     new Syntax(
@@ -219,7 +204,7 @@ public final class ParseMojo extends SafeMojo implements CompilationStep {
             this.targetDir.toPath().resolve(ParseMojo.DIR),
             TranspileMojo.EXT
         );
-        tojo.set(AssembleMojo.ATTR_XMIR, target.toAbsolutePath().toString());
+        tojo.withXmir(target.toAbsolutePath());
         Logger.debug(
             this, "Parsed %s to %s",
             new Rel(source), new Rel(target)

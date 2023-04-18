@@ -24,18 +24,15 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.ClasspathSources;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StBefore;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.StEndless;
+import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSchema;
-import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
@@ -48,9 +45,13 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -61,13 +62,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.StXPath;
@@ -121,18 +120,9 @@ public final class SodgMojo extends SafeMojo {
      */
     private static final Train<Shift> TO_XEMBLY = new TrFast(
         new TrDefault<Shift>().with(
-            new StXSL(
-                new XSLDocument(
-                    new UncheckedText(
-                        new TextOf(
-                            new ResourceOf(
-                                "org/eolang/maven/sodg-to/to-xembly.xsl"
-                            )
-                        )
-                    ).asString(),
-                    new ClasspathSources(),
-                    "to-xembly.xsl"
-                ).with("testing", "no")
+            new StClasspath(
+                "/org/eolang/maven/sodg-to/to-xembly.xsl",
+                "testing no"
             )
         ),
         SodgMojo.class
@@ -150,36 +140,83 @@ public final class SodgMojo extends SafeMojo {
             SodgMojo.class
         ),
         SodgMojo.class,
-        Level.FINEST
+        SodgMojo.loggingLevel()
+    );
+
+    /**
+     * Graph modification right after it's generated from Xembly.
+     */
+    private static final Train<Shift> FINISH = new TrLogged(
+        new TrFast(
+            new TrJoined<>(
+                new TrClasspath<>(
+                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-duplicate-vertices.xsl",
+                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
+                    "/org/eolang/maven/sodg-to/catch-singleton-greeks.xsl",
+                    "/org/eolang/maven/sodg-to/catch-conflicting-greeks.xsl",
+                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
+                ).back(),
+                new TrDefault<>(
+                    new StLambda(
+                        "graph-is-a-tree",
+                        input -> {
+                            final Set<String> seen = new HashSet<>();
+                            SodgMojo.traverse(input, "ν0", seen);
+                            final List<String> ids = input.xpath("//v/@id");
+                            if (ids.size() != seen.size()) {
+                                for (final String vid : ids) {
+                                    if (!seen.contains(vid)) {
+                                        Logger.error(
+                                            SodgMojo.class,
+                                            "Vertex is not in the tree: %s", vid
+                                        );
+                                    }
+                                }
+                                throw new IllegalStateException(
+                                    String.format(
+                                        "Not all vertices are in the tree, only %d out of %d, see log above",
+                                        seen.size(), ids.size()
+                                    )
+                                );
+                            }
+                            return input;
+                        }
+                    )
+                )
+            ),
+            SodgMojo.class
+        ),
+        SodgMojo.class,
+        SodgMojo.loggingLevel()
     );
 
     /**
      * The train that generates SODG.
      */
-    private static final Train<Shift> TRAIN = new TrWith(
-        new TrFast(
-            new TrJoined<>(
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/pre-clean.xsl",
-                    "/org/eolang/maven/sodg/remove-leveled.xsl"
-                ).back(),
-                new TrDefault<>(
-                    new StEndless(
-                        new StXPath(
-                            "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
-                            xml -> {
-                                final String loc = xml.xpath("@loc").get(0);
-                                return new Directives().attr(
-                                    "lambda",
-                                    SodgMojo.locToHex(
-                                        loc.substring(loc.indexOf('.') + 1)
-                                    )
-                                );
-                            }
+    private static final Train<Shift> TRAIN = new TrLogged(
+        new TrWith(
+            new TrFast(
+                new TrJoined<>(
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/pre-clean.xsl"
+                    ).back(),
+                    new TrDefault<>(
+                        new StEndless(
+                            new StXPath(
+                                "(//o[@name and @atom and not(@base) and @loc and not(@lambda)])[1]",
+                                xml -> {
+                                    final String loc = xml.xpath("@loc").get(0);
+                                    return new Directives().attr(
+                                        "lambda",
+                                        SodgMojo.utfToHex(
+                                            loc.substring(loc.indexOf('.') + 1)
+                                        )
+                                    );
+                                }
+                            )
                         )
-                    )
-                ),
-                new TrLogged(
+                    ),
                     new TrMapped<>(
                         (Function<String, Shift>) path -> new StBefore(
                             new StClasspath(path),
@@ -191,28 +228,52 @@ public final class SodgMojo extends SafeMojo {
                         "/org/eolang/maven/sodg/add-sodg-root.xsl",
                         "/org/eolang/maven/sodg/add-loc-to-objects.xsl",
                         "/org/eolang/maven/sodg/add-root.xsl",
+                        "/org/eolang/maven/sodg/append-xi.xsl",
+                        "/org/eolang/maven/sodg/unroll-refs.xsl",
+                        "/org/eolang/maven/sodg/remove-leveled.xsl",
                         "/org/eolang/maven/sodg/touch-all.xsl",
-                        "/org/eolang/maven/sodg/bind-rho-and-sigma.xsl",
+                        "/org/eolang/maven/sodg/bind-sigma.xsl",
+                        "/org/eolang/maven/sodg/bind-rho.xsl",
                         "/org/eolang/maven/sodg/pi-copies.xsl",
-                            "/org/eolang/maven/sodg/epsilon-bindings.xsl",
+                        "/org/eolang/maven/sodg/epsilon-bindings.xsl",
                         "/org/eolang/maven/sodg/connect-dots.xsl",
                         "/org/eolang/maven/sodg/put-data.xsl",
                         "/org/eolang/maven/sodg/put-atoms.xsl"
                     ).back(),
-                    SodgMojo.class,
-                    Level.FINEST
+                    new TrDefault<>(
+                        new StClasspath(
+                            "/org/eolang/maven/sodg/add-meta.xsl",
+                            "name version",
+                            String.format(
+                                "value %s",
+                                SodgMojo.utfToHex(
+                                    Manifests.read("EO-Version")
+                                )
+                            )
+                        ),
+                        new StClasspath(
+                            "/org/eolang/maven/sodg/add-meta.xsl",
+                            "name time",
+                            String.format(
+                                "value %s",
+                                SodgMojo.utfToHex(
+                                    ZonedDateTime.now(ZoneOffset.UTC).format(
+                                        DateTimeFormatter.ISO_INSTANT
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                    new TrClasspath<>(
+                        "/org/eolang/maven/sodg/focus.xsl"
+                    ).back()
                 ),
-                new TrClasspath<>(
-                    "/org/eolang/maven/sodg/focus.xsl",
-                    "/org/eolang/maven/sodg/add-license.xsl",
-                    "/org/eolang/maven/sodg-to/catch-lost-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-duplicate-edges.xsl",
-                    "/org/eolang/maven/sodg-to/catch-empty-edges.xsl"
-                ).back()
+                SodgMojo.class
             ),
-            SodgMojo.class
+            new StSchema("/org/eolang/maven/sodg/after.xsd")
         ),
-        new StSchema("/org/eolang/maven/sodg/after.xsd")
+        SodgMojo.class,
+        SodgMojo.loggingLevel()
     );
 
     /**
@@ -289,9 +350,7 @@ public final class SodgMojo extends SafeMojo {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-        );
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withSecondXmir();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
@@ -301,13 +360,13 @@ public final class SodgMojo extends SafeMojo {
         final Set<Pattern> excludes = this.sodgExcludes.stream()
             .map(i -> Pattern.compile(SodgMojo.createMatcher(i)))
             .collect(Collectors.toSet());
-        for (final Tojo tojo : tojos) {
-            final String name = tojo.get(Tojos.KEY);
+        for (final ForeignTojo tojo : tojos) {
+            final String name = tojo.identifier();
             if (this.exclude(name, includes, excludes)) {
                 continue;
             }
             final Path sodg = new Place(name).make(home, "sodg");
-            final Path xmir = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+            final Path xmir = tojo.xmirSecond();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
@@ -317,7 +376,7 @@ public final class SodgMojo extends SafeMojo {
             }
             final int extra = this.render(xmir, sodg);
             instructions += extra;
-            tojo.set(AssembleMojo.ATTR_SODG, sodg.toAbsolutePath().toString());
+            tojo.withSodg(sodg.toAbsolutePath());
             Logger.info(
                 this, "SODG for %s saved to %s (%d instructions)",
                 name, new Rel(sodg), extra
@@ -394,7 +453,10 @@ public final class SodgMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "SODGs:\n%s", instructions);
         }
-        new Home(sodg.getParent()).save(instructions, sodg.getParent().relativize(sodg));
+        new Home(sodg.getParent()).save(
+            String.format("# %s\n\n%s", new Disclaimer(), instructions),
+            sodg.getParent().relativize(sodg)
+        );
         if (this.generateSodgXmlFiles) {
             final Path sibling = sodg.resolveSibling(String.format("%s.xml", sodg.getFileName()));
             new Home(sibling.getParent()).save(
@@ -408,7 +470,7 @@ public final class SodgMojo extends SafeMojo {
                 .xpath("/xembly/text()").get(0);
             final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
             new Home(sibling.getParent()).save(
-                xembly,
+                String.format("# %s\n\n%s\n", new Disclaimer(), xembly),
                 sibling.getParent().relativize(sibling)
             );
             this.makeGraph(xembly, sodg);
@@ -431,12 +493,16 @@ public final class SodgMojo extends SafeMojo {
             );
             final ListOf<Directive> directives = new ListOf<>(all);
             final Directive comment = directives.remove(0);
-            final XML graph = new XMLDocument(
-                new Xembler(
-                    new Directives()
-                        .append(Collections.singleton(comment))
-                        .append(directives)
-                ).domQuietly()
+            final XML graph = new Xsline(SodgMojo.FINISH).pass(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives()
+                            .append(Collections.singleton(comment))
+                            .append(directives)
+                            .xpath("/graph")
+                            .attr("sodg-path", sodg)
+                    ).domQuietly()
+                )
             );
             final Path sibling = sodg.resolveSibling(
                 String.format("%s.graph.xml", sodg.getFileName())
@@ -467,23 +533,57 @@ public final class SodgMojo extends SafeMojo {
             }
             final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
             new Home(sibling.getParent()).save(
-                dot,
+                String.format("/%s %s %1$s/\n\n%s", "*", new Disclaimer(), dot),
                 sibling.getParent().relativize(sibling)
             );
         }
     }
 
     /**
-     * Lambda to HEX.
-     * @param loc The lambda
+     * UTF-8 string to HEX.
+     * @param txt The string
      * @return Hexadecimal value as string.
      */
-    private static String locToHex(final String loc) {
+    private static String utfToHex(final String txt) {
         final StringJoiner out = new StringJoiner("-");
-        for (final byte bty : loc.getBytes(StandardCharsets.UTF_8)) {
+        for (final byte bty : txt.getBytes(StandardCharsets.UTF_8)) {
             out.add(String.format("%02X", bty));
         }
         return out.toString();
+    }
+
+    /**
+     * We are in IntelliJ IDEA at the moment?
+     *
+     * This is for testing purposes, to enable higher visibility of logs inside
+     * tests being executed interactively in the IDE.
+     *
+     * @return TRUE if inside IDE
+     */
+    private static Level loggingLevel() {
+        Level lvl = Level.FINEST;
+        if (System.getProperty("java.class.path").contains("idea_rt.jar")) {
+            lvl = Level.INFO;
+        }
+        return lvl;
+    }
+
+    /**
+     * Go through the graph recursively and visit all vertices.
+     * @param graph The XML graph
+     * @param root The vertex to start from
+     * @param seen List of <code>@id</code> attributes already seen
+     */
+    private static void traverse(final XML graph, final String root,
+        final Set<String> seen) {
+        for (final XML edge : graph.nodes(String.format("//v[@id='%s']/e", root))) {
+            final String kid = edge.xpath("@to").get(0);
+            if (seen.contains(kid)) {
+                continue;
+            }
+            seen.add(kid);
+            SodgMojo.traverse(graph, kid, seen);
+        }
     }
 
 }

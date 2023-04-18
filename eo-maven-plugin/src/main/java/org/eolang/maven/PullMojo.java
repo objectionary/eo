@@ -24,8 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojo;
-import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Path;
@@ -34,8 +32,8 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
-import org.eolang.maven.hash.ChResolve;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
@@ -44,6 +42,7 @@ import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
@@ -58,7 +57,7 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo implements CompilationStep {
+public final class PullMojo extends SafeMojo {
 
     /**
      * The directory where to process to.
@@ -124,11 +123,7 @@ public final class PullMojo extends SafeMojo implements CompilationStep {
             );
             return;
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> !row.exists(AssembleMojo.ATTR_EO)
-                && !row.exists(AssembleMojo.ATTR_XMIR)
-        );
-        final CommitHash hash = new ChResolve(
+        final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
         if (this.objectionary == null) {
@@ -145,22 +140,15 @@ public final class PullMojo extends SafeMojo implements CompilationStep {
                 this.forceUpdate()
             );
         }
-        if (!tojos.isEmpty()) {
-            for (final Tojo tojo : tojos) {
-                tojo.set(
-                    AssembleMojo.ATTR_EO,
-                    this.pull(tojo.get(Tojos.KEY)).toAbsolutePath().toString()
-                );
-                tojo.set(
-                    AssembleMojo.ATTR_HASH,
-                    new ChNarrow(hash).value()
-                );
-            }
-            Logger.info(
-                this, "%d program(s) pulled from %s",
-                tojos.size(), this.objectionary
-            );
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+        for (final ForeignTojo tojo : tojos) {
+            tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
+                .withHash(new ChNarrow(hash));
         }
+        Logger.info(
+            this, "%d program(s) pulled from %s",
+            tojos.size(), this.objectionary
+        );
     }
 
     /**

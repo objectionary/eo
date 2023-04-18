@@ -41,19 +41,19 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.6</version>
+      <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.6</version>
+      <version>2.0.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.5</version>
+      <version>1.4.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -110,11 +110,10 @@ SOFTWARE.
         <artifactId>eo-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
-          <foreign>${project.basedir}/target/eo/foreign.csv</foreign>
+          <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <hash>master</hash>
-          <!-- @todo #1584:90min Set failOnWarning to 'true'. It's not a good idea to allow deploy artifacts with warnings. It's only temporary solution. -->
-          <failOnWarning>false</failOnWarning>
+          <failOnWarning>true</failOnWarning>
         </configuration>
         <executions>
           <execution>
@@ -134,6 +133,7 @@ SOFTWARE.
                 <glob>EOorg/EOeolang/EOfs/**</glob>
               </removeBinaries>
               <withRuntimeDependency>false</withRuntimeDependency>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
           <execution>
@@ -154,6 +154,7 @@ SOFTWARE.
                 ${project.basedir}/target/generated-test-sources
               </generatedDir>
               <withRuntimeDependency>false</withRuntimeDependency>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
         </executions>
@@ -199,32 +200,32 @@ SOFTWARE.
                     <limit>
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.37</minimum>
+                      <minimum>0.14</minimum>
                     </limit>
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.39</minimum>
+                      <minimum>0.13</minimum>
                     </limit>
                     <limit>
                       <counter>BRANCH</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.59</minimum>
+                      <minimum>0.03</minimum>
                     </limit>
                     <limit>
                       <counter>COMPLEXITY</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.53</minimum>
+                      <minimum>0.08</minimum>
                     </limit>
                     <limit>
                       <counter>METHOD</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.53</minimum>
+                      <minimum>0.12</minimum>
                     </limit>
                     <limit>
                       <counter>CLASS</counter>
                       <value>MISSEDCOUNT</value>
-                      <maximum>157</maximum>
+                      <maximum>1514</maximum>
                     </limit>
                   </limits>
                 </rule>

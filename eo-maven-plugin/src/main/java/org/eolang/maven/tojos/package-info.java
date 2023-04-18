@@ -21,48 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.XmirObject;
-
 /**
- * HEAP.FREE.
- *
- * @since 0.19
- * @checkstyle TypeNameCheck (5 lines)
+ * Package for domain tojos.
+ * @since 0.30
+ * The same way as {@link org.eolang.maven.tojos.TranspiledTojos} we can implement
+ *  - placed tojos
+ *  - foreign tojos
+ *  By that we can achieve grater encapsulation and better readability.
  */
-@XmirObject(oname = "heap.free")
-public class EOheap$EOfree extends PhDefault {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOheap$EOfree(final Phi sigma) {
-        super(sigma);
-        this.add("p", new AtFree());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final Phi heap = rho.attr("ρ").get();
-                    final int ptr = new Param(rho, "p").strong(Long.class).intValue();
-                    Heaps.INSTANCE.free(heap, ptr);
-                    return new Data.ToPhi(true);
-                }
-            )
-        );
-    }
-
-}
+package org.eolang.maven.tojos;

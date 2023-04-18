@@ -64,6 +64,14 @@ final class MainTest {
     }
 
     @Test
+    void deliversCleanOutput() throws Exception {
+        MatcherAssert.assertThat(
+            MainTest.exec("org.eolang.io.stdout", "Hi!"),
+            Matchers.equalTo(String.format("Hi!%s", System.lineSeparator()))
+        );
+    }
+
+    @Test
     void executesJvmFullRun() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),

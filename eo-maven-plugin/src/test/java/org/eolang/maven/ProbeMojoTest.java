@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
 
     @Test
@@ -66,9 +68,9 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
-        new Home().save(
+        new Home(temp).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
-            temp.resolve("tags.txt")
+            Paths.get("tags.txt")
         );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
