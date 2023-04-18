@@ -63,7 +63,7 @@
     positive-infinity > pos-inf!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -150,7 +150,7 @@
     positive-infinity.as-bytes > pos-inf-as-bytes!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -202,7 +202,7 @@
     ^.as-bytes > neg-inf-as-bytes!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -251,7 +251,7 @@
     ^ > neg-inf!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
