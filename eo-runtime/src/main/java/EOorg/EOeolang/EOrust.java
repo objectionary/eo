@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
- * @todo #1326 Name functions according to insert's
+ * @todo #1326:90m Name functions according to insert's
  *  attributes. Now they are named by location. It is
  *  better to call it using hash of code and parameters.
  * @todo #1326:90min Generate this file at compile phase
