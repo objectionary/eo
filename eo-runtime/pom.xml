@@ -111,7 +111,9 @@ SOFTWARE.
           </systemProperties>
           <!-- Default surefire plugin corrupts native stdout. It means the text that was
           printed in native method will not be printed in 'mvn clean install'. This configuration
-           switches surefire communication channel from default to TCP/IP and solves the bug. -->
+           switches surefire communication channel from default to TCP/IP and solves the bug.
+           More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
+           and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
         </configuration>
       </plugin>
