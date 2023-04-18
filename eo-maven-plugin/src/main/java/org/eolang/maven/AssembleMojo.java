@@ -78,11 +78,6 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Tojo ATTR.
      */
-    public static final String ATTR_PROBED = "probed";
-
-    /**
-     * Tojo ATTR.
-     */
     public static final String ATTR_SCOPE = "scope";
 
     /**
@@ -234,7 +229,7 @@ public final class AssembleMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        String before = this.status();
+        String before = this.tojos.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
@@ -251,7 +246,7 @@ public final class AssembleMojo extends SafeMojo {
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
-            final String after = this.status();
+            final String after = this.tojos.status();
             ++cycle;
             if (Logger.isInfoEnabled(this)) {
                 Logger.info(
@@ -269,30 +264,4 @@ public final class AssembleMojo extends SafeMojo {
             cycle, before
         );
     }
-
-    /**
-     * Status of tojos.
-     * @return Status in text
-     */
-    private String status() {
-        final String[] attrs = {
-            AssembleMojo.ATTR_EO,
-            AssembleMojo.ATTR_XMIR,
-            AssembleMojo.ATTR_XMIR2,
-            ForeignTojos.Attribute.DISCOVERED.key(),
-            AssembleMojo.ATTR_PROBED,
-        };
-        final Collection<String> parts = new LinkedList<>();
-        for (final String attr : attrs) {
-            parts.add(
-                String.format(
-                    "%s:%d",
-                    attr,
-                    this.scopedTojos().select(tojo -> tojo.exists(attr)).size()
-                )
-            );
-        }
-        return String.join("/", parts);
-    }
-
 }

@@ -28,12 +28,14 @@ import com.yegor256.tojos.Tojos;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.AssembleMojo;
 
 /**
  * Foreign tojos.
@@ -186,8 +188,8 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> withoutSources() {
         return this.select(
-            row -> !row.exists(Attribute.EO.key())
-                && !row.exists(Attribute.XMIR.key()))
+                row -> !row.exists(Attribute.EO.key())
+                    && !row.exists(Attribute.XMIR.key()))
             .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
@@ -199,8 +201,8 @@ public final class ForeignTojos implements Tojos {
      */
     public Collection<ForeignTojo> unprobed() {
         return this.select(
-            row -> row.exists(Attribute.XMIR_2.key())
-                && !row.exists(Attribute.PROBED.key()))
+                row -> row.exists(Attribute.XMIR_2.key())
+                    && !row.exists(Attribute.PROBED.key()))
             .stream()
             .map(ForeignTojo::new)
             .collect(Collectors.toList());
@@ -215,11 +217,28 @@ public final class ForeignTojos implements Tojos {
     }
 
     /**
-     * Get the old tojos.
-     * @return The old tojos.
+     * Status of tojos.
+     * @return Status in text
      */
-    public Tojos value() {
-        return this.tojos.value();
+    public String status() {
+        final Attribute[] attrs = {
+            Attribute.EO,
+            Attribute.XMIR,
+            Attribute.XMIR_2,
+            Attribute.DISCOVERED,
+            Attribute.PROBED,
+        };
+        final Collection<String> parts = new LinkedList<>();
+        for (final Attribute attr : attrs) {
+            parts.add(
+                String.format(
+                    "%s:%d",
+                    attr,
+                    this.select(tojo -> tojo.exists(attr.key())).size()
+                )
+            );
+        }
+        return String.join("/", parts);
     }
 
     /**
