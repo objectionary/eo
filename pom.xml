@@ -307,6 +307,12 @@ SOFTWARE.
             <systemProperties>
               <basedir>${project.basedir}</basedir>
             </systemProperties>
+            <properties>
+              <configurationParameters>
+                junit.jupiter.execution.parallel.enabled = true
+                junit.jupiter.execution.parallel.mode.default = concurrent
+              </configurationParameters>
+            </properties>
           </configuration>
         </plugin>
       </plugins>
