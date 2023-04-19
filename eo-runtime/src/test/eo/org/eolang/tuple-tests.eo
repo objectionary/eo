@@ -215,6 +215,16 @@
     $.equal-to
       list (* 1 2 3)
 
+[] > tuple-empty-fluent-with-indented-keyword
+  tuple
+  .with 1
+  .with 2
+  .with 3 > a
+  assert-that > @
+    list a
+    $.equal-to
+      list (* 1 2 3)
+
 [] > tuple-with-negative-index-gets-last
   * 0 1 2 3 4 > arr
   assert-that > @
