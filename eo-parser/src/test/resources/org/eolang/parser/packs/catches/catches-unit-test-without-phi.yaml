@@ -6,7 +6,7 @@ tests:
   - /program/errors/error[@check='unit-test-without-phi']
   - //o[@name='test']
 eo: |
-  +xunit
+  +tests
 
   [] > test
     TRUE

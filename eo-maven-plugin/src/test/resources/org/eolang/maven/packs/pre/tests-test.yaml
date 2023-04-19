@@ -16,7 +16,7 @@ tests:
   - /program/errors[count(*)=0]
   - //java[contains(text(), '@Test')]
 eo: |
-  +xunit
+  +tests
   
   [] > works
     1.eq 1 > @

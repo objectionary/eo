@@ -23,7 +23,7 @@
 +alias assertThat org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+xunit
++tests
 +package org.eolang
 +version 0.0.0
 
@@ -40,4 +40,4 @@
     "anything"
     $.is
       $.anything
-    "assert that should works with xunit"
+    "assert that should works with tests"
