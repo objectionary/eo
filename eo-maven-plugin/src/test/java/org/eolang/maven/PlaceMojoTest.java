@@ -46,6 +46,11 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for {@link PlaceMojo}.
  *
  * @since 0.11
+ * @todo #1996:30min Make PlaceMojoTest run tests in parallel.
+ *  Currently all tests in this class are executed in the same thread. This is done by the
+ *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
+ *  because the class has some concurrency problems. We need to make the tests in this class run
+ *  in parallel and then remove the annotation.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @Execution(ExecutionMode.SAME_THREAD)
