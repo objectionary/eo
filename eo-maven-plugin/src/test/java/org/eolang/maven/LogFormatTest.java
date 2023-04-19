@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.util.concurrent.atomic.AtomicReference;
-import jdk.internal.net.http.common.Log;
 import org.apache.log4j.Appender;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.spi.LoggingEvent;
