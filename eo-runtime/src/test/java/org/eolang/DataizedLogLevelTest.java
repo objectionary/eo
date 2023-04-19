@@ -39,18 +39,12 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for dataization log level.
  *
  * @since 0.22
- * @todo #1996:30min Make DataizedLogLevelTest run tests in parallel.
- *  Currently all tests in this class are executed in the same thread. This is done by the
- *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
- *  because the class has some concurrency problems. We need to make the tests in this class run
- *  in parallel and then remove the annotation.
  */
-@Execution(ExecutionMode.SAME_THREAD)
 final class DataizedLogLevelTest {
 
     @Test
     void printsShortLogs() throws InterruptedException {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("printsShortLogs");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -76,7 +70,7 @@ final class DataizedLogLevelTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi).take();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {
@@ -121,7 +115,7 @@ final class DataizedLogLevelTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi).take();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {

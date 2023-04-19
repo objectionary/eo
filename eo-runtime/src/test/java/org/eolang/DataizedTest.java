@@ -41,18 +41,12 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for {@link Dataized}.
  *
  * @since 0.22
- * @todo #1996:30min Make DataizedTest run tests in parallel.
- *  Currently all tests in this class are executed in the same thread. This is done by the
- *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
- *  because the class has some concurrency problems. We need to make the tests in this class run
- *  in parallel and then remove the annotation.
  */
-@Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
 
     @Test
     void logsCorrectly() {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("logsCorrectly");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -73,7 +67,7 @@ final class DataizedTest {
             }
         };
         log.addHandler(hnd);
-        new Dataized(new Data.ToPhi(1L)).take();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
@@ -87,7 +81,7 @@ final class DataizedTest {
 
     @Test
     void logsWhenException() {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("logsWhenException");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -115,7 +109,7 @@ final class DataizedTest {
                 () -> new Dataized(wrong).take()
             )
         );
-        new Dataized(new Data.ToPhi(1L)).take();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(

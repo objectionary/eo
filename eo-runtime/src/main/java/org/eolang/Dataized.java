@@ -48,7 +48,7 @@ public final class Dataized {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(Dataized.class.getName());
+    private static final Logger DEFAULT_LOGGER = Logger.getLogger(Dataized.class.getName());
 
     /**
      * Dataization level.
@@ -67,11 +67,26 @@ public final class Dataized {
     private final Phi phi;
 
     /**
+     * Logger.
+     */
+    private final Logger logger;
+
+    /**
      * Ctor.
      * @param src The object
      */
     public Dataized(final Phi src) {
+        this(src, Dataized.DEFAULT_LOGGER);
+    }
+
+    /**
+     * Ctor.
+     * @param src The object
+     * @param log Logger
+     */
+    public Dataized(final Phi src, final Logger log) {
         this.phi = src;
+        this.logger = log;
     }
 
     /**
@@ -97,10 +112,10 @@ public final class Dataized {
                 }
             }
             final Object data = Data.class.cast(src).take();
-            if (Dataized.LOGGER.isLoggable(Level.FINE)
+            if (this.logger.isLoggable(Level.FINE)
                 && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
             ) {
-                Dataized.LOGGER.log(
+                this.logger.log(
                     Level.FINE,
                     String.format(
                         "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
