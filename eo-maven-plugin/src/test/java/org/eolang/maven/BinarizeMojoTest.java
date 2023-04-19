@@ -52,7 +52,6 @@ final class BinarizeMojoTest {
      * @throws Exception If fails.
      */
     @Test
-    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
