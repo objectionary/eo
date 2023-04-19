@@ -194,6 +194,11 @@
     a.length
     $.equal-to 0
 
+[] > gets-lengths-of-empty-tuple-without-additional-obj
+  assert-that > @
+    tuple.length
+    $.equal-to 0
+
 [] > creates-empty-tuple-with-number
   tuple.with 3 > a
   assert-that > @

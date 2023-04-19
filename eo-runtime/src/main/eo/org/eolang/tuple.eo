@@ -27,9 +27,6 @@
 +version 0.0.0
 
 [] > tuple
-  # Create empty array.
-  [] > @ /tuple
-
   # Obtain the length of the array.
   [] > length /int
 

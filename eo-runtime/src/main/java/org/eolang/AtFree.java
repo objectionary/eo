@@ -110,9 +110,11 @@ public final class AtFree implements Attr {
 
     @Override
     public Phi get() {
-        Phi phi = this.origin.get();
+        final Phi phi = this.origin.get();
         if (phi.equals(Phi.Φ)) {
-            phi = new Data.Value(new Phi[0]);
+            throw new ExUnset(
+                "The attribute is not initialized, can't read"
+            );
         }
         return phi;
     }
