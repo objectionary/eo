@@ -103,6 +103,12 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
+          <properties>
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
       <plugin>

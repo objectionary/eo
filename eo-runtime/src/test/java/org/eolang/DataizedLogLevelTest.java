@@ -32,12 +32,15 @@ import java.util.logging.Logger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for dataization log level.
  *
  * @since 0.22
  */
+@Execution(ExecutionMode.SAME_THREAD)
 final class DataizedLogLevelTest {
 
     @Test
