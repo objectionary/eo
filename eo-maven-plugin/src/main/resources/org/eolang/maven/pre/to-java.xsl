@@ -131,7 +131,7 @@ SOFTWARE.
         <xsl:apply-templates select="//meta[head='package']" mode="head"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:apply-templates select="//meta[head='junit']" mode="head"/>
+        <xsl:apply-templates select="//meta[head='junit' or head='xunit']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
     </xsl:copy>
@@ -160,7 +160,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="." mode="equals-and-hashCode"/>
-    <xsl:if test="//meta[head='junit'] and not(@parent)">
+    <xsl:if test="//meta[head='junit' or head='xunit'] and not(@parent)">
       <xsl:apply-templates select="." mode="tests"/>
     </xsl:if>
     <xsl:apply-templates select="class" mode="body"/>
@@ -177,7 +177,7 @@ SOFTWARE.
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:choose>
-      <xsl:when test="//meta[head='junit'] and not(@parent)">
+      <xsl:when test="//meta[head='junit' or head='xunit'] and not(@parent)">
         <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>() {</xsl:text>
@@ -646,7 +646,7 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:template match="meta[head='junit']" mode="head">
+  <xsl:template match="meta[head='junit' or head='xunit']" mode="head">
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>

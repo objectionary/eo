@@ -2,8 +2,8 @@ xsls:
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/parser/remove-noise.xsl
-  - /org/eolang/maven/pre/junit.xsl
-  - /org/eolang/maven/pre/rename-junit-inners.xsl
+  - /org/eolang/maven/pre/xunit.xsl
+  - /org/eolang/maven/pre/rename-xunit-inners.xsl
 tests:
   - /program/errors[count(*)=0]
   - /program[count(//class)=5]
@@ -11,7 +11,7 @@ tests:
   - //class[@name='ω3t0$a0' and @parent='ω2c']
   - //o[@base='ω2c' and @name='c']
 eo: |
-  +junit
+  +xunit
   
   [] > a
     [] > b

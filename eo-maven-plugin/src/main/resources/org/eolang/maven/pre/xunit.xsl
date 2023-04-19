@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="junit" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xunit" version="2.0">
   <!--
   This stylesheet will take outer objects and put them into
   classes that are unit tests.
@@ -47,7 +47,7 @@ SOFTWARE.
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:choose>
-        <xsl:when test="//meta[head='junit']">
+        <xsl:when test="//meta[head='xunit' or head='junit']">
           <xsl:value-of select="eo:name(.)"/>
         </xsl:when>
         <xsl:otherwise>
@@ -61,7 +61,7 @@ SOFTWARE.
     <xsl:variable name="ourRef" select="parent::o/@ref"/>
     <xsl:attribute name="{name()}">
       <xsl:choose>
-        <xsl:when test="//meta[head='junit']">
+        <xsl:when test="//meta[head='xunit' or head='junit']">
           <xsl:choose>
             <xsl:when test="//class[@name=$a and @line=$ourRef]">
               <xsl:value-of select="eo:name($a)"/>
@@ -81,7 +81,7 @@ SOFTWARE.
     <xsl:variable name="a" select="."/>
     <xsl:attribute name="{name()}">
       <xsl:choose>
-        <xsl:when test="//meta[head='junit']">
+        <xsl:when test="//meta[head='xunit' or head='junit']">
           <xsl:choose>
             <xsl:when test="//class[@name=$a]">
               <xsl:value-of select="eo:name($a)"/>
@@ -100,7 +100,7 @@ SOFTWARE.
   <xsl:template match="class" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='junit']">
+      <xsl:if test="//meta[head='xunit' or head='junit']">
         <xsl:variable name="c" select="."/>
         <xsl:apply-templates select="//class[@parent=$c/@name]" mode="copy"/>
       </xsl:if>
@@ -108,7 +108,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="objects/class[@parent]" mode="#default">
     <xsl:choose>
-      <xsl:when test="//meta[head='junit']">
+      <xsl:when test="//meta[head='xunit' or head='junit']">
         <!-- kill them -->
       </xsl:when>
       <xsl:otherwise>

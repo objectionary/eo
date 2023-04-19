@@ -302,7 +302,7 @@ final class OptimizeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+architect yegor256@gmail.com",
-                "+junit",
+                "+xunit",
                 "+package org.eolang.examples\n",
                 "[] > main",
                 "  [] > @",

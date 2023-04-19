@@ -22,19 +22,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="rename-junit-inners" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="rename-xunit-inners" version="2.0">
   <!--
   This stylesheet renames inner classes, which were placed
-  into junit objects by junit.xsl. Without this cleaning there
+  into xunit objects by xunit.xsl. Without this cleaning there
   could be too long class names.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="junit" select="exists(//meta[head='junit'])"/>
+  <xsl:variable name="xunit" select="exists(//meta[head='junit' or head='xunit'])"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="class" as="node()"/>
     <xsl:variable name="ret">
       <xsl:choose>
-        <xsl:when test="$junit and $class/@parent">
+        <xsl:when test="$xunit and $class/@parent">
           <xsl:variable name="parent" select="$class/@parent"/>
           <xsl:text>ω</xsl:text>
           <xsl:value-of select="$class/@ancestors"/>
