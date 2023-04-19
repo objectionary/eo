@@ -39,6 +39,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link PlaceMojo}.
@@ -46,6 +48,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.11
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@Execution(ExecutionMode.SAME_THREAD)
 final class PlaceMojoTest {
 
     /**

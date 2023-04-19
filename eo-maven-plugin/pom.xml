@@ -278,6 +278,12 @@ SOFTWARE.
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
           </systemPropertyVariables>
+          <properties>
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
       <plugin>

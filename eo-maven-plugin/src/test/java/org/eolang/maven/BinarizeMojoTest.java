@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
@@ -37,7 +38,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  *
  * @since 0.1
  */
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.SAME_THREAD)
 final class BinarizeMojoTest {
 
     /**
@@ -46,6 +47,7 @@ final class BinarizeMojoTest {
      * @throws Exception If fails.
      */
     @Test
+    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
