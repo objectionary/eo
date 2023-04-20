@@ -103,6 +103,13 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
+          <properties>
+            <!-- @todo #1996:30min Enable parallel run of all tests in eo-runtime. For now we are experience some problems when concurrent mode is enabled. We have to investigate the problem and make all tests in eo-runtime run in parallel.-->
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = same_thread
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
       <plugin>
