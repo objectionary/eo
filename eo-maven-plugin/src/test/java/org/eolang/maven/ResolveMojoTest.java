@@ -239,57 +239,25 @@ final class ResolveMojoTest {
 
     @Test
     void resolvesWithConflictingDependenciesNoFail(@TempDir final Path temp) throws IOException {
-        final Path first = temp.resolve("src/foo1.src");
-        new Home(temp).save(
-            String.format(
-                "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
-                "[] > foo /int"
-            ),
-            temp.relativize(first)
-        );
-        final Path second = temp.resolve("src/foo2.src");
-        new Home(temp).save(
-            String.format(
-                "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
-                "[] > foo /int"
-            ),
-            temp.relativize(second)
-        );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo1.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, first.toString())
-            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        Catalogs.INSTANCE.make(foreign)
-            .add("foo2.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, second.toString())
-            .set(AssembleMojo.ATTR_VERSION, "0.22.0");
-        new Moja<>(ParseMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .execute();
-        new Moja<>(ResolveMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("central", Central.EMPTY)
-            .with("skipZeroVersions", true)
-            .with("discoverSelf", false)
-            .with("ignoreVersionConflicts", true)
-            .with("ignoreTransitive", true)
-            .execute();
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                String.format(
+                    "%s\n\n%s",
+                    "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.1",
+                    "[] > foo /int"
+                )
+            ).withProgram(
+                String.format(
+                    "%s\n\n%s",
+                    "+rt jvm org.eolang:eo-runtime:jar-with-dependencies:0.22.0",
+                    "[] > foo /int"
+                )
+            );
+        maven.with("ignoreVersionConflicts", true)
+            .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            true,
-            Matchers.equalTo(true)
+            maven.targetPath(),
+            new ContainsFile("**/eo-runtime-*.jar")
         );
     }
 
