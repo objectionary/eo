@@ -25,13 +25,11 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
 import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -50,24 +48,15 @@ import org.junit.jupiter.api.io.TempDir;
 final class ResolveMojoTest {
 
     @Test
-    void resolvesWithSingleDependency(@TempDir final Path temp) throws Exception {
-        final Path foo = Paths.get("src").resolve("foo.eo");
-        new Home(temp).save(
-            String.format(
-                "%s\n\n%s",
-                "+rt jvm org.eolang:eo-runtime:0.7.0",
-                "[] > foo /int"
-            ),
-            foo
-        );
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo.eo")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, temp.resolve(foo))
-            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        final Path target = temp.resolve("target");
-        this.resolve(new DummyCentral(), foreign, target);
+    void resolvesWithSingleDependency(@TempDir final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(
+                String.format(
+                    "%s\n\n%s",
+                    "+rt jvm org.eolang:eo-runtime:0.7.0",
+                    "[] > foo /int"
+                )
+            ).execute(new FakeMaven.Resolve());
         final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
@@ -259,29 +248,5 @@ final class ResolveMojoTest {
             maven.targetPath(),
             new ContainsFile("**/eo-runtime-*.jar")
         );
-    }
-
-    private void resolve(
-        final DummyCentral central,
-        final Path foreign,
-        final Path target
-    ) {
-        new Moja<>(ParseMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .execute();
-        new Moja<>(ResolveMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("central", central)
-            .with("skipZeroVersions", true)
-            .with("discoverSelf", false)
-            .with("ignoreVersionConflicts", false)
-            .with("ignoreTransitive", true)
-            .execute();
     }
 }
