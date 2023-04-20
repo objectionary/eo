@@ -212,56 +212,22 @@ final class ResolveMojoTest {
      */
     @Test
     void resolvesWithConflictingDependencies(@TempDir final Path temp) throws IOException {
-        final Path first = temp.resolve("src/foo1.src");
-        new Home(temp).save(
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.1",
                 "[] > foo /int"
-            ),
-            temp.relativize(first)
-        );
-        final Path second = temp.resolve("src/foo2.src");
-        new Home(temp).save(
+            )
+        ).withProgram(
             String.format(
                 "%s\n\n%s",
                 "+rt jvm org.eolang:eo-runtime:0.22.0",
                 "[] > foo /int"
-            ),
-            temp.relativize(second)
+            )
         );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo1.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, first.toString())
-            .set(AssembleMojo.ATTR_VERSION, "0.22.1");
-        Catalogs.INSTANCE.make(foreign, "json")
-            .add("foo2.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, second.toString())
-            .set(AssembleMojo.ATTR_VERSION, "0.22.0");
-        new Moja<>(ParseMojo.class)
-            .with("foreign", foreign.toFile())
-            .with("targetDir", target.toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .execute();
         final Exception excpt = Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Moja<>(ResolveMojo.class)
-                .with("foreign", foreign.toFile())
-                .with("targetDir", target.toFile())
-                .with("central", Central.EMPTY)
-                .with("skipZeroVersions", true)
-                .with("discoverSelf", false)
-                .with("ignoreVersionConflicts", false)
-                .with("ignoreTransitive", false)
-                .execute()
+            () -> maven.execute(new FakeMaven.Resolve())
         );
         MatcherAssert.assertThat(
             excpt.getCause().getCause().getMessage(),
