@@ -46,11 +46,6 @@ import java.util.logging.Logger;
 public final class Dataized {
 
     /**
-     * Logger.
-     */
-    private static final Logger DEFAULT_LOGGER = Logger.getLogger(Dataized.class.getName());
-
-    /**
      * Dataization level.
      */
     private static final ThreadLocal<Integer> LEVEL = ThreadLocal.withInitial(() -> 0);
@@ -76,7 +71,7 @@ public final class Dataized {
      * @param src The object
      */
     public Dataized(final Phi src) {
-        this(src, Dataized.DEFAULT_LOGGER);
+        this(src, Logger.getLogger(Dataized.class.getName()));
     }
 
     /**
