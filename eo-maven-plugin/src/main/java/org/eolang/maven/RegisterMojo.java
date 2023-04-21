@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -129,14 +128,14 @@ public final class RegisterMojo extends SafeMojo {
                 );
             }
             final String name = unplace.make(file);
-            if (!this.scopedTojos().select(t -> t.get(Tojos.KEY).equals(name)).isEmpty()) {
+            if (!this.scopedTojos().contains(name)) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
             this.scopedTojos()
                 .add(name)
-                .set(AssembleMojo.ATTR_VERSION, ParseMojo.ZERO)
-                .set(AssembleMojo.ATTR_EO, file.toAbsolutePath().toString());
+                .withSource(file.toAbsolutePath())
+                .withVersion(ParseMojo.ZERO);
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(

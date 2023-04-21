@@ -144,14 +144,14 @@ public final class ProbeMojo extends SafeMojo {
                 }
                 ++count;
                 this.scopedTojos()
-                    .addForeign(name)
+                    .add(name)
                     .withDiscoveredAt(src);
                 probed.add(name);
             }
             tojo.withHash(new ChNarrow(hash)).withProbed(count);
         }
         if (tojos.isEmpty()) {
-            if (this.scopedTojos().select(row -> true).isEmpty()) {
+            if (this.scopedTojos().size() == 0) {
                 Logger.warn(this, "Nothing to probe, since there are no programs");
             } else {
                 Logger.info(this, "Nothing to probe, all programs checked already");

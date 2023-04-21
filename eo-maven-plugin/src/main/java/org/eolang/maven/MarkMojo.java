@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.tojos.Tojos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +32,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -74,17 +74,16 @@ public final class MarkMojo extends SafeMojo {
      * @param dir Where they are
      * @param version The version of the JAR
      * @return How many registered
-     * @throws IOException If fails
      */
-    private long scan(final Path dir, final String version) throws IOException {
+    private long scan(final Path dir, final String version) {
         final Unplace unplace = new Unplace(dir);
         final Collection<Path> sources = new Walk(dir);
-        final Tojos scoped = this.scopedTojos();
+        final ForeignTojos scoped = this.scopedTojos();
         final long done = sources.stream()
             .filter(src -> src.toString().endsWith(".eo"))
             .map(unplace::make)
             .map(scoped::add)
-            .peek(tojo -> tojo.set(AssembleMojo.ATTR_VERSION, version))
+            .map(tojo -> tojo.withVersion(version))
             .count();
         Logger.info(
             this, "Found %d sources in %s, %d program(s) registered with version %s",

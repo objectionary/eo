@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
@@ -49,8 +50,13 @@ final class BinarizeMojoTest {
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
+     * @todo #1989:30min Enable BinarizeMojoTest.binarizesWithoutErrors() test. The test is disabled
+     *  because it fails on systems that don't hava install rust. We have to invent a way to check
+     *  installed rust on the system before running that test. The logic is similar to
+     *  {@link org.eolang.maven.OnlineCondition}.
      */
     @Test
+    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {

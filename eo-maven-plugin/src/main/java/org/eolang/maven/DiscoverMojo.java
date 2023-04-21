@@ -60,13 +60,13 @@ public final class DiscoverMojo extends SafeMojo {
             final Path src = tojo.xmirSecond();
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
-                this.scopedTojos().addForeign(name).withDiscoveredAt(src);
+                this.scopedTojos().add(name).withDiscoveredAt(src);
                 discovered.add(name);
             }
             tojo.withDiscovered(names.size());
         }
         if (tojos.isEmpty()) {
-            if (this.scopedTojos().select(row -> true).isEmpty()) {
+            if (this.scopedTojos().size() == 0) {
                 Logger.warn(this, "Nothing to discover, since there are no programs");
             } else {
                 Logger.info(this, "Nothing to discover, all programs checked already");
