@@ -23,21 +23,17 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.tojos.MnCsv;
 import com.yegor256.tojos.MnJson;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -116,21 +112,16 @@ final class PullMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreign()
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
-            .with("objectionary", this.dummy())
+        maven.with("objectionary", this.dummy())
             .with("offlineHashFile", temp.resolve("tags.txt"))
-            .execute();
+            .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
+            new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("mmmmmmm")
         );
     }
