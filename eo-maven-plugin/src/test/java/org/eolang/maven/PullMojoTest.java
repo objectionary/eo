@@ -35,6 +35,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Online;
 import org.hamcrest.MatcherAssert;
@@ -59,20 +60,15 @@ final class PullMojoTest {
 
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreign()
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
-            .with("objectionary", this.dummy())
-            .execute();
+        maven.with("objectionary", this.dummy())
+            .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(target).exists(
+            new Home(temp.resolve("target")).exists(
                 Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -80,12 +76,11 @@ final class PullMojoTest {
                     )
                 )
             ),
-            Matchers.is(new Online().value())
+            Matchers.is(true)
         );
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
         final Path program = temp.resolve("program.eo");
         new Home(temp).save(
