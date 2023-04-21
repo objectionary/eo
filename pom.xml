@@ -91,7 +91,7 @@ SOFTWARE.
     <!-- This is required for later correct replacement of argLine -->
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
-    <stack-size>8M</stack-size>
+    <stack-size>64M</stack-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -157,7 +157,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
-        <version>2.0.0</version>
+        <version>2.0.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -307,6 +307,12 @@ SOFTWARE.
             <systemProperties>
               <basedir>${project.basedir}</basedir>
             </systemProperties>
+            <properties>
+              <configurationParameters>
+                junit.jupiter.execution.parallel.enabled = true
+                junit.jupiter.execution.parallel.mode.default = concurrent
+              </configurationParameters>
+            </properties>
           </configuration>
         </plugin>
       </plugins>

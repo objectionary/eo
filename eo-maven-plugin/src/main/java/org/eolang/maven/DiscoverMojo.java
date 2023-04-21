@@ -26,11 +26,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeSet;
@@ -38,6 +36,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -55,26 +54,19 @@ public final class DiscoverMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && !row.exists(AssembleMojo.ATTR_DISCOVERED)
-        );
+        final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>(1);
-        for (final Tojo tojo : tojos) {
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        for (final ForeignTojo tojo : tojos) {
+            final Path src = tojo.xmirSecond();
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
-                final Tojo ftojo = this.scopedTojos().add(name);
-                if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
-                }
-                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
+                this.scopedTojos().add(name).withDiscoveredAt(src);
                 discovered.add(name);
             }
-            tojo.set(AssembleMojo.ATTR_DISCOVERED, Integer.toString(names.size()));
+            tojo.withDiscovered(names.size());
         }
         if (tojos.isEmpty()) {
-            if (this.scopedTojos().select(row -> true).isEmpty()) {
+            if (this.scopedTojos().size() == 0) {
                 Logger.warn(this, "Nothing to discover, since there are no programs");
             } else {
                 Logger.info(this, "Nothing to discover, all programs checked already");

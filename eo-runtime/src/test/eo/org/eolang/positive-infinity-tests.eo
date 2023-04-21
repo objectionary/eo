@@ -24,7 +24,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+junit
++tests
 +version 0.0.0
 
 # Equal to
@@ -203,11 +203,10 @@
     $.equal-to TRUE
 
 [] > positive-infinity-times-neg-float-zero
-  nop > @
-    assert-that
-      as-bytes.
-        positive-infinity.times -0.0
-      $.equal-to nan.as-bytes
+  assert-that > @
+    as-bytes.
+      positive-infinity.times -0.0
+    $.equal-to nan.as-bytes
 
 [] > positive-infinity-times-int-zero
   assert-that > @
@@ -247,16 +246,14 @@
     $.equal-to pos-inf
 
 [] > positive-infinity-times-negative-float
-  nop > @
-    assert-that
-      positive-infinity.times -42.5
-      $.equal-to negative-infinity
+  assert-that > @
+    positive-infinity.times -42.5
+    $.equal-to negative-infinity
 
 [] > positive-infinity-times-negative-int
-  nop > @
-    assert-that
-      positive-infinity.times -42
-      $.equal-to negative-infinity
+  assert-that > @
+    positive-infinity.times -42
+    $.equal-to negative-infinity
 
 [] > positive-infinity-times-multiple-positive-numbers
   positive-infinity > pos-inf!
@@ -271,35 +268,30 @@
     $.equal-to pos-inf
 
 [] > positive-infinity-times-three-negative-numbers
-  nop > @
-    assert-that
-      positive-infinity.times -11.2 -5 -3
-      $.equal-to negative-infinity
+  assert-that > @
+    positive-infinity.times -11.2 -5 -3
+    $.equal-to negative-infinity
 
 [] > positive-infinity-times-multiple-numbers-with-nan
   nan > not-a-number!
-  nop > @
-    assert-that
-      (positive-infinity.times -25 not-a-number 51).as-bytes
-      $.equal-to not-a-number.as-bytes
+  assert-that > @
+    (positive-infinity.times -25 not-a-number 51).as-bytes
+    $.equal-to not-a-number.as-bytes
 
 [] > positive-infinity-times-multiple-numbers-with-float-zero
-  nop > @
-    assert-that
-      (positive-infinity.times -25 0.0 51).as-bytes
-      $.equal-to nan.as-bytes
+  assert-that > @
+    (positive-infinity.times -25 0.0 51).as-bytes
+    $.equal-to nan.as-bytes
 
 [] > positive-infinity-times-multiple-numbers-with-neg-float-zero
-  nop > @
-    assert-that
-      (positive-infinity.times -25 -0.0 51).as-bytes
-      $.equal-to nan.as-bytes
+  assert-that > @
+    (positive-infinity.times -25 -0.0 51).as-bytes
+    $.equal-to nan.as-bytes
 
 [] > positive-infinity-times-multiple-numbers-with-int-zero
-  nop > @
-    assert-that
-      (positive-infinity.times -25 0 51).as-bytes
-      $.equal-to nan.as-bytes
+  assert-that > @
+    (positive-infinity.times -25 0 51).as-bytes
+    $.equal-to nan.as-bytes
 
 [] > positive-infinity-times-multiple-infinites
   positive-infinity > pos-inf!
@@ -422,17 +414,15 @@
 
 [] > positive-infinity-minus-multiple-numbers
   positive-infinity > pos-inf!
-  nop > @
-    assert-that
-      pos-inf.minus 42 -22.1 30
-      $.equal-to pos-inf
+  assert-that > @
+    pos-inf.minus 42 -22.1 30
+    $.equal-to pos-inf
 
 [] > positive-infinity-minus-multiple-numbers-with-nan
-  nan > not-a-number!
-  nop > @
-    assert-that
-      (positive-infinity.minus 42 not-a-number 30).as-bytes
-      $.equal-to not-a-number.as-bytes
+  nan > not-a-number
+  assert-that > @
+    (positive-infinity.minus 42 not-a-number 30).as-bytes
+    $.equal-to not-a-number.as-bytes
 
 [] > positive-infinity-minus-multiple-numbers-with-negative-infinity
   positive-infinity > pos-inf!
@@ -442,10 +432,9 @@
 
 [] > positive-infinity-minus-multiple-numbers-with-positive-infinity
   positive-infinity > pos-inf!
-  nop > @
-    assert-that
-      (pos-inf.minus 42 pos-inf 30).as-bytes
-      $.equal-to nan.as-bytes
+  assert-that > @
+    (pos-inf.minus 42 pos-inf 30).as-bytes
+    $.equal-to nan.as-bytes
 
 # Division
 [] > positive-infinity-div-float-zero

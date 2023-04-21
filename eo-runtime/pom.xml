@@ -53,7 +53,7 @@ SOFTWARE.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.6</version>
+      <version>1.4.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -115,6 +115,13 @@ SOFTWARE.
            More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
            and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+          <properties>
+            <!-- @todo #1996:30min Enable parallel run of all tests in eo-runtime. For now we are experience some problems when concurrent mode is enabled. We have to investigate the problem and make all tests in eo-runtime run in parallel.-->
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = same_thread
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
       <plugin>

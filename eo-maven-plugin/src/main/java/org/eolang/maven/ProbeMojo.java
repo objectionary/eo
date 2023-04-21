@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -46,6 +45,7 @@ import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
 
@@ -116,10 +116,6 @@ public final class ProbeMojo extends SafeMojo {
             );
             return;
         }
-        final Collection<Tojo> tojos = this.scopedTojos().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && !row.exists(AssembleMojo.ATTR_PROBED)
-        );
         final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
@@ -134,8 +130,9 @@ public final class ProbeMojo extends SafeMojo {
             );
         }
         final Collection<String> probed = new HashSet<>(1);
-        for (final Tojo tojo : tojos) {
-            final Path src = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
+        for (final ForeignTojo tojo : tojos) {
+            final Path src = tojo.xmirSecond();
             final Collection<String> names = this.probes(src);
             if (!names.isEmpty()) {
                 Logger.info(this, "Probing object(s): %s", names);
@@ -146,18 +143,15 @@ public final class ProbeMojo extends SafeMojo {
                     continue;
                 }
                 ++count;
-                final Tojo ftojo = this.scopedTojos().add(name);
-                if (!ftojo.exists(AssembleMojo.ATTR_VERSION)) {
-                    ftojo.set(AssembleMojo.ATTR_VERSION, "*.*.*");
-                }
-                ftojo.set(AssembleMojo.ATTR_DISCOVERED_AT, src);
+                this.scopedTojos()
+                    .add(name)
+                    .withDiscoveredAt(src);
                 probed.add(name);
             }
-            tojo.set(AssembleMojo.ATTR_HASH, new ChNarrow(hash).value());
-            tojo.set(AssembleMojo.ATTR_PROBED, Integer.toString(count));
+            tojo.withHash(new ChNarrow(hash)).withProbed(count);
         }
         if (tojos.isEmpty()) {
-            if (this.scopedTojos().select(row -> true).isEmpty()) {
+            if (this.scopedTojos().size() == 0) {
                 Logger.warn(this, "Nothing to probe, since there are no programs");
             } else {
                 Logger.info(this, "Nothing to probe, all programs checked already");

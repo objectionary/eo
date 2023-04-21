@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.tojos.Tojo;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrBulk;
 import com.yegor256.xsline.TrClasspath;
@@ -38,7 +37,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -49,6 +47,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.rust_project.Project;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
 
@@ -103,26 +102,22 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<Tojo> sources = this.tojos.value().select(
-            row -> row.exists(AssembleMojo.ATTR_XMIR2)
-                && row.get(AssembleMojo.ATTR_SCOPE).equals(this.scope)
-        );
-        final Project project = new Project(targetDir.toPath().resolve("Lib"));
-        for (final Tojo tojo : sources) {
-            final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
+        final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
+        for (final ForeignTojo tojo : this.scopedTojos().withSecondXmir()) {
+            final Path file = tojo.xmirSecond();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
                 final String filename = String.format(
                     "%s%s",
-                    name(node.xpath("@loc").get(0)),
+                    BinarizeParseMojo.name(node.xpath("@loc").get(0)),
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
                     .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
-                    unhex(node.xpath("@code").get(0)),
+                    BinarizeParseMojo.unhex(node.xpath("@code").get(0)),
                     target
                 );
                 Logger.info(

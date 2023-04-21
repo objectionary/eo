@@ -37,17 +37,23 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test case for {@link BinarizeMojo}.
  *
  * @since 0.1
+ * @todo #1996:30min Make BinarizeMojoTest run tests in parallel.
+ *  Currently all tests in this class are executed in the same thread. This is done by the
+ *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
+ *  because the class has some concurrency problems. We need to make the tests in this class run
+ *  in parallel and then remove the annotation.
  */
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.SAME_THREAD)
 final class BinarizeMojoTest {
 
     /**
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
-     * @todo #1829:30min BinarizeMojoTest.binarizesWithoutErrors() fails sometimes.
-     *  Apparently, the test was merged without appropriate checks verification.
-     *  The test should be fixed and then enabled.
+     * @todo #1989:30min Enable BinarizeMojoTest.binarizesWithoutErrors() test. The test is disabled
+     *  because it fails on systems that don't hava install rust. We have to invent a way to check
+     *  installed rust on the system before running that test. The logic is similar to
+     *  {@link org.eolang.maven.OnlineCondition}.
      */
     @Test
     @Disabled
