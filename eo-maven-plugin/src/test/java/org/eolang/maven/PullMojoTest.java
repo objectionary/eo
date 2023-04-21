@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.MnCsv;
-import com.yegor256.tojos.MnJson;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -132,23 +131,18 @@ final class PullMojoTest {
      * @param temp Temporary directory for test.
      */
     @Test
-    void pullsUsingOfflineHash(@TempDir final Path temp) {
-        final Path target = temp.resolve("target");
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, PullMojoTest.FOREIGN_FORMAT)
+    void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreign()
             .add("org.eolang.io.stdout")
             .set(AssembleMojo.ATTR_SCOPE, "compile")
             .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
-            .with("objectionary", this.dummy())
+        maven.with("objectionary", this.dummy())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
-            .execute();
+            .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new LinkedList<>(new MnJson(foreign).read()).getFirst().get("hash"),
+            new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
         );
     }
