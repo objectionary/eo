@@ -92,14 +92,6 @@ public final class BinarizeParseMojo extends SafeMojo {
     ).back().back();
 
     /**
-     * Cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
-
-    /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -116,7 +108,7 @@ public final class BinarizeParseMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
-        final Names names = new Names(this.cache);
+        final Names names = new Names(targetDir.toPath());
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
