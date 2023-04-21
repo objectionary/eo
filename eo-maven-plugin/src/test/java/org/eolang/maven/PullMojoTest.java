@@ -82,50 +82,23 @@ final class PullMojoTest {
 
     @Test
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
-        final Path program = temp.resolve("program.eo");
-        new Home(temp).save(
-            new InputOf(
-                new TextOf(
-                    new ResourceOf("org/eolang/maven/simple-io.eo")
-                )
-            ),
-            temp.relativize(program)
-        );
-        Catalogs.INSTANCE.make(temp.resolve("eo-foreign.json"), "json")
-            .add("foo.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, program.toString());
-        final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve("eo-foreign.json").toFile();
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
-        new Moja<>(DiscoverMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
         final Objectionary objectionary = new OyRemote(
             new ChCompound(null, null, "master")
         );
-        new Moja<>(ProbeMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .with("foreignFormat", "json")
+        new FakeMaven(temp)
+            .withProgram("+package org.eolang.custom",
+                "",
+                "[] > main",
+                "  QQ.io.stdout > @",
+                "    QQ.txt.sprintf \"I am %d years old\"",
+                "      plus.",
+                "        1337",
+                "        228"
+            )
             .with("objectionary", objectionary)
-            .execute();
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .with("foreignFormat", PullMojoTest.FOREIGN_FORMAT)
-            .with("objectionary", objectionary)
-            .execute();
+            .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
-            new Home(target.toPath()).exists(
+            new Home(temp.resolve("target")).exists(
                 Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -133,7 +106,7 @@ final class PullMojoTest {
                     )
                 )
             ),
-            Matchers.is(new Online().value())
+            Matchers.is(true)
         );
     }
 

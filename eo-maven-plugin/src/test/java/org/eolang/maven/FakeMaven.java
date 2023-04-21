@@ -567,4 +567,23 @@ public final class FakeMaven {
             ).iterator();
         }
     }
+
+    /**
+     * Pull full pipeline.
+     *
+     * @since 0.31
+     */
+    static final class Pull implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                DiscoverMojo.class,
+                ProbeMojo.class,
+                PullMojo.class
+            ).iterator();
+        }
+    }
 }
