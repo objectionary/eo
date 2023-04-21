@@ -60,7 +60,7 @@ import org.eolang.maven.util.Home;
  * NOT thread-safe.
  * @since 0.28.12
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
 @NotThreadSafe
 public final class FakeMaven {
 

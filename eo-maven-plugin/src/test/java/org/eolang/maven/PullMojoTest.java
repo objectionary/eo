@@ -75,7 +75,8 @@ final class PullMojoTest {
             new ChCompound(null, null, "master")
         );
         new FakeMaven(temp)
-            .withProgram("+package org.eolang.custom",
+            .withProgram(
+                "+package org.eolang.custom",
                 "",
                 "[] > main",
                 "  QQ.io.stdout > @",
