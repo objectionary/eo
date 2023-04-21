@@ -58,7 +58,9 @@ final class BinarizeParseMojoTest {
             .result();
         final String rust = String.format(
             "target/binarize/codes/%s0.rs",
-            temp.resolve("target").toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x")
+            temp.resolve("target").toString()
+                .toLowerCase(Locale.ENGLISH)
+                .replaceAll("[^a-z0-9]", "x")
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
@@ -87,7 +89,9 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
+        final String prefix = temp.resolve("target").toString()
+            .toLowerCase(Locale.ENGLISH)
+            .replaceAll("[^a-z0-9]", "x");
         final String one = String.format(
             "target/binarize/codes/%s0.rs",
             prefix
@@ -139,7 +143,9 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
+        final String prefix = temp.resolve("target").toString()
+            .toLowerCase(Locale.ENGLISH)
+            .replaceAll("[^a-z0-9]", "x");
         final String cargo = "target/Lib/Cargo.toml";
         final String lib = "target/Lib/src/lib.rs";
         final String module = String.format(

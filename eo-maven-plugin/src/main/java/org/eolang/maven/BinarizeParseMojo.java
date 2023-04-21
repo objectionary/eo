@@ -40,7 +40,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -194,30 +193,6 @@ public final class BinarizeParseMojo extends SafeMojo {
             );
         }
         return result;
-    }
-
-    /**
-     * Uniquely converts the loc into the name for jni function.
-     * @param loc Location attribute of the rust insert.
-     * @return Name for function.
-     */
-    private static String name(final String loc) {
-        final String prefix = "f";
-        final int word = 4;
-        final int capacity = prefix.length() + loc.length() + word * loc.length();
-        final StringBuilder out = new StringBuilder(
-            capacity
-        );
-        out.append(prefix).append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
-        for (final char chr: loc.toCharArray()) {
-            out.append(
-                String.format(
-                    "%04x",
-                    (int) chr
-                )
-            );
-        }
-        return out.toString();
     }
 
 }
