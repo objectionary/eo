@@ -195,6 +195,16 @@ public final class FakeMaven {
     }
 
     /**
+     * Foreign tojos for eo-foreign.* file.
+     * @return Foreign tojos.
+     */
+    ForeignTojos foreignTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.foreignPath())
+        );
+    }
+
+    /**
      * Sets placed tojo attribute.
      *
      * @param binary Binary as class file or jar.

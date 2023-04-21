@@ -48,19 +48,13 @@ import org.junit.jupiter.api.io.TempDir;
 @ExtendWith(OnlineCondition.class)
 final class PullMojoTest {
 
-    /**
-     * Default format of eo-foreign.json for all tests.
-     */
-    private static final String FOREIGN_FORMAT = "json";
-
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.foreign()
+        maven.foreignTojos()
             .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        maven.with("objectionary", this.dummy())
+            .withVersion("*.*.*");
+        maven.with("objectionary", new OyFake())
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
@@ -112,11 +106,10 @@ final class PullMojoTest {
             Paths.get("tags.txt")
         );
         final FakeMaven maven = new FakeMaven(temp);
-        maven.foreign()
+        maven.foreignTojos()
             .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        maven.with("objectionary", this.dummy())
+            .withVersion("*.*.*");
+        maven.with("objectionary", new OyFake())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -133,11 +126,10 @@ final class PullMojoTest {
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.foreign()
+        maven.foreignTojos()
             .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        maven.with("objectionary", this.dummy())
+            .withVersion("*.*.*");
+        maven.with("objectionary", new OyFake())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
             .execute(PullMojo.class);
@@ -146,14 +138,4 @@ final class PullMojoTest {
             Matchers.equalTo("abcdefg")
         );
     }
-
-    /**
-     * Dummy Objectionary.
-     *
-     * @return Dummy Objectionary.
-     */
-    private Objectionary dummy() {
-        return new OyFake();
-    }
-
 }
