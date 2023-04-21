@@ -42,7 +42,7 @@ final class DataizedLogLevelTest {
 
     @Test
     void printsShortLogs() throws InterruptedException {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("printsShortLogs");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -68,7 +68,7 @@ final class DataizedLogLevelTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi).take();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {
@@ -113,7 +113,7 @@ final class DataizedLogLevelTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi).take();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {

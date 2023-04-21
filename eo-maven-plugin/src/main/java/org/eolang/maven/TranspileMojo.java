@@ -80,8 +80,8 @@ public final class TranspileMojo extends SafeMojo {
             new ParsingTrain().empty().with(new StUnhex()),
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
-            "/org/eolang/maven/pre/junit.xsl",
-            "/org/eolang/maven/pre/rename-junit-inners.xsl",
+            "/org/eolang/maven/pre/tests.xsl",
+            "/org/eolang/maven/pre/rename-tests-inners.xsl",
             "/org/eolang/maven/pre/attrs.xsl",
             "/org/eolang/maven/pre/varargs.xsl",
             "/org/eolang/maven/pre/data.xsl"

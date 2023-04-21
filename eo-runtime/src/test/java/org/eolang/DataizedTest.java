@@ -42,12 +42,11 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  *
  * @since 0.22
  */
-@Execution(ExecutionMode.SAME_THREAD)
 final class DataizedTest {
 
     @Test
     void logsCorrectly() {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("logsCorrectly");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -68,7 +67,7 @@ final class DataizedTest {
             }
         };
         log.addHandler(hnd);
-        new Dataized(new Data.ToPhi(1L)).take();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
@@ -82,7 +81,7 @@ final class DataizedTest {
 
     @Test
     void logsWhenException() {
-        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Logger log = Logger.getLogger("logsWhenException");
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
@@ -110,7 +109,7 @@ final class DataizedTest {
                 () -> new Dataized(wrong).take()
             )
         );
-        new Dataized(new Data.ToPhi(1L)).take();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
