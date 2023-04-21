@@ -57,7 +57,7 @@ final class BinarizeParseMojoTest {
             .result();
         final String rust = String.format(
             "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+            "f0"
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
@@ -88,11 +88,11 @@ final class BinarizeParseMojoTest {
             .result();
         final String one = String.format(
             "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomohellooworldo1or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0031002e0072"
+            "f0"
         );
         final String two = String.format(
             "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomohellooworldo2or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0032002e0072"
+            "f1"
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
@@ -141,7 +141,7 @@ final class BinarizeParseMojoTest {
         final String lib = "target/Lib/src/lib.rs";
         final String module = String.format(
             "target/Lib/src/%s.rs",
-            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+            "f1"
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(cargo)

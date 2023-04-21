@@ -48,6 +48,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.rust_project.Names;
 import org.eolang.maven.rust_project.Project;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
@@ -91,6 +92,14 @@ public final class BinarizeParseMojo extends SafeMojo {
     ).back().back();
 
     /**
+     * Cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "eo.cache")
+    @SuppressWarnings("PMD.ImmutableField")
+    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+
+    /**
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -107,21 +116,32 @@ public final class BinarizeParseMojo extends SafeMojo {
             row -> row.exists(AssembleMojo.ATTR_XMIR2)
         );
         final Project project = new Project(targetDir.toPath().resolve("Lib"));
+        final Names names = new Names(this.cache);
         for (final Tojo tojo : sources) {
             final Path file = Paths.get(tojo.get(AssembleMojo.ATTR_XMIR2));
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
+                final String code = unhex(node.xpath("@code").get(0));
+                final List<String> dependencies =
+                    node.xpath("./dependencies/dependency/@name")
+                    .stream()
+                    .map(BinarizeParseMojo::unhex)
+                    .collect(Collectors.toList());
+                final String function = names.name(
+                    code,
+                    String.join(", ", dependencies)
+                );
                 final String filename = String.format(
                     "%s%s",
-                    name(node.xpath("@loc").get(0)),
+                    function,
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
                     .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
-                    unhex(node.xpath("@code").get(0)),
+                    code,
                     target
                 );
                 Logger.info(
@@ -131,16 +151,14 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 project.add(
-                    name(node.xpath("@loc").get(0)),
-                    unhex(node.xpath("@code").get(0)),
-                    node.xpath("./dependencies/dependency/@name")
-                        .stream()
-                        .map(BinarizeParseMojo::unhex)
-                        .collect(Collectors.toList())
+                    function,
+                    code,
+                    dependencies
                 );
             }
         }
         project.save();
+        names.save();
     }
 
     /**
