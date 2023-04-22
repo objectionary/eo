@@ -443,10 +443,21 @@
     pos-inf.div 0.0
     $.equal-to pos-inf
 
+[] > positive-infinity-div-neg-float-zero
+  assert-that > @
+    positive-infinity.div -0.0
+    $.equal-to negative-infinity
+
 [] > positive-infinity-div-int-zero
   positive-infinity > pos-inf!
   assert-that > @
     pos-inf.div 0
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-neg-int-zero
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div -0
     $.equal-to pos-inf
 
 [] > positive-infinity-div-nan
@@ -482,16 +493,52 @@
     $.equal-to pos-inf
 
 [] > positive-infinity-div-negative-float
-  positive-infinity > pos-inf!
   assert-that > @
-    pos-inf.div -42.5
-    $.equal-to pos-inf
+    positive-infinity.div -42.5
+    $.equal-to negative-infinity
 
 [] > positive-infinity-div-negative-int
+  assert-that > @
+    positive-infinity.div -42
+    $.equal-to negative-infinity
+
+[] > positive-infinity-div-multiple-positive-numbers
   positive-infinity > pos-inf!
   assert-that > @
-    pos-inf.div -42
+    pos-inf.div 42.2 5 12.5
     $.equal-to pos-inf
+
+[] > positive-infinity-div-multiple-numbers
+  assert-that > @
+    positive-infinity.div 43.2 0 -13.2
+    $.equal-to negative-infinity
+
+[] > positive-infinity-div-multiple-numbers-with-neg-float-zero
+  positive-infinity > pos-inf!
+  assert-that > @
+    pos-inf.div 43.2 -0.0 -13.2
+    $.equal-to pos-inf
+
+[] > positive-infinity-div-multiple-infinities
+  positive-infinity > pos-inf!
+  negative-infinity > neg-inf!
+  assert-that > @
+    as-bytes.
+      pos-inf.div pos-inf neg-inf neg-inf
+    $.equal-to nan.as-bytes
+
+[] > positive-infinity-div-multiple-numbers-with-nan
+  nan > not-a-number!
+  assert-that > @
+    as-bytes.
+      positive-infinity.div -243 not-a-number 43.1
+    $.equal-to not-a-number.as-bytes
+
+[] > positive-infinity-div-multiple-numbers-with-infinity
+  assert-that > @
+    as-bytes.
+      positive-infinity.div 22 negative-infinity -11
+    $.equal-to nan.as-bytes
 
 # Bytes
 [] > positive-infinity-as-bytes-is-valid
