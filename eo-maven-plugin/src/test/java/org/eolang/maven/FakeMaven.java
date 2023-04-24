@@ -369,11 +369,11 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
-        this.foreign()
-            .add(String.format("foo.x.main%s", suffix(this.current.get())))
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        this.foreignTojos()
+            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
+            .withScope("compile")
+            .withVersion("0.25.0")
+            .withSource(this.workspace.absolute(path));
         this.current.incrementAndGet();
         return this;
     }

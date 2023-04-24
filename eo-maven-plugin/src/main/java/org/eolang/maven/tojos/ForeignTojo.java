@@ -263,4 +263,14 @@ public final class ForeignTojo {
         this.delegate.set(ForeignTojos.Attribute.VERSION.key(), ver);
         return this;
     }
+
+    /**
+     * Set the scope.
+     * @param scope The scope.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withScope(final String scope) {
+        this.delegate.set(ForeignTojos.Attribute.SCOPE.key(), scope);
+        return this;
+    }
 }
