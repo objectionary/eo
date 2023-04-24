@@ -171,6 +171,14 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
+     * Get all tojos as a collection.
+     * @return Collection of tojos.
+     */
+    public Collection<ForeignTojo> all() {
+        return this.select(all -> true);
+    }
+
+    /**
      * Check if the tojos contains a foreign tojo with name.
      * @param name The name of the tojo.
      * @return True if the tojo exists.
