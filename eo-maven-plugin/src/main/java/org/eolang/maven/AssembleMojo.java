@@ -40,9 +40,6 @@ import org.eolang.maven.objectionary.Objectionary;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
- * @todo #1969:90min Remove all ATTR_* constants from AssembleMojo class.
- *  We have to replace all hardcoded ATTR_* attributes with corresponding methods from ForeignTojos
- *  and ForeignTojo classes. It will increase maintainability of the code.
  */
 @Mojo(
     name = "assemble",

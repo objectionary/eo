@@ -598,7 +598,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Discovery pipeline
+     * Discovery pipeline.
      *
      * @since 0.31
      */
