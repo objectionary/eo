@@ -60,11 +60,6 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Tojo ATTR.
      */
-    public static final String ATTR_EO = "eo";
-
-    /**
-     * Tojo ATTR.
-     */
     public static final String ATTR_VERSION = "version";
 
     /**

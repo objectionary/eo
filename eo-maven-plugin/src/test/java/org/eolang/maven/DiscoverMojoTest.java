@@ -23,16 +23,13 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.MnJson;
-import java.io.File;
+import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
-import org.cactoos.Input;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;
@@ -46,11 +43,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 final class DiscoverMojoTest {
 
-    /**
-     * The name of foreign dependencies file.
-     */
-    private static final String EO_FOREIGN = "eo-foreign.json";
-
     @ParameterizedTest
     @CsvSource({
         "org/eolang/maven/mess.eo, 7",
@@ -60,11 +52,14 @@ final class DiscoverMojoTest {
     void executesDiscoveryPhaseForCorrectEoPrograms(
         final String program,
         final int dependencies,
-        final @TempDir Path tmp
+        @TempDir final Path tmp
     ) throws IOException {
-        this.saveProgram(tmp, new ResourceOf(program));
-        this.discover(tmp);
-        final Deque<Map<String, String>> json = this.discoveredJsonEntries(tmp);
+        final FakeMaven maven = new FakeMaven(tmp);
+        maven.withProgram(new ResourceOf(program))
+            .execute(new FakeMaven.Discover());
+        final Deque<Map<String, String>> json = new LinkedList<>(
+            new MnCsv(maven.foreignPath()).read()
+        );
         final Map<String, String> first = json.removeFirst();
         MatcherAssert.assertThat(dependencies, Matchers.equalTo(json.size()));
         MatcherAssert.assertThat(
@@ -73,37 +68,4 @@ final class DiscoverMojoTest {
         );
     }
 
-    private Deque<Map<String, String>> discoveredJsonEntries(final Path tmp) {
-        return new LinkedList<>(
-            new MnJson(
-                tmp.resolve(DiscoverMojoTest.EO_FOREIGN)
-            ).read()
-        );
-    }
-
-    private void saveProgram(final Path temp, final Input code) throws IOException {
-        final Path program = temp.resolve("program.eo");
-        new Home(temp).save(code, temp.relativize(program));
-        Catalogs.INSTANCE.make(temp.resolve(DiscoverMojoTest.EO_FOREIGN), "json")
-            .add("foo.src")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_EO, program.toString());
-    }
-
-    private void discover(final Path temp) {
-        final File target = temp.resolve("target").toFile();
-        final File foreign = temp.resolve(DiscoverMojoTest.EO_FOREIGN).toFile();
-        new Moja<>(ParseMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
-        new Moja<>(OptimizeMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
-        new Moja<>(DiscoverMojo.class)
-            .with("targetDir", target)
-            .with("foreign", foreign)
-            .execute();
-    }
 }
