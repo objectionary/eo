@@ -63,11 +63,6 @@ public final class AssembleMojo extends SafeMojo {
     public static final String ATTR_VERSION = "version";
 
     /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_SCOPE = "scope";
-
-    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */

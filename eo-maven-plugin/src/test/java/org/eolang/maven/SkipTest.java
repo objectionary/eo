@@ -43,10 +43,9 @@ class SkipTest {
 
     @Test
     void executesPullMojo(@TempDir final Path temp) throws IOException {
-        final Path target = temp.resolve("target");
-        this.executePullMojo(temp, target, false);
+        this.executePullMojo(temp, false);
         MatcherAssert.assertThat(
-            new Home(target).exists(
+            new Home(temp.resolve("target")).exists(
                 Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -59,11 +58,10 @@ class SkipTest {
     }
 
     @Test
-    void skipsPullMojo(@TempDir final Path temp) {
-        final Path target = temp.resolve("target");
-        this.executePullMojo(temp, target, true);
+    void skipsPullMojo(@TempDir final Path temp) throws IOException {
+        this.executePullMojo(temp, true);
         MatcherAssert.assertThat(
-            !new Home(target).exists(
+            !new Home(temp.resolve("target")).exists(
                 Paths.get(
                     String.format(
                         "%s/org/eolang/io/stdout.eo",
@@ -78,19 +76,19 @@ class SkipTest {
     @Test
     void skipsCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
-        this.executeCopyMojo(temp, classes, true);
+        this.executeCopyMojo(temp, true);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            !new Home(classes).exists(classes.relativize(out)),
-            Matchers.is(true)
+            new Home(classes).exists(classes.relativize(out)),
+            Matchers.is(false)
         );
     }
 
     @Test
     void executesCopyMojo(@TempDir final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
-        this.executeCopyMojo(temp, classes, false);
-        final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
+        this.executeCopyMojo(temp, false);
+        final Path out = classes.resolve("EO-SOURCES/foo/x/main.eo");
         MatcherAssert.assertThat(
             new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
@@ -99,42 +97,34 @@ class SkipTest {
 
     private void executePullMojo(
         @TempDir final Path temp,
-        final Path target,
         final boolean skip
-    ) {
-        final Path foreign = temp.resolve("eo-foreign.json");
-        Catalogs.INSTANCE.make(foreign, "json")
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreignTojos()
             .add("org.eolang.io.stdout")
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "*.*.*");
-        new Moja<>(PullMojo.class)
-            .with("targetDir", target.toFile())
-            .with("foreign", foreign.toFile())
-            .with("foreignFormat", "json")
-            .with("skip", skip)
-            .with(
-                "objectionary",
-                new OyFake()
-            )
-            .execute();
+            .withScope("compile")
+            .withVersion("*.*.*");
+        maven.with("skip", skip)
+            .with("objectionary", new OyFake())
+            .execute(PullMojo.class);
     }
 
     private void executeCopyMojo(
         @TempDir final Path temp,
-        final Path classes,
         final boolean skip
     ) throws IOException {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
-            Paths.get("foo/main.eo")
-        );
-        final String ver = "1.1.1";
-        new Moja<>(CopyMojo.class)
-            .with("sourcesDir", src.toFile())
-            .with("outputDir", classes.toFile())
-            .with("version", ver)
+        new FakeMaven(temp)
+            .withProgram(
+                "+rt foo:0.0.0",
+                "",
+                "",
+                "[args] > main",
+                "  \"0.0.0\" > @"
+            )
+            .with("sourcesDir", temp.toFile())
+            .with("outputDir", temp.resolve("classes").toFile())
             .with("skip", skip)
-            .execute();
+            .with("version", "1.1.1")
+            .execute(CopyMojo.class);
     }
 }
