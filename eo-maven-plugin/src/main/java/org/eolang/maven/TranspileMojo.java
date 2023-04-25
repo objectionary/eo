@@ -130,31 +130,6 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Collection<ForeignTojo> sources = this.scopedTojos().withSecondXmir();
-//        for (final ForeignTojo tojo : sources) {
-//            final Path file = tojo.xmirSecond();
-//            final XML input = new XMLDocument(file);
-//            final String name = input.xpath("/program/@name").get(0);
-//            final Place place = new Place(name);
-//            final Path target = place.make(
-//                this.targetDir.toPath().resolve(TranspileMojo.DIR),
-//                TranspileMojo.EXT
-//            );
-//            final Path src = tojo.source();
-//            if (
-//                target.toFile().exists()
-//                    && target.toFile().lastModified() >= file.toFile().lastModified()
-//                    && target.toFile().lastModified() >= src.toFile().lastModified()
-//            ) {
-//                Logger.info(
-//                    this, "XMIR %s (%s) were already transpiled to %s",
-//                    new Rel(file), name, new Rel(target)
-//                );
-//            } else {
-//                final List<Path> paths = this.transpile(src, input, target);
-//                paths.forEach(p -> this.transpiledTojos.add(p, file));
-//                saved += paths.size();
-//            }
-//        }
         final long saved = sources.parallelStream().mapToLong(this::transpileSafety).sum();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
@@ -176,14 +151,28 @@ public final class TranspileMojo extends SafeMojo {
         }
     }
 
+    /**
+     * Transpile with careful exception handling.
+     * @param tojo Tojo that should be transpiled.
+     * @return Number of transpiled files.
+     */
     private long transpileSafety(final ForeignTojo tojo) {
         try {
             return this.transpile(tojo);
         } catch (final IOException exception) {
-            throw new TranspileException("CONTEXT NEEDED", exception);
+            throw new TranspileException(
+                String.format("Can't transpile tojo %s", tojo.identifier()),
+                exception
+            );
         }
     }
 
+    /**
+     * Transpile.
+     * @param tojo Tojo that should be transpiled.
+     * @return Number of transpiled files.
+     * @throws IOException If any issues with I/O
+     */
     private int transpile(final ForeignTojo tojo) throws IOException {
         final int saved;
         final Path file = tojo.xmirSecond();
@@ -264,8 +253,16 @@ public final class TranspileMojo extends SafeMojo {
             .sum();
     }
 
-
+    /**
+     * Exception during transpilation phase.
+     * @since 0.31
+     */
     private final class TranspileException extends RuntimeException {
+        /**
+         * Constructor.
+         * @param message Exception context message.
+         * @param cause The cause of the exception.
+         */
         TranspileException(final String message, final Throwable cause) {
             super(message, cause);
         }
