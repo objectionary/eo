@@ -29,7 +29,9 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
@@ -103,9 +105,15 @@ public final class TranspiledTojos implements Closeable {
      * @return List of tojos.
      */
     private List<Tojo> findByXmir(final Path second) {
-        return this.all.value().select(
-            row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
-        );
+        final List<Tojo> result;
+        if (this.all.value() == null) {
+            result = Collections.emptyList();
+        } else {
+            result = this.all.value().select(
+                row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
+            );
+        }
+        return result;
     }
 
     /**

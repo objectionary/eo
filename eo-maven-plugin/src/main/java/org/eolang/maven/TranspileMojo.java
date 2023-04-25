@@ -38,10 +38,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
@@ -130,7 +135,12 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Collection<ForeignTojo> sources = this.scopedTojos().withSecondXmir();
-        final long saved = sources.parallelStream().mapToLong(this::transpileSafety).sum();
+        final long saved = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(tojo -> () -> this.transpile(tojo), sources)
+            )
+        ).longValue();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
             sources.size(), saved, new Rel(this.generatedDir)
@@ -246,11 +256,15 @@ public final class TranspileMojo extends SafeMojo {
      * @return Count of removed files
      */
     private long removeTranspiled(final Path src) {
-        return this.scopedTojos()
+        final List<Path> all = this.scopedTojos()
             .withSource(src).stream()
             .map(ForeignTojo::xmirSecond)
-            .mapToLong(this.transpiledTojos::remove)
-            .sum();
+            .collect(Collectors.toList());
+        long sum = 0;
+        for (final Path path : all) {
+            sum += this.transpiledTojos.remove(path);
+        }
+        return sum;
     }
 
     /**
