@@ -130,32 +130,32 @@ public final class TranspileMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Collection<ForeignTojo> sources = this.scopedTojos().withSecondXmir();
-        int saved = 0;
-        for (final ForeignTojo tojo : sources) {
-            final Path file = tojo.xmirSecond();
-            final XML input = new XMLDocument(file);
-            final String name = input.xpath("/program/@name").get(0);
-            final Place place = new Place(name);
-            final Path target = place.make(
-                this.targetDir.toPath().resolve(TranspileMojo.DIR),
-                TranspileMojo.EXT
-            );
-            final Path src = tojo.source();
-            if (
-                target.toFile().exists()
-                    && target.toFile().lastModified() >= file.toFile().lastModified()
-                    && target.toFile().lastModified() >= src.toFile().lastModified()
-            ) {
-                Logger.info(
-                    this, "XMIR %s (%s) were already transpiled to %s",
-                    new Rel(file), name, new Rel(target)
-                );
-            } else {
-                final List<Path> paths = this.transpile(src, input, target);
-                paths.forEach(p -> this.transpiledTojos.add(p, file));
-                saved += paths.size();
-            }
-        }
+//        for (final ForeignTojo tojo : sources) {
+//            final Path file = tojo.xmirSecond();
+//            final XML input = new XMLDocument(file);
+//            final String name = input.xpath("/program/@name").get(0);
+//            final Place place = new Place(name);
+//            final Path target = place.make(
+//                this.targetDir.toPath().resolve(TranspileMojo.DIR),
+//                TranspileMojo.EXT
+//            );
+//            final Path src = tojo.source();
+//            if (
+//                target.toFile().exists()
+//                    && target.toFile().lastModified() >= file.toFile().lastModified()
+//                    && target.toFile().lastModified() >= src.toFile().lastModified()
+//            ) {
+//                Logger.info(
+//                    this, "XMIR %s (%s) were already transpiled to %s",
+//                    new Rel(file), name, new Rel(target)
+//                );
+//            } else {
+//                final List<Path> paths = this.transpile(src, input, target);
+//                paths.forEach(p -> this.transpiledTojos.add(p, file));
+//                saved += paths.size();
+//            }
+//        }
+        final long saved = sources.parallelStream().mapToLong(this::transpileSafety).sum();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %s",
             sources.size(), saved, new Rel(this.generatedDir)
@@ -174,6 +174,43 @@ public final class TranspileMojo extends SafeMojo {
                 new Rel(this.generatedDir)
             );
         }
+    }
+
+    private long transpileSafety(final ForeignTojo tojo) {
+        try {
+            return this.transpile(tojo);
+        } catch (final IOException exception) {
+            throw new TranspileException("CONTEXT NEEDED", exception);
+        }
+    }
+
+    private int transpile(final ForeignTojo tojo) throws IOException {
+        final int saved;
+        final Path file = tojo.xmirSecond();
+        final XML input = new XMLDocument(file);
+        final String name = input.xpath("/program/@name").get(0);
+        final Place place = new Place(name);
+        final Path target = place.make(
+            this.targetDir.toPath().resolve(TranspileMojo.DIR),
+            TranspileMojo.EXT
+        );
+        final Path src = tojo.source();
+        if (
+            target.toFile().exists()
+                && target.toFile().lastModified() >= file.toFile().lastModified()
+                && target.toFile().lastModified() >= src.toFile().lastModified()
+        ) {
+            Logger.info(
+                this, "XMIR %s (%s) were already transpiled to %s",
+                new Rel(file), name, new Rel(target)
+            );
+            saved = 0;
+        } else {
+            final List<Path> paths = this.transpile(src, input, target);
+            paths.forEach(p -> this.transpiledTojos.add(p, file));
+            saved = paths.size();
+        }
+        return saved;
     }
 
     /**
@@ -225,5 +262,12 @@ public final class TranspileMojo extends SafeMojo {
             .map(ForeignTojo::xmirSecond)
             .mapToLong(this.transpiledTojos::remove)
             .sum();
+    }
+
+
+    private final class TranspileException extends RuntimeException {
+        TranspileException(final String message, final Throwable cause) {
+            super(message, cause);
+        }
     }
 }
