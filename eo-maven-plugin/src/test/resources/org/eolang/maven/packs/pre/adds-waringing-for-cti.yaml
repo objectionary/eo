@@ -1,0 +1,22 @@
+xsls:
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=1]
+  - //java/text()[not(contains(., '&amp;'))]
+
+eo: |
+  [] > foo
+    cti > @
+      2.times 2
+      "warning"
+      "This method is deprecated!"
+  
+  [] > app
+    QQ.io.stdout > @
+      QQ.txt.sprintf
+        "The result is %d\n"
+        foo
