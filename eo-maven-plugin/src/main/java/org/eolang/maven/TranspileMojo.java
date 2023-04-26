@@ -239,14 +239,10 @@ public final class TranspileMojo extends SafeMojo {
      * @return Count of removed files
      */
     private long removeTranspiled(final Path src) {
-        final List<Path> all = this.scopedTojos()
+        return this.scopedTojos()
             .withSource(src).stream()
             .map(ForeignTojo::xmirSecond)
-            .collect(Collectors.toList());
-        long sum = 0;
-        for (final Path path : all) {
-            sum += this.transpiledTojos.remove(path);
-        }
-        return sum;
+            .mapToLong(this.transpiledTojos::remove)
+            .sum();
     }
 }
