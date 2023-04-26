@@ -39,7 +39,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -162,22 +161,6 @@ public final class TranspileMojo extends SafeMojo {
     }
 
     /**
-     * Transpile with careful exception handling.
-     * @param tojo Tojo that should be transpiled.
-     * @return Number of transpiled files.
-     */
-    private long transpileSafety(final ForeignTojo tojo) {
-        try {
-            return this.transpile(tojo);
-        } catch (final IOException exception) {
-            throw new TranspileException(
-                String.format("Can't transpile tojo %s", tojo.identifier()),
-                exception
-            );
-        }
-    }
-
-    /**
      * Transpile.
      * @param tojo Tojo that should be transpiled.
      * @return Number of transpiled files.
@@ -265,20 +248,5 @@ public final class TranspileMojo extends SafeMojo {
             sum += this.transpiledTojos.remove(path);
         }
         return sum;
-    }
-
-    /**
-     * Exception during transpilation phase.
-     * @since 0.31
-     */
-    private final class TranspileException extends RuntimeException {
-        /**
-         * Constructor.
-         * @param message Exception context message.
-         * @param cause The cause of the exception.
-         */
-        TranspileException(final String message, final Throwable cause) {
-            super(message, cause);
-        }
     }
 }

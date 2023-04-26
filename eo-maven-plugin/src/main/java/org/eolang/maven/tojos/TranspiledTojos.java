@@ -29,9 +29,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
@@ -46,6 +44,11 @@ public final class TranspiledTojos implements Closeable {
      * All tojos.
      */
     private final Unchecked<? extends Tojos> all;
+
+    /**
+     * Current object lock that is used to synchronize access to the object.
+     */
+    private final Object lock;
 
     /**
      * The main public constructor.
@@ -69,6 +72,7 @@ public final class TranspiledTojos implements Closeable {
      */
     TranspiledTojos(final Unchecked<? extends Tojos> tojos) {
         this.all = tojos;
+        this.lock = new Object();
     }
 
     @Override
@@ -82,7 +86,9 @@ public final class TranspiledTojos implements Closeable {
      * @param second Xmir2 file.
      */
     public void add(final Path transpiled, final Path second) {
-        this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), second);
+        synchronized (this.lock) {
+            this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), second);
+        }
     }
 
     /**
@@ -105,15 +111,11 @@ public final class TranspiledTojos implements Closeable {
      * @return List of tojos.
      */
     private List<Tojo> findByXmir(final Path second) {
-        final List<Tojo> result;
-        if (this.all.value() == null) {
-            result = Collections.emptyList();
-        } else {
-            result = this.all.value().select(
+        synchronized (this.lock) {
+            return this.all.value().select(
                 row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
             );
         }
-        return result;
     }
 
     /**
