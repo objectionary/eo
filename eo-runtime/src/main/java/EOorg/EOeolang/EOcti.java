@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -56,7 +55,7 @@ public class EOcti extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho -> rho.attr("delegate").get().copy()
+                rho -> rho.attr("delegate").get()
             )
         );
     }
