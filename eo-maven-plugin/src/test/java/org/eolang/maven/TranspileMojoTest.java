@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -139,6 +140,24 @@ final class TranspileMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(java)).asString(),
             Matchers.containsString("class EOtuple")
+        );
+    }
+
+    @Test
+    void transpilesSeveralEoProgramsInParallel(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int programs = 30;
+        for (int prog = 0; prog < programs; ++prog) {
+            maven.withProgram(this.program);
+        }
+        maven.execute(new FakeMaven.Transpile()).result();
+        MatcherAssert.assertThat(
+            Files.list(maven.generatedPath()
+                .resolve("EOorg")
+                .resolve("EOeolang")
+                .resolve("EOexamples")
+            ).count(),
+            Matchers.equalTo(4L)
         );
     }
 }
