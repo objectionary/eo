@@ -33,7 +33,6 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-import org.cactoos.list.ListOf;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 
@@ -83,7 +82,7 @@ public final class Names {
      */
     public String name(final String code, final String dependencies) {
         return this.all.computeIfAbsent(
-            new ListOf<>(code, dependencies).toString(),
+            String.format("code: %s, dependencies: %s", code, dependencies),
             key -> String.format(
                 "%s%d",
                 this.prefix,
