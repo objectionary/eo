@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.rust_project;
 
-import com.sun.tools.javac.util.Pair;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,10 +33,12 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import org.cactoos.list.ListOf;
+import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 
 /**
- * Uniquely converts the loc into the name for jni function.
+ * Uniquely converts the insert into the name for jni function.
  * @since 0.29
  */
 public final class Names {
@@ -65,10 +66,10 @@ public final class Names {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public Names(final Path target) throws IOException {
-        this.dest = target.resolve("names.txt");
+        this.dest = target.resolve("names");
         this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
         if (this.dest.toFile().exists()) {
-            this.all = this.load(this.dest);
+            this.all = load(this.dest);
         } else {
             this.all = new ConcurrentHashMap<>();
         }
@@ -82,7 +83,7 @@ public final class Names {
      */
     public String name(final String code, final String dependencies) {
         return this.all.computeIfAbsent(
-            new Pair<>(code, dependencies).toString(),
+            new ListOf<>(code, dependencies).toString(),
             key -> String.format(
                 "%s%d",
                 this.prefix,
@@ -100,9 +101,9 @@ public final class Names {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(this.all);
-        oos.close();
+        oos.flush();
         new Home(this.dest.getParent()).save(
-            Base64.getEncoder().encodeToString(baos.toByteArray()),
+            new String(Base64.getEncoder().encode(baos.toByteArray())),
             this.dest.getFileName()
         );
     }
@@ -114,7 +115,10 @@ public final class Names {
      * @throws IOException If any issues with IO.
      */
     private static ConcurrentHashMap<String, String> load(final Path src) throws IOException {
-        final String content = String.valueOf(new Home(src.getParent()).load(src.getFileName()));
+        final String content = new FtDefault(src.getParent()).load(
+            src.getFileName().toString(),
+            ""
+        );
         final ObjectInputStream ois = new ObjectInputStream(
             new ByteArrayInputStream(Base64.getDecoder().decode(content))
         );
