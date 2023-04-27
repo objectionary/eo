@@ -1,0 +1,22 @@
+xsls:
+  - /org/eolang/parser/cti/cti-adds-errors.xsl
+tests:
+  - /program/errors[count(*)=1]
+  - /program/errors/error[@check='cti']
+  #  '65 72 72 6F 72' == 'error'
+  - /program/errors/error[@severity='65 72 72 6F 72']
+  #  '54 68 69 73 20 6D 65 74 68 6F 64 20 69 73 20 64 65 70 72 65 63 61 74 65 64 21' == 'This method is deprecated!'
+  - /program/errors/error[text()='54 68 69 73 20 6D 65 74 68 6F 64 20 69 73 20 64 65 70 72 65 63 61 74 65 64 21']
+
+eo: |
+  [] > foo
+    cti > @
+      2.times 2
+      "error"
+      "This method is deprecated!"
+  
+  [] > app
+    QQ.io.stdout > @
+      QQ.txt.sprintf
+        "The result is %d\n"
+        foo
