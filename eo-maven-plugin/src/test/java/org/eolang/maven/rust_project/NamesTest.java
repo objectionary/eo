@@ -25,7 +25,6 @@ package org.eolang.maven.rust_project;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -66,10 +65,9 @@ final class NamesTest {
             .collect(Collectors.toList());
         final String dependency = "dependency";
         final Names before = new Names(temp);
-        final Map<String, String> functions = new HashMap<>();
-        for (final String code: codes) {
-            functions.put(code, before.name(code, dependency));
-        }
+        final Map<String, String> functions = codes.stream().collect(
+            Collectors.toMap(code -> code, code -> before.name(code, dependency))
+        );
         MatcherAssert.assertThat(
             codes.size(),
             Matchers.equalTo(functions.size())
