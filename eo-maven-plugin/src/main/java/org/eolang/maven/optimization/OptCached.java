@@ -68,7 +68,7 @@ public final class OptCached implements Optimization {
     public XML apply(final XML xml) {
         try {
             final Path path = new Place(xml.xpath("/program/@name").get(0))
-                .make(this.folder, AssembleMojo.ATTR_XMIR);
+                .make(this.folder, AssembleMojo.IR_EXTENSION);
             final XML optimized;
             if (Files.exists(path)) {
                 optimized = new XMLDocument(path);
@@ -76,7 +76,7 @@ public final class OptCached implements Optimization {
                 optimized = this.delegate.apply(xml);
                 new FtDefault(this.folder).save(
                     xml.xpath("/program/@name").get(0),
-                    AssembleMojo.ATTR_XMIR,
+                    AssembleMojo.IR_EXTENSION,
                     optimized::toString
                 );
             }

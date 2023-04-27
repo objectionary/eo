@@ -60,7 +60,7 @@ import org.eolang.maven.util.Home;
  * NOT thread-safe.
  * @since 0.28.12
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
 @NotThreadSafe
 public final class FakeMaven {
 
@@ -192,6 +192,16 @@ public final class FakeMaven {
         }
         moja.execute();
         return this;
+    }
+
+    /**
+     * Foreign tojos for eo-foreign.* file.
+     * @return Foreign tojos.
+     */
+    ForeignTojos foreignTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.foreignPath())
+        );
     }
 
     /**
@@ -359,11 +369,11 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
-        this.foreign()
-            .add(String.format("foo.x.main%s", suffix(this.current.get())))
-            .set(AssembleMojo.ATTR_SCOPE, "compile")
-            .set(AssembleMojo.ATTR_VERSION, "0.25.0")
-            .set(AssembleMojo.ATTR_EO, this.workspace.absolute(path));
+        this.foreignTojos()
+            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
+            .withScope("compile")
+            .withVersion("0.25.0")
+            .withSource(this.workspace.absolute(path));
         this.current.incrementAndGet();
         return this;
     }
@@ -564,6 +574,42 @@ public final class FakeMaven {
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Pull full pipeline.
+     *
+     * @since 0.31
+     */
+    static final class Pull implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                DiscoverMojo.class,
+                ProbeMojo.class,
+                PullMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Discovery pipeline.
+     *
+     * @since 0.31
+     */
+    static final class Discover implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                DiscoverMojo.class
             ).iterator();
         }
     }

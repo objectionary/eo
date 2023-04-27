@@ -46,6 +46,11 @@ public final class TranspiledTojos implements Closeable {
     private final Unchecked<? extends Tojos> all;
 
     /**
+     * Current object lock that is used to synchronize access to the object.
+     */
+    private final Object lock;
+
+    /**
      * The main public constructor.
      * @param tojos Tojos source.
      */
@@ -67,6 +72,7 @@ public final class TranspiledTojos implements Closeable {
      */
     TranspiledTojos(final Unchecked<? extends Tojos> tojos) {
         this.all = tojos;
+        this.lock = new Object();
     }
 
     @Override
@@ -80,7 +86,9 @@ public final class TranspiledTojos implements Closeable {
      * @param second Xmir2 file.
      */
     public void add(final Path transpiled, final Path second) {
-        this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), second);
+        synchronized (this.lock) {
+            this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), second);
+        }
     }
 
     /**
@@ -103,9 +111,11 @@ public final class TranspiledTojos implements Closeable {
      * @return List of tojos.
      */
     private List<Tojo> findByXmir(final Path second) {
-        return this.all.value().select(
-            row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
-        );
+        synchronized (this.lock) {
+            return this.all.value().select(
+                row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
+            );
+        }
     }
 
     /**

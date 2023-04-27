@@ -28,8 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -37,15 +35,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.tojos.ForeignTojos;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
- * @todo #1969:90min Remove all ATTR_* constants from AssembleMojo class.
- *  We have to replace all hardcoded ATTR_* attributes with corresponding methods from ForeignTojos
- *  and ForeignTojo classes. It will increase maintainability of the code.
  */
 @Mojo(
     name = "assemble",
@@ -56,34 +50,9 @@ import org.eolang.maven.tojos.ForeignTojos;
 public final class AssembleMojo extends SafeMojo {
 
     /**
-     * Tojo ATTR.
+     * The intermediate representation extension.
      */
-    public static final String ATTR_EO = "eo";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_VERSION = "version";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_XMIR = "xmir";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_XMIR2 = "xmir2";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_PROBED = "probed";
-
-    /**
-     * Tojo ATTR.
-     */
-    public static final String ATTR_SCOPE = "scope";
+    public static final String IR_EXTENSION = "xmir";
 
     /**
      * Output.
@@ -234,7 +203,7 @@ public final class AssembleMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        String before = this.status();
+        String before = this.tojos.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
@@ -251,7 +220,7 @@ public final class AssembleMojo extends SafeMojo {
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
-            final String after = this.status();
+            final String after = this.tojos.status();
             ++cycle;
             if (Logger.isInfoEnabled(this)) {
                 Logger.info(
@@ -269,30 +238,4 @@ public final class AssembleMojo extends SafeMojo {
             cycle, before
         );
     }
-
-    /**
-     * Status of tojos.
-     * @return Status in text
-     */
-    private String status() {
-        final String[] attrs = {
-            AssembleMojo.ATTR_EO,
-            AssembleMojo.ATTR_XMIR,
-            AssembleMojo.ATTR_XMIR2,
-            ForeignTojos.Attribute.DISCOVERED.key(),
-            AssembleMojo.ATTR_PROBED,
-        };
-        final Collection<String> parts = new LinkedList<>();
-        for (final String attr : attrs) {
-            parts.add(
-                String.format(
-                    "%s:%d",
-                    attr,
-                    this.scopedTojos().select(tojo -> tojo.exists(attr)).size()
-                )
-            );
-        }
-        return String.join("/", parts);
-    }
-
 }

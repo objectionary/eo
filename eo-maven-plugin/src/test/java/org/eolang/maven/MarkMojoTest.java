@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,10 +46,11 @@ final class MarkMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            maven.foreign()
-                .select(all -> true)
+            maven.foreignTojos()
+                .all()
                 .iterator()
-                .next().get(AssembleMojo.ATTR_VERSION),
+                .next()
+                .version(),
             Matchers.equalTo("0.1.8")
         );
     }
@@ -57,18 +59,16 @@ final class MarkMojoTest {
     void updatesVersionIfItExists(@TempDir final Path temp) throws IOException {
         MarkMojoTest.source(temp);
         final FakeMaven maven = new FakeMaven(temp);
-        maven.foreign().add("foo.bar").set(AssembleMojo.ATTR_VERSION, "*.*.*");
+        final ForeignTojos foreign = maven.foreignTojos();
+        foreign.add("foo.bar")
+            .withVersion("*.*.*");
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            maven.foreign()
-                .select(all -> true)
-                .iterator()
-                .next()
-                .get(AssembleMojo.ATTR_VERSION),
+            foreign.all().iterator().next().version(),
             Matchers.equalTo("0.1.8")
         );
         MatcherAssert.assertThat(
-            maven.foreign().select(all -> true).size(),
+            foreign.size(),
             Matchers.equalTo(1)
         );
     }

@@ -80,7 +80,7 @@ public final class ForeignTojo {
      * The tojo eo object.
      * @return The eo object.
      */
-    public Path eolangObject() {
+    public Path source() {
         return Paths.get(this.delegate.get(ForeignTojos.Attribute.EO.key()));
     }
 
@@ -96,7 +96,7 @@ public final class ForeignTojo {
      * The tojo description.
      * @return The description.
      */
-    public String shortDescription() {
+    public String description() {
         return String.format(
             "%s:%s",
             this.delegate.get(ForeignTojos.Attribute.ID.key()),
@@ -142,7 +142,7 @@ public final class ForeignTojo {
         boolean res = true;
         if (this.delegate.exists(ForeignTojos.Attribute.XMIR.key())) {
             final Path xmir = this.xmir();
-            if (xmir.toFile().lastModified() >= this.eolangObject().toFile().lastModified()) {
+            if (xmir.toFile().lastModified() >= this.source().toFile().lastModified()) {
                 Logger.debug(
                     this, "Already parsed %s to %s (it's newer than the source)",
                     this.identifier(), new Rel(xmir)
@@ -200,7 +200,7 @@ public final class ForeignTojo {
      * @return The tojo itself.
      */
     public ForeignTojo withSodg(final Path sodg) {
-        this.delegate.set(ForeignTojos.Attribute.SCOPE.key(), sodg.toString());
+        this.delegate.set(ForeignTojos.Attribute.SODG.key(), sodg.toString());
         return this;
     }
 
@@ -251,6 +251,26 @@ public final class ForeignTojo {
      */
     public ForeignTojo withXmir(final Path xmir) {
         this.delegate.set(ForeignTojos.Attribute.XMIR.key(), xmir.toString());
+        return this;
+    }
+
+    /**
+     * Set the version.
+     * @param ver The version.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withVersion(final String ver) {
+        this.delegate.set(ForeignTojos.Attribute.VERSION.key(), ver);
+        return this;
+    }
+
+    /**
+     * Set the scope.
+     * @param scope The scope.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withScope(final String scope) {
+        this.delegate.set(ForeignTojos.Attribute.SCOPE.key(), scope);
         return this;
     }
 }

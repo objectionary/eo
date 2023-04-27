@@ -91,7 +91,7 @@ SOFTWARE.
     <!-- This is required for later correct replacement of argLine -->
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
-    <stack-size>8M</stack-size>
+    <stack-size>64M</stack-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -132,26 +132,26 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -168,7 +168,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-log</artifactId>
-        <version>0.22.0</version>
+        <version>0.23.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -307,6 +307,12 @@ SOFTWARE.
             <systemProperties>
               <basedir>${project.basedir}</basedir>
             </systemProperties>
+            <properties>
+              <configurationParameters>
+                junit.jupiter.execution.parallel.enabled = true
+                junit.jupiter.execution.parallel.mode.default = concurrent
+              </configurationParameters>
+            </properties>
           </configuration>
         </plugin>
       </plugins>
