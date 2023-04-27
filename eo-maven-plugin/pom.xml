@@ -258,6 +258,11 @@ SOFTWARE.
       <version>0.7.2</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.10.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

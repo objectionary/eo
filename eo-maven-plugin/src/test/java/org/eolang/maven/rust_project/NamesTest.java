@@ -61,7 +61,7 @@ final class NamesTest {
 
     @Test
     void recoversNames(@TempDir final Path temp) throws IOException {
-        final List<String> codes = IntStream.range(0, 1000)
+        final List<String> codes = IntStream.range(0, 1000000)
             .mapToObj(String::valueOf)
             .collect(Collectors.toList());
         final String dependency = "dependency";
@@ -75,7 +75,10 @@ final class NamesTest {
             Matchers.equalTo(functions.size())
         );
         before.save();
+        final double start = System.currentTimeMillis();
         final Names after = new Names(temp);
+        final double finish = System.currentTimeMillis();
+        System.out.printf("time elapsed %f\n", finish - start);
         final ListIterator<String> iterator = codes.listIterator(codes.size());
         while (iterator.hasPrevious()) {
             final String code = iterator.previous();

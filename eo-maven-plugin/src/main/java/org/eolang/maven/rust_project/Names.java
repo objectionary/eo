@@ -28,11 +28,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
@@ -98,14 +104,26 @@ public final class Names {
      */
     public void save() throws IOException {
         Files.createDirectories(this.dest.getParent());
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(this.all);
-        oos.flush();
-        new Home(this.dest.getParent()).save(
-            new String(Base64.getEncoder().encode(baos.toByteArray())),
-            this.dest.getFileName()
-        );
+        StringWriter sw = new StringWriter();
+
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+            .setHeader(new String[]{"code", "name"})
+            .build();
+
+        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
+            this.all.forEach((code, name) -> {
+                try {
+                    printer.printRecord(code, name);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            new Home(this.dest.getParent()).save(
+                sw.toString(),
+                this.dest.getFileName()
+            );
+        }
+
     }
 
     /**
@@ -119,19 +137,18 @@ public final class Names {
             src.getFileName().toString(),
             ""
         );
-        final ObjectInputStream ois = new ObjectInputStream(
-            new ByteArrayInputStream(Base64.getDecoder().decode(content))
-        );
-        try {
-            return (ConcurrentHashMap<String, String>) ois.readObject();
-        } catch (final ClassNotFoundException exc) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "File %s contains invalid data",
-                    src
-                ),
-                exc
-            );
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+            .setHeader("code", "name")
+            .setSkipHeaderRecord(true)
+            .build();
+
+        Iterable<CSVRecord> records = csvFormat
+            .parse(new StringReader(content));
+
+        ConcurrentHashMap<String, String> res = new ConcurrentHashMap<>();
+        for (CSVRecord record : records) {
+            res.put(record.get("code"), record.get("name"));
         }
+        return res;
     }
 }
