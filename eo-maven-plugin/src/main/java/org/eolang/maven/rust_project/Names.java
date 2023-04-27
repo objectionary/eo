@@ -69,7 +69,7 @@ public final class Names {
         this.dest = target.resolve("names");
         this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
         if (this.dest.toFile().exists()) {
-            this.all = load(this.dest);
+            this.all = Names.load(this.dest);
         } else {
             this.all = new ConcurrentHashMap<>();
         }
