@@ -39,7 +39,7 @@ import org.eolang.maven.util.Home;
 
 /**
  * Uniquely converts the insert into the name for jni function.
- * @since 0.29
+ * @since 0.30
  */
 public final class Names {
 
