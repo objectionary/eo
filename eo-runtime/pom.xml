@@ -89,6 +89,12 @@ SOFTWARE.
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -103,6 +109,12 @@ SOFTWARE.
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
           </systemProperties>
+          <!-- Default surefire plugin corrupts native stdout. It means the text that was
+          printed in native method will not be printed in 'mvn clean install'. This configuration
+           switches surefire communication channel from default to TCP/IP and solves the bug.
+           More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
+           and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           <properties>
             <!-- @todo #1996:30min Enable parallel run of all tests in eo-runtime. For now we are experience some problems when concurrent mode is enabled. We have to investigate the problem and make all tests in eo-runtime run in parallel.-->
             <configurationParameters>
@@ -150,6 +162,7 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>

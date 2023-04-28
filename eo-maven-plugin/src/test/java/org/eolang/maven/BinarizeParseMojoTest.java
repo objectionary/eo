@@ -158,8 +158,14 @@ final class BinarizeParseMojoTest {
                 "[lib]",
                 "crate-type = [\"cdylib\"]",
                 "[dependencies]",
-                "rand = \"0.5.5\"",
                 "jni = \"0.21.1\""
+            )
+        );
+        MatcherAssert.assertThat(
+            new TextOf(res.get(cargo)).asString(),
+            Matchers.stringContainsInOrder(
+                "[dependencies]",
+                "rand = \"0.5.5\""
             )
         );
     }
