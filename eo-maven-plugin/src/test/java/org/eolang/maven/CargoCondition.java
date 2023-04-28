@@ -35,6 +35,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * JUnit's extension to skip a test if there is no cargo.
+ * Cargo is a build system for rust so it is required for rust inserts.
  *
  * @since 0.30
  */
