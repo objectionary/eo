@@ -23,17 +23,15 @@
  */
 package org.eolang.maven.rust_project;
 
-import com.google.common.collect.ImmutableMap;
 import com.moandjiezana.toml.TomlWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 
 /**
  * Class to manipulate Cargo.toml file.
@@ -60,20 +58,16 @@ public class Cargo {
      * @param name Name of lib.
      */
     public Cargo(final String name) {
-        this.pack = ImmutableMap.of(
-            "name", name,
-            "version", "0.1.0",
-            "edition", "2021"
+        this.pack = new MapOf<>(
+            new MapEntry<>("name", name),
+            new MapEntry<>("version", "0.1.0"),
+            new MapEntry<>("edition", "2021")
         );
-        this.lib = ImmutableMap.of(
+        this.lib = new MapOf<>(
             "crate-type", Collections.singleton("cdylib")
         );
-        this.dependencies = Stream.of(
-            new AbstractMap.SimpleEntry<>("jni", "0.21.1")
-        ).collect(
-            Collectors.toMap(
-                AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue
-            )
+        this.dependencies = new MapOf<>(
+            "jni", "0.21.1"
         );
     }
 
