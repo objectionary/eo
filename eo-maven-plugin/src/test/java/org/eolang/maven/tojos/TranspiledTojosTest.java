@@ -92,7 +92,7 @@ final class TranspiledTojosTest {
 
     @Test
     void adds() {
-        this.tojos.add(this.transpiled.get(0), Paths.get("first.xmir2"));
+        this.tojos.add(this.transpiled.get(0), Paths.get("first.optimized.xmir"));
         MatcherAssert.assertThat(
             this.original.select(all -> true),
             Matchers.hasSize(1)
@@ -101,9 +101,9 @@ final class TranspiledTojosTest {
 
     @Test
     void removesExistingTranspiledFiles() {
-        final Path first = Paths.get("1.xmir2");
-        final Path second = Paths.get("2.xmir2");
-        this.tojos.add(this.transpiled.get(0), Paths.get("0.xmir2"));
+        final Path first = Paths.get("1.optimized.xmir");
+        final Path second = Paths.get("2.optimized.xmir");
+        this.tojos.add(this.transpiled.get(0), Paths.get("0.optimized.xmir"));
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(

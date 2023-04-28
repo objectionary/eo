@@ -129,10 +129,10 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withSecondXmir();
+        final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
         int saved = 0;
         for (final ForeignTojo tojo : sources) {
-            final Path file = tojo.xmirSecond();
+            final Path file = tojo.optimized();
             final XML input = new XMLDocument(file);
             final String name = input.xpath("/program/@name").get(0);
             final Place place = new Place(name);
@@ -222,7 +222,7 @@ public final class TranspileMojo extends SafeMojo {
     private long removeTranspiled(final Path src) {
         return this.scopedTojos()
             .withSource(src).stream()
-            .map(ForeignTojo::xmirSecond)
+            .map(ForeignTojo::optimized)
             .mapToLong(this.transpiledTojos::remove)
             .sum();
     }

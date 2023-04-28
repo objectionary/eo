@@ -132,7 +132,7 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
-            final Path src = tojo.xmirSecond();
+            final Path src = tojo.optimized();
             final Collection<String> names = this.probes(src);
             if (!names.isEmpty()) {
                 Logger.info(this, "Probing object(s): %s", names);
