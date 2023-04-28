@@ -87,7 +87,8 @@ public final class TranspiledTojos implements Closeable {
      */
     public void add(final Path transpiled, final Path optimized) {
         synchronized (this.lock) {
-            this.all.value().add(String.valueOf(transpiled)).set(Attribute.OPTIMIZED.key(),
+            this.all.value().add(String.valueOf(transpiled)).set(
+                Attribute.OPTIMIZED.key(),
                 optimized
             );
         }
