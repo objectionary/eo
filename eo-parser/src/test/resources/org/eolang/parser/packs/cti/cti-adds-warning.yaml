@@ -4,7 +4,7 @@ tests:
   - /program/errors[count(*)=1]
   - /program/errors/error[@check='cti']
   #  - '77 61 72 6E 69 6E 67' == 'warning'
-  - /program/errors/error[@severity='77 61 72 6E 69 6E 67']
+  - /program/errors/error[@severity='warning']
   #  - '54 68 69 73 20 6D 65 74 68 6F 64 20 69 73 20 64 65 70 72 65 63 61 74 65 64 21' == 'This method is deprecated!'
   - /program/errors/error[text()='54 68 69 73 20 6D 65 74 68 6F 64 20 69 73 20 64 65 70 72 65 63 61 74 65 64 21']
 

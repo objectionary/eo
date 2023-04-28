@@ -39,7 +39,7 @@ SOFTWARE.
             <xsl:value-of select="@line"/>
           </xsl:attribute>
           <xsl:attribute name="severity">
-            <xsl:value-of select="element()[last() - 1]"/>
+            <xsl:text>warning</xsl:text>
           </xsl:attribute>
           <xsl:value-of select="element()[last()]"/>
         </xsl:element>
