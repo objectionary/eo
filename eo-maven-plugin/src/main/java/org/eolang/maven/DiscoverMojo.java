@@ -57,7 +57,7 @@ public final class DiscoverMojo extends SafeMojo {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>(1);
         for (final ForeignTojo tojo : tojos) {
-            final Path src = tojo.xmirSecond();
+            final Path src = tojo.optimized();
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
                 this.scopedTojos().add(name).withDiscoveredAt(src);

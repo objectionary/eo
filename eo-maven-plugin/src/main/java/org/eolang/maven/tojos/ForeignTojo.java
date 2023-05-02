@@ -69,11 +69,11 @@ public final class ForeignTojo {
     }
 
     /**
-     * The tojo xmir2.
-     * @return The xmir2.
+     * The tojo optimized xmir.
+     * @return The optimized xmir.
      */
-    public Path xmirSecond() {
-        return Paths.get(this.delegate.get(ForeignTojos.Attribute.XMIR_2.key()));
+    public Path optimized() {
+        return Paths.get(this.delegate.get(ForeignTojos.Attribute.OPTIMIZED.key()));
     }
 
     /**
@@ -120,8 +120,8 @@ public final class ForeignTojo {
     public boolean notOptimized() {
         final Path src = this.xmir();
         boolean res = true;
-        if (this.delegate.exists(ForeignTojos.Attribute.XMIR_2.key())) {
-            final Path tgt = this.xmirSecond();
+        if (this.delegate.exists(ForeignTojos.Attribute.OPTIMIZED.key())) {
+            final Path tgt = this.optimized();
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already optimized %s to %s",
@@ -205,12 +205,12 @@ public final class ForeignTojo {
     }
 
     /**
-     * Set the xmir2.
-     * @param xmir The xmir2.
+     * Set the optimized xmir.
+     * @param xmir The optimized xmir.
      * @return The tojo itself.
      */
-    public ForeignTojo withXmirSecond(final Path xmir) {
-        this.delegate.set(ForeignTojos.Attribute.XMIR_2.key(), xmir.toString());
+    public ForeignTojo withOptimized(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.OPTIMIZED.key(), xmir.toString());
         return this;
     }
 

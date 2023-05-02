@@ -83,21 +83,24 @@ public final class TranspiledTojos implements Closeable {
     /**
      * Add transpiled file to the list.
      * @param transpiled Transpiled file.
-     * @param second Xmir2 file.
+     * @param optimized Optimized xmir file.
      */
-    public void add(final Path transpiled, final Path second) {
+    public void add(final Path transpiled, final Path optimized) {
         synchronized (this.lock) {
-            this.all.value().add(String.valueOf(transpiled)).set(Attribute.XMIR2.key(), second);
+            this.all.value().add(String.valueOf(transpiled)).set(
+                Attribute.OPTIMIZED.key(),
+                optimized
+            );
         }
     }
 
     /**
      * Remove all transpiled files by xmir.
-     * @param second Xmir2 file.
+     * @param optimized Optimized xmir file.
      * @return Number of removed files.
      */
-    public long remove(final Path second) {
-        return this.findByXmir(second)
+    public long remove(final Path optimized) {
+        return this.findByOptimized(optimized)
             .stream()
             .map(row -> row.get(Attribute.ID.key()))
             .map(File::new)
@@ -106,14 +109,14 @@ public final class TranspiledTojos implements Closeable {
     }
 
     /**
-     * Find all tojos by xmir.
-     * @param second Xmir2 file.
+     * Find all tojos by optimized xmir.
+     * @param optimized Optimized xmir file.
      * @return List of tojos.
      */
-    private List<Tojo> findByXmir(final Path second) {
+    private List<Tojo> findByOptimized(final Path optimized) {
         synchronized (this.lock) {
             return this.all.value().select(
-                row -> row.get(Attribute.XMIR2.key()).equals(second.toString())
+                row -> row.get(Attribute.OPTIMIZED.key()).equals(optimized.toString())
             );
         }
     }
@@ -131,9 +134,9 @@ public final class TranspiledTojos implements Closeable {
         ID("id"),
 
         /**
-         * Xmir2.
+         * Optimized xmir.
          */
-        XMIR2("xmir2");
+        OPTIMIZED("optimized");
 
         /**
          * Attribute key in tojos file.
