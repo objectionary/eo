@@ -76,13 +76,12 @@ public final class Names {
 
     /**
      * Assign the new name to the function.
-     * @param code Code of the function.
-     * @param dependencies Function dependencies.
+     * @param loc Location of insert.
      * @return The name.
      */
-    public String name(final String code, final String dependencies) {
+    public String name(final String loc) {
         return this.all.computeIfAbsent(
-            String.format("code: %s, dependencies: %s", code, dependencies),
+            loc,
             key -> String.format(
                 "%s%d",
                 this.prefix,

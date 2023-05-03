@@ -116,8 +116,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                     .map(BinarizeParseMojo::unhex)
                     .collect(Collectors.toList());
                 final String function = names.name(
-                    code,
-                    String.join(", ", dependencies)
+                    node.xpath("@code_loc").get(0)
                 );
                 final String filename = String.format(
                     "%s%s",

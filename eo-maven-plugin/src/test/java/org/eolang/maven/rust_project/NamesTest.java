@@ -51,35 +51,34 @@ final class NamesTest {
             Matchers.equalTo(two.hashCode())
         );
         MatcherAssert.assertThat(
-            dispatcher.name(one, ""),
+            dispatcher.name(one),
             Matchers.not(
-                dispatcher.name(two, "")
+                dispatcher.name(two)
             )
         );
     }
 
     @Test
     void recoversNames(@TempDir final Path temp) throws IOException {
-        final List<String> codes = IntStream.range(0, 1000)
+        final List<String> locations = IntStream.range(0, 1000)
             .mapToObj(String::valueOf)
             .collect(Collectors.toList());
-        final String dependency = "dependency";
         final Names before = new Names(temp);
-        final Map<String, String> functions = codes.stream().collect(
-            Collectors.toMap(code -> code, code -> before.name(code, dependency))
+        final Map<String, String> functions = locations.stream().collect(
+            Collectors.toMap(loc -> loc, loc -> before.name(loc))
         );
         MatcherAssert.assertThat(
-            codes.size(),
+            locations.size(),
             Matchers.equalTo(functions.size())
         );
         before.save();
         final Names after = new Names(temp);
-        final ListIterator<String> iterator = codes.listIterator(codes.size());
+        final ListIterator<String> iterator = locations.listIterator(locations.size());
         while (iterator.hasPrevious()) {
-            final String code = iterator.previous();
+            final String loc = iterator.previous();
             MatcherAssert.assertThat(
-                functions.get(code),
-                Matchers.equalTo(after.name(code, dependency))
+                functions.get(loc),
+                Matchers.equalTo(after.name(loc))
             );
         }
     }
