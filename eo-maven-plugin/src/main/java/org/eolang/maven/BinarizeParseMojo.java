@@ -109,7 +109,7 @@ public final class BinarizeParseMojo extends SafeMojo {
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
-                final String code = unhex(node.xpath("@code").get(0));
+                final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
                 final List<String> dependencies =
                     node.xpath("./dependencies/dependency/@name")
                     .stream()
