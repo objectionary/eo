@@ -55,14 +55,16 @@ public final class Catalogs {
     private static final Unchecked<Boolean> TESTING = new Unchecked<>(
         new Sticky<>(
             () -> {
-                boolean tests;
-                try {
-                    Class.forName("org.junit.jupiter.api.Test");
-                    tests = true;
-                } catch (final ClassNotFoundException ex) {
-                    tests = false;
+                synchronized (Catalogs.class) {
+                    boolean tests;
+                    try {
+                        Class.forName("org.junit.jupiter.api.Test");
+                        tests = true;
+                    } catch (final ClassNotFoundException ex) {
+                        tests = false;
+                    }
+                    return tests;
                 }
-                return tests;
             }
         )
     );

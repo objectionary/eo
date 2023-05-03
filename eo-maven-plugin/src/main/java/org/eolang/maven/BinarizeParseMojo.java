@@ -104,8 +104,8 @@ public final class BinarizeParseMojo extends SafeMojo {
     public void exec() throws IOException {
         final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
         final Names names = new Names(targetDir.toPath());
-        for (final ForeignTojo tojo : this.scopedTojos().withSecondXmir()) {
-            final Path file = tojo.xmirSecond();
+        for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
+            final Path file = tojo.optimized();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {

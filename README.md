@@ -205,8 +205,9 @@ $ mvn clean install -Pqulice
 ```
 
 You will need [Maven 3.3+](https://maven.apache.org) and Java 8+ installed.
--___
+
+## Special thanks
 We are using the [YourKit Java Profiler](https://www.yourkit.com/java/profiler)
-to enhance the performance of EO components
+to enhance the performance of EO components:
 
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
