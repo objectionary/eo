@@ -1,0 +1,25 @@
+---
+name: up
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+jobs:
+  up:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: |-
+          git fetch --tags --force && \
+          latest=$(git tag --sort=creatordate | tail -1) && \
+          sed -E -i "s/<version>[^<]+/<version>${latest}/g" eo-maven-plugin/README.md
+      - uses: peter-evans/create-pull-request@v5
+        with:
+          branch: version-up
+          commit-message: 'new version in README'
+          delete-branch: true
+          title: 'New version in README'
+          assignees: yegor256
+          base: master

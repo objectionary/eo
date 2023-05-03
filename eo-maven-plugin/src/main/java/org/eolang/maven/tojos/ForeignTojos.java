@@ -96,7 +96,7 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> notDiscovered() {
         return this.select(
-            row -> row.exists(Attribute.XMIR_2.key()) && !row.exists(Attribute.DISCOVERED.key())
+            row -> row.exists(Attribute.OPTIMIZED.key()) && !row.exists(Attribute.DISCOVERED.key())
         );
     }
 
@@ -127,7 +127,7 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> withSource(final Path source) {
         return this.select(
-            row -> row.exists(Attribute.XMIR_2.key())
+            row -> row.exists(Attribute.OPTIMIZED.key())
                 && row.get(Attribute.EO.key()).equals(source.toString())
         );
     }
@@ -152,11 +152,11 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
-     * Get the tojos that have corresponding xmir_2.
+     * Get the tojos that have corresponding optimized xmir.
      * @return The tojos.
      */
-    public Collection<ForeignTojo> withSecondXmir() {
-        return this.select(row -> row.exists(Attribute.XMIR_2.key()));
+    public Collection<ForeignTojo> withOptimized() {
+        return this.select(row -> row.exists(Attribute.OPTIMIZED.key()));
     }
 
     /**
@@ -165,7 +165,7 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> unprobed() {
         return this.select(
-            row -> row.exists(Attribute.XMIR_2.key())
+            row -> row.exists(Attribute.OPTIMIZED.key())
                 && !row.exists(Attribute.PROBED.key())
         );
     }
@@ -203,7 +203,7 @@ public final class ForeignTojos implements Closeable {
         final Attribute[] attrs = {
             Attribute.EO,
             Attribute.XMIR,
-            Attribute.XMIR_2,
+            Attribute.OPTIMIZED,
             Attribute.DISCOVERED,
             Attribute.PROBED,
         };
@@ -259,12 +259,9 @@ public final class ForeignTojos implements Closeable {
         XMIR("xmir"),
 
         /**
-         * Tojo xmir2 file.
-         * @todo #1969:30min Add more meaningful name for the xmir2 attribute.
-         *  I believe that instead of xmir2 we have to invent something more meaningful and
-         *  change all related methods and parameters that use xmir2 abbreviation.
+         * Path to the optimized xmir file.
          */
-        XMIR_2("xmir2"),
+        OPTIMIZED("optimized"),
 
         /**
          * Absolute location of SODG file.

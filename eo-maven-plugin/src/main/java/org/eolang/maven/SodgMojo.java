@@ -350,7 +350,7 @@ public final class SodgMojo extends SafeMojo {
                 "Setting generateDotFiles and not setting generateGraphFiles has no effect because .dot files require .graph files"
             );
         }
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withSecondXmir();
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
@@ -366,7 +366,7 @@ public final class SodgMojo extends SafeMojo {
                 continue;
             }
             final Path sodg = new Place(name).make(home, "sodg");
-            final Path xmir = tojo.xmirSecond();
+            final Path xmir = tojo.optimized();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",

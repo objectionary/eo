@@ -29,20 +29,14 @@
 [] > creates-object
   QQ.rust > r
     """
-    use reo::universe::Universe;
-    use reo::data::Data;
-    use rand::rand;
-
-    pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
-      let i = copy!(find!("org.eolang.int"));
-      uni.data(i, Data::from_int(random::<i64>()))?;
-      Ok(i)
+    pub fn foo() -> i32 {
+      println!("Hello world from rust");
+      let i = 1234;
+      i
     }
     """
     *
-      "reo: 0.0.2"
-      "rand: 0.5.5"
   assert-that > @
-    r.length
+    r
     $.equal-to
-      2
+      1234

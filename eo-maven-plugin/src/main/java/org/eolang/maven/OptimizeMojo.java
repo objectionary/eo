@@ -167,7 +167,7 @@ public final class OptimizeMojo extends SafeMojo {
             final XML optimized = this.optimization(tojo, common)
                 .apply(new XMLDocument(src));
             if (this.shouldPass(optimized)) {
-                tojo.withXmirSecond(this.make(optimized, src).toAbsolutePath());
+                tojo.withOptimized(this.make(optimized, src).toAbsolutePath());
             }
             return 1;
         };
