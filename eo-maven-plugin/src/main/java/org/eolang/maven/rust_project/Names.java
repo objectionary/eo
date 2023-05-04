@@ -43,7 +43,7 @@ import org.eolang.maven.util.Home;
 /**
  * The class for storing and assigning names to
  * rust inserts by its location.
- * It loads names base when is created and needs to
+ * It loads names base from target and needs to
  * be saved for using in other process.
  * @since 0.30
  */
