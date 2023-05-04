@@ -113,18 +113,19 @@ public final class Names {
      * @throws IOException If any issues with IO.
      */
     private static ConcurrentHashMap<String, String> load(final Path src) throws IOException {
-        final ObjectInputStream ois = new ObjectInputStream(
-            new ByteArrayInputStream(
-                Base64.getDecoder().decode(
-                    new FtDefault(src.getParent()).load(
-                        src.getFileName().toString(),
-                        ""
+        try {
+            return (ConcurrentHashMap<String, String>) (
+                new ObjectInputStream(
+                    new ByteArrayInputStream(
+                        Base64.getDecoder().decode(
+                            new FtDefault(src.getParent()).load(
+                                src.getFileName().toString(),
+                                ""
+                            )
+                        )
                     )
                 )
-            )
-        );
-        try {
-            return (ConcurrentHashMap<String, String>) ois.readObject();
+            ).readObject();
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
