@@ -26,12 +26,12 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 import org.apache.log4j.Appender;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -46,20 +46,18 @@ class LogFormatTest {
      */
     private MockAppender mock;
 
-    @BeforeEach
-    public void overrideLogAppender() {
+    @Test
+    void printsFormattedMessage() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
         final Appender appender = logger.getAppender("CONSOLE");
         this.mock = new MockAppender(appender);
         logger.addAppender(this.mock);
-    }
-
-    @Test
-    void printsFormattedMessage() {
         Logger.info(this, "Wake up, Neo...");
+        final String expected = "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
         MatcherAssert.assertThat(
+            String.format("Expected message '%s', but log was:\n '%s'", expected, this.mock.raw()),
             this.mock.containsMessage(
-                "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R"
+                expected
             ),
             Matchers.is(true)
         );
@@ -106,6 +104,15 @@ class LogFormatTest {
             return this.events.stream().anyMatch(
                 event -> this.console.getLayout().format(event).matches(regex)
             );
+        }
+
+        /**
+         * Get all log messages as a single string.
+         * @return All log messages as a single string.
+         */
+        private String raw() {
+            return this.events.stream().map(LoggingEvent::getRenderedMessage)
+                .collect(Collectors.joining("\n"));
         }
     }
 }
