@@ -25,7 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Appender;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.spi.LoggingEvent;
@@ -88,7 +88,7 @@ class LogFormatTest {
          */
         private MockAppender(final Appender console) {
             this.console = console;
-            this.events = new ConcurrentLinkedDeque<>();
+            this.events = new ConcurrentLinkedQueue<>();
         }
 
         @Override
