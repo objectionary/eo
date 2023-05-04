@@ -76,7 +76,7 @@ public final class Names {
 
     /**
      * Assign the new name to the function.
-     * @param loc Location of insert.
+     * @param loc Location of the insert.
      * @return The name.
      */
     public String name(final String loc) {
