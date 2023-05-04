@@ -37,7 +37,10 @@ import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 
 /**
- * Uniquely converts the insert into the name for jni function.
+ * The class for storing and assigning names to
+ * rust inserts by its location.
+ * It loads names base when is created and needs to
+ * be saved for using in other process.
  * @since 0.30
  */
 public final class Names {
