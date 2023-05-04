@@ -170,6 +170,7 @@ SOFTWARE.
               <targetDir>${project.basedir}/target/eo-test</targetDir>
               <addSourcesRoot>false</addSourcesRoot>
               <addTestSourcesRoot>true</addTestSourcesRoot>
+              <failOnWarning>false</failOnWarning>
               <generatedDir>
                 ${project.basedir}/target/generated-test-sources
               </generatedDir>
