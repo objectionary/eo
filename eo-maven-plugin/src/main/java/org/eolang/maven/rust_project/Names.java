@@ -32,7 +32,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.util.Home;
 
@@ -54,7 +58,7 @@ public final class Names {
     /**
      * All names.
      */
-    private final ConcurrentHashMap<String, String> all;
+    private final IoChecked<ConcurrentHashMap<String, String>> all;
 
     /**
      * Prefix for the name.
@@ -66,15 +70,24 @@ public final class Names {
      * @param target Directory where to serialize names.
      * @throws IOException If any issues with IO.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public Names(final Path target) throws IOException {
         this.dest = target.resolve("names");
         this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
-        if (Files.exists(this.dest)) {
-            this.all = Names.load(this.dest);
-        } else {
-            this.all = new ConcurrentHashMap<>();
-        }
+        this.all = new IoChecked<>(
+            new Sticky<>(
+                new Synced<>(
+                    () -> {
+                        final ConcurrentHashMap<String, String> result;
+                        if (Files.exists(this.dest)) {
+                            result = Names.load(this.dest);
+                        } else {
+                            result = new ConcurrentHashMap<>();
+                        }
+                        return result;
+                    }
+                )
+            )
+        );
     }
 
     /**
@@ -83,12 +96,24 @@ public final class Names {
      * @return The name.
      */
     public String name(final String loc) {
-        return this.all.computeIfAbsent(
+        final Map<String, String> cached;
+        try {
+            cached = this.all.value();
+        } catch (final IOException exc) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Cannot load names correctly from %s",
+                    this.dest
+                ),
+                exc
+            );
+        }
+        return cached.computeIfAbsent(
             loc,
             key -> String.format(
                 "%s%d",
                 this.prefix,
-                this.all.size()
+                cached.size()
             )
         );
     }
@@ -101,7 +126,7 @@ public final class Names {
         Files.createDirectories(this.dest.getParent());
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(this.all);
+        oos.writeObject(this.all.value());
         oos.flush();
         new Home(this.dest.getParent()).save(
             new String(Base64.getEncoder().encode(baos.toByteArray())),
