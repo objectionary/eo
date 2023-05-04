@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -80,14 +79,6 @@ public final class ParseMojo extends SafeMojo {
      * Subdirectory for parsed cache.
      */
     public static final String PARSED = "parsed";
-
-    /**
-     * EO cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * Whether we should fail on parsing error.

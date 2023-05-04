@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -83,15 +82,6 @@ public final class PullMojo extends SafeMojo {
     private boolean overWrite;
 
     /**
-     * Target directory.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.home")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
-
-    /**
      * Read hashes from local file.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -130,11 +120,11 @@ public final class PullMojo extends SafeMojo {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     new ChNarrow(hash),
-                    this.outputPath
+                    this.cache
                 ),
                 new OyCaching(
                     new ChNarrow(hash),
-                    this.outputPath,
+                    this.cache,
                     PullMojo.remote(hash)
                 ),
                 this.forceUpdate()

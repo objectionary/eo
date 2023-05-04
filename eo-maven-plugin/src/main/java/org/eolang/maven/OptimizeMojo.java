@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -109,15 +108,6 @@ public final class OptimizeMojo extends SafeMojo {
         defaultValue = "false"
     )
     private boolean failOnWarning;
-
-    /**
-     * EO cache directory.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     @Override
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
