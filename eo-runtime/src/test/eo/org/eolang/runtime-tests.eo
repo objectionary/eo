@@ -415,3 +415,13 @@
           ^.x
     $.equal-to
       "[Hello, Jeff]"
+
+[] > right-way-to-hierarchy
+  [value] > pybool
+    value > @
+  [value] > pyint
+    [x] > eq
+      pybool (value.eq (x.value)) > @
+    [x] > add
+      ^.^.pyint (value.plus (x.value)) > @
+  ((pyint 1).add (pyint 3)).eq (pyint 4) > @
