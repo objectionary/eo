@@ -69,23 +69,21 @@ It consists of three sections: `xsls`, `tests`, and `eo`. The `xsls` section is 
 #### xsls
 
 This section is used to define the XSLT stylesheets that will be used for transforming the input program. The following stylesheets are defined in this section:
-
--  `/org/eolang/parser/add-refs.xsl`: This stylesheet is used to add references to the program.
--  `/org/eolang/parser/expand-aliases.xsl`: This stylesheet is used to expand aliases in the program.
--  `/org/eolang/parser/resolve-aliases.xsl`: This stylesheet is used to resolve aliases in the program.
--  `/org/eolang/parser/add-default-package.xsl`: This stylesheet is used to add a default package to the program.
+- `/org/eolang/parser/add-refs.xsl`: This stylesheet is used to add references to the program.
+- `/org/eolang/parser/expand-aliases.xsl`: This stylesheet is used to expand aliases in the program.
+- `/org/eolang/parser/resolve-aliases.xsl`: This stylesheet is used to resolve aliases in the program.
+- `/org/eolang/parser/add-default-package.xsl`: This stylesheet is used to add a default package to the program.
 
 #### tests
 
 This section is used for defining the tests that will be run on the program. The following tests are defined in this section:
-
--  `/program/errors[count(*)=0]`: This test checks that there are no errors in the program.
--  `/program/objects[count(o)=1]`: This test checks that there is only one object in the program.
--  `//o[@base='org.eolang.and' and @line='8']`: This test checks that there is an object with the base `org.eolang.and` and the line number `8`.
--  `//o[@base='foo']`: This test checks that there is an object with the base `foo`.
--  `//o[@base='$']`: This test checks that there is an object with the base `$`.
--  `//o[@base='^']`: This test checks that there is an object with the base `^`.
--  `//o[@base='Q']`: This test checks that there is an object with the base `Q`.
+- `/program/errors[count(*)=0]`: This test checks that there are no errors in the program.
+- `/program/objects[count(o)=1]`: This test checks that there is only one object in the program.
+- `//o[@base='org.eolang.and' and @line='8']`: This test checks that there is an object with the base `org.eolang.and` and the line number `8`.
+- `//o[@base='foo']`: This test checks that there is an object with the base `foo`.
+- `//o[@base='$']`: This test checks that there is an object with the base `$`.
+- `//o[@base='^']`: This test checks that there is an object with the base `^`.
+- `//o[@base='Q']`: This test checks that there is an object with the base `Q`.
 
 #### eo
 
