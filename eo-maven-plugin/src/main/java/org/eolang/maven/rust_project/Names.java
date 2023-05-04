@@ -113,12 +113,15 @@ public final class Names {
      * @throws IOException If any issues with IO.
      */
     private static ConcurrentHashMap<String, String> load(final Path src) throws IOException {
-        final String content = new FtDefault(src.getParent()).load(
-            src.getFileName().toString(),
-            ""
-        );
         final ObjectInputStream ois = new ObjectInputStream(
-            new ByteArrayInputStream(Base64.getDecoder().decode(content))
+            new ByteArrayInputStream(
+                Base64.getDecoder().decode(
+                    new FtDefault(src.getParent()).load(
+                        src.getFileName().toString(),
+                        ""
+                    )
+                )
+            )
         );
         try {
             return (ConcurrentHashMap<String, String>) ois.readObject();
