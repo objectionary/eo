@@ -37,9 +37,6 @@ SOFTWARE.
               <xsl:attribute name="code">
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
-              <xsl:attribute name="insert_loc">
-                <xsl:value-of select="../attribute(loc)"/>
-              </xsl:attribute>
               <xsl:attribute name="code_loc">
                 <xsl:value-of select="attribute(loc)"/>
               </xsl:attribute>
