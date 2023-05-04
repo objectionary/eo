@@ -26,7 +26,6 @@ package org.eolang.maven.rust_project;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -73,9 +72,8 @@ final class NamesTest {
         );
         before.save();
         final Names after = new Names(temp);
-        final ListIterator<String> iterator = locations.listIterator(locations.size());
-        while (iterator.hasPrevious()) {
-            final String loc = iterator.previous();
+        for (int iter = locations.size() - 1; iter >= 0; --iter) {
+            final String loc = locations.get(iter);
             MatcherAssert.assertThat(
                 functions.get(loc),
                 Matchers.equalTo(after.name(loc))
