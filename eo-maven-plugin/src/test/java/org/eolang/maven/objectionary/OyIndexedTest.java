@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Collections;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.OnlineCondition;
-import org.eolang.maven.OyFake;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

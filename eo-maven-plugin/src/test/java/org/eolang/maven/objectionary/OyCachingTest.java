@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.OyFake;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

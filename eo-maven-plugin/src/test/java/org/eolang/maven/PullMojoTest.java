@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;

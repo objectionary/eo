@@ -50,6 +50,7 @@ import org.cactoos.text.IsEmpty;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
