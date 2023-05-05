@@ -236,10 +236,16 @@ public final class TranspileMojo extends SafeMojo {
      * Remove transpiled files per EO.
      * @param src The eo path
      * @return Count of removed files
+     * @todo #2046:30min Enable removing transpiled files.
+     *  We ignored that method by using .filter(tojo -> false) statement, because it created
+     *  some problems like the next one:
+     *  <a href="https://github.com/objectionary/eo/issues/2046">#2046</a>
+     *  We have to decide if we need to remove transpiled files or not.
      */
     private long removeTranspiled(final Path src) {
         return this.scopedTojos()
             .withSource(src).stream()
+            .filter(tojo -> false)
             .map(ForeignTojo::optimized)
             .mapToLong(this.transpiledTojos::remove)
             .sum();
