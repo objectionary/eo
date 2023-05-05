@@ -287,6 +287,15 @@ SOFTWARE.
           </configuration>
         </plugin>
         <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <sourcepath>
+              ${project.basedir}/src/main/java
+              ${project.build.directory}/generated-sources
+            </sourcepath>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
           <version>4.12.0</version>
