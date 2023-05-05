@@ -68,9 +68,8 @@ public final class Names {
     /**
      * Ctor.
      * @param target Directory where to serialize names.
-     * @throws IOException If any issues with IO.
      */
-    public Names(final Path target) throws IOException {
+    public Names(final Path target) {
         this.dest = target.resolve("names");
         this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
         this.all = Names.checked(this.dest);
