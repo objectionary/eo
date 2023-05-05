@@ -99,7 +99,7 @@
       y
      x
     """.as-bytes
-    $.equal-to 20-7A-0A-20-20-79-0A-20-78
+    $.equal-to 7A-0A-20-20-79-0A-20-78
 
 [] > compares-two-different-strings
   assert-that > @

@@ -66,7 +66,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                " pub fn foo() -> i32 {",
+                "pub fn foo() -> i32 {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i32>();",
