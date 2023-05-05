@@ -540,20 +540,20 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      */
     private static String trimMargin(final String text, final int indent) {
         final String rexp = "[\\s]{%d}";
-        String cutted = text
+        final String cutted = text
             .substring(3, text.length() - 3).trim();
-        String[] splitted = cutted.split("\n");
-        String res = "";
-        for(String line : splitted) {
-            res += line.replaceAll(String.format(rexp, indent), "") + "\n";
+        final String[] splitted = cutted.split("\n");
+        StringBuilder res = new StringBuilder();
+        for (final String line : splitted) {
+            res.append(line.replaceAll(String.format(rexp, indent), "")).append('\n');
         }
-        if (!res.isEmpty() && res.charAt(0) == '\n') {
-            res = res.substring(1);
+        if (res.length() > 0 && res.charAt(0) == '\n') {
+            res = new StringBuilder(res.substring(1));
         }
-        if (!res.isEmpty() && res.charAt(res.length() - 1) == '\n') {
-            res = res.substring(0, res.length() - 1);
+        if (res.length() > 0 && res.charAt(res.length() - 1) == '\n') {
+            res = new StringBuilder(res.substring(0, res.length() - 1));
         }
-        return res;
+        return res.toString();
     }
 
     /**
