@@ -149,20 +149,19 @@ public final class Names {
      * @return The map.
      * @throws IOException If any issues with IO.
      */
+    @SuppressWarnings("unchecked")
     private static ConcurrentHashMap<String, String> load(final Path src) throws IOException {
-        try {
-            return (ConcurrentHashMap<String, String>) (
-                new ObjectInputStream(
-                    new ByteArrayInputStream(
-                        Base64.getDecoder().decode(
-                            new FtDefault(src.getParent()).load(
-                                src.getFileName().toString(),
-                                ""
-                            )
-                        )
+        try (ObjectInputStream map = new ObjectInputStream(
+            new ByteArrayInputStream(
+                Base64.getDecoder().decode(
+                    new FtDefault(src.getParent()).load(
+                        src.getFileName().toString(),
+                        ""
                     )
                 )
-            ).readObject();
+            )
+        )) {
+            return (ConcurrentHashMap<String, String>) map.readObject();
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
