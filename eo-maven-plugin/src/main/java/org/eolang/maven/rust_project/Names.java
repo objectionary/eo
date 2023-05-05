@@ -73,21 +73,7 @@ public final class Names {
     public Names(final Path target) throws IOException {
         this.dest = target.resolve("names");
         this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
-        this.all = new IoChecked<>(
-            new Sticky<>(
-                new Synced<>(
-                    () -> {
-                        final ConcurrentHashMap<String, String> result;
-                        if (Files.exists(this.dest)) {
-                            result = Names.load(this.dest);
-                        } else {
-                            result = new ConcurrentHashMap<>();
-                        }
-                        return result;
-                    }
-                )
-            )
-        );
+        this.all = Names.checked(this.dest);
     }
 
     /**
@@ -131,6 +117,29 @@ public final class Names {
         new Home(this.dest.getParent()).save(
             new String(Base64.getEncoder().encode(baos.toByteArray())),
             this.dest.getFileName()
+        );
+    }
+
+    /**
+     * Prestructor to initialize this.all.
+     * @param dest Directory where to load from.
+     * @return Names map.
+     */
+    private static IoChecked<ConcurrentHashMap<String, String>> checked(final Path dest) {
+        return new IoChecked<>(
+            new Sticky<>(
+                new Synced<>(
+                    () -> {
+                        final ConcurrentHashMap<String, String> result;
+                        if (Files.exists(dest)) {
+                            result = Names.load(dest);
+                        } else {
+                            result = new ConcurrentHashMap<>();
+                        }
+                        return result;
+                    }
+                )
+            )
         );
     }
 
