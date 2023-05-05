@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -114,7 +115,7 @@ public final class Names {
         oos.writeObject(this.all.value());
         oos.flush();
         new Home(this.dest.getParent()).save(
-            new String(Base64.getEncoder().encode(baos.toByteArray())),
+            new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8),
             this.dest.getFileName()
         );
     }
