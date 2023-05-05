@@ -64,7 +64,7 @@ final class NamesTest {
             .collect(Collectors.toList());
         final Names before = new Names(temp);
         final Map<String, String> functions = locations.stream().collect(
-            Collectors.toMap(loc -> loc, loc -> before.name(loc))
+            Collectors.toMap(loc -> loc, before::name)
         );
         MatcherAssert.assertThat(
             locations.size(),
