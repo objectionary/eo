@@ -161,7 +161,17 @@ public final class Names {
                 )
             )
         )) {
-            return (ConcurrentHashMap<String, String>) map.readObject();
+            final Object result = map.readObject();
+            if (result.getClass() != ConcurrentHashMap.class) {
+                throw new ClassCastException(
+                    String.format(
+                        "Object inside %s has wrong class %s",
+                        src,
+                        result.getClass()
+                    )
+                );
+            }
+            return (ConcurrentHashMap<String, String>) result;
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
