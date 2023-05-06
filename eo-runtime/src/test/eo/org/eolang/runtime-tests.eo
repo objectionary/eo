@@ -415,3 +415,12 @@
           ^.x
     $.equal-to
       "[Hello, Jeff]"
+
+[] > check-triple-quotes
+  assert-that > @
+    """
+    Hello
+
+    Hello
+    """
+    $.equal-to "Hello\n\nHello"
