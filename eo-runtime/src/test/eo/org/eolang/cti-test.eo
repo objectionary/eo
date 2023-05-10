@@ -21,72 +21,33 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
-+alias org.eolang.ram
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
 +version 0.0.0
 
-[] > writes-and-slice-ram
-  ram 1024 > r
+[] > just-prints-warning
   assert-that > @
-    seq
-      write.
-        r.slice 200 13 > s
-        "Hello, world!".as-bytes
-      as-string.
-        s.slice 0 5
-    $.equal-to "Hello"
+    cti
+      2.times 2
+      "warning"
+      "This method is deprecated!"
+    $.equal-to 4
 
-[] > writes-integer-to-ram
-  ram 1024 > r
-  3.as-bytes > b
-  r.write 0 b > w
+# @todo #1205:90min cti: Use normal string literals instead of hex literals.
+#  Currently we add errors for cti with hex representation of the error
+#  message which looks ugly. We should use normal string literals instead,
+#  but for now it seems impossible since during parsing we already
+#  have hex representation of the error message in cti.
+#  By that reason, the 'fails-since-deprecated' test passes
+#  successfully, but it should fail since it uses cti with "error" level.
+#  See cti-adds-error.yaml, cti-adds-warning.yaml pack tests
+#  and cti-adds-errors.xsl transformation for more details.
+[] > fails-since-deprecated
   assert-that > @
-    and.
-      w.eq TRUE
-      (r.slice 0 8).as-int.eq 3
-    $.equal-to TRUE
-
-[] > several-slices-ram
-  ram 1024 > r
-  assert-that > @
-    seq
-      write.
-        r.slice 10 3
-        "abc".as-bytes
-      write.
-        r.slice 13 3
-        "def".as-bytes
-      as-string.
-        (r.slice 10 6).slice 0 6
-    $.equal-to "abcdef"
-
-[] > intersection-writes-in-ram
-  ram 64 > r
-  assert-that > @
-    seq
-      write.
-        r.slice 0 10
-        "1234567890".as-bytes
-      write.
-        r.slice 5 10
-        "-----".as-bytes
-      as-string.
-        (r.slice 0 10).slice 0 10
-    $.equal-to "12345-----"
-
-[] > slice-chain
-  ram 1024 > r
-  [] > cut-hello
-    seq > @
-      write.
-        r.slice 200 13 > s
-        "Hello, world!".as-bytes
-      s.slice 0 5
-      .slice 0 4
-      .slice 0 1
-  assert-that > @
-    cut-hello
-    $.equal-to "H"
+    cti
+      2.times 2
+      "error"
+      "This method is deprecated!"
+    $.equal-to 4

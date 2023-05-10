@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -174,6 +176,14 @@ abstract class SafeMojo extends AbstractMojo {
      */
     @Parameter(property = "eo.unrollExitError")
     protected boolean unrollExitError = true;
+
+    /**
+     * EO cache directory.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(property = "eo.cache")
+    protected Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * Cached tojos.

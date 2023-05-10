@@ -28,7 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -76,15 +75,6 @@ public final class ProbeMojo extends SafeMojo {
     private String tag = "master";
 
     /**
-     * Target directory.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.home")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path outputPath = Paths.get(System.getProperty("user.home")).resolve(".eo");
-
-    /**
      * Read hashes from local file.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -123,7 +113,7 @@ public final class ProbeMojo extends SafeMojo {
             this.objectionary = new OyFallbackSwap(
                 new OyHome(
                     new ChNarrow(hash),
-                    this.outputPath
+                    this.cache
                 ),
                 new OyIndexed(new OyRemote(hash)),
                 this.forceUpdate()

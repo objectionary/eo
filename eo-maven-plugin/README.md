@@ -130,3 +130,22 @@ If you want to build your project or run your tests which use eo-maven-plugin, y
 mvn clean install -Pqulice -Dstack-size=1M
 ```
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
+
+## How to disable IT tests
+
+It is sometime necessary to temporary disable the integration tests (for example for introducing braking changes into plugin or EO runtime). 
+This can be achived by disabling `maven-invoker-plugin` execution within `eo-maven-plugin/pom.xml`:
+```xml
+<plugins>
+  ...
+  <plugin>
+    <artifactId>maven-invoker-plugin</artifactId>
+    <version>3.5.1</version>
+    <configuration>
+        <skipInstallation>true</skipInstallation>
+        <skipInvocation>true</skipInvocation>
+    </configuration>
+  </plugin>
+  ...
+</plugins>  
+```

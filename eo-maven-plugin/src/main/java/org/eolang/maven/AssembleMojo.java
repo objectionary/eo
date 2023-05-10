@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -158,14 +157,6 @@ public final class AssembleMojo extends SafeMojo {
     @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "true")
     @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private boolean withRuntimeDependency = true;
-
-    /**
-     * Parsed cache directory.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "eo.cache")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
      * If set to TRUE, the exception on exit will be printed in details

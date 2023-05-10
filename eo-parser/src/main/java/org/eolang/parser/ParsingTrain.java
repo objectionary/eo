@@ -64,6 +64,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/global-nonames.xsl",
         "/org/eolang/parser/errors/same-line-names.xsl",
         "/org/eolang/parser/errors/self-naming.xsl",
+        "/org/eolang/parser/cti/cti-adds-errors.xsl",
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/wrap-method-calls.xsl",
         "/org/eolang/parser/expand-qqs.xsl",

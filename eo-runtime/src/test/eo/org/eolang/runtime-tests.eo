@@ -425,3 +425,12 @@
     [x] > add
       ^.^.pyint (value.plus (x.value)) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
+
+[] > check-triple-quotes
+  assert-that > @
+    """
+    Hello
+
+    Hello
+    """
+    $.equal-to "Hello\n\nHello"
