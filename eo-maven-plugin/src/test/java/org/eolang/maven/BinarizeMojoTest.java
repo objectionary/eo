@@ -30,20 +30,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link BinarizeMojo}.
  *
  * @since 0.1
- * @todo #1996:30min Make BinarizeMojoTest run tests in parallel.
- *  Currently all tests in this class are executed in the same thread. This is done by the
- *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
- *  because the class has some concurrency problems. We need to make the tests in this class run
- *  in parallel and then remove the annotation.
  */
-@Execution(ExecutionMode.SAME_THREAD)
 final class BinarizeMojoTest {
 
     /**
