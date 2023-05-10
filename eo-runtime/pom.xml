@@ -116,10 +116,9 @@ SOFTWARE.
            and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           <properties>
-            <!-- @todo #1996:30min Enable parallel run of all tests in eo-runtime. For now we are experience some problems when concurrent mode is enabled. We have to investigate the problem and make all tests in eo-runtime run in parallel.-->
             <configurationParameters>
               junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = same_thread
+              junit.jupiter.execution.parallel.mode.default = concurrent
             </configurationParameters>
           </properties>
         </configuration>
