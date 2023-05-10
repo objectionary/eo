@@ -24,8 +24,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.log4j.Appender;
 import org.apache.log4j.WriterAppender;
@@ -33,6 +34,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Tests of the log4j logger messages format.
@@ -41,24 +43,19 @@ import org.junit.jupiter.api.Test;
  */
 class LogFormatTest {
 
-    /**
-     * Mock log4j appender that intercepts all log messages.
-     */
-    private MockAppender mock;
-
     @Test
+    @Timeout(5)
     void printsFormattedMessage() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
         final Appender appender = logger.getAppender("CONSOLE");
-        this.mock = new MockAppender(appender);
-        logger.addAppender(this.mock);
+        final MockAppender mock = new MockAppender(appender);
+        logger.addAppender(mock);
         Logger.info(this, "Wake up, Neo...");
-        final String expected = "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
+        final String expected =
+            "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
         MatcherAssert.assertThat(
-            String.format("Expected message '%s', but log was:\n '%s'", expected, this.mock.raw()),
-            this.mock.containsMessage(
-                expected
-            ),
+            String.format("Expected message '%s', but log was:\n '%s'", expected, mock.raw()),
+            mock.containsMessage(expected),
             Matchers.is(true)
         );
     }
@@ -77,7 +74,7 @@ class LogFormatTest {
         /**
          * Last log message event.
          */
-        private final Collection<LoggingEvent> events;
+        private final BlockingQueue<LoggingEvent> events;
 
         /**
          * The main constructor.
@@ -86,13 +83,13 @@ class LogFormatTest {
          */
         private MockAppender(final Appender console) {
             this.console = console;
-            this.events = new ConcurrentLinkedQueue<>();
+            this.events = new LinkedBlockingQueue<>();
         }
 
         @Override
         public void append(final LoggingEvent event) {
-            super.append(event);
             this.events.add(event);
+            super.append(event);
         }
 
         /**
@@ -101,9 +98,25 @@ class LogFormatTest {
          * @return True if any log message matches the regex.
          */
         private boolean containsMessage(final String regex) {
-            return this.events.stream().anyMatch(
-                event -> this.console.getLayout().format(event).matches(regex)
-            );
+            try {
+                while (true) {
+                    if (this.lastMessage().matches(regex)) {
+                        return true;
+                    }
+                }
+            } catch (final InterruptedException interrupt) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(interrupt);
+            }
+        }
+
+        /**
+         * Get the last log message.
+         * @return The last log message.
+         * @throws InterruptedException If interrupted.
+         */
+        private String lastMessage() throws InterruptedException {
+            return this.console.getLayout().format(this.events.poll(5, TimeUnit.SECONDS));
         }
 
         /**
