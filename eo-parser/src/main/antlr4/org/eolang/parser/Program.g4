@@ -61,7 +61,11 @@ abstraction
 attributes
   :
   LSQ
-  (attribute (SPACE attribute)* (SPACE vararg)?)?
+  (
+    (attribute (SPACE attribute)* (SPACE vararg)?)?
+    |
+    vararg
+  )
   RSQ
   ;
 
@@ -72,7 +76,7 @@ attribute
 
 vararg
   :
-  attribute
+  label
   DOTS
   ;
 

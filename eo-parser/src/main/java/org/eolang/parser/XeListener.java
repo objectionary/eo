@@ -245,7 +245,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVararg(ProgramParser.VarargContext ctx) {
+    public void enterVararg(final ProgramParser.VarargContext ctx) {
+        this.objects.enter();
         this.objects.start(
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
@@ -254,8 +255,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitVararg(ProgramParser.VarargContext ctx) {
-        // Nothing here
+    public void exitVararg(final ProgramParser.VarargContext ctx) {
+        this.objects.leave();
+        this.objects.leave();
     }
 
     @Override
