@@ -104,6 +104,35 @@ public final class Names {
         );
     }
 
+    @SuppressWarnings("PMD.OnlyOneReturn")
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Names)) {
+            return false;
+        }
+        final Names names = (Names) object;
+        try {
+            return this.dest.equals(names.dest)
+                && this.prefix.equals(names.prefix)
+                && this.all.value().equals(names.all.value());
+        } catch (final IOException exc) {
+            throw new IllegalArgumentException(
+                "Cannot load map correctly",
+                exc
+            );
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * this.dest.hashCode()
+            + 829 * this.prefix.hashCode()
+            + 9719 * this.all.hashCode();
+    }
+
     /**
      * Saves the function to name dispatching table.
      * @throws IOException If any issues with IO.

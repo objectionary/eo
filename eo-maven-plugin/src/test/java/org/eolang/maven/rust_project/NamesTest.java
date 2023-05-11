@@ -57,13 +57,6 @@ final class NamesTest {
         );
     }
 
-    /**
-     * The goal is to check that `after` is built according to `before`.
-     * If `after` is created independently on `before` it would give
-     * wrong name in reverse order.
-     * @param temp Temporary path.
-     * @throws IOException If any issues with IO.
-     */
     @Test
     void recoversNames(@TempDir final Path temp) throws IOException {
         final List<String> locations = IntStream.range(0, 1000)
@@ -79,12 +72,9 @@ final class NamesTest {
         );
         before.save();
         final Names after = new Names(temp);
-        for (int iter = locations.size() - 1; iter >= 0; --iter) {
-            final String loc = locations.get(iter);
-            MatcherAssert.assertThat(
-                functions.get(loc),
-                Matchers.equalTo(after.name(loc))
-            );
-        }
+        MatcherAssert.assertThat(
+            before,
+            Matchers.equalTo(after)
+        );
     }
 }
