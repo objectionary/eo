@@ -67,7 +67,13 @@ final class MainTest {
     void deliversCleanOutput() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("org.eolang.io.stdout", "Hi!"),
-            Matchers.equalTo(String.format("Hi!%s", System.lineSeparator()))
+            Matchers.equalTo(
+                String.format(
+                    "Hi!Dataization result:%strue%s",
+                    System.lineSeparator(),
+                    System.lineSeparator()
+                )
+            )
         );
     }
 
