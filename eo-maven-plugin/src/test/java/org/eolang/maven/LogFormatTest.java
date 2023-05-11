@@ -55,7 +55,7 @@ class LogFormatTest {
             "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
         MatcherAssert.assertThat(
             String.format("Expected message '%s', but log was:\n '%s'", expected, mock.raw()),
-            mock.containsMessage(expected),
+            mock.contains(expected),
             Matchers.is(true)
         );
     }
@@ -97,10 +97,10 @@ class LogFormatTest {
          * @param regex The regex to match.
          * @return True if any log message matches the regex.
          */
-        private boolean containsMessage(final String regex) {
+        private boolean contains(final String regex) {
             try {
                 while (true) {
-                    if (this.lastMessage().matches(regex)) {
+                    if (this.last().matches(regex)) {
                         return true;
                     }
                 }
@@ -115,7 +115,7 @@ class LogFormatTest {
          * @return The last log message.
          * @throws InterruptedException If interrupted.
          */
-        private String lastMessage() throws InterruptedException {
+        private String last() throws InterruptedException {
             return this.console.getLayout().format(this.events.poll(5, TimeUnit.SECONDS));
         }
 
