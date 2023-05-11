@@ -195,8 +195,7 @@ public final class Main {
         }
         Main.LOGGER.info(
             String.format(
-                "Dataization result:%s%s",
-                System.lineSeparator(),
+                "Dataization result:%n%s",
                 new Dataized(app).take().toString()
             )
         );
