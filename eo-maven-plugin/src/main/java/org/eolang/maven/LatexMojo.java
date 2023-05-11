@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -87,7 +86,10 @@ public final class LatexMojo extends SafeMojo {
     void exec() throws IOException {
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
-            final Place place = new Place(last(new XMLDocument(file).xpath("/program/@name").get(0)));
+            final Place place = new Place(
+                last(
+                    new XMLDocument(file).xpath("/program/@name").get(0)
+                ));
             final Path dir = this.targetDir.toPath();
             final Path target = place.make(
                 dir.resolve(LatexMojo.DIR), LatexMojo.EXT
