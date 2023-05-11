@@ -24,55 +24,39 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.log4j.Appender;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Tests of the log4j logger messages format.
  *
  * @since 0.28.11
- * @todo #1996:30min Make LogFormatTest run tests in parallel.
- *  Currently all tests in this class are executed in the same thread. This is done by the
- *  annotation @Execution(ExecutionMode.SAME_THREAD) on the class. This is a temporary solution
- *  because the class has some concurrency problems. We need to make the tests in this class run
- *  in parallel and then remove the annotation. Also we have to remove @Disabled from the test
- *  method
  */
-@Execution(ExecutionMode.SAME_THREAD)
 class LogFormatTest {
 
-    /**
-     * Mock log4j appender that intercepts all log messages.
-     */
-    private MockAppender mock;
-
-    @BeforeEach
-    public void overrideLogAppender() {
+    @Test
+    @Timeout(5)
+    void printsFormattedMessage() {
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
         final Appender appender = logger.getAppender("CONSOLE");
-        logger.removeAppender(appender);
-        this.mock = new MockAppender(appender);
-        logger.addAppender(this.mock);
-    }
-
-    @Test
-    @Disabled
-    void printsFormattedMessage() {
+        final MockAppender mock = new MockAppender(appender);
+        logger.addAppender(mock);
         Logger.info(this, "Wake up, Neo...");
+        final String expected =
+            "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
         MatcherAssert.assertThat(
-            this.mock.lastLog(),
-            Matchers.matchesPattern(
-                "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R"
-            )
+            String.format("Expected message '%s', but log was:\n '%s'", expected, mock.raw()),
+            mock.contains(expected),
+            Matchers.is(true)
         );
     }
 
@@ -90,7 +74,7 @@ class LogFormatTest {
         /**
          * Last log message event.
          */
-        private final AtomicReference<LoggingEvent> last;
+        private final BlockingQueue<LoggingEvent> events;
 
         /**
          * The main constructor.
@@ -99,22 +83,49 @@ class LogFormatTest {
          */
         private MockAppender(final Appender console) {
             this.console = console;
-            this.last = new AtomicReference<>();
+            this.events = new LinkedBlockingQueue<>();
         }
 
         @Override
         public void append(final LoggingEvent event) {
+            this.events.add(event);
             super.append(event);
-            this.last.set(event);
         }
 
         /**
-         * Formatted log message.
-         *
-         * @return Real log message.
+         * Check if any log message matches the regex.
+         * @param regex The regex to match.
+         * @return True if any log message matches the regex.
          */
-        private String lastLog() {
-            return this.console.getLayout().format(this.last.get());
+        private boolean contains(final String regex) {
+            try {
+                while (true) {
+                    if (this.last().matches(regex)) {
+                        return true;
+                    }
+                }
+            } catch (final InterruptedException interrupt) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(interrupt);
+            }
+        }
+
+        /**
+         * Get the last log message.
+         * @return The last log message.
+         * @throws InterruptedException If interrupted.
+         */
+        private String last() throws InterruptedException {
+            return this.console.getLayout().format(this.events.poll(5, TimeUnit.SECONDS));
+        }
+
+        /**
+         * Get all log messages as a single string.
+         * @return All log messages as a single string.
+         */
+        private String raw() {
+            return this.events.stream().map(LoggingEvent::getRenderedMessage)
+                .collect(Collectors.joining("\n"));
         }
     }
 }
