@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
-import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,12 +45,11 @@ class LatexMojoTest {
      */
     @Test
     void generatesTexFile(@TempDir final Path temp) throws Exception {
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withHelloWorld()
-            .execute(new FakeMaven.Latex())
-            .result();
         MatcherAssert.assertThat(
-            res,
+            new FakeMaven(temp)
+                .withHelloWorld()
+                .execute(new FakeMaven.Latex())
+                .result(),
             Matchers.hasKey(
                 String.format("target/%s/main.%s", LatexMojo.DIR, LatexMojo.EXT)
             )
@@ -64,9 +62,8 @@ class LatexMojoTest {
      */
     @Test
     void checksLastName() {
-        final String tested = LatexMojo.last("foo.bar.hello");
         MatcherAssert.assertThat(
-            tested,
+            LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
         );
     }

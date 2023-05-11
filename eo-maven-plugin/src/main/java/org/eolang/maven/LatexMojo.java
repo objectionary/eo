@@ -87,9 +87,8 @@ public final class LatexMojo extends SafeMojo {
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
             final Place place = new Place(
-                last(
-                    new XMLDocument(file).xpath("/program/@name").get(0)
-                ));
+                LatexMojo.last(new XMLDocument(file).xpath("/program/@name").get(0))
+            );
             final Path dir = this.targetDir.toPath();
             final Path target = place.make(
                 dir.resolve(LatexMojo.DIR), LatexMojo.EXT
