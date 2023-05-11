@@ -39,7 +39,7 @@ class LatexMojoTest {
 
     /**
      * Generate simple main.tex file from main.xmir file
-     * and check existence.
+     * and check its existence.
      *
      * @param temp Temporary directory.
      * @throws Exception
