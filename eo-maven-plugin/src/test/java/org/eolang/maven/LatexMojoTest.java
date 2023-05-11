@@ -46,8 +46,7 @@ class LatexMojoTest {
      */
     @Test
     void generatesTexFile(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp);
-        final Map<String, Path> res = maven
+        final Map<String, Path> res = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Latex())
             .result();
@@ -65,8 +64,7 @@ class LatexMojoTest {
      */
     @Test
     void checksLastName() {
-        final String name = "foo.bar.hello";
-        final String tested = LatexMojo.last(name);
+        final String tested = LatexMojo.last("foo.bar.hello");
         MatcherAssert.assertThat(
             tested,
             Matchers.equalTo("hello")
