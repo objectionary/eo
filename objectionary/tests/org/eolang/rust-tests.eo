@@ -22,27 +22,21 @@
 
 +alias org.eolang.hamcrest.assert-that
 +home https://github.com/objectionary/eo
-+junit
++tests
 +package org.eolang
-+version 0.29.3
++version 0.29.4
 
 [] > creates-object
   QQ.rust > r
     """
-    use reo::universe::Universe;
-    use reo::data::Data;
-    use rand::rand;
-
-    pub fn foo(uni: &mut Universe, v: u32) -> Result<u32> {
-      let i = copy!(find!("org.eolang.int"));
-      uni.data(i, Data::from_int(random::<i64>()))?;
-      Ok(i)
+    pub fn foo() -> i32 {
+      println!("Hello world from rust");
+      let i = 1234;
+      i
     }
     """
     *
-      "reo: 0.0.2"
-      "rand: 0.5.5"
   assert-that > @
-    r.length
+    r
     $.equal-to
-      2
+      1234

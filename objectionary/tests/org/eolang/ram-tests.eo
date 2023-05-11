@@ -24,9 +24,9 @@
 +alias org.eolang.ram
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+junit
++tests
 +package org.eolang
-+version 0.29.3
++version 0.29.4
 
 [] > writes-and-slice-ram
   ram 1024 > r
@@ -76,3 +76,17 @@
       as-string.
         (r.slice 0 10).slice 0 10
     $.equal-to "12345-----"
+
+[] > slice-chain
+  ram 1024 > r
+  [] > cut-hello
+    seq > @
+      write.
+        r.slice 200 13 > s
+        "Hello, world!".as-bytes
+      s.slice 0 5
+      .slice 0 4
+      .slice 0 1
+  assert-that > @
+    cut-hello
+    $.equal-to "H"

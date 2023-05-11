@@ -23,15 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.3
-+version 0.29.3
++rt jvm org.eolang:eo-runtime:0.29.4
++version 0.29.4
 
-# @todo #1161:30min Complete implementation of this
-#  object in Java. This object should load and
-#  execute *.so file. Only one function is stored
-#  in *.so file. The signature will be always the
-#  same.
-[code params] > rust
-  * > @
-    code
-    params
+[code params] > rust /int

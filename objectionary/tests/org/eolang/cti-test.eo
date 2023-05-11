@@ -21,20 +21,33 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
 +version 0.29.4
 
-[] > prints-itself
+[] > just-prints-warning
   assert-that > @
-    length.
-      as-phi $
-    $.greater-than 0
+    cti
+      2.times 2
+      "warning"
+      "This method is deprecated!"
+    $.equal-to 4
 
-[] > prints-itself-to-console
-  42 > x
-  stdout > @
-    as-phi $
+# @todo #1205:90min cti: Use normal string literals instead of hex literals.
+#  Currently we add errors for cti with hex representation of the error
+#  message which looks ugly. We should use normal string literals instead,
+#  but for now it seems impossible since during parsing we already
+#  have hex representation of the error message in cti.
+#  By that reason, the 'fails-since-deprecated' test passes
+#  successfully, but it should fail since it uses cti with "error" level.
+#  See cti-adds-error.yaml, cti-adds-warning.yaml pack tests
+#  and cti-adds-errors.xsl transformation for more details.
+[] > fails-since-deprecated
+  assert-that > @
+    cti
+      2.times 2
+      "error"
+      "This method is deprecated!"
+    $.equal-to 4

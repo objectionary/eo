@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.3
-+version 0.29.3
++rt jvm org.eolang:eo-runtime:0.29.4
++version 0.29.4
 
 # Negative infinity
 [] > negative-infinity
@@ -63,7 +63,7 @@
     positive-infinity > pos-inf!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -150,7 +150,7 @@
     positive-infinity.as-bytes > pos-inf-as-bytes!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -202,7 +202,7 @@
     ^.as-bytes > neg-inf-as-bytes!
     0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
@@ -247,17 +247,87 @@
 
   # Quotient of the division of $ by x
   [x...] > div
-    x.at 0 > first!
+    positive-infinity > pos-inf!
+    ^ > neg-inf!
+    0 > zero!
 
-    # here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
-    [num] > check-nan
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    [num] > is-nan
       not. > @
         num.eq num
 
+    [term] > is-nan-or-infinite
+      or. > @
+        is-nan
+          term > t!
+        t.eq pos-inf
+        t.eq neg-inf
+
+    [term] > is-term-gte-zero
+      try > @
+        []
+          term.gte 0 > @
+        [e]
+          term.gte 0.0 > @
+        FALSE
+
+    [acc-index-terms infs is-nan-or-infinite is-term-gte-zero] > div-rec
+      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 1 > index!
+      acc-index-terms.at 2 > terms
+      infs.at 0 > pos-inf
+      infs.at 1 > neg-inf
+
+      if. > @
+        index.eq terms.length
+        acc
+        if.
+          is-nan-or-infinite
+            terms.at index > term!
+          nan
+          []
+            if. > @
+              acc.gt 0.0
+              div-rec
+                *
+                  if.
+                    is-term-gte-zero term > term-gte-zero
+                    acc
+                    neg-inf
+                  index.plus 1 > next-index
+                  terms
+                infs
+                is-nan-or-infinite
+                is-term-gte-zero
+              div-rec
+                *
+                  if.
+                    term-gte-zero
+                    acc
+                    pos-inf
+                  next-index
+                  terms
+                infs
+                is-nan-or-infinite
+                is-term-gte-zero
+
     if. > @
-      or.
-        check-nan first
-        first.eq ^
-        first.eq positive-infinity
-      nan
-      ^
+      eq.
+        x.length > terms-count!
+        zero
+      neg-inf
+      if.
+        terms-count.gt 1
+        div-rec
+          * neg-inf zero x
+          * pos-inf neg-inf
+          is-nan-or-infinite
+          is-term-gte-zero
+        if.
+          is-nan-or-infinite
+            x.at zero > first!
+          nan
+          if.
+            is-term-gte-zero first
+            neg-inf
+            pos-inf

@@ -23,18 +23,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.3
-+version 0.29.3
++rt jvm org.eolang:eo-runtime:0.29.4
++version 0.29.4
 
-# @todo #1060:30min The method .empty is not nessesary.
-#  Make the create of tuple possible just by using
-#  the object name, i.e `tuple > a` and remove this
-#  method.
 [] > tuple
-  # Create empty tuple
-  [] > empty
-    * > @
-
   # Obtain the length of the array.
   [] > length /int
 
@@ -45,4 +37,3 @@
   # Create a new tuple with this element added to
   # the end of it.
   [x] > with /tuple
-

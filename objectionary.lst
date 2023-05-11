@@ -1,6 +1,6 @@
-objectionary/tests/org/eolang/array-tests.eo
 objectionary/tests/org/eolang/switch-tests.eo
 objectionary/tests/org/eolang/ram-tests.eo
+objectionary/tests/org/eolang/tuple-tests.eo
 objectionary/tests/org/eolang/nop-tests.eo
 objectionary/tests/org/eolang/heap-tests.eo
 objectionary/tests/org/eolang/nan-tests.eo
@@ -9,13 +9,14 @@ objectionary/tests/org/eolang/float-tests.eo
 objectionary/tests/org/eolang/string-tests.eo
 objectionary/tests/org/eolang/positive-infinity-tests.eo
 objectionary/tests/org/eolang/bytes-tests.eo
+objectionary/tests/org/eolang/cti-test.eo
 objectionary/tests/org/eolang/memory-tests.eo
 objectionary/tests/org/eolang/cage-tests.eo
 objectionary/tests/org/eolang/io/stdout-tests.eo
 objectionary/tests/org/eolang/negative-infinity-tests.eo
-objectionary/tests/org/eolang/junit-tests.eo
 objectionary/tests/org/eolang/bool-tests.eo
 objectionary/tests/org/eolang/runtime-tests.eo
+objectionary/tests/org/eolang/unit-tests.eo
 objectionary/tests/org/eolang/int-tests.eo
 objectionary/tests/org/eolang/as-phi-tests.eo
 objectionary/tests/org/eolang/seq-tests.eo
@@ -29,6 +30,7 @@ objectionary/objects/org/eolang/negative-infinity.eo
 objectionary/objects/org/eolang/bool.eo
 objectionary/objects/org/eolang/ram.eo
 objectionary/objects/org/eolang/seq.eo
+objectionary/objects/org/eolang/cti.eo
 objectionary/objects/org/eolang/positive-infinity.eo
 objectionary/objects/org/eolang/try.eo
 objectionary/objects/org/eolang/float.eo

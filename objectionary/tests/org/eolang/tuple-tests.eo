@@ -24,9 +24,9 @@
 +alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+junit
++tests
 +package org.eolang
-+version 0.29.3
++version 0.29.4
 
 [] > makes-tuple-through-special-syntax
   assert-that > @
@@ -183,13 +183,40 @@
       list
         * 1 2 3
 
-[] > gets-lengths-of-empty-tuple-keyword
+[] > gets-lengths-of-empty-tuple-asterisk
   assert-that > @
-    tuple.empty.length
+    *.length
     $.equal-to 0
 
+[] > gets-lengths-of-empty-tuple
+  tuple > a
+  assert-that > @
+    a.length
+    $.equal-to 0
+
+[] > gets-lengths-of-empty-tuple-without-additional-obj
+  assert-that > @
+    tuple.length
+    $.equal-to 0
+
+[] > creates-empty-tuple-with-number
+  tuple.with 3 > a
+  assert-that > @
+    a.at 0
+    $.equal-to 3
+
 [] > tuple-fluent-with-indented-keyword
-  tuple.empty
+  *
+  .with 1
+  .with 2
+  .with 3 > a
+  assert-that > @
+    list a
+    $.equal-to
+      list (* 1 2 3)
+
+[] > tuple-empty-fluent-with-indented-keyword
+  tuple
   .with 1
   .with 2
   .with 3 > a
