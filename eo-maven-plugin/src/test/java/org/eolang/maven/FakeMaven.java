@@ -445,6 +445,23 @@ public final class FakeMaven {
     }
 
     /**
+     * Latex full pipeline.
+     *
+     * @since 0.29.2
+     */
+    static final class Latex implements Iterable<Class<? extends AbstractMojo>> {
+
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                LatexMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
      * Transpile full pipeline.
      *
      * @since 0.29.0
