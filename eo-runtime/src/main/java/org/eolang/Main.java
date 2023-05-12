@@ -195,7 +195,7 @@ public final class Main {
         }
         Main.LOGGER.info(
             String.format(
-                "Dataization result:%n%s",
+                "%n---%n%s",
                 new Dataized(app).take().toString()
             )
         );
