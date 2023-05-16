@@ -23,51 +23,48 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.jupiter.api.Assertions;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link BinarizeMojo}.
+ * Test case for {@link org.eolang.maven.LatexMojo}.
  *
- * @since 0.1
+ * @since 0.29
  */
-final class BinarizeMojoTest {
+class LatexMojoTest {
 
     /**
-     * BinarizeMojo can binarize without errors.
+     * Generate simple main.tex file from main.xmir file
+     * and check its existence.
+     *
      * @param temp Temporary directory.
-     * @throws Exception If fails.
+     * @throws Exception
      */
     @Test
-    @ExtendWith(CargoCondition.class)
-    void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven;
-        synchronized (BinarizeMojoTest.class) {
-            maven = new FakeMaven(temp)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
-        }
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Binarize())
+    void generatesTexFile(@TempDir final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .withHelloWorld()
+                .execute(new FakeMaven.Latex())
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/main.%s", LatexMojo.DIR, LatexMojo.EXT)
+            )
         );
     }
 
+    /**
+     * Checks if the last part of the filename is
+     * truncated correctly.
+     */
     @Test
-    void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
-        final FakeMaven maven;
-        synchronized (BinarizeMojoTest.class) {
-            maven = new FakeMaven(temp)
-                .withProgram(src);
-        }
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Binarize())
+    void checksLastName() {
+        MatcherAssert.assertThat(
+            LatexMojo.last("foo.bar.hello"),
+            Matchers.equalTo("hello")
         );
     }
 }

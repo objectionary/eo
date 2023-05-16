@@ -193,11 +193,12 @@ public final class Main {
             phi.attr("Δ").put(new Data.Value<>(arg));
             app.attr(0).put(phi);
         }
-        if (!new Dataized(app).take(Boolean.class)) {
-            throw new IllegalStateException(
-                "Runtime dataization failure"
-            );
-        }
+        Main.LOGGER.info(
+            String.format(
+                "%n---%n%s",
+                new Dataized(app).take().toString()
+            )
+        );
     }
 
     /**
