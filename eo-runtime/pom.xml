@@ -102,13 +102,13 @@ SOFTWARE.
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>
-            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
+            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU -Xmx16g
           </argLine>
-          <systemProperties>
+          <systemPropertyVariables>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
-          </systemProperties>
+          </systemPropertyVariables>
           <!-- Default surefire plugin corrupts native stdout. It means the text that was
           printed in native method will not be printed in 'mvn clean install'. This configuration
            switches surefire communication channel from default to TCP/IP and solves the bug.
@@ -119,6 +119,9 @@ SOFTWARE.
             <configurationParameters>
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.classes.default = concurrent
+              junit.jupiter.execution.parallel.config.strategy = custom
+              junit.jupiter.execution.parallel.config.custom.class = org.eolang.CustomStrategy
             </configurationParameters>
           </properties>
         </configuration>
@@ -161,7 +164,6 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
-              <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>
