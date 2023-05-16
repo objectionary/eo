@@ -66,8 +66,8 @@ final class MainTest {
     @Test
     void deliversCleanOutput() throws Exception {
         MatcherAssert.assertThat(
-            MainTest.exec("org.eolang.io.stdout", "Hi!"),
-            Matchers.equalTo(String.format("Hi!%n---%ntrue%n"))
+            MainTest.exec("org.eolang.io.stdout", "Hello!"),
+            Matchers.equalTo(String.format("Hello!%n---%ntrue%n"))
         );
     }
 
