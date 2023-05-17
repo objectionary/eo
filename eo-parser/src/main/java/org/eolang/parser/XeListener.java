@@ -245,15 +245,28 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterVararg(final ProgramParser.VarargContext ctx) {
+        this.objects.enter();
+        this.objects.start(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine()
+        );
+        this.objects.prop("vararg", "");
+    }
+
+    @Override
+    public void exitVararg(final ProgramParser.VarargContext ctx) {
+        this.objects.leave();
+        this.objects.leave();
+    }
+
+    @Override
     public void enterLabel(final ProgramParser.LabelContext ctx) {
         if (ctx.AT() != null) {
             this.objects.prop("name", ctx.AT().getText());
         }
         if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
-        }
-        if (ctx.DOTS() != null) {
-            this.objects.prop("vararg", "");
         }
     }
 

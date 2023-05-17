@@ -268,13 +268,13 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/02-duplicate-names.xml",
+                            "target/%s/foo/x/main/26-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=3]",
+                "/program/sheets[count(sheet)=2]",
                 "/program/errors[count(error)=1]",
                 "/program/errors/error[@severity='critical']"
             )
