@@ -40,4 +40,7 @@
   'target/eo/6-transpile',
 ].each { assert !new File(basedir, it).exists() }
 
+def classes = new File(basedir, 'target/classes');
+def testClasses = new File(basedir, 'target/test-classes');
+
 true

@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
++alias equality
 +home https://github.com/objectionary/eo
 +tests
-+package equality.package
++package org.eolang
++version 0.0.0
 
 [] > ensures-equality
   assert-that > @

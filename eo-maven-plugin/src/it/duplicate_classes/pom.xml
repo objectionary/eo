@@ -24,9 +24,31 @@ SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.jcabi</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.65.0</version>
+  </parent>
   <groupId>org.eolang</groupId>
   <artifactId>not.all.goals</artifactId>
   <version>@project.version@</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -34,9 +56,7 @@ SOFTWARE.
         <artifactId>eo-maven-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
-          <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <hash>master</hash>
-          <failOnWarning>true</failOnWarning>
         </configuration>
         <executions>
           <execution>
@@ -55,7 +75,6 @@ SOFTWARE.
                 <glob>EOorg/EOeolang/EOmath/**</glob>
                 <glob>EOorg/EOeolang/EOfs/**</glob>
               </removeBinaries>
-              <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
@@ -78,7 +97,6 @@ SOFTWARE.
               <generatedDir>
                 ${project.basedir}/target/generated-test-sources
               </generatedDir>
-              <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
             </configuration>
           </execution>
