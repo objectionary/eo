@@ -264,8 +264,8 @@ SOFTWARE.
         <artifactId>maven-invoker-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <skipInstallation>true</skipInstallation>
-          <skipInvocation>true</skipInvocation>
+          <skipInstallation>false</skipInstallation>
+          <skipInvocation>false</skipInvocation>
         </configuration>
       </plugin>
       <plugin>
