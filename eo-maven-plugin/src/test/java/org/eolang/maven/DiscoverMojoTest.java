@@ -30,8 +30,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -68,4 +71,17 @@ final class DiscoverMojoTest {
         );
     }
 
+    @Test
+    void discoversForDifferentScopes(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp);
+        maven.withHelloWorld()
+            .with("scope", "test")
+            .execute(new FakeMaven.Discover());
+        final ForeignTojos foreign = new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(maven.foreignPath()));
+
+        for (final ForeignTojo tojo : foreign.all()) {
+            System.out.println(tojo.scope());
+        }
+    }
 }
