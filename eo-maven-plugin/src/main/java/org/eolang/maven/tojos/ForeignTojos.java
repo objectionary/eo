@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
@@ -52,14 +53,14 @@ public final class ForeignTojos implements Closeable {
     /**
      * Scope.
      */
-    private final String scope;
+    private final Supplier<String> scope;
 
     /**
      * Ctor.
      * @param scalar Scalar
      */
     public ForeignTojos(final Scalar<Tojos> scalar) {
-        this(scalar, "compile");
+        this(scalar, () -> "compile");
     }
 
     /**
@@ -67,7 +68,7 @@ public final class ForeignTojos implements Closeable {
      * @param scalar Scalar
      * @param scope Scope
      */
-    public ForeignTojos(final Scalar<Tojos> scalar, final String scope) {
+    public ForeignTojos(final Scalar<Tojos> scalar, final Supplier<String> scope) {
         this.tojos = new Unchecked<>(new Sticky<>(scalar));
         this.scope = scope;
     }
@@ -85,7 +86,7 @@ public final class ForeignTojos implements Closeable {
     public ForeignTojo add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
         if (!tojo.exists(Attribute.SCOPE.key())) {
-            tojo.set(Attribute.SCOPE.key(), this.scope);
+            tojo.set(Attribute.SCOPE.key(), this.scope.get());
         }
         return new ForeignTojo(tojo);
     }
@@ -226,8 +227,8 @@ public final class ForeignTojos implements Closeable {
      * @return Selected tojos.
      */
     private Collection<ForeignTojo> select(final Predicate<? super Tojo> filter) {
-        final Predicate<Tojo> scoped = t -> t.get(Attribute.SCOPE.key()).equals(this.scope);
-        final Predicate<Tojo> test = t -> "test".equals(this.scope);
+        final Predicate<Tojo> scoped = t -> t.get(Attribute.SCOPE.key()).equals(this.scope.get());
+        final Predicate<Tojo> test = t -> "test".equals(this.scope.get());
         return this.tojos.value()
             .select(t -> filter.test(t) && (scoped.test(t) || test.test(t)))
             .stream().map(ForeignTojo::new).collect(Collectors.toList());
