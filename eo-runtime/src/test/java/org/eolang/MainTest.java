@@ -143,6 +143,7 @@ final class MainTest {
         args.add(System.getProperty("java.class.path"));
         args.add(Main.class.getCanonicalName());
         args.addAll(Arrays.asList(cmds));
+        System.setProperty("file.encoding", "UTF-8");
         final Process proc = new ProcessBuilder().command(
             args.toArray(new String[args.size()])
         ).redirectErrorStream(true).start();
