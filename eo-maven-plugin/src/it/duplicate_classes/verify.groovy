@@ -25,8 +25,8 @@ import java.util.stream.Collectors
  * SOFTWARE.
  */
 
-def classes = new File(basedir).toPath().resolve("target").resolve("classes")
-def testClasses = new File(basedir).toPath().resolve("target").resolve("test-classes")
+def classes = basedir.toPath().resolve("target").resolve("classes")
+def testClasses = basedir.toPath().resolve("target").resolve("test-classes")
 def binaries = Files.walk(classes).filter(Files::isRegularFile)
   .filter(file -> file.toString().endsWith(".class")).map {
   return classes.relativize(it).toString()
