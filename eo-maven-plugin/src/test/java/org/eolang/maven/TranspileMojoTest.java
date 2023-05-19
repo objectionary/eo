@@ -23,15 +23,19 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
+import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -159,5 +163,61 @@ final class TranspileMojoTest {
             ).count(),
             Matchers.equalTo(4L)
         );
+    }
+
+    @Test
+    void transpilesSourcesAndTestsWithoutIntersections(
+        @TempDir final Path temp
+    ) throws IOException {
+        final Path target = temp.resolve("target");
+        final Path sources = target.resolve("generated-sources");
+        final Path tests = target.resolve("generated-test-sources");
+        final FakeMaven maven = new FakeMaven(temp);
+        maven
+            .with("generatedDir", sources.toFile())
+            .withHelloWorld()
+            .execute(new FakeMaven.Transpile());
+        maven
+            .with("scope", "test")
+            .with("generatedDir", tests.toFile())
+            .withProgram(this.program)
+            .execute(new FakeMaven.Transpile());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().size(),
+            Matchers.equalTo(2)
+        );
+        final Set<String> generated = Files.walk(sources)
+            .filter(TranspileMojoTest::isJava)
+            .map(TranspileMojoTest::filename)
+            .collect(Collectors.toSet());
+        MatcherAssert.assertThat(
+            generated,
+            Matchers.not(
+                Matchers.hasItems(
+                    Files.walk(tests)
+                        .filter(TranspileMojoTest::isJava)
+                        .map(TranspileMojoTest::filename)
+                        .toArray(String[]::new)
+                )
+            )
+        );
+    }
+
+    /**
+     * Is java file.
+     * @param path Path to check.
+     * @return True if path is java file.
+     */
+    private static boolean isJava(final Path path) {
+        return Files.isRegularFile(path) && path.toString().endsWith(".java");
+    }
+
+    /**
+     * Get filename.
+     * @param path Path to get filename from.
+     * @return Filename.
+     */
+    private static String filename(final Path path) {
+        return path.getFileName().toString();
     }
 }
