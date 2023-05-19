@@ -207,16 +207,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Returns the current scope that was set.
-     * @return The current scope.
-     */
-    private String scope() {
-        return Optional.ofNullable(this.params.get("scope"))
-            .map(String::valueOf)
-            .orElse("compile");
-    }
-
-    /**
      * Sets placed tojo attribute.
      *
      * @param binary Binary as class file or jar.
@@ -405,6 +395,16 @@ public final class FakeMaven {
             }
         }
         return res;
+    }
+
+    /**
+     * Returns the current scope that was set.
+     * @return The current scope.
+     */
+    private String scope() {
+        return Optional.ofNullable(this.params.get("scope"))
+            .map(String::valueOf)
+            .orElse("compile");
     }
 
     /**
