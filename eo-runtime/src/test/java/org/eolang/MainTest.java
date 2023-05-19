@@ -155,9 +155,8 @@ final class MainTest {
         try (VerboseProcess vproc = new VerboseProcess(proc)) {
             new LengthOf(
                 new TeeInput(
-                    new InputOf(vproc.stdoutQuietly()).toString(),
-                    new OutputTo(stdout),
-                    charset
+                    new InputOf(vproc.stdoutQuietly()),
+                    new OutputTo(stdout)
                 )
             ).value();
         }
