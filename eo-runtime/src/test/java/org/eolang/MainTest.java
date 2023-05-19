@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -73,8 +74,14 @@ final class MainTest {
 
     @Test
     void executesJvmFullRun() throws Exception {
+        final String exec = MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!");
+        Logger.info(
+            this,
+            "Executing JVM full run: %s",
+            exec
+        );
         MatcherAssert.assertThat(
-            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
+            exec,
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("Hello, "),
@@ -108,8 +115,14 @@ final class MainTest {
 
     @Test
     void executesJvmFullRunWithError() throws Exception {
+        final String exec = MainTest.exec("--verbose", "org.eolang.io.stdout");
+        Logger.info(
+            this,
+            "Executing JVM full run with error: %s",
+            exec
+        );
         MatcherAssert.assertThat(
-            MainTest.exec("--verbose", "org.eolang.io.stdout"),
+            exec,
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
         );
     }
