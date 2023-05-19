@@ -402,9 +402,7 @@ public final class FakeMaven {
      * @return The current scope.
      */
     private String scope() {
-        return Optional.ofNullable(this.params.get("scope"))
-            .map(String::valueOf)
-            .orElse("compile");
+        return String.valueOf(this.params.getOrDefault("scope", "compile"));
     }
 
     /**
