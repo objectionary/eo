@@ -40,7 +40,7 @@ println "Compiled classes do not have duplicates: " + disjoint
  * #2072:90min. Fix the bug with class intersection in the 'classes' and
  *  'test-classes' folders. Both folders should contain different unique
  *  classes. In other words, we should avoid duplicating class compilation for
- *  tests. Once the bug is fixed, uncomment the following statement:
- *  'assert disjoint'.
+ *  tests. Once the bug is fixed, uncomment the following statement.
  */
+// assert disjoint
 return true
