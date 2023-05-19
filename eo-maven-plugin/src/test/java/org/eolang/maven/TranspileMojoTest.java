@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,11 +30,11 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
-import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -175,32 +174,40 @@ final class TranspileMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven
             .with("generatedDir", sources.toFile())
+            .with("targetDir", target.resolve("eo-sources").toFile())
             .withHelloWorld()
             .execute(new FakeMaven.Transpile());
         maven
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
+            .with("targetDir", target.resolve("eo-test-sources").toFile())
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            maven.foreignTojos().size(),
+            maven.foreign().size(),
             Matchers.equalTo(2)
         );
-        final Set<String> generated = Files.walk(sources)
-            .filter(TranspileMojoTest::isJava)
-            .map(TranspileMojoTest::filename)
-            .collect(Collectors.toSet());
+        final Set<String> intersection = TranspileMojoTest.classes(tests);
+        intersection.retainAll(TranspileMojoTest.classes(sources));
         MatcherAssert.assertThat(
-            generated,
-            Matchers.not(
-                Matchers.hasItems(
-                    Files.walk(tests)
-                        .filter(TranspileMojoTest::isJava)
-                        .map(TranspileMojoTest::filename)
-                        .toArray(String[]::new)
-                )
-            )
+            "Both class paths should not intersect and don't have to have common classes",
+            intersection,
+            Matchers.empty()
         );
+    }
+
+    /**
+     * Get all classes in directory.
+     * @param root Directory to get classes from.
+     * @return Set of classes.
+     * @throws IOException If fails.
+     */
+    private static Set<String> classes(final Path root) throws IOException {
+        try (Stream<Path> walk = Files.walk(root)) {
+            return walk.filter(TranspileMojoTest::isJava)
+                .map(TranspileMojoTest::filename)
+                .collect(Collectors.toSet());
+        }
     }
 
     /**

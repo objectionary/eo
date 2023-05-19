@@ -228,9 +228,8 @@ public final class ForeignTojos implements Closeable {
      */
     private Collection<ForeignTojo> select(final Predicate<? super Tojo> filter) {
         final Predicate<Tojo> scoped = t -> t.get(Attribute.SCOPE.key()).equals(this.scope.get());
-        final Predicate<Tojo> test = t -> "test".equals(this.scope.get());
         return this.tojos.value()
-            .select(t -> filter.test(t) && (scoped.test(t) || test.test(t)))
+            .select(t -> filter.test(t) && scoped.test(t))
             .stream().map(ForeignTojo::new).collect(Collectors.toList());
     }
 
