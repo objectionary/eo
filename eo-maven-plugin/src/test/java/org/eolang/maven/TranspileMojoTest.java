@@ -165,7 +165,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void transpilesSourcesAndTestsWithoutIntersections(
+    void transpilesSourcesForDifferentScopesWithoutIntersections(
         @TempDir final Path temp
     ) throws IOException {
         final Path target = temp.resolve("target");
