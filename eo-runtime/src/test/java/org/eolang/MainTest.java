@@ -26,7 +26,7 @@ package org.eolang;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -143,7 +143,11 @@ final class MainTest {
         args.add(System.getProperty("java.class.path"));
         args.add(Main.class.getCanonicalName());
         args.addAll(Arrays.asList(cmds));
-        System.setProperty("file.encoding", "UTF-8");
+        final String encoding = System.getProperty("native.encoding");
+        Charset charset = Charset.defaultCharset();
+        if (encoding != null) {
+            charset = Charset.forName(encoding);
+        }
         final Process proc = new ProcessBuilder().command(
             args.toArray(new String[args.size()])
         ).redirectErrorStream(true).start();
@@ -151,13 +155,20 @@ final class MainTest {
         try (VerboseProcess vproc = new VerboseProcess(proc)) {
             new LengthOf(
                 new TeeInput(
-                    new InputOf(vproc.stdoutQuietly()),
-                    new OutputTo(stdout)
+                    new InputOf(vproc.stdoutQuietly()).toString(),
+                    new OutputTo(stdout),
+                    charset
                 )
             ).value();
         }
-        return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
-            .replaceFirst("Picked up .*\n", "");
+        return new String(stdout.toByteArray(), charset)
+            .replaceFirst(
+                String.format(
+                    "Picked up .*%s",
+                    System.lineSeparator()
+                ),
+                ""
+            );
     }
 
     /**
