@@ -200,7 +200,8 @@ public final class FakeMaven {
      */
     ForeignTojos foreignTojos() {
         return new ForeignTojos(
-            () -> Catalogs.INSTANCE.make(this.foreignPath())
+            () -> Catalogs.INSTANCE.make(this.foreignPath()),
+            this::scope
         );
     }
 
@@ -371,7 +372,7 @@ public final class FakeMaven {
         this.workspace.save(content, path);
         this.foreignTojos()
             .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
-            .withScope("compile")
+            .withScope(this.scope())
             .withVersion("0.25.0")
             .withSource(this.workspace.absolute(path));
         this.current.incrementAndGet();
@@ -393,6 +394,14 @@ public final class FakeMaven {
             }
         }
         return res;
+    }
+
+    /**
+     * Returns the current scope that was set.
+     * @return The current scope.
+     */
+    private String scope() {
+        return String.valueOf(this.params.getOrDefault("scope", "compile"));
     }
 
     /**

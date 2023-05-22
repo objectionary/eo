@@ -191,7 +191,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final ForeignTojos tojos = new ForeignTojos(
         () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
-        this.scope
+        () -> this.scope
     );
 
     /**
