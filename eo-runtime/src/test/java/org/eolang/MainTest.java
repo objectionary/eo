@@ -26,7 +26,7 @@ package org.eolang;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -143,11 +143,6 @@ final class MainTest {
         args.add(System.getProperty("java.class.path"));
         args.add(Main.class.getCanonicalName());
         args.addAll(Arrays.asList(cmds));
-        final String encoding = System.getProperty("native.encoding");
-        Charset charset = Charset.defaultCharset();
-        if (encoding != null) {
-            charset = Charset.forName(encoding);
-        }
         final Process proc = new ProcessBuilder().command(
             args.toArray(new String[args.size()])
         ).redirectErrorStream(true).start();
@@ -160,7 +155,7 @@ final class MainTest {
                 )
             ).value();
         }
-        return new String(stdout.toByteArray(), charset)
+        return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
             .replaceFirst(
                 String.format(
                     "Picked up .*%s",
