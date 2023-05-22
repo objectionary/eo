@@ -153,7 +153,7 @@ final class MainTest {
                     new InputOf(vproc.stdoutQuietly()),
                     new OutputTo(stdout)
                 )
-            ).value()
+            ).value();
         }
         return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
             .replaceFirst(
