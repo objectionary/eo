@@ -35,9 +35,13 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -112,6 +116,17 @@ public final class TranspileMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
+
+    /**
+     * Output.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.outputDir",
+        required = true,
+        defaultValue = "${project.build.outputDirectory}"
+    )
+    private File outputDir;
 
     /**
      * Add to source root.
@@ -229,7 +244,36 @@ public final class TranspileMojo extends SafeMojo {
         );
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
         new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
-        return new JavaFiles(target, this.generatedDir.toPath()).save();
+        final List<Path> javas = new JavaFiles(target, this.generatedDir.toPath()).save();
+        this.cleanUpClasses(javas);
+        return javas;
+    }
+
+    private void cleanUpClasses(final List<Path> save) {
+        System.out.println(save);
+
+        final Set<Path> collect = save.stream().map(
+                p -> this.generatedDir.toPath().relativize(p))
+            .map(p -> getResolve(p))
+            .collect(Collectors.toSet());
+
+        for (final Path path : collect) {
+            try {
+                Files.deleteIfExists(outputDir.toPath().resolve(path));
+            } catch (final IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        System.out.println(collect);
+    }
+
+    private static Path getResolve(final Path p) {
+        final String filename = p.getFileName().toString().replace(".java", ".class");
+        if (p.getParent() != null) {
+            return p.getParent().resolve(filename);
+        } else {
+            return Paths.get(filename);
+        }
     }
 
     /**
