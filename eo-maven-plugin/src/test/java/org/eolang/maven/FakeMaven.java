@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -402,9 +401,7 @@ public final class FakeMaven {
      * @return The current scope.
      */
     private String scope() {
-        return Optional.ofNullable(this.params.get("scope"))
-            .map(String::valueOf)
-            .orElse("compile");
+        return String.valueOf(this.params.getOrDefault("scope", "compile"));
     }
 
     /**
