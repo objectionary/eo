@@ -34,7 +34,7 @@ import org.cactoos.text.UncheckedText;
  * @since 0.29
  * @todo #2067:30min We need to refactor TemplateGenerator class.
  *  And to remove redundant parts in the code, like DOM variables and
- *  license header. E.g.: "<listing># The MIT License (MIT)...".
+ *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
 public final class TemplateGenerator {
 
