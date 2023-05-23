@@ -35,9 +35,14 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -98,6 +103,11 @@ public final class TranspileMojo extends SafeMojo {
     );
 
     /**
+     * Java extension.
+     */
+    private static final Pattern JAVA_EXT = Pattern.compile(".java", Pattern.LITERAL);
+
+    /**
      * The directory where to put pre-transpile files.
      */
     private static final String PRE = "5-pre";
@@ -112,6 +122,17 @@ public final class TranspileMojo extends SafeMojo {
         defaultValue = "${project.build.directory}/generated-sources"
     )
     private File generatedDir;
+
+    /**
+     * Output.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        property = "eo.outputDir",
+        required = true,
+        defaultValue = "${project.build.outputDirectory}"
+    )
+    private File outputDir;
 
     /**
      * Add to source root.
@@ -163,7 +184,7 @@ public final class TranspileMojo extends SafeMojo {
      * Transpile.
      * @param tojo Tojo that should be transpiled.
      * @return Number of transpiled files.
-     * @throws IOException If any issues with I/O
+     * @throws java.io.IOException If any issues with I/O
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
         final int saved;
@@ -200,7 +221,7 @@ public final class TranspileMojo extends SafeMojo {
      * @param input The .xmir file
      * @param target The path to transpiled .xmir file
      * @return List of Paths to generated java file
-     * @throws IOException If any issues with I/O
+     * @throws java.io.IOException If any issues with I/O
      */
     private List<Path> transpile(
         final Path src,
@@ -229,7 +250,58 @@ public final class TranspileMojo extends SafeMojo {
         );
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
         new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
-        return new JavaFiles(target, this.generatedDir.toPath()).save();
+        final List<Path> javas = new JavaFiles(target, this.generatedDir.toPath()).save();
+        this.cleanUpClasses(javas);
+        return javas;
+    }
+
+    /**
+     * Clean up dirty classes.
+     * The method is trying to fix problem produced by dirty libraries:
+     * <a href="https://github.com/objectionary/eo-strings/issues/147"> eo-strings example </a>
+     * Some libraries by mistake can put ALL their compiled classes right into the final library
+     * jar, instead of only adding atoms. This can cause different runtime errors since the
+     * classpath will contain two classes with the same name:
+     * - The first class file will be added from dirty library
+     * - The second class with the same name will be compiled from the transpiled java file
+     * In order to prevent this, we remove all classes that have the java analog in the
+     * generated sources. In other words, if generated-sources (or generated-test-sources) folder
+     * has java classes, we expect that they will be only compiled from that folder.
+     * @param java The list of java files.
+     */
+    private void cleanUpClasses(final Collection<? extends Path> java) {
+        final Set<Path> unexpected = java.stream()
+            .map(path -> this.generatedDir.toPath().relativize(path))
+            .map(TranspileMojo::classExtension)
+            .map(binary -> this.outputDir.toPath().resolve(binary))
+            .collect(Collectors.toSet());
+        for (final Path binary : unexpected) {
+            try {
+                Files.deleteIfExists(binary);
+            } catch (final IOException cause) {
+                throw new IllegalStateException(
+                    String.format("Can't delete file %s", binary),
+                    cause
+                );
+            }
+        }
+    }
+
+    /**
+     * Rename java to class.
+     * @param java The java file
+     * @return The class file with the same (java) content.
+     */
+    private static Path classExtension(final Path java) {
+        final Path result;
+        final String filename = TranspileMojo.JAVA_EXT.matcher(java.getFileName().toString())
+            .replaceAll(".class");
+        if (java.getParent() == null) {
+            result = Paths.get(filename);
+        } else {
+            result = java.getParent().resolve(filename);
+        }
+        return result;
     }
 
     /**

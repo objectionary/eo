@@ -36,15 +36,5 @@ def disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
   return testClasses.relativize(it).toString()
 }.noneMatch { binaries.contains(it) }
 println "Compiled classes do not have duplicates: " + disjoint
-/**
- * @todo #2072:90min. Fix the bug with class intersection in the 'classes' and
- *  'test-classes' folders. Both folders should contain different unique
- *  classes. In other words, we should avoid duplicating class compilation for
- *  tests. The problem with duplicated sources in tests was fixed:
- *  <a href="https://github.com/objectionary/eo/pull/2076">here<a/>
- *  But we still have problems with duplicated classes downloaded from
- *  dependencies. Apparently, we might check ResolveMojo to find the problem
- *  cause. Once the bug is fixed, uncomment the following statement.
- */
-// assert disjoint
+assert disjoint
 return true

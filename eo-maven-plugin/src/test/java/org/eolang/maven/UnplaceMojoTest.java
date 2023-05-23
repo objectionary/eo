@@ -38,6 +38,7 @@ import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -47,7 +48,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  * @checkstyle LocalFinalVariableNameCheck (100 lines)
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class UnplaceMojoTest {
 
     /**
@@ -184,6 +185,55 @@ final class UnplaceMojoTest {
                 Matchers.containsString("false"),
                 Matchers.not(Matchers.containsString("true"))
             )
+        );
+    }
+
+    @Test
+    void unplacesWithRemoveBinaries(@TempDir final Path temp) throws Exception {
+        final Path target = Paths.get("target");
+        final Path source = target
+            .resolve("classes")
+            .resolve("EOorg")
+            .resolve("EOeolang")
+            .resolve("EOtxt")
+            .resolve("EOregexp.class");
+        final Path test = target
+            .resolve("test-classes")
+            .resolve("EOorg")
+            .resolve("EOeolang")
+            .resolve("EOtxt")
+            .resolve("EOregexp.class");
+        final Path remaining = target
+            .resolve("test-classes")
+            .resolve("EOorg")
+            .resolve("EOeolang")
+            .resolve("EOharmcrest")
+            .resolve("EOassert.class");
+        final Home workspace = new Home(temp);
+        workspace.save(UUID.randomUUID().toString(), source);
+        workspace.save(UUID.randomUUID().toString(), test);
+        workspace.save(UUID.randomUUID().toString(), remaining);
+        UnplaceMojoTest.placeClass(temp, temp.resolve(source));
+        final Path placed = UnplaceMojoTest.placeClass(temp, temp.resolve(test));
+        new FakeMaven(temp)
+            .with("placed", placed.toFile())
+            .with("removeBinaries", Collections.singleton("EOorg/EOeolang/EOtxt/**"))
+            .execute(UnplaceMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            String.format("Source class %s has not to be present", source),
+            temp.resolve(source).toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+        MatcherAssert.assertThat(
+            String.format("Test class %s has not to be present", test),
+            temp.resolve(test).toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+        MatcherAssert.assertThat(
+            String.format("Test class %s has to be present", remaining),
+            temp.resolve(remaining).toFile(),
+            FileMatchers.anExistingFile()
         );
     }
 
