@@ -61,8 +61,7 @@ final class PhPackage implements Phi {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
         if (!this.objects.get().containsKey(key)) {
-            final Phi newValue = this.loadPhi(key).orElseGet(() -> new PhPackage(obj));
-            this.objects.get().put(key, newValue);
+            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
         }
         return new AtSimple(this.objects.get().get(key));
     }
