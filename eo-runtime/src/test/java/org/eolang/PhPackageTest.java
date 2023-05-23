@@ -29,9 +29,7 @@ import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgoto;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -143,7 +141,7 @@ final class PhPackageTest {
     }
 
     @Test
-    void concurrentlyFindsAttributes() throws InterruptedException {
+    void findsAttributesConcurrently() throws InterruptedException {
         final int threads = Runtime.getRuntime().availableProcessors() + 10;
         final ExecutorService service = Executors.newFixedThreadPool(threads);
         final PhPackage pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
