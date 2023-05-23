@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.maven.latex.TemplateGenerator;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 
@@ -42,10 +43,6 @@ import org.eolang.maven.util.Home;
  *  we need to generate summary in universe.tex file,
  *  which will include all generated objects. And this file
  *  should be a standalone compilable document.
- * @todo #1206:30min Generate a standalone compilable document from
- *  each of the file in "latex" directory. All of this files are already
- *  ".tex" files. But they are contain only the EO code without LaTex
- *  structure.
  */
 @Mojo(
     name = "latex",
@@ -62,7 +59,7 @@ public final class LatexMojo extends SafeMojo {
     /**
      * Latex extension (.tex).
      */
-    public static final String EXT = ".tex";
+    public static final String EXT = "tex";
 
     /**
      * Truncated the last part of the filename,
@@ -93,8 +90,11 @@ public final class LatexMojo extends SafeMojo {
             final Path target = place.make(
                 dir.resolve(LatexMojo.DIR), LatexMojo.EXT
             );
+            final TemplateGenerator generator = new TemplateGenerator(
+                new XMLDocument(file).nodes("/program/listing").get(0).toString()
+            );
             new Home(dir).save(
-                new XMLDocument(file).nodes("/program/listing").get(0).toString(),
+                generator.generate(),
                 dir.relativize(target)
             );
             Logger.info(
