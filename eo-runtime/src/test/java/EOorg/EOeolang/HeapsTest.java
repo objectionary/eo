@@ -42,12 +42,12 @@ public final class HeapsTest {
     @Test
     public void performsMallocAndFreeWork() {
         final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.malloc(heap, 100);
+        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
         MatcherAssert.assertThat(
-            Heaps.INSTANCE.malloc(heap, 64),
+            Heaps.INSTANCE.get().malloc(heap, 64),
             Matchers.not(Matchers.equalTo(pointer))
         );
-        Heaps.INSTANCE.free(heap, pointer);
+        Heaps.INSTANCE.get().free(heap, pointer);
     }
 
 }

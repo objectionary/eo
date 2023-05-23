@@ -251,7 +251,7 @@ public interface Data<T> {
         public Value(final T value) {
             super(Phi.Φ);
             this.val = value;
-            this.vertex = PhDefault.VTX.best(value);
+            this.vertex = PhDefault.VTX.get().best(value);
         }
 
         @Override

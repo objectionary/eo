@@ -41,7 +41,7 @@ final class Heaps {
     /**
      * Heaps.
      */
-    public static final Heaps INSTANCE = new Heaps();
+    public static final ThreadLocal<Heaps> INSTANCE = ThreadLocal.withInitial(Heaps::new);
 
     /**
      * All.

@@ -50,7 +50,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Vertices.
      */
-    protected static final Vertices VTX = new Vertices();
+    protected static final ThreadLocal<Vertices> VTX = ThreadLocal.withInitial(Vertices::new);
 
     /**
      * Logger.
@@ -107,7 +107,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
-        this.vertex = PhDefault.VTX.next();
+        this.vertex = PhDefault.VTX.get().next();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
@@ -179,7 +179,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.vertex = PhDefault.VTX.next();
+            copy.vertex = PhDefault.VTX.get().next();
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {

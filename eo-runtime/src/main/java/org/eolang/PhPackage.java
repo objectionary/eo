@@ -44,7 +44,9 @@ final class PhPackage implements Phi {
     /**
      * All of them.
      */
-    private final Map<String, Phi> objects = new ConcurrentHashMap<>(0);
+    private final ThreadLocal<Map<String, Phi>> objects = ThreadLocal.withInitial(
+        () -> new ConcurrentHashMap<>(0)
+    );
 
     /**
      * Ctor.
@@ -55,14 +57,20 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Attr attr(final String name) {
+    public synchronized Attr attr(final String name) {
         final String obj = this.eoPackage(name);
-        return new AtSimple(
-            this.objects.computeIfAbsent(
-                new JavaPath(obj).toString(),
-                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(obj))
-            )
-        );
+        final String key = new JavaPath(obj).toString();
+        if (!this.objects.get().containsKey(key)) {
+            final Phi newValue = this.loadPhi(key).orElseGet(() -> new PhPackage(obj));
+            this.objects.get().put(key, newValue);
+        }
+        return new AtSimple(this.objects.get().get(key));
+//        return new AtSimple(
+//            this.objects.computeIfAbsent(
+//                new JavaPath(obj).toString(),
+//                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(obj))
+//            )
+//        );
     }
 
     @Override
@@ -122,11 +130,12 @@ final class PhPackage implements Phi {
             kid.attr("ρ").put(this);
             res = Optional.of(kid);
         } catch (final ClassNotFoundException notfound) {
+            notfound.printStackTrace();
             res = Optional.empty();
         } catch (final NoSuchMethodException
-            | InvocationTargetException
-            | InstantiationException
-            | IllegalAccessException ex
+                       | InvocationTargetException
+                       | InstantiationException
+                       | IllegalAccessException ex
         ) {
             throw new ExFailure(
                 String.format(
