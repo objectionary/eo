@@ -57,7 +57,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public synchronized Attr attr(final String name) {
+    public Attr attr(final String name) {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
         if (!this.objects.get().containsKey(key)) {
@@ -65,12 +65,6 @@ final class PhPackage implements Phi {
             this.objects.get().put(key, newValue);
         }
         return new AtSimple(this.objects.get().get(key));
-//        return new AtSimple(
-//            this.objects.computeIfAbsent(
-//                new JavaPath(obj).toString(),
-//                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(obj))
-//            )
-//        );
     }
 
     @Override
@@ -130,12 +124,11 @@ final class PhPackage implements Phi {
             kid.attr("ρ").put(this);
             res = Optional.of(kid);
         } catch (final ClassNotFoundException notfound) {
-            notfound.printStackTrace();
             res = Optional.empty();
         } catch (final NoSuchMethodException
-                       | InvocationTargetException
-                       | InstantiationException
-                       | IllegalAccessException ex
+            | InvocationTargetException
+            | InstantiationException
+            | IllegalAccessException ex
         ) {
             throw new ExFailure(
                 String.format(
