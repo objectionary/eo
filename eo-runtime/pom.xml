@@ -102,7 +102,7 @@ SOFTWARE.
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>
-            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU -Xmx16g
+            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemPropertyVariables>
             <java.util.logging.config.file>
@@ -150,7 +150,6 @@ SOFTWARE.
                 <glob>EOorg/EOeolang/EOhamcrest/**</glob>
                 <glob>EOorg/EOeolang/EOmath/**</glob>
                 <glob>EOorg/EOeolang/EOfs/**</glob>
-                <glob>EOorg/EOeolang/EOtxt/**</glob>
               </removeBinaries>
               <withRuntimeDependency>false</withRuntimeDependency>
               <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
@@ -163,6 +162,7 @@ SOFTWARE.
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
+              <goal>binarize</goal>
             </goals>
             <configuration>
               <scope>test</scope>

@@ -24,16 +24,12 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * A named object.
  *
  * @since 0.17
  */
 final class PhNamed implements Phi {
-
-    private final AtomicInteger calls = new AtomicInteger();
 
     /**
      * The original.
@@ -88,17 +84,6 @@ final class PhNamed implements Phi {
 
     @Override
     public Attr attr(final String attr) {
-        if (this.calls.get() == 0 && this.calls.get() >= 1000) {
-//        if (this.calls.get() > 0) {
-            throw new IllegalStateException(
-                String.format(
-                    "Seems, that we have recursion for class %s, calls %d",
-                    this,
-                    this.calls.get()
-                )
-            );
-        }
-        calls.incrementAndGet();
         return new AtNamed(this.name, this.name, this, this.origin.attr(attr));
     }
 
