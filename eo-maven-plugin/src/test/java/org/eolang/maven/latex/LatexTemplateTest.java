@@ -23,47 +23,37 @@
  */
 package org.eolang.maven.latex;
 
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Template generator. Generates the template from the code
- * in LaTex notation as a standalone compilable document.
+ * Test case for {@link LatexTemplate}.
  *
  * @since 0.29
- * @todo #2067:30min We need to refactor TemplateGenerator class.
- *  And to remove redundant parts in the code, like DOM variables and
- *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
-public final class TemplateGenerator {
+class LatexTemplateTest {
 
     /**
-     * The code.
+     * Check the full template.
      */
-    private final String code;
-
-    /**
-     * Ctor.
-     * @param code The code.
-     */
-    public TemplateGenerator(final String code) {
-        this.code = code;
-    }
-
-    /**
-     * Generates the template from the code from
-     * resources/latex-template.txt.
-     * @return The generated template with the code.
-     */
-    public String generate() {
-        return String.format(
-            new UncheckedText(
-                new TextOf(
-                    new ResourceOf("org/eolang/maven/latex/latex-template.txt")
-                )
-            ).asString(),
-            this.code
+    @Test
+    void generatesFullTemplate() {
+        MatcherAssert.assertThat(
+            new LatexTemplate(
+                "+package f\n[args] > main\n  stdout \"Hello!\""
+            ).generate(),
+            Matchers.stringContainsInOrder(
+                "\\documentclass{article}",
+                "\\usepackage{ffcode}",
+                "\\begin{document}",
+                "\\begin{ffcode}",
+                "+package f",
+                "[args] > main",
+                "  stdout \"Hello!\"",
+                "\\end{ffcode}",
+                "\\end{document}"
+            )
         );
     }
 }

@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.latex.TemplateGenerator;
+import org.eolang.maven.latex.LatexTemplate;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 
@@ -90,11 +90,10 @@ public final class LatexMojo extends SafeMojo {
             final Path target = place.make(
                 dir.resolve(LatexMojo.DIR), LatexMojo.EXT
             );
-            final TemplateGenerator generator = new TemplateGenerator(
-                new XMLDocument(file).nodes("/program/listing").get(0).toString()
-            );
             new Home(dir).save(
-                generator.generate(),
+                new LatexTemplate(
+                    new XMLDocument(file).nodes("/program/listing").get(0).toString()
+                ).generate(),
                 dir.relativize(target)
             );
             Logger.info(
