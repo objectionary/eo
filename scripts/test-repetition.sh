@@ -32,9 +32,9 @@ set -e
 cd "$folder"
 # Clean the test classes to avoid caching issues and prepare testing environment
 # without running the tests
-mvn clean install -Pqulice -DskipTests -PskipITs -Dinvoker.skip=true
+mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
 # Run the tests several times
-for (( i=1; i <= $max; ++i ))
+for (( i=1; i <= max; ++i ))
 do
     echo "Test repetition #$i of $max"
     MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e
