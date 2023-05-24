@@ -37,12 +37,23 @@ import org.junitpioneer.jupiter.StdOut;
 /**
  * Tests of the log4j logger messages format.
  *
+ * All log messages are written to System.out. System.out is a shared resource among all other
+ * threads.  For this reason, we run tests in this class in the same thread (disabling parallelism).
+ * This approach prevents log messages from other threads from interfering. Since all the tests in
+ * this class are relatively fast, it does not significantly impact overall performance.
+ * We disable parallelism by using the {@link Execution} annotation with
+ * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!
+ *
  * @since 0.28.11
  */
 @Execution(ExecutionMode.SAME_THREAD)
 class LogFormatTest {
 
-    private static final String FORMAT = "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
+    /**
+     * Expected log message format.
+     */
+    private static final String FORMAT =
+        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
 
     @StdIo
     @Test
