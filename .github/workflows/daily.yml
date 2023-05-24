@@ -17,5 +17,11 @@ jobs:
           bash "${GITHUB_WORKSPACE}/scrips/test-repetition.sh --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
           # Test eo-runtime
           bash "${GITHUB_WORKSPACE}/scrips/test-repetition.sh --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
-          
+      # @todo #2085:90min Add GitHub action step to create an issue.
+      #  It would be convenient to add github action step that will create an
+      #  issue in case of any of the tests is failed. We can do it through
+      #  <a href="https://github.com/JasonEtco/create-an-issue">create-an-issue</a>
+      #  action. Also, you can read about that problem in that discussion:
+      #  <a href="https://github.com/orgs/community/discussions/25111">
+      #  Create an issue case the workflow fails</a>
 
