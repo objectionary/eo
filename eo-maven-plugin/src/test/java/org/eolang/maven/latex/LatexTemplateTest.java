@@ -42,7 +42,7 @@ class LatexTemplateTest {
         MatcherAssert.assertThat(
             new LatexTemplate(
                 "+package f\n[args] > main\n  stdout \"Hello!\""
-            ).generate(),
+            ).asString(),
             Matchers.stringContainsInOrder(
                 "\\documentclass{article}",
                 "\\usepackage{ffcode}",

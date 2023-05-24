@@ -28,11 +28,11 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * Template generator. Generates the template from the code
+ * Latex template. Generates the LaTex template from the code
  * in LaTex notation as a standalone compilable document.
  *
  * @since 0.29
- * @todo #2067:30min We need to refactor TemplateGenerator class.
+ * @todo #2067:30min We need to refactor LatexTemplate class.
  *  And to remove redundant parts in the code, like DOM variables and
  *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
@@ -54,9 +54,9 @@ public final class LatexTemplate {
     /**
      * Generates the template from the code from
      * resources/latex-template.txt.
-     * @return The generated template with the code.
+     * @return The generated template with the code as string.
      */
-    public String generate() {
+    public String asString() {
         return String.format(
             new UncheckedText(
                 new TextOf(

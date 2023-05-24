@@ -93,7 +93,7 @@ public final class LatexMojo extends SafeMojo {
             new Home(dir).save(
                 new LatexTemplate(
                     new XMLDocument(file).nodes("/program/listing").get(0).toString()
-                ).generate(),
+                ).asString(),
                 dir.relativize(target)
             );
             Logger.info(
