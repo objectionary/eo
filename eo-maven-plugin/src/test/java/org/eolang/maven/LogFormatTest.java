@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import org.hamcrest.MatcherAssert;
@@ -57,9 +58,10 @@ class LogFormatTest {
 
     @StdIo
     @Test
-    void printsFormattedMessage(final StdOut out) {
+    void printsFormattedMessage(final StdOut out) throws IOException {
         final String message = "Wake up, Neo...";
         Logger.info(this, message);
+        out.flush();
         final Optional<String> log = Arrays.stream(out.capturedLines())
             .filter(s -> s.contains(message))
             .findFirst();
