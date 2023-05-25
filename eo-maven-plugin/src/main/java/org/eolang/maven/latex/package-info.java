@@ -24,6 +24,6 @@
 /**
  * LaTex.
  *
- * @since 0.29
+ * @since 0.30
  */
 package org.eolang.maven.latex;

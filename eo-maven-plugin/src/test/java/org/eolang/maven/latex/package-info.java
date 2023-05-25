@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 /**
- * Test cases for {@link org.eolang.maven.optimization} package.
+ * Test cases for {@link org.eolang.maven.latex} package.
+ *
+ * @since 0.30
  */
 package org.eolang.maven.latex;

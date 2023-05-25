@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link LatexTemplate}.
  *
- * @since 0.29
+ * @since 0.30
  */
 class LatexTemplateTest {
 

@@ -31,7 +31,7 @@ import org.cactoos.text.UncheckedText;
  * Latex template. Generates the LaTex template from the code
  * in LaTex notation as a standalone compilable document.
  *
- * @since 0.29
+ * @since 0.30
  * @todo #2067:30min We need to refactor LatexTemplate class.
  *  And to remove redundant parts in the code, like DOM variables and
  *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
