@@ -88,6 +88,12 @@ class LogFormatTest {
         );
     }
 
+    /**
+     * Since logging is usually asynchronous, we need to wait for the message to appear in the
+     * output. Moreover, logging system can take extra time to initialize.
+     * @param out Standard output
+     * @return Logged message
+     */
     private static String waitForMessage(final StdOut out) {
         try {
             return Executors.newSingleThreadExecutor().submit(
