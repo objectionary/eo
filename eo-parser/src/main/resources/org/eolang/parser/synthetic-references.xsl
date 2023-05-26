@@ -25,18 +25,19 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="synthetic-references" version="2.0">
   <!--
   Process alias attribute.
-  @todo #1167:90m synthetic-attributes. Add more tests with methods.
-   The current number of tests is not enough to implement
-   synthetic-references.xsl transformation.
-   We also have to add tests that checks XMIR with "methods".
-   Something like "((foo 1).with 2).with 3"
-   Then we have to continue to work on that issue,
-   until the next tests pass:
+  @todo #2093:90m synthetic-attributes. Solution for synthetic-references.xsl.
+   Implement the proper solution for synthetic-references.xsl.
+   Currently we have enough tests that cover all important cases of that
+   feature:
     synthetic-attributes.yaml
     synthetic-attributes-double-scope.yaml
     synthetic-attributes-many-arguments.yaml
     synthetic-attributes-nested.yaml
     synthetic-attributes-without-scope.yaml
+    synthetic-attributes-with-doubled-methods.yaml
+    synthetic-attributes-with-nested-methods.yaml
+  When the task will be implemented we have to enable all the tests that
+  listed above (skip=false).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@alias]">
