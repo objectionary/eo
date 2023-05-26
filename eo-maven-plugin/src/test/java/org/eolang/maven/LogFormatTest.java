@@ -24,9 +24,10 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
+import org.slf4j.spi.SLF4JServiceProvider;
 
 /**
  * Tests of the log4j logger messages format.
@@ -58,10 +60,10 @@ class LogFormatTest {
 
     @StdIo
     @Test
-    void printsFormattedMessage(final StdOut out) throws IOException {
+    void printsFormattedMessage(final StdOut out) {
         final String message = "Wake up, Neo...";
+        SLF4JServiceProvider
         Logger.info(this, message);
-        out.flush();
         final Optional<String> log = Arrays.stream(out.capturedLines())
             .filter(s -> s.contains(message))
             .findFirst();
@@ -79,6 +81,25 @@ class LogFormatTest {
             log.get(),
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
+    }
+
+    private static String waitForMessage(final StdOut out) {
+        final Callable<String> task = Executors.callable(
+            () -> {
+                while (true) {
+                    final Optional<String> message = LogFormatTest.message(out);
+                    if (message.isPresent()) {
+                        return message.get();
+                    }
+                }
+            }
+        );
+    }
+
+    private static Optional<String> message(final StdOut out) {
+        return Arrays.stream(out.capturedLines())
+            .filter(s -> s.contains("Wake up, Neo..."))
+            .findFirst();
     }
 
     @Test
