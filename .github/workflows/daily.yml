@@ -9,14 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          SCRIP="${GITHUB_WORKSPACE}/src/test/scrips/test-repetition.sh"
           # Make script runnable
-          chmod +x "${GITHUB_WORKSPACE}/scrips/test-repetition.sh"
+          chmod +x "${GITHUB_WORKSPACE}src/test/scrips/test-repetition.sh"
           # Test eo-parser
-          bash "${GITHUB_WORKSPACE}/scrips/test-repetition.sh --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
+          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
           # Test eo-maven-plugin
-          bash "${GITHUB_WORKSPACE}/scrips/test-repetition.sh --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
+          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
           # Test eo-runtime
-          bash "${GITHUB_WORKSPACE}/scrips/test-repetition.sh --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
+          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
       # @todo #2085:90min Add GitHub action step to create an issue.
       #  It would be convenient to add github action step that will create an
       #  issue in case of any of the tests is failed. We can do it through
