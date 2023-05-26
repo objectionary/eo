@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          SCRIP="${GITHUB_WORKSPACE}/src/test/scrips/test-repetition.sh"
+          SCRIPT="${GITHUB_WORKSPACE}/src/test/scrips/test-repetition.sh"
           # Make script runnable
           chmod +x "${GITHUB_WORKSPACE}src/test/scrips/test-repetition.sh"
           # Test eo-parser
