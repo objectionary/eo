@@ -26,8 +26,10 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
-import org.slf4j.spi.SLF4JServiceProvider;
 
 /**
  * Tests of the log4j logger messages format.
@@ -58,48 +59,25 @@ class LogFormatTest {
     private static final String FORMAT =
         "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
 
+    /**
+     * Message to log.
+     */
+    private static final String MESSAGE = "Wake up, Neo...";
+
     @StdIo
     @Test
     void printsFormattedMessage(final StdOut out) {
-        final String message = "Wake up, Neo...";
-        SLF4JServiceProvider
-        Logger.info(this, message);
-        final Optional<String> log = Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains(message))
-            .findFirst();
-        MatcherAssert.assertThat(
-            String.format("Log message '%s' not found", message),
-            log.isPresent(),
-            Matchers.is(true)
-        );
+        Logger.info(this, LogFormatTest.MESSAGE);
+        final String actual = LogFormatTest.waitForMessage(out);
         MatcherAssert.assertThat(
             String.format(
                 "Expected message '%s', but log was:\n '%s'",
-                log.get(),
+                actual,
                 LogFormatTest.FORMAT
             ),
-            log.get(),
+            actual,
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
-    }
-
-    private static String waitForMessage(final StdOut out) {
-        final Callable<String> task = Executors.callable(
-            () -> {
-                while (true) {
-                    final Optional<String> message = LogFormatTest.message(out);
-                    if (message.isPresent()) {
-                        return message.get();
-                    }
-                }
-            }
-        );
-    }
-
-    private static Optional<String> message(final StdOut out) {
-        return Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains("Wake up, Neo..."))
-            .findFirst();
     }
 
     @Test
@@ -108,5 +86,41 @@ class LogFormatTest {
             "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
+    }
+
+    private static String waitForMessage(final StdOut out) {
+        try {
+            return Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    while (true) {
+                        final Optional<String> message = Arrays.stream(out.capturedLines())
+                            .filter(s -> s.contains(LogFormatTest.MESSAGE))
+                            .findFirst();
+                        if (message.isPresent()) {
+                            return message.get();
+                        }
+                    }
+                }
+            ).get(10, TimeUnit.SECONDS);
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Waiting thread was interrupted, can't read '%s' msg",
+                    LogFormatTest.MESSAGE
+                ),
+                exception
+            );
+        } catch (final ExecutionException exception) {
+            throw new IllegalStateException(
+                String.format("Some problem happened, can't read '%s' msg", LogFormatTest.MESSAGE),
+                exception
+            );
+        } catch (final TimeoutException exception) {
+            throw new IllegalStateException(
+                String.format("Timeout limit exceed to read msg %s", LogFormatTest.MESSAGE),
+                exception
+            );
+        }
     }
 }
