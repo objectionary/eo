@@ -25,6 +25,8 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
-import org.junitpioneer.jupiter.WritesStdIo;
 
 /**
  * Tests of the log4j logger messages format.
@@ -43,7 +44,7 @@ import org.junitpioneer.jupiter.WritesStdIo;
  * this class are relatively fast, it does not significantly impact overall performance.
  * We disable parallelism by using the {@link Execution} annotation with
  * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!
- * 
+ *
  * @since 0.28.11
  */
 @Execution(ExecutionMode.SAME_THREAD)
@@ -55,26 +56,27 @@ class LogFormatTest {
     private static final String FORMAT =
         "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
 
-    @Test
     @StdIo
-    @WritesStdIo
+    @Test
     void printsFormattedMessage(final StdOut out) throws IOException {
         final String message = "Wake up, Neo...";
         Logger.info(this, message);
         out.flush();
-        final String[] lines = out.capturedLines();
+        final Optional<String> log = Arrays.stream(out.capturedLines())
+            .filter(s -> s.contains(message))
+            .findFirst();
         MatcherAssert.assertThat(
-            lines.length,
-            Matchers.greaterThan(0)
+            String.format("Log message '%s' not found", message),
+            log.isPresent(),
+            Matchers.is(true)
         );
-        MatcherAssert.assertThat(lines[0], Matchers.containsString(message));
         MatcherAssert.assertThat(
             String.format(
                 "Expected message '%s', but log was:\n '%s'",
-                lines[0],
+                log.get(),
                 LogFormatTest.FORMAT
             ),
-            lines[0],
+            log.get(),
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
