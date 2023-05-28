@@ -22,6 +22,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+<!--
+  @todo #1890:30m Change the behaviour of conversions for names
+    with underscore. Currently, the conversion is done by replacing
+    underscore with doubled underscore. We need to find more elegant
+    solution. For example, we can use camel case for names with underscore.
+    For example, we can convert `foo_bar` to `fooBar`. Or something else.
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="to-java" version="2.0">
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:param name="disclaimer"/>
@@ -57,7 +64,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(replace(replace($n, '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', replace(replace(replace(replace(replace($n, '_', '__'), '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
   <xsl:function name="eo:suffix" as="xs:string">
     <xsl:param name="s1"/>

@@ -210,7 +210,7 @@ SOFTWARE.
       <artifactId>slf4j-reload4j</artifactId>
       <version>2.0.7</version>
       <scope>provided</scope>
-      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
     <dependency>
@@ -218,7 +218,7 @@ SOFTWARE.
       <artifactId>reload4j</artifactId>
       <version>1.2.25</version>
       <scope>runtime</scope>
-      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
     <dependency>
