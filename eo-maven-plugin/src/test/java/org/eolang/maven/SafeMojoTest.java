@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
 import org.junitpioneer.jupiter.WritesStdIo;
@@ -40,6 +42,7 @@ import org.junitpioneer.jupiter.WritesStdIo;
  *
  * @since 0.1
  */
+@Execution(ExecutionMode.SAME_THREAD)
 final class SafeMojoTest {
 
     @Test
@@ -49,7 +52,10 @@ final class SafeMojoTest {
     //  together with LogFormatTest, for some pretty weird reason. We need to
     //  investigate why and fix it. The test itself is correct. Moreover, it
     //  doesn't need the SAME_THREAD annotation, because StdIo and WritesStdIo
-    //  already provide thread safety, according to their documentation.
+    //  already provide thread safety, according to their documentation. However,
+    //  removing this annotation from this test and LogFormatTest leads to an
+    //  error even if just one of them is executed. This is also weird and needs
+    //  investigation.
     @Disabled
     void logsStackTrace(final StdOut out, @TempDir final Path temp) throws IOException {
         Assertions.assertThrows(
