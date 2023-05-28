@@ -23,50 +23,33 @@
  */
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.StdIo;
-import org.junitpioneer.jupiter.StdOut;
-import org.junitpioneer.jupiter.WritesStdIo;
 
 /**
  * Test case for {@link SafeMojo}.
  *
  * @since 0.1
  */
-@Execution(ExecutionMode.SAME_THREAD)
 final class SafeMojoTest {
 
     @Test
-    @StdIo
-    @WritesStdIo
-    // @todo #2099:30min The test here is disabled, because it doesn't work
-    //  together with LogFormatTest, for some pretty weird reason. We need to
-    //  investigate why and fix it. The test itself is correct. Moreover, it
-    //  doesn't need the SAME_THREAD annotation, because StdIo and WritesStdIo
-    //  already provide thread safety, according to their documentation. However,
-    //  removing this annotation from this test and LogFormatTest leads to an
-    //  error even if just one of them is executed. This is also weird and needs
-    //  investigation.
-    @Disabled
-    void logsStackTrace(final StdOut out, @TempDir final Path temp) throws IOException {
+    @CaptureLogs
+    void logsStackTrace(final Logs out, @TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("something < is definitely wrong here")
                 .execute(ParseMojo.class)
         );
-        out.flush();
         MatcherAssert.assertThat(
-            String.join("\n", out.capturedLines()),
+            String.join("\n", out.captured()),
             Matchers.allOf(
                 Matchers.containsString("no viable alternative at input"),
                 Matchers.containsString("Failed to parse")
