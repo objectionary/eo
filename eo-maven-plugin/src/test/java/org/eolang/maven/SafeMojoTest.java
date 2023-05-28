@@ -45,6 +45,11 @@ final class SafeMojoTest {
     @Test
     @StdIo
     @WritesStdIo
+    // @todo #2099:30min The test here is disabled, because it doesn't work
+    //  together with LogFormatTest, for some pretty weird reason. We need to
+    //  investigate why and fix it. The test itself is correct. Moreover, it
+    //  doesn't need the SAME_THREAD annotation, because StdIo and WritesStdIo
+    //  already provide thread safety, according to their documentation.
     @Disabled
     void logsStackTrace(final StdOut out, @TempDir final Path temp) throws IOException {
         Assertions.assertThrows(
