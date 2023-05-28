@@ -30,6 +30,8 @@ import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
 import org.junitpioneer.jupiter.WritesStdIo;
@@ -39,6 +41,7 @@ import org.junitpioneer.jupiter.WritesStdIo;
  *
  * @since 0.28.11
  */
+@Execution(ExecutionMode.SAME_THREAD)
 class LogFormatTest {
 
     /**
