@@ -35,8 +35,11 @@ import org.apache.log4j.spi.LoggingEvent;
  *
  * @since 0.30
  */
-public class CaptureLogsAppender extends ConsoleAppender {
+public final class CaptureLogsAppender extends ConsoleAppender {
 
+    /**
+     * Where to save logs from the appender.
+     */
     private final Logs logs;
 
     /**

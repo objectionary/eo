@@ -34,13 +34,15 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Captured logs.
+ *
+ * @since 0.30
  */
-public class Logs {
+public final class Logs {
 
     /**
      * Captured logs.
      */
-    private final Collection<String> captured;
+    private final Collection<String> container;
 
     /**
      * Ctor.
@@ -51,18 +53,18 @@ public class Logs {
 
     /**
      * Ctor.
-     * @param captured Captured logs.
+     * @param collection Captured logs.
      */
-    private Logs(final Collection<String> captured) {
-        this.captured = captured;
+    private Logs(final Collection<String> collection) {
+        this.container = collection;
     }
 
     /**
      * Return all captured logs up to this point.
-     * @return
+     * @return Captured logs.
      */
     public Collection<String> captured() {
-        return Collections.unmodifiableCollection(this.captured);
+        return Collections.unmodifiableCollection(this.container);
     }
 
     /**
@@ -76,7 +78,7 @@ public class Logs {
             return Executors.newSingleThreadExecutor().submit(
                 () -> {
                     while (true) {
-                        final Optional<String> full = this.captured.stream()
+                        final Optional<String> full = this.container.stream()
                             .filter(s -> s.contains(message))
                             .findFirst();
                         if (full.isPresent()) {
@@ -115,6 +117,6 @@ public class Logs {
      * @param log Log message.
      */
     void append(final String log) {
-        this.captured.add(log);
+        this.container.add(log);
     }
 }

@@ -34,7 +34,8 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  *
  * @since 0.30
  */
-public class CaptureLogsExtension implements ParameterResolver, BeforeEachCallback, AfterEachCallback {
+public final class CaptureLogsExtension implements
+    ParameterResolver, BeforeEachCallback, AfterEachCallback {
 
     /**
      * Logs.
@@ -72,12 +73,12 @@ public class CaptureLogsExtension implements ParameterResolver, BeforeEachCallba
     }
 
     @Override
-    public void beforeEach(final ExtensionContext extensionContext) {
+    public void beforeEach(final ExtensionContext context) {
         this.appender.init();
     }
 
     @Override
-    public void afterEach(final ExtensionContext extensionContext) {
+    public void afterEach(final ExtensionContext context) {
         this.appender.destroy();
     }
 

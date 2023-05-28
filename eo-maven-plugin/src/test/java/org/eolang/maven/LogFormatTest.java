@@ -81,6 +81,4 @@ class LogFormatTest {
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
-
-
 }
