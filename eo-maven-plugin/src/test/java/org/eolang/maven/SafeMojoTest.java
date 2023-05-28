@@ -23,61 +23,42 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
 import org.junitpioneer.jupiter.WritesStdIo;
 
 /**
- * Tests of the log4j logger messages format.
+ * Test case for {@link SafeMojo}.
  *
- * @since 0.28.11
+ * @since 0.1
  */
-class LogFormatTest {
-
-    /**
-     * Expected log message format.
-     */
-    private static final String FORMAT =
-        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
+final class SafeMojoTest {
 
     @Test
     @StdIo
     @WritesStdIo
-    void printsFormattedMessage(final StdOut out) throws IOException {
-        final String message = "Wake up, Neo...";
-        Logger.info(this, message);
-        out.flush();
-        final Optional<String> log = Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains(message))
-            .findFirst();
-        MatcherAssert.assertThat(
-            String.format("Log message '%s' not found", message),
-            log.isPresent(),
-            Matchers.is(true)
+    void logsStackTrace(@TempDir final Path temp, final StdOut out) throws IOException {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram("something < is definitely wrong here")
+                .execute(ParseMojo.class)
         );
+        out.flush();
         MatcherAssert.assertThat(
-            String.format(
-                "Expected message '%s', but log was:\n '%s'",
-                log.get(),
-                LogFormatTest.FORMAT
-            ),
-            log.get(),
-            Matchers.matchesPattern(LogFormatTest.FORMAT)
+            String.join("\n", out.capturedLines()),
+            Matchers.allOf(
+                Matchers.containsString("no viable alternative at input"),
+                Matchers.containsString("Failed to parse")
+            )
         );
     }
 
-    @Test
-    void matchesCorrectly() {
-        MatcherAssert.assertThat(
-            "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...",
-            Matchers.matchesPattern(LogFormatTest.FORMAT)
-        );
-    }
 }

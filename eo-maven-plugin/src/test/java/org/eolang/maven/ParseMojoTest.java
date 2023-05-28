@@ -25,13 +25,8 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Map;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.WriterAppender;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
@@ -49,9 +44,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.StdIo;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -75,33 +67,6 @@ final class ParseMojoTest {
         MatcherAssert.assertThat(
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
-        );
-    }
-
-    @Test
-    @StdIo
-    @Execution(ExecutionMode.SAME_THREAD)
-    void logsStackTrace(@TempDir final Path temp) {
-        final Logger logger = Logger.getLogger(ParseMojo.class);
-        final StringWriter stdout = new StringWriter();
-        final Appender appender = new WriterAppender(new SimpleLayout(), stdout);
-        logger.addAppender(appender);
-        try {
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new FakeMaven(temp)
-                    .withProgram("something < is definitely wrong here")
-                    .execute(ParseMojo.class)
-            );
-        } finally {
-            logger.removeAppender(appender);
-        }
-        MatcherAssert.assertThat(
-            stdout.toString(),
-            Matchers.allOf(
-                Matchers.containsString("no viable alternative at input"),
-                Matchers.containsString("Failed to parse")
-            )
         );
     }
 
