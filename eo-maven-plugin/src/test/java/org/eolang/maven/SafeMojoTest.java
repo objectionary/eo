@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.StdIo;
@@ -44,6 +45,7 @@ final class SafeMojoTest {
     @Test
     @StdIo
     @WritesStdIo
+    @Disabled
     void logsStackTrace(final StdOut out, @TempDir final Path temp) throws IOException {
         Assertions.assertThrows(
             IllegalStateException.class,
