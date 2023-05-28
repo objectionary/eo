@@ -25,8 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -57,21 +55,19 @@ class LogFormatTest {
         final String message = "Wake up, Neo...";
         Logger.info(this, message);
         out.flush();
-        final Optional<String> log = Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains(message))
-            .findFirst();
+        final String[] lines = out.capturedLines();
         MatcherAssert.assertThat(
-            String.format("Log message '%s' not found", message),
-            log.isPresent(),
-            Matchers.is(true)
+            lines.length,
+            Matchers.greaterThan(0)
         );
+        MatcherAssert.assertThat(lines[0], Matchers.containsString(message));
         MatcherAssert.assertThat(
             String.format(
                 "Expected message '%s', but log was:\n '%s'",
-                log.get(),
+                lines[0],
                 LogFormatTest.FORMAT
             ),
-            log.get(),
+            lines[0],
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }

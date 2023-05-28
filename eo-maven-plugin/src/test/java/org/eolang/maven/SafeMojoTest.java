@@ -47,7 +47,7 @@ final class SafeMojoTest {
     @Test
     @StdIo
     @WritesStdIo
-    void logsStackTrace(@TempDir final Path temp, final StdOut out) throws IOException {
+    void logsStackTrace(final StdOut out, @TempDir final Path temp) throws IOException {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
