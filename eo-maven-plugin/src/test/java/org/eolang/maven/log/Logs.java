@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.log;
 
+import com.jcabi.log.Logger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -122,5 +123,54 @@ public final class Logs {
      */
     void append(final String log) {
         this.container.add(log);
+    }
+
+    /**
+     * Checks if the log contains the given message.
+     * If that method is finished it means that loggers are initialized.
+     */
+    void ping() {
+        final String msg = "ping";
+        try {
+            Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    while (true) {
+                        Logger.info(this, msg);
+                        final Optional<String> full = this.container.stream()
+                            .filter(s -> s.contains(msg))
+                            .findFirst();
+                        if (full.isPresent()) {
+                            return full.get();
+                        }
+                    }
+                }
+            ).get(10, TimeUnit.SECONDS);
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Waiting thread was interrupted, can't read '%s' msg",
+                    msg
+                ),
+                exception
+            );
+        } catch (final ExecutionException exception) {
+            throw new IllegalStateException(
+                String.format(
+                    "Some problem happened, can't read '%s' msg",
+                    msg
+                ),
+                exception
+            );
+        } catch (final TimeoutException exception) {
+            throw new IllegalStateException(
+                String.format(
+                    "Timeout limit exceed to read msg %s, current set of captured logs: %s",
+                    msg,
+                    this.container
+                ),
+                exception
+            );
+        }
     }
 }
