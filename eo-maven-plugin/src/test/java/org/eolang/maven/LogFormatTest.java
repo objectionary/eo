@@ -24,9 +24,12 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -34,7 +37,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
-import org.junitpioneer.jupiter.WritesStdIo;
 
 /**
  * Tests of the log4j logger messages format.
@@ -57,28 +59,23 @@ class LogFormatTest {
     private static final String FORMAT =
         "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
 
-    @Test
+    /**
+     * Message to log.
+     */
+    private static final String MESSAGE = "Wake up, Neo...";
+
     @StdIo
-    @WritesStdIo
-    void printsFormattedMessage(final StdOut out) throws IOException {
-        final String message = "Wake up, Neo...";
-        Logger.info(this, message);
-        out.flush();
-        final Optional<String> log = Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains(message))
-            .findFirst();
-        MatcherAssert.assertThat(
-            String.format("Log message '%s' not found", message),
-            log.isPresent(),
-            Matchers.is(true)
-        );
+    @Test
+    void printsFormattedMessage(final StdOut out) {
+        Logger.info(this, LogFormatTest.MESSAGE);
+        final String actual = LogFormatTest.waitForMessage(out);
         MatcherAssert.assertThat(
             String.format(
                 "Expected message '%s', but log was:\n '%s'",
-                log.get(),
+                actual,
                 LogFormatTest.FORMAT
             ),
-            log.get(),
+            actual,
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
@@ -89,5 +86,47 @@ class LogFormatTest {
             "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
+    }
+
+    /**
+     * Since logging is usually asynchronous, we need to wait for the message to appear in the
+     * output. Moreover, logging system can take extra time to initialize.
+     * @param out Standard output
+     * @return Logged message
+     */
+    private static String waitForMessage(final StdOut out) {
+        try {
+            return Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    while (true) {
+                        final Optional<String> message = Arrays.stream(out.capturedLines())
+                            .filter(s -> s.contains(LogFormatTest.MESSAGE))
+                            .findFirst();
+                        if (message.isPresent()) {
+                            return message.get();
+                        }
+                    }
+                }
+            ).get(10, TimeUnit.SECONDS);
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Waiting thread was interrupted, can't read '%s' msg",
+                    LogFormatTest.MESSAGE
+                ),
+                exception
+            );
+        } catch (final ExecutionException exception) {
+            throw new IllegalStateException(
+                String.format("Some problem happened, can't read '%s' msg", LogFormatTest.MESSAGE),
+                exception
+            );
+        } catch (final TimeoutException exception) {
+            throw new IllegalStateException(
+                String.format("Timeout limit exceed to read msg %s", LogFormatTest.MESSAGE),
+                exception
+            );
+        }
     }
 }
