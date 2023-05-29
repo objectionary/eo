@@ -20,23 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +home https://github.com/objectionary/eo
-+tests
-+package org.eolang
 +version 0.0.0
 
-[] > creates-object
-  QQ.rust > r
-    """
-    pub fn foo() -> i32 {
-      println!("Hello world from rust");
-      let i = 1234;
-      i
-    }
-    """
-    *
-  assert-that > @
-    r
-    $.equal-to
-      1234
+[] > equality
+  1.eq 1 > @

@@ -21,33 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link Heaps}.
+ * Test cases for {@link org.eolang.maven.latex} package.
  *
- * @since 0.19
+ * @since 0.30
  */
-public final class HeapsTest {
-
-    @Test
-    public void performsMallocAndFreeWork() {
-        final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
-        MatcherAssert.assertThat(
-            Heaps.INSTANCE.get().malloc(heap, 64),
-            Matchers.not(Matchers.equalTo(pointer))
-        );
-        Heaps.INSTANCE.get().free(heap, pointer);
-    }
-
-}
+package org.eolang.maven.latex;

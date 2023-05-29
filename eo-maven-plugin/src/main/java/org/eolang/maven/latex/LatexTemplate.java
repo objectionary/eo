@@ -21,33 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.latex;
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
- * Test case for {@link Heaps}.
+ * Latex template. Generates the LaTex template from the code
+ * in LaTex notation as a standalone compilable document.
  *
- * @since 0.19
+ * @since 0.30
+ * @todo #2067:30min We need to refactor LatexTemplate class.
+ *  And to remove redundant parts in the code, like DOM variables and
+ *  license header. E.g.: "&lt;listing&gt;# The MIT License (MIT)...&lt;/listing&gt;".
  */
-public final class HeapsTest {
+public final class LatexTemplate {
 
-    @Test
-    public void performsMallocAndFreeWork() {
-        final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
-        MatcherAssert.assertThat(
-            Heaps.INSTANCE.get().malloc(heap, 64),
-            Matchers.not(Matchers.equalTo(pointer))
-        );
-        Heaps.INSTANCE.get().free(heap, pointer);
+    /**
+     * The code.
+     */
+    private final String code;
+
+    /**
+     * Ctor.
+     * @param code The code.
+     */
+    public LatexTemplate(final String code) {
+        this.code = code;
     }
 
+    /**
+     * Generates the template from the code from
+     * resources/latex-template.txt.
+     * @return The generated template with the code as string.
+     */
+    public String asString() {
+        return String.format(
+            new UncheckedText(
+                new TextOf(
+                    new ResourceOf("org/eolang/maven/latex/latex-template.txt")
+                )
+            ).asString(),
+            this.code
+        );
+    }
 }

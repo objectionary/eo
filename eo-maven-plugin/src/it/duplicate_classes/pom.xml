@@ -30,10 +30,25 @@ SOFTWARE.
     <version>0.66.0</version>
   </parent>
   <groupId>org.eolang</groupId>
-  <artifactId>examples</artifactId>
+  <artifactId>not.all.goals</artifactId>
   <version>@project.version@</version>
-  <packaging>jar</packaging>
-  <name>Fibonacci Numbers Calculator</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -42,61 +57,55 @@ SOFTWARE.
         <configuration combine.self="override"/>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <failIfNoTests>false</failIfNoTests>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
         <version>@project.version@</version>
+        <configuration>
+          <hash>master</hash>
+        </configuration>
         <executions>
           <execution>
+            <id>compile</id>
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
               <goal>transpile</goal>
-              <goal>sodg</goal>
+              <goal>copy</goal>
+              <goal>unplace</goal>
+              <goal>unspile</goal>
             </goals>
+            <configuration>
+              <removeBinaries>
+                <glob>EOorg/EOeolang/EOhamcrest/**</glob>
+                <glob>EOorg/EOeolang/EOmath/**</glob>
+                <glob>EOorg/EOeolang/EOfs/**</glob>
+              </removeBinaries>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+            </configuration>
           </execution>
-        </executions>
-        <configuration>
-          <unrollExitError>true</unrollExitError>
-          <sodgIncludes>
-            <o>org.eolang.error</o>
-          </sodgIncludes>
-          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
-          <foreignFormat>csv</foreignFormat>
-          <placed>${project.build.directory}/eo/placed.json</placed>
-          <placedFormat>json</placedFormat>
-          <trackOptimizationSteps>true</trackOptimizationSteps>
-          <generateSodgXmlFiles>true</generateSodgXmlFiles>
-          <generateGraphFiles>true</generateGraphFiles>
-          <generateXemblyFiles>true</generateXemblyFiles>
-          <generateDotFiles>true</generateDotFiles>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
           <execution>
-            <phase>test</phase>
+            <id>test-compile</id>
+            <phase>generate-test-sources</phase>
             <goals>
-              <goal>java</goal>
+              <goal>register</goal>
+              <goal>assemble</goal>
+              <goal>transpile</goal>
+              <goal>binarize</goal>
             </goals>
+            <configuration>
+              <scope>test</scope>
+              <sourcesDir>${project.basedir}/src/test/eo</sourcesDir>
+              <targetDir>${project.basedir}/target/eo-test</targetDir>
+              <addSourcesRoot>false</addSourcesRoot>
+              <addTestSourcesRoot>true</addTestSourcesRoot>
+              <failOnWarning>false</failOnWarning>
+              <generatedDir>
+                ${project.basedir}/target/generated-test-sources
+              </generatedDir>
+              <placeBinariesThatHaveSources>true</placeBinariesThatHaveSources>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <mainClass>org.eolang.Main</mainClass>
-          <arguments>
-            <argument>org.eolang.examples.app</argument>
-            <argument>6</argument>
-            <argument>8</argument>
-          </arguments>
-        </configuration>
       </plugin>
     </plugins>
   </build>

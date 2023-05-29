@@ -24,108 +24,109 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.apache.log4j.Appender;
-import org.apache.log4j.WriterAppender;
-import org.apache.log4j.spi.LoggingEvent;
+import java.util.concurrent.TimeoutException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junitpioneer.jupiter.StdIo;
+import org.junitpioneer.jupiter.StdOut;
 
 /**
  * Tests of the log4j logger messages format.
  *
+ * All log messages are written to System.out. System.out is a shared resource among all other
+ * threads.  For this reason, we run tests in this class in the same thread (disabling parallelism).
+ * This approach prevents log messages from other threads from interfering. Since all the tests in
+ * this class are relatively fast, it does not significantly impact overall performance.
+ * We disable parallelism by using the {@link Execution} annotation with
+ * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!
+ *
  * @since 0.28.11
  */
+@Execution(ExecutionMode.SAME_THREAD)
 class LogFormatTest {
 
+    /**
+     * Expected log message format.
+     */
+    private static final String FORMAT =
+        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
+
+    /**
+     * Message to log.
+     */
+    private static final String MESSAGE = "Wake up, Neo...";
+
+    @StdIo
     @Test
-    @Timeout(5)
-    void printsFormattedMessage() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-        final Appender appender = logger.getAppender("CONSOLE");
-        final MockAppender mock = new MockAppender(appender);
-        logger.addAppender(mock);
-        Logger.info(this, "Wake up, Neo...");
-        final String expected =
-            "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
+    void printsFormattedMessage(final StdOut out) {
+        Logger.info(this, LogFormatTest.MESSAGE);
+        final String actual = LogFormatTest.waitForMessage(out);
         MatcherAssert.assertThat(
-            String.format("Expected message '%s', but log was:\n '%s'", expected, mock.raw()),
-            mock.contains(expected),
-            Matchers.is(true)
+            String.format(
+                "Expected message '%s', but log was:\n '%s'",
+                actual,
+                LogFormatTest.FORMAT
+            ),
+            actual,
+            Matchers.matchesPattern(LogFormatTest.FORMAT)
+        );
+    }
+
+    @Test
+    void matchesCorrectly() {
+        MatcherAssert.assertThat(
+            "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...",
+            Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
 
     /**
-     * Mock log4j adapter that intercepts all log messages.
-     *
-     * @since 0.28.11
+     * Since logging is usually asynchronous, we need to wait for the message to appear in the
+     * output. Moreover, logging system can take extra time to initialize.
+     * @param out Standard output
+     * @return Logged message
      */
-    private static final class MockAppender extends WriterAppender {
-        /**
-         * Real appender.
-         */
-        private final Appender console;
-
-        /**
-         * Last log message event.
-         */
-        private final BlockingQueue<LoggingEvent> events;
-
-        /**
-         * The main constructor.
-         *
-         * @param console Real log4j appender that we want to replace.
-         */
-        private MockAppender(final Appender console) {
-            this.console = console;
-            this.events = new LinkedBlockingQueue<>();
-        }
-
-        @Override
-        public void append(final LoggingEvent event) {
-            this.events.add(event);
-            super.append(event);
-        }
-
-        /**
-         * Check if any log message matches the regex.
-         * @param regex The regex to match.
-         * @return True if any log message matches the regex.
-         */
-        private boolean contains(final String regex) {
-            try {
-                while (true) {
-                    if (this.last().matches(regex)) {
-                        return true;
+    private static String waitForMessage(final StdOut out) {
+        try {
+            return Executors.newSingleThreadExecutor().submit(
+                () -> {
+                    while (true) {
+                        final Optional<String> message = Arrays.stream(out.capturedLines())
+                            .filter(s -> s.contains(LogFormatTest.MESSAGE))
+                            .findFirst();
+                        if (message.isPresent()) {
+                            return message.get();
+                        }
                     }
                 }
-            } catch (final InterruptedException interrupt) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException(interrupt);
-            }
-        }
-
-        /**
-         * Get the last log message.
-         * @return The last log message.
-         * @throws InterruptedException If interrupted.
-         */
-        private String last() throws InterruptedException {
-            return this.console.getLayout().format(this.events.poll(5, TimeUnit.SECONDS));
-        }
-
-        /**
-         * Get all log messages as a single string.
-         * @return All log messages as a single string.
-         */
-        private String raw() {
-            return this.events.stream().map(LoggingEvent::getRenderedMessage)
-                .collect(Collectors.joining("\n"));
+            ).get(10, TimeUnit.SECONDS);
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(
+                String.format(
+                    "Waiting thread was interrupted, can't read '%s' msg",
+                    LogFormatTest.MESSAGE
+                ),
+                exception
+            );
+        } catch (final ExecutionException exception) {
+            throw new IllegalStateException(
+                String.format("Some problem happened, can't read '%s' msg", LogFormatTest.MESSAGE),
+                exception
+            );
+        } catch (final TimeoutException exception) {
+            throw new IllegalStateException(
+                String.format("Timeout limit exceed to read msg %s", LogFormatTest.MESSAGE),
+                exception
+            );
         }
     }
 }

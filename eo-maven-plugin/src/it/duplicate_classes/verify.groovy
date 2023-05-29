@@ -1,4 +1,7 @@
-/*
+import java.nio.file.Files
+import java.util.stream.Collectors
+
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,32 +25,16 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
-/**
- * Test case for {@link Heaps}.
- *
- * @since 0.19
- */
-public final class HeapsTest {
-
-    @Test
-    public void performsMallocAndFreeWork() {
-        final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
-        MatcherAssert.assertThat(
-            Heaps.INSTANCE.get().malloc(heap, 64),
-            Matchers.not(Matchers.equalTo(pointer))
-        );
-        Heaps.INSTANCE.get().free(heap, pointer);
-    }
-
-}
+def classes = basedir.toPath().resolve("target").resolve("classes")
+def testClasses = basedir.toPath().resolve("target").resolve("test-classes")
+def binaries = Files.walk(classes).filter(Files::isRegularFile)
+  .filter(file -> file.toString().endsWith(".class")).map {
+  return classes.relativize(it).toString()
+}.collect(Collectors.toSet())
+def disjoint = Files.walk(testClasses).filter(Files::isRegularFile)
+  .filter(file -> file.toString().endsWith(".class")).map {
+  return testClasses.relativize(it).toString()
+}.noneMatch { binaries.contains(it) }
+println "Compiled classes do not have duplicates: " + disjoint
+assert disjoint
+return true

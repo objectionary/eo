@@ -28,10 +28,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -68,4 +72,21 @@ final class DiscoverMojoTest {
         );
     }
 
+    @Test
+    void discoversForDifferentScopes(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp);
+        final String scope = "test";
+        maven.with("scope", scope)
+            .withHelloWorld()
+            .execute(new FakeMaven.Discover());
+        final List<String> scopes = maven.foreignTojos().all()
+            .stream()
+            .map(ForeignTojo::scope)
+            .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+            String.format("All tojos have the same scope '%s', but was '%s'", scope, scopes),
+            scopes.stream().allMatch(s -> s.equals(scope)),
+            Matchers.is(true)
+        );
+    }
 }

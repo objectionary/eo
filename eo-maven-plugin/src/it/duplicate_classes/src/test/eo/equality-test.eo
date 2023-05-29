@@ -21,22 +21,13 @@
 # SOFTWARE.
 
 +alias org.eolang.hamcrest.assert-that
++alias equality
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
 +version 0.0.0
 
-[] > creates-object
-  QQ.rust > r
-    """
-    pub fn foo() -> i32 {
-      println!("Hello world from rust");
-      let i = 1234;
-      i
-    }
-    """
-    *
+[] > ensures-equality
   assert-that > @
-    r
-    $.equal-to
-      1234
+    equality
+    $.equal-to TRUE

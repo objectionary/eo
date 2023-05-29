@@ -44,7 +44,9 @@ final class PhPackage implements Phi {
     /**
      * All of them.
      */
-    private final Map<String, Phi> objects = new ConcurrentHashMap<>(0);
+    private final ThreadLocal<Map<String, Phi>> objects = ThreadLocal.withInitial(
+        () -> new ConcurrentHashMap<>(0)
+    );
 
     /**
      * Ctor.
@@ -57,12 +59,11 @@ final class PhPackage implements Phi {
     @Override
     public Attr attr(final String name) {
         final String obj = this.eoPackage(name);
-        return new AtSimple(
-            this.objects.computeIfAbsent(
-                new JavaPath(obj).toString(),
-                t -> this.loadPhi(t).orElseGet(() -> new PhPackage(obj))
-            )
-        );
+        final String key = new JavaPath(obj).toString();
+        if (!this.objects.get().containsKey(key)) {
+            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
+        }
+        return new AtSimple(this.objects.get().get(key));
     }
 
     @Override

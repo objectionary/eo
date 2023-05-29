@@ -27,6 +27,13 @@ import EOorg.EOeolang.EObool$EOand;
 import EOorg.EOeolang.EObytes$EOas_int;
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgoto;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -131,6 +138,42 @@ final class PhPackageTest {
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).toString(),
             Matchers.equalTo("Φ.org.eolang")
         );
+    }
+
+    @Test
+    void findsAttributesConcurrently() throws InterruptedException {
+        final int threads = Runtime.getRuntime().availableProcessors() + 10;
+        final ExecutorService service = Executors.newFixedThreadPool(threads);
+        final PhPackage pckg = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
+        final Set<Integer> basket = Collections.synchronizedSet(new HashSet<>(threads));
+        final CountDownLatch latch = new CountDownLatch(1);
+        Stream.generate(
+            () -> (Runnable) () -> {
+                try {
+                    latch.await();
+                    basket.add(System.identityHashCode(pckg.attr("goto").get()));
+                } catch (final InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(
+                        "The testing thread was interrupted, current basket size %d",
+                        exception
+                    );
+                }
+            }
+        ).limit(threads).forEach(service::submit);
+        latch.countDown();
+        service.shutdown();
+        if (service.awaitTermination(1, TimeUnit.SECONDS)) {
+            MatcherAssert.assertThat(basket.size(), Matchers.equalTo(threads));
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "Failed to wait for threads to finish. Current basket size %d, but expected %d",
+                    basket.size(),
+                    threads
+                )
+            );
+        }
     }
 
     private static Stream<Arguments> attributes() {

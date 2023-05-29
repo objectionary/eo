@@ -65,7 +65,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                         new Param(pointer, "address").strong(Long.class).intValue();
                     final int len = new Param(rho, "len").strong(Long.class).intValue();
                     final byte[] chunk = Arrays.copyOfRange(
-                        Heaps.INSTANCE.data(pointer),
+                        Heaps.INSTANCE.get().data(pointer),
                         address, address + len
                     );
                     final Phi inverse = rho.attr("inverse").get().copy();
@@ -99,7 +99,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
                         final int address =
                             new Param(pointer, "address").strong(Long.class).intValue();
                         final byte[] source = new Param(rho, "x").strong(byte[].class);
-                        final byte[] data = Heaps.INSTANCE.data(pointer);
+                        final byte[] data = Heaps.INSTANCE.get().data(pointer);
                         System.arraycopy(source, 0, data, address, source.length);
                         return new Data.ToPhi(true);
                     }

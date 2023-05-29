@@ -21,33 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.latex;
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Heaps}.
+ * Test case for {@link LatexTemplate}.
  *
- * @since 0.19
+ * @since 0.30
  */
-public final class HeapsTest {
+class LatexTemplateTest {
 
+    /**
+     * Check the full template.
+     */
     @Test
-    public void performsMallocAndFreeWork() {
-        final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
+    void generatesFullTemplate() {
         MatcherAssert.assertThat(
-            Heaps.INSTANCE.get().malloc(heap, 64),
-            Matchers.not(Matchers.equalTo(pointer))
+            new LatexTemplate(
+                "+package f\n[args] > main\n  stdout \"Hello!\""
+            ).asString(),
+            Matchers.stringContainsInOrder(
+                "\\documentclass{article}",
+                "\\usepackage{ffcode}",
+                "\\begin{document}",
+                "\\begin{ffcode}",
+                "+package f",
+                "[args] > main",
+                "  stdout \"Hello!\"",
+                "\\end{ffcode}",
+                "\\end{document}"
+            )
         );
-        Heaps.INSTANCE.get().free(heap, pointer);
     }
-
 }

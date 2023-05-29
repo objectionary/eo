@@ -25,13 +25,18 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="synthetic-references" version="2.0">
   <!--
   Process alias attribute.
-  @todo #1145:30m This stylesheet just removes alias attribute.
-   A proper processing would be
-   1) move object one level above
-   2) add a synthetic name to its attributes
-   3) put the alias in place of actual object.
-   Continue to work on that issue,
-   until synthetic-attributes.yaml passes.
+  @todo #1167:90m synthetic-attributes. Add more tests with methods.
+   The current number of tests is not enough to implement
+   synthetic-references.xsl transformation.
+   We also have to add tests that checks XMIR with "methods".
+   Something like "((foo 1).with 2).with 3"
+   Then we have to continue to work on that issue,
+   until the next tests pass:
+    synthetic-attributes.yaml
+    synthetic-attributes-double-scope.yaml
+    synthetic-attributes-many-arguments.yaml
+    synthetic-attributes-nested.yaml
+    synthetic-attributes-without-scope.yaml
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@alias]">

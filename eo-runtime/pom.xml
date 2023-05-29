@@ -104,11 +104,11 @@ SOFTWARE.
           <argLine>
             @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
-          <systemProperties>
+          <systemPropertyVariables>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
-          </systemProperties>
+          </systemPropertyVariables>
           <!-- Default surefire plugin corrupts native stdout. It means the text that was
           printed in native method will not be printed in 'mvn clean install'. This configuration
            switches surefire communication channel from default to TCP/IP and solves the bug.
@@ -116,10 +116,10 @@ SOFTWARE.
            and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
           <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           <properties>
-            <!-- @todo #1996:30min Enable parallel run of all tests in eo-runtime. For now we are experience some problems when concurrent mode is enabled. We have to investigate the problem and make all tests in eo-runtime run in parallel.-->
             <configurationParameters>
               junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = same_thread
+              junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.classes.default = concurrent
             </configurationParameters>
           </properties>
         </configuration>

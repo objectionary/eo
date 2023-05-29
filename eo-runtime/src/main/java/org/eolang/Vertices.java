@@ -108,7 +108,7 @@ final class Vertices {
      */
     private static String label(final Object obj) {
         final String label;
-        if (primitive(obj)) {
+        if (Vertices.primitive(obj)) {
             label = obj.toString();
         } else if (obj instanceof Pattern) {
             label = Pattern.class.cast(obj).pattern();

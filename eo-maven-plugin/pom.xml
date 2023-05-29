@@ -57,11 +57,6 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
-      <groupId>com.jcabi</groupId>
-      <artifactId>jcabi-manifests</artifactId>
-      <!-- version from parent POM -->
-    </dependency>
-    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <!-- version from parent POM -->
@@ -215,7 +210,7 @@ SOFTWARE.
       <artifactId>slf4j-reload4j</artifactId>
       <version>2.0.7</version>
       <scope>provided</scope>
-      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
     <dependency>
@@ -223,7 +218,7 @@ SOFTWARE.
       <artifactId>reload4j</artifactId>
       <version>1.2.25</version>
       <scope>runtime</scope>
-      <!-- This dependency must preceed jcabi-maven-slf4j in order
+      <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
     </dependency>
     <dependency>
@@ -261,14 +256,6 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <skipInstallation>false</skipInstallation>
-          <skipInvocation>false</skipInvocation>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -277,6 +264,13 @@ SOFTWARE.
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
           </systemPropertyVariables>
+          <properties>
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.classes.default = concurrent
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
       <plugin>
