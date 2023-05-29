@@ -340,7 +340,31 @@ abstract class SafeMojo extends AbstractMojo {
         throws MojoFailureException {
         final MojoFailureException out = new MojoFailureException(msg, exp);
         if (this.unrollExitError) {
-            for (final String cause : SafeMojo.causes(exp)) {
+            final List<String> causes = SafeMojo.causes(exp);
+            int idx = 0;
+            while (true) {
+                if (idx >= causes.size()) {
+                    break;
+                }
+                final String cause = causes.get(idx);
+                for (int later = idx + 1; later < causes.size(); ++later) {
+                    final String another = causes.get(later);
+                    if (another != null && cause.contains(another)) {
+                        causes.remove(idx);
+                        idx -= 1;
+                        break;
+                    }
+                }
+                idx += 1;
+            }
+            for (int pos = 0; pos < causes.size(); ++pos) {
+                final String cause = causes.get(pos);
+                if (cause == null) {
+                    causes.remove(pos);
+                    break;
+                }
+            }
+            for (final String cause : causes) {
                 Logger.error(this, cause);
             }
         }

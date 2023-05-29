@@ -34,6 +34,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junitpioneer.jupiter.StdIo;
 import org.junitpioneer.jupiter.StdOut;
+import org.junitpioneer.jupiter.WritesStdIo;
 
 /**
  * Tests of the log4j logger messages format.
@@ -56,8 +57,9 @@ class LogFormatTest {
     private static final String FORMAT =
         "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
 
-    @StdIo
     @Test
+    @StdIo
+    @WritesStdIo
     void printsFormattedMessage(final StdOut out) throws IOException {
         final String message = "Wake up, Neo...";
         Logger.info(this, message);
