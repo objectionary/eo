@@ -106,7 +106,11 @@ public final class Logs {
             );
         } catch (final TimeoutException exception) {
             throw new IllegalStateException(
-                String.format("Timeout limit exceed to read msg %s", message),
+                String.format(
+                    "Timeout limit exceed to read msg %s, current set of captured logs: %s",
+                    message,
+                    this.container
+                ),
                 exception
             );
         }
