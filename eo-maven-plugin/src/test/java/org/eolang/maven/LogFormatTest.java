@@ -51,7 +51,7 @@ class LogFormatTest {
      * Expected log message format.
      */
     private static final String FORMAT =
-        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n";
+        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
 
     /**
      * Message to log.
