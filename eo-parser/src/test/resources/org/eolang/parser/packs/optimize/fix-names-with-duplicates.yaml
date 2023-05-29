@@ -5,7 +5,7 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
 tests:
-  - //objects[count(.//o[@base='hello$t1$t2$t2$t1$a0$build hello$t1$t2$t2$t1$a1$build'])=3]
+  - //objects[count(.//o[@base='hello$t1$t2$t2$t1$a0$build hello$t1$t2$t2$t1$a1$build'])=2]
 eo: |
   [] > hello
     [f s] > calc
