@@ -101,12 +101,3 @@
 
   # Converts this to bytes
   [] > as-bytes /bytes
-
-  # Converts this to hash
-  [] > as-hash
-    as-int. > @
-      xor.
-        as-bytes
-        right.
-          as-bytes
-          32

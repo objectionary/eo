@@ -285,30 +285,6 @@
     42.as-bytes
     $.equal-to 42
 
-[] > as-hash-equals-to-similar-values
-  assert-that > @
-    42.as-hash
-    $.equal-to
-      42.as-hash
-
-# We can have collisions, so in this test just check if values not similar
-[] > as-hash-have-different-hashes
-  seq > @
-    stdout
-      sprintf
-        "%d %d %d\n"
-        41.as-hash
-        42.as-hash
-        43.as-hash
-    TRUE
-
-[] > as-hash-not-equal
-  assert-that > @
-    41.as-hash
-    $.not
-      $.equal-to
-        42.as-hash
-
 [] > sum-up-several-arguments
   assert-that > @
     1982

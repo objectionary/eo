@@ -78,20 +78,6 @@
   [] > as-bytes
     ^ > @
 
-  # Converts this to hash
-  [] > as-hash
-    reduced. > @
-      list
-        bytes-as-array ^
-      1
-      [a b]
-        plus. > @
-          times.
-            31
-            a
-          as-int.
-            (0.as-bytes.and b).right 54
-
   # Concatenation of two byte sequences:
   # the current and the provided one,
   # as a new sequence

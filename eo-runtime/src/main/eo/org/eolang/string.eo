@@ -39,10 +39,5 @@
   # Turn it into bytes.
   [] > as-bytes /bytes
 
-  # Converts this to hash
-  [] > as-hash
-    as-hash. > @
-      ^.as-bytes
-
   # Takes a piece of a string as another string
   [start len] > slice /string
