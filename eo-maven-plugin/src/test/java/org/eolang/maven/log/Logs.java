@@ -75,10 +75,42 @@ public final class Logs {
      * @return Logged message with formatting
      */
     public String waitForMessage(final String message) {
+        return this.waitForMessage(
+            message,
+            () -> {
+            }
+        );
+    }
+
+    /**
+     * Waits until the logger is initialized.
+     * If that method is finished it means that loggers are initialized.
+     */
+    void waitForInit() {
+        final String msg = "ping";
+        this.waitForMessage(msg, () -> Logger.info(this, msg));
+    }
+
+    /**
+     * Append log message.
+     * @param log Log message.
+     */
+    void append(final String log) {
+        this.container.add(log);
+    }
+
+    /**
+     * Wait for message.
+     * @param message Message to wait for
+     * @param action Action to perform before checking the message on each check iteration
+     * @return Logged message
+     */
+    private String waitForMessage(final String message, final Runnable action) {
         try {
             return Executors.newSingleThreadExecutor().submit(
                 () -> {
                     while (true) {
+                        action.run();
                         final Optional<String> full = this.container.stream()
                             .filter(s -> s.contains(message))
                             .findFirst();
@@ -110,63 +142,6 @@ public final class Logs {
                 String.format(
                     "Timeout limit exceed to read msg %s, current set of captured logs: %s",
                     message,
-                    this.container
-                ),
-                exception
-            );
-        }
-    }
-
-    /**
-     * Append log message.
-     * @param log Log message.
-     */
-    void append(final String log) {
-        this.container.add(log);
-    }
-
-    /**
-     * Checks if the log contains the given message.
-     * If that method is finished it means that loggers are initialized.
-     */
-    void ping() {
-        final String msg = "ping";
-        try {
-            Executors.newSingleThreadExecutor().submit(
-                () -> {
-                    while (true) {
-                        Logger.info(this, msg);
-                        final Optional<String> full = this.container.stream()
-                            .filter(s -> s.contains(msg))
-                            .findFirst();
-                        if (full.isPresent()) {
-                            return full.get();
-                        }
-                    }
-                }
-            ).get(10, TimeUnit.SECONDS);
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(
-                String.format(
-                    "Waiting thread was interrupted, can't read '%s' msg",
-                    msg
-                ),
-                exception
-            );
-        } catch (final ExecutionException exception) {
-            throw new IllegalStateException(
-                String.format(
-                    "Some problem happened, can't read '%s' msg",
-                    msg
-                ),
-                exception
-            );
-        } catch (final TimeoutException exception) {
-            throw new IllegalStateException(
-                String.format(
-                    "Timeout limit exceed to read msg %s, current set of captured logs: %s",
-                    msg,
                     this.container
                 ),
                 exception

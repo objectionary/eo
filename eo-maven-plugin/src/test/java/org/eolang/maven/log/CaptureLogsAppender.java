@@ -69,7 +69,7 @@ public final class CaptureLogsAppender extends ConsoleAppender {
             }
         }
         logger.addAppender(this);
-        this.logs.ping();
+        this.logs.waitForInit();
     }
 
     /**
