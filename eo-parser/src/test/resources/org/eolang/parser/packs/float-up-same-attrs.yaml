@@ -1,0 +1,31 @@
+xsls:
+  - /org/eolang/parser/optimize/remove-refs.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+  - /org/eolang/parser/add-refs.xsl
+tests:
+  - /program[count(.//o[@base='build' and not(@ref)])=2]
+  - /program/objects[count(o[@original-name='build'])=2]
+eo: |
+  [] > hello
+    [f s] > calc
+      plus. > @
+        f.next
+        s.next
+  
+    seq > @
+      QQ.io.stdout
+        QQ.txt.sprintf
+          "Result is %d\n"
+          calc
+            []
+              [x] > build
+                x.plus 1 > @
+                build (@.plus 1) > next
+              build 1 > @
+            []
+              [y] > build
+                y.plus 2 > @
+                build (@.plus 2) > next
+              build 2 > @
+      TRUE
