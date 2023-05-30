@@ -24,16 +24,13 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.StdIo;
-import org.junitpioneer.jupiter.StdOut;
 
 /**
  * Tests of the log4j logger messages format.
@@ -54,29 +51,25 @@ class LogFormatTest {
      * Expected log message format.
      */
     private static final String FORMAT =
-        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...";
+        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
 
-    @StdIo
+    /**
+     * Message to log.
+     */
+    private static final String MESSAGE = "Wake up, Neo...";
+
     @Test
-    void printsFormattedMessage(final StdOut out) throws IOException {
-        final String message = "Wake up, Neo...";
-        Logger.info(this, message);
-        out.flush();
-        final Optional<String> log = Arrays.stream(out.capturedLines())
-            .filter(s -> s.contains(message))
-            .findFirst();
-        MatcherAssert.assertThat(
-            String.format("Log message '%s' not found", message),
-            log.isPresent(),
-            Matchers.is(true)
-        );
+    @CaptureLogs
+    void printsFormattedMessage(final Logs out) {
+        Logger.info(this, LogFormatTest.MESSAGE);
+        final String actual = out.waitForMessage(LogFormatTest.MESSAGE);
         MatcherAssert.assertThat(
             String.format(
-                "Expected message '%s', but log was:\n '%s'",
-                log.get(),
+                "Actual log output is '%s', but expected pattern is: '%s'",
+                actual,
                 LogFormatTest.FORMAT
             ),
-            log.get(),
+            actual,
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
@@ -84,7 +77,7 @@ class LogFormatTest {
     @Test
     void matchesCorrectly() {
         MatcherAssert.assertThat(
-            "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...",
+            "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
