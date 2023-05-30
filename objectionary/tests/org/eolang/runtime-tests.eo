@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.29.4
++version 0.29.5
 
 [] > understands-this-correctly
   [x] > a
@@ -415,6 +415,16 @@
           ^.x
     $.equal-to
       "[Hello, Jeff]"
+
+[] > right-way-to-use-hierarchy
+  [value] > pybool
+    value > @
+  [value] > pyint
+    [x] > eq
+      pybool (value.eq (x.value)) > @
+    [x] > add
+      ^.^.pyint (value.plus (x.value)) > @
+  ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
 [] > check-triple-quotes
   assert-that > @
