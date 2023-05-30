@@ -21,40 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.nio.file.Path;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Test case for {@link SafeMojo}.
+ * The package for log capturing during unit tests.
+ * Includes JUnit extension and a logger appender.
  *
- * @since 0.1
+ * @since 0.30
  */
-final class SafeMojoTest {
-
-    @Test
-    @CaptureLogs
-    void logsStackTrace(final Logs out, @TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("something < is definitely wrong here")
-                .execute(ParseMojo.class)
-        );
-        MatcherAssert.assertThat(
-            String.join("\n", out.captured()),
-            Matchers.allOf(
-                Matchers.containsString("no viable alternative at input"),
-                Matchers.containsString("Failed to parse")
-            )
-        );
-    }
-
-}
+package org.eolang.maven.log;
