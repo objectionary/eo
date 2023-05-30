@@ -95,6 +95,7 @@ SOFTWARE.
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <antlr.version>4.13.0</antlr.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -207,7 +208,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
-        <version>4.13.0</version>
+        <version>${antlr.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -292,7 +293,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
-          <version>4.13.0</version>
+          <version>${antlr.version}</version>
           <configuration>
             <treatWarningsAsErrors>true</treatWarningsAsErrors>
           </configuration>
