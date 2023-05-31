@@ -26,7 +26,10 @@ package org.eolang.parser;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -71,6 +74,8 @@ interface Objects extends Iterable<Directive> {
      */
     void alias();
 
+    void closeAlias();
+
     /**
      * Xembly object tree.
      * @since 0.1
@@ -85,12 +90,7 @@ interface Objects extends Iterable<Directive> {
         /**
          * Generated aliases.
          */
-        private final Deque<Integer> aliases = new LinkedList<>();
-
-        /**
-         * Counter of aliases.
-         */
-        private final AtomicInteger counter = new AtomicInteger();
+        private final Deque<String> aliases = new LinkedList<>();
 
         @Override
         public void start(final int line, final int pos) {
@@ -98,7 +98,8 @@ interface Objects extends Iterable<Directive> {
             this.prop("line", line);
             this.prop("pos", pos);
             if (!this.aliases.isEmpty()) {
-                this.prop("alias", this.aliases.pop());
+                final String alias = String.join("-", this.aliases);
+                this.prop("alias", alias);
             }
         }
 
@@ -122,11 +123,25 @@ interface Objects extends Iterable<Directive> {
             this.dirs.up();
         }
 
+        private final AtomicInteger next = new AtomicInteger(1);
+        private final Random random = new Random();
+
+
         @Override
         public void alias() {
             this.aliases.push(
-                this.counter.incrementAndGet()
+                String.format(
+                    "%s-scope-%s",
+                    Math.abs(this.random.nextInt(100)),
+                    this.next.getAndIncrement()
+                )
             );
+        }
+
+        @Override
+        public void closeAlias() {
+            this.aliases.remove();
+            this.next.decrementAndGet();
         }
 
         @Override

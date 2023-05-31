@@ -40,10 +40,35 @@ SOFTWARE.
   listed above (skip=false).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@alias]">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@* except @alias"/>
-    </xsl:copy>
+  <xsl:template match="o[@alias and count(child::o) &gt; 1]">
+    <xsl:element name="o">
+      <xsl:attribute name="abstract"/>
+      <xsl:attribute name="line">
+        <xsl:value-of select="@line"/>
+      </xsl:attribute>
+      <xsl:attribute name="pos">
+        <xsl:value-of select="@pos"/>
+      </xsl:attribute>
+      <xsl:variable name="curr" select="@alias"/>
+      <xsl:copy>
+        <xsl:copy-of select="@*"/>
+        <xsl:attribute name="name">
+          <xsl:text>org.eolang.</xsl:text>
+          <xsl:value-of select="@alias"/>
+        </xsl:attribute>
+        <xsl:apply-templates select="child::o[contains(@alias, $curr)]"/>
+      </xsl:copy>
+      <xsl:element name="o">
+        <xsl:attribute name="base">
+          <xsl:text>org.eolang.</xsl:text>
+          <xsl:value-of select="@alias"/>
+        </xsl:attribute>
+        <xsl:attribute name="name">
+          <xsl:text>@</xsl:text>
+        </xsl:attribute>
+        <xsl:apply-templates select="child::o[not(@alias) or not(contains(@alias, $curr))]"/>
+      </xsl:element>
+    </xsl:element>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

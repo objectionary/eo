@@ -324,7 +324,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        this.objects.closeAlias();
     }
 
     @Override
