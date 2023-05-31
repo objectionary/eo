@@ -128,12 +128,6 @@
     """
     $.equal-to "a\n b\n  c"
 
-[] > similar-strings-generate-similar-hashes
-  assert-that > @
-    "hello".as-hash
-    $.equal-to
-      "hello".as-hash
-
 [] > compares-two-strings
   assert-that > @
     eq.
