@@ -26,10 +26,7 @@ package org.eolang.parser;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -74,6 +71,10 @@ interface Objects extends Iterable<Directive> {
      */
     void alias();
 
+    /**
+     * Mark current object as last inside the scope.
+     * Last object that relates to the alias.
+     */
     void closeAlias();
 
     /**
@@ -123,17 +124,12 @@ interface Objects extends Iterable<Directive> {
             this.dirs.up();
         }
 
-        private final AtomicInteger next = new AtomicInteger(1);
-        private final Random random = new Random();
-
-
         @Override
         public void alias() {
             this.aliases.push(
                 String.format(
-                    "%s-scope-%s",
-                    Math.abs(this.random.nextInt(100)),
-                    this.next.getAndIncrement()
+                    "scope-%s",
+                    UUID.randomUUID()
                 )
             );
         }
@@ -141,7 +137,6 @@ interface Objects extends Iterable<Directive> {
         @Override
         public void closeAlias() {
             this.aliases.remove();
-            this.next.decrementAndGet();
         }
 
         @Override
