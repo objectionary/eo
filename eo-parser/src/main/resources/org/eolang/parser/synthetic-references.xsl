@@ -22,7 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="synthetic-references" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                id="synthetic-references" version="2.0">
   <!--
   Process alias attribute.
   @todo #2093:90m synthetic-attributes. Solution for synthetic-references.xsl.
@@ -42,14 +43,18 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@alias and count(child::o) &gt; 1]">
     <xsl:element name="o">
+      <xsl:variable name="curr" select="@alias"/>
       <xsl:attribute name="abstract"/>
+      <xsl:attribute name="name">
+        generated-
+        <xsl:value-of select="$curr"/>
+      </xsl:attribute>
       <xsl:attribute name="line">
         <xsl:value-of select="@line"/>
       </xsl:attribute>
       <xsl:attribute name="pos">
         <xsl:value-of select="@pos"/>
       </xsl:attribute>
-      <xsl:variable name="curr" select="@alias"/>
       <xsl:copy>
         <xsl:copy-of select="@*"/>
         <xsl:attribute name="name">
@@ -66,7 +71,8 @@ SOFTWARE.
         <xsl:attribute name="name">
           <xsl:text>@</xsl:text>
         </xsl:attribute>
-        <xsl:apply-templates select="child::o[not(@alias) or not(contains(@alias, $curr))]"/>
+        <xsl:apply-templates
+                select="child::o[not(@alias) or not(contains(@alias, $curr))]"/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
