@@ -25,19 +25,14 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="synthetic-references" version="2.0">
   <!--
   Process alias attribute.
-  @todo #2093:90m synthetic-attributes. Solution for synthetic-references.xsl.
-   Implement the proper solution for synthetic-references.xsl.
-   Currently we have enough tests that cover all important cases of that
-   feature:
-    synthetic-attributes.yaml
-    synthetic-attributes-double-scope.yaml
-    synthetic-attributes-many-arguments.yaml
-    synthetic-attributes-nested.yaml
-    synthetic-attributes-without-scope.yaml
-    synthetic-attributes-with-doubled-methods.yaml
-    synthetic-attributes-with-nested-methods.yaml
-  When the task will be implemented we have to enable all the tests that
-  listed above (skip=false).
+  @todo #2110:90m Rename synthetic-attributes to synthetic-scopes.
+    We call all attributes in the transformation as "aliases".
+    (you can read more about the original issue and why it is named so right
+    <a href="https://github.com/objectionary/eo/issues/415">here</a>.)
+    which is quite confusing and conflicts with the concept of aliases as
+    foreign references. We should rename the transformation to "scopes" or
+    "synthetic-scopes" and rename the "aliases" attributes in that stylesheet
+    accordingly.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@alias and count(child::o) &gt; 1]">
