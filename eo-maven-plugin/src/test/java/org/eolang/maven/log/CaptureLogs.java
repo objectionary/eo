@@ -21,40 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.log;
 
-import java.nio.file.Path;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link SafeMojo}.
- *
- * @since 0.1
+ * Captured logs annotation for tests.
  */
-final class SafeMojoTest {
-
-    @Test
-    @CaptureLogs
-    void logsStackTrace(final Logs out, @TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("something < is definitely wrong here")
-                .execute(ParseMojo.class)
-        );
-        MatcherAssert.assertThat(
-            String.join("\n", out.captured()),
-            Matchers.allOf(
-                Matchers.containsString("no viable alternative at input"),
-                Matchers.containsString("Failed to parse")
-            )
-        );
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@ExtendWith(CaptureLogsExtension.class)
+public @interface CaptureLogs {
 }

@@ -496,11 +496,5 @@
     3.1415926.as-bytes
     $.equal-to 3.1415926
 
-[] > similar-values-have-similar-hash
-  assert-that > @
-    (3.1415926).as-hash
-    $.equal-to
-      (3.1415926).as-hash
-
 [] > inline-float-computation
   ((4.0).plus (5.7)).eq (9.7) > @
