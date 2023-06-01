@@ -175,7 +175,7 @@ public final class Names {
     /**
      * Loads the table.
      * @param src Path where to install from.
-     * @return The map.
+     * @return The map .
      * @throws IOException If any issues with IO.
      */
     @SuppressWarnings("unchecked")
