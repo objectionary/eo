@@ -23,14 +23,15 @@
  */
 package org.eolang.maven;
 
-import com.google.common.io.CharStreams;
 import com.jcabi.log.Logger;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.commons.codec.Charsets;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -89,15 +90,23 @@ public final class BinarizeMojo extends SafeMojo {
             );
         }
         if (building.exitValue() != 0) {
+            final StringWriter writer = new StringWriter();
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                    building.getErrorStream(),
+                    StandardCharsets.UTF_8
+                )
+            )) {
+                String line = reader.readLine();
+                while (line != null) {
+                    writer.write(line);
+                    line = reader.readLine();
+                }
+            }
             Logger.error(this, "There was an error in compilation");
             Logger.error(
                 this,
-                CharStreams.toString(
-                    new InputStreamReader(
-                        building.getErrorStream(),
-                        Charsets.UTF_8
-                    )
-                )
+                writer.toString()
             );
             throw new BuildFailureException(
                 String.format(
