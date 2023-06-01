@@ -1,6 +1,5 @@
 xsls:
   - /org/eolang/parser/synthetic-references.xsl
-skip: false
 tests:
   - //o[@base='foo' and count(o)=3]
 eo: |
