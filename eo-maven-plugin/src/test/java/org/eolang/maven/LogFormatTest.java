@@ -24,108 +24,61 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.apache.log4j.Appender;
-import org.apache.log4j.WriterAppender;
-import org.apache.log4j.spi.LoggingEvent;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Tests of the log4j logger messages format.
  *
+ * All log messages are written to System.out. System.out is a shared resource among all other
+ * threads.  For this reason, we run tests in this class in the same thread (disabling parallelism).
+ * This approach prevents log messages from other threads from interfering. Since all the tests in
+ * this class are relatively fast, it does not significantly impact overall performance.
+ * We disable parallelism by using the {@link Execution} annotation with
+ * {@link ExecutionMode#SAME_THREAD}. DO NOT REMOVE THAT ANNOTATION!
+ *
  * @since 0.28.11
  */
+@Execution(ExecutionMode.SAME_THREAD)
 class LogFormatTest {
 
+    /**
+     * Expected log message format.
+     */
+    private static final String FORMAT =
+        "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
+
+    /**
+     * Message to log.
+     */
+    private static final String MESSAGE = "Wake up, Neo...";
+
     @Test
-    @Timeout(5)
-    void printsFormattedMessage() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-        final Appender appender = logger.getAppender("CONSOLE");
-        final MockAppender mock = new MockAppender(appender);
-        logger.addAppender(mock);
-        Logger.info(this, "Wake up, Neo...");
-        final String expected =
-            "^\\d{2}:\\d{2}:\\d{2} \\[INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\\R";
+    @CaptureLogs
+    void printsFormattedMessage(final Logs out) {
+        Logger.info(this, LogFormatTest.MESSAGE);
+        final String actual = out.waitForMessage(LogFormatTest.MESSAGE);
         MatcherAssert.assertThat(
-            String.format("Expected message '%s', but log was:\n '%s'", expected, mock.raw()),
-            mock.contains(expected),
-            Matchers.is(true)
+            String.format(
+                "Actual log output is '%s', but expected pattern is: '%s'",
+                actual,
+                LogFormatTest.FORMAT
+            ),
+            actual,
+            Matchers.matchesPattern(LogFormatTest.FORMAT)
         );
     }
 
-    /**
-     * Mock log4j adapter that intercepts all log messages.
-     *
-     * @since 0.28.11
-     */
-    private static final class MockAppender extends WriterAppender {
-        /**
-         * Real appender.
-         */
-        private final Appender console;
-
-        /**
-         * Last log message event.
-         */
-        private final BlockingQueue<LoggingEvent> events;
-
-        /**
-         * The main constructor.
-         *
-         * @param console Real log4j appender that we want to replace.
-         */
-        private MockAppender(final Appender console) {
-            this.console = console;
-            this.events = new LinkedBlockingQueue<>();
-        }
-
-        @Override
-        public void append(final LoggingEvent event) {
-            this.events.add(event);
-            super.append(event);
-        }
-
-        /**
-         * Check if any log message matches the regex.
-         * @param regex The regex to match.
-         * @return True if any log message matches the regex.
-         */
-        private boolean contains(final String regex) {
-            try {
-                while (true) {
-                    if (this.last().matches(regex)) {
-                        return true;
-                    }
-                }
-            } catch (final InterruptedException interrupt) {
-                Thread.currentThread().interrupt();
-                throw new IllegalStateException(interrupt);
-            }
-        }
-
-        /**
-         * Get the last log message.
-         * @return The last log message.
-         * @throws InterruptedException If interrupted.
-         */
-        private String last() throws InterruptedException {
-            return this.console.getLayout().format(this.events.poll(5, TimeUnit.SECONDS));
-        }
-
-        /**
-         * Get all log messages as a single string.
-         * @return All log messages as a single string.
-         */
-        private String raw() {
-            return this.events.stream().map(LoggingEvent::getRenderedMessage)
-                .collect(Collectors.joining("\n"));
-        }
+    @Test
+    void matchesCorrectly() {
+        MatcherAssert.assertThat(
+            "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n",
+            Matchers.matchesPattern(LogFormatTest.FORMAT)
+        );
     }
 }

@@ -2,12 +2,12 @@ xsls:
   - /org/eolang/parser/synthetic-references.xsl
 skip: true
 tests:
-  - //o[@base='foo' and count(o)=1]
+  - //o[@base='foo' and count(o)=2]
 eo: |
   [] > aliases
-    [x] > foo
-      [y] > @
+    [x y] > foo
+      [z] > @
         42 > @
     eq. > @
-      (foo 1) 2
+      foo 1 2
       42

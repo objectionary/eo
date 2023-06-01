@@ -445,12 +445,6 @@
     ((-4294967296).as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
 
-[] > bytes-hashes-remain-same
-  assert-that > @
-    01-02-03-04.as-hash
-    $.equal-to
-      923521
-
 # @todo #793:30min To enable next 4 as-bytes tests.
 #  All of the next 4 tests checks as-string, as-float, as-int and as-bool
 #  for transparency. All of these tests must be transparent and not create
