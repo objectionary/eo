@@ -40,21 +40,17 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.IsEmpty;
-import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -294,6 +290,10 @@ final class SnippetTest {
     /**
      * Fake objectionary.
      * @return Fake objectionary.
+     * @todo #1804:30min Introduce OyFilesystem instead of using OyFake.
+     *  The code below can be moved into separate class with the possible name OyFilesystem.
+     *  This class will upload eo sources from filesystem. By that change we will simplify
+     *  the SnippetTest itself and will be able to use OyFilesystem in some other cases.
      */
     private static Objectionary objectionary() {
         final Path home = Paths.get(
