@@ -26,7 +26,7 @@ package org.eolang.parser;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -72,6 +72,12 @@ interface Objects extends Iterable<Directive> {
     void alias();
 
     /**
+     * Mark current object as last inside the scope.
+     * Last object that relates to the alias.
+     */
+    void closeAlias();
+
+    /**
      * Xembly object tree.
      * @since 0.1
      */
@@ -85,12 +91,7 @@ interface Objects extends Iterable<Directive> {
         /**
          * Generated aliases.
          */
-        private final Deque<Integer> aliases = new LinkedList<>();
-
-        /**
-         * Counter of aliases.
-         */
-        private final AtomicInteger counter = new AtomicInteger();
+        private final Deque<String> aliases = new LinkedList<>();
 
         @Override
         public void start(final int line, final int pos) {
@@ -98,7 +99,8 @@ interface Objects extends Iterable<Directive> {
             this.prop("line", line);
             this.prop("pos", pos);
             if (!this.aliases.isEmpty()) {
-                this.prop("alias", this.aliases.pop());
+                final String alias = String.join("-", this.aliases);
+                this.prop("alias", alias);
             }
         }
 
@@ -125,8 +127,16 @@ interface Objects extends Iterable<Directive> {
         @Override
         public void alias() {
             this.aliases.push(
-                this.counter.incrementAndGet()
+                String.format(
+                    "scope-%s",
+                    UUID.randomUUID()
+                )
             );
+        }
+
+        @Override
+        public void closeAlias() {
+            this.aliases.remove();
         }
 
         @Override
