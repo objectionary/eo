@@ -303,46 +303,22 @@ final class SnippetTest {
             )
         );
         return new OyFake(
-            name -> {
-                final Input res;
-                if (name.contains("collections")) {
-                    res = new ResourceOf(
-                        String.format("%s.eo", name.replace(".", "/"))
-                    );
-                } else {
-                    res = new InputOf(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            },
-            name -> {
-                final boolean res;
-                if (name.contains("collections")) {
-                    res = !new IsEmpty(
-                        new TextOf(
-                            new ResourceOf(
-                                String.format("%s.eo", name.replace(".", "/"))
-                            )
-                        )
-                    ).value();
-                } else {
-                    res = Files.exists(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            }
+            name -> new InputOf(
+                home.resolve(
+                    String.format(
+                        "src/main/eo/%s.eo",
+                        name.replace(".", "/")
+                    )
+                )
+            ),
+            name -> Files.exists(
+                home.resolve(
+                    String.format(
+                        "src/main/eo/%s.eo",
+                        name.replace(".", "/")
+                    )
+                )
+            )
         );
     }
 
