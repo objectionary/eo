@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
@@ -56,8 +57,10 @@ final class BinarizeParseMojoTest {
             .execute(new FakeMaven.BinarizeParse())
             .result();
         final String rust = String.format(
-            "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+            "target/binarize/codes/%s0.rs",
+            temp.resolve("target").toString()
+                .toLowerCase(Locale.ENGLISH)
+                .replaceAll("[^a-z0-9]", "x")
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
@@ -86,13 +89,16 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
+        final String prefix = temp.resolve("target").toString()
+            .toLowerCase(Locale.ENGLISH)
+            .replaceAll("[^a-z0-9]", "x");
         final String one = String.format(
-            "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomohellooworldo1or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0031002e0072"
+            "target/binarize/codes/%s0.rs",
+            prefix
         );
         final String two = String.format(
-            "target/binarize/codes/%s.rs",
-            "fooorgoeolangocustomohellooworldo2or03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e00680065006c006c006f002d0077006f0072006c0064002d0032002e0072"
+            "target/binarize/codes/%s1.rs",
+            prefix
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
@@ -137,11 +143,14 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
+        final String prefix = temp.resolve("target").toString()
+            .toLowerCase(Locale.ENGLISH)
+            .replaceAll("[^a-z0-9]", "x");
         final String cargo = "target/Lib/Cargo.toml";
         final String lib = "target/Lib/src/lib.rs";
         final String module = String.format(
-            "target/Lib/src/%s.rs",
-            "fooorgoeolangocustomocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007500730074006f006d002e0063007200650061007400650073002d006f0062006a006500630074002e0072"
+            "target/Lib/src/%s1.rs",
+            prefix
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(cargo)
