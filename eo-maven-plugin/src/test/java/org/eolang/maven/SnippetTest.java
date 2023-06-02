@@ -173,8 +173,7 @@ final class SnippetTest {
                     .map(Path::toAbsolutePath)
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
-                classes
-                ,
+                classes,
                 SnippetTest.classpath()
             ),
             generated
