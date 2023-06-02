@@ -89,15 +89,9 @@ final class SnippetTest {
     /**
      * Runs and checks of eo snippets.
      *
-     * @todo #1723:90m Enable runsAllSpinners test. This test disabled because it requires
-     *  foreign eo objects from the internet. We need to find a way to mock them or to put into
-     *  eo-runtime.jar. You can read more about the problem
-     *  <a href="https://github.com/objectionary/eo/issues/1724">here</a>. Also it's important to
-     *  remove bytes-as-array.eo and list.eo from the test resources.
      * @param yml Yaml test case.
      * @throws Exception If fails
      */
-    @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
