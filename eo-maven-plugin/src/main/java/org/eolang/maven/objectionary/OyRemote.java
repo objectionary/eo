@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.InputWithFallback;
 import org.eolang.maven.Place;
 import org.eolang.maven.hash.CommitHash;
 
@@ -69,7 +70,17 @@ public final class OyRemote implements Objectionary {
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
-        return new InputOf(url);
+        return new InputWithFallback(
+            new InputOf(url),
+            input -> {
+                throw new IOException(
+                    String.format(
+                        "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home. This means that you either mispelled the name of it or simply refer to your own local object somewhere in your code as if it was an object of org.eolang package. Check the sources and make sure you always use +alias meta when you refer to an object outside of org.eolang, even if this object belongs to your package.",
+                        name
+                    )
+                );
+            }
+        );
     }
 
     @Override
