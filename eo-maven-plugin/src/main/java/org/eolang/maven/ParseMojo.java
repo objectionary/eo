@@ -24,10 +24,12 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -46,7 +48,6 @@ import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.ParsingException;
 import org.eolang.parser.Syntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -149,46 +150,51 @@ public final class ParseMojo extends SafeMojo {
                 footprint
             );
         }
-        try {
-            footprint.save(
-                name,
-                "xmir",
-                () -> {
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    new Syntax(
-                        name,
-                        new InputOf(source),
-                        new OutputTo(baos)
-                    ).parse();
-                    final String parsed = new XMLDocument(
-                        new Xembler(
-                            new Directives().xpath("/program").attr(
-                                "source",
-                                source.toAbsolutePath()
-                            )
-                        ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
-                    ).toString();
-                    Logger.debug(
-                        this,
-                        "Parsed program %s:\n %s",
-                        name,
-                        parsed
-                    );
-                    return parsed;
-                }
-            );
-        } catch (final ParsingException ex) {
-            if (this.failOnError) {
-                throw new IllegalArgumentException(
-                    String.format("Failed to parse %s", source),
-                    ex
+        footprint.save(
+            name,
+            "xmir",
+            () -> {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                new Syntax(
+                    name,
+                    new InputOf(source),
+                    new OutputTo(baos)
+                ).parse();
+                final String parsed = new XMLDocument(
+                    new Xembler(
+                        new Directives().xpath("/program").attr(
+                            "source",
+                            source.toAbsolutePath()
+                        )
+                    ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                ).toString();
+                Logger.debug(
+                    this,
+                    "Parsed program %s:\n %s",
+                    name,
+                    parsed
+                );
+                return parsed;
+            }
+        );
+        final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
+        final List<XML> errors = xmir.nodes("/program/errors/error");
+        if (!errors.isEmpty()) {
+            for (final XML error : errors) {
+                Logger.error(
+                    this,
+                    "Failed to parse '%s:%s': %s (just logging, because of failOnError=false)",
+                    source, error.xpath("@line").get(0), error.xpath("text()").get(0)
                 );
             }
-            Logger.warn(
-                this, "Parsing was skipped due to failOnError=false. In file %s with error: %s",
-                source,
-                ex.getMessage()
-            );
+            if (this.failOnError) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Failed to parse %s (%d parsing errors)",
+                        source, errors.size()
+                    )
+                );
+            }
             return;
         }
         final Path target = new Place(name).make(

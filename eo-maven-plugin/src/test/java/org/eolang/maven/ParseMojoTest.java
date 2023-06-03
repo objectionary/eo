@@ -115,6 +115,7 @@ final class ParseMojoTest {
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
                     .withProgram("something < is wrong here")
+                    .with("failOnError", true)
                     .execute(ParseMojo.class)
             ).getCause().getCause().getMessage(),
             Matchers.containsString("Failed to parse")
@@ -129,10 +130,8 @@ final class ParseMojoTest {
                 .with("failOnError", false)
                 .execute(new FakeMaven.Parse())
                 .result(),
-            Matchers.not(
-                Matchers.hasKey(
-                    String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
-                )
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
             )
         );
     }
@@ -191,7 +190,6 @@ final class ParseMojoTest {
      */
     @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)
     private static final class InfiniteMojo extends SafeMojo {
-
         @Override
         public void exec() {
             try {

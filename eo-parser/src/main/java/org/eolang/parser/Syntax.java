@@ -115,6 +115,10 @@ public final class Syntax {
     /**
      * Compile it to XML and save.
      *
+     * <p>No exception will be thrown if the syntax is invalid. In any case, XMIR will
+     * be generated and saved. Read it in order to find the errors,
+     * at <tt>/program/errors</tt> XPath.</p>
+     *
      * @throws IOException If fails
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
