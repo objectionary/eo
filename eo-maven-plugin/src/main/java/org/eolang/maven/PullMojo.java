@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -36,7 +35,6 @@ import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
@@ -118,7 +116,7 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     new ChNarrow(hash),
                     this.cache,
-                    PullMojo.remote(hash)
+                    new OyIndexed(new OyRemote(hash))
                 ),
                 this.forceUpdate()
             );
@@ -132,23 +130,6 @@ public final class PullMojo extends SafeMojo {
             this, "%d program(s) pulled from %s",
             tojos.size(), this.objectionary
         );
-    }
-
-    /**
-     * Create remote repo.
-     *
-     * @param hash Full Git hash
-     * @return Objectionary
-     */
-    private static Objectionary remote(final CommitHash hash) {
-        Objectionary obj;
-        try {
-            InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyIndexed(new OyRemote(hash));
-        } catch (final IOException ex) {
-            obj = new OyEmpty();
-        }
-        return obj;
     }
 
     /**
