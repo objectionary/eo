@@ -75,7 +75,7 @@ public final class OyRemote implements Objectionary {
             input -> {
                 throw new IOException(
                     String.format(
-                        "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home. This means that you either mispelled the name of it or simply refer to your own local object somewhere in your code as if it was an object of org.eolang package. Check the sources and make sure you always use +alias meta when you refer to an object outside of org.eolang, even if this object belongs to your package.",
+                        "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home. This means that you either misspelled the name of it or simply referred to your own local object somewhere in your code as if it was an object of 'org.eolang' package. Check the sources and make sure you always use +alias meta when you refer to an object outside of 'org.eolang', even if this object belongs to your package.",
                         name
                     )
                 );
@@ -92,20 +92,23 @@ public final class OyRemote implements Objectionary {
 
     /**
      * Objectionary URL template.
-     * Assumes two placeholders in terms of
+     *
+     * <p>Assumes two placeholders in terms of
      * {@link String#format(String, Object...)}: 1st for version hash,
-     * 2nd for program name.
-     * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+     * 2nd for program name, for
+     * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">example</a>.</p>
      *
      * @since 1.0
      */
     public static final class UrlOy {
 
         /**
-         * URL template. Expects two placeholders in terms of
+         * URL template.
+         *
+         * <p>Expects two placeholders in terms of
          * {@link String#format(String, Object...)}: 1st for hash,
-         * 2nd for program name.
-         * <br>Example: "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo"
+         * 2nd for program name, for
+         * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">example</a>.</p>
          */
         private final String template;
 
