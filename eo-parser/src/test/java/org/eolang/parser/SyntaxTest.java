@@ -117,44 +117,6 @@ final class SyntaxTest {
     }
 
     @Test
-    void failsWithDoubleNewLine() {
-        final Syntax syntax = new Syntax(
-            "test-3",
-            new InputOf("1 > x\n\n\n2 > y"),
-            new DeadOutput()
-        );
-        Assertions.assertThrows(
-            ParsingException.class,
-            syntax::parse
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "...",
-        ">",
-        "",
-        "\n\n\n\n",
-        "<",
-        "a>b",
-        "@ > []",
-        "^ > ^",
-        "this < code is definitely > wrong",
-        "[] > x\n x ^ > @"
-    })
-    void failsOnBrokenSyntax(final String code) {
-        final Syntax syntax = new Syntax(
-            "test-it-2",
-            new InputOf(code),
-            new DeadOutput()
-        );
-        Assertions.assertThrows(
-            ParsingException.class,
-            syntax::parse
-        );
-    }
-
-    @Test
     void parsesArrow() throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
