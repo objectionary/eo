@@ -44,7 +44,7 @@ import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 
 /**
- * Pull EO XML files from Objectionary and parse them into XML.
+ * Pull EO files from Objectionary.
  *
  * @since 0.1
  */
@@ -118,7 +118,7 @@ public final class PullMojo extends SafeMojo {
                     this.cache,
                     new OyIndexed(new OyRemote(hash))
                 ),
-                this.forceUpdate()
+                this.session.getRequest().isUpdateSnapshots()
             );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
@@ -160,15 +160,6 @@ public final class PullMojo extends SafeMojo {
             );
         }
         return src;
-    }
-
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
     }
 
 }

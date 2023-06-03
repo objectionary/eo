@@ -35,8 +35,9 @@ import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
 /**
- * The objects index that contains all available eo objects.
- * <a href="https://github.com/objectionary/home/blob/gh-pages/objectionary.lst">Example</a>
+ * The objects index that contains all available EO objects.
+ *
+ * @see <a href="https://github.com/objectionary/home/blob/gh-pages/objectionary.lst">Example</a>
  * @since 0.29
  */
 final class ObjectsIndex {
@@ -80,6 +81,7 @@ final class ObjectsIndex {
 
     /**
      * Checks whether object index contains the object.
+     *
      * @param name Object name.
      * @return True if object index contains the object.
      * @throws Exception If something unexpected happened.
