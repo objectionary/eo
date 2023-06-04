@@ -179,7 +179,17 @@ public final class ParseMojo extends SafeMojo {
         );
         final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
         final List<XML> errors = xmir.nodes("/program/errors/error");
-        if (!errors.isEmpty()) {
+        if (errors.isEmpty()) {
+            final Path target = new Place(name).make(
+                this.targetDir.toPath().resolve(ParseMojo.DIR),
+                TranspileMojo.EXT
+            );
+            tojo.withXmir(target.toAbsolutePath());
+            Logger.debug(
+                this, "Parsed %s to %s",
+                new Rel(source), new Rel(target)
+            );
+        } else {
             for (final XML error : errors) {
                 Logger.error(
                     this,
@@ -195,16 +205,6 @@ public final class ParseMojo extends SafeMojo {
                     )
                 );
             }
-            return;
         }
-        final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR),
-            TranspileMojo.EXT
-        );
-        tojo.withXmir(target.toAbsolutePath());
-        Logger.debug(
-            this, "Parsed %s to %s",
-            new Rel(source), new Rel(target)
-        );
     }
 }
