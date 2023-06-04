@@ -121,7 +121,6 @@ public final class Syntax {
      * at <tt>/program/errors</tt> XPath.</p>
      *
      * @throws IOException If fails
-     * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     public void parse() throws IOException {
         final List<Text> lines = this.lines();
