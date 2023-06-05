@@ -53,7 +53,7 @@ xsls:
   - /org/eolang/maven/pre/varargs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
-# @todo #2110:90min Found more than one target of object at the line.
+# @todo #2122:90min Found more than one target of object at the line.
 #  The test below throws exception during the execution of the entire
 #  pipeline. The problem is in the synthetic-references.xsl transformation.
 #  The transformation adds new objects to the program, probably with incorrect
