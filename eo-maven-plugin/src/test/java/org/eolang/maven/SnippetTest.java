@@ -48,6 +48,7 @@ import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFake;
+import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -147,7 +148,7 @@ final class SnippetTest {
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("objectionary", SnippetTest.objectionary());
+            .with("objectionary", new OyFilesystem());
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
@@ -285,41 +286,6 @@ final class SnippetTest {
             result = String.format(relative, property, name);
         }
         return result;
-    }
-
-    /**
-     * Fake objectionary.
-     * @return Fake objectionary.
-     * @todo #1804:30min Introduce OyFilesystem instead of using OyFake.
-     *  The code below can be moved into separate class with the possible name OyFilesystem.
-     *  This class will upload eo sources from filesystem. By that change we will simplify
-     *  the SnippetTest itself and will be able to use OyFilesystem in some other cases.
-     */
-    private static Objectionary objectionary() {
-        final Path home = Paths.get(
-            System.getProperty(
-                "runtime.path",
-                Paths.get("").toAbsolutePath().resolve("eo-runtime").toString()
-            )
-        );
-        return new OyFake(
-            name -> new InputOf(
-                home.resolve(
-                    String.format(
-                        "src/main/eo/%s.eo",
-                        name.replace(".", "/")
-                    )
-                )
-            ),
-            name -> Files.exists(
-                home.resolve(
-                    String.format(
-                        "src/main/eo/%s.eo",
-                        name.replace(".", "/")
-                    )
-                )
-            )
-        );
     }
 
     /**
