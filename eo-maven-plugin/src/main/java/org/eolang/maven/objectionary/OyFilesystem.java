@@ -34,13 +34,16 @@ import org.cactoos.io.InputOf;
  * Objectionary stored locally in the filesystem.
  * The aim of this class is to download object sources directly from the filesystem, for example,
  * from the project itself. It is useful for testing purposes.
+ * The difference with {@link OyHome} is that OyHome downloads object sources from the shared cash
+ * folder, and OyFilesystemSources downloads object sources from the particular project folder -
+ * from the source code of the project itself.
  *
  * @since 0.30
  * @todo #2125:30min Add unit tests for OyFilesystemSources. The tests should check that
- *  OyFilesystemSources can get an object from the filesystem and that it can check if an object
+ *  OyFilesystem can get an object from the filesystem and that it can check if an object
  *  exists in the filesystem.
  */
-public final class OyFilesystemSources implements Objectionary {
+public final class OyFilesystem implements Objectionary {
 
     /**
      * Root where to look for object sources.
@@ -50,15 +53,15 @@ public final class OyFilesystemSources implements Objectionary {
     /**
      * Constructor.
      */
-    public OyFilesystemSources() {
-        this(OyFilesystemSources.defaultHome());
+    public OyFilesystem() {
+        this(OyFilesystem.defaultHome());
     }
 
     /**
      * Constructor.
      * @param root Root where to look for object sources.
      */
-    private OyFilesystemSources(final Path root) {
+    private OyFilesystem(final Path root) {
         this.home = root;
     }
 

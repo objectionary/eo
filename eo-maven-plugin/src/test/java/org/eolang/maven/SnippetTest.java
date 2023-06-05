@@ -45,7 +45,7 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.objectionary.OyFilesystemSources;
+import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -145,7 +145,7 @@ final class SnippetTest {
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("objectionary", new OyFilesystemSources());
+            .with("objectionary", new OyFilesystem());
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
