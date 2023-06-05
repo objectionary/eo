@@ -27,7 +27,10 @@
  */
 package EOorg.EOeolang.EOio;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -62,6 +65,13 @@ public class EOstdout extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
+                    System.setOut(
+                        new PrintStream(
+                            new FileOutputStream(FileDescriptor.out),
+                            true,
+                            StandardCharsets.UTF_8
+                        )
+                    );
                     EOstdout.OUT.print(
                         new Param(rho, "text").strong(String.class)
                     );
