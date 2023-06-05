@@ -64,6 +64,12 @@ SOFTWARE.
         <xsl:attribute name="name">
           <xsl:text>@</xsl:text>
         </xsl:attribute>
+        <xsl:attribute name="line">
+          <xsl:value-of select="@line"/>
+        </xsl:attribute>
+        <xsl:attribute name="pos">
+          <xsl:value-of select="@pos"/>
+        </xsl:attribute>
         <xsl:apply-templates select="child::o[not(@alias) or not(contains(@alias, $curr))]"/>
       </xsl:element>
     </xsl:element>

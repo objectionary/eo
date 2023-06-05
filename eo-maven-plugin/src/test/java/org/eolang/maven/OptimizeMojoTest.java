@@ -46,6 +46,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -61,8 +62,14 @@ final class OptimizeMojoTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
     void checksPacks(final String pack) throws Exception {
+        final CheckPack check = new CheckPack(pack);
+        if (check.skip()) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
         MatcherAssert.assertThat(
-            new CheckPack(pack).failures(),
+            check.failures(),
             Matchers.empty()
         );
     }
