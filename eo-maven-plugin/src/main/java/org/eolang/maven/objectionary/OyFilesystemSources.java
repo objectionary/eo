@@ -36,6 +36,9 @@ import org.cactoos.io.InputOf;
  * from the project itself. It is useful for testing purposes.
  *
  * @since 0.30
+ * @todo #2125:30min Add unit tests for OyFilesystemSources. The tests should check that
+ *  OyFilesystemSources can get an object from the filesystem and that it can check if an object
+ *  exists in the filesystem.
  */
 public final class OyFilesystemSources implements Objectionary {
 
