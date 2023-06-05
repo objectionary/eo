@@ -40,21 +40,17 @@ import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
-import org.cactoos.text.IsEmpty;
-import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -89,15 +85,9 @@ final class SnippetTest {
     /**
      * Runs and checks of eo snippets.
      *
-     * @todo #1723:90m Enable runsAllSpinners test. This test disabled because it requires
-     *  foreign eo objects from the internet. We need to find a way to mock them or to put into
-     *  eo-runtime.jar. You can read more about the problem
-     *  <a href="https://github.com/objectionary/eo/issues/1724">here</a>. Also it's important to
-     *  remove bytes-as-array.eo and list.eo from the test resources.
      * @param yml Yaml test case.
      * @throws Exception If fails
      */
-    @Disabled
     @ParameterizedTest
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
@@ -300,6 +290,10 @@ final class SnippetTest {
     /**
      * Fake objectionary.
      * @return Fake objectionary.
+     * @todo #1804:30min Introduce OyFilesystem instead of using OyFake.
+     *  The code below can be moved into separate class with the possible name OyFilesystem.
+     *  This class will upload eo sources from filesystem. By that change we will simplify
+     *  the SnippetTest itself and will be able to use OyFilesystem in some other cases.
      */
     private static Objectionary objectionary() {
         final Path home = Paths.get(
@@ -309,46 +303,22 @@ final class SnippetTest {
             )
         );
         return new OyFake(
-            name -> {
-                final Input res;
-                if (name.contains("collections")) {
-                    res = new ResourceOf(
-                        String.format("%s.eo", name.replace(".", "/"))
-                    );
-                } else {
-                    res = new InputOf(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            },
-            name -> {
-                final boolean res;
-                if (name.contains("collections")) {
-                    res = !new IsEmpty(
-                        new TextOf(
-                            new ResourceOf(
-                                String.format("%s.eo", name.replace(".", "/"))
-                            )
-                        )
-                    ).value();
-                } else {
-                    res = Files.exists(
-                        home.resolve(
-                            String.format(
-                                "src/main/eo/%s.eo",
-                                name.replace(".", "/")
-                            )
-                        )
-                    );
-                }
-                return res;
-            }
+            name -> new InputOf(
+                home.resolve(
+                    String.format(
+                        "src/main/eo/%s.eo",
+                        name.replace(".", "/")
+                    )
+                )
+            ),
+            name -> Files.exists(
+                home.resolve(
+                    String.format(
+                        "src/main/eo/%s.eo",
+                        name.replace(".", "/")
+                    )
+                )
+            )
         );
     }
 
