@@ -28,7 +28,6 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -46,9 +45,7 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyFake;
-import org.eolang.maven.objectionary.OyFilesystem;
+import org.eolang.maven.objectionary.OyFilesystemSources;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -148,7 +145,7 @@ final class SnippetTest {
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("objectionary", new OyFilesystem());
+            .with("objectionary", new OyFilesystemSources());
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
