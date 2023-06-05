@@ -38,7 +38,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -46,6 +45,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.eolang.maven.rust_project.Names;
 import org.eolang.maven.rust_project.Project;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
@@ -103,21 +103,31 @@ public final class BinarizeParseMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
+        final Names names = new Names(targetDir.toPath());
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
             final XML input = new XMLDocument(file);
             final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
             for (final XML node: nodes) {
+                final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
+                final List<String> dependencies =
+                    node.xpath("./dependencies/dependency/@name")
+                    .stream()
+                    .map(BinarizeParseMojo::unhex)
+                    .collect(Collectors.toList());
+                final String function = names.name(
+                    node.xpath("@code_loc").get(0)
+                );
                 final String filename = String.format(
                     "%s%s",
-                    BinarizeParseMojo.name(node.xpath("@loc").get(0)),
+                    function,
                     ".rs"
                 );
                 final Path target = BinarizeMojo.DIR
                     .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
                 new Home(this.targetDir.toPath()).save(
-                    BinarizeParseMojo.unhex(node.xpath("@code").get(0)),
+                    code,
                     target
                 );
                 Logger.info(
@@ -127,16 +137,14 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 project.add(
-                    name(node.xpath("@loc").get(0)),
-                    unhex(node.xpath("@code").get(0)),
-                    node.xpath("./dependencies/dependency/@name")
-                        .stream()
-                        .map(BinarizeParseMojo::unhex)
-                        .collect(Collectors.toList())
+                    function,
+                    code,
+                    dependencies
                 );
             }
         }
         project.save();
+        names.save();
     }
 
     /**
@@ -180,30 +188,6 @@ public final class BinarizeParseMojo extends SafeMojo {
             );
         }
         return result;
-    }
-
-    /**
-     * Uniquely converts the loc into the name for jni function.
-     * @param loc Location attribute of the rust insert.
-     * @return Name for function.
-     */
-    private static String name(final String loc) {
-        final String prefix = "f";
-        final int word = 4;
-        final int capacity = prefix.length() + loc.length() + word * loc.length();
-        final StringBuilder out = new StringBuilder(
-            capacity
-        );
-        out.append(prefix).append(loc.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "o"));
-        for (final char chr: loc.toCharArray()) {
-            out.append(
-                String.format(
-                    "%04x",
-                    (int) chr
-                )
-            );
-        }
-        return out.toString();
     }
 
 }

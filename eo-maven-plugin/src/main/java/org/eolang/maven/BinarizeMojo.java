@@ -23,18 +23,22 @@
  */
 package org.eolang.maven;
 
-import com.google.common.io.CharStreams;
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseProcess;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.commons.codec.Charsets;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.io.InputOf;
+import org.cactoos.io.OutputTo;
+import org.cactoos.io.TeeInput;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.rust_project.BuildFailureException;
 
 /**
@@ -90,15 +94,17 @@ public final class BinarizeMojo extends SafeMojo {
         }
         if (building.exitValue() != 0) {
             Logger.error(this, "There was an error in compilation");
-            Logger.error(
-                this,
-                CharStreams.toString(
-                    new InputStreamReader(
-                        building.getErrorStream(),
-                        Charsets.UTF_8
+            final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+            try (VerboseProcess process = new VerboseProcess(building)) {
+                new Unchecked<>(
+                    new LengthOf(
+                        new TeeInput(
+                            new InputOf(process.stdoutQuietly()),
+                            new OutputTo(stdout)
+                        )
                     )
-                )
-            );
+                ).value();
+            }
             throw new BuildFailureException(
                 String.format(
                     "Failed to build cargo project with dest = %s",

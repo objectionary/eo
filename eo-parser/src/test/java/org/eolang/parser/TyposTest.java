@@ -23,6 +23,8 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import org.cactoos.io.InputOf;
@@ -30,7 +32,6 @@ import org.cactoos.io.OutputTo;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -46,19 +47,18 @@ final class TyposTest {
     void checksPacks(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
-        try {
-            new Syntax(
-                "typo",
-                new InputOf(String.format("%s\n", map.get("eo"))),
-                new OutputTo(new ByteArrayOutputStream())
-            ).parse();
-            Assertions.fail("Exception not thrown :(");
-        } catch (final ParsingException ex) {
-            MatcherAssert.assertThat(
-                ex.line(),
-                Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
-            );
-        }
+        final ByteArrayOutputStream xmir = new ByteArrayOutputStream();
+        new Syntax(
+            "typo",
+            new InputOf(String.format("%s\n", map.get("eo"))),
+            new OutputTo(xmir)
+        ).parse();
+        final XML xml = new XMLDocument(xmir.toByteArray());
+        MatcherAssert.assertThat(
+            xml.toString(),
+            Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
+            Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
+        );
     }
 
 }

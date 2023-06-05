@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +32,7 @@ import java.net.URLConnection;
  *
  * @since 1.0
  */
-public class Online {
+class Online {
     /**
      * URL to validate.
      */
@@ -42,7 +42,7 @@ public class Online {
      * Ctor.
      * @param url URL to check availability for.
      */
-    public Online(final String url) {
+    Online(final String url) {
         this.url = url;
     }
 
@@ -50,7 +50,7 @@ public class Online {
      * Ctor.
      * Check against default url.
      */
-    public Online() {
+    Online() {
         this("https://www.objectionary.com");
     }
 
@@ -59,7 +59,7 @@ public class Online {
      * @return True if we are online and false otherwise.
      * @throws IOException In case of check failure
      */
-    public boolean value() throws IOException {
+    boolean value() throws IOException {
         boolean online = true;
         try {
             final URLConnection conn = new URL(this.url).openConnection();

@@ -41,9 +41,6 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
- * @todo #1326:90m Name functions according to insert's
- *  attributes. Now they are named by location. It is
- *  better to call it using hash of code and parameters.
  * @todo #1326:90min Generate this file at compile phase
  *  instead of keep it here. It allows to call any
  *  rust insert depending on its attributes.
@@ -94,16 +91,8 @@ public class EOrust extends PhDefault {
             new AtComposite(
                 this,
                 rho ->
-                    new Data.ToPhi(
-                        (long) fooorgoeolangocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007200650061007400650073002d006f0062006a006500630074002e0072()
-                    )
+                    new Data.ToPhi(1234L)
             )
         );
     }
-
-    /**
-     * Hardcoded rust insert.
-     * @return Value that rust function returns.
-     */
-    private static native int fooorgoeolangocreatesoobjector03a6002e006f00720067002e0065006f006c0061006e0067002e0063007200650061007400650073002d006f0062006a006500630074002e0072();
 }
