@@ -324,7 +324,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        // This method is created by ANTLR and can't be removed
+        this.objects.closeAlias();
     }
 
     @Override
@@ -500,13 +500,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         // This method is created by ANTLR and can't be removed
     }
 
+    // We don't do anything here. We let the error nodes stay in the
+    // tree. Later, the syntax analysis will hit them and raise
+    // ParsingException, with proper information about them. Here we
+    // don't do anything, to not pollute the error reporting with
+    // duplicated.
     @Override
     public void visitErrorNode(final ErrorNode node) {
-        throw new ParsingException(
-            node.getText(),
-            new IllegalArgumentException(),
-            0
-        );
+        // This method is created by ANTLR and can't be removed
     }
 
     @Override

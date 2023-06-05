@@ -45,7 +45,6 @@ import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -100,12 +99,6 @@ public final class ProbeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (!new Online().value()) {
-            Logger.warn(
-                this, "We are offline: skipping probes"
-            );
-            return;
-        }
         final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );

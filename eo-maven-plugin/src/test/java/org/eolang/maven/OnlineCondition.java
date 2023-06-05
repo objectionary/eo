@@ -25,7 +25,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import org.eolang.maven.util.Online;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;

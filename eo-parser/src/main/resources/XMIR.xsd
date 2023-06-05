@@ -59,7 +59,15 @@ SOFTWARE.
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="line" use="required"/>
-                    <xs:attribute name="severity" use="required"/>
+                    <xs:attribute name="severity" use="required">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="critical"/>
+                          <xs:enumeration value="error"/>
+                          <xs:enumeration value="warning"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:attribute>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>

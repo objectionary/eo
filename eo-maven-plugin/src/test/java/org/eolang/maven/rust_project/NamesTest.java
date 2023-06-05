@@ -21,41 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.rust_project;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link SafeMojo}.
+ * Test case for {@link Names}.
  *
  * @since 0.1
  */
-final class SafeMojoTest {
-
+final class NamesTest {
     @Test
-    @CaptureLogs
-    void logsStackTrace(final Logs out, @TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("something < is definitely wrong here")
-                .with("failOnError", true)
-                .execute(ParseMojo.class)
+    void solvesSameHashes(@TempDir final Path temp) throws IOException {
+        final Names dispatcher = new Names(temp);
+        final String one = "AaAaAa";
+        final String two = "AaAaBB";
+        MatcherAssert.assertThat(
+            one.hashCode(),
+            Matchers.equalTo(two.hashCode())
         );
         MatcherAssert.assertThat(
-            String.join("\n", out.captured()),
-            Matchers.allOf(
-                Matchers.containsString("no viable alternative at input"),
-                Matchers.containsString("Failed to parse")
+            dispatcher.name(one),
+            Matchers.not(
+                dispatcher.name(two)
             )
         );
     }
 
+    @Test
+    void recoversNames(@TempDir final Path temp) throws IOException {
+        final List<String> locations = IntStream.range(0, 1000)
+            .mapToObj(String::valueOf)
+            .collect(Collectors.toList());
+        final Names before = new Names(temp);
+        final Map<String, String> functions = locations.stream().collect(
+            Collectors.toMap(loc -> loc, before::name)
+        );
+        MatcherAssert.assertThat(
+            locations.size(),
+            Matchers.equalTo(functions.size())
+        );
+        before.save();
+        final Names after = new Names(temp);
+        MatcherAssert.assertThat(
+            before,
+            Matchers.equalTo(after)
+        );
+    }
 }

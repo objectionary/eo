@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -39,6 +41,7 @@ import org.cactoos.Output;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.TeeInput;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
@@ -46,12 +49,15 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.xembly.Directive;
+import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
  * Syntax parser, from EO to XMIR, using ANTLR4.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
 public final class Syntax {
 
@@ -110,41 +116,30 @@ public final class Syntax {
     /**
      * Compile it to XML and save.
      *
+     * <p>No exception will be thrown if the syntax is invalid. In any case, XMIR will
+     * be generated and saved. Read it in order to find the errors,
+     * at <tt>/program/errors</tt> XPath.</p>
+     *
      * @throws IOException If fails
      */
     public void parse() throws IOException {
         final List<Text> lines = this.lines();
-        final ANTLRErrorListener errors = new BaseErrorListener() {
-            // @checkstyle ParameterNumberCheck (10 lines)
-            @Override
-            public void syntaxError(final Recognizer<?, ?> recognizer,
-                final Object symbol, final int line,
-                final int position, final String msg,
-                final RecognitionException error
-            ) {
-                throw new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg,
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        lines.size() < line ? "EOF" : lines.get(line - 1)
-                    ),
-                    error,
-                    line
-                );
-            }
-        };
+        final ParsingErrors spy = new ParsingErrors(lines);
         final ProgramLexer lexer = new EoLexer(this.normalize());
         lexer.removeErrorListeners();
-        lexer.addErrorListener(errors);
+        lexer.addErrorListener(spy);
         final ProgramParser parser = new ProgramParser(
             new CommonTokenStream(lexer)
         );
         parser.removeErrorListeners();
-        parser.addErrorListener(errors);
+        parser.addErrorListener(spy);
         final XeListener xel = new XeListener(this.name, this.redundancy);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = new XMLDocument(new Xembler(xel).domQuietly());
+        final XML dom = new XMLDocument(
+            new Xembler(
+                new Directives(xel).append(spy)
+            ).domQuietly()
+        );
         new Schema(dom).check();
         new Unchecked<>(
             new LengthOf(
@@ -154,7 +149,14 @@ public final class Syntax {
                 )
             )
         ).value();
-        Logger.debug(this, "Input of %d EO lines compiled", lines.size());
+        if (spy.size() == 0) {
+            Logger.debug(this, "Input of %d EO lines compiled, no errors", lines.size());
+        } else {
+            Logger.debug(
+                this, "Input of %d EO lines failed to compile (%d errors)",
+                lines.size(), spy.size()
+            );
+        }
     }
 
     /**
@@ -176,6 +178,79 @@ public final class Syntax {
      */
     private List<Text> lines() {
         return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
+    }
+
+    /**
+     * Accumulates all parsing errors.
+     *
+     * @since 0.30.0
+     */
+    private static final class ParsingErrors extends BaseErrorListener
+        implements ANTLRErrorListener, Iterable<Directive> {
+        /**
+         * Errors accumulated.
+         */
+        private final List<ParsingException> errors;
+
+        /**
+         * The source.
+         */
+        private final List<Text> lines;
+
+        /**
+         * Ctor.
+         * @param src The source in lines
+         */
+        private ParsingErrors(final List<Text> src) {
+            this.errors = new LinkedList<>();
+            this.lines = src;
+        }
+
+        // @checkstyle ParameterNumberCheck (10 lines)
+        @Override
+        public void syntaxError(final Recognizer<?, ?> recognizer,
+            final Object symbol, final int line,
+            final int position, final String msg,
+            final RecognitionException error
+        ) {
+            this.errors.add(
+                new ParsingException(
+                    String.format(
+                        "[%d:%d] %s: \"%s\"",
+                        line, position, msg,
+                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
+                        this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
+                    ),
+                    error,
+                    line
+                )
+            );
+        }
+
+        @Override
+        public Iterator<Directive> iterator() {
+            return new org.cactoos.iterable.Joined<>(
+                new Mapped<Iterable<Directive>>(
+                    error -> new Directives()
+                        .xpath("/program/errors")
+                        .add("error")
+                        .attr("line", error.line())
+                        .attr("severity", "critical")
+                        .set(error.getMessage())
+                        .up(),
+                    this.errors
+                )
+            ).iterator();
+        }
+
+        /**
+         * How many errors?
+         * @return Count of errors accumulated
+         */
+        public int size() {
+            return this.errors.size();
+        }
+
     }
 
 }

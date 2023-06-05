@@ -36,7 +36,7 @@ SOFTWARE.
         <xsl:variable name="p" select="ancestor::*[o[@parent and @original-name=$o/@base]][1]"/>
         <xsl:choose>
           <xsl:when test="$p">
-            <xsl:variable name="x" select="$p/o[@original-name=$o/@base]"/>
+            <xsl:variable name="x" select="$p/o[@original-name=$o/@base][1]"/>
             <xsl:value-of select="$x/@name"/>
           </xsl:when>
           <xsl:otherwise>

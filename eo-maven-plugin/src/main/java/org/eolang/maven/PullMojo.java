@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -36,18 +35,16 @@ import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyEmpty;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Online;
 import org.eolang.maven.util.Rel;
 
 /**
- * Pull EO XML files from Objectionary and parse them into XML.
+ * Pull EO files from Objectionary.
  *
  * @since 0.1
  */
@@ -107,12 +104,6 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (!new Online().value()) {
-            Logger.warn(
-                this, "There is not internet connection. Pull skipped"
-            );
-            return;
-        }
         final CommitHash hash = new ChCompound(
             this.offlineHashFile, this.offlineHash, this.tag
         );
@@ -125,9 +116,9 @@ public final class PullMojo extends SafeMojo {
                 new OyCaching(
                     new ChNarrow(hash),
                     this.cache,
-                    PullMojo.remote(hash)
+                    new OyIndexed(new OyRemote(hash))
                 ),
-                this.forceUpdate()
+                this.session.getRequest().isUpdateSnapshots()
             );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
@@ -139,23 +130,6 @@ public final class PullMojo extends SafeMojo {
             this, "%d program(s) pulled from %s",
             tojos.size(), this.objectionary
         );
-    }
-
-    /**
-     * Create remote repo.
-     *
-     * @param hash Full Git hash
-     * @return Objectionary
-     */
-    private static Objectionary remote(final CommitHash hash) {
-        Objectionary obj;
-        try {
-            InetAddress.getByName("home.objectionary.com").isReachable(1000);
-            obj = new OyIndexed(new OyRemote(hash));
-        } catch (final IOException ex) {
-            obj = new OyEmpty();
-        }
-        return obj;
     }
 
     /**
@@ -186,15 +160,6 @@ public final class PullMojo extends SafeMojo {
             );
         }
         return src;
-    }
-
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
     }
 
 }

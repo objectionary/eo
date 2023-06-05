@@ -1,9 +1,8 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/synthetic-references.xsl
-skip: true
 tests:
-  - //o[@base='.foo' and count(o[@base='.bar'])=2]
+  - //o[@base='.foo' and count(o[@abstract]/o[@base='.bar'])=2]
   - //o[@base='.bar' and count(o)=2]
 eo: |
   [] > aliases

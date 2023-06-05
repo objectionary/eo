@@ -37,8 +37,8 @@ SOFTWARE.
               <xsl:attribute name="code">
                 <xsl:value-of select="text()"/>
               </xsl:attribute>
-              <xsl:attribute name="loc">
-                <xsl:value-of select="../attribute(loc)"/>
+              <xsl:attribute name="code_loc">
+                <xsl:value-of select="attribute(loc)"/>
               </xsl:attribute>
               <dependencies>
                 <xsl:for-each select="following-sibling::o/o">
