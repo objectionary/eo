@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
