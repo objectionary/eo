@@ -24,11 +24,19 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import org.cactoos.io.InputOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link OyFilesystem}.
@@ -37,18 +45,36 @@ import org.junit.jupiter.api.Test;
  */
 class OyFilesystemTest {
 
+    /**
+     * Object content.
+     */
+    private static final String OBJECT_CONTENT = "Object Content";
 
     @Test
-    void containsObject() throws IOException {
-        final OyFilesystem objectionary = new OyFilesystem();
+    void containsObject(@TempDir Path home) throws IOException {
+        final OyFilesystem objectionary = new OyFilesystem(home);
+        final String object = "org.eolang.found";
+        OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
-            objectionary.contains("org.eolang.found"),
+            objectionary.contains(object),
             Matchers.is(true)
         );
     }
 
     @Test
-    void doesNotContainObject() throws IOException {
+    void containsObjectWithDefaultHome(@TempDir Path home) throws IOException {
+        System.setProperty(OyFilesystem.HOME_PROPERTY, home.toString());
+        final OyFilesystem objectionary = new OyFilesystem();
+        final String object = "org.eolang.default-found";
+        OyFilesystemTest.save(object, home);
+        MatcherAssert.assertThat(
+            objectionary.contains(object),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotContainObject() {
         final OyFilesystem objectionary = new OyFilesystem();
         final String looking = "org.eolang.not-found";
         MatcherAssert.assertThat(
@@ -62,25 +88,13 @@ class OyFilesystemTest {
     }
 
     @Test
-    void throwsExceptionDuringCheckingForObject() {
-        final OyFilesystem objectionary = new OyFilesystem();
-        final String looking = "org.eolang.exception";
-        Assertions.assertThrows(
-            IOException.class,
-            () -> objectionary.contains(looking),
-            String.format(
-                "The looking for object %s should thrown an exception, but noting happened",
-                looking
-            )
-        );
-    }
-
-    @Test
-    void getsObjectSuccessfully() throws IOException {
-        final OyFilesystem objectionary = new OyFilesystem();
+    void getsObjectSuccessfully(@TempDir Path home) throws IOException {
+        final OyFilesystem objectionary = new OyFilesystem(home);
+        final String object = "org.eolang.get";
+        OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
-            objectionary.get("org.eolang.get"),
-            Matchers.equalTo(new InputOf("get-content"))
+            new TextOf(objectionary.get(object)),
+            Matchers.equalTo(new TextOf(new InputOf(OyFilesystemTest.OBJECT_CONTENT)))
         );
     }
 
@@ -90,7 +104,7 @@ class OyFilesystemTest {
         final String absent = "org.eolang.absent";
         Assertions.assertThrows(
             IOException.class,
-            () -> objectionary.get(absent),
+            () -> new TextOf(objectionary.get(absent)).asString(),
             String.format(
                 "The getting of %s object should thrown an exception, but noting happened",
                 absent
@@ -98,4 +112,21 @@ class OyFilesystemTest {
         );
     }
 
+    /**
+     * Saves object to the home directory.
+     * @param object Object name
+     * @param home Home directory
+     * @throws IOException If some I/O problem occurs
+     */
+    private static void save(final String object, final Path home) throws IOException {
+        final Path name = Arrays.stream(object.split("\\."))
+            .map(Paths::get)
+            .reduce(home.resolve(OyFilesystem.SOURCES), Path::resolve);
+        Files.createDirectories(name.getParent());
+        Files.write(
+            name.resolveSibling(name.getFileName() + ".eo"),
+            OyFilesystemTest.OBJECT_CONTENT.getBytes(StandardCharsets.UTF_8),
+            StandardOpenOption.CREATE
+        );
+    }
 }

@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.objectionary;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,6 +45,16 @@ import org.cactoos.io.InputOf;
 public final class OyFilesystem implements Objectionary {
 
     /**
+     * Property name for the root where to look for object sources.
+     */
+    static final String HOME_PROPERTY = "runtime.path";
+
+    /**
+     * Default subfolder in the root where to look for object sources.
+     */
+    static final String SOURCES = "src/main/eo";
+
+    /**
      * Root where to look for object sources.
      */
     private final Path home;
@@ -61,17 +70,17 @@ public final class OyFilesystem implements Objectionary {
      * Constructor.
      * @param root Root where to look for object sources.
      */
-    private OyFilesystem(final Path root) {
+    OyFilesystem(final Path root) {
         this.home = root;
     }
 
     @Override
-    public Input get(final String name) throws IOException {
+    public Input get(final String name) {
         return new InputOf(this.object(name));
     }
 
     @Override
-    public boolean contains(final String name) throws IOException {
+    public boolean contains(final String name) {
         return Files.exists(this.object(name));
     }
 
@@ -81,12 +90,14 @@ public final class OyFilesystem implements Objectionary {
      * @return Path to the object.
      */
     private Path object(final String name) {
-        return this.home.resolve(
+        final Path resolve = this.home.resolve(
             String.format(
-                "src/main/eo/%s.eo",
+                "%s/%s.eo",
+                OyFilesystem.SOURCES,
                 name.replace(".", "/")
             )
         );
+        return resolve;
     }
 
     /**
@@ -96,7 +107,7 @@ public final class OyFilesystem implements Objectionary {
     private static Path defaultHome() {
         return Paths.get(
             System.getProperty(
-                "runtime.path",
+                OyFilesystem.HOME_PROPERTY,
                 Paths.get("")
                     .toAbsolutePath()
                     .resolve("eo-runtime")
