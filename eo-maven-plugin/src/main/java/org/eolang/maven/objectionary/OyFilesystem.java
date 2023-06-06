@@ -38,9 +38,6 @@ import org.cactoos.io.InputOf;
  * from the source code of the project itself.
  *
  * @since 0.30
- * @todo #2125:30min Add unit tests for OyFilesystemSources. The tests should check that
- *  OyFilesystem can get an object from the filesystem and that it can check if an object
- *  exists in the filesystem.
  */
 public final class OyFilesystem implements Objectionary {
 
@@ -90,14 +87,13 @@ public final class OyFilesystem implements Objectionary {
      * @return Path to the object.
      */
     private Path object(final String name) {
-        final Path resolve = this.home.resolve(
+        return this.home.resolve(
             String.format(
                 "%s/%s.eo",
                 OyFilesystem.SOURCES,
                 name.replace(".", "/")
             )
         );
-        return resolve;
     }
 
     /**

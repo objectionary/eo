@@ -51,7 +51,7 @@ class OyFilesystemTest {
     private static final String OBJECT_CONTENT = "Object Content";
 
     @Test
-    void containsObject(@TempDir Path home) throws IOException {
+    void containsObject(@TempDir final Path home) throws IOException {
         final OyFilesystem objectionary = new OyFilesystem(home);
         final String object = "org.eolang.found";
         OyFilesystemTest.save(object, home);
@@ -62,7 +62,7 @@ class OyFilesystemTest {
     }
 
     @Test
-    void containsObjectWithDefaultHome(@TempDir Path home) throws IOException {
+    void containsObjectWithDefaultHome(@TempDir final Path home) throws IOException {
         System.setProperty(OyFilesystem.HOME_PROPERTY, home.toString());
         final OyFilesystem objectionary = new OyFilesystem();
         final String object = "org.eolang.default-found";
@@ -88,7 +88,7 @@ class OyFilesystemTest {
     }
 
     @Test
-    void getsObjectSuccessfully(@TempDir Path home) throws IOException {
+    void getsObjectSuccessfully(@TempDir final Path home) throws IOException {
         final OyFilesystem objectionary = new OyFilesystem(home);
         final String object = "org.eolang.get";
         OyFilesystemTest.save(object, home);
@@ -124,7 +124,7 @@ class OyFilesystemTest {
             .reduce(home.resolve(OyFilesystem.SOURCES), Path::resolve);
         Files.createDirectories(name.getParent());
         Files.write(
-            name.resolveSibling(name.getFileName() + ".eo"),
+            name.resolveSibling(String.format("%s.%s", name.getFileName(), "eo")),
             OyFilesystemTest.OBJECT_CONTENT.getBytes(StandardCharsets.UTF_8),
             StandardOpenOption.CREATE
         );
