@@ -63,9 +63,8 @@ class OyFilesystemTest {
 
     @Test
     void containsObjectWithDefaultHome(@TempDir final Path home) throws IOException {
-        System.setProperty(OyFilesystem.HOME_PROPERTY, home.toString());
         final OyFilesystem objectionary = new OyFilesystem();
-        final String object = "org.eolang.default-found";
+        final String object = "org.eolang.ram";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
             objectionary.contains(object),

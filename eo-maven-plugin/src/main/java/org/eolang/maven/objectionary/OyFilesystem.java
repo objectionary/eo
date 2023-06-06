@@ -42,11 +42,6 @@ import org.cactoos.io.InputOf;
 public final class OyFilesystem implements Objectionary {
 
     /**
-     * Property name for the root where to look for object sources.
-     */
-    static final String HOME_PROPERTY = "runtime.path";
-
-    /**
      * Default subfolder in the root where to look for object sources.
      */
     static final String SOURCES = "src/main/eo";
@@ -103,7 +98,7 @@ public final class OyFilesystem implements Objectionary {
     private static Path defaultHome() {
         return Paths.get(
             System.getProperty(
-                OyFilesystem.HOME_PROPERTY,
+                "runtime.path",
                 Paths.get("")
                     .toAbsolutePath()
                     .resolve("eo-runtime")
