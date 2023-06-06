@@ -51,7 +51,6 @@ import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,7 +73,6 @@ import org.yaml.snakeyaml.Yaml;
  *  VerboseProcess) and remove it from MainTest.
  */
 @ExtendWith(OnlineCondition.class)
-@Disabled
 final class SnippetTest {
 
     /**
@@ -204,6 +202,8 @@ final class SnippetTest {
                     new ListOf<>(
                         SnippetTest.jdkExecutable("java"),
                         "-Dfile.encoding=utf-8",
+                        "-Dsun.stdout.encoding=\"UTF-8\"",
+                        "-Dsun.stderr.encoding=\"UTF-8\"",
                         "-cp",
                         SnippetTest.classpath(),
                         "org.eolang.Main"
