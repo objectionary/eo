@@ -11,7 +11,7 @@ jobs:
       - run: |
           SCRIPT="${GITHUB_WORKSPACE}/src/test/scrips/test-repetition.sh"
           # Make script runnable
-          chmod +x "${GITHUB_WORKSPACE}/src/test/scrips/test-repetition.sh"
+          chmod +x "${SCRIPT}"
           # Test eo-parser
           bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
           # Test eo-maven-plugin
