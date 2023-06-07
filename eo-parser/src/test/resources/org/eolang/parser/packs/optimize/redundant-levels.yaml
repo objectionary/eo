@@ -3,6 +3,7 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
 tests:
   - /program/errors[count(*)=0]
+  -
 skip: true
 # Currently the test converts the code from the snippet to:
 # ____
