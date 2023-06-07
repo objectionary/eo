@@ -3,12 +3,12 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
 tests:
   - /program/errors[count(*)=0]
-  # first
+  # 'first' object
   - //o[@name='first']
   - //o[@name='first']/o[@base='first$second' and @name='second']
   - //o[@name='first']/o[@base='first$second' and @name='second']/o[@base='arg']
   - //o[@name='first']/o[@base='first$second' and @name='second']/o[@base='arg']
-  # first$second
+  # 'first$second' object
   - //o[@name='first$second']
   - //o[@name='first$second']/o[@name='arg']
   - //o[@name='first$second']/o[@base='.method' and @name='a']

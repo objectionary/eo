@@ -3,7 +3,17 @@ xsls:
   - /org/eolang/parser/optimize/remove-levels.xsl
 tests:
   - /program/errors[count(*)=0]
-  -
+  # 'another' object
+  - //o[@name='another']
+  - //o[@name='another']/o[@base='eq.' and @name='@']
+  - //o[@name='another']/o[@base='eq.' and @name='@']/o[@base='another$t0$first' and @name='first']
+  - //o[@name='another']/o[@base='eq.' and @name='@']/o[@base='another$t0$second' and @name='second']
+  # 'another$t0$first' object
+  - //o[@name='another$t0$first' and count(o)=1]
+  - //o[@name='another$t0$first']/o[@base='1' and @name='@']
+  # 'another$t0$second' object
+  - //o[@name='another$t0$second' and count(o)=1]
+  - //o[@name='another$t0$second']/o[@base='2' and @name='@']
 skip: true
 # Currently the test converts the code from the snippet to:
 # ____
@@ -25,6 +35,7 @@ skip: true
 
 # @todo #2131:90min Remove redundant objects and levels.
 #  It's better to remove redundant objects from the result code snippet.
+#  They create some problems in the future transformations.
 #  When the transformation is fixed we can enable the test.
 #  The test should convert the code from the snippet to the next:
 # ____
@@ -38,6 +49,7 @@ skip: true
 #
 # [] > another$t0$second
 #   2 > @
+# ____
 
 eo: |
   [] > another
