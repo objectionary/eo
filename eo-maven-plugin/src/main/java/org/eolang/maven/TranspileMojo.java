@@ -229,20 +229,6 @@ public final class TranspileMojo extends SafeMojo {
         final Path target
     ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
-        final long removed = this.removeTranspiled(src);
-        if (removed > 0) {
-            Logger.debug(
-                this,
-                "Removed %d Java files for %s",
-                removed, new Rel(src)
-            );
-        } else {
-            Logger.debug(
-                this,
-                "No Java files removed for %s",
-                new Rel(src)
-            );
-        }
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
             TranspileMojo.TRAIN,
@@ -302,24 +288,5 @@ public final class TranspileMojo extends SafeMojo {
             result = java.getParent().resolve(filename);
         }
         return result;
-    }
-
-    /**
-     * Remove transpiled files per EO.
-     * @param src The eo path
-     * @return Count of removed files
-     * @todo #2046:30min Enable removing transpiled files.
-     *  We ignored that method by using .filter(tojo -> false) statement, because it created
-     *  some problems like the next one:
-     *  <a href="https://github.com/objectionary/eo/issues/2046">#2046</a>
-     *  We have to decide if we need to remove transpiled files or not.
-     */
-    private long removeTranspiled(final Path src) {
-        return this.scopedTojos()
-            .withSource(src).stream()
-            .filter(tojo -> false)
-            .map(ForeignTojo::optimized)
-            .mapToLong(this.transpiledTojos::remove)
-            .sum();
     }
 }
