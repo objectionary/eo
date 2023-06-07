@@ -196,11 +196,10 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             TranspileMojo.EXT
         );
-        final Path src = tojo.source();
         if (
             target.toFile().exists()
                 && target.toFile().lastModified() >= file.toFile().lastModified()
-                && target.toFile().lastModified() >= src.toFile().lastModified()
+                && target.toFile().lastModified() >= tojo.source().toFile().lastModified()
         ) {
             Logger.info(
                 this, "XMIR %s (%s) were already transpiled to %s",
@@ -208,7 +207,7 @@ public final class TranspileMojo extends SafeMojo {
             );
             saved = 0;
         } else {
-            final List<Path> paths = this.transpile(src, input, target);
+            final List<Path> paths = this.transpile(input, target);
             paths.forEach(p -> this.transpiledTojos.add(p, file));
             saved = paths.size();
         }
@@ -217,14 +216,12 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Transpile.
-     * @param src The .eo file
      * @param input The .xmir file
      * @param target The path to transpiled .xmir file
      * @return List of Paths to generated java file
      * @throws java.io.IOException If any issues with I/O
      */
     private List<Path> transpile(
-        final Path src,
         final XML input,
         final Path target
     ) throws IOException {
