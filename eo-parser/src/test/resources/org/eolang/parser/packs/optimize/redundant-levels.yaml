@@ -8,21 +8,18 @@ tests:
 #
 # [] > another
 #   eq. > @
-#     [] > another$t0$first
+#     another$t0$first > first
 #       second
-#     [] > another$t0$second
+#     another$t0$second > second
 #       first
 #
-# [] > another$t0$first
+# [second] > another$t0$first
 #   1 > @
-#   [] > second
 #
-# [] > another$t0$second
+# [first] > another$t0$second
 #   2 > @
-#   [] > first
-#
 # ____
-# Which actually looks strange.
+# Which actually looks strange
 
 eo: |
   [] > another

@@ -1,0 +1,19 @@
+xsls:
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+tests:
+  - /program/errors[count(*)=0]
+# Converts the code from the snippet to the next:
+# ____
+#
+# [arg] > first
+#   first$second > second
+#     arg
+#
+# [arg] > first$second
+#   arg.method > a
+# ____
+eo: |
+  [arg] > first
+    [] > second
+      arg.method > a
