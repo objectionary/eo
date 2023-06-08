@@ -61,7 +61,7 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
-    void checksPacks(final String pack) throws Exception {
+    void checksPacks(final String pack) throws IOException {
         final CheckPack check = new CheckPack(pack);
         if (check.skip()) {
             Assumptions.abort(
@@ -75,7 +75,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void skipsAlreadyOptimized(@TempDir final Path temp) throws Exception {
+    void skipsAlreadyOptimized(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Optimize());
@@ -101,13 +101,14 @@ final class OptimizeMojoTest {
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
         final long start = System.currentTimeMillis();
-        if (!tgt.toFile().setLastModified(start - TimeUnit.SECONDS.toMillis(10L))) {
+        final long old = start - TimeUnit.SECONDS.toMillis(10L);
+        if (!tgt.toFile().setLastModified(old)) {
             Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
         }
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
             tgt.toFile().lastModified(),
-            Matchers.greaterThan(start)
+            Matchers.greaterThan(old)
         );
     }
 
@@ -152,7 +153,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void savesOptimizedResultsToCache(@TempDir final Path temp) throws Exception {
+    void savesOptimizedResultsToCache(@TempDir final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
@@ -169,7 +170,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void optimizesSuccessfully(@TempDir final Path temp) throws Exception {
+    void optimizesSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withHelloWorld()
@@ -222,7 +223,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorFlag(@TempDir final Path temp) throws Exception {
+    void failsOnErrorFlag(@TempDir final Path temp) throws IOException {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram(
@@ -258,7 +259,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void stopsOnCritical(@TempDir final Path temp) throws Exception {
+    void stopsOnCritical(@TempDir final Path temp) throws IOException {
         MatcherAssert.assertThat(
             new XMLDocument(
                 new FakeMaven(temp)

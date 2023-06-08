@@ -110,7 +110,6 @@ public final class OptimizeMojo extends SafeMojo {
     private boolean failOnWarning;
 
     @Override
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public void exec() throws IOException {
         final Collection<ForeignTojo> sources = this.scopedTojos().withXmir();
         final Optimization common = this.optimization();
