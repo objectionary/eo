@@ -196,11 +196,10 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             TranspileMojo.EXT
         );
-        final Path src = tojo.source();
         if (
             target.toFile().exists()
                 && target.toFile().lastModified() >= file.toFile().lastModified()
-                && target.toFile().lastModified() >= src.toFile().lastModified()
+                && target.toFile().lastModified() >= tojo.source().toFile().lastModified()
         ) {
             Logger.info(
                 this, "XMIR %s (%s) were already transpiled to %s",
@@ -208,7 +207,7 @@ public final class TranspileMojo extends SafeMojo {
             );
             saved = 0;
         } else {
-            final List<Path> paths = this.transpile(src, input, target);
+            final List<Path> paths = this.transpile(input, target);
             paths.forEach(p -> this.transpiledTojos.add(p, file));
             saved = paths.size();
         }
@@ -217,32 +216,16 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Transpile.
-     * @param src The .eo file
      * @param input The .xmir file
      * @param target The path to transpiled .xmir file
      * @return List of Paths to generated java file
      * @throws java.io.IOException If any issues with I/O
      */
     private List<Path> transpile(
-        final Path src,
         final XML input,
         final Path target
     ) throws IOException {
         final String name = input.xpath("/program/@name").get(0);
-        final long removed = this.removeTranspiled(src);
-        if (removed > 0) {
-            Logger.debug(
-                this,
-                "Removed %d Java files for %s",
-                removed, new Rel(src)
-            );
-        } else {
-            Logger.debug(
-                this,
-                "No Java files removed for %s",
-                new Rel(src)
-            );
-        }
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
             TranspileMojo.TRAIN,
@@ -302,24 +285,5 @@ public final class TranspileMojo extends SafeMojo {
             result = java.getParent().resolve(filename);
         }
         return result;
-    }
-
-    /**
-     * Remove transpiled files per EO.
-     * @param src The eo path
-     * @return Count of removed files
-     * @todo #2046:30min Enable removing transpiled files.
-     *  We ignored that method by using .filter(tojo -> false) statement, because it created
-     *  some problems like the next one:
-     *  <a href="https://github.com/objectionary/eo/issues/2046">#2046</a>
-     *  We have to decide if we need to remove transpiled files or not.
-     */
-    private long removeTranspiled(final Path src) {
-        return this.scopedTojos()
-            .withSource(src).stream()
-            .filter(tojo -> false)
-            .map(ForeignTojo::optimized)
-            .mapToLong(this.transpiledTojos::remove)
-            .sum();
     }
 }
