@@ -276,7 +276,7 @@ SOFTWARE.
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
             <configuration>
-              <!-- @todo: #2144:30min Enable RuleAllTestsHaveProductionClass rule.
+              <!-- @todo #2144:30min Enable RuleAllTestsHaveProductionClass rule.
                     It is disabled in the whole eo-runtime module because it
                     requires lots of fixes simultaneously. We have to enable
                     that rule and apply all required changes in order to make
