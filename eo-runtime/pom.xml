@@ -22,9 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eolang</groupId>
@@ -116,8 +114,7 @@ SOFTWARE.
            switches surefire communication channel from default to TCP/IP and solves the bug.
            More detailed: https://stackoverflow.com/questions/55272870/surefire-maven-plugin-corrupted-stdout-by-directly-writing-to-native-stream-in
            and https://maven.apache.org/surefire/maven-surefire-plugin/examples/process-communication.html-->
-          <forkNode
-                  implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           <properties>
             <configurationParameters>
               junit.jupiter.execution.parallel.enabled = true
