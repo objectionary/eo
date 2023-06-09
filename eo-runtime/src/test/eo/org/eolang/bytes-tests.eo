@@ -433,3 +433,48 @@
   assert-that > @
     ((-4294967296).as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
+
+# @todo #793:30min To enable next 4 as-bytes tests.
+#  All of the next 4 tests checks as-string, as-float, as-int and as-bool
+#  for transparency. All of these tests must be transparent and not create
+#  new object. For now it they are not and these tests are disabled. Looks
+#  like we need to store bytes in some place(like string pool in Java) and
+#  every time before creating a new object check if it already exists in the
+#  pool. If it does, return it from the pool, otherwise create a new one and
+#  put it into the pool. This way we will have only one instance of bytes for
+#  each value.
+[] > as-string-is-transparent
+  68-65-6C-6C-6F > b
+  nop > @
+    assert-that
+      b.as-string.as-bytes.<
+      $.is
+        $.equal-to
+          b.<
+
+[] > as-int-is-transparent
+  489.as-bytes > b
+  nop > @
+    assert-that
+      b.as-int.as-bytes.<
+      $.is
+        $.equal-to
+          b.<
+
+[] > as-float-is-transparent
+  33.0.as-bytes > b
+  nop > @
+    assert-that
+      b.as-float.as-bytes.<
+      $.is
+        $.equal-to
+          b.<
+
+[] > as-bool-is-transparent
+  TRUE.as-bytes > b
+  nop > @
+    assert-that
+      b.as-bool.as-bytes.<
+      $.is
+        $.equal-to
+          b.<
