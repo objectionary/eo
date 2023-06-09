@@ -180,6 +180,8 @@ Got the idea?
 
 Join [our Telegram group](https://t.me/polystat_org).
 
+Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) about EOLANG basics.
+
 Read [our blog](https://news.eolang.org), especially the section with
 [recently published papers](https://news.eolang.org/papers.html).
 
