@@ -237,4 +237,24 @@ SOFTWARE.
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>qulice</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.volodya-lombrozo</groupId>
+            <artifactId>jtcop-maven-plugin</artifactId>
+            <configuration>
+              <exclusions>
+                <exclusion>
+                  JTCOP.RuleAllTestsHaveProductionClass
+                </exclusion>
+              </exclusions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
