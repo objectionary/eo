@@ -125,7 +125,9 @@ final class MainTest {
     private static String exec(final String... cmds) throws Exception {
         final Collection<String> args = new LinkedList<>();
         args.add(MainTest.jdkExecutable("java"));
-        args.add("-Dfile.encoding=utf-8");
+        args.add("-Dfile.encoding=UTF-8");
+        args.add("-Dsun.stdout.encoding=UTF-8");
+        args.add("-Dsun.stderr.encoding=UTF-8");
         args.add("-cp");
         args.add(System.getProperty("java.class.path"));
         args.add(Main.class.getCanonicalName());
@@ -143,7 +145,13 @@ final class MainTest {
             ).value();
         }
         return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
-            .replaceFirst("Picked up .*\n", "");
+            .replaceFirst(
+                String.format(
+                    "Picked up .*%s",
+                    System.lineSeparator()
+                ),
+                ""
+            );
     }
 
     /**

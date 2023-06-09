@@ -199,7 +199,9 @@ final class SnippetTest {
                 new Joined<String>(
                     new ListOf<>(
                         SnippetTest.jdkExecutable("java"),
-                        "-Dfile.encoding=utf-8",
+                        "-Dfile.encoding=UTF-8",
+                        "-Dsun.stdout.encoding=UTF-8",
+                        "-Dsun.stderr.encoding=UTF-8",
                         "-cp",
                         SnippetTest.classpath(),
                         "org.eolang.Main"
