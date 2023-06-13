@@ -1,0 +1,11 @@
+xsls:
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/errors/broken-refs.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@base='a' and @line='3' and @ref='2']
+  - //o[@base='a' and @line='3' and @ref!='']
+eo: |
+  [] > app
+    42 > a
+    a.plus 1 > @
