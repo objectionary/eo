@@ -27,9 +27,13 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Xsline;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link ParsingTrain}.
@@ -74,4 +78,27 @@ final class ParsingTrainTest {
         );
     }
 
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/packs/", glob = "**.yaml")
+    void parsesPacks(final String pack) throws Exception {
+        final CheckPack check = new CheckPack(pack);
+        if (check.skip()) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
+        MatcherAssert.assertThat(
+            check.failures(),
+            Matchers.empty()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
+    void createsXaxStoryWithXslStylesheets(final String yaml) {
+        MatcherAssert.assertThat(
+            new XaxStory(yaml),
+            Matchers.is(true)
+        );
+    }
 }
