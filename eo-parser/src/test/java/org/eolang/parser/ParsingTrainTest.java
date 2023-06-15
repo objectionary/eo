@@ -24,13 +24,9 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.Xsline;
-import org.cactoos.io.InputStreamOf;
-import org.cactoos.io.ResourceOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
