@@ -259,13 +259,7 @@ final class OptimizeMojoTest {
         );
     }
 
-    /**
-     * @todo #2109:30min Enable the test. After new "sparse-decoration" xsl
-     *  was added the test started failing with `NullPointer Cannot invoke
-     *  "java.nio.file.Path.toFile()" because "file" is null`
-     */
     @Test
-    @Disabled
     void stopsOnCritical(@TempDir final Path temp) throws IOException {
         MatcherAssert.assertThat(
             new XMLDocument(

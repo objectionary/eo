@@ -64,6 +64,12 @@ public final class ParsingTrain extends TrEnvelope {
      *  When the problem is fixed, we should enable synthetic-references.xsl transformation
      *  by adding it to the SHEETS array between remove-aliases.xsl and add-default-package.xsl
      *  transformations.
+     *
+     * @todo #2109:30min Enable sparse-decoration.xsl transformation.
+     *  Currently sparse-decoration.xsl transformations is disabled because
+     *  it breaks some integration tests for unknown reason. Need to put
+     *  the transformation right before warnings/unsorted-metas.xsl
+     *  transformation and make sure build works.
      */
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
@@ -75,7 +81,6 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/same-line-names.xsl",
         "/org/eolang/parser/errors/self-naming.xsl",
         "/org/eolang/parser/cti/cti-adds-errors.xsl",
-        "/org/eolang/parser/warnings/sparse-decoration.xsl",
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/wrap-method-calls.xsl",
         "/org/eolang/parser/expand-qqs.xsl",
