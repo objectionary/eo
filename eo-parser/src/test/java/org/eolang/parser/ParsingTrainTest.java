@@ -24,9 +24,13 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.Xsline;
+import org.cactoos.io.InputStreamOf;
+import org.cactoos.io.ResourceOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
@@ -34,6 +38,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ParsingTrain}.
@@ -74,6 +79,32 @@ final class ParsingTrainTest {
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)=2]",
                 "/program/errors/error[@severity='critical']"
+            )
+        );
+    }
+
+    /**
+     * Test for {@see _func.xsl}.
+     *
+     * @since 1.0
+     */
+    @ParameterizedTest
+    @CsvSource({
+        "00     , 0",
+        "0000   , 0",
+        "000000 , 0",
+        "000001 , 1",
+        "000010 , 16",
+        "000100 , 256",
+        "FFFFFF , 16777215"
+    })
+    void runsXslFunction(final String bytes, final String num) {
+        MatcherAssert.assertThat(
+            new Xsline(
+                new ParsingTrain("/org/eolang/parser/apply-func.xsl")
+            ).pass(new XMLDocument(String.format("<o>%s</o>", bytes))),
+            XhtmlMatchers.hasXPath(
+                String.format("/o[text()='%s']", num)
             )
         );
     }
