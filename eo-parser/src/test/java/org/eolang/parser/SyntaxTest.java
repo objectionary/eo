@@ -30,17 +30,20 @@ import com.yegor256.xsline.Xsline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test case for {@link Xsline}.
@@ -218,4 +221,22 @@ final class SyntaxTest {
         );
     }
 
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
+    void checksTypoPacks(final String yml) throws IOException, NumberFormatException {
+        final Yaml yaml = new Yaml();
+        final Map<String, Object> map = yaml.load(yml);
+        final ByteArrayOutputStream xmir = new ByteArrayOutputStream();
+        new Syntax(
+            "typo",
+            new InputOf(String.format("%s\n", map.get("eo"))),
+            new OutputTo(xmir)
+        ).parse();
+        final XML xml = new XMLDocument(xmir.toByteArray());
+        MatcherAssert.assertThat(
+            xml.toString(),
+            Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
+            Matchers.equalTo(Integer.parseInt(map.get("line").toString()))
+        );
+    }
 }
