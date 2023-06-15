@@ -81,7 +81,8 @@ final class ParsingTrainTest {
 
     /**
      * Test for {@see _func.xsl}.
-     *
+     * @param bytes Bytes to convert
+     * @param num Expected number
      * @since 1.0
      */
     @ParameterizedTest
