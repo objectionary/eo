@@ -38,8 +38,11 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EObool$EOnot}.
  * {@link EOorg.EOeolang.EObool$EOnot} is the generated class. This is the reason
  * why we disable jtcop check.
+ *
  * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EObool$EOnotTest {
 
     @Test

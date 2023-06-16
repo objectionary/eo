@@ -44,8 +44,9 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOheap$EOpointer$EOblock}.
  *
  * @since 0.19
+ * @checkstyle TypeNameCheck (4 lines)
  */
-final class EOheapEOpointerEOblockTest {
+final class EOheap$EOpointer$EOblockTest {
 
     @Test
     void writesBytesIntoHeap() {
@@ -61,7 +62,7 @@ final class EOheapEOpointerEOblockTest {
                 new PhMethod(pointer, "block"),
                 0, new Data.ToPhi((long) bytes.length)
             ),
-            1, new EOheapEOpointerEOblockTest.Inverse(Phi.Φ)
+            1, new EOheap$EOpointer$EOblockTest.Inverse(Phi.Φ)
         );
         new Dataized(
             new PhWith(
