@@ -44,7 +44,7 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
-    <xsl:variable name="n">
+    <xsl:variable name="name">
       <xsl:for-each select="$object/ancestor-or-self::o">
         <xsl:choose>
           <xsl:when test="eo:abstract(.) and not(@name)">
@@ -64,7 +64,7 @@ SOFTWARE.
         </xsl:if>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:value-of select="$n"/>
+    <xsl:value-of select="$name"/>
   </xsl:function>
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
@@ -81,13 +81,17 @@ SOFTWARE.
       </xsl:if>
     </xsl:for-each>
   </xsl:function>
-  <xsl:function name="eo:ancestors">
-    <xsl:param name="object" as="element()"/>
-    <xsl:for-each select="$object/ancestor-or-self::o[eo:abstract(.)]">
-      <xsl:sort data-type="number" select="position()" order="descending"/>
-      <xsl:copy-of select="."/>
-    </xsl:for-each>
-  </xsl:function>
+  <xsl:template match="//objects">
+    <xsl:copy>
+      <xsl:apply-templates select=".//o[eo:abstract(.)]" mode="top"/>
+      <xsl:apply-templates select="o[not(eo:abstract(.))]|@*"/>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="o[eo:abstract(.)]">
     <xsl:element name="o">
       <xsl:apply-templates select="@* except @base except @abstract"/>
@@ -158,17 +162,6 @@ SOFTWARE.
           </xsl:element>
         </xsl:for-each>
       </xsl:for-each>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="//objects">
-    <xsl:copy>
-      <xsl:apply-templates select=".//o[eo:abstract(.)]" mode="top"/>
-      <xsl:apply-templates select="o[not(eo:abstract(.))]|@*"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
