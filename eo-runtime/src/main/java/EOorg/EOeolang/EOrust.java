@@ -27,9 +27,21 @@
  */
 package EOorg.EOeolang;
 
+import EOrust.EOnatives.xhomextardis3xeoxeoxruntimextargetxeoxtest0;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
+import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -50,7 +62,16 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
+    private static ConcurrentHashMap<String, String> names;
     static {
+        try {
+            names = load("target/eo-test/names");
+        } catch (IOException e) {
+            throw new RuntimeException(
+                "Cannot read the file target/eo-test/names",
+                e
+            );
+        }
         final String lib;
         if (SystemUtils.IS_OS_WINDOWS) {
             lib = "common.dll";
@@ -91,8 +112,45 @@ public class EOrust extends PhDefault {
             new AtComposite(
                 this,
                 rho ->
-                    new Data.ToPhi(1234L)
+                {
+                    System.out.println();
+                    return new Data.ToPhi(
+                        (long) xhomextardis3xeoxeoxruntimextargetxeoxtest0.xhomextardis3xeoxeoxruntimextargetxeoxtest0()
+                    );
+                }
             )
         );
+    }
+    private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
+        System.out.println(Paths.get(src).toAbsolutePath());
+        try (ObjectInputStream map = new ObjectInputStream(
+            new ByteArrayInputStream(
+                Base64.getDecoder().decode(
+                    new TextOf(Paths.get(src)).asString()
+                )
+            )
+        )) {
+            final Object result = map.readObject();
+            if (result.getClass() != ConcurrentHashMap.class) {
+                throw new ClassCastException(
+                    String.format(
+                        "Object inside %s has wrong class %s",
+                        src,
+                        result.getClass()
+                    )
+                );
+            }
+            return (ConcurrentHashMap<String, String>) result;
+        } catch (final ClassNotFoundException exc) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "File %s contains invalid data",
+                    src
+                ),
+                exc
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
