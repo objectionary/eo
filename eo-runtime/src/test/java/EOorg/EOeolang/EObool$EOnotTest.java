@@ -40,6 +40,11 @@ import org.junit.jupiter.api.Test;
  * why we disable jtcop check.
  *
  * @since 0.1
+ * @todo #2146:30min Remove RuleAllTestsHaveProductionClass suppressing.
+ *  This rule was suppressed because the test class is generated and jtcop can't find it in the
+ *  classpath. So, when that feature will be implemented in the jtcop, we have to remove all
+ *  the similar suppression's from that test package.
+ *  jtcop issue: https://github.com/volodya-lombrozo/jtcop/issues/178
  * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
