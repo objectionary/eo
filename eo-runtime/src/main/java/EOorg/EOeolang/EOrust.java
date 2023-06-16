@@ -36,6 +36,8 @@ import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -48,9 +50,6 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
- * @todo #1326:90min Generate this file at compile phase
- *  instead of keep it here. It allows to call any
- *  rust insert depending on its attributes.
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -126,11 +125,12 @@ public class EOrust extends PhDefault {
         );
     }
     private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
-        System.out.println(Paths.get(src).toAbsolutePath());
         try (ObjectInputStream map = new ObjectInputStream(
             new ByteArrayInputStream(
                 Base64.getDecoder().decode(
-                    new TextOf(Paths.get(src)).asString()
+                    new IoCheckedText(
+                        new TextOf(Paths.get(src))
+                    ).asString()
                 )
             )
         )) {
@@ -153,8 +153,6 @@ public class EOrust extends PhDefault {
                 ),
                 exc
             );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }

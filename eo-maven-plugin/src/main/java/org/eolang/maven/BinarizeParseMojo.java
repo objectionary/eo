@@ -145,7 +145,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                 );
                 new Native(function, "EOrust.natives").save(
                     new FtDefault(
-                        generatedDir.toPath().resolve("EOrust").resolve("natives")
+                        this.generatedDir.toPath().resolve("EOrust").resolve("natives")
                     )
                 );
             }
