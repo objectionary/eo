@@ -375,6 +375,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterVersion(ProgramParser.VersionContext ctx) {
+        this.objects.enter();
+        if (ctx.VERSION() != null) {
+            this.objects.prop("version", ctx.VERSION().getText());
+        }
+    }
+
+    @Override
+    public void exitVersion(ProgramParser.VersionContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
     public void enterHas(final ProgramParser.HasContext ctx) {
         this.objects.enter();
         final String has;

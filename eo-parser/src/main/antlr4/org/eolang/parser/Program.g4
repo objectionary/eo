@@ -131,6 +131,9 @@ scope
 application
   :
   head
+  version
+  |
+  head
   htail?
   |
   application
@@ -212,6 +215,12 @@ head
   )
   ;
 
+version
+  :
+  BAR
+  VERSION
+  ;
+
 has
   :
   COLON
@@ -266,6 +275,7 @@ RB: ')';
 AT: '@';
 RHO: '^';
 HASH: '#';
+BAR: '|';
 
 fragment INDENT:
     SPACE SPACE
@@ -315,6 +325,7 @@ FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
 HEX: '0x' [0-9a-fA-F]+;
 
 NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
+VERSION: [0-9]+ DOT [0-9]+ DOT [0-9]+;
 
 fragment TEXT_MARK: '"""';
 TEXT:

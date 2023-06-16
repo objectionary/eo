@@ -1,0 +1,16 @@
+xsls: []
+tests:
+  - //o[@base='func0' and @version='3.4.5' and @name='x']
+  - //o[@base='func1' and @version='1.2.3']
+  - //o[@base='func2' and not(@version)]
+  - //o[@base='func3' and @version='3.2.1']
+  - //o[@base='func4' and @version='10.20.30']
+eo: |
+  [] > main
+    func0|3.4.5 > x
+    func1|1.2.3
+      1
+    func2 2
+    func3|3.2.1
+    .method
+      func4|10.20.30
