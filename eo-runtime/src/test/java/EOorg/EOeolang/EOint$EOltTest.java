@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
  * why we disable jtcop check.
  *
  * @since 0.1
- * @checkstyle TypeNameCheck (2 lines)
+ * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOint$EOltTest {

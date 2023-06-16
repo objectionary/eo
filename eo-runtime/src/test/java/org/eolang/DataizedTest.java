@@ -121,11 +121,101 @@ final class DataizedTest {
         );
     }
 
+    @Test
+    void printsShortLogs() throws InterruptedException {
+        final Logger log = Logger.getLogger("printsShortLogs");
+        final Level before = log.getLevel();
+        log.setLevel(Level.ALL);
+        final List<LogRecord> logs = new LinkedList<>();
+        final Handler hnd = new Handler() {
+            @Override
+            public void publish(final LogRecord record) {
+                logs.add(record);
+            }
+
+            @Override
+            public void flush() {
+                throw new UnsupportedOperationException("#flush()");
+            }
+
+            @Override
+            public void close() throws SecurityException {
+                throw new UnsupportedOperationException("#close()");
+            }
+        };
+        log.addHandler(hnd);
+        final Thread thread = new Thread(
+            () -> {
+                final String property = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi, log).take();
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
+        thread.start();
+        thread.join();
+        log.setLevel(before);
+        log.removeHandler(hnd);
+        MatcherAssert.assertThat(
+            logs.size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void printsLongLogs() throws InterruptedException {
+        final Logger log = Logger.getLogger(Dataized.class.getName());
+        final Level before = log.getLevel();
+        log.setLevel(Level.ALL);
+        final List<LogRecord> logs = new LinkedList<>();
+        final Handler hnd = new Handler() {
+            @Override
+            public void publish(final LogRecord record) {
+                logs.add(record);
+            }
+
+            @Override
+            public void flush() {
+                throw new UnsupportedOperationException("#flush()");
+            }
+
+            @Override
+            public void close() throws SecurityException {
+                throw new UnsupportedOperationException("#close()");
+            }
+        };
+        log.addHandler(hnd);
+        final Thread thread = new Thread(
+            () -> {
+                final String property = System.getProperty("max.dataization.log");
+                System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
+                final Phi phi = new PhiDec(Phi.Φ);
+                new Dataized(phi, log).take();
+                if (property != null) {
+                    System.getProperties().setProperty("max.dataization.log", property);
+                } else {
+                    System.clearProperty("max.dataization.log");
+                }
+            });
+        thread.start();
+        thread.join();
+        log.setLevel(before);
+        log.removeHandler(hnd);
+        MatcherAssert.assertThat(
+            logs.size(),
+            Matchers.greaterThan(1)
+        );
+    }
+
     /**
      * Fake Phi failing when dataized.
      * @since 1.0
      */
-    public static class PhIncorrect extends PhDefault {
+    private static class PhIncorrect extends PhDefault {
 
         /**
          * Ctor.
@@ -138,6 +228,36 @@ final class DataizedTest {
                 new AtComposite(
                     this,
                     rho -> Phi.Φ
+                )
+            );
+        }
+    }
+
+    /**
+     * Fake Phi with decoration.
+     *
+     * @since 1.0
+     */
+    public static class PhiDec extends PhDefault {
+
+        /**
+         * Ctor.
+         *
+         * @param sigma Sigma
+         */
+        PhiDec(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> new PhWith(
+                            new PhCopy(new PhMethod(new Data.ToPhi(2L), "plus")),
+                            0,
+                            new Data.ToPhi(2L)
+                        )
+                    )
                 )
             );
         }

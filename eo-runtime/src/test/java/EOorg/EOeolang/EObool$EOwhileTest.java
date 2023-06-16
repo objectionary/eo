@@ -83,7 +83,7 @@ final class EObool$EOwhileTest {
     }
 
     @Test
-    public void iteratesManyTimes() {
+    void iteratesManyTimes() {
         final long total = 5L;
         final AtomicLong term = new AtomicLong(total);
         final AtomicLong body = new AtomicLong(0L);
@@ -109,7 +109,7 @@ final class EObool$EOwhileTest {
     }
 
     @Test
-    public void loopsOverAbstractObjects() {
+    void loopsOverAbstractObjects() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"));
         new Dataized(
@@ -127,7 +127,7 @@ final class EObool$EOwhileTest {
     }
 
     @Test
-    public void dataizesComplexBooleanToggle() {
+    void dataizesComplexBooleanToggle() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhMethod(parent, "toggle");
         new Dataized(
@@ -154,12 +154,12 @@ final class EObool$EOwhileTest {
      * Parent Phi.
      * @since 1.0
      */
-    public static class Parent extends PhDefault {
+    private static final class Parent extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Parent(final Phi sigma) {
+        Parent(final Phi sigma) {
             super(sigma);
             this.add(
                 "toggle",
@@ -175,7 +175,7 @@ final class EObool$EOwhileTest {
      * Kid Phi.
      * @since 1.0
      */
-    public static class Kid extends PhDefault {
+    private static final class Kid extends PhDefault {
         /**
          * Toggle.
          */
@@ -186,7 +186,7 @@ final class EObool$EOwhileTest {
          * @param sigma Sigma
          * @param tgl Toggle
          */
-        public Kid(final Phi sigma, final Phi tgl) {
+        Kid(final Phi sigma, final Phi tgl) {
             super(sigma);
             this.toggle = tgl;
             this.add("x", new AtFree());
