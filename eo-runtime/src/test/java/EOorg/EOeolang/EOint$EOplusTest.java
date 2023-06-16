@@ -38,11 +38,12 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOint}.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOintEOaddTest {
+final class EOint$EOplusTest {
 
     @Test
-    public void addsNumbers() {
+    void addsNumbers() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(13L);
         final Phi add = left.attr("plus").get();
