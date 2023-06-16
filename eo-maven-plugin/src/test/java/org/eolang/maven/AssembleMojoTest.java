@@ -26,7 +26,7 @@ package org.eolang.maven;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.OyFake;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -74,7 +74,7 @@ final class AssembleMojoTest {
             .with("ignoreTransitive", true)
             .with(
                 "objectionary",
-                new OyFake()
+                new Objectionary.Fake()
             )
             .execute();
         MatcherAssert.assertThat(
@@ -138,7 +138,7 @@ final class AssembleMojoTest {
             .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
-                new OyFake()
+                new Objectionary.Fake()
             )
             .execute();
         MatcherAssert.assertThat(

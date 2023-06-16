@@ -49,7 +49,7 @@ final class OyCachingTest {
                 new OyCaching(
                     "master",
                     path,
-                    new OyFake(s -> new InputOf(content))
+                    new Objectionary.Fake(s -> new InputOf(content))
                 ).get("org.example.main")
             ).asString(),
             Matchers.is(content)

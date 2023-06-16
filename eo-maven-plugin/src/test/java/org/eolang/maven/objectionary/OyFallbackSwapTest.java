@@ -42,8 +42,8 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyFake(s -> new InputOf("[] > local\n")),
-                    new OyFake(s -> new InputOf("[] > remote\n")),
+                    new Objectionary.Fake(s -> new InputOf("[] > local\n")),
+                    new Objectionary.Fake(s -> new InputOf("[] > remote\n")),
                     false
                 ).get("")
             ).asString(),
@@ -56,8 +56,8 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyFake(s -> new InputOf("[] > local\n")),
-                    new OyFake(
+                    new Objectionary.Fake(s -> new InputOf("[] > local\n")),
+                    new Objectionary.Fake(
                         s -> {
                             throw new IOException("Can't get object");
                         }
@@ -74,8 +74,8 @@ class OyFallbackSwapTest {
         MatcherAssert.assertThat(
             new TextOf(
                 new OyFallbackSwap(
-                    new OyFake(s -> new InputOf("[] > local\n")),
-                    new OyFake(s -> new InputOf("[] > remote\n")),
+                    new Objectionary.Fake(s -> new InputOf("[] > local\n")),
+                    new Objectionary.Fake(s -> new InputOf("[] > remote\n")),
                     true
                 ).get("")
             ).asString(),
@@ -92,7 +92,7 @@ class OyFallbackSwapTest {
         final Objectionary cache = new OyCaching(
             "master",
             path,
-            new OyFake(
+            new Objectionary.Fake(
                 s -> new InputOf("[] > main\n"),
                 s -> false
             )

@@ -37,7 +37,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 1.0
  */
-final class OyLocalTest {
+final class OyHomeTest {
 
     @Test
     void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {

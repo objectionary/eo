@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.OyFake;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -94,7 +94,7 @@ class CleanMojoTest {
             .with("plugin", FakeMaven.pluginDescriptor())
             .with(
                 "objectionary",
-                new OyFake()
+                new Objectionary.Fake()
             )
             .execute();
         new Moja<>(CleanMojo.class)

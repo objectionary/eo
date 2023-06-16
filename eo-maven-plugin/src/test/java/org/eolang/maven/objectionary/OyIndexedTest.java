@@ -47,7 +47,7 @@ class OyIndexedTest {
     @Test
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
-            new TextOf(new OyIndexed(new OyFake()).get("foo")).asString(),
+            new TextOf(new OyIndexed(new Objectionary.Fake()).get("foo")).asString(),
             Matchers.equalTo("[] > sprintf\n")
         );
     }
@@ -56,7 +56,7 @@ class OyIndexedTest {
     @ExtendWith(OnlineCondition.class)
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
-            new OyIndexed(new OyFake()).contains(OyIndexedTest.STDOUT_OBJECT),
+            new OyIndexed(new Objectionary.Fake()).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
     }
@@ -65,7 +65,7 @@ class OyIndexedTest {
     void containsInFakeIndex() throws IOException {
         MatcherAssert.assertThat(
             new OyIndexed(
-                new OyFake(),
+                new Objectionary.Fake(),
                 new ObjectsIndex(() -> Collections.singleton(OyIndexedTest.STDOUT_OBJECT))
             ).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
@@ -76,7 +76,7 @@ class OyIndexedTest {
     void checksContainsInDelegateIfExceptionHappensInIndex() throws IOException {
         MatcherAssert.assertThat(
             new OyIndexed(
-                new OyFake(),
+                new Objectionary.Fake(),
                 new ObjectsIndex(
                     () -> {
                         throw new IllegalStateException("Fake exception");

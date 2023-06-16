@@ -23,8 +23,11 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
+import org.cactoos.Func;
 import org.cactoos.Input;
+import org.cactoos.io.InputOf;
 
 /**
  * Objectionary.
@@ -55,4 +58,88 @@ public interface Objectionary {
      * @throws IOException If fails to fetch.
      */
     boolean contains(String name) throws IOException;
+
+    /**
+     * Objectionary with lambda-function Ctor-s for testing.
+     *
+     * @since 0.28.11
+     * @checkstyle IllegalCatchCheck (150 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    final class Fake implements Objectionary {
+
+        /**
+         * Function that emulates 'get()' method in {@link Objectionary}.
+         */
+        private final Func<String, Input> getter;
+
+        /**
+         * Function that emulates 'contains()' method in {@link Objectionary}.
+         */
+        private final Func<String, Boolean> container;
+
+        /**
+         * Ctor.
+         */
+        public Fake() {
+            this(
+                s -> new InputOf("[] > sprintf\n")
+            );
+        }
+
+        /**
+         * Ctor.
+         *
+         * @param gett Lambda func for get()
+         */
+        Fake(final Func<String, Input> gett) {
+            this(
+                gett,
+                s -> true
+            );
+        }
+
+        /**
+         * Ctor.
+         *
+         * @param gett Lambda func for get()
+         * @param cont Lambda func for contains()
+         */
+        public Fake(
+            final Func<String, Input> gett,
+            final Func<String, Boolean> cont
+        ) {
+            this.getter = gett;
+            this.container = cont;
+        }
+
+        @Override
+        public Input get(final String name) {
+            try {
+                return this.getter.apply(name);
+            } catch (final Exception ex) {
+                Logger.debug(
+                    this, "Invalid lambda function for get() method in OyFake!"
+                );
+                throw new IllegalArgumentException(ex);
+            }
+        }
+
+        @Override
+        public boolean contains(final String name) {
+            try {
+                return this.container.apply(name);
+            } catch (final Exception ex) {
+                Logger.debug(
+                    this, "Invalid lambda function for contains() method in OyFake!"
+                );
+                throw new IllegalArgumentException(ex);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "OyFake";
+        }
+    }
 }
