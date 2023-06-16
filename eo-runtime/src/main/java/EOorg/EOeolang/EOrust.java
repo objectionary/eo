@@ -56,14 +56,20 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
-    private static ConcurrentHashMap<String, String> names;
+
+    /**
+     * Map with location of the `code` attribute as the key
+     * and native method as the value.
+     */
+    private static final ConcurrentHashMap<String, String> NAMES;
+
     static {
         try {
-            names = load("target/eo-test/names");
-        } catch (IOException e) {
+            NAMES = load("target/eo-test/names");
+        } catch (final IOException exc) {
             throw new RuntimeException(
                 "Cannot read the file target/eo-test/names",
-                e
+                exc
             );
         }
         final String lib;
@@ -105,18 +111,16 @@ public class EOrust extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho ->
-                {
-                    final String name = names.get(
+                rho -> {
+                    final String name = NAMES.get(
                         rho.attr("code").get().locator().split(":")[0]
                     );
-                    final Class Native = Class.forName(
+                    final Method method = Class.forName(
                         String.format(
                             "EOrust.natives.%s",
                             name
                         )
-                    );
-                    final Method method = Native.getDeclaredMethod(name, null);
+                    ).getDeclaredMethod(name, null);
                     return new Data.ToPhi(
                         Long.valueOf((int) method.invoke(null))
                     );
@@ -124,6 +128,13 @@ public class EOrust extends PhDefault {
             )
         );
     }
+
+    /**
+     * Loads names map.
+     * @param src Where to load from.
+     * @return Names map.
+     * @throws IOException If any issues with IO.
+     */
     private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
         try (ObjectInputStream map = new ObjectInputStream(
             new ByteArrayInputStream(
