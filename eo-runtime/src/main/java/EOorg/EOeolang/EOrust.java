@@ -27,18 +27,13 @@
  */
 package EOorg.EOeolang;
 
-import EOrust.EOnatives.xhomextardis3xeoxeoxruntimextargetxeoxtest0;
-
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.file.Path;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.text.TextOf;
@@ -113,9 +108,18 @@ public class EOrust extends PhDefault {
                 this,
                 rho ->
                 {
-                    System.out.println();
+                    final String name = names.get(
+                        rho.attr("code").get().locator().split(":")[0]
+                    );
+                    final Class Native = Class.forName(
+                        String.format(
+                            "EOrust.natives.%s",
+                            name
+                        )
+                    );
+                    final Method method = Native.getDeclaredMethod(name, null);
                     return new Data.ToPhi(
-                        (long) xhomextardis3xeoxeoxruntimextargetxeoxtest0.xhomextardis3xeoxeoxruntimextargetxeoxtest0()
+                        Long.valueOf((int) method.invoke(null))
                     );
                 }
             )

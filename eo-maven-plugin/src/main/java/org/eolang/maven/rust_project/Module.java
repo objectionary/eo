@@ -72,7 +72,7 @@ public class Module {
      */
     private String transform() {
         final String signature = String.format(
-            "#[no_mangle]%spub extern \"system\" fn Java_EOrust_EOnatives_%s_%s(_env: JNIEnv, _class: JClass,) -> jint {",
+            "#[no_mangle]%spub extern \"system\" fn Java_EOrust_natives_%s_%s(_env: JNIEnv, _class: JClass,) -> jint {",
             System.lineSeparator(),
             this.name,
             this.name

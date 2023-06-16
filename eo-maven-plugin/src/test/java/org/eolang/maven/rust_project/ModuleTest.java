@@ -62,7 +62,7 @@ final class ModuleTest {
                 "use jni::sys::{jint};",
                 "use jni::JNIEnv;",
                 "#[no_mangle]",
-                "pub extern \"system\" fn Java_EOrust_EOnatives_simple_simple(_env: JNIEnv, _class: JClass,) -> jint {"
+                "pub extern \"system\" fn Java_EOrust_natives_simple_simple(_env: JNIEnv, _class: JClass,) -> jint {"
             )
         );
     }

@@ -1,6 +1,4 @@
-import java.nio.file.Path
-
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -23,15 +21,41 @@ import java.nio.file.Path
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.rust_project;
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
- */
-Path tests = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
-for (it in ['check-folders-numbering.groovy', 'check-all-java-classes-compiled.groovy']) {
-  def res = evaluate tests.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
+import org.eolang.maven.footprint.Footprint;
+
+import java.io.IOException;
+
+public class Native {
+    private final String name;
+    private final String pack;
+
+    public Native(String name, String pack) {
+        this.name = name;
+        this.pack = pack;
+    }
+
+    public void save(final Footprint footprint) throws IOException {
+        footprint.save(
+            name,
+            "java",
+            () -> String.join(
+                System.lineSeparator(),
+                String.format(
+                    "package %s;",
+                    pack
+                ),
+                String.format(
+                    "public class %s {",
+                    name
+                ),
+                String.format(
+                    "public static native int %s ();",
+                    name
+                ),
+                "}"
+            )
+        );
+    }
 }
-true
