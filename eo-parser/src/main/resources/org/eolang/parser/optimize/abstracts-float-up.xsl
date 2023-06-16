@@ -24,8 +24,8 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="abstracts-float-up" version="2.0">
   <!--
-  Here we take abstracts that stay inside other
-  abstracts and move them to highest level. This code:
+  Here, we extract abstracts that are nested within other abstracts
+  and relocate them to the highest level. Example:
 
   [a] > foo
     [] > test
@@ -42,6 +42,20 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- The eo:name-of function generates the name of the object based on its
+  ancestors. Example:
+
+  [] > another
+    eq. > @
+      [] > first
+        1 > @
+      [] > second
+        2 > @
+
+   Will generate the following names:
+   eo:name-of(first) = "another$t0$first"
+   eo:name-of(second) = "another$t0$second"
+  -->
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="object" as="element()"/>
     <xsl:variable name="name">
@@ -66,6 +80,7 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$name"/>
   </xsl:function>
+  <!-- This is the strange function -->
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
     <xsl:param name="top" as="element()"/>
