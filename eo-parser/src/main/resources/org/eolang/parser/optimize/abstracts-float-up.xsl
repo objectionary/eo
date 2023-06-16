@@ -80,14 +80,13 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$name"/>
   </xsl:function>
-  <!-- This is the strange function -->
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
     <xsl:param name="top" as="element()"/>
     <xsl:for-each select="$bottom/ancestor::o">
-      <xsl:variable name="a" select="."/>
-      <xsl:if test="$top/descendant-or-self::o[generate-id() = generate-id($a)]">
-        <xsl:for-each select="$a/o[@name and generate-id() != generate-id($bottom)]">
+      <xsl:variable name="current-ancestor" select="."/>
+      <xsl:if test="$top/descendant-or-self::o[generate-id() = generate-id($current-ancestor)]">
+        <xsl:for-each select="$current-ancestor/o[@name and generate-id() != generate-id($bottom)]">
           <xsl:variable name="o" select="."/>
           <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($o)])">
             <xsl:copy-of select="$o"/>
