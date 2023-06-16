@@ -25,30 +25,40 @@
 /*
  * @checkstyle PackageNameCheck (10 lines)
  */
+
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhCopy;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObool}.
+ * Test case for {@link EOint}.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOboolEOandTest {
+final class EOint$EOeqTest {
 
     @Test
-    public void joinsTwoValuesLogically() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi right = new Data.ToPhi(false);
-        final Phi and = left.attr("and").get();
-        and.attr(0).put(right);
+    void comparesWithAnotherNumber() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(0L);
+        final Phi eql = new PhWith(
+            new PhMethod(new PhCopy(left), "eq"),
+            0, new PhCopy(right)
+        );
         MatcherAssert.assertThat(
-            new Dataized(and).take(Boolean.class),
+            new Dataized(eql).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

@@ -29,27 +29,26 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * Test case for {@link EOint}.
  *
- * @since 0.17
- * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.1
  */
-public final class EOstringEOas_bytesTest {
+final class EOintTest {
 
     @Test
-    public void convertsStringToBytes() {
-        final Phi str = new Data.ToPhi("Hello, друг!");
-        final Phi phi = new EOstring$EOas_bytes(str);
+    void negatesNumber() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
-            new Dataized(phi).take(byte[].class).length,
-            Matchers.equalTo(16)
+            new Dataized(neg).take(Long.class),
+            Matchers.equalTo(-42L)
         );
     }
-
 }

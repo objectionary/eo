@@ -31,42 +31,30 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * Test case for {@link EOint}.
  *
- * @since 0.17
+ * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOstringEOeqTest {
+final class EOint$EOminusTest {
 
     @Test
-    public void comparesTwoEqualStrings() {
-        final String txt = "Hello, друг!";
+    void subtractsNumber() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(13L);
+        final Phi sub = new PhWith(
+            new PhMethod(left, "minus"),
+            0, right
+        );
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhMethod(new Data.ToPhi(txt), "eq"),
-                    0, new Data.ToPhi(txt)
-                )
-            ).take(Boolean.class),
-            Matchers.equalTo(true)
+            new Dataized(sub).take(Long.class),
+            Matchers.equalTo(29L)
         );
     }
-
-    @Test
-    public void comparesTwoDifferentStrings() {
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),
-                    0, new Data.ToPhi("Hello, world!")
-                )
-            ).take(Boolean.class),
-            Matchers.equalTo(false)
-        );
-    }
-
 }

@@ -39,11 +39,12 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOtuple}.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOtupleEOatTest {
+final class EOtuple$EOatTest {
 
     @Test
-    public void pushesAndGetsBack() {
+    void pushesAndGetsBack() {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
         final Phi tuple = new Data.ToPhi(new Phi[] {str});
@@ -61,7 +62,7 @@ public final class EOtupleEOatTest {
     }
 
     @Test
-    public void checksNegativeIndex() {
+    void checksNegativeIndex() {
         MatcherAssert.assertThat(
             new Dataized(this.get(-1L)).take(String.class),
             Matchers.equalTo("second")
@@ -73,7 +74,7 @@ public final class EOtupleEOatTest {
     }
 
     @Test
-    public void checksOutOfBounds() {
+    void checksOutOfBounds() {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(this.get(-3L)).take()

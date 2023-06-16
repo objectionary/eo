@@ -35,19 +35,21 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObool}.
+ * Test case for {@link EOstring}.
  *
- * @since 0.1
+ * @since 0.17
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOboolEOnotTest {
+final class EOstring$EOas_bytesTest {
 
     @Test
-    public void inversesValue() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi not = left.attr("not").get();
+    void convertsStringToBytes() {
+        final Phi str = new Data.ToPhi("Hello, друг!");
+        final Phi phi = new EOstring$EOas_bytes(str);
         MatcherAssert.assertThat(
-            new Dataized(not).take(Boolean.class),
-            Matchers.equalTo(false)
+            new Dataized(phi).take(byte[].class).length,
+            Matchers.equalTo(16)
         );
     }
+
 }

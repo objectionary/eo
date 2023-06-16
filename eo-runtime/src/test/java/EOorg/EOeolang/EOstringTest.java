@@ -29,26 +29,43 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Phi;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link EOstring}.
  *
- * @since 0.1
+ * @since 0.17
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOintEOltTest {
+final class EOstringTest {
 
     @Test
-    public void comparesWithAnotherNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("lt").get();
-        less.attr(0).put(right);
+    void comparesTwoEqualStrings() {
+        final String txt = "Hello, друг!";
         MatcherAssert.assertThat(
-            new Dataized(less).take(Boolean.class),
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(txt), "eq"),
+                    0, new Data.ToPhi(txt)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void comparesTwoDifferentStrings() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),
+                    0, new Data.ToPhi("Hello, world!")
+                )
+            ).take(Boolean.class),
             Matchers.equalTo(false)
         );
     }

@@ -53,11 +53,12 @@ import org.junit.jupiter.api.Test;
  *       ^.^.write FALSE
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOboolEOwhileTest {
+final class EObool$EOwhileTest {
 
     @Test
-    public void iteratesOnce() {
+    void iteratesOnce() {
         final AtomicBoolean term = new AtomicBoolean(true);
         final AtomicLong body = new AtomicLong(0L);
         new Dataized(
@@ -120,7 +121,7 @@ public final class EOboolEOwhileTest {
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(toggle, "while")),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
+                0, new EObool$EOwhileTest.Kid(Phi.Φ, toggle)
             )
         ).take();
     }
@@ -144,7 +145,7 @@ public final class EOboolEOwhileTest {
                     ),
                     "while"
                 ),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
+                0, new EObool$EOwhileTest.Kid(Phi.Φ, toggle)
             )
         ).take();
     }

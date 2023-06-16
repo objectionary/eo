@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -37,23 +36,29 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link EOstring}.
  *
- * @since 0.1
+ * @since 0.23
+ * @checkstyle TypeNameCheck (2 lines)
  */
-public final class EOintEOminusTest {
+final class EOstring$EOsliceTest {
 
     @Test
-    public void subtractsNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi sub = new PhWith(
-            new PhMethod(left, "minus"),
-            0, right
+    void slicesString() {
+        final Phi str = new Data.ToPhi("строка ㄤㄠ");
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOstring$EOslice(str),
+                "start",
+                new Data.ToPhi(7L)
+            ),
+            "len",
+            new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            new Dataized(sub).take(Long.class),
-            Matchers.equalTo(29L)
+            new Dataized(phi.copy()).take(String.class),
+            Matchers.equalTo("ㄤ")
         );
     }
+
 }

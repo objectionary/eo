@@ -44,10 +44,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-public final class EOcageTest {
+final class EOcageTest {
 
     @Test
-    public void writesAndReads() {
+    void writesAndReads() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
@@ -57,7 +57,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void checksThatEmptyCageHasIdentity() {
+    void checksThatEmptyCageHasIdentity() {
         final Phi cage = new EOcage(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(cage.attr("ν").get()).take(Long.class),
@@ -66,7 +66,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void writesItselfToItself() {
+    void writesItselfToItself() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         final Phi first = cage.copy();
@@ -88,7 +88,7 @@ public final class EOcageTest {
     //     c.write (dummy c')
     //     c.x.x.eq 1
     @Test
-    public void writesDummyToItself() {
+    void writesDummyToItself() {
         final Phi cage = new EOcage(Phi.Φ);
         final Phi first = new PhWith(
             new PhCopy(new PhMethod(cage, "write")),
@@ -125,7 +125,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void overwritesCagedObject() {
+    void overwritesCagedObject() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
             cage,
@@ -146,7 +146,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void evaluatesLazily() {
+    void evaluatesLazily() {
         final Phi first = new EOcage(Phi.Φ);
         EOcageTest.writeTo(first, new Data.ToPhi(3L));
         final Phi second = new EOcage(Phi.Φ);
@@ -168,7 +168,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void makesTrueCopy() {
+    void makesTrueCopy() {
         final Phi first = new EOcage(Phi.Φ);
         first.attr(0).put(new Data.ToPhi(1L));
         final Phi second = first.copy();
@@ -185,7 +185,7 @@ public final class EOcageTest {
     }
 
     @Test
-    public void writesAndRewritesPrimitive() {
+    void writesAndRewritesPrimitive() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
@@ -213,12 +213,12 @@ public final class EOcageTest {
      * Dummy Phi.
      * @since 1.0
      */
-    public static class Dummy extends PhDefault {
+    public static final class Dummy extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Dummy(final Phi sigma) {
+        Dummy(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
         }

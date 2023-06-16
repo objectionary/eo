@@ -27,36 +27,62 @@
  */
 package EOorg.EOeolang;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link EOstring}.
+ * Test case for {@link EOram$EOram_slice}.
+ * {@link EOorg.EOeolang.EOram$EOram_slice} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (4 lines)
+ * @checkstyle ParameterNumberCheck (20 lines)
  */
-public final class EOstringEOsliceTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOram$EOram_sliceTest {
 
-    @Test
-    public void slicesString() {
-        final Phi str = new Data.ToPhi("строка ㄤㄠ");
+    @ParameterizedTest
+    @CsvSource({
+        "5,  0, hello, 0, 5, hello",
+        "10, 5, hello, 5, 5, hello",
+        "13, 0, hello world, 6, 5, world"
+    })
+    void makesRamSlice(
+        final long total,
+        final int wrt,
+        final String data,
+        final int rdr,
+        final int len,
+        final String result
+    ) throws IOException {
+        final Phi ref = new PhWith(new EOram(Phi.Φ), 0, new Data.ToPhi(total));
+        Ram.INSTANCE.write(ref, wrt, data.getBytes(StandardCharsets.UTF_8));
+        final Phi slice = new PhMethod(ref, "slice");
         final Phi phi = new PhWith(
             new PhWith(
-                new EOstring$EOslice(str),
-                "start",
-                new Data.ToPhi(7L)
+                slice,
+                "position",
+                new Data.ToPhi((long) rdr)
             ),
-            "len",
-            new Data.ToPhi(1L)
+            "size",
+            new Data.ToPhi((long) len)
         );
+        final byte[] bytes = new Dataized(phi).take(byte[].class);
         MatcherAssert.assertThat(
-            new Dataized(phi.copy()).take(String.class),
-            Matchers.equalTo("ㄤ")
+            new String(bytes, StandardCharsets.UTF_8),
+            Matchers.is(
+                result
+            )
         );
     }
 
