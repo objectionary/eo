@@ -30,7 +30,7 @@
   QQ.rust > r
     """
     pub fn foo() -> i32 {
-      println!("Hello from rust");
+      println!("Hello frum rust");
       let i = 1234;
       i
     }
