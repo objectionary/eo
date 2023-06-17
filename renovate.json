@@ -8,5 +8,8 @@
       "matchPackageNames": ["maven-compiler-plugin"],
       "allowedVersions": "3.8.1"
     }
+  ],
+  "ignoreDeps": [
+    "org.apache.maven.plugins:maven-compiler-plugin"
   ]
 }
