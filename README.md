@@ -166,7 +166,7 @@ This is how you iterate:
     TRUE
 ```
 
-This code will print this:
+This code will print  this:
 
 ```
 2 x 2 = 4
