@@ -74,7 +74,7 @@ public final class Native {
                     this.name
                 ),
                 String.format(
-                    "public static native int %s ();",
+                    "    public static native int %s ();",
                     this.name
                 ),
                 "}"
