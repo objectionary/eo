@@ -119,12 +119,15 @@ final class EOboolEOwhileTest {
                 0, new Data.ToPhi(true)
             )
         ).take();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(toggle, "while")),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
-            )
-        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhCopy(new PhMethod(toggle, "while")),
+                    0, new Kid(Phi.Φ, toggle)
+                )
+            ).take(),
+            Matchers.notNullValue()
+        );
     }
 
     @Test
@@ -137,18 +140,21 @@ final class EOboolEOwhileTest {
                 0, new Data.ToPhi(true)
             )
         ).take();
-        new Dataized(
-            new PhWith(
-                new PhMethod(
-                    new PhWith(
-                        new PhCopy(new PhMethod(toggle, "eq")),
-                        0, new Data.ToPhi(true)
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(
+                            new PhCopy(new PhMethod(toggle, "eq")),
+                            0, new Data.ToPhi(true)
+                        ),
+                        "while"
                     ),
-                    "while"
-                ),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
-            )
-        ).take();
+                    0, new Kid(Phi.Φ, toggle)
+                )
+            ).take(),
+            Matchers.notNullValue()
+        );
     }
 
     /**

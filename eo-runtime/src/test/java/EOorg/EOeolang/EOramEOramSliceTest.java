@@ -49,7 +49,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle ParameterNumberCheck (20 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOramEOram_sliceTest {
+final class EOramEOramSliceTest {
 
     @ParameterizedTest
     @CsvSource({
