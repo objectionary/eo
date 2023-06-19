@@ -42,6 +42,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -67,7 +68,7 @@ public class EOrust extends PhDefault {
         try {
             NAMES = load("target/eo-test/names");
         } catch (final IOException exc) {
-            throw new RuntimeException(
+            throw new ExFailure(
                 "Cannot read the file target/eo-test/names",
                 exc
             );
