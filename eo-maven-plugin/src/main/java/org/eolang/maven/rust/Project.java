@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.rust_project;
+package org.eolang.maven.rust;
 
 import java.io.File;
 import java.io.IOException;

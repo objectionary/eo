@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Creating rust project tests.
- * The package contains different unit tests for all
- * implementations of {@link org.eolang.maven.rust_project.Project}.
+ * Rust project creating.
  */
-package org.eolang.maven.rust_project;
+package org.eolang.maven.rust;
