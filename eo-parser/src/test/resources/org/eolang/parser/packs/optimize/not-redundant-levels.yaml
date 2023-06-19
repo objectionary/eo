@@ -22,6 +22,6 @@ tests:
 #   arg.method > a
 # ____
 eo: |
-  [arg arg2] > first
+  [arg] > first
     [] > second
       arg.method > a

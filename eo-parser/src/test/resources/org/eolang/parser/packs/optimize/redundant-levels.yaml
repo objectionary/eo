@@ -14,7 +14,6 @@ tests:
   # 'another$t0$second' object
   - //o[@name='another$t0$second' and count(o)=1]
   - //o[@name='another$t0$second']/o[@base='int' and @name='@']
-skip: false
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > another
