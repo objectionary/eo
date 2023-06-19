@@ -71,7 +71,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    public void phiAreUniqueInDynamic() {
+    public void createsDifferentPhiInParallel() {
         final int threads = 1500;
         final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
         new Threads<>(
