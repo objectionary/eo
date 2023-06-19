@@ -29,36 +29,30 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * Test case for {@link EOint$EOneg}.
+ * {@link EOint$EOneg} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (2 lines)
+ * @since 0.1
+ * @checkstyle TypeNameCheck (4 lines)
  */
-final class EOstring$EOsliceTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOintEOnegTest {
 
     @Test
-    void slicesString() {
-        final Phi str = new Data.ToPhi("строка ㄤㄠ");
-        final Phi phi = new PhWith(
-            new PhWith(
-                new EOstring$EOslice(str),
-                "start",
-                new Data.ToPhi(7L)
-            ),
-            "len",
-            new Data.ToPhi(1L)
-        );
+    void negatesNumber() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
-            new Dataized(phi.copy()).take(String.class),
-            Matchers.equalTo("ㄤ")
+            new Dataized(neg).take(Long.class),
+            Matchers.equalTo(-42L)
         );
     }
-
 }

@@ -29,6 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -37,18 +38,27 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EOstring}.
  *
- * @since 0.17
+ * @since 0.23
  * @checkstyle TypeNameCheck (4 lines)
  */
-final class EOstring$EOas_bytesTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOstringEOsliceTest {
 
     @Test
-    void convertsStringToBytes() {
-        final Phi str = new Data.ToPhi("Hello, друг!");
-        final Phi phi = new EOstring$EOas_bytes(str);
+    void slicesString() {
+        final Phi str = new Data.ToPhi("строка ㄤㄠ");
+        final Phi phi = new PhWith(
+            new PhWith(
+                new EOstring$EOslice(str),
+                "start",
+                new Data.ToPhi(7L)
+            ),
+            "len",
+            new Data.ToPhi(1L)
+        );
         MatcherAssert.assertThat(
-            new Dataized(phi).take(byte[].class).length,
-            Matchers.equalTo(16)
+            new Dataized(phi.copy()).take(String.class),
+            Matchers.equalTo("ㄤ")
         );
     }
 

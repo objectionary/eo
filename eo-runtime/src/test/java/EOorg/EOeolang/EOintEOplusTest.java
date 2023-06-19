@@ -35,22 +35,23 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObool}.
+ * Test case for {@link EOint}.
  *
  * @since 0.1
- * @checkstyle TypeNameCheck (2 lines)
+ * @checkstyle TypeNameCheck (4 lines)
  */
-final class EObool$EOandTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOintEOplusTest {
 
     @Test
-    void joinsTwoValuesLogically() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi right = new Data.ToPhi(false);
-        final Phi and = left.attr("and").get();
-        and.attr(0).put(right);
+    void addsNumbers() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(13L);
+        final Phi add = left.attr("plus").get();
+        add.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Dataized(and).take(Boolean.class),
-            Matchers.equalTo(false)
+            new Dataized(add).take(Long.class),
+            Matchers.equalTo(55L)
         );
     }
 }

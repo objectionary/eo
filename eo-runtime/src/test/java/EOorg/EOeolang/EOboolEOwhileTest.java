@@ -53,9 +53,10 @@ import org.junit.jupiter.api.Test;
  *       ^.^.write FALSE
  *
  * @since 0.1
- * @checkstyle TypeNameCheck (2 lines)
+ * @checkstyle TypeNameCheck (4 lines)
  */
-final class EObool$EOwhileTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOboolEOwhileTest {
 
     @Test
     void iteratesOnce() {
@@ -121,7 +122,7 @@ final class EObool$EOwhileTest {
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(toggle, "while")),
-                0, new EObool$EOwhileTest.Kid(Phi.Φ, toggle)
+                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
             )
         ).take();
     }
@@ -145,7 +146,7 @@ final class EObool$EOwhileTest {
                     ),
                     "while"
                 ),
-                0, new EObool$EOwhileTest.Kid(Phi.Φ, toggle)
+                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
             )
         ).take();
     }

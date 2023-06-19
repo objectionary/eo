@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOint$EOltTest {
+final class EOintEOltTest {
 
     @Test
     void comparesWithAnotherNumber() {

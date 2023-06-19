@@ -29,37 +29,34 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EObytes}.
+ * Test case for {@link EObool$EOnot}.
+ * {@link EOorg.EOeolang.EObool$EOnot} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (2 lines)
+ * @since 0.1
+ * @todo #2146:30min Remove RuleAllTestsHaveProductionClass suppressing.
+ *  This rule was suppressed because the test class is generated and jtcop can't find it in the
+ *  classpath. So, when that feature will be implemented in the jtcop, we have to remove all
+ *  the similar suppression's from that test package.
+ *  jtcop issue: https://github.com/volodya-lombrozo/jtcop/issues/178
+ * @checkstyle TypeNameCheck (4 lines)
  */
-final class EObytes$EOconcatTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOboolEOnotTest {
 
     @Test
-    void concatenatesBytes() {
-        final Phi current = new EOstring$EOas_bytes(new Data.ToPhi("привет "));
-        final Phi provided = new EOstring$EOas_bytes(new Data.ToPhi("mr. ㄤㄠ!"));
-        final Phi phi = new PhMethod(
-            new PhWith(
-                new EObytes$EOconcat(current),
-                "b",
-                provided
-            ),
-            "as-string"
-        );
+    void inversesValue() {
+        final Phi left = new Data.ToPhi(true);
+        final Phi not = left.attr("not").get();
         MatcherAssert.assertThat(
-            new Dataized(phi.copy()).take(String.class),
-            Matchers.equalTo("привет mr. ㄤㄠ!")
+            new Dataized(not).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
-
 }

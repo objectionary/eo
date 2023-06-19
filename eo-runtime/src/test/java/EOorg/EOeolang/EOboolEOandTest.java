@@ -29,30 +29,29 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint$EOneg}.
- * {@link EOint$EOneg} is the generated class. This is the reason
- * why we disable jtcop check.
+ * Test case for {@link EObool}.
  *
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOint$EOnegTest {
+final class EOboolEOandTest {
 
     @Test
-    void negatesNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi neg = new PhMethod(left, "neg");
+    void joinsTwoValuesLogically() {
+        final Phi left = new Data.ToPhi(true);
+        final Phi right = new Data.ToPhi(false);
+        final Phi and = left.attr("and").get();
+        and.attr(0).put(right);
         MatcherAssert.assertThat(
-            new Dataized(neg).take(Long.class),
-            Matchers.equalTo(-42L)
+            new Dataized(and).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
 }
