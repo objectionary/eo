@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyFake;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -55,7 +54,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new OyFake())
+        maven.with("objectionary", new Objectionary.Fake())
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
@@ -111,7 +110,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new OyFake())
+        maven.with("objectionary", new Objectionary.Fake())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -131,7 +130,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new OyFake())
+        maven.with("objectionary", new Objectionary.Fake())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
             .execute(PullMojo.class);

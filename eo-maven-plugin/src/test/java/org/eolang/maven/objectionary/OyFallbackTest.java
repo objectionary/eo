@@ -172,7 +172,7 @@ final class OyFallbackTest {
         }
 
         @Override
-        public boolean contains(final String object) throws IOException {
+        public boolean contains(final String object) {
             this.invocations.incrementAndGet();
             return this.name.equals(object);
         }

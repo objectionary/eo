@@ -27,7 +27,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.maven.objectionary.OyFake;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -105,7 +105,7 @@ class SkipTest {
             .withScope("compile")
             .withVersion("*.*.*");
         maven.with("skip", skip)
-            .with("objectionary", new OyFake())
+            .with("objectionary", new Objectionary.Fake())
             .execute(PullMojo.class);
     }
 

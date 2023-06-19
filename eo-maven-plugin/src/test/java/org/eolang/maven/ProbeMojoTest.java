@@ -33,7 +33,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.objectionary.OyFake;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -57,7 +57,7 @@ final class ProbeMojoTest {
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("foreignFormat", "json")
-                    .with("objectionary", new OyFake())
+                    .with("objectionary", new Objectionary.Fake())
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -77,7 +77,7 @@ final class ProbeMojoTest {
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("offlineHashFile", temp.resolve("tags.txt"))
-                    .with("objectionary", new OyFake())
+                    .with("objectionary", new Objectionary.Fake())
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -94,7 +94,7 @@ final class ProbeMojoTest {
                 new FakeMaven(temp)
                     .with("tag", "1.0.0")
                     .with("offlineHash", "*.*.*:abcdefg")
-                    .with("objectionary", new OyFake())
+                    .with("objectionary", new Objectionary.Fake())
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
