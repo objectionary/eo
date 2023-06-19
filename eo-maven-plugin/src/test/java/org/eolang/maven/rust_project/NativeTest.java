@@ -42,8 +42,8 @@ final class NativeTest {
     @Test
     void savesCorrectly(@TempDir final Path temp) throws Exception {
         final Path target = Paths.get("mypackage");
-        final Native klass = new Native("name", target.toString());
-        klass.save(new FtDefault(temp.resolve(target)));
+        final Native java = new Native("name", target.toString());
+        java.save(new FtDefault(temp.resolve(target)));
         MatcherAssert.assertThat(
             new TextOf(
                 temp.resolve(target.resolve("name.java"))
