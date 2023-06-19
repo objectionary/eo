@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.objectionary;
 
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import org.cactoos.Func;
 import org.cactoos.Input;
