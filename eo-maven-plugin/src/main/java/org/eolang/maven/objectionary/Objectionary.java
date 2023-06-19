@@ -28,6 +28,7 @@ import java.io.IOException;
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Objectionary.
@@ -71,12 +72,12 @@ public interface Objectionary {
         /**
          * Function that emulates 'get()' method in {@link Objectionary}.
          */
-        private final Func<String, Input> getter;
+        private final Func<? super String, ? extends Input> getter;
 
         /**
          * Function that emulates 'contains()' method in {@link Objectionary}.
          */
-        private final Func<String, Boolean> container;
+        private final Func<? super String, Boolean> container;
 
         /**
          * Ctor.
@@ -92,7 +93,7 @@ public interface Objectionary {
          *
          * @param gett Lambda func for get()
          */
-        Fake(final Func<String, Input> gett) {
+        Fake(final Func<? super String, ? extends Input> gett) {
             this(
                 gett,
                 s -> true
@@ -105,9 +106,9 @@ public interface Objectionary {
          * @param gett Lambda func for get()
          * @param cont Lambda func for contains()
          */
-        public Fake(
-            final Func<String, Input> gett,
-            final Func<String, Boolean> cont
+        Fake(
+            final Func<? super String, ? extends Input> gett,
+            final Func<? super String, Boolean> cont
         ) {
             this.getter = gett;
             this.container = cont;
@@ -115,26 +116,12 @@ public interface Objectionary {
 
         @Override
         public Input get(final String name) {
-            try {
-                return this.getter.apply(name);
-            } catch (final Exception ex) {
-                Logger.debug(
-                    this, "Invalid lambda function for get() method in OyFake!"
-                );
-                throw new IllegalArgumentException(ex);
-            }
+            return new Unchecked<>(() -> this.getter.apply(name)).value();
         }
 
         @Override
         public boolean contains(final String name) {
-            try {
-                return this.container.apply(name);
-            } catch (final Exception ex) {
-                Logger.debug(
-                    this, "Invalid lambda function for contains() method in OyFake!"
-                );
-                throw new IllegalArgumentException(ex);
-            }
+            return new Unchecked<>(() -> this.container.apply(name)).value();
         }
 
         @Override
