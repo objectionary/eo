@@ -448,7 +448,7 @@ SOFTWARE.
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <excludedGroups>""</excludedGroups>
+              <excludedGroups>nothing-to-exclude</excludedGroups>
             </configuration>
           </plugin>
           <plugin>
