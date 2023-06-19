@@ -31,12 +31,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
+import org.cactoos.bytes.Base64Bytes;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.IoCheckedBytes;
 import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.Base64Decoded;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
@@ -139,11 +144,15 @@ public class EOrust extends PhDefault {
     private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
         try (ObjectInputStream map = new ObjectInputStream(
             new ByteArrayInputStream(
-                Base64.getDecoder().decode(
-                    new IoCheckedText(
-                        new TextOf(Paths.get(src))
-                    ).asString()
-                )
+                new IoCheckedBytes(
+                    new Base64Bytes(
+                        new BytesOf(
+                            new IoCheckedText(
+                                new TextOf(Paths.get(src))
+                            )
+                        )
+                    )
+                ).asBytes()
             )
         )) {
             final Object result = map.readObject();
