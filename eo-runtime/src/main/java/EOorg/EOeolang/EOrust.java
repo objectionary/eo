@@ -147,9 +147,7 @@ public class EOrust extends PhDefault {
                 new IoCheckedBytes(
                     new Base64Bytes(
                         new BytesOf(
-                            new IoCheckedText(
-                                new TextOf(Paths.get(src))
-                            )
+                            new TextOf(Paths.get(src))
                         )
                     )
                 ).asBytes()
