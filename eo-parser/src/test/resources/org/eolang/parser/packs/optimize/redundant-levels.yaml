@@ -17,28 +17,6 @@ tests:
 skip: false
 # Currently the test converts the code from the snippet to:
 # ____
-#
-# [] > another
-#   eq. > @
-#     another$t0$first > first
-#       second
-#     another$t0$second > second
-#       first
-#
-# [second] > another$t0$first
-#   1 > @
-#
-# [first] > another$t0$second
-#   2 > @
-# ____
-# Which actually looks strange.
-
-# @todo #2131:90min Remove redundant objects and levels.
-#  It's better to remove redundant objects from the result code snippet.
-#  They create some problems in the future transformations.
-#  When the transformation is fixed we can enable the test.
-#  The test should convert the code from the snippet to the next:
-# ____
 # [] > another
 #   eq. > @
 #     another$t0$first > first
