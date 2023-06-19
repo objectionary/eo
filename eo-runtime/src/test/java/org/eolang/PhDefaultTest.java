@@ -71,17 +71,17 @@ final class PhDefaultTest {
     }
 
     @Test
-    public void phiUniqueHashesInDynamic() {
+    public void phiAreUniqueInDynamic() {
         final int threads = 1500;
-        final Set<PhDefault> hashes = ConcurrentHashMap.newKeySet();
+        final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
         new Threads<>(
             threads,
             Stream.generate(
                 () -> (Scalar<PhDefault>) () -> (new EOstring$EOlength(Phi.Φ))
             ).limit(threads).collect(Collectors.toList())
-        ).forEach(hashes::add);
+        ).forEach(objects::add);
         MatcherAssert.assertThat(
-            hashes.size(),
+            objects.size(),
             Matchers.equalTo(threads)
         );
     }
