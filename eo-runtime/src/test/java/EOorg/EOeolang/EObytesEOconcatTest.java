@@ -40,11 +40,13 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EObytes}.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EObytesEOconcatTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EObytesEOconcatTest {
 
     @Test
-    public void concatenatesBytes() {
+    void concatenatesBytes() {
         final Phi current = new EOstring$EOas_bytes(new Data.ToPhi("привет "));
         final Phi provided = new EOstring$EOas_bytes(new Data.ToPhi("mr. ㄤㄠ!"));
         final Phi phi = new PhMethod(

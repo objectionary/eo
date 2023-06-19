@@ -46,10 +46,13 @@ import org.junitpioneer.jupiter.StdIo;
 
 /**
  * Test case for {@link EOstdin}.
+ * {@link EOstdin} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
  * @since 0.23
  */
-public final class EOstdinTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOstdinTest {
 
     /**
      * DEFAULT_STDIN.
@@ -57,16 +60,16 @@ public final class EOstdinTest {
     private static final InputStream DEFAULT_STDIN = System.in;
 
     @AfterAll
-    public static void restoreSystemInput() {
+    static void restoreSystemInput() {
         MatcherAssert.assertThat(
             System.in,
-            Matchers.equalTo(DEFAULT_STDIN)
+            Matchers.equalTo(EOstdinTest.DEFAULT_STDIN)
         );
     }
 
     @AfterEach
     @ReadsStdIo
-    public void clearInput() {
+    void clearInput() {
         final Input input = Input.getInstance();
         try {
             final Field prop = input.getClass().getDeclaredField("instance");
@@ -81,7 +84,7 @@ public final class EOstdinTest {
 
     @StdIo("this is a test input!")
     @Test
-    public void dataizesNextLineOneLine(final StdIn stdin) {
+    void dataizesNextLineOneLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
@@ -93,7 +96,7 @@ public final class EOstdinTest {
 
     @StdIo("this is a testing input!")
     @Test
-    public void dataizesStdinOneLine(final StdIn stdin) {
+    void dataizesStdinOneLine(final StdIn stdin) {
         final String expected = "this is a testing input!".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
@@ -105,7 +108,7 @@ public final class EOstdinTest {
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    public void dataizesNextLineMultiLine(final StdIn stdin) {
+    void dataizesNextLineMultiLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final String actual = new Dataized(phi).take(String.class);
@@ -117,7 +120,7 @@ public final class EOstdinTest {
 
     @StdIo("")
     @Test
-    public void dataizesNextLineEmpty(final StdIn stdin) {
+    void dataizesNextLineEmpty(final StdIn stdin) {
         final Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
@@ -133,7 +136,7 @@ public final class EOstdinTest {
 
     @StdIo("")
     @Test
-    public void dataizesEmptyStdin(final StdIn stdin) {
+    void dataizesEmptyStdin(final StdIn stdin) {
         final String expected = "";
         final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
         final String actual = new Dataized(phi).take(String.class);
@@ -145,7 +148,7 @@ public final class EOstdinTest {
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    public void dataizesStdinMultiLine(final StdIn stdin) {
+    void dataizesStdinMultiLine(final StdIn stdin) {
         final String first = "this is a test input!".concat(System.lineSeparator());
         final String second = "another line".concat(System.lineSeparator());
         final String third = "yet another line".concat(System.lineSeparator());
@@ -159,7 +162,7 @@ public final class EOstdinTest {
 
     @StdIo({"first", "second", "third"})
     @Test
-    public void dataizesStdinFewOneLine(final StdIn stdin) {
+    void dataizesStdinFewOneLine(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
@@ -185,7 +188,7 @@ public final class EOstdinTest {
 
     @StdIo({"first", "", "third"})
     @Test
-    public void dataizesStdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
+    void dataizesStdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
         Phi phi = new PhMethod(new PhCopy(new EOstdin(Phi.Φ)), "next-line");

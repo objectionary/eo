@@ -39,10 +39,10 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.26
  */
-public final class EOerrorTest {
+final class EOerrorTest {
 
     @Test
-    public void makesToxicObject() {
+    void makesToxicObject() {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(

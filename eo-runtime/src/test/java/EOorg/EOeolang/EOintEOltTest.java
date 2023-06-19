@@ -35,14 +35,18 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link EOint$EOlt}.
+ * {@link EOint$EOlt} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOintEOltTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOintEOltTest {
 
     @Test
-    public void comparesWithAnotherNumber() {
+    void comparesWithAnotherNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
         final Phi less = left.attr("lt").get();

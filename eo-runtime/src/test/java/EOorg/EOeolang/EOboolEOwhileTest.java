@@ -53,11 +53,13 @@ import org.junit.jupiter.api.Test;
  *       ^.^.write FALSE
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOboolEOwhileTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOboolEOwhileTest {
 
     @Test
-    public void iteratesOnce() {
+    void iteratesOnce() {
         final AtomicBoolean term = new AtomicBoolean(true);
         final AtomicLong body = new AtomicLong(0L);
         new Dataized(
@@ -82,7 +84,7 @@ public final class EOboolEOwhileTest {
     }
 
     @Test
-    public void iteratesManyTimes() {
+    void iteratesManyTimes() {
         final long total = 5L;
         final AtomicLong term = new AtomicLong(total);
         final AtomicLong body = new AtomicLong(0L);
@@ -108,7 +110,7 @@ public final class EOboolEOwhileTest {
     }
 
     @Test
-    public void loopsOverAbstractObjects() {
+    void loopsOverAbstractObjects() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"));
         new Dataized(
@@ -117,16 +119,19 @@ public final class EOboolEOwhileTest {
                 0, new Data.ToPhi(true)
             )
         ).take();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(toggle, "while")),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
-            )
-        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhCopy(new PhMethod(toggle, "while")),
+                    0, new Kid(Phi.Φ, toggle)
+                )
+            ).take(),
+            Matchers.notNullValue()
+        );
     }
 
     @Test
-    public void dataizesComplexBooleanToggle() {
+    void dataizesComplexBooleanToggle() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhMethod(parent, "toggle");
         new Dataized(
@@ -135,30 +140,33 @@ public final class EOboolEOwhileTest {
                 0, new Data.ToPhi(true)
             )
         ).take();
-        new Dataized(
-            new PhWith(
-                new PhMethod(
-                    new PhWith(
-                        new PhCopy(new PhMethod(toggle, "eq")),
-                        0, new Data.ToPhi(true)
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(
+                            new PhCopy(new PhMethod(toggle, "eq")),
+                            0, new Data.ToPhi(true)
+                        ),
+                        "while"
                     ),
-                    "while"
-                ),
-                0, new EOboolEOwhileTest.Kid(Phi.Φ, toggle)
-            )
-        ).take();
+                    0, new Kid(Phi.Φ, toggle)
+                )
+            ).take(),
+            Matchers.notNullValue()
+        );
     }
 
     /**
      * Parent Phi.
      * @since 1.0
      */
-    public static class Parent extends PhDefault {
+    private static final class Parent extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Parent(final Phi sigma) {
+        Parent(final Phi sigma) {
             super(sigma);
             this.add(
                 "toggle",
@@ -174,7 +182,7 @@ public final class EOboolEOwhileTest {
      * Kid Phi.
      * @since 1.0
      */
-    public static class Kid extends PhDefault {
+    private static final class Kid extends PhDefault {
         /**
          * Toggle.
          */
@@ -185,7 +193,7 @@ public final class EOboolEOwhileTest {
          * @param sigma Sigma
          * @param tgl Toggle
          */
-        public Kid(final Phi sigma, final Phi tgl) {
+        Kid(final Phi sigma, final Phi tgl) {
             super(sigma);
             this.toggle = tgl;
             this.add("x", new AtFree());

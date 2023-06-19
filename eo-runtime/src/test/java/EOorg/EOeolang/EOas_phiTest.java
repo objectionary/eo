@@ -41,10 +41,10 @@ import org.junit.jupiter.api.Test;
  * @since 0.22
  * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOas_phiTest {
+final class EOas_phiTest {
 
     @Test
-    public void printsAndReturns() {
+    void printsAndReturns() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(

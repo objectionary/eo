@@ -38,11 +38,13 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EObool}.
  *
  * @since 0.1
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOboolEOandTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOboolEOandTest {
 
     @Test
-    public void joinsTwoValuesLogically() {
+    void joinsTwoValuesLogically() {
         final Phi left = new Data.ToPhi(true);
         final Phi right = new Data.ToPhi(false);
         final Phi and = left.attr("and").get();

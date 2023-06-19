@@ -44,11 +44,13 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOheap$EOpointer$EOblock}.
  *
  * @since 0.19
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOheapEOpointerEOblockTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOheapEOpointerEOblockTest {
 
     @Test
-    public void writesBytesIntoHeap() {
+    void writesBytesIntoHeap() {
         final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(
             new PhMethod(heap, "pointer"),
@@ -79,12 +81,12 @@ public final class EOheapEOpointerEOblockTest {
      * Inverse Phi.
      * @since 1.0
      */
-    public static class Inverse extends PhDefault {
+    private static final class Inverse extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Inverse(final Phi sigma) {
+        Inverse(final Phi sigma) {
             super(sigma);
             this.add("b", new AtFree());
             this.add(

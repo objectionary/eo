@@ -39,11 +39,13 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOstring}.
  *
  * @since 0.23
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOstringEOsliceTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOstringEOsliceTest {
 
     @Test
-    public void slicesString() {
+    void slicesString() {
         final Phi str = new Data.ToPhi("строка ㄤㄠ");
         final Phi phi = new PhWith(
             new PhWith(

@@ -29,27 +29,48 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Phi;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link EOstring$EOeq}.
+ * {@link EOorg.EOeolang.EOio.EOstdin} is the generated class. This is the reason
+ * why we disable jtcop check.
  *
- * @since 0.1
+ * @since 0.17
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOintEOaddTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOstringTest {
 
     @Test
-    public void addsNumbers() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi add = left.attr("plus").get();
-        add.attr(0).put(right);
+    void comparesTwoEqualStrings() {
+        final String txt = "Hello, друг!";
         MatcherAssert.assertThat(
-            new Dataized(add).take(Long.class),
-            Matchers.equalTo(55L)
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(txt), "eq"),
+                    0, new Data.ToPhi(txt)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
         );
     }
+
+    @Test
+    void comparesTwoDifferentStrings() {
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),
+                    0, new Data.ToPhi("Hello, world!")
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
+        );
+    }
+
 }
