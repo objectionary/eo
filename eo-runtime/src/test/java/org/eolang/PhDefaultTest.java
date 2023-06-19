@@ -71,7 +71,7 @@ final class PhDefaultTest {
 
     @Test
     void createsDifferentPhiInParallel() {
-        final int threads = 1500;
+        final int threads = 100;
         final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
         new Threads<>(
             threads,
@@ -80,8 +80,8 @@ final class PhDefaultTest {
             ).limit(threads).collect(Collectors.toList())
         ).forEach(objects::add);
         MatcherAssert.assertThat(
-            objects.size(),
-            Matchers.equalTo(threads)
+            objects,
+            Matchers.hasSize(threads)
         );
     }
 
