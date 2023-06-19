@@ -7,7 +7,6 @@ tests:
   - //o[@name='first']
   - //o[@name='first']/o[@base='first$second' and @name='second']
   - //o[@name='first']/o[@base='first$second' and @name='second']/o[@base='arg']
-  - //o[@name='first']/o[@base='first$second' and @name='second']/o[@base='arg']
   # 'first$second' object
   - //o[@name='first$second']
   - //o[@name='first$second']/o[@name='arg']

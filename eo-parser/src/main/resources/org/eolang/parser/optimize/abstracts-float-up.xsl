@@ -83,13 +83,13 @@ SOFTWARE.
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
     <xsl:param name="top" as="element()"/>
-    <xsl:for-each select="$bottom/ancestor::o">
+    <xsl:for-each select="$bottom/ancestor::o[eo:abstract(.)]">
       <xsl:variable name="current-ancestor" select="."/>
       <xsl:if test="$top/descendant-or-self::o[generate-id() = generate-id($current-ancestor)]">
         <xsl:for-each select="$current-ancestor/o[@name and generate-id() != generate-id($bottom)]">
-          <xsl:variable name="o" select="."/>
-          <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($o)])">
-            <xsl:copy-of select="$o"/>
+          <xsl:variable name="copied" select="."/>
+          <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($copied)])">
+            <xsl:copy-of select="$copied"/>
           </xsl:if>
         </xsl:for-each>
       </xsl:if>
@@ -120,8 +120,8 @@ SOFTWARE.
       </xsl:attribute>
       <xsl:variable name="ancestors" select="ancestor-or-self::o[eo:abstract(.)]"/>
       <xsl:for-each select="1 to count($ancestors) - 1">
-        <xsl:variable name="level" select="position()"/>
-        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">
+        <xsl:variable name="index" select="position()"/>
+        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $index + 1], $ancestors[count($ancestors) - $index])">
           <xsl:element name="o">
             <xsl:attribute name="as">
               <xsl:value-of select="@name"/>
@@ -130,7 +130,7 @@ SOFTWARE.
               <xsl:value-of select="@name"/>
             </xsl:attribute>
             <xsl:attribute name="level">
-              <xsl:value-of select="$level"/>
+              <xsl:value-of select="$index"/>
             </xsl:attribute>
           </xsl:element>
         </xsl:for-each>
@@ -159,14 +159,14 @@ SOFTWARE.
       </xsl:if>
       <xsl:apply-templates select="node()|@* except @name"/>
       <xsl:for-each select="1 to count($ancestors) - 1">
-        <xsl:variable name="level" select="position()"/>
-        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $level + 1], $ancestors[count($ancestors) - $level])">
+        <xsl:variable name="index" select="position()"/>
+        <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $index + 1], $ancestors[count($ancestors) - $index])">
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
             </xsl:attribute>
             <xsl:attribute name="level">
-              <xsl:value-of select="$level"/>
+              <xsl:value-of select="$index"/>
             </xsl:attribute>
             <xsl:attribute name="line">
               <xsl:value-of select="$o/@line"/>
