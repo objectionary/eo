@@ -45,7 +45,7 @@ final class BinarizeMojoTest {
      * @throws Exception If fails.
      */
     @Test
-    @Tag("Slow")
+    @Tag("slow")
     @ExtendWith(CargoCondition.class)
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;

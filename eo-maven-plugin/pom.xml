@@ -253,7 +253,7 @@ SOFTWARE.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <excludedGroups>Slow</excludedGroups>
+          <excludedGroups>slow</excludedGroups>
           <argLine>@{argLine} -Xss${stack-size}</argLine>
           <systemPropertyVariables>
             <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
