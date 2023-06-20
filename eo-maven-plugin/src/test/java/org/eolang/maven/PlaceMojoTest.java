@@ -221,7 +221,7 @@ final class PlaceMojoTest {
 
     /**
      * Test case for {@link PlaceMojo#execute()}.
-     * Since for tests we are using {@link org.eolang.maven.DummyCentral}, then instead of unpacking
+     * Since for tests we are using dummy maven central, then instead of unpacking
      * of classes from jar it just copies the jar itself to target/classes folder.
      *
      * @param temp Temporary directory

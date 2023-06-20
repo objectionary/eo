@@ -31,19 +31,23 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
@@ -60,7 +64,11 @@ import org.eolang.maven.util.Home;
  * NOT thread-safe.
  * @since 0.28.12
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({
+    "PMD.TooManyMethods",
+    "PMD.CouplingBetweenObjects",
+    "JTCOP.RuleAllTestsHaveProductionClass"
+})
 @NotThreadSafe
 public final class FakeMaven {
 
@@ -637,6 +645,52 @@ public final class FakeMaven {
                 OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();
+        }
+    }
+
+    /**
+     * The class for emulating of Maven Central repository.
+     * DummyCentral creates an empty dependency jar file under the path.
+     *
+     * @since 0.28.11
+     */
+    private static final class DummyCentral implements BiConsumer<Dependency, Path> {
+
+        @Override
+        public void accept(
+            final Dependency dependency,
+            final Path path
+        ) {
+            try {
+                Files.createDirectories(path);
+                final String other = DummyCentral.jarName(dependency);
+                Files.createFile(path.resolve(other));
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    String.format("Can't save '%s' to '%s'", dependency, path),
+                    ex
+                );
+            }
+        }
+
+        /**
+         * Dependency jar name.
+         *
+         * @param dependency Dependency
+         * @return Jar file name
+         */
+        private static String jarName(final Dependency dependency) {
+            final List<String> parts = new ArrayList<>(3);
+            if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {
+                parts.add(dependency.getArtifactId());
+            }
+            if (dependency.getVersion() != null && !dependency.getVersion().isEmpty()) {
+                parts.add(dependency.getVersion());
+            }
+            if (dependency.getClassifier() != null && !dependency.getClassifier().isEmpty()) {
+                parts.add(dependency.getClassifier());
+            }
+            return String.format("%s.jar", String.join("-", parts));
         }
     }
 }
