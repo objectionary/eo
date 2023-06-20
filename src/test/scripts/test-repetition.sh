@@ -29,7 +29,7 @@ printf "Number of iterations is %s\n" "$max"
 printf "Path to the testable module is %s\n" "$folder"
 set -e
 # Go to testable folder
-cd $folder
+cd "$folder"
 # Clean the test classes to avoid caching issues and prepare testing environment
 # without running the tests
 mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
