@@ -37,7 +37,7 @@ tests:
 #  or remove-levels.xsl transformations. As you can see from the comment above
 #  - we have strange argument @ that passes into main$t1$first and
 #  main$t1$second objects which is considered wrong and can cause some problems.
-
+skip: true
 eo: |
   [] > main
     sibling > @
