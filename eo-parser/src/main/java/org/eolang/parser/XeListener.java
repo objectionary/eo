@@ -48,7 +48,7 @@ import org.xembly.Directives;
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.ExcessivePublicCount"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
