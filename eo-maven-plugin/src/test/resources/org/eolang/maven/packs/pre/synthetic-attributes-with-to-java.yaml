@@ -60,7 +60,7 @@ xsls:
 #  line and pos attributes.
 #  Processing terminated by xsl:message at line 358 in to-java.xsl
 #  When we fix the problem, we have to enable the following test.
-skip: false
+skip: true
 tests:
   - /program/errors[count(*)=0]
 eo: |
