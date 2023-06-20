@@ -55,6 +55,7 @@ final class PullMojoTest {
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
         maven.with("objectionary", new Objectionary.Fake())
+            .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
@@ -112,6 +113,7 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.with("objectionary", new Objectionary.Fake())
             .with("offlineHashFile", temp.resolve("tags.txt"))
+            .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
@@ -133,10 +135,34 @@ final class PullMojoTest {
         maven.with("objectionary", new Objectionary.Fake())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
+            .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
+        );
+    }
+
+    @Test
+    void skipsPullMojo(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreignTojos()
+            .add("org.eolang.io.stdout")
+            .withScope("compile")
+            .withVersion("*.*.*");
+        maven.with("skip", true)
+            .with("objectionary", new Objectionary.Fake())
+            .execute(PullMojo.class);
+        MatcherAssert.assertThat(
+            new Home(temp.resolve("target")).exists(
+                Paths.get(
+                    String.format(
+                        "%s/org/eolang/io/stdout.eo",
+                        PullMojo.DIR
+                    )
+                )
+            ),
+            Matchers.is(false)
         );
     }
 }

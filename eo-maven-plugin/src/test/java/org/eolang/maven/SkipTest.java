@@ -41,37 +41,6 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class SkipTest {
 
-    @Test
-    void executesPullMojo(@TempDir final Path temp) throws IOException {
-        this.executePullMojo(temp, false);
-        MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
-            Matchers.is(new Online().value())
-        );
-    }
-
-    @Test
-    void skipsPullMojo(@TempDir final Path temp) throws IOException {
-        this.executePullMojo(temp, true);
-        MatcherAssert.assertThat(
-            !new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
-            Matchers.is(true)
-        );
-    }
 
     @Test
     void skipsCopyMojo(@TempDir final Path temp) throws IOException {
@@ -93,20 +62,6 @@ class SkipTest {
             new Home(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
-    }
-
-    private void executePullMojo(
-        @TempDir final Path temp,
-        final boolean skip
-    ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        maven.foreignTojos()
-            .add("org.eolang.io.stdout")
-            .withScope("compile")
-            .withVersion("*.*.*");
-        maven.with("skip", skip)
-            .with("objectionary", new Objectionary.Fake())
-            .execute(PullMojo.class);
     }
 
     private void executeCopyMojo(
