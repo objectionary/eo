@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
@@ -51,6 +52,7 @@ final class CopyMojoTest {
         new Moja<>(CopyMojo.class)
             .with("sourcesDir", src.toFile())
             .with("outputDir", classes.toFile())
+            .with("skip", false)
             .with("version", ver)
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
@@ -65,6 +67,29 @@ final class CopyMojoTest {
                 Matchers.containsString("0.0.0"),
                 Matchers.containsString(ver)
             )
+        );
+    }
+
+    @Test
+    void skipsCopyMojo(@TempDir final Path temp) throws IOException {
+        final Path classes = temp.resolve("classes");
+        new FakeMaven(temp)
+            .withProgram(
+                "+rt foo:0.0.0",
+                "",
+                "",
+                "[args] > main",
+                "  \"0.0.0\" > @"
+            )
+            .with("sourcesDir", temp.toFile())
+            .with("outputDir", temp.resolve("classes").toFile())
+            .with("skip", true)
+            .with("version", "1.1.1")
+            .execute(CopyMojo.class);
+        final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
+        MatcherAssert.assertThat(
+            new Home(classes).exists(classes.relativize(out)),
+            Matchers.is(false)
         );
     }
 
