@@ -39,7 +39,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Bridge between Java CLI and EO.
@@ -195,9 +194,7 @@ public final class Main {
         }
         Main.LOGGER.info(
             String.format(
-                "%s---%s%s",
-                System.lineSeparator(),
-                System.lineSeparator(),
+                "%n---%n%s",
                 new Dataized(app).take().toString()
             )
         );
