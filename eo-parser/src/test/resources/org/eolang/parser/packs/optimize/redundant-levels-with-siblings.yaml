@@ -1,0 +1,48 @@
+xsls:
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+tests:
+  - /program/errors[count(*)=0]
+  # 'main' object
+  - //o[@name='main']
+  - //o[@name='main']/o[@base='sibling' and @name='@']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t1$first' and @name='first' and count(o)=0]
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t1$second' and @name='second' and count(o)=0]
+  # 'main$t1$first' object
+  - //o[@name='main$t1$first' and count(o)=1]
+  - //o[@name='main$t1$first']/o[@base='int' and @name='@']
+  # 'main$t1$second' object
+  - //o[@name='main$t1$second' and count(o)=1]
+  - //o[@name='main$t1$second']/o[@base='int' and @name='@']
+# Currently the test converts the code from the snippet to:
+# ____
+# [] > main
+#   sibling > @
+#   eq. > sibling
+#     main$t1$first > first
+#       @   <-------------------- What is this?
+#     main$t1$second > second
+#       @   <-------------------- What is this?
+#
+# [] > main$t1$first
+#   1 > @
+#
+# [] > main$t1$second
+#   2 > @
+# ____
+# @todo #2126:90min Fix problem with redundant objects.
+#  Enabling synthetic-attributes-with-to-java.yaml test case still fails.
+#  The possible reason is the wrong behaviour of abstracts-float-up.xsl
+#  or remove-levels.xsl transformations. As you can see from the comment above
+#  - we have strange argument @ that passes into main$t1$first and
+#  main$t1$second objects which is considered wrong and can cause some problems.
+skip: true
+eo: |
+  [] > main
+    sibling > @
+    eq. > sibling
+      [] > first
+        1 > @
+      [] > second
+        2 > @
