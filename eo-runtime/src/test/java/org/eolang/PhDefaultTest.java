@@ -24,7 +24,14 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOstring;
+import EOorg.EOeolang.EOstring$EOlength;
 import EOorg.EOeolang.EOtxt.EOsprintf;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -59,6 +66,22 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             new Dataized(phi.attr("ν").get()).take(Long.class),
             Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void createsDifferentPhiInParallel() {
+        final int threads = 100;
+        final Set<PhDefault> objects = ConcurrentHashMap.newKeySet();
+        new Threads<>(
+            threads,
+            Stream.generate(
+                () -> (Scalar<PhDefault>) () -> new EOstring$EOlength(Phi.Φ)
+            ).limit(threads).collect(Collectors.toList())
+        ).forEach(objects::add);
+        MatcherAssert.assertThat(
+            objects,
+            Matchers.hasSize(threads)
         );
     }
 
