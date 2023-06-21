@@ -195,7 +195,9 @@ public final class Main {
         }
         Main.LOGGER.info(
             String.format(
-                "%n---%n%s",
+                "%s---%s%s",
+                System.lineSeparator(),
+                System.lineSeparator(),
                 new Dataized(app).take().toString()
             )
         );
