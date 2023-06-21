@@ -113,7 +113,7 @@ final class SnippetTest {
             Matchers.allOf(
                 new Mapped<>(
                     ptn -> Matchers.matchesPattern(
-                        Pattern.compile(ptn, Pattern.DOTALL | Pattern.MULTILINE)
+                        Pattern.compile(ptn, Pattern.DOTALL)
                     ),
                     (Iterable<String>) map.get("out")
                 )
