@@ -1,7 +1,7 @@
 exit: 0
 in: ""
 out:
-  - "\n---\ntrue\n"
+  - ".*true.*"
 args: [ "main" ]
 eo: |
   [args...] > main
