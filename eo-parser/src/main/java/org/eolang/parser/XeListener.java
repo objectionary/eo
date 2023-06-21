@@ -48,7 +48,7 @@ import org.xembly.Directives;
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.ExcessivePublicCount"})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
@@ -371,6 +371,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         if (ctx.DOTS() != null) {
             this.objects.prop("unvar", "");
         }
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterVersion(final ProgramParser.VersionContext ctx) {
+        this.objects.enter();
+        if (ctx.VERSION() != null) {
+            this.objects.prop("version", ctx.VERSION().getText());
+        }
+    }
+
+    @Override
+    public void exitVersion(final ProgramParser.VersionContext ctx) {
         this.objects.leave();
     }
 
