@@ -2,7 +2,7 @@
 # This script runs the maven tests of the eo component several times
 # to check for flaky tests and to find concurrency issues.
 # Usage ./test-repetition.sh --max 15 --folder /some/path
-
+set -x
 # Initialize variables
 max="10"
 folder="../eo-runtime"

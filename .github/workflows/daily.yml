@@ -13,11 +13,11 @@ jobs:
           # Make script runnable
           chmod +x "${SCRIPT}"
           # Test eo-parser
-          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
+          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
           # Test eo-maven-plugin
-          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
+          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
           # Test eo-runtime
-          bash "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
+          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
       # @todo #2085:90min Add GitHub action step to create an issue.
       #  It would be convenient to add github action step that will create an
       #  issue in case of any of the tests is failed. We can do it through
