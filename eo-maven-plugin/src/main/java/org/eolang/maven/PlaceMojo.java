@@ -40,7 +40,6 @@ import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.tojos.PlacedTojosCache;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
