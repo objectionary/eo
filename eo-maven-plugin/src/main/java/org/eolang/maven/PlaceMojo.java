@@ -96,13 +96,6 @@ public final class PlaceMojo extends SafeMojo {
     @SuppressWarnings("PMD.LongVariable")
     private boolean placeBinariesThatHaveSources;
 
-    /**
-     * Placed cached tojos.
-     * @since 0.30
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    private PlacedTojosCache placedCache = new PlacedTojosCache(this.placedTojos);
-
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
@@ -270,7 +263,7 @@ public final class PlaceMojo extends SafeMojo {
             final Path target = PlaceMojo.this.outputDir.toPath().resolve(
                 this.dir.relativize(file)
             );
-            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedTojos.find(target);
             final boolean res;
             if (tojo.isPresent() && Files.exists(target)
                 && (this.sameLength(target, file) || !tojo.get().unplaced())) {
@@ -296,7 +289,7 @@ public final class PlaceMojo extends SafeMojo {
             final Path target = PlaceMojo.this.outputDir.toPath().resolve(
                 this.dir.relativize(file)
             );
-            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedCache.find(target);
+            final Optional<PlacedTojo> tojo = PlaceMojo.this.placedTojos.find(target);
             if (tojo.isPresent()) {
                 if (!Files.exists(target)) {
                     Logger.info(
@@ -327,7 +320,7 @@ public final class PlaceMojo extends SafeMojo {
             try {
                 final Path target = PlaceMojo.this.outputDir.toPath().resolve(path);
                 new Home(PlaceMojo.this.outputDir).save(new InputOf(file), path);
-                PlaceMojo.this.placedCache.placeClass(
+                PlaceMojo.this.placedTojos.placeClass(
                     target,
                     PlaceMojo.this.outputDir.toPath().relativize(target).toString(),
                     this.dep

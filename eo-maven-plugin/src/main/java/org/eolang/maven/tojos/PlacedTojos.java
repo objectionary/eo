@@ -129,6 +129,17 @@ public final class PlacedTojos implements Closeable {
     }
 
     /**
+     * Find placed tojo by path.
+     * @param target Path.
+     * @return Placed tojo.
+     */
+    public Optional<PlacedTojo> find(final Path target) {
+        return this.allBinaries().stream().filter(
+            tojo -> target.toString().equals(tojo.identifier())
+        ).findFirst();
+    }
+
+    /**
      * Place class into placed tojos file.
      * @param target Path to the class.
      * @param related Related.
