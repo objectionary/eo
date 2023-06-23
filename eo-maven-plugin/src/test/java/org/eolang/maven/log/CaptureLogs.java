@@ -46,6 +46,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @ExtendWith(CaptureLogs.CaptureLogsExtension.class)
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public @interface CaptureLogs {
 
     /**

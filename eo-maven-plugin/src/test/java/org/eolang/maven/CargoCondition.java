@@ -39,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  *
  * @since 0.30
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public final class CargoCondition implements ExecutionCondition {
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(

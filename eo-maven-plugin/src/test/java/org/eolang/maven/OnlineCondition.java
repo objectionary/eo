@@ -36,6 +36,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  *
  * @since 0.26
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public final class OnlineCondition implements ExecutionCondition {
 
     @Override
