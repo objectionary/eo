@@ -70,7 +70,7 @@ public @interface CaptureLogs {
         /**
          * Ctor.
          */
-        public CaptureLogsExtension() {
+        CaptureLogsExtension() {
             this(new Logs());
         }
 
