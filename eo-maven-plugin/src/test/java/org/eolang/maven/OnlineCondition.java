@@ -25,6 +25,8 @@
 package org.eolang.maven;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -38,7 +40,8 @@ public final class OnlineCondition implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(
-        final ExtensionContext context) {
+        final ExtensionContext context
+    ) {
         ConditionEvaluationResult ret;
         try {
             if (new Online().value()) {
@@ -52,5 +55,50 @@ public final class OnlineCondition implements ExecutionCondition {
             );
         }
         return ret;
+    }
+
+    /**
+     * Check if we are online.
+     *
+     * @since 1.0
+     */
+    private static class Online {
+        /**
+         * URL to validate.
+         */
+        private final String url;
+
+        /**
+         * Ctor.
+         * @param url URL to check availability for.
+         */
+        Online(final String url) {
+            this.url = url;
+        }
+
+        /**
+         * Ctor.
+         * Check against default url.
+         */
+        Online() {
+            this("https://www.objectionary.com");
+        }
+
+        /**
+         * If we are online.
+         * @return True if we are online and false otherwise.
+         * @throws java.io.IOException In case of check failure
+         */
+        boolean value() throws IOException {
+            boolean online = true;
+            try {
+                final URLConnection conn = new URL(this.url).openConnection();
+                conn.connect();
+                conn.getInputStream().close();
+            } catch (final IOException ignored) {
+                online = false;
+            }
+            return online;
+        }
     }
 }
