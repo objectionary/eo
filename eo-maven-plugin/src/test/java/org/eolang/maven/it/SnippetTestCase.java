@@ -78,7 +78,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 @ExtendWith(OnlineCondition.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class SnippetITCase {
+final class SnippetTestCase {
 
     /**
      * Temp dir.
@@ -100,7 +100,7 @@ final class SnippetITCase {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        final int result = SnippetITCase.run(
+        final int result = SnippetTestCase.run(
             this.temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
@@ -158,8 +158,8 @@ final class SnippetITCase {
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
         final Path classes = maven.targetPath().resolve("classes");
-        SnippetITCase.compileJava(maven.generatedPath(), classes);
-        SnippetITCase.runJava(args, stdin, stdout, classes);
+        SnippetTestCase.compileJava(maven.generatedPath(), classes);
+        SnippetTestCase.runJava(args, stdin, stdout, classes);
         return 0;
     }
 
@@ -170,16 +170,16 @@ final class SnippetITCase {
      * @throws Exception If fails
      */
     private static void compileJava(final Path generated, final Path classes) throws Exception {
-        SnippetITCase.exec(
+        SnippetTestCase.exec(
             String.format(
                 "%s -encoding utf-8 %s -d %s -cp %s",
-                SnippetITCase.jdkExecutable("javac"),
+                SnippetTestCase.jdkExecutable("javac"),
                 new Walk(generated).stream()
                     .map(Path::toAbsolutePath)
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
                 classes,
-                SnippetITCase.classpath()
+                SnippetTestCase.classpath()
             ),
             generated
         );
@@ -200,17 +200,17 @@ final class SnippetITCase {
         final Output stdout,
         final Path classes
     ) throws Exception {
-        SnippetITCase.exec(
+        SnippetTestCase.exec(
             String.join(
                 " ",
                 new Joined<String>(
                     new ListOf<>(
-                        SnippetITCase.jdkExecutable("java"),
+                        SnippetTestCase.jdkExecutable("java"),
                         "-Dfile.encoding=UTF-8",
                         "-Dsun.stdout.encoding=UTF-8",
                         "-Dsun.stderr.encoding=UTF-8",
                         "-cp",
-                        SnippetITCase.classpath(),
+                        SnippetTestCase.classpath(),
                         "org.eolang.Main"
                     ),
                     args
@@ -227,7 +227,7 @@ final class SnippetITCase {
      * @param dir The home dir
      */
     private static void exec(final String cmd, final Path dir) throws Exception {
-        SnippetITCase.exec(
+        SnippetTestCase.exec(
             cmd,
             dir,
             new InputOf(""),
@@ -250,7 +250,7 @@ final class SnippetITCase {
         final Input stdin,
         final Output stdout
     ) throws Exception {
-        Logger.debug(SnippetITCase.class, "+%s", cmd);
+        Logger.debug(SnippetTestCase.class, "+%s", cmd);
         final Process proc = new ProcessBuilder()
             .command(cmd.split(" "))
             .directory(dir.toFile())
