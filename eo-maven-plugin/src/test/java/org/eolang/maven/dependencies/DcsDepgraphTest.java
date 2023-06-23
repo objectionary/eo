@@ -40,7 +40,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-final class DcsJsonTest {
+final class DcsDepgraphTest {
 
     @ParameterizedTest
     @CsvSource({
