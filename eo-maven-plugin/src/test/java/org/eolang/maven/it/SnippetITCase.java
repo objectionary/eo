@@ -77,6 +77,7 @@ import org.yaml.snakeyaml.Yaml;
  *  VerboseProcess) and remove it from MainTest.
  */
 @ExtendWith(OnlineCondition.class)
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class SnippetITCase {
 
     /**

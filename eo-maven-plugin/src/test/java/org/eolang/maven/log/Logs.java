@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @since 0.30
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public final class Logs {
 
     /**
