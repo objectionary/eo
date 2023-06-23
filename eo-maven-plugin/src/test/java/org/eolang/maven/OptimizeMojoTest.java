@@ -36,6 +36,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.xml.transform.TransformerFactory;
+import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
@@ -328,6 +332,26 @@ final class OptimizeMojoTest {
                 .with("failOnWarning", true)
                 .execute(OptimizeMojo.class)
         );
+    }
+
+    @Test
+    void choosesTransformerFactoryOnce() {
+        MatcherAssert.assertThat(
+            TransformerFactory.newInstance().getClass(),
+            Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
+        );
+    }
+
+    @Test
+    void choosesTransformerFactoryInConcurrentEnvironment() {
+        for (final Class<? extends TransformerFactory> clazz : IntStream.range(0, 100).parallel()
+            .mapToObj(i -> TransformerFactory.newInstance().getClass())
+            .collect(Collectors.toList())) {
+            MatcherAssert.assertThat(
+                clazz,
+                Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
+            );
+        }
     }
 
     /**
