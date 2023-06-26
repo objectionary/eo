@@ -225,6 +225,7 @@ final class SnippetTestCase {
      *
      * @param cmd The command
      * @param dir The home dir
+     * @throws Exception If fails
      */
     private static void exec(final String cmd, final Path dir) throws Exception {
         SnippetTestCase.exec(
@@ -242,6 +243,7 @@ final class SnippetTestCase {
      * @param dir The home dir
      * @param stdin Stdin
      * @param stdout Stdout
+     * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static void exec(
