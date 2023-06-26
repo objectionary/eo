@@ -88,7 +88,7 @@ SOFTWARE.
       <xsl:if test="$top/descendant-or-self::o[generate-id() = generate-id($current-ancestor)]">
         <xsl:for-each select="$current-ancestor/o[@name and generate-id() != generate-id($bottom)]">
           <xsl:variable name="copied" select="."/>
-          <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($copied)])">
+          <xsl:if test="not($bottom/ancestor-or-self::o[generate-id() = generate-id($copied)]) and $bottom/descendant::o[@base=$copied/@name]">
             <xsl:copy-of select="$copied"/>
           </xsl:if>
         </xsl:for-each>
