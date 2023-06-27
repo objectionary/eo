@@ -203,6 +203,32 @@ public final class FakeMaven {
     }
 
     /**
+     * Adds eo program to a workspace.
+     * @param input Program as an input.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    public FakeMaven withProgram(final Input input) throws IOException {
+        return this.withProgram(new UncheckedText(new TextOf(input)).asString());
+    }
+
+    /**
+     * Path to compilation target directory.
+     * @return Path to target dir.
+     */
+    public Path targetPath() {
+        return this.workspace.absolute(Paths.get("target"));
+    }
+
+    /**
+     * Path to generated directory.
+     * @return Path to generated dir.
+     */
+    public Path generatedPath() {
+        return this.targetPath().resolve("generated");
+    }
+
+    /**
      * Foreign tojos for eo-foreign.* file.
      * @return Foreign tojos.
      */
@@ -231,16 +257,6 @@ public final class FakeMaven {
      */
     FakeMaven withHelloWorld() throws IOException {
         return this.withProgram("+package f\n", "[args] > main", "  (stdout \"Hello!\").print");
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     * @param input Program as an input.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    FakeMaven withProgram(final Input input) throws IOException {
-        return this.withProgram(new UncheckedText(new TextOf(input)).asString());
     }
 
     /**
@@ -274,22 +290,6 @@ public final class FakeMaven {
     FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
         this.attributes.put(attribute, value);
         return this;
-    }
-
-    /**
-     * Path to compilation target directory.
-     * @return Path to target dir.
-     */
-    Path targetPath() {
-        return this.workspace.absolute(Paths.get("target"));
-    }
-
-    /**
-     * Path to generated directory.
-     * @return Path to generated dir.
-     */
-    Path generatedPath() {
-        return this.targetPath().resolve("generated");
     }
 
     /**

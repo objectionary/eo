@@ -21,39 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import javax.xml.transform.TransformerFactory;
-import net.sf.saxon.TransformerFactoryImpl;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Tests for choosing correct implementation of {@link javax.xml.transform.TransformerFactory}.
+ * Integration tests.
  *
- * @since 0.28.12
+ * @since 0.30
  */
-class ChooseCorrectTransformerFactoryTest {
-    @Test
-    void choosesOnce() {
-        MatcherAssert.assertThat(
-            TransformerFactory.newInstance().getClass(),
-            Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
-        );
-    }
-
-    @Test
-    void choosesCorrectlyInConcurrentEnvironment() {
-        for (final Class<? extends TransformerFactory> clazz : IntStream.range(0, 100).parallel()
-            .mapToObj(i -> TransformerFactory.newInstance().getClass())
-            .collect(Collectors.toList())) {
-            MatcherAssert.assertThat(
-                clazz,
-                Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
-            );
-        }
-    }
-}
+package org.eolang.maven.it;

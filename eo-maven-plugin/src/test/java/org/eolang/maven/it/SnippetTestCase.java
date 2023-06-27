@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.it;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
@@ -45,6 +45,12 @@ import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.AssembleMojo;
+import org.eolang.maven.DemandMojo;
+import org.eolang.maven.FakeMaven;
+import org.eolang.maven.OnlineCondition;
+import org.eolang.maven.RegisterMojo;
+import org.eolang.maven.TranspileMojo;
 import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -71,7 +77,8 @@ import org.yaml.snakeyaml.Yaml;
  *  VerboseProcess) and remove it from MainTest.
  */
 @ExtendWith(OnlineCondition.class)
-final class SnippetTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class SnippetTestCase {
 
     /**
      * Temp dir.
@@ -93,7 +100,7 @@ final class SnippetTest {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        final int result = SnippetTest.run(
+        final int result = SnippetTestCase.run(
             this.temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
@@ -151,8 +158,8 @@ final class SnippetTest {
         maven.execute(AssembleMojo.class);
         maven.execute(TranspileMojo.class);
         final Path classes = maven.targetPath().resolve("classes");
-        SnippetTest.compileJava(maven.generatedPath(), classes);
-        SnippetTest.runJava(args, stdin, stdout, classes);
+        SnippetTestCase.compileJava(maven.generatedPath(), classes);
+        SnippetTestCase.runJava(args, stdin, stdout, classes);
         return 0;
     }
 
@@ -163,16 +170,16 @@ final class SnippetTest {
      * @throws Exception If fails
      */
     private static void compileJava(final Path generated, final Path classes) throws Exception {
-        SnippetTest.exec(
+        SnippetTestCase.exec(
             String.format(
                 "%s -encoding utf-8 %s -d %s -cp %s",
-                SnippetTest.jdkExecutable("javac"),
+                SnippetTestCase.jdkExecutable("javac"),
                 new Walk(generated).stream()
                     .map(Path::toAbsolutePath)
                     .map(Path::toString)
                     .collect(Collectors.joining(" ")),
                 classes,
-                SnippetTest.classpath()
+                SnippetTestCase.classpath()
             ),
             generated
         );
@@ -193,17 +200,17 @@ final class SnippetTest {
         final Output stdout,
         final Path classes
     ) throws Exception {
-        SnippetTest.exec(
+        SnippetTestCase.exec(
             String.join(
                 " ",
                 new Joined<String>(
                     new ListOf<>(
-                        SnippetTest.jdkExecutable("java"),
+                        SnippetTestCase.jdkExecutable("java"),
                         "-Dfile.encoding=UTF-8",
                         "-Dsun.stdout.encoding=UTF-8",
                         "-Dsun.stderr.encoding=UTF-8",
                         "-cp",
-                        SnippetTest.classpath(),
+                        SnippetTestCase.classpath(),
                         "org.eolang.Main"
                     ),
                     args
@@ -218,9 +225,10 @@ final class SnippetTest {
      *
      * @param cmd The command
      * @param dir The home dir
+     * @throws Exception If fails
      */
     private static void exec(final String cmd, final Path dir) throws Exception {
-        SnippetTest.exec(
+        SnippetTestCase.exec(
             cmd,
             dir,
             new InputOf(""),
@@ -235,6 +243,7 @@ final class SnippetTest {
      * @param dir The home dir
      * @param stdin Stdin
      * @param stdout Stdout
+     * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static void exec(
@@ -243,7 +252,7 @@ final class SnippetTest {
         final Input stdin,
         final Output stdout
     ) throws Exception {
-        Logger.debug(SnippetTest.class, "+%s", cmd);
+        Logger.debug(SnippetTestCase.class, "+%s", cmd);
         final Process proc = new ProcessBuilder()
             .command(cmd.split(" "))
             .directory(dir.toFile())

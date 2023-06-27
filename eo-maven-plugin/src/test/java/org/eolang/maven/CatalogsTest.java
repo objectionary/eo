@@ -43,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
  * everything works fine it's important to run the tests many times.
  * @since 0.29.0
  */
-class CatalogsConcurrencyTest {
+class CatalogsTest {
 
     /**
      * Number of cores on the running system.
@@ -56,14 +56,14 @@ class CatalogsConcurrencyTest {
         MatcherAssert.assertThat(
             new SumOf(
                 new Threads<>(
-                    CatalogsConcurrencyTest.CORES,
-                    IntStream.range(0, CatalogsConcurrencyTest.CORES)
+                    CatalogsTest.CORES,
+                    IntStream.range(0, CatalogsTest.CORES)
                         .mapToObj(i -> tojos.add(UUID.randomUUID().toString()))
-                        .map(CatalogsConcurrencyTest::task)
+                        .map(CatalogsTest::task)
                         .collect(Collectors.toList())
                 )
             ),
-            Matchers.equalTo(CatalogsConcurrencyTest.CORES)
+            Matchers.equalTo(CatalogsTest.CORES)
         );
     }
 
