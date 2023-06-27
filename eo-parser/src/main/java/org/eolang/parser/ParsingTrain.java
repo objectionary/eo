@@ -87,6 +87,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/add-probes.xsl",
         "/org/eolang/parser/vars-float-up.xsl",
         "/org/eolang/parser/add-refs.xsl",
+        "/org/eolang/parser/warnings/sparse-decoration.xsl",
         "/org/eolang/parser/warnings/unsorted-metas.xsl",
         "/org/eolang/parser/warnings/incorrect-architect.xsl",
         "/org/eolang/parser/warnings/incorrect-home.xsl",
