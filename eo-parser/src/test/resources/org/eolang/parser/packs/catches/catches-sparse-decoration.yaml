@@ -1,11 +1,12 @@
 xsls:
   - /org/eolang/parser/warnings/sparse-decoration.xsl
 tests:
-  - /program/errors[count(error[@severity='warning'])=4]
+  - /program/errors[count(error[@severity='warning'])=5]
   - /program/errors/error[@line='3']
   - /program/errors/error[@line='6']
   - /program/errors/error[@line='18']
   - /program/errors/error[@line='19']
+  - /program/errors/error[@line='27']
 eo: |
   5 > five
 
@@ -27,3 +28,17 @@ eo: |
   [] > decorates-abstract
     [] > @
       five > @
+
+  [] > decorates-parent
+    ^ > @
+
+  [] > try-example
+    try
+      []
+        5 > @
+      []
+        error "Error" > @
+      nop
+
+  [args...] > nop
+    TRUE > @

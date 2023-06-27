@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@abstract and count(o)=1 and count(o[@name='@' and (@abstract or count(o)=0)])=1]">
+      <xsl:for-each select="//o[@abstract and count(o)=1 and count(o[@name='@' and not(@base='^') and (@abstract or count(o)=0)])=1]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>sparse-decoration</xsl:text>
