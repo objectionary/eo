@@ -192,9 +192,6 @@
           nan
           ^
 
-  # Negation of $
-  positive-infinity > neg
-
   # Difference between $ and x
   [x...] > minus
     ^.as-bytes > neg-inf-as-bytes!
