@@ -38,7 +38,7 @@ SOFTWARE.
           <xsl:attribute name="severity">
             <xsl:text>warning</xsl:text>
           </xsl:attribute>
-          <xsl:text>Sparse decoration is not prohibited</xsl:text>
+          <xsl:text>Sparse decoration is prohibited</xsl:text>
         </xsl:element>
       </xsl:for-each>
     </xsl:copy>
