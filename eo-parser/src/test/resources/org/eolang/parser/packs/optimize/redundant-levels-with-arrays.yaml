@@ -1,0 +1,98 @@
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/synthetic-references.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+tests:
+  - /program/errors[count(*)=0]
+  # 'main' object
+  - //o[@name='main']
+  - //o[@name='main']/o[@base='sibling' and @name='@']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t1$first' and @name='first' and count(o)=0]
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t1$second' and @name='second' and count(o)=0]
+  # 'main$t1$first' object
+  - //o[@name='main$t1$first' and count(o)=1]
+  - //o[@name='main$t1$first']/o[@base='int' and @name='@']
+  # 'main$t1$second' object
+  - //o[@name='main$t1$second' and count(o)=1]
+  - //o[@name='main$t1$second']/o[@base='int' and @name='@']
+# Currently the test converts the code from the snippet to:
+# Without synthetic references:
+# ____
+# [] > main
+#   tuple > arr
+#     0
+#     tuple
+#       1
+#       2
+#   eq > @
+#     tuple
+#       arr
+#       .at
+#         1
+#       .at
+#         1
+#     tuple
+#       2
+# ____
+# With synthetic references:
+# ____
+# [] > main
+#   tuple > arr
+#     0
+#     main$t0$generated-scope-a5d6690a-1b51-4872-96f8-f4347eed3128 > generated-scope-a5d6690a-1b51-4872-96f8-f4347eed3128
+#   eq > @
+#     tuple
+#       arr
+#       .at
+#         1
+#       .at
+#         1
+#     tuple
+#       2
+#
+# [] > main$t0$generated-scope-a5d6690a-1b51-4872-96f8-f4347eed3128
+#   tuple > org.eolang.scope-a5d6690a-1b51-4872-96f8-f4347eed3128
+#     1
+#     2
+#   org.eolang.scope-a5d6690a-1b51-4872-96f8-f4347eed3128 > @
+# ____
+# With WRAPPED METHOD CALLS and synthetic references
+# ____
+# [] > main
+#   tuple > arr
+#     0
+#     constant-array
+#   eq > @
+#     tuple
+#       second
+#         arr
+#     tuple
+#       2
+#
+# [] > constant-array
+#   tuple > local-element
+#     1
+#     2
+#   local-element > @
+#
+# [arr] > second
+#   .at > local-element
+#     first
+#       arr
+#     1
+#   local-element > @
+#
+# [arr] > first
+#   .at > local-element
+#     arr
+#     1
+#   local-element > @
+# ____
+eo: |
+  [] > main
+    * 0 (* 1 2) > arr
+    eq > @
+      * ((arr.at 1).at 1)
+      * 2
