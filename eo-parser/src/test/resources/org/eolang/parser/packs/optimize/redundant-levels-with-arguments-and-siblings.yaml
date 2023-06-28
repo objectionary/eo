@@ -1,0 +1,45 @@
+xsls:
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+tests:
+  - /program/errors[count(*)=0]
+  # 'main' object
+  - //o[@name='main']
+  - //o[@name='main']/o[@base='sibling' and @name='@']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t2$first' and @name='first' and count(o)=1]
+  - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t2$second' and @name='second' and count(o)=1]
+  # 'main$t2$first' object
+  - //o[@name='main$t2$first' and count(o)=3]
+  - //o[@name='main$t2$first']/o[@base='arg' and not(@name)]
+  - //o[@name='main$t2$first']/o[@base='.one' and @name='@']
+  - //o[@name='main$t2$first']/o[not(@base) and @name='arg']
+  # 'main$t2$second' object
+  - //o[@name='main$t2$second' and count(o)=3]
+  - //o[@name='main$t2$second']/o[@base='arg' and not(@name)]
+  - //o[@name='main$t2$second']/o[@base='.two' and @name='@']
+  - //o[@name='main$t2$second']/o[not(@base) and @name='arg']
+# Currently the test converts the code from the snippet to:
+# ____
+# [arg] > main
+#   sibling > @
+#   eq. > sibling
+#     main$t2$first > first
+#       arg
+#     main$t2$second > second
+#       arg
+#
+# [arg] > main$t2$first
+#   arg.one > @
+#
+# [] > main$t2$second
+#   arg.two > @
+# ____
+eo: |
+  [arg] > main
+    sibling > @
+    eq. > sibling
+      [] > first
+        arg.one > @
+      [] > second
+        arg.two > @

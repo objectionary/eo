@@ -21,9 +21,7 @@ tests:
 #   sibling > @
 #   eq. > sibling
 #     main$t1$first > first
-#       @   <-------------------- What is this?
 #     main$t1$second > second
-#       @   <-------------------- What is this?
 #
 # [] > main$t1$first
 #   1 > @
@@ -31,13 +29,6 @@ tests:
 # [] > main$t1$second
 #   2 > @
 # ____
-# @todo #2126:90min Fix problem with redundant objects.
-#  Enabling synthetic-attributes-with-to-java.yaml test case still fails.
-#  The possible reason is the wrong behaviour of abstracts-float-up.xsl
-#  or remove-levels.xsl transformations. As you can see from the comment above
-#  - we have strange argument @ that passes into main$t1$first and
-#  main$t1$second objects which is considered wrong and can cause some problems.
-skip: true
 eo: |
   [] > main
     sibling > @
