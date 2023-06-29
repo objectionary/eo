@@ -123,6 +123,4 @@ class StEoLoggedTest {
             return new ArrayList<>(this.captured);
         }
     }
-
-
 }
