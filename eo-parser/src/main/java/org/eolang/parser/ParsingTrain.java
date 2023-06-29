@@ -120,10 +120,13 @@ public final class ParsingTrain extends TrEnvelope {
         super(
             new TrLambda(
                 new TrFast(
-                    new TrLogged(
-                        new TrClasspath<>(sheets).back(),
-                        ParsingTrain.class,
-                        Level.FINEST
+                    new TrLambda(
+                        new TrLogged(
+                            new TrClasspath<>(sheets).back(),
+                            ParsingTrain.class,
+                            Level.FINEST
+                        ),
+                        StEoLogged::new
                     )
                 ),
                 shift -> new StSequence(

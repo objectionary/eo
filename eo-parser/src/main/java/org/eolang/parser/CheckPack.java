@@ -98,6 +98,7 @@ public final class CheckPack {
         }
         if (!failures.isEmpty()) {
             Logger.info(this, "Broken XML:\n%s", out);
+            Logger.info(this, "Broken EO:\n%s", new XMIR(out).toEO());
         }
         return failures;
     }
