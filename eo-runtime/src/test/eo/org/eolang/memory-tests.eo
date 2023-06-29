@@ -99,7 +99,7 @@
 [] > memory-is-strictly-typed-int-error
   memory 42 > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write 3.1416 > @
@@ -111,10 +111,10 @@
 [] > memory-is-strictly-typed-int-error-overflow
   memory 256 > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
-          m.write 9223372036854775808 > @
+          m.write (9223372036854775807.plus 1) > @
         [e]
           e > @
         nop
@@ -123,7 +123,7 @@
 [] > memory-is-strictly-typed-float-error
   memory 3.24 > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write 2556 > @
@@ -136,7 +136,7 @@
   memory 256.24 > m
   1.79e308 > float-max-value
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write (float-max-value.plus 0.1e308) > @
@@ -148,7 +148,7 @@
 [] > memory-is-strictly-typed-bool-error
   memory TRUE > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write "Not good" > @
@@ -160,7 +160,7 @@
 [] > memory-is-strictly-typed-string-error-overflow
   memory "Hello" > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write "Much longer string!" > @
@@ -172,7 +172,7 @@
 [] > memory-is-strictly-typed-int
   memory 12248 > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write 2556 > @
@@ -184,7 +184,7 @@
 [] > memory-is-strictly-typed-float
   memory 245.88 > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write 82.22 > @
@@ -196,7 +196,7 @@
 [] > memory-is-strictly-typed-string
   memory "Hello" > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write "Hell" > @
@@ -208,7 +208,7 @@
 [] > memory-is-strictly-typed-bool
   memory FALSE > m
   nop > @
-    assert-that > @
+    assert-that
       try
         []
           m.write TRUE > @
