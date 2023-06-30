@@ -56,7 +56,6 @@ xsls:
 # @todo #2126:90min Found more than one target of object at the line.
 #  Processing terminated by xsl:message at line 358 in to-java.xsl
 #  When we fix the problem, we have to enable the following test.
-skip: true
 tests:
   - /program/errors[count(*)=0]
 eo: |

@@ -96,7 +96,7 @@ public final class CheckPack {
                 failures.add(xpath);
             }
         }
-        if (!failures.isEmpty()) {
+        if (!failures.isEmpty() || true) {
             Logger.info(this, "Broken XML:\n%s", out);
             Logger.info(this, "Broken EO:\n%s", new XMIR(out).toEO());
         }
