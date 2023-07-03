@@ -125,7 +125,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "pub fn foo() -> i32 {",
-                "print!(\"Hello world 1\");"
+                "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
