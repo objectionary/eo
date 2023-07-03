@@ -78,7 +78,6 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        targetDir.toPath().resolve("Lib").toFile().mkdirs();
         for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
                 Logger.info(this, String.format("Building rust project.."));
