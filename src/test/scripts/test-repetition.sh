@@ -39,5 +39,5 @@ max=10
 for i in $(seq 1 $max)
 do
   echo "Test repetition #$i of $max"
-  MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e
+  MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e --batch-mode
 done
