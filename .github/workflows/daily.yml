@@ -16,6 +16,11 @@ jobs:
           SCRIPT="${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh"
           # Make script runnable
           chmod +x "${SCRIPT}"
+          # Check that script is exists
+          if [ ! -f "${SCRIPT}" ]; then
+              echo "Script ${SCRIPT} not found"
+              exit 1
+          fi
           # Test eo-parser
           sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
           # Test eo-maven-plugin
