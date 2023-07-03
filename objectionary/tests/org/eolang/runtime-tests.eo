@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.29.5
++version 0.29.6
 
 [] > understands-this-correctly
   [x] > a
@@ -434,3 +434,22 @@
     Hello
     """
     $.equal-to "Hello\n\nHello"
+
+[] > correctly-handles-same-name-attrs
+  [f s] > calc
+    plus. > @
+      f.next
+      s.next
+  assert-that > @
+    calc
+      []
+        [x] > build
+          x.plus 1 > @
+          build (@.plus 1) > next
+        build 1 > @
+      []
+        [y] > build
+          y.plus 2 > @
+          build (@.plus 2) > next
+        build 2 > @
+    $.equal-to 12

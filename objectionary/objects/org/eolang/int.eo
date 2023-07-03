@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.5
-+version 0.29.5
++rt jvm org.eolang:eo-runtime:0.29.6
++version 0.29.6
 
 [] > int
   # Tests that $ = x
@@ -101,12 +101,3 @@
 
   # Converts this to bytes
   [] > as-bytes /bytes
-
-  # Converts this to hash
-  [] > as-hash
-    as-int. > @
-      xor.
-        as-bytes
-        right.
-          as-bytes
-          32

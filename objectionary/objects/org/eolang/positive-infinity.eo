@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.29.5
-+version 0.29.5
++rt jvm org.eolang:eo-runtime:0.29.6
++version 0.29.6
 
 # Positive infinity
 [] > positive-infinity
@@ -98,31 +98,30 @@
           is-nan-or-zero
             terms.at index > term!
           nan
-          []
-            if. > @
-              acc.gt 0.0
-              times-rec
-                *
-                  if.
-                    is-term-gt-zero term > term-gt-zero
-                    acc
-                    neg-inf
-                  index.plus 1 > next-index
-                  terms
-                infs
-                is-nan-or-zero
-                is-term-gt-zero
-              times-rec
-                *
-                  if.
-                    term-gt-zero
-                    acc
-                    pos-inf
-                  next-index
-                  terms
-                infs
-                is-nan-or-zero
-                is-term-gt-zero
+          if.
+            acc.gt 0.0
+            times-rec
+              *
+                if.
+                  is-term-gt-zero term > term-gt-zero
+                  acc
+                  neg-inf
+                index.plus 1 > next-index
+                terms
+              infs
+              is-nan-or-zero
+              is-term-gt-zero
+            times-rec
+              *
+                if.
+                  term-gt-zero
+                  acc
+                  pos-inf
+                next-index
+                terms
+              infs
+              is-nan-or-zero
+              is-term-gt-zero
 
     if. > @
       eq.
@@ -192,10 +191,6 @@
             x.at zero
           nan
           ^
-
-  # Negation of $
-  [] > neg
-    negative-infinity > @
 
   # Difference between $ and x
   [x...] > minus
@@ -285,31 +280,30 @@
           is-nan-or-infinite
             terms.at index > term!
           nan
-          []
-            if. > @
-              acc.gt 0.0
-              div-rec
-                *
-                  if.
-                    is-term-gte-zero term > term-gte-zero
-                    acc
-                    neg-inf
-                  index.plus 1 > next-index
-                  terms
-                infs
-                is-nan-or-infinite
-                is-term-gte-zero
-              div-rec
-                *
-                  if.
-                    term-gte-zero
-                    acc
-                    pos-inf
-                  next-index
-                  terms
-                infs
-                is-nan-or-infinite
-                is-term-gte-zero
+          if.
+            acc.gt 0.0
+            div-rec
+              *
+                if.
+                  is-term-gte-zero term > term-gte-zero
+                  acc
+                  neg-inf
+                index.plus 1 > next-index
+                terms
+              infs
+              is-nan-or-infinite
+              is-term-gte-zero
+            div-rec
+              *
+                if.
+                  term-gte-zero
+                  acc
+                  pos-inf
+                next-index
+                terms
+              infs
+              is-nan-or-infinite
+              is-term-gte-zero
 
     if. > @
       eq.

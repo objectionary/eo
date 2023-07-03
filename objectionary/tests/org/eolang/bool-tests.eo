@@ -28,7 +28,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.29.5
++version 0.29.6
 
 [] > compares-two-bools
   assert-that > @
@@ -169,17 +169,6 @@
             m.write (m.minus 1)
             stdout (sprintf "%d\n" m)
       TRUE
-    $.equal-to TRUE
-
-[] > hash-equals-the-value
-  assert-that > @
-    and.
-      eq.
-        1231
-        TRUE.as-hash
-      eq.
-        1237
-        FALSE.as-hash
     $.equal-to TRUE
 
 [] > last-while-dataization-object
