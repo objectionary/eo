@@ -43,7 +43,7 @@ SOFTWARE.
         <xsl:value-of select="concat('generated-',$curr)"/>
       </xsl:attribute>
       <xsl:attribute name="line">
-        <xsl:value-of select="concat(@line, generate-id())"/>
+        <xsl:value-of select="concat(@line, '.1')"/>
       </xsl:attribute>
       <xsl:attribute name="pos">
         <xsl:value-of select="@pos"/>
@@ -65,7 +65,7 @@ SOFTWARE.
           <xsl:text>@</xsl:text>
         </xsl:attribute>
         <xsl:attribute name="line">
-          <xsl:value-of select="concat(@line, generate-id())"/>
+          <xsl:value-of select="concat(@line, '.2')"/>
         </xsl:attribute>
         <xsl:attribute name="pos">
           <xsl:value-of select="@pos"/>
