@@ -46,7 +46,7 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #2195:90min Make cargo compilation parallel. Now cargo
+ * @todo #2195:90min Make cargo compilation in parallel. Now cargo
  *  projects are being built consistently which is too long.
  *  It is much better to build them in parallel to reduce time.
  */
