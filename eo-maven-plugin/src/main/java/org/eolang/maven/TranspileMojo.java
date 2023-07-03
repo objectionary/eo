@@ -35,6 +35,7 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -261,6 +262,11 @@ public final class TranspileMojo extends SafeMojo {
         for (final Path binary : unexpected) {
             try {
                 Files.deleteIfExists(binary);
+            } catch (final AccessDeniedException ignore) {
+                Logger.warn(
+                    this, "Can't delete file %s due to access denied",
+                    binary
+                );
             } catch (final IOException cause) {
                 throw new IllegalStateException(
                     String.format("Can't delete file %s", binary),
@@ -268,6 +274,7 @@ public final class TranspileMojo extends SafeMojo {
                 );
             }
         }
+
     }
 
     /**
