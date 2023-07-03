@@ -28,10 +28,12 @@
 package EOorg.EOeolang;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,16 +95,21 @@ public class EOrust extends PhDefault {
                 )
             );
         }
-        System.load(
-            Paths.get("target")
-                .resolve("eo-test")
-                .resolve("Lib")
-                .resolve("target")
-                .resolve("debug")
-                .resolve(lib)
-                .toAbsolutePath()
-                .toString()
-        );
+        final File libs = Paths.get("target")
+            .resolve("eo-test")
+            .resolve("Lib").toFile();
+        if (libs.isDirectory()) {
+            for (final File subdir: libs.listFiles()) {
+                final Path path = subdir.toPath()
+                    .resolve("target")
+                    .resolve("debug")
+                    .resolve(lib)
+                    .toAbsolutePath();
+                if (path.toFile().exists()){
+                    System.load(path.toString());
+                }
+            }
+        }
     }
 
     /**
