@@ -22,11 +22,11 @@ jobs:
               exit 1
           fi
           # Test eo-parser
-          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser"
+          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser
           # Test eo-maven-plugin
-          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin"
+          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin
           # Test eo-runtime
-          sh "${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime"
+          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime
       # @todo #2085:90min Add GitHub action step to create an issue.
       #  It would be convenient to add github action step that will create an
       #  issue in case of any of the tests is failed. We can do it through
