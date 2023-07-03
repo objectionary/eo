@@ -264,7 +264,8 @@ public final class TranspileMojo extends SafeMojo {
                 Files.deleteIfExists(binary);
             } catch (final AccessDeniedException ignore) {
                 Logger.warn(
-                    this, "Can't delete file %s due to access denied",
+                    this,
+                    "Can't delete file %s due to access denied",
                     binary
                 );
             } catch (final IOException cause) {
@@ -274,7 +275,6 @@ public final class TranspileMojo extends SafeMojo {
                 );
             }
         }
-
     }
 
     /**
