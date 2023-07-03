@@ -21,49 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.rust_project;
+package org.eolang.maven.rust;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.FtDefault;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link Module}.
+ * Test case for {@link Names}.
  *
  * @since 0.1
  */
-final class ModuleTest {
+final class NamesTest {
     @Test
-    void transformsCorrectly(@TempDir final Path temp) throws Exception {
-        final Module module = new Module(
-            String.join(
-                System.lineSeparator(),
-                "pub fn foo() -> i32 {",
-                "  let mut rng = rand::thread_rng();",
-                "  print!(\"Hello world\");",
-                "  let i = rng.gen::<i32>();",
-                "  i",
-                "}"
-            ),
-            "simple"
-        );
-        module.save(new FtDefault(temp.resolve(Paths.get("qwerty"))));
+    void solvesSameHashes(@TempDir final Path temp) throws IOException {
+        final Names dispatcher = new Names(temp);
+        final String one = "AaAaAa";
+        final String two = "AaAaBB";
         MatcherAssert.assertThat(
-            new TextOf(
-                temp.resolve(Paths.get("qwerty").resolve("src").resolve("simple.rs"))
-            ).asString(),
-            Matchers.stringContainsInOrder(
-                "use jni::objects::{JClass};",
-                "use jni::sys::{jint};",
-                "use jni::JNIEnv;",
-                "#[no_mangle]",
-                "pub extern \"system\" fn Java_EOorg_EOeolang_EOrust_simple(_env: JNIEnv, _class: JClass,) -> jint {"
+            one.hashCode(),
+            Matchers.equalTo(two.hashCode())
+        );
+        MatcherAssert.assertThat(
+            dispatcher.name(one),
+            Matchers.not(
+                dispatcher.name(two)
             )
+        );
+    }
+
+    @Test
+    void recoversNames(@TempDir final Path temp) throws IOException {
+        final List<String> locations = IntStream.range(0, 1000)
+            .mapToObj(String::valueOf)
+            .collect(Collectors.toList());
+        final Names before = new Names(temp);
+        final Map<String, String> functions = locations.stream().collect(
+            Collectors.toMap(loc -> loc, before::name)
+        );
+        MatcherAssert.assertThat(
+            locations.size(),
+            Matchers.equalTo(functions.size())
+        );
+        before.save();
+        final Names after = new Names(temp);
+        MatcherAssert.assertThat(
+            before,
+            Matchers.equalTo(after)
         );
     }
 }

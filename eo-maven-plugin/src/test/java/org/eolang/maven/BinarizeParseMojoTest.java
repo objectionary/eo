@@ -56,11 +56,15 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String rust = String.format(
-            "target/binarize/codes/%s0.rs",
+        final String function = String.format(
+            "%s0",
             temp.resolve("target").toString()
                 .toLowerCase(Locale.ENGLISH)
                 .replaceAll("[^a-z0-9]", "x")
+        );
+        final String rust = String.format(
+            "target/binarize/codes/%s.rs",
+            function
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(rust)
@@ -76,6 +80,17 @@ final class BinarizeParseMojoTest {
                 "  i",
                 "}"
             )
+        );
+        MatcherAssert.assertThat(
+            new TextOf(
+                res.get(
+                    String.format(
+                        "target/generated/EOrust/natives/%s.java",
+                        function
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("public static native int")
         );
     }
 

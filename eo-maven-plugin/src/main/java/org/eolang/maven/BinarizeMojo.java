@@ -40,7 +40,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.rust_project.BuildFailureException;
+import org.eolang.maven.rust.BuildFailureException;
 
 /**
  * Compile binaries.
@@ -77,6 +77,7 @@ public final class BinarizeMojo extends SafeMojo {
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         final File dest = targetDir.toPath().resolve("Lib").toFile();
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
                 Logger.info(this, String.format("Building rust project.."));

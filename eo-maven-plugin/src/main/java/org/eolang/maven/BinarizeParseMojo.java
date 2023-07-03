@@ -45,8 +45,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.maven.rust_project.Names;
-import org.eolang.maven.rust_project.Project;
+import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.rust.Names;
+import org.eolang.maven.rust.Native;
+import org.eolang.maven.rust.Project;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
@@ -103,6 +105,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Names names = new Names(targetDir.toPath());
+        new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
             final XML input = new XMLDocument(file);
@@ -138,6 +141,11 @@ public final class BinarizeParseMojo extends SafeMojo {
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
                     .with(function, code, dependencies)
                     .save();
+                new Native(function, "EOrust.natives").save(
+                    new FtDefault(
+                        this.generatedDir.toPath().resolve("EOrust").resolve("natives")
+                    )
+                );
             }
         }
         names.save();
