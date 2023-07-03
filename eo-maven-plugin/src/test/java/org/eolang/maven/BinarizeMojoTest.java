@@ -41,7 +41,7 @@ final class BinarizeMojoTest {
 
     /**
      * BinarizeMojo can binarize without errors.
-     * @param temp Temporary directory.
+     * @param temp Temporary dir.
      * @throws Exception If fails.
      */
     @Test
