@@ -102,7 +102,6 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
         final Names names = new Names(targetDir.toPath());
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
@@ -136,14 +135,11 @@ public final class BinarizeParseMojo extends SafeMojo {
                     filename,
                     input.xpath("/program/@name").get(0)
                 );
-                project.add(
-                    function,
-                    code,
-                    dependencies
-                );
+                new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
+                    .with(function, code, dependencies)
+                    .save();
             }
         }
-        project.save();
         names.save();
     }
 

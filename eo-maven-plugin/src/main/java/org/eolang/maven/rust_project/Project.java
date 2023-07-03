@@ -74,9 +74,10 @@ public final class Project {
      * @param name Name of function in project.
      * @param raw Content of rust insert.
      * @param crates Dependencies of the module.
+     * @return this.
      * @throws IOException If any issues with I/O
      */
-    public void add(final String name, final String raw, final List<String> crates)
+    public Project with(final String name, final String raw, final List<String> crates)
         throws IOException {
         this.modules.add(
             String.format("pub mod %s;", name)
@@ -86,6 +87,7 @@ public final class Project {
             final String[] split = crate.split("[=:]");
             this.cargo.add(split[0], split[1].replace("\"", "").trim());
         }
+        return this;
     }
 
     /**

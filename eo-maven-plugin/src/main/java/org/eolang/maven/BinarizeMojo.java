@@ -28,6 +28,7 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -75,42 +76,46 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        final Path dest = targetDir.toPath().resolve("Lib");
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(dest.toFile());
-        Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
-        try {
-            building.waitFor();
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw new BuildFailureException(
-                String.format(
-                    "Interrupted while building %s",
-                    dest.toAbsolutePath()
-                ),
-                exception
-            );
-        }
-        if (building.exitValue() != 0) {
-            Logger.error(this, "There was an error in compilation");
-            final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-            try (VerboseProcess process = new VerboseProcess(building)) {
-                new Unchecked<>(
-                    new LengthOf(
-                        new TeeInput(
-                            new InputOf(process.stdoutQuietly()),
-                            new OutputTo(stdout)
+        final File dest = targetDir.toPath().resolve("Lib").toFile();
+        for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
+            if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
+                Logger.info(this, String.format("Building rust project.."));
+                final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
+                    .directory(file);
+                final Process building = builder.start();
+                try {
+                    building.waitFor();
+                } catch (final InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    throw new BuildFailureException(
+                        String.format(
+                            "Interrupted while building %s",
+                            file
+                        ),
+                        exception
+                    );
+                }
+                if (building.exitValue() != 0) {
+                    Logger.error(this, "There was an error in compilation");
+                    final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+                    try (VerboseProcess process = new VerboseProcess(building)) {
+                        new Unchecked<>(
+                            new LengthOf(
+                                new TeeInput(
+                                    new InputOf(process.stdoutQuietly()),
+                                    new OutputTo(stdout)
+                                )
+                            )
+                        ).value();
+                    }
+                    throw new BuildFailureException(
+                        String.format(
+                            "Failed to build cargo project with dest = %s",
+                            file
                         )
-                    )
-                ).value();
+                    );
+                }
             }
-            throw new BuildFailureException(
-                String.format(
-                    "Failed to build cargo project with dest = %s",
-                    dest.toAbsolutePath()
-                )
-            );
         }
     }
 
