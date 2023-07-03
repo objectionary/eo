@@ -74,7 +74,7 @@ public final class Project {
      * @param name Name of function in project.
      * @param raw Content of rust insert.
      * @param crates Dependencies of the module.
-     * @return this.
+     * @return The project.
      * @throws IOException If any issues with I/O
      */
     public Project with(final String name, final String raw, final List<String> crates)

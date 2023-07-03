@@ -113,7 +113,7 @@ public final class BinarizeParseMojo extends SafeMojo {
             for (final XML node: nodes) {
                 final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
                 final List<String> dependencies =
-                    node.xpath("./dependencies/dependency/@name")
+                    node.xpath("./dependencies/dependency/attribute(name)")
                     .stream()
                     .map(BinarizeParseMojo::unhex)
                     .collect(Collectors.toList());

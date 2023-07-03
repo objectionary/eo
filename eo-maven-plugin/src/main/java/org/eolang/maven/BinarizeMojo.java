@@ -28,7 +28,6 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -76,8 +75,6 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        final File dest = targetDir.toPath().resolve("Lib").toFile();
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
                 Logger.info(this, String.format("Building rust project.."));

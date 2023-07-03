@@ -166,7 +166,7 @@ final class BinarizeParseMojoTest {
             prefix
         );
         final String cargo = dir.concat("Cargo.toml");
-        final String lib = dir.concat("src/lib.rs");;
+        final String lib = dir.concat("src/lib.rs");
         final String module = String.format(
             "%ssrc/%s1.rs",
             dir,
