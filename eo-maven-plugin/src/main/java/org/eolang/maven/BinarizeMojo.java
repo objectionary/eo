@@ -39,7 +39,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.scalar.Unchecked;
-import org.eolang.maven.rust_project.BuildFailureException;
+import org.eolang.maven.rust.BuildFailureException;
 
 /**
  * Compile binaries.

@@ -45,8 +45,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.eolang.maven.rust_project.Names;
-import org.eolang.maven.rust_project.Project;
+import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.rust.Names;
+import org.eolang.maven.rust.Native;
+import org.eolang.maven.rust.Project;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.ParsingTrain;
@@ -140,6 +142,11 @@ public final class BinarizeParseMojo extends SafeMojo {
                     function,
                     code,
                     dependencies
+                );
+                new Native(function, "EOrust.natives").save(
+                    new FtDefault(
+                        this.generatedDir.toPath().resolve("EOrust").resolve("natives")
+                    )
                 );
             }
         }

@@ -27,12 +27,27 @@
  */
 package EOorg.EOeolang;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
+import org.cactoos.bytes.Base64Bytes;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.IoCheckedBytes;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.text.Base64Decoded;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -41,16 +56,28 @@ import org.eolang.XmirObject;
  * Rust.
  *
  * @since 0.29
- * @todo #1326:90min Generate this file at compile phase
- *  instead of keep it here. It allows to call any
- *  rust insert depending on its attributes.
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
+
+    /**
+     * Map with location of the `code` attribute as the key
+     * and native method as the value.
+     */
+    private static final ConcurrentHashMap<String, String> NAMES;
+
     static {
+        try {
+            NAMES = load("target/eo-test/names");
+        } catch (final IOException exc) {
+            throw new ExFailure(
+                "Cannot read the file target/eo-test/names",
+                exc
+            );
+        }
         final String lib;
         if (SystemUtils.IS_OS_WINDOWS) {
             lib = "common.dll";
@@ -90,9 +117,61 @@ public class EOrust extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                rho ->
-                    new Data.ToPhi(1234L)
+                rho -> {
+                    final String name = NAMES.get(
+                        rho.attr("code").get().locator().split(":")[0]
+                    );
+                    final Method method = Class.forName(
+                        String.format(
+                            "EOrust.natives.%s",
+                            name
+                        )
+                    ).getDeclaredMethod(name, null);
+                    return new Data.ToPhi(
+                        Long.valueOf((int) method.invoke(null))
+                    );
+                }
             )
         );
+    }
+
+    /**
+     * Loads names map.
+     * @param src Where to load from.
+     * @return Names map.
+     * @throws IOException If any issues with IO.
+     */
+    private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
+        try (ObjectInputStream map = new ObjectInputStream(
+            new ByteArrayInputStream(
+                new IoCheckedBytes(
+                    new Base64Bytes(
+                        new BytesOf(
+                            new TextOf(Paths.get(src))
+                        )
+                    )
+                ).asBytes()
+            )
+        )) {
+            final Object result = map.readObject();
+            if (result.getClass() != ConcurrentHashMap.class) {
+                throw new ClassCastException(
+                    String.format(
+                        "Object inside %s has wrong class %s",
+                        src,
+                        result.getClass()
+                    )
+                );
+            }
+            return (ConcurrentHashMap<String, String>) result;
+        } catch (final ClassNotFoundException exc) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "File %s contains invalid data",
+                    src
+                ),
+                exc
+            );
+        }
     }
 }
