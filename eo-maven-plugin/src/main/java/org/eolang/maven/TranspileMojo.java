@@ -261,12 +261,17 @@ public final class TranspileMojo extends SafeMojo {
             .collect(Collectors.toSet());
         for (final Path binary : unexpected) {
             try {
-                Files.deleteIfExists(binary);
-            } catch (final AccessDeniedException ignore) {
-                Logger.warn(
-                    this,
-                    "Can't delete file %s due to access denied",
-                    binary
+                if (TranspileMojo.canRemove(binary)) {
+                    Files.deleteIfExists(binary);
+                } else {
+                    Logger.warn(
+                        this, "Can't delete file %s due to access denied", binary
+                    );
+                }
+            } catch (final AccessDeniedException cause) {
+                throw new IllegalStateException(
+                    String.format("Fails during file [%s] deleting due to access denied", binary),
+                    cause
                 );
             } catch (final IOException cause) {
                 throw new IllegalStateException(
@@ -275,6 +280,19 @@ public final class TranspileMojo extends SafeMojo {
                 );
             }
         }
+    }
+
+    /**
+     * Check if we can remove the file.
+     * @param file The file to check
+     * @return True if we can remove the file
+     * @todo #2169:30min Find the original cause of the problem with access denied.
+     *  The problem is that sometimes we can't remove the file due to access denied.
+     *  We need to find the original cause of the problem and fix it.
+     *  For now, we just ignore the problem and log the warning.
+     */
+    private static boolean canRemove(final Path file) {
+        return Files.isWritable(file.getParent());
     }
 
     /**
