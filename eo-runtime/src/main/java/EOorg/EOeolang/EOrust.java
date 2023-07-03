@@ -105,7 +105,7 @@ public class EOrust extends PhDefault {
                     .resolve("debug")
                     .resolve(lib)
                     .toAbsolutePath();
-                if (path.toFile().exists()){
+                if (path.toFile().exists()) {
                     System.load(path.toString());
                 }
             }
