@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # This script runs the maven tests of the eo component several times
 # to check for flaky tests and to find concurrency issues.
 # Usage ./test-repetition.sh --max 15 --folder /some/path
@@ -7,7 +7,8 @@ set -x
 max="10"
 folder="../eo-runtime"
 # Process command-line options
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]
+do
   case $1 in
     --max)
       shift
@@ -34,8 +35,9 @@ cd "$folder"
 # without running the tests
 mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
 # Run the tests several times
-for (( i=1; i <= max; ++i ))
+max=10
+for i in $(seq 1 $max)
 do
-    echo "Test repetition #$i of $max"
-    MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e
+  echo "Test repetition #$i of $max"
+  MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e --batch-mode
 done
