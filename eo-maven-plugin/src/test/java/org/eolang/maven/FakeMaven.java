@@ -52,7 +52,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
-import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -96,50 +95,15 @@ public final class FakeMaven {
     private final AtomicInteger current;
 
     /**
-     * Ctor.
-     * @param workspace Workspace.
-     * @param params Params.
-     * @param attributes Attributes.
-     * @param current Current.
-     */
-    public FakeMaven(
-        final Home workspace,
-        final Map<String, Object> params,
-        final Map<ForeignTojos.Attribute, Object> attributes,
-        final AtomicInteger current
-    ) {
-        this.workspace = workspace;
-        this.params = params;
-        this.attributes = attributes;
-        this.current = current;
-    }
-
-    /**
      * The main constructor.
      *
      * @param workspace Test temporary directory.
      */
     public FakeMaven(final Path workspace) {
-        this(
-            new Home(workspace),
-            new HashMap<>(),
-            new HashMap<>(),
-            new AtomicInteger(0)
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param workspace
-     * @param params
-     */
-    public FakeMaven(final Home workspace, final Map<String, Object> params) {
-        this(
-            workspace,
-            params,
-            new HashMap<>(),
-            new AtomicInteger(0)
-        );
+        this.workspace = new Home(workspace);
+        this.params = new HashMap<>();
+        this.attributes = new HashMap<>();
+        this.current = new AtomicInteger(0);
     }
 
     /**
