@@ -21,28 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.rust_project;
-
 /**
- * If cargo project building failed.
- * @since 1.0
+ * Creating rust project tests.
+ * The package contains different unit tests for all
+ * implementations of {@link org.eolang.maven.rust.Project}.
  */
-public class BuildFailureException extends RuntimeException {
-
-    /**
-     * Ctor.
-     * @param message The detail message.
-     */
-    public BuildFailureException(final String message) {
-        super(message);
-    }
-
-    /**
-     * Ctor.
-     * @param message The detail message.
-     * @param root Root cause exception.
-     */
-    public BuildFailureException(final String message, final Throwable root) {
-        super(message, root);
-    }
-}
+package org.eolang.maven.rust;
