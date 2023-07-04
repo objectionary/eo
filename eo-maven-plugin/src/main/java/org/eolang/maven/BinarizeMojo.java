@@ -34,6 +34,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.commons.io.FileUtils;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -76,6 +77,19 @@ public final class BinarizeMojo extends SafeMojo {
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         final Path dest = targetDir.toPath().resolve("Lib");
+        // cp .eo/Lib/target to Lib/target
+        final File cached = cache.resolve("Lib").resolve("target").toFile();
+        if (cached.exists()) {
+            Logger.info(this,
+                String.format("Copying %s to %s"),
+                cached,
+                dest.resolve("target").toString()
+                );
+            FileUtils.copyDirectory(
+                cached,
+                dest.resolve("target").toFile()
+            );
+        }
         final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
             .directory(dest.toFile());
         Logger.info(this, "Building rust project..");
@@ -111,6 +125,9 @@ public final class BinarizeMojo extends SafeMojo {
                     dest.toAbsolutePath()
                 )
             );
+        } else {
+            // cp Lib/target .eo/Lib/target
+            FileUtils.copyDirectory(dest.resolve("target").toFile(), cached);
         }
     }
 
