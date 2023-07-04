@@ -47,6 +47,10 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2197: 45min Update cached rust insert if it was changed.
+ *  Now it copies cargo project to cache directory in the end of every
+ *  compilation. It is better to copy the project only if it was changed
+ *  with the last compilation.
  */
 @Mojo(
     name = "binarize",
@@ -77,14 +81,16 @@ public final class BinarizeMojo extends SafeMojo {
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         final Path dest = targetDir.toPath().resolve("Lib");
-        // cp .eo/Lib/target to Lib/target
         final File cached = cache.resolve("Lib").resolve("target").toFile();
         if (cached.exists()) {
-            Logger.info(this,
-                String.format("Copying %s to %s"),
-                cached,
-                dest.resolve("target").toString()
-                );
+            Logger.info(
+                this,
+                String.format(
+                    "Copying %s to %s",
+                    cached,
+                    dest.resolve("target")
+                )
+            );
             FileUtils.copyDirectory(
                 cached,
                 dest.resolve("target").toFile()
@@ -126,7 +132,14 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             );
         } else {
-            // cp Lib/target .eo/Lib/target
+            Logger.info(
+                this,
+                String.format(
+                    "Update cached %s with %s",
+                    cached,
+                    dest.resolve("target").toFile()
+                )
+            );
             FileUtils.copyDirectory(dest.resolve("target").toFile(), cached);
         }
     }
