@@ -252,6 +252,11 @@ public final class TranspileMojo extends SafeMojo {
      * generated sources. In other words, if generated-sources (or generated-test-sources) folder
      * has java classes, we expect that they will be only compiled from that folder.
      * @param java The list of java files.
+     * @todo #2169:30min Find the original cause of the problem with access denied.
+     *  The problem is that sometimes we can't remove the file due to access denied.
+     *  We need to find the original cause of the problem and fix it.
+     *  Then, just remove AccessDeniedException from the catch block.
+     *  For now, we just ignore the problem and log the warning.
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
@@ -261,17 +266,10 @@ public final class TranspileMojo extends SafeMojo {
             .collect(Collectors.toSet());
         for (final Path binary : unexpected) {
             try {
-                if (TranspileMojo.canRemove(binary)) {
-                    Files.deleteIfExists(binary);
-                } else {
-                    Logger.warn(
-                        this, "Can't delete file %s due to access denied", binary
-                    );
-                }
+                Files.deleteIfExists(binary);
             } catch (final AccessDeniedException cause) {
-                throw new IllegalStateException(
-                    String.format("Fails during file [%s] deleting due to access denied", binary),
-                    cause
+                Logger.warn(
+                    this, "Can't delete file %s due to access denied", binary
                 );
             } catch (final IOException cause) {
                 throw new IllegalStateException(
@@ -280,19 +278,6 @@ public final class TranspileMojo extends SafeMojo {
                 );
             }
         }
-    }
-
-    /**
-     * Check if we can remove the file.
-     * @param file The file to check
-     * @return True if we can remove the file
-     * @todo #2169:30min Find the original cause of the problem with access denied.
-     *  The problem is that sometimes we can't remove the file due to access denied.
-     *  We need to find the original cause of the problem and fix it.
-     *  For now, we just ignore the problem and log the warning.
-     */
-    private static boolean canRemove(final Path file) {
-        return Files.isWritable(file.getParent());
     }
 
     /**
