@@ -78,7 +78,7 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
-    void binarizesAgainQuickly(@TempDir final Path temp) throws IOException {
+    void savesToCache(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
