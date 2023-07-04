@@ -72,4 +72,17 @@ final class BinarizeMojoTest {
             () -> maven.execute(new FakeMaven.Binarize())
         );
     }
+
+    @Test
+    @Tag("slow")
+    void binarizesAgainQuickly(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
+        }
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(new FakeMaven.Binarize())
+        );
+    }
 }

@@ -80,24 +80,25 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        final Path dest = targetDir.toPath().resolve("Lib");
-        final File cached = cache.resolve("Lib").toFile();
+        final Path project = targetDir.toPath().resolve("Lib");
+        final File target = project.resolve("target").toFile();
+        final File cached = cache.resolve("Lib").resolve("target").toFile();
         if (cached.exists()) {
             Logger.info(
                 this,
                 String.format(
                     "Copying %s to %s",
                     cached,
-                    dest
+                    target
                 )
             );
             FileUtils.copyDirectory(
                 cached,
-                dest.toFile()
+                target
             );
         }
         final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(dest.toFile());
+            .directory(project.toFile());
         Logger.info(this, "Building rust project..");
         final Process building = builder.start();
         try {
@@ -107,7 +108,7 @@ public final class BinarizeMojo extends SafeMojo {
             throw new BuildFailureException(
                 String.format(
                     "Interrupted while building %s",
-                    dest.toAbsolutePath()
+                    project.toAbsolutePath()
                 ),
                 exception
             );
@@ -118,10 +119,10 @@ public final class BinarizeMojo extends SafeMojo {
                 String.format(
                     "Cargo building succeeded, update cached %s with %s",
                     cached,
-                    dest.toFile()
+                    target
                 )
             );
-            FileUtils.copyDirectory(dest.toFile(), cached);
+            FileUtils.copyDirectory(project.toFile(), cached);
         } else {
             Logger.error(this, "There was an error in compilation");
             final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
@@ -137,8 +138,8 @@ public final class BinarizeMojo extends SafeMojo {
             }
             throw new BuildFailureException(
                 String.format(
-                    "Failed to build cargo project with dest = %s",
-                    dest.toAbsolutePath()
+                    "Failed to build cargo project with destination = %s",
+                    project.toAbsolutePath()
                 )
             );
         }
