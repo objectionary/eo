@@ -46,6 +46,9 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2195:90min Make cargo compilation in parallel. Now cargo
+ *  projects are being built consistently which is too long.
+ *  It is much better to build them in parallel to reduce time.
  */
 @Mojo(
     name = "binarize",
@@ -75,42 +78,44 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        final Path dest = targetDir.toPath().resolve("Lib");
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(dest.toFile());
-        Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
-        try {
-            building.waitFor();
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw new BuildFailureException(
-                String.format(
-                    "Interrupted while building %s",
-                    dest.toAbsolutePath()
-                ),
-                exception
-            );
-        }
-        if (building.exitValue() != 0) {
-            Logger.error(this, "There was an error in compilation");
-            final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-            try (VerboseProcess process = new VerboseProcess(building)) {
-                new Unchecked<>(
-                    new LengthOf(
-                        new TeeInput(
-                            new InputOf(process.stdoutQuietly()),
-                            new OutputTo(stdout)
+        for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
+            if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
+                Logger.info(this, String.format("Building rust project.."));
+                final Process building = new ProcessBuilder("cargo", "build")
+                    .directory(file)
+                    .start();
+                try {
+                    building.waitFor();
+                } catch (final InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    throw new BuildFailureException(
+                        String.format(
+                            "Interrupted while building %s",
+                            file
+                        ),
+                        exception
+                    );
+                }
+                if (building.exitValue() != 0) {
+                    Logger.error(this, "There was an error in compilation");
+                    try (VerboseProcess process = new VerboseProcess(building)) {
+                        new Unchecked<>(
+                            new LengthOf(
+                                new TeeInput(
+                                    new InputOf(process.stdoutQuietly()),
+                                    new OutputTo(new ByteArrayOutputStream())
+                                )
+                            )
+                        ).value();
+                    }
+                    throw new BuildFailureException(
+                        String.format(
+                            "Failed to build cargo project with dest = %s",
+                            file
                         )
-                    )
-                ).value();
+                    );
+                }
             }
-            throw new BuildFailureException(
-                String.format(
-                    "Failed to build cargo project with dest = %s",
-                    dest.toAbsolutePath()
-                )
-            );
         }
     }
 
