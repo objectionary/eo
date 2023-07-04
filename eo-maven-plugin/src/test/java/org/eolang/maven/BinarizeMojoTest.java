@@ -26,6 +26,12 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+
+import org.cactoos.map.MapOf;
+import org.eolang.maven.util.Home;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -78,9 +84,17 @@ final class BinarizeMojoTest {
     void binarizesAgainQuickly(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
-            maven = new FakeMaven(temp)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
+            maven = new FakeMaven(
+                new Home(temp), new MapOf("cache", temp.resolve(".cache"))
+            ).withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
         }
+        final Map<String, Path> res = maven
+            .execute(new FakeMaven.Binarize())
+            .result();
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasKey(Paths.get(".cache").resolve("Lib").toString())
+        );
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
         );
