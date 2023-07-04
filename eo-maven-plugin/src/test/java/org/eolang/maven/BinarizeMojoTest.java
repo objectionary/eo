@@ -84,9 +84,9 @@ final class BinarizeMojoTest {
     void binarizesAgainQuickly(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
-            maven = new FakeMaven(
-                new Home(temp), new MapOf("cache", temp.resolve(".cache"))
-            ).withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
+            maven = new FakeMaven(temp)
+                .with("cache", temp.resolve(".cache"))
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
