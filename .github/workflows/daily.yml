@@ -19,6 +19,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
+          # Clean the test classes to avoid caching issues and prepare testing environment
+          # without running the tests
+          mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
+          # Find script
           SCRIPT="${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh"
           # Check that script is exists
           if [ ! -f "${SCRIPT}" ]; then
