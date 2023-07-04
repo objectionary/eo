@@ -81,9 +81,9 @@ public final class BinarizeMojo extends SafeMojo {
         for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
                 Logger.info(this, String.format("Building rust project.."));
-                final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-                    .directory(file);
-                final Process building = builder.start();
+                final Process building = new ProcessBuilder("cargo", "build")
+                    .directory(file)
+                    .start();
                 try {
                     building.waitFor();
                 } catch (final InterruptedException exception) {
@@ -98,13 +98,12 @@ public final class BinarizeMojo extends SafeMojo {
                 }
                 if (building.exitValue() != 0) {
                     Logger.error(this, "There was an error in compilation");
-                    final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
                     try (VerboseProcess process = new VerboseProcess(building)) {
                         new Unchecked<>(
                             new LengthOf(
                                 new TeeInput(
                                     new InputOf(process.stdoutQuietly()),
-                                    new OutputTo(stdout)
+                                    new OutputTo(new ByteArrayOutputStream())
                                 )
                             )
                         ).value();
