@@ -85,10 +85,16 @@ public final class BinarizeMojo extends SafeMojo {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         for (final File project: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (project.isDirectory() && project.toPath().resolve("Cargo.toml").toFile().exists()) {
-                build(project);
+                this.build(project);
             }
         }
     }
+
+    /**
+     * Builds cargo project.
+     * @param project Path to the project.
+     * @throws IOException If any issues with IO.
+     */
     private void build(final File project) throws IOException {
         final File target = project.toPath().resolve("target").toFile();
         final File cached = cache
