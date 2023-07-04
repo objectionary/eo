@@ -120,16 +120,23 @@ public final class FakeMaven {
      * @param workspace Test temporary directory.
      */
     public FakeMaven(final Path workspace) {
-        this.workspace = new Home(workspace);
-        this.params = new HashMap<>();
-        this.attributes = new HashMap<>();
-        this.current = new AtomicInteger(0);
+        this(
+            new Home(workspace),
+            new HashMap<>(),
+            new HashMap<>(),
+            new AtomicInteger(0)
+        );
     }
 
+    /**
+     * Ctor.
+     * @param workspace
+     * @param params
+     */
     public FakeMaven(final Home workspace, final Map<String, Object> params) {
         this(
             workspace,
-            new MapOf<>("cache", workspace.absolute(Paths.get("eo")).resolve("cache")),
+            params,
             new HashMap<>(),
             new AtomicInteger(0)
         );
