@@ -30,11 +30,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.commons.io.FileUtils;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
@@ -81,19 +81,19 @@ public final class BinarizeMojo extends SafeMojo {
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         final Path dest = targetDir.toPath().resolve("Lib");
-        final File cached = cache.resolve("Lib").resolve("target").toFile();
+        final File cached = cache.resolve("Lib").toFile();
         if (cached.exists()) {
             Logger.info(
                 this,
                 String.format(
                     "Copying %s to %s",
                     cached,
-                    dest.resolve("target")
+                    dest
                 )
             );
             FileUtils.copyDirectory(
                 cached,
-                dest.resolve("target").toFile()
+                dest.toFile()
             );
         }
         final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
@@ -112,7 +112,17 @@ public final class BinarizeMojo extends SafeMojo {
                 exception
             );
         }
-        if (building.exitValue() != 0) {
+        if (building.exitValue() == 0) {
+            Logger.info(
+                this,
+                String.format(
+                    "Cargo building succeeded, update cached %s with %s",
+                    cached,
+                    dest.toFile()
+                )
+            );
+            FileUtils.copyDirectory(dest.toFile(), cached);
+        } else {
             Logger.error(this, "There was an error in compilation");
             final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
             try (VerboseProcess process = new VerboseProcess(building)) {
@@ -131,16 +141,6 @@ public final class BinarizeMojo extends SafeMojo {
                     dest.toAbsolutePath()
                 )
             );
-        } else {
-            Logger.info(
-                this,
-                String.format(
-                    "Update cached %s with %s",
-                    cached,
-                    dest.resolve("target").toFile()
-                )
-            );
-            FileUtils.copyDirectory(dest.resolve("target").toFile(), cached);
         }
     }
 
