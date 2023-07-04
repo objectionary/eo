@@ -8,6 +8,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
           SCRIPT="${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh"
           # Check that script is exists
