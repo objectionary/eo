@@ -90,7 +90,7 @@ final class BinarizeMojoTest {
             .result();
         MatcherAssert.assertThat(
             res,
-            Matchers.hasKey(Paths.get(".cache").resolve("Lib").toString())
+            Matchers.hasValue(temp.resolve(".cache").resolve("Lib"))
         );
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
