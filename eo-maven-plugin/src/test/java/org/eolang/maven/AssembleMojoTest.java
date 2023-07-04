@@ -38,6 +38,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
+ * @todo 2120:90min Use FakeMaven in AssembleMojoTest.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
