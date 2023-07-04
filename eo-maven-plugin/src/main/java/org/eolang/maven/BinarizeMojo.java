@@ -85,72 +85,74 @@ public final class BinarizeMojo extends SafeMojo {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
         for (final File project: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
             if (project.isDirectory() && project.toPath().resolve("Cargo.toml").toFile().exists()) {
-                final File target = project.toPath().resolve("target").toFile();
-                final File cached = cache
-                    .resolve("Lib")
-                    .resolve(project.getName())
-                    .resolve("target").toFile();
-                if (cached.exists()) {
-                    Logger.info(
-                        this,
-                        String.format(
-                            "Copying %s to %s",
-                            cached,
-                            target
-                        )
-                    );
-                    FileUtils.copyDirectory(
-                        cached,
-                        target
-                    );
-                }
-                final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-                    .directory(project);
-                Logger.info(this, "Building rust project..");
-                final Process building = builder.start();
-                try {
-                    building.waitFor();
-                } catch (final InterruptedException exception) {
-                    Thread.currentThread().interrupt();
-                    throw new BuildFailureException(
-                        String.format(
-                            "Interrupted while building %s",
-                            project
-                        ),
-                        exception
-                    );
-                }
-                if (building.exitValue() == 0) {
-                    Logger.info(
-                        this,
-                        String.format(
-                            "Cargo building succeeded, update cached %s with %s",
-                            cached,
-                            target
-                        )
-                    );
-                    FileUtils.copyDirectory(project, cached);
-                } else {
-                    Logger.error(this, "There was an error in compilation");
-                    try (VerboseProcess process = new VerboseProcess(building)) {
-                        new Unchecked<>(
-                            new LengthOf(
-                                new TeeInput(
-                                    new InputOf(process.stdoutQuietly()),
-                                    new OutputTo(new ByteArrayOutputStream())
-                                )
-                            )
-                        ).value();
-                    }
-                    throw new BuildFailureException(
-                        String.format(
-                            "Failed to build cargo project with dest = %s",
-                            project
-                        )
-                    );
-                }
+                build(project);
             }
         }
     }
-
+    private void build(final File project) throws IOException {
+        final File target = project.toPath().resolve("target").toFile();
+        final File cached = cache
+            .resolve("Lib")
+            .resolve(project.getName())
+            .resolve("target").toFile();
+        if (cached.exists()) {
+            Logger.info(
+                this,
+                String.format(
+                    "Copying %s to %s",
+                    cached,
+                    target
+                )
+            );
+            FileUtils.copyDirectory(
+                cached,
+                target
+            );
+        }
+        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
+            .directory(project);
+        Logger.info(this, "Building rust project..");
+        final Process building = builder.start();
+        try {
+            building.waitFor();
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new BuildFailureException(
+                String.format(
+                    "Interrupted while building %s",
+                    project
+                ),
+                exception
+            );
+        }
+        if (building.exitValue() == 0) {
+            Logger.info(
+                this,
+                String.format(
+                    "Cargo building succeeded, update cached %s with %s",
+                    cached,
+                    target
+                )
+            );
+            FileUtils.copyDirectory(project, cached);
+        } else {
+            Logger.error(this, "There was an error in compilation");
+            try (VerboseProcess process = new VerboseProcess(building)) {
+                new Unchecked<>(
+                    new LengthOf(
+                        new TeeInput(
+                            new InputOf(process.stdoutQuietly()),
+                            new OutputTo(new ByteArrayOutputStream())
+                        )
+                    )
+                ).value();
+            }
+            throw new BuildFailureException(
+                String.format(
+                    "Failed to build cargo project with dest = %s",
+                    project
+                )
+            );
+        }
+    }
 }
