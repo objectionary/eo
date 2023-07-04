@@ -47,7 +47,7 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #2197: 45min Update cached rust insert if it was changed.
+ * @todo #2197:45min Update cached rust insert if it was changed.
  *  Now it copies cargo project to cache directory in the end of every
  *  compilation. It is better to copy the project only if it was changed
  *  with the last compilation.
