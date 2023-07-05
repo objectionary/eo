@@ -89,6 +89,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
         "/org/eolang/parser/synthetic-references.xsl",
+        "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/add-default-package.xsl",
         "/org/eolang/parser/errors/broken-refs.xsl",
         "/org/eolang/parser/errors/unknown-names.xsl",

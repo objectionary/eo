@@ -33,13 +33,13 @@ SOFTWARE.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(starts-with(@base, '.')) and @base!='$' and @base!='^']">
-    <xsl:variable name="o" select="."/>
+    <xsl:variable name="current" select="."/>
     <xsl:copy>
-      <xsl:variable name="p" select="ancestor::*[o[@name=$o/@base]][1]"/>
-      <xsl:if test="$p">
-        <xsl:variable name="x" select="$p/o[@name=$o/@base]"/>
-        <xsl:if test="$p">
-          <xsl:if test="count($x)!=1">
+      <xsl:variable name="parent" select="ancestor::*[o[@name=$current/@base]][1]"/>
+      <xsl:if test="$parent">
+        <xsl:variable name="source" select="$parent/o[@name=$current/@base]"/>
+        <xsl:if test="$parent">
+          <xsl:if test="count($source)!=1">
             <xsl:message terminate="yes">
               <xsl:text>Duplicate names inside "</xsl:text>
               <xsl:value-of select="@name"/>
@@ -48,7 +48,7 @@ SOFTWARE.
               <xsl:text>" at the line #</xsl:text>
               <xsl:value-of select="@line"/>
               <xsl:text> pointing to </xsl:text>
-              <xsl:for-each select="$x">
+              <xsl:for-each select="$source">
                 <xsl:if test="position()&gt;1">
                   <xsl:text>, </xsl:text>
                 </xsl:if>
@@ -61,15 +61,15 @@ SOFTWARE.
               <xsl:text>; it's internal bug</xsl:text>
             </xsl:message>
           </xsl:if>
-          <xsl:if test="not($x/@line)">
+          <xsl:if test="not($source/@line)">
             <xsl:message terminate="yes">
               <xsl:text>Attribute @line is absent at "</xsl:text>
-              <xsl:value-of select="$x/@name"/>
+              <xsl:value-of select="$source/@name"/>
               <xsl:text>"</xsl:text>
             </xsl:message>
           </xsl:if>
           <xsl:attribute name="ref">
-            <xsl:value-of select="$x/@line"/>
+            <xsl:value-of select="$source/@line"/>
           </xsl:attribute>
         </xsl:if>
       </xsl:if>

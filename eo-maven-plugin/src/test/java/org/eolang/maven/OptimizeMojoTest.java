@@ -280,7 +280,7 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/27-duplicate-names.xml",
+                            "target/%s/foo/x/main/28-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )
