@@ -281,4 +281,22 @@ public final class ForeignTojo {
     public String scope() {
         return this.delegate.get(ForeignTojos.Attribute.SCOPE.key());
     }
+
+    /**
+     * Temporary version.
+     * @param ver The version.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withVer(final String ver) {
+        this.delegate.set(ForeignTojos.Attribute.VER.key(), ver);
+        return this;
+    }
+
+    /**
+     * Return the temporary version of the tojo.
+     * @return The version.
+     */
+    public String ver() {
+        return this.delegate.get(ForeignTojos.Attribute.VER.key());
+    }
 }

@@ -301,7 +301,12 @@ public final class ForeignTojos implements Closeable {
         /**
          * Hash.
          */
-        HASH("hash");
+        HASH("hash"),
+
+        /**
+         * Ver.
+         */
+        VER("ver");
 
         /**
          * Attribute name.
