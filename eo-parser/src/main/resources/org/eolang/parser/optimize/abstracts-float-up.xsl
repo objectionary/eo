@@ -172,6 +172,8 @@ SOFTWARE.
               <xsl:value-of select="$o/@line"/>
               <xsl:text>.</xsl:text>
               <xsl:value-of select="@line"/>
+              <xsl:text>.</xsl:text>
+              <xsl:value-of select="$index"/>
             </xsl:attribute>
           </xsl:element>
         </xsl:for-each>
