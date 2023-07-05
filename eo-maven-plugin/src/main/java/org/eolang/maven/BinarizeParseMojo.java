@@ -104,8 +104,8 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Project project = new Project(this.targetDir.toPath().resolve("Lib"));
         final Names names = new Names(targetDir.toPath());
+        new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
             final XML input = new XMLDocument(file);
@@ -113,7 +113,7 @@ public final class BinarizeParseMojo extends SafeMojo {
             for (final XML node: nodes) {
                 final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
                 final List<String> dependencies =
-                    node.xpath("./dependencies/dependency/@name")
+                    node.xpath("./dependencies/dependency/attribute(name)")
                     .stream()
                     .map(BinarizeParseMojo::unhex)
                     .collect(Collectors.toList());
@@ -138,11 +138,9 @@ public final class BinarizeParseMojo extends SafeMojo {
                     filename,
                     input.xpath("/program/@name").get(0)
                 );
-                project.add(
-                    function,
-                    code,
-                    dependencies
-                );
+                new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
+                    .with(function, code, dependencies)
+                    .save();
                 new Native(function, "EOrust.natives").save(
                     new FtDefault(
                         this.generatedDir.toPath().resolve("EOrust").resolve("natives")
@@ -150,7 +148,6 @@ public final class BinarizeParseMojo extends SafeMojo {
                 );
             }
         }
-        project.save();
         names.save();
     }
 

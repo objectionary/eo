@@ -125,7 +125,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "pub fn foo() -> i32 {",
-                "print!(\"Hello world 1\");"
+                "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
@@ -161,10 +161,15 @@ final class BinarizeParseMojoTest {
         final String prefix = temp.resolve("target").toString()
             .toLowerCase(Locale.ENGLISH)
             .replaceAll("[^a-z0-9]", "x");
-        final String cargo = "target/Lib/Cargo.toml";
-        final String lib = "target/Lib/src/lib.rs";
+        final String dir = String.format(
+            "target/Lib/%s1/",
+            prefix
+        );
+        final String cargo = dir.concat("Cargo.toml");
+        final String lib = dir.concat("src/lib.rs");
         final String module = String.format(
-            "target/Lib/src/%s1.rs",
+            "%ssrc/%s1.rs",
+            dir,
             prefix
         );
         MatcherAssert.assertThat(
