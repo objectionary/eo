@@ -96,7 +96,6 @@ final class SnippetTestCase {
      */
     @ParameterizedTest
     @SuppressWarnings("unchecked")
-    @Disabled
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
