@@ -38,6 +38,10 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
+ * @todo #2120:90min Use FakeMaven in AssembleMojoTest.
+ *  It's better to refactor of the tests inside {@link AssembleMojoTest}.
+ *  Refactoring will simplify the existing code and reduce the total lines number.
+ *  When the refactoring is done, remove this puzzle.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
