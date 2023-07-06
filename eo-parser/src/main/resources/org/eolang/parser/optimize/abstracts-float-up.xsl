@@ -161,6 +161,9 @@ SOFTWARE.
       <xsl:for-each select="1 to count($ancestors) - 1">
         <xsl:variable name="index" select="position()"/>
         <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $index + 1], $ancestors[count($ancestors) - $index])">
+          <xsl:variable name="generated">
+            <random/>
+          </xsl:variable>
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
@@ -173,7 +176,7 @@ SOFTWARE.
               <xsl:text>.</xsl:text>
               <xsl:value-of select="@line"/>
               <xsl:text>.</xsl:text>
-              <xsl:value-of select="$index"/>
+              <xsl:value-of select="sum(string-to-codepoints(generate-id($generated//random)))"/>
             </xsl:attribute>
           </xsl:element>
         </xsl:for-each>
