@@ -42,6 +42,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.cactoos.scalar.LengthOf;
 import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
@@ -103,28 +104,22 @@ public final class ParseMojo extends SafeMojo {
     private PluginDescriptor plugin;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() throws Exception {
+        final Iterable<ForeignTojo> external = new Filtered<>(
+            ForeignTojo::notParsed,
+            this.extTojos.withSources()
+        );
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojos -> (Scalar<Integer>) () -> {
-                        this.parse(tojos[0], tojos[1]);
+                    tojo -> (Scalar<Integer>) () -> {
+                        this.parse(tojo, external.iterator().next());
                         return 1;
                     },
-                    new Mapped<>(
-                        iterable -> new ForeignTojo[]{
-                            iterable.iterator().next(),
-                            iterable.iterator().next()
-                        },
-                        new Filtered<>(
-                            ForeignTojo::notParsed,
-                            this.scopedTojos().withSources()
-                        ),
-                        new Filtered<>(
-                            ForeignTojo::notParsed,
-                            this.externalTojos.withSources()
-                        )
+                    new Filtered<>(
+                        ForeignTojo::notParsed,
+                        this.scopedTojos().withSources()
                     )
                 )
             )
@@ -144,6 +139,7 @@ public final class ParseMojo extends SafeMojo {
      * Parse EO file to XML.
      *
      * @param tojo The tojo
+     * @param external The external tojo
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
@@ -195,7 +191,7 @@ public final class ParseMojo extends SafeMojo {
                 TranspileMojo.EXT
             );
             tojo.withXmir(target.toAbsolutePath());
-            tojo.withXmir(target.toAbsolutePath());
+            external.withXmir(target.toAbsolutePath());
             Logger.debug(
                 this, "Parsed %s to %s",
                 new Rel(source), new Rel(target)

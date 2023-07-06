@@ -57,6 +57,7 @@ final class AssembleMojoTest {
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("external", temp.resolve("eo-external.json").toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
             .with("includeSources", new SetOf<>("**.eo"))
@@ -65,6 +66,7 @@ final class AssembleMojoTest {
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("external", temp.resolve("eo-external.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed"))
@@ -120,6 +122,7 @@ final class AssembleMojoTest {
         final Path target = temp.resolve("target");
         new Moja<>(RegisterMojo.class)
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("external", temp.resolve("eo-external.json").toFile())
             .with("foreignFormat", "json")
             .with("sourcesDir", src.toFile())
             .with("includeSources", new SetOf<>("**.eo"))
@@ -128,6 +131,7 @@ final class AssembleMojoTest {
             .with("outputDir", temp.resolve("out").toFile())
             .with("targetDir", target.toFile())
             .with("foreign", temp.resolve("eo-foreign.json").toFile())
+            .with("external", temp.resolve("eo-external.json").toFile())
             .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed"))
