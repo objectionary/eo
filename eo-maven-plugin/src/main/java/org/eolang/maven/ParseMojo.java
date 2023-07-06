@@ -108,13 +108,23 @@ public final class ParseMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> (Scalar<Integer>) () -> {
-                        this.parse(tojo);
+                    tojos -> (Scalar<Integer>) () -> {
+                        this.parse(tojos[0], tojos[1]);
                         return 1;
                     },
-                    new Filtered<>(
-                        ForeignTojo::notParsed,
-                        this.scopedTojos().withSources()
+                    new Mapped<>(
+                        iterable -> new ForeignTojo[]{
+                            iterable.iterator().next(),
+                            iterable.iterator().next()
+                        },
+                        new Filtered<>(
+                            ForeignTojo::notParsed,
+                            this.scopedTojos().withSources()
+                        ),
+                        new Filtered<>(
+                            ForeignTojo::notParsed,
+                            this.externalTojos.withSources()
+                        )
                     )
                 )
             )
@@ -137,7 +147,7 @@ public final class ParseMojo extends SafeMojo {
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private void parse(final ForeignTojo tojo) throws IOException {
+    private void parse(final ForeignTojo tojo, final ForeignTojo external) throws IOException {
         final Path source = tojo.source();
         final String name = tojo.identifier();
         Footprint footprint = new FtDefault(
@@ -184,6 +194,7 @@ public final class ParseMojo extends SafeMojo {
                 this.targetDir.toPath().resolve(ParseMojo.DIR),
                 TranspileMojo.EXT
             );
+            tojo.withXmir(target.toAbsolutePath());
             tojo.withXmir(target.toAbsolutePath());
             Logger.debug(
                 this, "Parsed %s to %s",

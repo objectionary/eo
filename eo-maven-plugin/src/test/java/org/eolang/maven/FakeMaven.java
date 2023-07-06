@@ -139,11 +139,22 @@ public final class FakeMaven {
     /**
      * Tojo for eo-foreign.* file.
      *
-     * @return TjSmart of the current eo-foreign.file.
+     * @return TjSmart of the current eo-foreign.* file.
      */
     public TjSmart foreign() {
         return new TjSmart(
             Catalogs.INSTANCE.make(this.foreignPath())
+        );
+    }
+
+    /**
+     * Tojo for eo-external.* file.
+     *
+     * @return TjSmart of the current eo-external.* file.
+     */
+    public TjSmart external() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.externalPath())
         );
     }
 
@@ -162,8 +173,15 @@ public final class FakeMaven {
                 tojo.set(entry.getKey().key(), entry.getValue());
             }
         }
+        for (final Tojo tojo : this.external().select(all -> true)) {
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
+                : this.attributes.entrySet()) {
+                tojo.set(entry.getKey().key(), entry.getValue());
+            }
+        }
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+        this.params.putIfAbsent("external", this.externalPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
         final Path transpiled = Paths.get("transpiled");
@@ -204,6 +222,7 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param input Program as an input.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
@@ -214,6 +233,7 @@ public final class FakeMaven {
 
     /**
      * Path to compilation target directory.
+     *
      * @return Path to target dir.
      */
     public Path targetPath() {
@@ -222,6 +242,7 @@ public final class FakeMaven {
 
     /**
      * Path to generated directory.
+     *
      * @return Path to generated dir.
      */
     public Path generatedPath() {
@@ -230,11 +251,24 @@ public final class FakeMaven {
 
     /**
      * Foreign tojos for eo-foreign.* file.
+     *
      * @return Foreign tojos.
      */
     ForeignTojos foreignTojos() {
         return new ForeignTojos(
             () -> Catalogs.INSTANCE.make(this.foreignPath()),
+            this::scope
+        );
+    }
+
+    /**
+     * External tojos for eo-external.* file.
+     *
+     * @return External tojos.
+     */
+    ForeignTojos externalTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.externalPath()),
             this::scope
         );
     }
@@ -252,6 +286,7 @@ public final class FakeMaven {
 
     /**
      * Adds correct 'Hello world' program to workspace.
+     *
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
@@ -261,6 +296,7 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param program Program as a raw string.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
@@ -284,7 +320,7 @@ public final class FakeMaven {
      * Sets tojo attribute.
      *
      * @param attribute Tojo attribute.
-     * @param value Attribute value.
+     * @param value     Attribute value.
      * @return The same maven instance.
      */
     FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
@@ -294,10 +330,15 @@ public final class FakeMaven {
 
     /**
      * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
+     *
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
+    }
+
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -311,7 +352,7 @@ public final class FakeMaven {
 
     /**
      * Creates of the result map with all files and folders that was created
-     *  or compiled during mojo execution.
+     * or compiled during mojo execution.
      *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.
@@ -331,6 +372,7 @@ public final class FakeMaven {
 
     /**
      * The version of eo-maven-plugin for tests.
+     *
      * @return Version.
      */
     static String pluginVersion() {
@@ -342,6 +384,7 @@ public final class FakeMaven {
      * - main_1.eo
      * - foo.x.main100
      * - main.eo
+     *
      * @param index Number of the program.
      * @return String suffix.
      */
@@ -357,6 +400,7 @@ public final class FakeMaven {
 
     /**
      * Plugin descriptor with test version.
+     *
      * @return Plugin descriptor.
      */
     static PluginDescriptor pluginDescriptor() {
@@ -369,6 +413,7 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param content EO program content.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
@@ -378,9 +423,16 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
+        final String name = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
+        final String scope = this.scope();
         this.foreignTojos()
-            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
-            .withScope(this.scope())
+            .add(name)
+            .withScope(scope)
+            .withVersion("0.25.0")
+            .withSource(this.workspace.absolute(path));
+        this.externalTojos()
+            .add(name)
+            .withScope(scope)
             .withVersion("0.25.0")
             .withSource(this.workspace.absolute(path));
         this.current.incrementAndGet();
@@ -406,6 +458,7 @@ public final class FakeMaven {
 
     /**
      * Returns the current scope that was set.
+     *
      * @return The current scope.
      */
     private String scope() {
@@ -415,7 +468,7 @@ public final class FakeMaven {
     /**
      * Looks for all declared fields for mojo and its parents.
      *
-     * @param mojo Mojo or mojo parent.
+     * @param mojo   Mojo or mojo parent.
      * @param fields Already collected fields.
      * @return All mojo and mojo parent fields.
      */
@@ -583,6 +636,7 @@ public final class FakeMaven {
 
     /**
      * Single register phase.
+     *
      * @since 1.0
      */
     static final class Register implements Iterable<Class<? extends AbstractMojo>> {
