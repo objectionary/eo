@@ -43,6 +43,7 @@ import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
@@ -113,11 +114,15 @@ public final class OptimizeMojo extends SafeMojo {
     public void exec() throws IOException {
         final Collection<ForeignTojo> sources = this.scopedTojos().withXmir();
         final Optimization common = this.optimization();
+        final Iterable<ForeignTojo> external = new Filtered<>(
+            ForeignTojo::notOptimized,
+            this.extTojos.withXmir()
+        );
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> this.task(tojo, common),
+                    tojo -> this.task(tojo, external.iterator().next(), common),
                     new Filtered<>(
                         ForeignTojo::notOptimized,
                         sources
@@ -140,11 +145,13 @@ public final class OptimizeMojo extends SafeMojo {
      * Converts tojo to optimization task.
      *
      * @param tojo Tojo that should be optimized.
+     * @param external Copy of tojo to optimize.
      * @param common Optimization.
      * @return Optimization task.
      */
     private Scalar<Integer> task(
         final ForeignTojo tojo,
+        final ForeignTojo external,
         final Optimization common
     ) {
         final Path src = tojo.xmir();
@@ -156,7 +163,9 @@ public final class OptimizeMojo extends SafeMojo {
             final XML optimized = this.optimization(tojo, common)
                 .apply(new XMLDocument(src));
             if (this.shouldPass(optimized)) {
-                tojo.withOptimized(this.make(optimized, src).toAbsolutePath());
+                final Path made = this.make(optimized, src).toAbsolutePath();
+                tojo.withOptimized(made);
+                external.withOptimized(made);
             }
             return 1;
         };

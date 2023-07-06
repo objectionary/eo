@@ -114,6 +114,7 @@ public final class ProbeMojo extends SafeMojo {
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
+        final Collection<ForeignTojo> external = this.extTojos.unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
             final Collection<String> names = this.probes(src);
@@ -131,7 +132,9 @@ public final class ProbeMojo extends SafeMojo {
                     .withDiscoveredAt(src);
                 probed.add(name);
             }
-            tojo.withHash(new ChNarrow(hash)).withProbed(count);
+            final CommitHash narrow = new ChNarrow(hash);
+            tojo.withHash(narrow).withProbed(count);
+            external.iterator().next().withHash(narrow).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
