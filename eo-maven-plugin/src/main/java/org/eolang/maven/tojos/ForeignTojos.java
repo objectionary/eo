@@ -185,7 +185,7 @@ public final class ForeignTojos implements Closeable {
      * @return True if the tojo exists.
      */
     public boolean contains(final String name) {
-        return this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
+        return !this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
     }
 
     /**
