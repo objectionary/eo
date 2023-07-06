@@ -90,6 +90,13 @@ abstract class SafeMojo extends AbstractMojo {
     )
     protected File foreign;
 
+    @Parameter(
+        property = "eo.external",
+        required = true,
+        defaultValue = "${project.build.directory}/eo-external.csv"
+    )
+    protected File external;
+
     /**
      * Format of "foreign" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
@@ -196,6 +203,15 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
+     * Copy of foreign tojos for object versioning implementation.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final ForeignTojos externalTojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.external.toPath(), this.foreignFormat),
+        () -> this.scope
+    );
+
+    /**
      * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -265,6 +281,9 @@ abstract class SafeMojo extends AbstractMojo {
             } finally {
                 if (this.foreign != null) {
                     SafeMojo.closeTojos(this.tojos);
+                }
+                if (this.external != null) {
+                    SafeMojo.closeTojos(this.externalTojos);
                 }
                 if (this.placed != null) {
                     SafeMojo.closeTojos(this.placedTojos);
