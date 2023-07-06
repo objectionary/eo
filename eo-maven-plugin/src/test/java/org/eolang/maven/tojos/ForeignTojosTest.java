@@ -46,6 +46,14 @@ final class ForeignTojosTest {
      */
     private ForeignTojos tojos;
 
+    /**
+     * Set up environment before each test.
+     *
+     * @param tmp Temporary dir.
+     * @todo #2213:60min Create an instance of ForeignTojos in memory.
+     *  It would be better to be able to create an instance of ForeignTojos in
+     *  memory for test purposes.
+     */
     @BeforeEach
     void setUp(@TempDir final Path tmp) {
         this.tojos = new ForeignTojos(() -> new FakeMaven(tmp).foreign());
@@ -53,15 +61,15 @@ final class ForeignTojosTest {
 
     @ParameterizedTest
     @CsvSource({
-        "abs",
-        "org.eolang.int",
-        "QQ.io.stdout"
+        "abs, abs, true",
+        "org.eolang.int, org.eolang.float, false",
+        "QQ.io.stdout, QQ.io.stdout, true"
     })
-    void contains(final String name) {
+    void contains(final String name, final String check, final boolean contains) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
-            this.tojos.contains(name),
-            Matchers.is(true)
+            this.tojos.contains(check),
+            Matchers.is(contains)
         );
     }
 
