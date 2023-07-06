@@ -61,15 +61,29 @@ final class ForeignTojosTest {
 
     @ParameterizedTest
     @CsvSource({
-        "abs, abs, true",
-        "org.eolang.int, org.eolang.float, false",
-        "QQ.io.stdout, QQ.io.stdout, true"
+        "abs",
+        "org.eolang.int",
+        "QQ.io.stdout"
     })
-    void contains(final String name, final String check, final boolean contains) {
+    void contains(final String name) {
+        this.tojos.add(name);
+        MatcherAssert.assertThat(
+            this.tojos.contains(name),
+            Matchers.is(true)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "abs, sba",
+        "org.eolang.int, org.eolang.float",
+        "QQ.io.stdout, QQ.txt.sprintf"
+    })
+    void doesNotContain(final String name, final String check) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
             this.tojos.contains(check),
-            Matchers.is(contains)
+            Matchers.is(false)
         );
     }
 
