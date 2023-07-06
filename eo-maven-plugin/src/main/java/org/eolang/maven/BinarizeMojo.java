@@ -115,10 +115,10 @@ public final class BinarizeMojo extends SafeMojo {
                 target
             );
         }
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(project);
         Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
+        final Process building = new ProcessBuilder("cargo", "build")
+            .directory(project)
+            .start();
         try {
             building.waitFor();
         } catch (final InterruptedException exception) {
