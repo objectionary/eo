@@ -452,7 +452,7 @@
           y > @
     $.equal-to 3
 
-# @todo #2120:30m Enable the 'correctly-handles-same-name-attrs' test.
+# @todo #2120:30min Enable the 'correctly-handles-same-name-attrs' test.
 #  The correctly-handles-same-name-attrs test is disabled because it
 #  fails with StackOverflowError. We have to understand why it happens
 #  and fix it. The first problem is that the error message is not very
