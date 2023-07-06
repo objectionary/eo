@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@ref and @ref!='' and not(matches(@ref, '^[0-9]+(\.[0-9]+)?$'))]">
+      <xsl:for-each select="//o[@ref and @ref!='' and not(matches(@ref, '^[0-9]+(\.[0-9]+)*$'))]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>broken-refs</xsl:text>
