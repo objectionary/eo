@@ -80,6 +80,14 @@ SOFTWARE.
     </xsl:variable>
     <xsl:value-of select="$name"/>
   </xsl:function>
+  <!-- Generates pseudo-random integer -->
+  <xsl:function name="eo:random-int" as="xs:integer">
+    <xsl:variable name="generated">
+      <random/>
+    </xsl:variable>
+    <xsl:value-of select="sum(string-to-codepoints(generate-id($generated//random)))"/>
+  </xsl:function>
+  <!-- Finds all required attributes -->
   <xsl:function name="eo:vars">
     <xsl:param name="bottom" as="element()"/>
     <xsl:param name="top" as="element()"/>
@@ -161,9 +169,6 @@ SOFTWARE.
       <xsl:for-each select="1 to count($ancestors) - 1">
         <xsl:variable name="index" select="position()"/>
         <xsl:for-each select="eo:vars($ancestors[count($ancestors) - $index + 1], $ancestors[count($ancestors) - $index])">
-          <xsl:variable name="generated">
-            <random/>
-          </xsl:variable>
           <xsl:element name="o">
             <xsl:attribute name="name">
               <xsl:value-of select="@name"/>
@@ -176,7 +181,7 @@ SOFTWARE.
               <xsl:text>.</xsl:text>
               <xsl:value-of select="@line"/>
               <xsl:text>.</xsl:text>
-              <xsl:value-of select="sum(string-to-codepoints(generate-id($generated//random)))"/>
+              <xsl:value-of select="eo:random-int()"/>
             </xsl:attribute>
           </xsl:element>
         </xsl:for-each>
