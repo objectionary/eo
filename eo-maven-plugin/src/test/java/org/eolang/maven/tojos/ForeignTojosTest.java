@@ -79,10 +79,10 @@ final class ForeignTojosTest {
         "org.eolang.int, org.eolang.float",
         "QQ.io.stdout, QQ.txt.sprintf"
     })
-    void doesNotContain(final String name, final String check) {
-        this.tojos.add(name);
+    void doesNotContain(final String existing, final String considered) {
+        this.tojos.add(existing);
         MatcherAssert.assertThat(
-            this.tojos.contains(check),
+            this.tojos.contains(considered),
             Matchers.is(false)
         );
     }
