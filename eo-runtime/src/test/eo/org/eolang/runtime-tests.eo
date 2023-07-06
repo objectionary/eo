@@ -435,21 +435,19 @@
     """
     $.equal-to "Hello\n\nHello"
 
-[] > correctly-handles-same-name-attrs
-  [f s] > calc
+[] > correctly-handles-same-name-attrs-simplified
+  [first second] > calc
     plus. > @
-      f.next
-      s.next
+      first
+      second
   assert-that > @
     calc
       []
-        [x] > build
-          x.plus 1 > @
-          build (@.plus 1) > next
         build 1 > @
+        [x] > build
+          x > @
       []
-        [y] > build
-          y.plus 2 > @
-          build (@.plus 2) > next
         build 2 > @
-    $.equal-to 12
+        [y] > build
+          y > @
+    $.equal-to 3
