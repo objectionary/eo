@@ -53,17 +53,6 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Sheets in the right order.
-     *
-     * @todo #2110:90min Enable synthetic-references.xsl transformation.
-     *  Currently, synthetic-references.xsl transformation is disabled because
-     *  it breaks the integration tests in eo-maven-plugin.
-     *  The problem is that the transformation breaks add-refs.xsl transformation and
-     *  to-java.xsl transformation. The reason is that synthetic-references.xsl transformation
-     *  adds new objects without @line and @pos attributes which are required by add-refs.xsl
-     *  and to-java.xsl transformations.
-     *  When the problem is fixed, we should enable synthetic-references.xsl transformation
-     *  by adding it to the SHEETS array between remove-aliases.xsl and add-default-package.xsl
-     *  transformations.
      */
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
