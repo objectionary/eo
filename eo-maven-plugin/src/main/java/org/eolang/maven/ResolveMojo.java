@@ -206,6 +206,7 @@ public final class ResolveMojo extends SafeMojo {
     private Collection<Dependency> deps() {
         Iterable<Dependency> deps = new DcsDefault(
             this.scopedTojos(),
+            this.extTojos,
             this.discoverSelf,
             this.skipZeroVersions
         );

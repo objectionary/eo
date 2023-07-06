@@ -51,6 +51,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -351,6 +352,7 @@ public final class SodgMojo extends SafeMojo {
             );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
+        final Iterator<ForeignTojo> external = this.extTojos.withOptimized().iterator();
         final Path home = this.targetDir.toPath().resolve(SodgMojo.DIR);
         int total = 0;
         int instructions = 0;
@@ -377,6 +379,7 @@ public final class SodgMojo extends SafeMojo {
             final int extra = this.render(xmir, sodg);
             instructions += extra;
             tojo.withSodg(sodg.toAbsolutePath());
+            external.next().withSodg(sodg.toAbsolutePath());
             Logger.info(
                 this, "SODG for %s saved to %s (%d instructions)",
                 name, new Rel(sodg), extra

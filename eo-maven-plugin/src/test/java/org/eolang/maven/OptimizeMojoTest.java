@@ -116,6 +116,32 @@ final class OptimizeMojoTest {
         );
     }
 
+    @Test
+    void comparesForeignAndExternalTojosAfterOptimization(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld().execute(new FakeMaven.Optimize());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterOptimizationManyFiles(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int count = 20;
+        for (int idx = 0; idx < count; ++idx) {
+            maven.withHelloWorld();
+        }
+        maven.execute(new FakeMaven.Optimize());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
     /**
      * Test case for #1223.
      *

@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -39,10 +40,9 @@ import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.RangeOf;
 import org.cactoos.number.SumOf;
-import org.cactoos.scalar.LengthOf;
 import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.Footprint;
 import org.eolang.maven.footprint.FtCached;
@@ -104,22 +104,32 @@ public final class ParseMojo extends SafeMojo {
     private PluginDescriptor plugin;
 
     @Override
-    public void exec() throws Exception {
-        final Iterable<ForeignTojo> external = new Filtered<>(
-            ForeignTojo::notParsed,
-            this.extTojos.withSources()
-        );
+    public void exec() throws IOException {
+        final List<ForeignTojo> tojos = this.scopedTojos()
+            .withSources()
+            .stream()
+            .filter(ForeignTojo::notParsed)
+            .collect(Collectors.toList());
+        final List<ForeignTojo> external = this.extTojos
+            .withSources()
+            .stream()
+            .filter(ForeignTojo::notParsed)
+            .collect(Collectors.toList());
+        final int size = tojos.size();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> (Scalar<Integer>) () -> {
-                        this.parse(tojo, external.iterator().next());
+                    tjs -> (Scalar<Integer>) () -> {
+                        this.parse(tjs[0], tjs[1]);
                         return 1;
                     },
-                    new Filtered<>(
-                        ForeignTojo::notParsed,
-                        this.scopedTojos().withSources()
+                    new Mapped<>(
+                        index -> new ForeignTojo[] {
+                            tojos.get(index),
+                            external.get(index),
+                        },
+                        new RangeOf<>(0, size - 1, num -> num + 1)
                     )
                 )
             )

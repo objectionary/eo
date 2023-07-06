@@ -320,7 +320,7 @@ public final class FakeMaven {
      * Sets tojo attribute.
      *
      * @param attribute Tojo attribute.
-     * @param value     Attribute value.
+     * @param value Attribute value.
      * @return The same maven instance.
      */
     FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
@@ -337,6 +337,11 @@ public final class FakeMaven {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
     }
 
+    /**
+     * Path to 'eo-external.*' file after all changes.
+     *
+     * @return Path to eo-external.* file.
+     */
     Path externalPath() {
         return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
@@ -468,7 +473,7 @@ public final class FakeMaven {
     /**
      * Looks for all declared fields for mojo and its parents.
      *
-     * @param mojo   Mojo or mojo parent.
+     * @param mojo Mojo or mojo parent.
      * @param fields Already collected fields.
      * @return All mojo and mojo parent fields.
      */

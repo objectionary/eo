@@ -249,4 +249,31 @@ final class ResolveMojoTest {
             new ContainsFile("**/eo-runtime-*.jar")
         );
     }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterResolving(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .withProgram(
+                String.format(
+                    "%s\n\n%s",
+                    "+rt jvm org.eolang:eo-runtime:0.7.0",
+                    "[] > foo /int"
+                )
+            ).execute(new FakeMaven.Resolve());
+        final Path path = tmp.resolve("target/4-resolve/org.eolang/eo-runtime/-/0.7.0");
+        MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
+        MatcherAssert.assertThat(
+            path.resolve("eo-runtime-0.7.0.jar").toFile(),
+            FileMatchers.anExistingFile()
+        );
+        final ForeignTojos tojos = maven.foreignTojos();
+        MatcherAssert.assertThat(
+            tojos.size(),
+            Matchers.greaterThan(0)
+        );
+        MatcherAssert.assertThat(
+            tojos.status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
 }

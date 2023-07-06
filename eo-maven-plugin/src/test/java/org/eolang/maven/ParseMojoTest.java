@@ -184,6 +184,32 @@ final class ParseMojoTest {
         }
     }
 
+    @Test
+    void comparesStatusOfForeignAndExternalTojosAfterParsing(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld().execute(new FakeMaven.Parse());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
+    @Test
+    void comparesStatusOfForeignAndExternalTojosAfterParsingManyPrograms(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int count = 20;
+        for (int idx = 0; idx < count; ++idx) {
+            maven.withHelloWorld();
+        }
+        maven.execute(new FakeMaven.Parse());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
     /**
      * The mojo that does nothing, but executes infinitely.
      * @since 0.29

@@ -168,5 +168,4 @@ final class AssembleMojoTest {
             Matchers.is(true)
         );
     }
-
 }

@@ -195,6 +195,7 @@ public final class AssembleMojo extends SafeMojo {
             this.central = new Central(this.project, this.session, this.manager);
         }
         String before = this.tojos.status();
+        String extbefore = this.extTojos.status();
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
@@ -212,17 +213,23 @@ public final class AssembleMojo extends SafeMojo {
                 moja.copy(this).execute();
             }
             final String after = this.tojos.status();
+            final String extafter = this.extTojos.status();
             ++cycle;
             if (Logger.isInfoEnabled(this)) {
                 Logger.info(
                     this, "Assemble cycle #%d (%s -> %s), took %[nano]s",
                     cycle, before, after, System.nanoTime() - start
                 );
+                Logger.info(
+                    this, "External assemble cycle #%d (%s -> %s), took %[nano]s",
+                    cycle, extbefore, extafter, System.nanoTime() - start
+                );
             }
             if (after.equals(before)) {
                 break;
             }
             before = after;
+            extbefore = extafter;
         }
         Logger.info(
             this, "%d assemble cycle(s) produced some new object(s): %s",

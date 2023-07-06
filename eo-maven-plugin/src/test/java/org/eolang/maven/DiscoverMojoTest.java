@@ -89,4 +89,30 @@ final class DiscoverMojoTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void comparesStatusOfForeignAndExternalTojosAfterDiscovering(
+        @TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp);
+        maven.withHelloWorld().execute(new FakeMaven.Discover());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
+    @Test
+    void comparesStatusOfForeignAndExternalTojosAfterDiscoveringManyPrograms(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final int count = 20;
+        for (int idx = 0; idx < count; ++idx) {
+            maven.withHelloWorld();
+        }
+        maven.execute(new FakeMaven.Discover());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
 }

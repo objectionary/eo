@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -114,7 +115,7 @@ public final class ProbeMojo extends SafeMojo {
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
-        final Collection<ForeignTojo> external = this.extTojos.unprobed();
+        final Iterator<ForeignTojo> external = this.extTojos.unprobed().iterator();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
             final Collection<String> names = this.probes(src);
@@ -127,14 +128,13 @@ public final class ProbeMojo extends SafeMojo {
                     continue;
                 }
                 ++count;
-                this.scopedTojos()
-                    .add(name)
-                    .withDiscoveredAt(src);
+                this.scopedTojos().add(name).withDiscoveredAt(src);
+                this.extTojos.add(name).withDiscoveredAt(src);
                 probed.add(name);
             }
             final CommitHash narrow = new ChNarrow(hash);
             tojo.withHash(narrow).withProbed(count);
-            external.iterator().next().withHash(narrow).withProbed(count);
+            external.next().withHash(narrow).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -192,6 +192,7 @@ public final class ProbeMojo extends SafeMojo {
      * Trim Q prefix.
      * Q.a.b.c -> a.b
      * a.b.c -> a.b.c
+     *
      * @param obj Full object name
      * @return Trimmed object name
      */

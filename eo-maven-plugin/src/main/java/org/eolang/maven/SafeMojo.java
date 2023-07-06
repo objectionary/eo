@@ -208,6 +208,7 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Copy of foreign tojos for object versioning implementation.
+     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected final ForeignTojos extTojos = new ForeignTojos(
@@ -240,6 +241,13 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
+    /**
+     * Execute it.
+     * @throws MojoFailureException If fails during build
+     * @throws MojoExecutionException If fails during execution
+     * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
+     * @checkstyle CyclomaticComplexityCheck (70 lines)
+     */
     @Override
     public final void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -312,7 +320,7 @@ abstract class SafeMojo extends AbstractMojo {
      * Exec it.
      * @throws IOException If fails
      */
-    abstract void exec() throws Exception;
+    abstract void exec() throws IOException;
 
     /**
      * Runs exec command with timeout if needed.

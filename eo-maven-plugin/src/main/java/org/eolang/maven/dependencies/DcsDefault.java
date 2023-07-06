@@ -51,6 +51,11 @@ public final class DcsDefault implements Iterable<Dependency> {
     private final ForeignTojos tojos;
 
     /**
+     * List of external tojos.
+     */
+    private final ForeignTojos external;
+
+    /**
      * Discover self too.
      */
     private final boolean discover;
@@ -71,7 +76,25 @@ public final class DcsDefault implements Iterable<Dependency> {
         final boolean self,
         final boolean skip
     ) {
+        this(tjs, tjs, self, skip);
+    }
+
+    /**
+     * Ctor.
+     * @param tjs Tojos
+     * @param ext External tojos
+     * @param self Self
+     * @param skip Skip
+     * @checkstyle ParameterNumberCheck (8 lines)
+     */
+    public DcsDefault(
+        final ForeignTojos tjs,
+        final ForeignTojos ext,
+        final boolean self,
+        final boolean skip
+    ) {
         this.tojos = tjs;
+        this.external = ext;
         this.discover = self;
         this.skip = skip;
     }
@@ -79,6 +102,7 @@ public final class DcsDefault implements Iterable<Dependency> {
     @Override
     public Iterator<Dependency> iterator() {
         final Collection<ForeignTojo> list = this.tojos.dependencies();
+        final Iterator<ForeignTojo> ext = this.external.dependencies().iterator();
         Logger.debug(
             this, "%d suitable tojo(s) found out of %d",
             list.size(), this.tojos.size()
@@ -114,7 +138,9 @@ public final class DcsDefault implements Iterable<Dependency> {
                 new Coordinates(dep)
             );
             deps.add(dep);
-            tojo.withJar(new Coordinates(dep));
+            final Coordinates coordinates = new Coordinates(dep);
+            tojo.withJar(coordinates);
+            ext.next().withJar(coordinates);
         }
         return deps.iterator();
     }

@@ -122,6 +122,34 @@ final class ProbeMojoTest {
         );
     }
 
+    @Test
+    void comparesForeignAndExternalTojosAfterProbing(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("objectionary", new Objectionary.Fake())
+            .withProgram(ProbeMojoTest.program())
+            .execute(new FakeMaven.Probe());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterProbingManyPrograms(
+        @TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("objectionary", new Objectionary.Fake());
+        final int count = 20;
+        for (int program = 0; program < count; ++program) {
+            maven.withProgram(ProbeMojoTest.program());
+        }
+        maven.execute(new FakeMaven.Probe());
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
+
     private static String program() {
         return new UncheckedText(
             new TextOf(

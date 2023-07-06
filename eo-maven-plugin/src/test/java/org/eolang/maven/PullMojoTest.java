@@ -32,6 +32,7 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,9 +52,14 @@ final class PullMojoTest {
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final String object = "org.eolang.io.stdout";
+        final String version = "*.*.*";
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
-            .withVersion("*.*.*");
+            .add(object)
+            .withVersion(version);
+        maven.externalTojos()
+            .add(object)
+            .withVersion(version);
         maven.with("objectionary", new Objectionary.Fake())
             .with("skip", false)
             .execute(PullMojo.class);
@@ -67,6 +73,46 @@ final class PullMojoTest {
                 )
             ),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterPulling(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .with("objectionary", new Objectionary.Fake())
+            .with("skip", false);
+        final String name = "org.eolang.io.stdout";
+        final String version = "*.*.*";
+        final ForeignTojos tojos = maven.foreignTojos();
+        final ForeignTojos external = maven.externalTojos();
+        tojos.add(name).withVersion(version);
+        external.add(name).withVer(version);
+        maven.execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            external.status(),
+            Matchers.equalTo(external.status())
+        );
+    }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterPullingManyObjects(
+        @TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .with("objectionary", new Objectionary.Fake())
+            .with("skip", false);
+        final String name = "org.eolang.io.stdout";
+        final String version = "*.*.*";
+        final ForeignTojos tojos = maven.foreignTojos();
+        final ForeignTojos external = maven.externalTojos();
+        final int count = 20;
+        for (int idx = 0; idx < count; ++idx) {
+            tojos.add(name + idx).withVersion(version);
+            external.add(name + idx).withVersion(version);
+        }
+        maven.execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            tojos.status(),
+            Matchers.equalTo(external.status())
         );
     }
 
@@ -108,9 +154,14 @@ final class PullMojoTest {
             Paths.get("tags.txt")
         );
         final FakeMaven maven = new FakeMaven(temp);
+        final String object = "org.eolang.io.stdout";
+        final String version = "*.*.*";
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
-            .withVersion("*.*.*");
+            .add(object)
+            .withVersion(version);
+        maven.externalTojos()
+            .add(object)
+            .withVersion(version);
         maven.with("objectionary", new Objectionary.Fake())
             .with("offlineHashFile", temp.resolve("tags.txt"))
             .with("skip", false)
@@ -129,9 +180,14 @@ final class PullMojoTest {
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final String object = "org.eolang.io.stdout";
+        final String version = "*.*.*";
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
-            .withVersion("*.*.*");
+            .add(object)
+            .withVersion(version);
+        maven.externalTojos()
+            .add(object)
+            .withVersion(version);
         maven.with("objectionary", new Objectionary.Fake())
             .with("tag", "1.0.0")
             .with("offlineHash", "*.*.*:abcdefg")
@@ -146,10 +202,17 @@ final class PullMojoTest {
     @Test
     void skipsPullMojo(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final String object = "org.eolang.io.stdout";
+        final String version = "*.*.*";
+        final String scope = "complie";
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
-            .withScope("compile")
-            .withVersion("*.*.*");
+            .add(object)
+            .withVersion(version)
+            .withScope(scope);
+        maven.externalTojos()
+            .add(object)
+            .withVersion(version)
+            .withScope(scope);
         maven.with("skip", true)
             .with("objectionary", new Objectionary.Fake())
             .execute(PullMojo.class);

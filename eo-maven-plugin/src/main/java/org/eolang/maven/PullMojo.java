@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Iterator;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -122,9 +123,12 @@ public final class PullMojo extends SafeMojo {
             );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+        final Iterator<ForeignTojo> external = this.extTojos.withoutSources().iterator();
         for (final ForeignTojo tojo : tojos) {
-            tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
-                .withHash(new ChNarrow(hash));
+            final Path pulled = this.pull(tojo.identifier()).toAbsolutePath();
+            final CommitHash narrow = new ChNarrow(hash);
+            tojo.withSource(pulled).withHash(narrow);
+            external.next().withSource(pulled).withHash(narrow);
         }
         Logger.info(
             this, "%d program(s) pulled from %s",

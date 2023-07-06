@@ -60,8 +60,11 @@ final class MarkMojoTest {
         MarkMojoTest.source(temp);
         final FakeMaven maven = new FakeMaven(temp);
         final ForeignTojos foreign = maven.foreignTojos();
-        foreign.add("foo.bar")
-            .withVersion("*.*.*");
+        final ForeignTojos external = maven.externalTojos();
+        final String name = "foo.bar";
+        final String version = "*.*.*";
+        foreign.add(name).withVersion(version);
+        external.add(name).withVersion(version);
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
             foreign.all().iterator().next().version(),
@@ -70,6 +73,23 @@ final class MarkMojoTest {
         MatcherAssert.assertThat(
             foreign.size(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void comparesForeignAndExternalTojosAfterMarking(@TempDir final Path temp) throws IOException {
+        MarkMojoTest.source(temp);
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.execute(MarkMojo.class);
+        final ForeignTojos foreign = maven.foreignTojos();
+        final ForeignTojos external = maven.externalTojos();
+        MatcherAssert.assertThat(
+            foreign.status(),
+            Matchers.equalTo(external.status())
+        );
+        MatcherAssert.assertThat(
+            foreign.all().iterator().next().version(),
+            Matchers.equalTo(external.all().iterator().next().version())
         );
     }
 

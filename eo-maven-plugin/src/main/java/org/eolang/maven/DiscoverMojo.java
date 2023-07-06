@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -55,17 +56,18 @@ public final class DiscoverMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-        final Collection<ForeignTojo> external = this.extTojos.notDiscovered();
+        final Iterator<ForeignTojo> external = this.extTojos.notDiscovered().iterator();
         final Collection<String> discovered = new HashSet<>(1);
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
             final Collection<String> names = this.discover(src);
             for (final String name : names) {
                 this.scopedTojos().add(name).withDiscoveredAt(src);
+                this.extTojos.add(name).withDiscoveredAt(src);
                 discovered.add(name);
             }
             tojo.withDiscovered(names.size());
-            external.iterator().next().withDiscovered(names.size());
+            external.next().withDiscovered(names.size());
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
