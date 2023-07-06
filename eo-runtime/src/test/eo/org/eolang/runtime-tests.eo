@@ -451,3 +451,31 @@
         [y] > build
           y > @
     $.equal-to 3
+
+# @todo #2120:30m Enable the 'correctly-handles-same-name-attrs' test.
+#  The correctly-handles-same-name-attrs test is disabled because it
+#  fails with StackOverflowError. We have to understand why it happens
+#  and fix it. The first problem is that the error message is not very
+#  informative. The second problem is that the test is too complex and it
+#  is hard to understand which 'build' object we are using in which case.
+#  So, I believe we have to create several small tests that will explain the
+#  behaviour better.
+[] > correctly-handles-same-name-attrs
+  [f s] > calc
+    plus. > @
+      f.next
+      s.next
+  nop > @
+    assert-that
+      calc
+        []
+          [x] > build
+            x.plus 1 > @
+            build (@.plus 1) > next
+          build 1 > @
+        []
+          [y] > build
+            y.plus 2 > @
+            build (@.plus 2) > next
+          build 2 > @
+      $.equal-to 12
