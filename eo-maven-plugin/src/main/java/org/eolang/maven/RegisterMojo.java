@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -108,6 +109,7 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        this.verifyPrerequisite();
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
@@ -145,6 +147,24 @@ public final class RegisterMojo extends SafeMojo {
             new Rel(this.foreign),
             this.includeSources, this.excludeSources
         );
+    }
+
+    /**
+     * Verify that all prerequisites are met before execution of the mojo.
+     */
+    private void verifyPrerequisite() {
+        if (this.sourcesDir == null) {
+            throw new IllegalArgumentException(
+                String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
+            );
+        } else if (!Files.exists(this.sourcesDir.toPath())) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "sourcesDir %s does not exist. Please specify a valid sourceDir for %s",
+                    this.sourcesDir, this
+                )
+            );
+        }
     }
 
 }

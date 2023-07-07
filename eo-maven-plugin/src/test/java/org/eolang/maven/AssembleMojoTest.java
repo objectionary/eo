@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.util.Home;
@@ -92,6 +93,80 @@ final class AssembleMojoTest {
             ),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void assemblesTogether2(@TempDir final Path temp) throws Exception {
+        final Map<String, Path> result = new FakeMaven(temp)
+            .withProgram(
+                "+alias stdout org.eolang.io.stdout",
+                "",
+                "[x] > main",
+                "  (stdout \"Hello!\" x).print"
+            )
+            .execute(RegisterMojo.class)
+            .execute(AssembleMojo.class)
+            .result();
+
+        System.out.println(result);
+
+//        MatcherAssert.assertThat(
+//            new Home(target).exists(
+//                Paths.get(
+//                    String.format(
+//                        "%s/org/eolang/io/stdout.%s",
+//                        ParseMojo.DIR,
+//                        TranspileMojo.EXT
+//                    )
+//                )
+//            ),
+//            Matchers.is(true)
+//        );
+
+//        final Path src = temp.resolve("src");
+//        new Home(src).save(
+//            String.join(
+//                "\n",
+//                "+alias stdout org.eolang.io.stdout",
+//                "",
+//                "[x] > main\n  (stdout \"Hello!\" x).print\n"
+//            ),
+//            Paths.get("main.eo")
+//        );
+//        final Path target = temp.resolve("target");
+//        new Moja<>(RegisterMojo.class)
+//            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+//            .with("foreignFormat", "json")
+//            .with("sourcesDir", src.toFile())
+//            .with("includeSources", new SetOf<>("**.eo"))
+//            .execute();
+//        new Moja<>(AssembleMojo.class)
+//            .with("outputDir", temp.resolve("out").toFile())
+//            .with("targetDir", target.toFile())
+//            .with("foreign", temp.resolve("eo-foreign.json").toFile())
+//            .with("foreignFormat", "json")
+//            .with("placed", temp.resolve("list").toFile())
+//            .with("cache", temp.resolve("cache/parsed"))
+//            .with("skipZeroVersions", true)
+//            .with("central", Central.EMPTY)
+//            .with("plugin", FakeMaven.pluginDescriptor())
+//            .with("ignoreTransitive", true)
+//            .with(
+//                "objectionary",
+//                new Objectionary.Fake()
+//            )
+//            .execute();
+//        MatcherAssert.assertThat(
+//            new Home(target).exists(
+//                Paths.get(
+//                    String.format(
+//                        "%s/org/eolang/io/stdout.%s",
+//                        ParseMojo.DIR, TranspileMojo.EXT
+//                    )
+//                )
+//            ),
+//            Matchers.is(true)
+//        );
     }
 
     @Test
