@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
@@ -156,13 +155,6 @@ public final class RegisterMojo extends SafeMojo {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
-            );
-        } else if (!Files.exists(this.sourcesDir.toPath())) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "sourcesDir %s does not exist. Please specify a valid sourceDir for %s",
-                    this.sourcesDir, this
-                )
             );
         }
     }
