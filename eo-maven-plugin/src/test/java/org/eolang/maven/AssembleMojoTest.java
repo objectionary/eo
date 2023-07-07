@@ -37,10 +37,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
- * @todo #2120:90min Use FakeMaven in AssembleMojoTest.
- *  It's better to refactor of the tests inside {@link AssembleMojoTest}.
- *  Refactoring will simplify the existing code and reduce the total lines number.
- *  When the refactoring is done, remove this puzzle.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
@@ -55,7 +51,7 @@ final class AssembleMojoTest {
         "+version 0.0.0",
         "",
         "[x] < wrong>",
-        "  (stdout \"Hello!\" x).print"
+        "  (stdout \"Hello!\" x).print",
     };
 
     @Test
@@ -69,15 +65,18 @@ final class AssembleMojoTest {
             )
             .execute(AssembleMojo.class)
             .result();
-        final String parsed = String.format("target/%s/org/eolang/io/stdout.%s",
+        final String parsed = String.format(
+            "target/%s/org/eolang/io/stdout.%s",
             ParseMojo.DIR,
             TranspileMojo.EXT
         );
-        final String optimized = String.format("target/%s/org/eolang/io/stdout.%s",
+        final String optimized = String.format(
+            "target/%s/org/eolang/io/stdout.%s",
             OptimizeMojo.DIR,
             TranspileMojo.EXT
         );
-        final String pulled = String.format("target/%s/org/eolang/io/stdout.eo",
+        final String pulled = String.format(
+            "target/%s/org/eolang/io/stdout.eo",
             PullMojo.DIR
         );
         MatcherAssert.assertThat(
