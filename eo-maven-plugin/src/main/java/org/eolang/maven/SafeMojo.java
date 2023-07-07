@@ -208,9 +208,11 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * External tojos.
-     * @todo #1602:30min Parsing with versions using external tojos. Need to
-     *  implement mechanism of parsing objects with versions and save them to
-     *  external tojos.
+     * @todo #1602:30min Use external tojos to implement object versioning.
+     *  Implementation of object versioning will bring a lot significant
+     *  changes. That's why it's better to use independent separated tojos for
+     *  that purpose. At the end when object versioning works - just replace
+     *  them and remove unnecessary one.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
