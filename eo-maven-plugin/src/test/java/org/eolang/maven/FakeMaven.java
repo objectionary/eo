@@ -263,7 +263,7 @@ public final class FakeMaven {
      */
     ForeignTojos externalTojos() {
         return new ForeignTojos(
-            () -> Catalogs.INSTANCE.make(this.foreignPath()),
+            () -> Catalogs.INSTANCE.make(this.externalPath()),
             this::scope
         );
     }
