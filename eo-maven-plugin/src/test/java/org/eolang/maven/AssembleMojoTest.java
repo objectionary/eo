@@ -102,6 +102,32 @@ final class AssembleMojoTest {
     }
 
     @Test
+    void assemblesNotFailWithFailOnErrorFlag2(@TempDir final Path temp) throws Exception {
+        final Map<String, Path> result = new FakeMaven(temp)
+            .withProgram(
+                "+alias stdout org.eolang.io.stdout",
+                "+home https://github.com/objectionary/eo",
+                "+package test",
+                "+version 0.0.0",
+                "",
+                "[x] < wrong>",
+                "  (stdout \"Hello!\" x).print"
+            )
+            .with("failOnError", false)
+            .execute(AssembleMojo.class).result();
+        MatcherAssert.assertThat(
+            "Even if the eo program invalid we still have parse it, but we didn't",
+            result.get(String.format("target/%s", ParseMojo.DIR)),
+            new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT))
+        );
+        MatcherAssert.assertThat(
+            "Since the eo program invalid we shouldn't have optimized it, but we did",
+            result.get(String.format("target/%s", OptimizeMojo.DIR)),
+            Matchers.not(new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT)))
+        );
+    }
+
+    @Test
     void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         new Home(src).save(
