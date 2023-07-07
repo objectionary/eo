@@ -25,13 +25,10 @@ package org.eolang.maven;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
-import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -47,6 +44,19 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
+
+    /**
+     * Invalid eo program for testing.
+     */
+    private static final String[] INVALID_PROGRAM = {
+        "+alias stdout org.eolang.io.stdout",
+        "+home https://github.com/objectionary/eo",
+        "+package test",
+        "+version 0.0.0",
+        "",
+        "[x] < wrong>",
+        "  (stdout \"Hello!\" x).print"
+    };
 
     @Test
     void assemblesTogether(@TempDir final Path temp) throws IOException {
@@ -102,17 +112,9 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag2(@TempDir final Path temp) throws Exception {
+    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] < wrong>",
-                "  (stdout \"Hello!\" x).print"
-            )
+            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
             .with("failOnError", false)
             .execute(AssembleMojo.class).result();
         MatcherAssert.assertThat(
@@ -128,78 +130,14 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("wrong.eo")
-        );
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("main.eo")
-        );
-        final Path target = temp.resolve("target");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .with("includeSources", new SetOf<>("**.eo"))
-            .execute();
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("placed", temp.resolve("list").toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("skipZeroVersions", true)
-            .with("failOnError", false)
-            .with("central", Central.EMPTY)
-            .with("ignoreTransitive", true)
-            .with("plugin", FakeMaven.pluginDescriptor())
-            .with(
-                "objectionary",
-                new Objectionary.Fake()
-            )
-            .execute();
-        MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/main.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
+    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
+        final Class<IllegalStateException> expected = IllegalStateException.class;
+        Assertions.assertThrows(
+            expected,
+            () -> new FakeMaven(temp)
+                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .execute(AssembleMojo.class),
+            String.format("AssembleMojo should have failed with %s, but didn't", expected)
         );
     }
-
 }
