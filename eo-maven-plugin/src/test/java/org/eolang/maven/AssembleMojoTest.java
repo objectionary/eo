@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -48,55 +49,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class AssembleMojoTest {
 
     @Test
-    void assemblesTogether(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("main.eo")
-        );
-        final Path target = temp.resolve("target");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .with("includeSources", new SetOf<>("**.eo"))
-            .execute();
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("placed", temp.resolve("list").toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("skipZeroVersions", true)
-            .with("central", Central.EMPTY)
-            .with("plugin", FakeMaven.pluginDescriptor())
-            .with("ignoreTransitive", true)
-            .with(
-                "objectionary",
-                new Objectionary.Fake()
-            )
-            .execute();
-        MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void assemblesTogether2(@TempDir final Path temp) throws Exception {
+    void assemblesTogether(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(
                 "+alias stdout org.eolang.io.stdout",
@@ -104,69 +57,48 @@ final class AssembleMojoTest {
                 "[x] > main",
                 "  (stdout \"Hello!\" x).print"
             )
-            .execute(RegisterMojo.class)
             .execute(AssembleMojo.class)
             .result();
-
-        System.out.println(result);
-
-//        MatcherAssert.assertThat(
-//            new Home(target).exists(
-//                Paths.get(
-//                    String.format(
-//                        "%s/org/eolang/io/stdout.%s",
-//                        ParseMojo.DIR,
-//                        TranspileMojo.EXT
-//                    )
-//                )
-//            ),
-//            Matchers.is(true)
-//        );
-
-//        final Path src = temp.resolve("src");
-//        new Home(src).save(
-//            String.join(
-//                "\n",
-//                "+alias stdout org.eolang.io.stdout",
-//                "",
-//                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-//            ),
-//            Paths.get("main.eo")
-//        );
-//        final Path target = temp.resolve("target");
-//        new Moja<>(RegisterMojo.class)
-//            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-//            .with("foreignFormat", "json")
-//            .with("sourcesDir", src.toFile())
-//            .with("includeSources", new SetOf<>("**.eo"))
-//            .execute();
-//        new Moja<>(AssembleMojo.class)
-//            .with("outputDir", temp.resolve("out").toFile())
-//            .with("targetDir", target.toFile())
-//            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-//            .with("foreignFormat", "json")
-//            .with("placed", temp.resolve("list").toFile())
-//            .with("cache", temp.resolve("cache/parsed"))
-//            .with("skipZeroVersions", true)
-//            .with("central", Central.EMPTY)
-//            .with("plugin", FakeMaven.pluginDescriptor())
-//            .with("ignoreTransitive", true)
-//            .with(
-//                "objectionary",
-//                new Objectionary.Fake()
-//            )
-//            .execute();
-//        MatcherAssert.assertThat(
-//            new Home(target).exists(
-//                Paths.get(
-//                    String.format(
-//                        "%s/org/eolang/io/stdout.%s",
-//                        ParseMojo.DIR, TranspileMojo.EXT
-//                    )
-//                )
-//            ),
-//            Matchers.is(true)
-//        );
+        final String parsed = String.format("target/%s/org/eolang/io/stdout.%s",
+            ParseMojo.DIR,
+            TranspileMojo.EXT
+        );
+        final String optimized = String.format("target/%s/org/eolang/io/stdout.%s",
+            OptimizeMojo.DIR,
+            TranspileMojo.EXT
+        );
+        final String pulled = String.format("target/%s/org/eolang/io/stdout.eo",
+            PullMojo.DIR
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "AssembleMojo should have parsed stdout object %s, but wasn't",
+                parsed
+            ),
+            result.containsKey(parsed),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "AssembleMojo should have optimized stdout object %s, but wasn't ",
+                optimized
+            ),
+            result.containsKey(optimized),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "AssembleMojo should have pulled stdout object %s, but wasn't ",
+                pulled
+            ),
+            result.containsKey(pulled),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "AssembleMojo should have placed runtime library under classes directory, but wasn't ",
+            result.get("target/classes").toAbsolutePath(),
+            new ContainsFile("**/eo-runtime-*.jar")
+        );
     }
 
     @Test

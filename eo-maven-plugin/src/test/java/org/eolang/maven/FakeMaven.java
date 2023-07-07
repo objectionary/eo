@@ -54,6 +54,7 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -179,6 +180,10 @@ public final class FakeMaven {
         this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
         this.params.putIfAbsent("placedFormat", "json");
         this.params.putIfAbsent(
+            "sourcesDir",
+            this.workspace.absolute(Paths.get(".")).toFile()
+        );
+        this.params.putIfAbsent(
             "outputDir",
             this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
         );
@@ -194,6 +199,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
         this.params.putIfAbsent("placedFormat", "csv");
         this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
+        this.params.putIfAbsent("objectionary", new Objectionary.Fake());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
