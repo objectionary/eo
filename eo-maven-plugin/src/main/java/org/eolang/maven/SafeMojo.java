@@ -91,6 +91,17 @@ abstract class SafeMojo extends AbstractMojo {
     protected File foreign;
 
     /**
+     * File with external "tojos".
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(
+        property = "eo.external",
+        required = true,
+        defaultValue = "${project.build.directory}/eo-external.csv"
+    )
+    protected File external;
+
+    /**
      * Format of "foreign" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -196,6 +207,16 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
+     * External tojos.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final ForeignTojos extTojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.external.toPath(), this.foreignFormat),
+        () -> this.scope
+    );
+
+    /**
      * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -220,6 +241,13 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
+    /**
+     * Execute it.
+     * @throws MojoFailureException If fails during build
+     * @throws MojoExecutionException If fails during execution
+     * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
+     * @checkstyle CyclomaticComplexityCheck (70 lines)
+     */
     @Override
     public final void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -265,6 +293,9 @@ abstract class SafeMojo extends AbstractMojo {
             } finally {
                 if (this.foreign != null) {
                     SafeMojo.closeTojos(this.tojos);
+                }
+                if (this.external != null) {
+                    SafeMojo.closeTojos(this.extTojos);
                 }
                 if (this.placed != null) {
                     SafeMojo.closeTojos(this.placedTojos);

@@ -148,6 +148,17 @@ public final class FakeMaven {
     }
 
     /**
+     * Tojo for eo-external.* file.
+     *
+     * @return TjSmart of the current eo-external.file.
+     */
+    public TjSmart external() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.externalPath())
+        );
+    }
+
+    /**
      * Executes Mojo in the workspace.
      *
      * @param mojo Mojo to execute.
@@ -162,8 +173,15 @@ public final class FakeMaven {
                 tojo.set(entry.getKey().key(), entry.getValue());
             }
         }
+        for (final Tojo tojo : this.external().select(all -> true)) {
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
+                : this.attributes.entrySet()) {
+                tojo.set(entry.getKey().key(), entry.getValue());
+            }
+        }
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+        this.params.putIfAbsent("external", this.externalPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
         final Path transpiled = Paths.get("transpiled");
@@ -240,6 +258,17 @@ public final class FakeMaven {
     }
 
     /**
+     * External tojos for eo-external.* file.
+     * @return External tojos.
+     */
+    ForeignTojos externalTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.foreignPath()),
+            this::scope
+        );
+    }
+
+    /**
      * Sets placed tojo attribute.
      *
      * @param binary Binary as class file or jar.
@@ -293,11 +322,19 @@ public final class FakeMaven {
     }
 
     /**
-     * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
+     * Path to eo-foreign.* file after all changes.
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
+    }
+
+    /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -378,11 +415,21 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
+        final String object = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
+        final String scope = this.scope();
+        final String version = "0.25.0";
+        final Path source = this.workspace.absolute(path);
         this.foreignTojos()
-            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
-            .withScope(this.scope())
-            .withVersion("0.25.0")
-            .withSource(this.workspace.absolute(path));
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.externalTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+
         this.current.incrementAndGet();
         return this;
     }
