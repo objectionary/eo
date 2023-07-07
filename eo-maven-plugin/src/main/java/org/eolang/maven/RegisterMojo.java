@@ -139,7 +139,7 @@ public final class RegisterMojo extends SafeMojo {
                 .withVer(ParseMojo.ZERO);
             final String fullname = String.join("|", name, ParseMojo.ZERO);
             if (this.external != null) {
-                this.extTojos
+                this.externalTojos
                     .add(fullname)
                     .withSource(file.toAbsolutePath())
                     .withVersion(ParseMojo.ZERO);

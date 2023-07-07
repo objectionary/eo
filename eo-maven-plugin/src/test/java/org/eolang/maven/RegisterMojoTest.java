@@ -107,5 +107,9 @@ final class RegisterMojoTest {
                 .exists("id"),
             Matchers.is(true)
         );
+        MatcherAssert.assertThat(
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
     }
 }

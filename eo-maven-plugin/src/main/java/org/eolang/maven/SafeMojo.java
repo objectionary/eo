@@ -208,10 +208,13 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * External tojos.
+     * @todo #1602:30min Parsing with versions using external tojos. Need to
+     *  implement mechanism of parsing objects with versions and save them to
+     *  external tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final ForeignTojos extTojos = new ForeignTojos(
+    protected final ForeignTojos externalTojos = new ForeignTojos(
         () -> Catalogs.INSTANCE.make(this.external.toPath(), this.foreignFormat),
         () -> this.scope
     );
@@ -295,7 +298,7 @@ abstract class SafeMojo extends AbstractMojo {
                     SafeMojo.closeTojos(this.tojos);
                 }
                 if (this.external != null) {
-                    SafeMojo.closeTojos(this.extTojos);
+                    SafeMojo.closeTojos(this.externalTojos);
                 }
                 if (this.placed != null) {
                     SafeMojo.closeTojos(this.placedTojos);
