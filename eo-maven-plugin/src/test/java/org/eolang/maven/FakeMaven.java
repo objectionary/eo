@@ -429,7 +429,6 @@ public final class FakeMaven {
             .withScope(scope)
             .withVersion(version)
             .withSource(source);
-
         this.current.incrementAndGet();
         return this;
     }

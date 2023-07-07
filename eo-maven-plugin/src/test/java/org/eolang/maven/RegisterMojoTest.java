@@ -91,4 +91,21 @@ final class RegisterMojoTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void registersInExternalWithZeroVersions(@TempDir final Path temp) throws IOException {
+        new Home(temp).save(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            Paths.get("src/eo/org/eolang/maven/foo.eo")
+        );
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("sourcesDir", temp.resolve("src/eo").toFile())
+            .execute(new FakeMaven.Register());
+        MatcherAssert.assertThat(
+            maven.external()
+                .getById(String.join("|", "org.eolang.maven.foo", ParseMojo.ZERO))
+                .exists("id"),
+            Matchers.is(true)
+        );
+    }
 }
