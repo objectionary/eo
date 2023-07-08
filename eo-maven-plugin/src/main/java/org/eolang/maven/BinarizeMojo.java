@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,11 +34,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.rust.BuildFailureException;
 
 /**
@@ -116,11 +110,14 @@ public final class BinarizeMojo extends SafeMojo {
             );
         }
         Logger.info(this, "Building rust project..");
-        final Process building = new ProcessBuilder("cargo", "build")
-            .directory(project)
-            .start();
-        try {
-            building.waitFor();
+        try (
+            VerboseProcess proc = new VerboseProcess(
+                new ProcessBuilder("cargo", "build")
+                    .directory(project)
+            )
+        ) {
+            proc.stdout();
+            proc.waitFor();
         } catch (final InterruptedException exception) {
             Thread.currentThread().interrupt();
             throw new BuildFailureException(
@@ -130,35 +127,23 @@ public final class BinarizeMojo extends SafeMojo {
                 ),
                 exception
             );
-        }
-        if (building.exitValue() == 0) {
-            Logger.info(
-                this,
-                String.format(
-                    "Cargo building succeeded, update cached %s with %s",
-                    cached,
-                    target
-                )
-            );
-            FileUtils.copyDirectory(project, cached);
-        } else {
-            Logger.error(this, "There was an error in compilation");
-            try (VerboseProcess process = new VerboseProcess(building)) {
-                new Unchecked<>(
-                    new LengthOf(
-                        new TeeInput(
-                            new InputOf(process.stdoutQuietly()),
-                            new OutputTo(new ByteArrayOutputStream())
-                        )
-                    )
-                ).value();
-            }
+        } catch (final IllegalArgumentException exc) {
             throw new BuildFailureException(
                 String.format(
                     "Failed to build cargo project with dest = %s",
                     project
-                )
+                ),
+                exc
             );
         }
+        Logger.info(
+            this,
+            String.format(
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
+            )
+        );
+        FileUtils.copyDirectory(project, cached);
     }
 }
