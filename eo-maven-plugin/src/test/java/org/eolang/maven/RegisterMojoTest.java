@@ -93,21 +93,33 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void registersInExternalWithZeroVersions(@TempDir final Path temp) throws IOException {
+    void registersInExternal(@TempDir final Path temp) throws IOException {
         new Home(temp).save(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/foo.eo")
         );
+        final String name = "org.eolang.maven.foo";
+        final String source = "src/eo";
         final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve("src/eo").toFile())
+            .with("sourcesDir", temp.resolve(source).toFile())
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
+            String.format(
+                String.join(
+                    " ",
+                "Source object %s placed in %s should have been registered in external tojos",
+                    "but it have not"
+                ),
+                name,
+                source
+            ),
             maven.external()
-                .getById(String.join("|", "org.eolang.maven.foo", ParseMojo.ZERO))
+                .getById(name)
                 .exists("id"),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            "External and foreign tojos should have the same status after registering",
             maven.foreignTojos().status(),
             Matchers.equalTo(maven.externalTojos().status())
         );

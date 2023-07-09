@@ -83,7 +83,7 @@ public final class FakeMaven {
     private final Map<String, Object> params;
 
     /**
-     * Attributes for eo.foreign.*.
+     * Attributes for eo.foreign.* and eo.external.*.
      */
     private final Map<ForeignTojos.Attribute, Object> attributes;
 
@@ -167,18 +167,8 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        for (final Tojo tojo : this.foreign().select(all -> true)) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
-                : this.attributes.entrySet()) {
-                tojo.set(entry.getKey().key(), entry.getValue());
-            }
-        }
-        for (final Tojo tojo : this.external().select(all -> true)) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
-                : this.attributes.entrySet()) {
-                tojo.set(entry.getKey().key(), entry.getValue());
-            }
-        }
+        this.fillUpTojos(this.foreign().select(all -> true));
+        this.fillUpTojos(this.external().select(all -> true));
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
         this.params.putIfAbsent("external", this.externalPath().toFile());
@@ -474,6 +464,19 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
+    }
+
+    /**
+     * Fill up given tojos by attributes.
+     * @param tojos Tojos to fill up.
+     */
+    private void fillUpTojos(final List<Tojo> tojos) {
+        for (final Tojo tojo : tojos) {
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
+                : this.attributes.entrySet()) {
+                tojo.set(entry.getKey().key(), entry.getValue());
+            }
+        }
     }
 
     /**
