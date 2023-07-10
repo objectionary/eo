@@ -105,11 +105,7 @@ final class RegisterMojoTest {
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             String.format(
-                String.join(
-                    " ",
-                "Source object %s placed in %s should have been registered in external tojos",
-                    "but it have not"
-                ),
+                "Source object %s placed in %s should have been registered in external tojos but it didn't",
                 name,
                 source
             ),
@@ -119,7 +115,7 @@ final class RegisterMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "External and foreign tojos should have the same status after registering",
+            "External and foreign tojos should have the same status after registering because of identical behaviour at the step but they didn't",
             maven.foreignTojos().status(),
             Matchers.equalTo(maven.externalTojos().status())
         );
