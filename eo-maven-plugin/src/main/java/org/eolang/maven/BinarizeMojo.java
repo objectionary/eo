@@ -77,7 +77,7 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        int total = new SumOf(
+        final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
