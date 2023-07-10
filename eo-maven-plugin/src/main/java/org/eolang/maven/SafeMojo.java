@@ -198,10 +198,19 @@ abstract class SafeMojo extends AbstractMojo {
     protected Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
 
     /**
+     * Used for object versioning implementation.
+     * If set to TRUE, external tojos are used instead of foreign ones and all
+     * inherited Mojos behave a bit differently.
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(property = "eo.versioned", defaultValue = "false")
+    protected boolean versioned;
+
+    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final ForeignTojos tojos = new ForeignTojos(
+    private final ForeignTojos tojos = new ForeignTojos(
         () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
         () -> this.scope
     );
@@ -318,7 +327,13 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle AnonInnerLengthCheck (100 lines)
      */
     protected final ForeignTojos scopedTojos() {
-        return this.tojos;
+        final ForeignTojos tjs;
+        if (this.external != null && this.versioned) {
+            tjs = this.externalTojos;
+        } else {
+            tjs = this.tojos;
+        }
+        return tjs;
     }
 
     /**

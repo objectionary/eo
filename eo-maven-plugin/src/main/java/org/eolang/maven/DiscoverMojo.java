@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -94,26 +95,33 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = new TreeSet<>(
-            new ListOf<>(
-                new Filtered<>(
-                    obj -> !obj.isEmpty(),
-                    xml.xpath(
-                        String.join(
-                            " ",
-                            "//o[",
-                            "not(starts-with(@base,'.'))",
-                            " and @base != 'Q'",
-                            " and @base != '^'",
-                            " and @base != '$'",
-                            " and @base != '&'",
-                            " and not(@ref)",
-                            "]/@base"
-                        )
-                    )
-                )
-            )
+        final List<String> base = new ListOf<>(
+            "//o[",
+            "not(starts-with(@base,'.'))",
+            "and @base != 'Q'",
+            "and @base != '^'",
+            "and @base != '$'",
+            "and @base != '&'",
+            "and not(@ref)"
         );
+        final List<String> regular = new ListOf<>(base);
+        if (this.versioned) {
+            regular.add("and not(@ver)");
+        }
+        regular.add("]/@base");
+        final Collection<String> names = new TreeSet<>(
+            this.names(xml, regular)
+        );
+        if (this.versioned) {
+            final List<String> versioned = new ListOf<>(base);
+            versioned.addAll(
+                new ListOf<>(
+                    "and @ver",
+                    "]/concat(@base,'|',@ver)"
+                )
+            );
+            names.addAll(this.names(xml, versioned));
+        }
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
@@ -131,4 +139,24 @@ public final class DiscoverMojo extends SafeMojo {
         return names;
     }
 
+    /**
+     * Get list of object names from given XML by provided xpath.
+     * @param xml XML.
+     * @param xpath Xpath.
+     * @return List of object names.
+     * @checkstyle NonStaticMethodCheck (25 lines)
+     */
+    private List<String> names(final XML xml, final List<String> xpath) {
+        return new ListOf<>(
+            new Filtered<>(
+                obj -> !obj.isEmpty(),
+                xml.xpath(
+                    String.join(
+                        " ",
+                        xpath
+                    )
+                )
+            )
+        );
+    }
 }

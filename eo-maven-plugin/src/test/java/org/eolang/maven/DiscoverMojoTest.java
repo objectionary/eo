@@ -89,4 +89,26 @@ final class DiscoverMojoTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void discoversWithVersions(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .with("versioned", true)
+            .withProgram(
+                "+alias org.eolang.txt.sprintf\n",
+                "[] > main",
+                "  seq > @",
+                "    QQ.io.stdout",
+                "      sprintf|0.28.5",
+                "        \"Hello world\"",
+                "          TRUE"
+            )
+            .execute(new FakeMaven.Discover());
+        final String name = "org.eolang.txt.sprintf|0.28.5";
+        MatcherAssert.assertThat(
+            String.format("External tojos have to contain %s object, but they don't", name),
+            maven.externalTojos().contains(name),
+            Matchers.is(true)
+        );
+    }
 }

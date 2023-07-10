@@ -102,6 +102,7 @@ final class RegisterMojoTest {
         final String source = "src/eo";
         final FakeMaven maven = new FakeMaven(temp)
             .with("sourcesDir", temp.resolve(source).toFile())
+            .with("versioned", true)
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             String.format(
@@ -115,9 +116,13 @@ final class RegisterMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "External and foreign tojos should have the same status after registering because of identical behaviour at the step but they didn't",
+            "External and foreign tojos should not have the same status after registering because external should replace foreign but they didn't",
             maven.foreignTojos().status(),
-            Matchers.equalTo(maven.externalTojos().status())
+            Matchers.not(
+                Matchers.equalTo(
+                    maven.externalTojos().status()
+                )
+            )
         );
     }
 }

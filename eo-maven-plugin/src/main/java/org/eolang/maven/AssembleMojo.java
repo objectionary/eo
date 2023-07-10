@@ -194,7 +194,7 @@ public final class AssembleMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        String before = this.tojos.status();
+        String before = this.scopedTojos().status();
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
@@ -211,7 +211,7 @@ public final class AssembleMojo extends SafeMojo {
             for (final Moja<?> moja : mojas) {
                 moja.copy(this).execute();
             }
-            final String after = this.tojos.status();
+            final String after = this.scopedTojos().status();
             ++cycle;
             if (Logger.isInfoEnabled(this)) {
                 Logger.info(
