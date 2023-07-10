@@ -84,8 +84,8 @@ public final class BinarizeMojo extends SafeMojo {
                     project -> () -> {
                         final int built;
                         if (
-                            project.isDirectory() &&
-                                project.toPath().resolve("Cargo.toml").toFile().exists()
+                            project.isDirectory()
+                                && project.toPath().resolve("Cargo.toml").toFile().exists()
                         ) {
                             this.build(project);
                             built = 1;
