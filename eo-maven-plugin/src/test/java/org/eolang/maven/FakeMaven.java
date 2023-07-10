@@ -148,17 +148,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Tojo for eo-external.* file.
-     *
-     * @return TjSmart of the current eo-external.file.
-     */
-    TjSmart external() {
-        return new TjSmart(
-            Catalogs.INSTANCE.make(this.externalPath())
-        );
-    }
-
-    /**
      * Executes Mojo in the workspace.
      *
      * @param mojo Mojo to execute.
@@ -256,6 +245,17 @@ public final class FakeMaven {
         return new ForeignTojos(
             () -> Catalogs.INSTANCE.make(this.externalPath()),
             this::scope
+        );
+    }
+
+    /**
+     * Tojo for eo-external.* file.
+     *
+     * @return TjSmart of the current eo-external.file.
+     */
+    TjSmart external() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.externalPath())
         );
     }
 
