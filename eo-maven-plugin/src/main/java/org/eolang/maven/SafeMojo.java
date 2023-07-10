@@ -91,6 +91,17 @@ abstract class SafeMojo extends AbstractMojo {
     protected File foreign;
 
     /**
+     * File with external "tojos".
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(
+        property = "eo.external",
+        required = true,
+        defaultValue = "${project.build.directory}/eo-external.csv"
+    )
+    protected File external;
+
+    /**
      * Format of "foreign" file ("json" or "csv").
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -196,6 +207,21 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
+     * External tojos.
+     * @todo #1602:30min Use external tojos to implement object versioning.
+     *  Implementation of object versioning will bring a lot significant
+     *  changes. That's why it's better to use independent separated tojos for
+     *  that purpose. At the end when object versioning works - just replace
+     *  them and remove unnecessary one.
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final ForeignTojos externalTojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.external.toPath(), this.foreignFormat),
+        () -> this.scope
+    );
+
+    /**
      * Placed tojos.
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -220,6 +246,13 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
+    /**
+     * Execute it.
+     * @throws MojoFailureException If fails during build
+     * @throws MojoExecutionException If fails during execution
+     * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
+     * @checkstyle CyclomaticComplexityCheck (70 lines)
+     */
     @Override
     public final void execute() throws MojoFailureException, MojoExecutionException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
@@ -265,6 +298,9 @@ abstract class SafeMojo extends AbstractMojo {
             } finally {
                 if (this.foreign != null) {
                     SafeMojo.closeTojos(this.tojos);
+                }
+                if (this.external != null) {
+                    SafeMojo.closeTojos(this.externalTojos);
                 }
                 if (this.placed != null) {
                     SafeMojo.closeTojos(this.placedTojos);
