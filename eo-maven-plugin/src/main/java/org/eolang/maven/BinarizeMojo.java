@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
 import org.eolang.maven.rust.BuildFailureException;
@@ -81,8 +82,14 @@ public final class BinarizeMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    project -> () -> this.apply(project),
-                    targetDir.toPath().resolve("Lib").toFile().listFiles()
+                    project -> () -> {
+                        this.build(project);
+                        return 1;
+                    },
+                    new Filtered<>(
+                        project -> BinarizeMojo.valid(project),
+                        targetDir.toPath().resolve("Lib").toFile().listFiles()
+                    )
                 )
             )
         ).intValue();
@@ -93,23 +100,13 @@ public final class BinarizeMojo extends SafeMojo {
     }
 
     /**
-     * Builds the project if it is a directory.
-     * @param project File to build.
-     * @return Number of projects were built, i.e. 0 or 1.
-     * @throws IOException If any issues with IO
+     * Is the project valid?
+     * @param project File to check.
+     * @return True if valid. Otherwise false.
      */
-    private int apply(final File project) throws IOException {
-        final int built;
-        if (
-            project.isDirectory()
-                && project.toPath().resolve("Cargo.toml").toFile().exists()
-        ) {
-            this.build(project);
-            built = 1;
-        } else {
-            built = 0;
-        }
-        return built;
+    private static boolean valid(final File project) {
+        return project.isDirectory()
+            && project.toPath().resolve("Cargo.toml").toFile().exists();
     }
 
     /**
