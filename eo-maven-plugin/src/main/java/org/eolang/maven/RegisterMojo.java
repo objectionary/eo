@@ -128,14 +128,15 @@ public final class RegisterMojo extends SafeMojo {
                 );
             }
             final String name = unplace.make(file);
-            if (!this.scopedTojos().contains(name)) {
+            if (this.scopedTojos().contains(name)) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
             this.scopedTojos()
                 .add(name)
                 .withSource(file.toAbsolutePath())
-                .withVersion(ParseMojo.ZERO);
+                .withVersion(ParseMojo.ZERO)
+                .withVer(ParseMojo.ZERO);
             Logger.debug(this, "EO source %s registered", name);
         }
         Logger.info(

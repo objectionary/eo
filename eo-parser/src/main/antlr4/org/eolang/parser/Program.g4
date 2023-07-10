@@ -140,6 +140,11 @@ application
   method
   htail?
   |
+  application
+  method
+  version
+  suffix?
+  |
   scope
   htail?
   |
