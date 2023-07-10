@@ -81,19 +81,7 @@ public final class BinarizeMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    project -> () -> {
-                        final int built;
-                        if (
-                            project.isDirectory()
-                                && project.toPath().resolve("Cargo.toml").toFile().exists()
-                        ) {
-                            this.build(project);
-                            built = 1;
-                        } else {
-                            built = 0;
-                        }
-                        return built;
-                    },
+                    project -> () -> apply(project),
                     targetDir.toPath().resolve("Lib").toFile().listFiles()
                 )
             )
@@ -105,13 +93,33 @@ public final class BinarizeMojo extends SafeMojo {
     }
 
     /**
+     * Builds the project if it is a directory.
+     * @param project File to build.
+     * @return Number of projects were built, i.e. 0 or 1.
+     * @throws IOException If any issues with IO
+     */
+    private int apply(final File project) throws IOException {
+        final int built;
+        if (
+            project.isDirectory()
+                && project.toPath().resolve("Cargo.toml").toFile().exists()
+        ) {
+            this.build(project);
+            built = 1;
+        } else {
+            built = 0;
+        }
+        return built;
+    }
+
+    /**
      * Builds cargo project.
      * @param project Path to the project.
      * @throws IOException If any issues with IO.
      */
     private void build(final File project) throws IOException {
         final File target = project.toPath().resolve("target").toFile();
-        final File cached = cache
+        final File cached = this.cache
             .resolve("Lib")
             .resolve(project.getName())
             .resolve("target").toFile();
