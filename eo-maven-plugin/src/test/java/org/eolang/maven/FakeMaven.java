@@ -83,7 +83,7 @@ public final class FakeMaven {
     private final Map<String, Object> params;
 
     /**
-     * Attributes for eo.foreign.*.
+     * Attributes for eo.foreign.* and eo.external.*.
      */
     private final Map<ForeignTojos.Attribute, Object> attributes;
 
@@ -156,14 +156,11 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        for (final Tojo tojo : this.foreign().select(all -> true)) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
-                : this.attributes.entrySet()) {
-                tojo.set(entry.getKey().key(), entry.getValue());
-            }
-        }
+        this.fillUp(this.foreign().select(all -> true));
+        this.fillUp(this.external().select(all -> true));
         this.params.putIfAbsent("targetDir", this.targetPath().toFile());
         this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+        this.params.putIfAbsent("external", this.externalPath().toFile());
         this.params.putIfAbsent("foreignFormat", "csv");
         this.params.putIfAbsent("project", new MavenProjectStub());
         final Path transpiled = Paths.get("transpiled");
@@ -171,6 +168,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
         this.params.putIfAbsent("transpiledFormat", "csv");
         this.params.putIfAbsent("skipZeroVersions", true);
+        this.params.putIfAbsent("versioned", false);
         this.params.putIfAbsent("discoverSelf", false);
         this.params.putIfAbsent("ignoreVersionConflict", false);
         this.params.putIfAbsent("ignoreTransitive", true);
@@ -240,6 +238,28 @@ public final class FakeMaven {
     }
 
     /**
+     * External tojos for eo-external.* file.
+     * @return External tojos.
+     */
+    ForeignTojos externalTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.externalPath()),
+            this::scope
+        );
+    }
+
+    /**
+     * Tojo for eo-external.* file.
+     *
+     * @return TjSmart of the current eo-external.file.
+     */
+    TjSmart external() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.externalPath())
+        );
+    }
+
+    /**
      * Sets placed tojo attribute.
      *
      * @param binary Binary as class file or jar.
@@ -293,7 +313,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
+     * Path to eo-foreign.* file after all changes.
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
@@ -378,11 +398,20 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
+        final String object = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
+        final String scope = this.scope();
+        final String version = "0.25.0";
+        final Path source = this.workspace.absolute(path);
         this.foreignTojos()
-            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
-            .withScope(this.scope())
-            .withVersion("0.25.0")
-            .withSource(this.workspace.absolute(path));
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.externalTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
         this.current.incrementAndGet();
         return this;
     }
@@ -428,6 +457,33 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
+    }
+
+    /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    private Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
+    }
+
+    /**
+     * Fill up given tojos by the attributes.
+     * @param tojos Tojos to fill up.
+     * @todo #1602:30min Move the method to ForeignTojos if possible.
+     *  Let's treat ForeignTojos as an object (not as a collection of data)
+     *  and give it a chance to fulfill itself. It knows better how to do so.
+     *  ForeignTojo in current implementation does not have method set() so
+     *  we either need to implement it or just stay with the method here in
+     *  FakeMaven class.
+     */
+    private void fillUp(final List<Tojo> tojos) {
+        for (final Tojo tojo : tojos) {
+            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
+                : this.attributes.entrySet()) {
+                tojo.set(entry.getKey().key(), entry.getValue());
+            }
+        }
     }
 
     /**

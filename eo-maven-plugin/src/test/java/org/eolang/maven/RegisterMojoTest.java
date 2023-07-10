@@ -91,4 +91,33 @@ final class RegisterMojoTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void registersInExternal(@TempDir final Path temp) throws IOException {
+        new Home(temp).save(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            Paths.get("src/eo/org/eolang/maven/foo.eo")
+        );
+        final String name = "org.eolang.maven.foo";
+        final String source = "src/eo";
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("sourcesDir", temp.resolve(source).toFile())
+            .execute(new FakeMaven.Register());
+        MatcherAssert.assertThat(
+            String.format(
+                "Source object %s placed in %s should have been registered in external tojos but it didn't",
+                name,
+                source
+            ),
+            maven.external()
+                .getById(name)
+                .exists("id"),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "External and foreign tojos should have the same status after registering because of identical behaviour at the step but they didn't",
+            maven.foreignTojos().status(),
+            Matchers.equalTo(maven.externalTojos().status())
+        );
+    }
 }

@@ -138,6 +138,13 @@ public final class RegisterMojo extends SafeMojo {
                 .withVersion(ParseMojo.ZERO)
                 .withVer(ParseMojo.ZERO);
             Logger.debug(this, "EO source %s registered", name);
+            if (this.external != null) {
+                this.externalTojos
+                    .add(name)
+                    .withSource(file.toAbsolutePath())
+                    .withVersion(ParseMojo.ZERO);
+                Logger.debug(this, "EO source %s registered (external)", name);
+            }
         }
         Logger.info(
             this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
