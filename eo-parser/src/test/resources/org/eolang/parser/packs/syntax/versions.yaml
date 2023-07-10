@@ -5,6 +5,8 @@ tests:
   - //o[@base='func2' and not(@ver)]
   - //o[@base='func3' and @ver='3.2.1']
   - //o[@base='func4' and @ver='10.20.30']
+  - //o[@base='.stdout' and @ver='1.28.5']
+  - //o[@base='.sprintf' and @ver='0.28.5' and @name='y']
 eo: |
   [] > main
     func0|3.4.5 > x
@@ -14,3 +16,6 @@ eo: |
     func3|3.2.1
     .method
       func4|10.20.30
+    QQ.io.stdout|1.28.5
+      QQ.txt.sprintf|0.28.5 > y
+        "Hello world"
