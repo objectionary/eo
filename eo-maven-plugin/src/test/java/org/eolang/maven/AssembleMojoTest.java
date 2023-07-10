@@ -81,7 +81,7 @@ final class AssembleMojoTest {
         );
         MatcherAssert.assertThat(
             String.format(
-                "AssembleMojo should have parsed stdout object %s, but wasn't",
+                "AssembleMojo should have parsed stdout object %s, but didn't",
                 parsed
             ),
             result.containsKey(parsed),
@@ -89,7 +89,7 @@ final class AssembleMojoTest {
         );
         MatcherAssert.assertThat(
             String.format(
-                "AssembleMojo should have optimized stdout object %s, but wasn't ",
+                "AssembleMojo should have optimized stdout object %s, but didn't",
                 optimized
             ),
             result.containsKey(optimized),
@@ -97,14 +97,14 @@ final class AssembleMojoTest {
         );
         MatcherAssert.assertThat(
             String.format(
-                "AssembleMojo should have pulled stdout object %s, but wasn't ",
+                "AssembleMojo should have pulled stdout object %s, but didn't",
                 pulled
             ),
             result.containsKey(pulled),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "AssembleMojo should have placed runtime library under classes directory, but wasn't ",
+            "AssembleMojo should have placed runtime library under classes directory, but didn't",
             result.get("target/classes").toAbsolutePath(),
             new ContainsFile("**/eo-runtime-*.jar")
         );
@@ -117,7 +117,7 @@ final class AssembleMojoTest {
             .with("failOnError", false)
             .execute(AssembleMojo.class).result();
         MatcherAssert.assertThat(
-            "Even if the eo program invalid we still have parse it, but we didn't",
+            "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
             new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT))
         );
