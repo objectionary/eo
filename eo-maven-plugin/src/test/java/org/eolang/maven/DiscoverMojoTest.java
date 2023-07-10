@@ -98,17 +98,23 @@ final class DiscoverMojoTest {
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
                 "  seq > @",
-                "    QQ.io.stdout",
+                "    QQ.io.stdout|0.29.1",
                 "      sprintf|0.28.5",
                 "        \"Hello world\"",
                 "          TRUE"
             )
             .execute(new FakeMaven.Discover());
-        final String name = "org.eolang.txt.sprintf|0.28.5";
+        final String sprintf = "org.eolang.txt.sprintf|0.28.5";
+        final String stdout = "org.eolang.io.stdout|0.29.1";
         MatcherAssert.assertThat(
-            String.format("External tojos have to contain %s object, but they don't", name),
-            maven.externalTojos().contains(name),
+            String.format("External tojos have to contain %s object, but they don't", sprintf),
+            maven.externalTojos().contains(sprintf),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format("External tojos should not contain %s object, but they did", stdout),
+            maven.externalTojos().contains(stdout),
+            Matchers.is(false)
         );
     }
 }
