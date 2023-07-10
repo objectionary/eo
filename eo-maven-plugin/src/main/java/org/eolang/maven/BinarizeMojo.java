@@ -34,6 +34,10 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.rust.BuildFailureException;
 
 /**
@@ -45,9 +49,6 @@ import org.eolang.maven.rust.BuildFailureException;
  *  Now it copies cargo project to cache directory in the end of every
  *  compilation. It is better to copy the project only if it was changed
  *  with the last compilation.
- * @todo #2195:90min Make cargo compilation in parallel. Now cargo
- *  projects are being built consistently which is too long.
- *  It is much better to build them in parallel to reduce time.
  */
 @Mojo(
     name = "binarize",
@@ -77,11 +78,35 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        for (final File project: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
-            if (project.isDirectory() && project.toPath().resolve("Cargo.toml").toFile().exists()) {
-                this.build(project);
-            }
-        }
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    project -> () -> {
+                        this.build(project);
+                        return 1;
+                    },
+                    new Filtered<>(
+                        project -> BinarizeMojo.valid(project),
+                        targetDir.toPath().resolve("Lib").toFile().listFiles()
+                    )
+                )
+            )
+        ).intValue();
+        Logger.info(
+            this,
+            String.format("Built in total %d cargo projects", total)
+        );
+    }
+
+    /**
+     * Is the project valid?
+     * @param project File to check.
+     * @return True if valid. Otherwise false.
+     */
+    private static boolean valid(final File project) {
+        return project.isDirectory()
+            && project.toPath().resolve("Cargo.toml").toFile().exists();
     }
 
     /**
@@ -91,7 +116,7 @@ public final class BinarizeMojo extends SafeMojo {
      */
     private void build(final File project) throws IOException {
         final File target = project.toPath().resolve("target").toFile();
-        final File cached = cache
+        final File cached = this.cache
             .resolve("Lib")
             .resolve(project.getName())
             .resolve("target").toFile();
@@ -117,16 +142,6 @@ public final class BinarizeMojo extends SafeMojo {
             )
         ) {
             proc.stdout();
-            proc.waitFor();
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw new BuildFailureException(
-                String.format(
-                    "Interrupted while building %s",
-                    project
-                ),
-                exception
-            );
         } catch (final IllegalArgumentException exc) {
             throw new BuildFailureException(
                 String.format(
