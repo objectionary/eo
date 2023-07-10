@@ -122,7 +122,7 @@ final class XMIRTest {
                 Level.FINE
             )
         ).pass(xml);
-        final String ebnf = after.xpath("/ebnf/text()").get(0);
+        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ");
         Files.write(
             Paths.get("target/ebnf.txt"),
             ebnf.getBytes(StandardCharsets.UTF_8)

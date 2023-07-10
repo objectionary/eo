@@ -27,7 +27,9 @@ SOFTWARE.
   <xsl:function name="eo:escape" as="xs:string">
     <xsl:param name="s" as="xs:string"/>
     <xsl:variable name="r1" select='replace(replace(replace(replace(replace(replace($s, "\\", "\\textbackslash{}"), "&amp;", "\\&amp;"), " ", "\\textvisiblespace{}"), "\^", "\\^{}"), "\$", "\\textdollar"), "#", "\\#")'/>
-    <xsl:value-of select="replace($r1, '&quot;', '\\lq\\lq')"/>
+    <xsl:variable name="r2" select='replace($r1, "_", "\\_")'/>
+    <xsl:variable name="r3" select="replace($r2, '&quot;', '\\lq\\lq')"/>
+    <xsl:value-of select="$r3"/>
   </xsl:function>
   <xsl:template match="g:grammar">
     <xsl:element name="ebnf">
@@ -37,27 +39,27 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="g:production">
-    <xsl:value-of select="@name"/>
-    <xsl:text> ::= </xsl:text>
+    <xsl:value-of select="eo:escape(@name)"/>
+    <xsl:text> := </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>&#x0A;</xsl:text>
+    <xsl:text> \\ &#x0A;</xsl:text>
   </xsl:template>
   <xsl:template match="g:optional">
-    <xsl:text> [</xsl:text>
+    <xsl:text> [ </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>] </xsl:text>
+    <xsl:text> ] </xsl:text>
   </xsl:template>
   <xsl:template match="g:zeroOrMore">
-    <xsl:text> {</xsl:text>
+    <xsl:text> { </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>} </xsl:text>
+    <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:oneOrMore">
-    <xsl:text> (</xsl:text>
+    <xsl:text> ( </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>) {</xsl:text>
+    <xsl:text> ) { </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>} </xsl:text>
+    <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:sequence">
     <xsl:text> (</xsl:text>
@@ -78,12 +80,26 @@ SOFTWARE.
     <xsl:text>" </xsl:text>
   </xsl:template>
   <xsl:template match="g:complement">
+    <xsl:text> /</xsl:text>
     <xsl:apply-templates select="g:*"/>
+    <xsl:text>/ </xsl:text>
   </xsl:template>
   <xsl:template match="g:charClass">
-    <xsl:text>[</xsl:text>
-    <xsl:apply-templates select="g:*"/>
-    <xsl:text>]</xsl:text>
+    <xsl:variable name="txt">
+      <xsl:text>[</xsl:text>
+      <xsl:apply-templates select="g:*"/>
+      <xsl:text>]</xsl:text>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="ancestor::g:complement">
+        <xsl:value-of select="$txt"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text> /</xsl:text>
+        <xsl:value-of select="$txt"/>
+        <xsl:text>/ </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="g:charRange">
     <xsl:value-of select='@minChar'/>
@@ -92,7 +108,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="g:charCode">
     <xsl:text>\textbackslash{}x</xsl:text>
-    <xsl:value-of select='@value'/>
+    <xsl:value-of select='upper-case(@value)'/>
   </xsl:template>
   <xsl:template match="g:char">
     <xsl:value-of select='eo:escape(text())'/>
