@@ -25,20 +25,15 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.rust.BuildFailureException;
 
 /**
@@ -46,6 +41,10 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2197:45min Update cached rust insert if it was changed.
+ *  Now it copies cargo project to cache directory in the end of every
+ *  compilation. It is better to copy the project only if it was changed
+ *  with the last compilation.
  * @todo #2195:90min Make cargo compilation in parallel. Now cargo
  *  projects are being built consistently which is too long.
  *  It is much better to build them in parallel to reduce time.
@@ -78,45 +77,73 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        for (final File file: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
-            if (file.isDirectory() && file.toPath().resolve("Cargo.toml").toFile().exists()) {
-                Logger.info(this, String.format("Building rust project.."));
-                final Process building = new ProcessBuilder("cargo", "build")
-                    .directory(file)
-                    .start();
-                try {
-                    building.waitFor();
-                } catch (final InterruptedException exception) {
-                    Thread.currentThread().interrupt();
-                    throw new BuildFailureException(
-                        String.format(
-                            "Interrupted while building %s",
-                            file
-                        ),
-                        exception
-                    );
-                }
-                if (building.exitValue() != 0) {
-                    Logger.error(this, "There was an error in compilation");
-                    try (VerboseProcess process = new VerboseProcess(building)) {
-                        new Unchecked<>(
-                            new LengthOf(
-                                new TeeInput(
-                                    new InputOf(process.stdoutQuietly()),
-                                    new OutputTo(new ByteArrayOutputStream())
-                                )
-                            )
-                        ).value();
-                    }
-                    throw new BuildFailureException(
-                        String.format(
-                            "Failed to build cargo project with dest = %s",
-                            file
-                        )
-                    );
-                }
+        for (final File project: targetDir.toPath().resolve("Lib").toFile().listFiles()) {
+            if (project.isDirectory() && project.toPath().resolve("Cargo.toml").toFile().exists()) {
+                this.build(project);
             }
         }
     }
 
+    /**
+     * Builds cargo project.
+     * @param project Path to the project.
+     * @throws IOException If any issues with IO.
+     */
+    private void build(final File project) throws IOException {
+        final File target = project.toPath().resolve("target").toFile();
+        final File cached = cache
+            .resolve("Lib")
+            .resolve(project.getName())
+            .resolve("target").toFile();
+        if (cached.exists()) {
+            Logger.info(
+                this,
+                String.format(
+                    "Copying %s to %s",
+                    cached,
+                    target
+                )
+            );
+            FileUtils.copyDirectory(
+                cached,
+                target
+            );
+        }
+        Logger.info(this, "Building rust project..");
+        try (
+            VerboseProcess proc = new VerboseProcess(
+                new ProcessBuilder("cargo", "build")
+                    .directory(project)
+            )
+        ) {
+            proc.stdout();
+            proc.waitFor();
+        } catch (final InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new BuildFailureException(
+                String.format(
+                    "Interrupted while building %s",
+                    project
+                ),
+                exception
+            );
+        } catch (final IllegalArgumentException exc) {
+            throw new BuildFailureException(
+                String.format(
+                    "Failed to build cargo project with dest = %s",
+                    project
+                ),
+                exc
+            );
+        }
+        Logger.info(
+            this,
+            String.format(
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
+            )
+        );
+        FileUtils.copyDirectory(project, cached);
+    }
 }
