@@ -248,7 +248,7 @@ data
   HEX
   ;
 
-COMMENT: HASH | (HASH ~[\r\n]* ~[\r\n\p{Space}]);
+COMMENT: HASH | (HASH ~[\r\n]* ~[\r\n\t ]);
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 ROOT: 'Q';
@@ -324,7 +324,7 @@ fragment EXPONENT: ('e'|'E') (PLUS | MINUS)? ('0'..'9')+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
 HEX: '0x' [0-9a-fA-F]+;
 
-NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
+NAME: [a-z][a-zA-Z0-9_-]*;
 VERSION: [0-9]+ DOT [0-9]+ DOT [0-9]+;
 
 fragment TEXT_MARK: '"""';
