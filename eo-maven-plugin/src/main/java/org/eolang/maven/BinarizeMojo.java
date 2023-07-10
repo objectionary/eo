@@ -81,7 +81,7 @@ public final class BinarizeMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    project -> () -> apply(project),
+                    project -> () -> this.apply(project),
                     targetDir.toPath().resolve("Lib").toFile().listFiles()
                 )
             )
