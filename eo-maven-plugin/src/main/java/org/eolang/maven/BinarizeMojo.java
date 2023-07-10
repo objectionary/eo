@@ -82,12 +82,17 @@ public final class BinarizeMojo extends SafeMojo {
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     project -> () -> {
-                        if (project.isDirectory() && project.toPath().resolve("Cargo.toml").toFile().exists()) {
+                        final int built;
+                        if (
+                            project.isDirectory() &&
+                                project.toPath().resolve("Cargo.toml").toFile().exists()
+                        ) {
                             this.build(project);
-                            return 1;
+                            built = 1;
                         } else {
-                            return 0;
+                            built = 0;
                         }
+                        return built;
                     },
                     targetDir.toPath().resolve("Lib").toFile().listFiles()
                 )
