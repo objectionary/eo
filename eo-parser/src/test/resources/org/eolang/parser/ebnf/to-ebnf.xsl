@@ -26,15 +26,16 @@ SOFTWARE.
   <xsl:output method="text" encoding="UTF-8"/>
   <xsl:function name="eo:escape" as="xs:string">
     <xsl:param name="s" as="xs:string"/>
-    <xsl:variable name="r1" select='replace(replace(replace(replace(replace(replace($s, "\\", "\\textbackslash{}"), "&amp;", "\\&amp;"), " ", "\\textvisiblespace{}"), "\^", "\\^{}"), "\$", "\\textdollar"), "#", "\\#")'/>
-    <xsl:variable name="r2" select='replace($r1, "_", "\\_")'/>
+    <xsl:variable name="r1" select="replace(replace(replace(replace(replace(replace($s, &quot;\\&quot;, &quot;\\textbackslash{}&quot;), &quot;&amp;&quot;, &quot;\\&amp;&quot;), &quot; &quot;, &quot;\\textvisiblespace{}&quot;), &quot;\^&quot;, &quot;\\^{}&quot;), &quot;\$&quot;, &quot;\\textdollar&quot;), &quot;#&quot;, &quot;\\#&quot;)"/>
+    <xsl:variable name="r2" select="replace($r1, '_', '\\_')"/>
     <xsl:variable name="r3" select="replace($r2, '&quot;', '\\lq\\lq')"/>
     <xsl:value-of select="$r3"/>
   </xsl:function>
   <xsl:template match="g:grammar">
     <xsl:element name="ebnf">
       <xsl:text>% Use native-enbf LaTeX package to render this</xsl:text>
-      <xsl:text>&#x0A;</xsl:text>
+      <xsl:text>
+</xsl:text>
       <xsl:apply-templates select="g:production"/>
     </xsl:element>
   </xsl:template>
@@ -42,7 +43,8 @@ SOFTWARE.
     <xsl:value-of select="eo:escape(@name)"/>
     <xsl:text> := </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text> \\ &#x0A;</xsl:text>
+    <xsl:text> \\
+</xsl:text>
   </xsl:template>
   <xsl:template match="g:optional">
     <xsl:text> [ </xsl:text>
@@ -102,21 +104,21 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="g:charRange">
-    <xsl:value-of select='@minChar'/>
+    <xsl:value-of select="@minChar"/>
     <xsl:text>-</xsl:text>
-    <xsl:value-of select='@maxChar'/>
+    <xsl:value-of select="@maxChar"/>
   </xsl:template>
   <xsl:template match="g:charCode">
     <xsl:text>\textbackslash{}x</xsl:text>
-    <xsl:value-of select='upper-case(@value)'/>
+    <xsl:value-of select="upper-case(@value)"/>
   </xsl:template>
   <xsl:template match="g:char">
-    <xsl:value-of select='eo:escape(text())'/>
+    <xsl:value-of select="eo:escape(text())"/>
   </xsl:template>
   <xsl:template match="g:ref">
     <xsl:text> </xsl:text>
     <xsl:choose>
-      <xsl:when test='matches(@name, "^[A-Z].*")'>
+      <xsl:when test="matches(@name, '^[A-Z].*')">
         <xsl:text>'</xsl:text>
         <xsl:value-of select="eo:escape(@name)"/>
         <xsl:text>'</xsl:text>
