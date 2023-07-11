@@ -12,22 +12,22 @@ program
 
 license
   :
-  (COMMENT SINGLE_EOL)*
-  COMMENT DOUBLE_EOL
+  (COMMENT EOL)*
+  COMMENT EOP
   ;
 
 metas
   :
-  (META SINGLE_EOL)*
-  META DOUBLE_EOL
+  (META EOL)*
+  META EOP
   ;
 
 objects
   :
   (
-    (COMMENT SINGLE_EOL)*
+    (COMMENT EOL)*
     object
-    (SINGLE_EOL | DOUBLE_EOL)
+    (EOL | EOP)
   )+
   ;
 
@@ -40,7 +40,7 @@ object
   )
   tail?
   (
-    SINGLE_EOL
+    EOL
     method
     htail?
     suffix?
@@ -50,7 +50,7 @@ object
 
 abstraction
   :
-  (COMMENT SINGLE_EOL)*
+  (COMMENT EOL)*
   attributes
   (
     (suffix (SPACE SLASH (NAME | QUESTION))?)
@@ -89,9 +89,9 @@ label
 
 tail
   :
-  SINGLE_EOL
+  EOL
   TAB
-  (object (SINGLE_EOL | DOUBLE_EOL))+
+  (object (EOL | EOP))+
   UNTAB
   ;
 
@@ -289,13 +289,13 @@ fragment LINEBREAK:
     ('\n' | '\r\n')
     ;
 
-SINGLE_EOL
+EOL
   :
   LINEBREAK
   INDENT*
   ;
 
-DOUBLE_EOL
+EOP
   :
   LINEBREAK
   LINEBREAK
@@ -309,7 +309,7 @@ fragment LINE_BYTES : BYTE (MINUS BYTE)+;
 BYTES:
        EMPTY_BYTES
     |  BYTE MINUS
-    |  LINE_BYTES (MINUS SINGLE_EOL LINE_BYTES)*;
+    |  LINE_BYTES (MINUS EOL LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
 STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
