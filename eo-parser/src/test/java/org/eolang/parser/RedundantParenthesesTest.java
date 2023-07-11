@@ -96,7 +96,8 @@ class RedundantParenthesesTest {
             Arguments.of("[] > foo\n  ((1.add 1)) > x", false),
             Arguments.of("[] > foo\n  1.add 1 > x\n  (1.add 1)", false),
             Arguments.of("[] > foo\n  1.add 1 > x\n  (1.add 1) > y", false),
-            Arguments.of("[] > foo\n  add > x\n    (1)\n    (1)\n", false)
+            Arguments.of("[] > foo\n  add > x\n    (1)\n    (1)\n", false),
+            Arguments.of("# Comment().\n[] > obj\n", true)
         );
     }
 }
