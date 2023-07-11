@@ -27,18 +27,23 @@ objects
   (
     (COMMENT SINGLE_EOL)*
     object
-    (SINGLE_EOL | DOUBLE_EOL)
   )+
   ;
 
 object
   :
-  (
-    abstraction
-    |
-    application
-  )
-  tail?
+  abstraction
+  otail?
+  SINGLE_EOL?
+  |
+  application
+  otail?
+  (SINGLE_EOL | DOUBLE_EOL)
+  ;
+
+otail
+  :
+  tail
   (
     SINGLE_EOL
     method
@@ -53,9 +58,10 @@ abstraction
   (COMMENT SINGLE_EOL)*
   attributes
   (
-    (suffix (SPACE SLASH (NAME | QUESTION))?)
-    | htail
+    suffix
+    (SPACE SLASH (NAME | QUESTION))?
   )?
+  SINGLE_EOL
   ;
 
 attributes
@@ -91,7 +97,7 @@ tail
   :
   SINGLE_EOL
   TAB
-  (object (SINGLE_EOL | DOUBLE_EOL))+
+  object+
   UNTAB
   ;
 

@@ -198,6 +198,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOtail(ProgramParser.OtailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitOtail(ProgramParser.OtailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.objects.start(
             ctx.getStart().getLine(),
