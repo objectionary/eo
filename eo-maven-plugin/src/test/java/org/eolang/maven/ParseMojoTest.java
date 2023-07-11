@@ -35,6 +35,7 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
@@ -91,7 +92,7 @@ final class ParseMojoTest {
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
-        final CommitHash hash = new ChNarrow(new ChRemote("0.25.0"));
+        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
         new FtCached(
             new CacheVersion(FakeMaven.pluginVersion(), hash.value()),
             cache.resolve(ParseMojo.PARSED),
