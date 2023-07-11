@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -77,6 +78,7 @@ public final class ForeignTojos implements Closeable {
     public void close() throws IOException {
         this.tojos.value().close();
     }
+
 
     /**
      * Add a foreign tojo.

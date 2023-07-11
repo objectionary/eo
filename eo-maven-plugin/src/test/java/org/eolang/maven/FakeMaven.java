@@ -54,6 +54,7 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -301,14 +302,12 @@ public final class FakeMaven {
     }
 
     /**
-     * Sets tojo attribute.
-     *
-     * @param attribute Tojo attribute.
-     * @param value Attribute value.
+     * Specify hash for all foreign tojos
+     * @param hash Commit hash
      * @return The same maven instance.
      */
-    FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
-        this.attributes.put(attribute, value);
+    FakeMaven allTojosWithHash(final CommitHash hash) {
+        this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 

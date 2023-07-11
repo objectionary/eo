@@ -138,7 +138,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
+            .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
@@ -163,7 +163,7 @@ final class OptimizeMojoTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("cache", cache)
-            .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
+            .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             cache.resolve(OptimizeMojo.OPTIMIZED)
