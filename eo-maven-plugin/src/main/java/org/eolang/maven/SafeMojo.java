@@ -201,10 +201,16 @@ abstract class SafeMojo extends AbstractMojo {
      * Used for object versioning implementation.
      * If set to TRUE, external tojos are used instead of foreign ones and all
      * inherited Mojos behave a bit differently.
+     * @todo #1602:30min Remove the flag when objection versioned is
+     *  implemented. The variable is used for implementation of object
+     *  versioning. It allows to use external tojos instead of foreign in Mojos.
+     *  for the test purposes. When object versioning is implemented there
+     *  will be no need for that variable
      * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.versioned", defaultValue = "false")
-    protected boolean versioned;
+    @Parameter(property = "eo.withVersions", defaultValue = "false")
+    protected boolean withVersions;
 
     /**
      * Cached tojos.
@@ -328,7 +334,7 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final ForeignTojos scopedTojos() {
         final ForeignTojos tjs;
-        if (this.external != null && this.versioned) {
+        if (this.external != null && this.withVersions) {
             tjs = this.externalTojos;
         } else {
             tjs = this.tojos;

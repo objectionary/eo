@@ -105,14 +105,14 @@ public final class DiscoverMojo extends SafeMojo {
             "and not(@ref)"
         );
         final List<String> regular = new ListOf<>(base);
-        if (this.versioned) {
+        if (this.withVersions) {
             regular.add("and not(@ver)");
         }
         regular.add("]/@base");
         final Collection<String> names = new TreeSet<>(
-            this.names(xml, regular)
+            DiscoverMojo.names(xml, regular)
         );
-        if (this.versioned) {
+        if (this.withVersions) {
             final List<String> versioned = new ListOf<>(base);
             versioned.addAll(
                 new ListOf<>(
@@ -120,7 +120,7 @@ public final class DiscoverMojo extends SafeMojo {
                     "]/concat(@base,'|',@ver)"
                 )
             );
-            names.addAll(this.names(xml, versioned));
+            names.addAll(DiscoverMojo.names(xml, versioned));
         }
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
@@ -144,9 +144,8 @@ public final class DiscoverMojo extends SafeMojo {
      * @param xml XML.
      * @param xpath Xpath.
      * @return List of object names.
-     * @checkstyle NonStaticMethodCheck (25 lines)
      */
-    private List<String> names(final XML xml, final List<String> xpath) {
+    private static List<String> names(final XML xml, final List<String> xpath) {
         return new ListOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),

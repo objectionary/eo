@@ -168,7 +168,7 @@ public final class FakeMaven {
         this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
         this.params.putIfAbsent("transpiledFormat", "csv");
         this.params.putIfAbsent("skipZeroVersions", true);
-        this.params.putIfAbsent("versioned", false);
+        this.params.putIfAbsent("withVersions", false);
         this.params.putIfAbsent("discoverSelf", false);
         this.params.putIfAbsent("ignoreVersionConflict", false);
         this.params.putIfAbsent("ignoreTransitive", true);
