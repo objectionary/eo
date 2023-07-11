@@ -40,7 +40,9 @@ SOFTWARE.
     </xsl:element>
   </xsl:template>
   <xsl:template match="g:production">
+    <xsl:text>&lt;</xsl:text>
     <xsl:value-of select="eo:escape(@name)"/>
+    <xsl:text>&gt;</xsl:text>
     <xsl:text> := </xsl:text>
     <xsl:apply-templates select="g:*"/>
     <xsl:text> \\
@@ -64,17 +66,19 @@ SOFTWARE.
     <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:sequence">
-    <xsl:text> (</xsl:text>
+    <xsl:text> ( </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text>) </xsl:text>
+    <xsl:text> ) </xsl:text>
   </xsl:template>
   <xsl:template match="g:choice">
+    <xsl:text> ( </xsl:text>
     <xsl:for-each select="g:*">
       <xsl:if test="position() &gt; 1">
         <xsl:text> | </xsl:text>
       </xsl:if>
       <xsl:apply-templates select="."/>
     </xsl:for-each>
+    <xsl:text> ) </xsl:text>
   </xsl:template>
   <xsl:template match="g:string">
     <xsl:text> "</xsl:text>
@@ -109,15 +113,19 @@ SOFTWARE.
     <xsl:value-of select="@maxChar"/>
   </xsl:template>
   <xsl:template match="g:charCode">
+    <xsl:text>\textbackslash{}</xsl:text>
     <xsl:choose>
+      <xsl:when test="@value = '9'">
+        <xsl:text>t</xsl:text>
+      </xsl:when>
       <xsl:when test="upper-case(@value) = 'A'">
-        <xsl:text>\n</xsl:text>
+        <xsl:text>n</xsl:text>
       </xsl:when>
       <xsl:when test="upper-case(@value) = 'D'">
-        <xsl:text>\r</xsl:text>
+        <xsl:text>r</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>\textbackslash{}x</xsl:text>
+        <xsl:text>x</xsl:text>
         <xsl:value-of select="upper-case(@value)"/>
       </xsl:otherwise>
     </xsl:choose>
