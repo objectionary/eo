@@ -40,6 +40,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -247,6 +248,7 @@ final class SyntaxTest {
     void checksTypoPacks(final String yml) throws IOException, NumberFormatException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
+        Assumptions.assumeTrue(map.get("skip") == null);
         final ByteArrayOutputStream xmir = new ByteArrayOutputStream();
         new Syntax(
             "typo",
@@ -254,6 +256,10 @@ final class SyntaxTest {
             new OutputTo(xmir)
         ).parse();
         final XML xml = new XMLDocument(xmir.toByteArray());
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(xml.toString()),
+            XhtmlMatchers.hasXPaths("/program/errors/error/@line")
+        );
         MatcherAssert.assertThat(
             xml.toString(),
             Integer.parseInt(xml.xpath("/program/errors/error[1]/@line").get(0)),
