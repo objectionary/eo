@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
-import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -98,7 +97,6 @@ public final class FakeMaven {
     public FakeMaven(final Path workspace) {
         this.workspace = new Home(workspace);
         this.params = new HashMap<>();
-        this.attributes = new HashMap<>();
         this.current = new AtomicInteger(0);
     }
 
@@ -295,7 +293,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Specify hash for all foreign tojos
+     * Specify hash for all foreign tojos.
      * @param hash Commit hash
      * @return The same maven instance.
      */
