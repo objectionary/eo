@@ -71,9 +71,10 @@ public final class CheckPack {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(this.script);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final String src = map.get("eo").toString();
         new Syntax(
             "scenario",
-            new InputOf(String.format("%s\n", map.get("eo"))),
+            new InputOf(String.format("%s\n", src)),
             new OutputTo(baos)
         ).parse();
         final XML xml = new XMLDocument(baos.toByteArray());
@@ -98,7 +99,7 @@ public final class CheckPack {
         }
         if (!failures.isEmpty()) {
             Logger.info(this, "Broken XML:\n%s", out);
-            Logger.info(this, "Broken EO:\n%s", new XMIR(out).toEO());
+            Logger.info(this, "Broken EO:\n%s", src);
         }
         return failures;
     }

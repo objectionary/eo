@@ -204,18 +204,29 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             ctx.getStart().getCharPositionInLine()
         );
         this.objects.prop("abstract", "");
-        if (ctx.SLASH() != null) {
-            if (ctx.QUESTION() == null) {
-                this.objects.prop("atom", ctx.NAME());
-            } else {
-                this.objects.prop("atom", "?");
-            }
-        }
         this.objects.leave();
     }
 
     @Override
     public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterType(ProgramParser.TypeContext ctx) {
+        if (ctx.SLASH() != null) {
+            this.objects.enter();
+            if (ctx.QUESTION() == null) {
+                this.objects.prop("atom", ctx.NAME());
+            } else {
+                this.objects.prop("atom", "?");
+            }
+            this.objects.leave();
+        }
+    }
+
+    @Override
+    public void exitType(ProgramParser.TypeContext ctx) {
         // Nothing here
     }
 
@@ -377,8 +388,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterVersion(final ProgramParser.VersionContext ctx) {
         this.objects.enter();
-        if (ctx.VERSION() != null) {
-            this.objects.prop("ver", ctx.VERSION().getText());
+        if (ctx.VER() != null) {
+            this.objects.prop("ver", ctx.VER().getText());
         }
     }
 

@@ -12,35 +12,38 @@ program
 
 license
   :
-  (COMMENT SINGLE_EOL)*
-  COMMENT DOUBLE_EOL
+  (COMMENT EOL)*
+  COMMENT EOP
   ;
 
 metas
   :
-  (META SINGLE_EOL)*
-  META DOUBLE_EOL
+  (META EOL)*
+  META EOP
   ;
 
 objects
   :
   (
-    (COMMENT SINGLE_EOL)*
+    (COMMENT EOL)*
     object
-    (SINGLE_EOL | DOUBLE_EOL)
+    (EOL | EOP)
   )+
   ;
 
 object
   :
   (
-    abstraction
+    (
+      abstraction
+      type?
+    )
     |
     application
   )
   tail?
   (
-    SINGLE_EOL
+    EOL
     method
     htail?
     suffix?
@@ -50,12 +53,16 @@ object
 
 abstraction
   :
-  (COMMENT SINGLE_EOL)*
+  (COMMENT EOL)*
   attributes
-  (
-    (suffix (SPACE SLASH (NAME | QUESTION))?)
-    | htail
-  )?
+  ;
+
+type
+  :
+  suffix
+  SPACE
+  SLASH
+  (NAME | QUESTION)?
   ;
 
 attributes
@@ -89,9 +96,9 @@ label
 
 tail
   :
-  SINGLE_EOL
+  EOL
   TAB
-  (object (SINGLE_EOL | DOUBLE_EOL))+
+  (object (EOL | EOP))+
   UNTAB
   ;
 
@@ -133,6 +140,9 @@ application
   head
   version
   |
+  abstraction
+  htail?
+  |
   head
   htail?
   |
@@ -154,7 +164,10 @@ application
   |
   application
   suffix
-  htail?
+  (
+    SPACE
+    scope
+  )?
   ;
 
 htail
@@ -180,6 +193,7 @@ htail
     |
     SPACE
     abstraction
+    suffix?
   )+
   ;
 
@@ -215,15 +229,13 @@ head
     DOT
     |
     data
-    |
-    abstraction
   )
   ;
 
 version
   :
   BAR
-  VERSION
+  VER
   ;
 
 has
@@ -253,7 +265,7 @@ data
   HEX
   ;
 
-COMMENT: HASH | (HASH ~[\r\n]* ~[\r\n\p{Space}]);
+COMMENT: HASH | (HASH ~[\r\n]* ~[\r\n\t ]);
 META: PLUS NAME (SPACE ~[\r\n]+)?;
 
 ROOT: 'Q';
@@ -289,13 +301,13 @@ fragment LINEBREAK:
     ('\n' | '\r\n')
     ;
 
-SINGLE_EOL
+EOL
   :
   LINEBREAK
   INDENT*
   ;
 
-DOUBLE_EOL
+EOP
   :
   LINEBREAK
   LINEBREAK
@@ -309,7 +321,7 @@ fragment LINE_BYTES : BYTE (MINUS BYTE)+;
 BYTES:
        EMPTY_BYTES
     |  BYTE MINUS
-    |  LINE_BYTES (MINUS SINGLE_EOL LINE_BYTES)*;
+    |  LINE_BYTES (MINUS EOL LINE_BYTES)*;
 
 BOOL: 'TRUE' | 'FALSE';
 STRING: '"' (~["\\\r\n] | ESCAPE_SEQUENCE)* '"';
@@ -329,8 +341,8 @@ fragment EXPONENT: ('e'|'E') (PLUS | MINUS)? ('0'..'9')+;
 FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
 HEX: '0x' [0-9a-fA-F]+;
 
-NAME: [a-z][\p{Letter}\p{General_Category=Decimal_Number}_-]*;
-VERSION: [0-9]+ DOT [0-9]+ DOT [0-9]+;
+NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(]*;
+VER: [0-9]+ DOT [0-9]+ DOT [0-9]+;
 
 fragment TEXT_MARK: '"""';
 TEXT:
