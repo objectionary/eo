@@ -123,8 +123,8 @@ public final class RegisterMojo extends SafeMojo {
                 .excludes(this.excludeSources);
             final Unplace unplace = new Unplace(this.sourcesDir);
             for (final Path file : sources) {
-                if (this.strictFileNames && !pattern.matcher(
-                    file.getFileName().toString()).matches()) {
+                if (this.strictFileNames
+                    && !pattern.matcher(file.getFileName().toString()).matches()) {
                     throw new IllegalArgumentException(
                         String.format(
                             "Incorrect name found: '%s'. EO name must match '%s'",
