@@ -59,16 +59,25 @@ SOFTWARE.
     <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:oneOrMore">
-    <xsl:text> ( </xsl:text>
+    <xsl:if test="count(g:*) &gt; 1">
+      <xsl:text> ( </xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text> ) { </xsl:text>
+    <xsl:if test="count(g:*) &gt; 1">
+      <xsl:text> ) </xsl:text>
+    </xsl:if>
+    <xsl:text> { </xsl:text>
     <xsl:apply-templates select="g:*"/>
     <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:sequence">
-    <xsl:text> ( </xsl:text>
+    <xsl:if test="count(g:*) &gt; 1">
+      <xsl:text> ( </xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text> ) </xsl:text>
+    <xsl:if test="count(g:*) &gt; 1">
+      <xsl:text> ) </xsl:text>
+    </xsl:if>
   </xsl:template>
   <xsl:template match="g:choice">
     <xsl:text> ( </xsl:text>
@@ -113,20 +122,32 @@ SOFTWARE.
     <xsl:value-of select="@maxChar"/>
   </xsl:template>
   <xsl:template match="g:charCode">
-    <xsl:text>\textbackslash{}</xsl:text>
+    <xsl:variable name="txt">
+      <xsl:text>\textbackslash{}</xsl:text>
+      <xsl:choose>
+        <xsl:when test="@value = '9'">
+          <xsl:text>t</xsl:text>
+        </xsl:when>
+        <xsl:when test="upper-case(@value) = 'A'">
+          <xsl:text>n</xsl:text>
+        </xsl:when>
+        <xsl:when test="upper-case(@value) = 'D'">
+          <xsl:text>r</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>x</xsl:text>
+          <xsl:value-of select="upper-case(@value)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:choose>
-      <xsl:when test="@value = '9'">
-        <xsl:text>t</xsl:text>
-      </xsl:when>
-      <xsl:when test="upper-case(@value) = 'A'">
-        <xsl:text>n</xsl:text>
-      </xsl:when>
-      <xsl:when test="upper-case(@value) = 'D'">
-        <xsl:text>r</xsl:text>
+      <xsl:when test="ancestor::g:charClass">
+        <xsl:value-of select="$txt"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>x</xsl:text>
-        <xsl:value-of select="upper-case(@value)"/>
+        <xsl:text>"</xsl:text>
+        <xsl:value-of select="$txt"/>
+        <xsl:text>"</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
