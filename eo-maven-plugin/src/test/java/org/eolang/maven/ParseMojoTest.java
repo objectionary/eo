@@ -98,12 +98,18 @@ final class ParseMojoTest {
             cache.resolve(ParseMojo.PARSED),
             new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
+        final String actual = String.format(
+            "target/%s/foo/x/main.%s",
+            ParseMojo.DIR,
+            TranspileMojo.EXT
+        );
         MatcherAssert.assertThat(
+            String.format("We expect that that %s is taken from the cache, but it didn't", actual),
             new TextOf(
                 maven.allTojosWithHash(hash)
                     .execute(new FakeMaven.Parse())
                     .result()
-                    .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
+                    .get(actual)
             ).toString(),
             Matchers.equalTo(expected)
         );
