@@ -213,7 +213,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterType(ProgramParser.TypeContext ctx) {
+    public void enterType(final ProgramParser.TypeContext ctx) {
         if (ctx.SLASH() != null) {
             this.objects.enter();
             if (ctx.QUESTION() == null) {
@@ -226,7 +226,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitType(ProgramParser.TypeContext ctx) {
+    public void exitType(final ProgramParser.TypeContext ctx) {
         // Nothing here
     }
 

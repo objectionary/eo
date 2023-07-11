@@ -164,10 +164,6 @@ application
   |
   application
   suffix
-  (
-    SPACE
-    scope
-  )?
   ;
 
 htail
