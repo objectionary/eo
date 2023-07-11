@@ -34,7 +34,10 @@ objects
 object
   :
   (
-    abstraction
+    (
+      abstraction
+      type?
+    )
     |
     application
   )
@@ -52,10 +55,14 @@ abstraction
   :
   (COMMENT EOL)*
   attributes
-  (
-    (suffix (SPACE SLASH (NAME | QUESTION))?)
-    | htail
-  )?
+  ;
+
+type
+  :
+  suffix
+  SPACE
+  SLASH
+  (NAME | QUESTION)?
   ;
 
 attributes
@@ -133,6 +140,9 @@ application
   head
   version
   |
+  abstraction
+  htail?
+  |
   head
   htail?
   |
@@ -154,7 +164,10 @@ application
   |
   application
   suffix
-  htail?
+  (
+    SPACE
+    scope
+  )?
   ;
 
 htail
@@ -180,6 +193,7 @@ htail
     |
     SPACE
     abstraction
+    suffix?
   )+
   ;
 
@@ -215,8 +229,6 @@ head
     DOT
     |
     data
-    |
-    abstraction
   )
   ;
 
