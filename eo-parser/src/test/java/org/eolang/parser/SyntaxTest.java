@@ -78,7 +78,7 @@ final class SyntaxTest {
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final String src = "# hello, world!\n\n[] > x, 1\n";
+        final String src = "# hello, world!\n\n[] > x-н, 1\n";
         final Syntax syntax = new Syntax(
             "test-44",
             new InputOf(src),
