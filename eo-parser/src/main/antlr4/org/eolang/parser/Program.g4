@@ -330,6 +330,7 @@ FLOAT: (PLUS | MINUS)? [0-9]+ DOT [0-9]+ EXPONENT?;
 HEX: '0x' [0-9a-fA-F]+;
 
 NAME: [a-z][a-zA-Z0-9_-]*;
+//NAME: [a-z] ~[\r\n\t ,:;!?]*;
 VERSION: [0-9]+ DOT [0-9]+ DOT [0-9]+;
 
 fragment TEXT_MARK: '"""';

@@ -76,6 +76,27 @@ final class SyntaxTest {
     }
 
     @Test
+    void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final String src = "# hello, world!\n\n[] > x [] > z\n";
+        final Syntax syntax = new Syntax(
+            "test-44",
+            new InputOf(src),
+            new OutputTo(baos)
+        );
+        syntax.parse();
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new String(baos.toByteArray(), StandardCharsets.UTF_8)
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/program/errors[count(error)=1]",
+                String.format("/program[listing='%s']", src)
+            )
+        );
+    }
+
+    @Test
     void copiesListingCorrectly() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = new TextOf(

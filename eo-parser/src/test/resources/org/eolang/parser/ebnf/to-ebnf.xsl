@@ -109,8 +109,18 @@ SOFTWARE.
     <xsl:value-of select="@maxChar"/>
   </xsl:template>
   <xsl:template match="g:charCode">
-    <xsl:text>\textbackslash{}x</xsl:text>
-    <xsl:value-of select="upper-case(@value)"/>
+    <xsl:choose>
+      <xsl:when test="upper-case(@value) = 'A'">
+        <xsl:text>\n</xsl:text>
+      </xsl:when>
+      <xsl:when test="upper-case(@value) = 'D'">
+        <xsl:text>\r</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>\textbackslash{}x</xsl:text>
+        <xsl:value-of select="upper-case(@value)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="g:char">
     <xsl:value-of select="eo:escape(text())"/>
