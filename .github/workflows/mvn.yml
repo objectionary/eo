@@ -24,7 +24,7 @@ jobs:
       CONVERT_PATH: /tmp/convert
     steps:
       - uses: actions/checkout@v3
-      - run: sudo apt-get -y install ghostscript
+      - run: sudo apt-get update && sudo apt-get -y install ghostscript
         if: matrix.os == 'ubuntu-20.04'
       - uses: teatimeguest/setup-texlive-action@v2.5.1
         with:
