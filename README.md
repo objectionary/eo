@@ -179,9 +179,11 @@ Got the idea?
 
 ## Backus-Naur Form
 
-This is our EBNF:
+This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form):
 
 <img alt="ENBF of EO" src="https://www.eolang.org/ebnf.png" width="100%" />
+
+The image was [auto-generated]().
 
 ## What's Next?
 

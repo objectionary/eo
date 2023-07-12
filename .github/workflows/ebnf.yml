@@ -1,0 +1,57 @@
+---
+name: ebnf
+on:
+  push:
+    branches:
+      - master
+    paths-ignore: ['paper/**', 'sandbox/**']
+  pull_request:
+    branches:
+      - master
+    paths-ignore: ['paper/**', 'sandbox/**']
+concurrency:
+  group: ebnf-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ebnf:
+    runs-on: ubuntu-20.04
+    env:
+      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
+    steps:
+      - uses: actions/checkout@v3
+      - run:
+          sudo apt-get update
+          sudo apt-get -y install ghostscript
+          sudo apt-get -y install imagemagick
+      - uses: teatimeguest/setup-texlive-action@v2.5.1
+        with:
+          update-all-packages: true
+          packages: scheme-basic naive-ebnf
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - run: |
+          mkdir -p $CONVERT_PATH
+          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
+          unzip -o -d $CONVERT_PATH /tmp/convert.zip
+      - run: mvn clean test -pl :eo-parser --errors --batch-mode
+      - run: |
+          cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
+          cd eo-parser/target
+          sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
+          pdflatex ebnf.tex
+          convert -density 300 -quality 100 ebnf.pdf ebnf.png
+          mkdir gh-pages
+          cp ebnf.png gh-pages
+      - uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: eo-parser/target/gh-pages
+          clean: false
+        if: github.ref == 'refs/heads/master'

@@ -20,16 +20,8 @@ jobs:
         os: [ubuntu-20.04, windows-2022, macos-12]
         java: [11, 17, 18]
     runs-on: ${{ matrix.os }}
-    env:
-      CONVERT_PATH: /tmp/convert
     steps:
       - uses: actions/checkout@v3
-      - run: sudo apt-get update && sudo apt-get -y install ghostscript
-        if: matrix.os == 'ubuntu-20.04'
-      - uses: teatimeguest/setup-texlive-action@v2.5.1
-        with:
-          update-all-packages: true
-          packages: scheme-basic naive-ebnf
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -38,27 +30,5 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
-      - run: |
-          mkdir -p $CONVERT_PATH
-          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
-          unzip -o -d $CONVERT_PATH /tmp/convert.zip
-        if: matrix.os == 'ubuntu-20.04'
+          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: mvn clean install -Pqulice --errors --batch-mode
-      - run: sudo apt-get update && sudo apt-get install -y imagemagick
-      - run: |
-          cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
-          cd eo-parser/target
-          sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
-          pdflatex ebnf.tex
-          convert -density 300 -quality 100 ebnf.pdf ebnf.png
-          mkdir gh-pages
-          cp ebnf.png gh-pages
-        if: matrix.os == 'ubuntu-20.04'
-      - uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          branch: gh-pages
-          folder: eo-parser/target/gh-pages
-          clean: false
-        if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-20.04'
