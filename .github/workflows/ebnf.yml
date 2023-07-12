@@ -51,6 +51,7 @@ jobs:
           pdflatex -shell-escape ebnf.tex
           convert -density 300 -quality 100 -colorspace RGB ebnf.pdf ebnf.png
           mkdir gh-pages
+          ls -al
           cp ebnf.png gh-pages
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
