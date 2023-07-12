@@ -46,6 +46,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.rust.Module;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.Native;
 import org.eolang.maven.rust.Project;
@@ -139,7 +140,11 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(function, code, dependencies)
+                    .with(new Module(code, "foo.rs"), dependencies)
+                    .dependency(
+                        "eo_env",
+                        this.project.getBasedir().toPath().resolve("src/main/rust/eo_env")
+                    )
                     .save();
                 new Native(function, "EOrust.natives").save(
                     new FtDefault(

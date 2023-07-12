@@ -62,30 +62,7 @@ public class Module {
         footprint.save(
             Paths.get("src").resolve(this.name).toString(),
             "rs",
-            this::transform
-        );
-    }
-
-    /**
-     * Transform raw to compilable file.
-     * @return Content for file.
-     */
-    private String transform() {
-        final String signature = String.format(
-            "#[no_mangle]%spub extern \"system\" fn Java_EOrust_natives_%s_%s(_env: JNIEnv, _class: JClass,) -> jint {",
-            System.lineSeparator(),
-            this.name,
-            this.name
-        );
-        return String.join(
-            System.lineSeparator(),
-            "use jni::objects::{JClass};",
-            "use jni::sys::{jint};",
-            "use jni::JNIEnv;",
-            this.raw.replaceFirst(
-                "[ ]*pub[ ]+fn[ ]+foo\\(\\)[ ]+->[ ]*i32[ ]*\\{",
-                signature
-            )
+            () -> this.raw
         );
     }
 }
