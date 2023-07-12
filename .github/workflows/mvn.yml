@@ -54,7 +54,7 @@ jobs:
           pdflatex ebnf.tex
           convert -density 300 -quality 100 ebnf.pdf ebnf.png
           mkdir gh-pages
-          cp ebnf.pdf ebnf.png gh-pages
+          cp ebnf.png gh-pages
         if: matrix.os == 'ubuntu-20.04'
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
