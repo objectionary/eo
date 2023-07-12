@@ -120,4 +120,18 @@ final class RegisterMojoTest {
             Matchers.equalTo(maven.externalTojos().status())
         );
     }
+
+    @Test
+    void throwsExceptionInCaseSourceDirIsNotSet(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withoutDefaults()
+                .execute(new FakeMaven.Register()),
+            String.format(
+                "sourcesDir should not be set and the %s should fail, but didn't",
+                RegisterMojo.class
+            )
+        );
+    }
 }
