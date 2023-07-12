@@ -319,12 +319,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterScope(final ProgramParser.ScopeContext ctx) {
-        this.objects.alias();
+        this.objects.scope();
     }
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        this.objects.closeAlias();
+        this.objects.closeScope();
     }
 
     @Override

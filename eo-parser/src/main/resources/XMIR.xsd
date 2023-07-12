@@ -34,7 +34,7 @@ SOFTWARE.
     </xs:sequence>
     <xs:attribute name="line" type="xs:decimal"/>
     <xs:attribute name="pos" type="xs:decimal"/>
-    <xs:attribute name="alias" type="xs:string"/>
+    <xs:attribute name="scope" type="xs:string"/>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
     <xs:attribute name="data"/>
