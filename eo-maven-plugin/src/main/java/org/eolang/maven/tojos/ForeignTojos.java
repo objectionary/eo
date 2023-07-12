@@ -236,7 +236,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * Foreign tojo attributes.
      */
-    public enum Attribute {
+    enum Attribute {
 
         /**
          * Tojo id.
@@ -294,11 +294,6 @@ public final class ForeignTojos implements Closeable {
         SCOPE("scope"),
 
         /**
-         * Transpiled.
-         */
-        TRANSPILED("transpiled"),
-
-        /**
          * Hash.
          */
         HASH("hash"),
@@ -325,7 +320,7 @@ public final class ForeignTojos implements Closeable {
          * Get the attribute name.
          * @return The attribute name.
          */
-        public String key() {
+        String key() {
             return this.key;
         }
     }

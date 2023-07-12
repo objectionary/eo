@@ -108,6 +108,11 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        if (this.sourcesDir == null) {
+            throw new IllegalArgumentException(
+                String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
+            );
+        }
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
@@ -118,7 +123,8 @@ public final class RegisterMojo extends SafeMojo {
             .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
-            if (this.strictFileNames && !pattern.matcher(file.getFileName().toString()).matches()) {
+            if (this.strictFileNames
+                && !pattern.matcher(file.getFileName().toString()).matches()) {
                 throw new IllegalArgumentException(
                     String.format(
                         "Incorrect name found: '%s'. EO name must match '%s'",
@@ -146,5 +152,4 @@ public final class RegisterMojo extends SafeMojo {
             this.includeSources, this.excludeSources
         );
     }
-
 }
