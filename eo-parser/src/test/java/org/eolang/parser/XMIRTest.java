@@ -77,7 +77,11 @@ final class XMIRTest {
      */
     @Test
     void convertsAntlrToEbnf() throws Exception {
-        final Path lib = Paths.get("/code/convert-master/build/lib");
+        String home = System.getenv("CONVERT_PATH");
+        if (home == null) {
+            home = "/code/convert-master/build/lib";
+        }
+        final Path lib = Paths.get(home);
         Assumptions.assumeTrue(
             lib.toFile().exists(),
             String.format("The JAR of convert tool is not available: %s", lib)
