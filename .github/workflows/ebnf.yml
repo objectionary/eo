@@ -44,6 +44,7 @@ jobs:
       - run: |
           cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
           cd eo-parser/target
+          cat ebnf.txt
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
           cat ebnf.tex
           pdflatex -shell-escape ebnf.tex
