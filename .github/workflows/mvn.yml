@@ -36,7 +36,7 @@ jobs:
             ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
           mkdir $CONVERT_PATH
-          wget https://public.yegor256.com/convert.zip -O /tmp/convert.zip
+          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
           unzip /tmp/convert.zip -o -d $CONVERT_PATH
         if: matrix.os == 'ubuntu-20.04'
       - run: mvn clean install -Pqulice --errors --batch-mode
