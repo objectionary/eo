@@ -77,17 +77,15 @@ final class XMIRTest {
      */
     @Test
     void convertsAntlrToEbnf() throws Exception {
-        final Path home = Paths.get("/code/convert-master/build");
-        final Path jar = home.resolve("libs").resolve("convert.jar");
+        final Path lib = Paths.get("/code/convert-master/build/lib");
         Assumptions.assumeTrue(
-            jar.toFile().exists(),
-            String.format("The JAR of convert tool is not available: %s", jar)
+            lib.toFile().exists(),
+            String.format("The JAR of convert tool is not available: %s", lib)
         );
-        final List<String> jars = Stream.of(home.resolve("lib").toFile().listFiles())
+        final List<String> jars = Stream.of(lib.toFile().listFiles())
             .filter(file -> !file.isDirectory())
             .map(File::getAbsolutePath)
             .collect(Collectors.toList());
-        jars.add(jar.getFileName().toString());
         final List<String> args = new LinkedList<>();
         args.add("java");
         args.add("-cp");
