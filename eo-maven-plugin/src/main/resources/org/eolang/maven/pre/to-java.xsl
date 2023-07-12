@@ -351,16 +351,16 @@ SOFTWARE.
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:variable name="o" select="."/>
-    <xsl:variable name="b" select="//*[generate-id()!=generate-id($o) and @name=$o/@base and @line=$o/@ref]"/>
-    <xsl:if test="count($b) &gt; 1">
+    <xsl:variable name="current" select="."/>
+    <xsl:variable name="source" select="//*[generate-id()!=generate-id($current) and @name=$current/@base and @line=$current/@ref]"/>
+    <xsl:if test="count($source) &gt; 1">
       <xsl:message terminate="yes">
         <xsl:text>Found more than one target of '</xsl:text>
-        <xsl:value-of select="$o/@base"/>
+        <xsl:value-of select="$current/@base"/>
         <xsl:text>' at the line #</xsl:text>
-        <xsl:value-of select="$o/@line"/>
+        <xsl:value-of select="$current/@line"/>
         <xsl:text> leading to </xsl:text>
-        <xsl:for-each select="$b">
+        <xsl:for-each select="$source">
           <xsl:if test="position()&gt;1">
             <xsl:text>, </xsl:text>
           </xsl:if>
@@ -395,27 +395,27 @@ SOFTWARE.
       <xsl:when test="@base='&amp;'">
         <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
-      <xsl:when test="$b/@ancestors">
+      <xsl:when test="$source/@ancestors">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name($b/@name, eo:suffix(@line, @pos))"/>
+        <xsl:value-of select="eo:class-name($source/@name, eo:suffix(@line, @pos))"/>
         <xsl:text>(rho)</xsl:text>
       </xsl:when>
-      <xsl:when test="$b and name($b)='class'">
-        <xsl:value-of select="eo:fetch(concat($b/@package, '.', $b/@name))"/>
+      <xsl:when test="$source and name($source)='class'">
+        <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
       </xsl:when>
-      <xsl:when test="$b/@level">
-        <xsl:for-each select="0 to $b/@level">
+      <xsl:when test="$source/@level">
+        <xsl:for-each select="0 to $source/@level">
           <xsl:text>new PhMethod(</xsl:text>
         </xsl:for-each>
         <xsl:text>rho</xsl:text>
-        <xsl:for-each select="1 to $b/@level">
+        <xsl:for-each select="1 to $source/@level">
           <xsl:text>, "σ")</xsl:text>
         </xsl:for-each>
         <xsl:text>, "</xsl:text>
-        <xsl:value-of select="$b/@name"/>
+        <xsl:value-of select="$source/@name"/>
         <xsl:text>")</xsl:text>
       </xsl:when>
-      <xsl:when test="$b">
+      <xsl:when test="$source">
         <xsl:text>new PhMethod(rho, "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
         <xsl:text>")</xsl:text>

@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
-import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -54,6 +53,8 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -83,11 +84,6 @@ public final class FakeMaven {
     private final Map<String, Object> params;
 
     /**
-     * Attributes for eo.foreign.*.
-     */
-    private final Map<ForeignTojos.Attribute, Object> attributes;
-
-    /**
      * Current program number.
      * We can save several programs in workspace and each program has it's own number
      * started from 0.
@@ -95,15 +91,52 @@ public final class FakeMaven {
     private final AtomicInteger current;
 
     /**
-     * The main constructor.
+     * Use default attributes if they are not set.
+     */
+    private final boolean defaults;
+
+    /**
+     * Constructor.
      *
      * @param workspace Test temporary directory.
      */
     public FakeMaven(final Path workspace) {
-        this.workspace = new Home(workspace);
-        this.params = new HashMap<>();
-        this.attributes = new HashMap<>();
-        this.current = new AtomicInteger(0);
+        this(workspace, true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param workspace Test temporary directory.
+     * @param defaults Use default attributes if they are not set.
+     */
+    private FakeMaven(final Path workspace, final boolean defaults) {
+        this(
+            new Home(workspace),
+            new HashMap<>(),
+            new AtomicInteger(0),
+            defaults
+        );
+    }
+
+    /**
+     * The main constructor.
+     * @param workspace Test temporary directory.
+     * @param params Mojos params.
+     * @param current Current program number.
+     * @param defaults Use default attributes if they are not set.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    private FakeMaven(
+        final Home workspace,
+        final Map<String, Object> params,
+        final AtomicInteger current,
+        final boolean defaults
+    ) {
+        this.workspace = workspace;
+        this.params = params;
+        this.current = current;
+        this.defaults = defaults;
     }
 
     /**
@@ -156,44 +189,47 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        for (final Tojo tojo : this.foreign().select(all -> true)) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
-                : this.attributes.entrySet()) {
-                tojo.set(entry.getKey().key(), entry.getValue());
-            }
+        if (this.defaults) {
+            this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+            this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+            this.params.putIfAbsent("external", this.externalPath().toFile());
+            this.params.putIfAbsent("foreignFormat", "csv");
+            this.params.putIfAbsent("project", new MavenProjectStub());
+            final Path transpiled = Paths.get("transpiled");
+            this.workspace.save(new TextOf(""), transpiled);
+            this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
+            this.params.putIfAbsent("transpiledFormat", "csv");
+            this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("discoverSelf", false);
+            this.params.putIfAbsent("versioned", false);
+            this.params.putIfAbsent("ignoreVersionConflict", false);
+            this.params.putIfAbsent("ignoreTransitive", true);
+            this.params.putIfAbsent("central", new DummyCentral());
+            final Path placed = Paths.get("placed.json");
+            this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
+            this.params.putIfAbsent("placedFormat", "json");
+            this.params.putIfAbsent(
+                "sourcesDir",
+                this.workspace.absolute(Paths.get(".")).toFile()
+            );
+            this.params.putIfAbsent(
+                "outputDir",
+                this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
+            );
+            this.params.putIfAbsent(
+                "cache",
+                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed")
+            );
+            this.params.putIfAbsent("generateSodgXmlFiles", true);
+            this.params.putIfAbsent("generateXemblyFiles", true);
+            this.params.putIfAbsent("generateGraphFiles", true);
+            this.params.putIfAbsent("generateDotFiles", true);
+            this.params.putIfAbsent("generateDotFiles", true);
+            this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+            this.params.putIfAbsent("placedFormat", "csv");
+            this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
+            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
         }
-        this.params.putIfAbsent("targetDir", this.targetPath().toFile());
-        this.params.putIfAbsent("foreign", this.foreignPath().toFile());
-        this.params.putIfAbsent("foreignFormat", "csv");
-        this.params.putIfAbsent("project", new MavenProjectStub());
-        final Path transpiled = Paths.get("transpiled");
-        this.workspace.save(new TextOf(""), transpiled);
-        this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
-        this.params.putIfAbsent("transpiledFormat", "csv");
-        this.params.putIfAbsent("skipZeroVersions", true);
-        this.params.putIfAbsent("discoverSelf", false);
-        this.params.putIfAbsent("ignoreVersionConflict", false);
-        this.params.putIfAbsent("ignoreTransitive", true);
-        this.params.putIfAbsent("central", new DummyCentral());
-        final Path placed = Paths.get("placed.json");
-        this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
-        this.params.putIfAbsent("placedFormat", "json");
-        this.params.putIfAbsent(
-            "outputDir",
-            this.workspace.absolute(Paths.get("target").resolve("classes")).toFile()
-        );
-        this.params.putIfAbsent(
-            "cache",
-            this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed")
-        );
-        this.params.putIfAbsent("generateSodgXmlFiles", true);
-        this.params.putIfAbsent("generateXemblyFiles", true);
-        this.params.putIfAbsent("generateGraphFiles", true);
-        this.params.putIfAbsent("generateDotFiles", true);
-        this.params.putIfAbsent("generateDotFiles", true);
-        this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
-        this.params.putIfAbsent("placedFormat", "csv");
-        this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
@@ -240,6 +276,28 @@ public final class FakeMaven {
     }
 
     /**
+     * External tojos for eo-external.* file.
+     * @return External tojos.
+     */
+    ForeignTojos externalTojos() {
+        return new ForeignTojos(
+            () -> Catalogs.INSTANCE.make(this.externalPath()),
+            this::scope
+        );
+    }
+
+    /**
+     * Tojo for eo-external.* file.
+     *
+     * @return TjSmart of the current eo-external.file.
+     */
+    TjSmart external() {
+        return new TjSmart(
+            Catalogs.INSTANCE.make(this.externalPath())
+        );
+    }
+
+    /**
      * Sets placed tojo attribute.
      *
      * @param binary Binary as class file or jar.
@@ -281,19 +339,25 @@ public final class FakeMaven {
     }
 
     /**
-     * Sets tojo attribute.
-     *
-     * @param attribute Tojo attribute.
-     * @param value Attribute value.
+     * Specify hash for all foreign tojos.
+     * @param hash Commit hash
      * @return The same maven instance.
      */
-    FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
-        this.attributes.put(attribute, value);
+    FakeMaven allTojosWithHash(final CommitHash hash) {
+        this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 
     /**
-     * Path to 'eo-foreign.csv' or 'eo-foreign.json' file after all changes.
+     * Should we use defaults or not?
+     * @return The same maven instance.
+     */
+    FakeMaven withoutDefaults() {
+        return new FakeMaven(this.workspace, this.params, this.current, false);
+    }
+
+    /**
+     * Path to eo-foreign.* file after all changes.
      * @return Path to eo-foreign.* file.
      */
     Path foreignPath() {
@@ -378,11 +442,20 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
+        final String object = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
+        final String scope = this.scope();
+        final String version = "0.25.0";
+        final Path source = this.workspace.absolute(path);
         this.foreignTojos()
-            .add(String.format("foo.x.main%s", FakeMaven.suffix(this.current.get())))
-            .withScope(this.scope())
-            .withVersion("0.25.0")
-            .withSource(this.workspace.absolute(path));
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.externalTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
         this.current.incrementAndGet();
         return this;
     }
@@ -428,6 +501,14 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
+    }
+
+    /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    private Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**

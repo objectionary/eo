@@ -108,6 +108,11 @@ public final class RegisterMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
+        if (this.sourcesDir == null) {
+            throw new IllegalArgumentException(
+                String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
+            );
+        }
         final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
         final int before = this.scopedTojos().size();
         if (before > 0) {
@@ -118,7 +123,8 @@ public final class RegisterMojo extends SafeMojo {
             .excludes(this.excludeSources);
         final Unplace unplace = new Unplace(this.sourcesDir);
         for (final Path file : sources) {
-            if (this.strictFileNames && !pattern.matcher(file.getFileName().toString()).matches()) {
+            if (this.strictFileNames
+                && !pattern.matcher(file.getFileName().toString()).matches()) {
                 throw new IllegalArgumentException(
                     String.format(
                         "Incorrect name found: '%s'. EO name must match '%s'",
@@ -128,15 +134,23 @@ public final class RegisterMojo extends SafeMojo {
                 );
             }
             final String name = unplace.make(file);
-            if (!this.scopedTojos().contains(name)) {
+            if (this.scopedTojos().contains(name)) {
                 Logger.debug(this, "EO source %s already registered", name);
                 continue;
             }
             this.scopedTojos()
                 .add(name)
                 .withSource(file.toAbsolutePath())
-                .withVersion(ParseMojo.ZERO);
+                .withVersion(ParseMojo.ZERO)
+                .withVer(ParseMojo.ZERO);
             Logger.debug(this, "EO source %s registered", name);
+            if (this.external != null) {
+                this.externalTojos
+                    .add(name)
+                    .withSource(file.toAbsolutePath())
+                    .withVersion(ParseMojo.ZERO);
+                Logger.debug(this, "EO source %s registered (external)", name);
+            }
         }
         Logger.info(
             this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
@@ -145,5 +159,4 @@ public final class RegisterMojo extends SafeMojo {
             this.includeSources, this.excludeSources
         );
     }
-
 }

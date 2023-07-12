@@ -6,8 +6,11 @@ on:
   pull_request:
     branches: master
     paths: 'paper/**'
+concurrency:
+  group: latexmk-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  build:
+  latexmk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

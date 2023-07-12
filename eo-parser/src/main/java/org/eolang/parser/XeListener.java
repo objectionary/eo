@@ -377,8 +377,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterVersion(final ProgramParser.VersionContext ctx) {
         this.objects.enter();
-        if (ctx.VERSION() != null) {
-            this.objects.prop("version", ctx.VERSION().getText());
+        if (ctx.VER() != null) {
+            this.objects.prop("ver", ctx.VER().getText());
         }
     }
 

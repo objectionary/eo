@@ -9,7 +9,7 @@ tests:
   - /program/objects[count(o)=3]
   - //objects[not(//o[@ref and @base='@'])]
   - //o[@base='x' and @ref='1']
-  - //o[@base='x' and @ref='4']
+  - //o[@base='x' and @line='7' and @ref='4']
   - //o[@base='x' and @line='11' and @ref='4']
   - //o[@base='a' and @line='9' and @ref='12']
   - //o[@base='something' and @line='12' and @name='a' and not(@ref)]

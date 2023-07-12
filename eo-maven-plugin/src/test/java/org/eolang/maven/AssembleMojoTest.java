@@ -23,13 +23,12 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.util.Home;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -42,127 +41,102 @@ import org.junit.jupiter.api.io.TempDir;
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
 
+    /**
+     * Invalid eo program for testing.
+     */
+    private static final String[] INVALID_PROGRAM = {
+        "+alias stdout org.eolang.io.stdout",
+        "+home https://github.com/objectionary/eo",
+        "+package test",
+        "+version 0.0.0",
+        "",
+        "[x] < wrong>",
+        "  (stdout \"Hello!\" x).print",
+    };
+
     @Test
-    void assemblesTogether(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            String.join(
-                "\n",
+    void assemblesTogether(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> result = new FakeMaven(temp)
+            .withProgram(
                 "+alias stdout org.eolang.io.stdout",
                 "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("main.eo")
-        );
-        final Path target = temp.resolve("target");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .with("includeSources", new SetOf<>("**.eo"))
-            .execute();
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("placed", temp.resolve("list").toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("skipZeroVersions", true)
-            .with("central", Central.EMPTY)
-            .with("plugin", FakeMaven.pluginDescriptor())
-            .with("ignoreTransitive", true)
-            .with(
-                "objectionary",
-                new Objectionary.Fake()
+                "[x] > main",
+                "  (stdout \"Hello!\" x).print"
             )
-            .execute();
+            .execute(AssembleMojo.class)
+            .result();
+        final String parsed = String.format(
+            "target/%s/org/eolang/io/stdout.%s",
+            ParseMojo.DIR,
+            TranspileMojo.EXT
+        );
+        final String optimized = String.format(
+            "target/%s/org/eolang/io/stdout.%s",
+            OptimizeMojo.DIR,
+            TranspileMojo.EXT
+        );
+        final String pulled = String.format(
+            "target/%s/org/eolang/io/stdout.eo",
+            PullMojo.DIR
+        );
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
+            String.format(
+                "AssembleMojo should have parsed stdout object %s, but didn't",
+                parsed
             ),
+            result.containsKey(parsed),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "AssembleMojo should have optimized stdout object %s, but didn't",
+                optimized
+            ),
+            result.containsKey(optimized),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "AssembleMojo should have pulled stdout object %s, but didn't",
+                pulled
+            ),
+            result.containsKey(pulled),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "AssembleMojo should have placed runtime library under classes directory, but didn't",
+            result.get("target/classes").toAbsolutePath(),
+            new ContainsFile("**/eo-runtime-*.jar")
         );
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws Exception {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] < wrong>\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("wrong.eo")
-        );
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "+home https://github.com/objectionary/eo",
-                "+package test",
-                "+version 0.0.0",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("main.eo")
-        );
-        final Path target = temp.resolve("target");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
-            .with("includeSources", new SetOf<>("**.eo"))
-            .execute();
-        new Moja<>(AssembleMojo.class)
-            .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("placed", temp.resolve("list").toFile())
-            .with("cache", temp.resolve("cache/parsed"))
-            .with("skipZeroVersions", true)
+    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> result = new FakeMaven(temp)
+            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
             .with("failOnError", false)
-            .with("central", Central.EMPTY)
-            .with("ignoreTransitive", true)
-            .with("plugin", FakeMaven.pluginDescriptor())
-            .with(
-                "objectionary",
-                new Objectionary.Fake()
-            )
-            .execute();
+            .execute(AssembleMojo.class).result();
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
+            "Even if the eo program invalid we still have to parse it, but we didn't",
+            result.get(String.format("target/%s", ParseMojo.DIR)),
+            new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT))
         );
         MatcherAssert.assertThat(
-            new Home(target).exists(
-                Paths.get(
-                    String.format(
-                        "%s/main.%s",
-                        ParseMojo.DIR, TranspileMojo.EXT
-                    )
-                )
-            ),
-            Matchers.is(true)
+            "Since the eo program invalid we shouldn't have optimized it, but we did",
+            result.get(String.format("target/%s", OptimizeMojo.DIR)),
+            Matchers.not(new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT)))
         );
     }
 
+    @Test
+    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
+        final Class<IllegalStateException> expected = IllegalStateException.class;
+        Assertions.assertThrows(
+            expected,
+            () -> new FakeMaven(temp)
+                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .execute(AssembleMojo.class),
+            String.format("AssembleMojo should have failed with %s, but didn't", expected)
+        );
+    }
 }

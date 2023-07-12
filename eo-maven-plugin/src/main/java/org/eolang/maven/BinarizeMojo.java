@@ -25,20 +25,19 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
-import org.cactoos.scalar.Unchecked;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.eolang.maven.rust.BuildFailureException;
 
 /**
@@ -46,6 +45,10 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2197:45min Update cached rust insert if it was changed.
+ *  Now it copies cargo project to cache directory in the end of every
+ *  compilation. It is better to copy the project only if it was changed
+ *  with the last compilation.
  */
 @Mojo(
     name = "binarize",
@@ -75,43 +78,87 @@ public final class BinarizeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();
-        final Path dest = targetDir.toPath().resolve("Lib");
-        final ProcessBuilder builder = new ProcessBuilder("cargo", "build")
-            .directory(dest.toFile());
-        Logger.info(this, "Building rust project..");
-        final Process building = builder.start();
-        try {
-            building.waitFor();
-        } catch (final InterruptedException exception) {
-            Thread.currentThread().interrupt();
-            throw new BuildFailureException(
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    project -> () -> {
+                        this.build(project);
+                        return 1;
+                    },
+                    new Filtered<>(
+                        project -> BinarizeMojo.valid(project),
+                        targetDir.toPath().resolve("Lib").toFile().listFiles()
+                    )
+                )
+            )
+        ).intValue();
+        Logger.info(
+            this,
+            String.format("Built in total %d cargo projects", total)
+        );
+    }
+
+    /**
+     * Is the project valid?
+     * @param project File to check.
+     * @return True if valid. Otherwise false.
+     */
+    private static boolean valid(final File project) {
+        return project.isDirectory()
+            && project.toPath().resolve("Cargo.toml").toFile().exists();
+    }
+
+    /**
+     * Builds cargo project.
+     * @param project Path to the project.
+     * @throws IOException If any issues with IO.
+     */
+    private void build(final File project) throws IOException {
+        final File target = project.toPath().resolve("target").toFile();
+        final File cached = this.cache
+            .resolve("Lib")
+            .resolve(project.getName())
+            .resolve("target").toFile();
+        if (cached.exists()) {
+            Logger.info(
+                this,
                 String.format(
-                    "Interrupted while building %s",
-                    dest.toAbsolutePath()
-                ),
-                exception
+                    "Copying %s to %s",
+                    cached,
+                    target
+                )
+            );
+            FileUtils.copyDirectory(
+                cached,
+                target
             );
         }
-        if (building.exitValue() != 0) {
-            Logger.error(this, "There was an error in compilation");
-            final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-            try (VerboseProcess process = new VerboseProcess(building)) {
-                new Unchecked<>(
-                    new LengthOf(
-                        new TeeInput(
-                            new InputOf(process.stdoutQuietly()),
-                            new OutputTo(stdout)
-                        )
-                    )
-                ).value();
-            }
+        Logger.info(this, "Building rust project..");
+        try (
+            VerboseProcess proc = new VerboseProcess(
+                new ProcessBuilder("cargo", "build")
+                    .directory(project)
+            )
+        ) {
+            proc.stdout();
+        } catch (final IllegalArgumentException exc) {
             throw new BuildFailureException(
                 String.format(
                     "Failed to build cargo project with dest = %s",
-                    dest.toAbsolutePath()
-                )
+                    project
+                ),
+                exc
             );
         }
+        Logger.info(
+            this,
+            String.format(
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
+            )
+        );
+        FileUtils.copyDirectory(project, cached);
     }
-
 }

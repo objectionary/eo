@@ -185,7 +185,7 @@ public final class ForeignTojos implements Closeable {
      * @return True if the tojo exists.
      */
     public boolean contains(final String name) {
-        return this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
+        return !this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
     }
 
     /**
@@ -236,7 +236,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * Foreign tojo attributes.
      */
-    public enum Attribute {
+    enum Attribute {
 
         /**
          * Tojo id.
@@ -294,14 +294,14 @@ public final class ForeignTojos implements Closeable {
         SCOPE("scope"),
 
         /**
-         * Transpiled.
-         */
-        TRANSPILED("transpiled"),
-
-        /**
          * Hash.
          */
-        HASH("hash");
+        HASH("hash"),
+
+        /**
+         * Ver.
+         */
+        VER("ver");
 
         /**
          * Attribute name.
@@ -320,7 +320,7 @@ public final class ForeignTojos implements Closeable {
          * Get the attribute name.
          * @return The attribute name.
          */
-        public String key() {
+        String key() {
             return this.key;
         }
     }

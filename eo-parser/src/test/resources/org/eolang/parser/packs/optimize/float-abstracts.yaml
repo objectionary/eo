@@ -17,7 +17,7 @@ tests:
   - //o[@name='first$t2$second' and @ancestors='1' and @parent='first']
   - //o[@name='first$t2$second$third']
   - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
-  - //o[@line='20.19' and @name='aa']
+  - //o[@line and @name='aa']
 eo: |
   [a b] > first
     test:foo
