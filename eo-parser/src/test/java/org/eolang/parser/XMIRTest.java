@@ -97,7 +97,7 @@ final class XMIRTest {
         args.add("de.bottlecaps.convert.Convert");
         args.add("-xml");
         args.add("src/main/antlr4/org/eolang/parser/Program.g4");
-        Logger.info(this, "+%s", args);
+        Logger.debug(this, "+%s", args);
         final Process proc = new ProcessBuilder()
             .command(args)
             .directory(new File(System.getProperty("user.dir")))
