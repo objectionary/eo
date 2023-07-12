@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
-import com.yegor256.tojos.Tojo;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -54,6 +53,7 @@ import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -82,11 +82,6 @@ public final class FakeMaven {
      * Mojos params.
      */
     private final Map<String, Object> params;
-
-    /**
-     * Attributes for eo.foreign.* and eo.external.*.
-     */
-    private final Map<ForeignTojos.Attribute, Object> attributes;
 
     /**
      * Current program number.
@@ -119,7 +114,6 @@ public final class FakeMaven {
         this(
             new Home(workspace),
             new HashMap<>(),
-            new HashMap<>(),
             new AtomicInteger(0),
             defaults
         );
@@ -137,13 +131,11 @@ public final class FakeMaven {
     private FakeMaven(
         final Home workspace,
         final Map<String, Object> params,
-        final Map<ForeignTojos.Attribute, Object> attributes,
         final AtomicInteger current,
         final boolean defaults
     ) {
         this.workspace = workspace;
         this.params = params;
-        this.attributes = attributes;
         this.current = current;
         this.defaults = defaults;
     }
@@ -198,8 +190,6 @@ public final class FakeMaven {
      * @throws java.io.IOException If some problem with filesystem have happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
-        this.fillUp(this.foreign().select(all -> true));
-        this.fillUp(this.external().select(all -> true));
         if (this.defaults) {
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
@@ -350,14 +340,12 @@ public final class FakeMaven {
     }
 
     /**
-     * Sets tojo attribute.
-     *
-     * @param attribute Tojo attribute.
-     * @param value Attribute value.
+     * Specify hash for all foreign tojos.
+     * @param hash Commit hash
      * @return The same maven instance.
      */
-    FakeMaven withTojoAttribute(final ForeignTojos.Attribute attribute, final Object value) {
-        this.attributes.put(attribute, value);
+    FakeMaven allTojosWithHash(final CommitHash hash) {
+        this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 
@@ -522,25 +510,6 @@ public final class FakeMaven {
      */
     private Path externalPath() {
         return this.workspace.absolute(Paths.get("eo-external.csv"));
-    }
-
-    /**
-     * Fill up given tojos by the attributes.
-     * @param tojos Tojos to fill up.
-     * @todo #1602:30min Move the method to ForeignTojos if possible.
-     *  Let's treat ForeignTojos as an object (not as a collection of data)
-     *  and give it a chance to fulfill itself. It knows better how to do so.
-     *  ForeignTojo in current implementation does not have method set() so
-     *  we either need to implement it or just stay with the method here in
-     *  FakeMaven class.
-     */
-    private void fillUp(final List<Tojo> tojos) {
-        for (final Tojo tojo : tojos) {
-            for (final Map.Entry<ForeignTojos.Attribute, Object> entry
-                : this.attributes.entrySet()) {
-                tojo.set(entry.getKey().key(), entry.getValue());
-            }
-        }
     }
 
     /**
