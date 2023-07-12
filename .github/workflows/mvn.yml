@@ -37,7 +37,7 @@ jobs:
       - run: |
           mkdir -p $CONVERT_PATH
           wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
-          unzip /tmp/convert.zip -o -d $CONVERT_PATH
+          unzip -o -d $CONVERT_PATH /tmp/convert.zip
         if: matrix.os == 'ubuntu-20.04'
       - run: mvn clean install -Pqulice --errors --batch-mode
       - uses: JamesIves/github-pages-deploy-action@v4.4.1

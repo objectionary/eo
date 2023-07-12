@@ -53,6 +53,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -74,8 +75,13 @@ final class XMIRTest {
      * which later can be used by the {@see https://ctan.org/pkg/naive-ebnf}.</p>
      *
      * @since 0.30.0
+     * @todo #2240:30min Test fails on github actions CI. On ubuntu 22.04
+     *  JARs of covert tool are downloaded from
+     *  <a href="http://public.yegor256.com/convert.zip"/>. Test seems to work
+     *  locally but it fails on github actions.
      */
     @Test
+    @Disabled
     void convertsAntlrToEbnf() throws Exception {
         String home = System.getenv("CONVERT_PATH");
         if (home == null) {
