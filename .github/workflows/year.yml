@@ -2,6 +2,9 @@ name: year
 on:
   schedule:
     - cron: '0 1 22 * *' # Runs at 01:00 UTC on the 22nd of every month
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   license:
     runs-on: ubuntu-20.04

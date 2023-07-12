@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   sonar:
     runs-on: ubuntu-20.04

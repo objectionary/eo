@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - master
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   pdd:
     runs-on: ubuntu-20.04
