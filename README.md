@@ -183,7 +183,7 @@ This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_fo
 
 <img alt="ENBF of EO" src="https://www.eolang.org/ebnf.png" width="100%" />
 
-The image was [auto-generated]().
+The image was [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
 
 ## What's Next?
 

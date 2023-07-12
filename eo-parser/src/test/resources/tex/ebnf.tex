@@ -1,6 +1,12 @@
 \documentclass{article}
+\usepackage{xcolor}
 \usepackage{naive-ebnf}
 \begin{document}
+\renewcommand\EbnfSpecial[1]{\textcolor{MidnightBlue}{\texttt{#1}}}
+\renewcommand\EbnfTerminal[1]{\textcolor{Orange}{\texttt{"#1"}}}
+\renewcommand\EbnfRegex[1]{\textcolor{PineGreen}{\texttt{#1}}}
+\small
+\noindent
 \begin{ebnf}[8em]
 
 EBNF
