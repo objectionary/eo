@@ -19,7 +19,7 @@ jobs:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
       - uses: actions/checkout@v3
-      - run:
+      - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript
           sudo apt-get -y install imagemagick
