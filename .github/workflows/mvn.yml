@@ -10,7 +10,7 @@ on:
       - master
     paths-ignore: ['paper/**', 'sandbox/**']
 concurrency:
-  group: ${{ github.ref }}
+  group: mvn-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   mvn:

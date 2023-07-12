@@ -3,7 +3,7 @@ on:
   schedule:
     - cron: '0 1 22 * *' # Runs at 01:00 UTC on the 22nd of every month
 concurrency:
-  group: ${{ github.ref }}
+  group: year-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   license:

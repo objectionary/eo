@@ -5,7 +5,7 @@ on:
     branches:
       - master
 concurrency:
-  group: ${{ github.ref }}
+  group: sonar-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   sonar:

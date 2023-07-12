@@ -7,7 +7,7 @@ on:
     tags:
       - '*'
 concurrency:
-  group: ${{ github.ref }}
+  group: up-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   up:
