@@ -1,6 +1,6 @@
 xsls: []
 tests:
-  - //objects[count(.//o[@alias])=3]
+  - //objects[count(.//o[@scope])=3]
 eo: |
   [] > aliases
     a (b (c d))
