@@ -74,10 +74,6 @@ final class XMIRTest {
      * which later can be used by the {@see https://ctan.org/pkg/naive-ebnf}.</p>
      *
      * @since 0.30.0
-     * @todo #2240:30min Test fails on github actions CI. On ubuntu 22.04
-     *  JARs of covert tool are downloaded from
-     *  <a href="http://public.yegor256.com/convert.zip"/>. Test seems to work
-     *  locally but it fails on github actions.
      */
     @Test
     void convertsAntlrToEbnf() throws Exception {

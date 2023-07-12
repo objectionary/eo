@@ -40,7 +40,6 @@ jobs:
           mkdir -p $CONVERT_PATH
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip
           unzip -o -d $CONVERT_PATH /tmp/convert.zip
-        if: matrix.os == 'ubuntu-20.04'
       - run: mvn clean test '-P!jacoco' -Dtest=XMIRTest -pl :eo-parser --errors --batch-mode
       - run: |
           cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
