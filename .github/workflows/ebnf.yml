@@ -49,7 +49,7 @@ jobs:
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
           cat ebnf.tex
           pdflatex -shell-escape ebnf.tex
-          convert -density 300 -quality 100 -define colorspace:auto-grayscale=false ebnf.pdf ebnf.png
+          convert -density 300 -quality 100 -colorspace RGB ebnf.pdf ebnf.png
           mkdir gh-pages
           cp ebnf.png gh-pages
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
