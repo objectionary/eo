@@ -20,6 +20,8 @@ jobs:
         os: [ubuntu-20.04, windows-2022, macos-12]
         java: [11, 17, 18]
     runs-on: ${{ matrix.os }}
+    env:
+      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -31,4 +33,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - run: |
+          mkdir -p $CONVERT_PATH
+          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
+          unzip -o -d $CONVERT_PATH /tmp/convert.zip
       - run: mvn clean install -Pqulice --errors --batch-mode
