@@ -53,7 +53,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -75,13 +74,8 @@ final class XMIRTest {
      * which later can be used by the {@see https://ctan.org/pkg/naive-ebnf}.</p>
      *
      * @since 0.30.0
-     * @todo #2240:30min Test fails on github actions CI. On ubuntu 22.04
-     *  JARs of covert tool are downloaded from
-     *  <a href="http://public.yegor256.com/convert.zip"/>. Test seems to work
-     *  locally but it fails on github actions.
      */
     @Test
-    @Disabled
     void convertsAntlrToEbnf() throws Exception {
         String home = System.getenv("CONVERT_PATH");
         if (home == null) {
@@ -90,7 +84,7 @@ final class XMIRTest {
         final Path lib = Paths.get(home);
         Assumptions.assumeTrue(
             lib.toFile().exists(),
-            String.format("The JAR of convert tool is not available: %s", lib)
+            String.format("The JAR of the 'convert' tool is not available at '%s'", lib)
         );
         final List<String> jars = Stream.of(lib.toFile().listFiles())
             .filter(file -> !file.isDirectory())
@@ -103,6 +97,7 @@ final class XMIRTest {
         args.add("de.bottlecaps.convert.Convert");
         args.add("-xml");
         args.add("src/main/antlr4/org/eolang/parser/Program.g4");
+        Logger.debug(this, "+%s", args);
         final Process proc = new ProcessBuilder()
             .command(args)
             .directory(new File(System.getProperty("user.dir")))
@@ -118,6 +113,9 @@ final class XMIRTest {
             ).value();
         }
         final String output = stdout.toString();
+        if (!output.startsWith("<?xml")) {
+            Logger.warn(this, "Stdout: %n%s", output);
+        }
         final XML xml = new XMLDocument(output);
         final XML after = new Xsline(
             new TrLogged(
