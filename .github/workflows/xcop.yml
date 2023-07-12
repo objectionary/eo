@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - master
+concurrency:
+  group: xcop-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   xcop:
     runs-on: ubuntu-20.04
