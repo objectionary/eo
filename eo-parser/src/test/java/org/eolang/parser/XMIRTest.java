@@ -53,7 +53,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -81,7 +80,6 @@ final class XMIRTest {
      *  locally but it fails on github actions.
      */
     @Test
-    @Disabled
     void convertsAntlrToEbnf() throws Exception {
         String home = System.getenv("CONVERT_PATH");
         if (home == null) {
@@ -103,6 +101,7 @@ final class XMIRTest {
         args.add("de.bottlecaps.convert.Convert");
         args.add("-xml");
         args.add("src/main/antlr4/org/eolang/parser/Program.g4");
+        Logger.info(this, "+%s", args);
         final Process proc = new ProcessBuilder()
             .command(args)
             .directory(new File(System.getProperty("user.dir")))
@@ -118,6 +117,9 @@ final class XMIRTest {
             ).value();
         }
         final String output = stdout.toString();
+        if (!output.startsWith("<?xml")) {
+            Logger.warn(this, "Stdout: %n%s", output);
+        }
         final XML xml = new XMLDocument(output);
         final XML after = new Xsline(
             new TrLogged(
