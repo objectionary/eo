@@ -23,17 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="synthetic-references" version="2.0">
-  <!--
-  Process alias attribute.
-  @todo #2110:90m Rename synthetic-attributes to synthetic-scopes.
-    We call all attributes in the transformation as "aliases".
-    (you can read more about the original issue and why it is named so right
-    <a href="https://github.com/objectionary/eo/issues/415">here</a>.)
-    which is quite confusing and conflicts with the concept of aliases as
-    foreign references. We should rename the transformation to "scopes" or
-    "synthetic-scopes" and rename the "aliases" attributes in that stylesheet
-    accordingly.
-  -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@alias and count(child::o) &gt; 1]">
     <xsl:element name="o">
