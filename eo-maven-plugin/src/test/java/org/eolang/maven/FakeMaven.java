@@ -123,7 +123,6 @@ public final class FakeMaven {
      * The main constructor.
      * @param workspace Test temporary directory.
      * @param params Mojos params.
-     * @param attributes Attributes for eo.foreign.*.
      * @param current Current program number.
      * @param defaults Use default attributes if they are not set.
      * @checkstyle ParameterNumberCheck (10 lines)
@@ -354,7 +353,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      */
     FakeMaven withoutDefaults() {
-        return new FakeMaven(this.workspace, this.params, this.attributes, this.current, false);
+        return new FakeMaven(this.workspace, this.params, this.current, false);
     }
 
     /**
