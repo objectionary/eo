@@ -112,52 +112,51 @@ public final class RegisterMojo extends SafeMojo {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
-        } else {
-            final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
-            final int before = this.scopedTojos().size();
-            if (before > 0) {
-                Logger.info(this, "There are %d EO sources registered already", before);
+        }
+        final Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\-]+\\.eo$");
+        final int before = this.scopedTojos().size();
+        if (before > 0) {
+            Logger.info(this, "There are %d EO sources registered already", before);
+        }
+        final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
+            .includes(this.includeSources)
+            .excludes(this.excludeSources);
+        final Unplace unplace = new Unplace(this.sourcesDir);
+        for (final Path file : sources) {
+            if (this.strictFileNames
+                && !pattern.matcher(file.getFileName().toString()).matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Incorrect name found: '%s'. EO name must match '%s'",
+                        file.getFileName().toString(),
+                        pattern
+                    )
+                );
             }
-            final Collection<Path> sources = new Walk(this.sourcesDir.toPath())
-                .includes(this.includeSources)
-                .excludes(this.excludeSources);
-            final Unplace unplace = new Unplace(this.sourcesDir);
-            for (final Path file : sources) {
-                if (this.strictFileNames
-                    && !pattern.matcher(file.getFileName().toString()).matches()) {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "Incorrect name found: '%s'. EO name must match '%s'",
-                            file.getFileName().toString(),
-                            pattern
-                        )
-                    );
-                }
-                final String name = unplace.make(file);
-                if (this.scopedTojos().contains(name)) {
-                    Logger.debug(this, "EO source %s already registered", name);
-                    continue;
-                }
-                this.scopedTojos()
+            final String name = unplace.make(file);
+            if (this.scopedTojos().contains(name)) {
+                Logger.debug(this, "EO source %s already registered", name);
+                continue;
+            }
+            this.scopedTojos()
+                .add(name)
+                .withSource(file.toAbsolutePath())
+                .withVersion(ParseMojo.ZERO)
+                .withVer(ParseMojo.ZERO);
+            Logger.debug(this, "EO source %s registered", name);
+            if (this.external != null) {
+                this.externalTojos
                     .add(name)
                     .withSource(file.toAbsolutePath())
-                    .withVersion(ParseMojo.ZERO)
-                    .withVer(ParseMojo.ZERO);
-                Logger.debug(this, "EO source %s registered", name);
-                if (this.external != null) {
-                    this.externalTojos
-                        .add(name)
-                        .withSource(file.toAbsolutePath())
-                        .withVersion(ParseMojo.ZERO);
-                    Logger.debug(this, "EO source %s registered (external)", name);
-                }
+                    .withVersion(ParseMojo.ZERO);
+                Logger.debug(this, "EO source %s registered (external)", name);
             }
-            Logger.info(
-                this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
-                sources.size(), new Rel(this.sourcesDir),
-                new Rel(this.foreign),
-                this.includeSources, this.excludeSources
-            );
         }
+        Logger.info(
+            this, "Registered %d EO sources from %s to %s, included %s, excluded %s",
+            sources.size(), new Rel(this.sourcesDir),
+            new Rel(this.foreign),
+            this.includeSources, this.excludeSources
+        );
     }
 }
