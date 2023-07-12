@@ -46,7 +46,7 @@ jobs:
           convert -density 300 -quality 100 -colorspace RGB crop.pdf[0] ebnf.png
           mkdir gh-pages
           cp ebnf.png gh-pages
-      - uses: JamesIves/github-pages-deploy-action@v4.4.1
+      - uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
           folder: eo-parser/target/gh-pages
