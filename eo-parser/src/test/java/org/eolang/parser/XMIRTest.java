@@ -84,7 +84,7 @@ final class XMIRTest {
         final Path lib = Paths.get(home);
         Assumptions.assumeTrue(
             lib.toFile().exists(),
-            String.format("The JAR of convert tool is not available: %s", lib)
+            String.format("The JAR of the 'convert' tool is not available at '%s'", lib)
         );
         final List<String> jars = Stream.of(lib.toFile().listFiles())
             .filter(file -> !file.isDirectory())
