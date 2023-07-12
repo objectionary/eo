@@ -46,13 +46,15 @@ jobs:
           unzip -o -d $CONVERT_PATH /tmp/convert.zip
         if: matrix.os == 'ubuntu-20.04'
       - run: mvn clean install -Pqulice --errors --batch-mode
+      - run: sudo apt-get install -y imagemagick
       - run: |
           cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
           cd eo-parser/target
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
           pdflatex ebnf.tex
+          convert -density 300 -quality 100 ebnf.pdf ebnf.png
           mkdir gh-pages
-          cp ebnf.pdf gh-pages/ebnf.pdf
+          cp ebnf.pdf ebnf.png gh-pages
         if: matrix.os == 'ubuntu-20.04'
       - uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:

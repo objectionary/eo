@@ -177,6 +177,12 @@ This code will print this:
 
 Got the idea?
 
+## Backus-Naur Form
+
+This is our EBNF:
+
+<img alt="ENBF of EO" src="https://www.eolang.org/ebnf.png" width="100%" />
+
 ## What's Next?
 
 Join [our Telegram group](https://t.me/polystat_org).
