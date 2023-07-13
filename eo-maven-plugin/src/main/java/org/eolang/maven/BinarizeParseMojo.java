@@ -105,11 +105,9 @@ public final class BinarizeParseMojo extends SafeMojo {
     /**
      * Exec.
      * @throws IOException If any issues with IO.
-     * @todo: 30min Specify directory for names via
-     *  pom.xml.Now names map is serialized in
-     *  targetDir.toPath().getParent() which is a bad
-     *  decision since it must be created just as
-     *  target/names.
+     * @todo #2238: 30min Specify directory for names via pom.xml.Now names map is
+     *  serialized in targetDir.toPath().getParent() which is a bad decision since
+     *  it must be created just as target/names.
      */
     @Override
     public void exec() throws IOException {
