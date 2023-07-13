@@ -21,7 +21,7 @@ jobs:
       - uses: teatimeguest/setup-texlive-action@v2.6.0
         with:
           update-all-packages: true
-          packages: scheme-basic geometry xcolor naive-ebnf microtype
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
