@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -93,7 +94,52 @@ final class DiscoverMojoTest {
     @Test
     void discoversWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
-            .with("versioned", true)
+            .with("withVersions", true)
+            .withProgram(
+                "+alias org.eolang.txt.sprintf\n",
+                "[] > main",
+                "  seq > @",
+                "    QQ.io.stdout|0.29.1",
+                "      sprintf|0.28.5",
+                "        \"Hello world\"",
+                "          TRUE",
+                "    nop"
+            )
+            .execute(new FakeMaven.Discover());
+        final String sprintf = "org.eolang.txt.sprintf|0.28.5";
+        final String stdout = "org.eolang.io.stdout|0.29.1";
+        final String nop = "org.eolang.nop";
+        final ForeignTojos tojos = maven.externalTojos();
+        MatcherAssert.assertThat(
+            String.format(
+                "External tojos should have contained %s object after discovering, but they didn't",
+                sprintf
+            ),
+            tojos.contains(sprintf),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "External tojos should have not contained %s object after discovering, but they did",
+                stdout
+            ),
+            tojos.contains(stdout),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "External tojos should have contained %s object after discovering, but they didn't",
+                nop
+            ),
+            tojos.contains(nop),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .with("withVersions", false)
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
@@ -107,12 +153,18 @@ final class DiscoverMojoTest {
         final String sprintf = "org.eolang.txt.sprintf|0.28.5";
         final String stdout = "org.eolang.io.stdout|0.29.1";
         MatcherAssert.assertThat(
-            String.format("External tojos have to contain %s object, but they don't", sprintf),
+            String.format(
+                "External tojos should not have contained %s object after discovering, but they did",
+                sprintf
+            ),
             maven.externalTojos().contains(sprintf),
-            Matchers.is(true)
+            Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            String.format("External tojos should not contain %s object, but they did", stdout),
+            String.format(
+                "External tojos should not have contained %s object after discovering, but they did",
+                stdout
+            ),
             maven.externalTojos().contains(stdout),
             Matchers.is(false)
         );

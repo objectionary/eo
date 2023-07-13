@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -40,6 +41,15 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.11
  */
 final class RegisterMojoTest {
+    /**
+     * Parameter for source directory.
+     */
+    private static final String PARAM = "sourcesDir";
+
+    /**
+     * Source directory.
+     */
+    private static final String SOURCES = "src/eo";
 
     @Test
     void registersOkNames(@TempDir final Path temp) throws IOException {
@@ -48,7 +58,7 @@ final class RegisterMojoTest {
             Paths.get("src/eo/org/eolang/maven/abc-def.eo")
         );
         final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve("src/eo").toFile())
+            .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             maven.foreign().getById("org.eolang.maven.abc-def").exists("id"),
@@ -66,7 +76,7 @@ final class RegisterMojoTest {
             IllegalStateException.class,
             () -> {
                 new FakeMaven(temp)
-                    .with("sourcesDir", temp.resolve("src/eo").toFile())
+                    .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
                     .execute(new FakeMaven.Register());
             }
         );
@@ -83,7 +93,7 @@ final class RegisterMojoTest {
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
         );
         final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve("src/eo").toFile())
+            .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
             .with("strictFileNames", false)
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
@@ -99,16 +109,15 @@ final class RegisterMojoTest {
             Paths.get("src/eo/org/eolang/maven/foo.eo")
         );
         final String name = "org.eolang.maven.foo";
-        final String source = "src/eo";
         final FakeMaven maven = new FakeMaven(temp)
-            .with("sourcesDir", temp.resolve(source).toFile())
-            .with("versioned", true)
+            .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
+            .with("withVersions", true)
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
             String.format(
                 "Source object %s placed in %s should have been registered in external tojos but it didn't",
                 name,
-                source
+                RegisterMojoTest.SOURCES
             ),
             maven.external()
                 .getById(name)
@@ -122,6 +131,28 @@ final class RegisterMojoTest {
                 Matchers.equalTo(
                     maven.externalTojos().status()
                 )
+            )
+        );
+    }
+
+    @Test
+    void doesNotRegisterInExternal(@TempDir final Path temp) throws IOException {
+        new Home(temp).save(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            Paths.get("src/eo/org/eolang/maven/foo.eo")
+        );
+        final String name = "org.eolang.maven.foo";
+        Assertions.assertThrows(
+            NoSuchElementException.class,
+            () -> new FakeMaven(temp)
+                .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
+                .with("withVersions", false)
+                .execute(new FakeMaven.Register())
+                .external()
+                .getById(name),
+            String.format(
+                "External tojos should not have contained %s because \"withVersions\" is FALSE, but they did",
+                name
             )
         );
     }
