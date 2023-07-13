@@ -73,7 +73,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut env: EOEnv<'_>) -> i32 {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i32>();",
@@ -124,14 +124,14 @@ final class BinarizeParseMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
                 "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
                 "print!(\"Hello 大 2\");"
             )
         );
@@ -148,11 +148,11 @@ final class BinarizeParseMojoTest {
 
     @Test
     void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
+;
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp)
-                .withProgram(src)
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
                 .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
         }
         final Map<String, Path> res = maven
@@ -168,9 +168,8 @@ final class BinarizeParseMojoTest {
         final String cargo = dir.concat("Cargo.toml");
         final String lib = dir.concat("src/lib.rs");
         final String module = String.format(
-            "%ssrc/%s1.rs",
-            dir,
-            prefix
+            "%ssrc/foo.rs",
+            dir
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(cargo)

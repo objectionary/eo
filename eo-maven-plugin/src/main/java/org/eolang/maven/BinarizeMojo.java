@@ -118,8 +118,7 @@ public final class BinarizeMojo extends SafeMojo {
         final File target = project.toPath().resolve("target").toFile();
         final File cached = this.cache
             .resolve("Lib")
-            .resolve(project.getName())
-            .resolve("target").toFile();
+            .resolve(project.getName()).toFile();
         if (cached.exists()) {
             Logger.info(
                 this,
