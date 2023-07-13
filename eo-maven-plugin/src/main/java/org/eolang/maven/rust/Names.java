@@ -114,7 +114,6 @@ public final class Names {
         final Names names = (Names) object;
         try {
             return this.dest.equals(names.dest)
-                && Names.PREFIX.equals(Names.PREFIX)
                 && this.all.value().equals(names.all.value());
         } catch (final IOException exc) {
             throw new IllegalArgumentException(
