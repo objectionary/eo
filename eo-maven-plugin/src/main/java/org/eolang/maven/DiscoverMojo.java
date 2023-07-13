@@ -125,6 +125,13 @@ public final class DiscoverMojo extends SafeMojo {
      * Xpath for selecting objects from given xml.
      * @param versioned Select with versions or not.
      * @return Xpath as list of strings
+     * @todo #1602:30min Simplify xpath. Current implementation for building
+     *  xpath with and without versions is quite ugly. For some reason
+     *  if we try to take `/concat(@base,'|',@ver)` and there are object without
+     *  attribute `ver` - xpath returns nothing. So we need to take `/@base`
+     *  from objects where attribute `ver` is not present in both cases and
+     *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
+     *  from objects attribute `ver` is present.
      */
     private List<String> xpath(final boolean versioned) {
         final List<String> xpath = new ListOf<>(
