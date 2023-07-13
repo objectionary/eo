@@ -25,10 +25,10 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.rust.Names;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,9 +58,7 @@ final class BinarizeParseMojoTest {
             .result();
         final String function = String.format(
             "%s0",
-            temp.resolve("target").toString()
-                .toLowerCase(Locale.ENGLISH)
-                .replaceAll("[^a-z0-9]", "x")
+            Names.PREFIX
         );
         final String rust = String.format(
             "target/binarize/codes/%s.rs",
@@ -104,16 +102,13 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString()
-            .toLowerCase(Locale.ENGLISH)
-            .replaceAll("[^a-z0-9]", "x");
         final String one = String.format(
             "target/binarize/codes/%s0.rs",
-            prefix
+            Names.PREFIX
         );
         final String two = String.format(
             "target/binarize/codes/%s1.rs",
-            prefix
+            Names.PREFIX
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
@@ -158,19 +153,16 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString()
-            .toLowerCase(Locale.ENGLISH)
-            .replaceAll("[^a-z0-9]", "x");
         final String dir = String.format(
             "target/Lib/%s1/",
-            prefix
+            Names.PREFIX
         );
         final String cargo = dir.concat("Cargo.toml");
         final String lib = dir.concat("src/lib.rs");
         final String module = String.format(
             "%ssrc/%s1.rs",
             dir,
-            prefix
+            Names.PREFIX
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(cargo)

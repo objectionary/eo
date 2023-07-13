@@ -104,7 +104,7 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(targetDir.toPath(), "Java2Rust_");
+        final Names names = new Names(targetDir.toPath().getParent());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
