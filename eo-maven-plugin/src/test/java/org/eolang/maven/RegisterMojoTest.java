@@ -141,12 +141,19 @@ final class RegisterMojoTest {
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/foo.eo")
         );
-        final FakeMaven maven = new FakeMaven(temp)
-            .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
-            .with("withVersions", false);
+        final String name = "org.eolang.maven.foo";
         Assertions.assertThrows(
             NoSuchElementException.class,
-            () -> maven.external().getById("org.eolang.maven.foo")
+            () -> new FakeMaven(temp)
+                .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
+                .with("withVersions", false)
+                .execute(new FakeMaven.Register())
+                .external()
+                .getById(name),
+            String.format(
+                "External tojos should not have contained %s because \"withVersions\" is FALSE, but they did",
+                name
+            )
         );
     }
 

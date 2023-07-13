@@ -32,11 +32,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -95,32 +96,13 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final List<String> base = new ListOf<>(
-            "//o[",
-            "not(starts-with(@base,'.'))",
-            "and @base != 'Q'",
-            "and @base != '^'",
-            "and @base != '$'",
-            "and @base != '&'",
-            "and not(@ref)"
-        );
-        final List<String> regular = new ListOf<>(base);
-        if (this.withVersions) {
-            regular.add("and not(@ver)");
-        }
-        regular.add("]/@base");
-        final Collection<String> names = new TreeSet<>(
-            DiscoverMojo.names(xml, regular)
+        final Collection<String> names = DiscoverMojo.names(
+            xml, this.xpath(false)
         );
         if (this.withVersions) {
-            final List<String> versioned = new ListOf<>(base);
-            versioned.addAll(
-                new ListOf<>(
-                    "and @ver",
-                    "]/concat(@base,'|',@ver)"
-                )
+            names.addAll(
+                DiscoverMojo.names(xml, this.xpath(true))
             );
-            names.addAll(DiscoverMojo.names(xml, versioned));
         }
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
@@ -140,13 +122,45 @@ public final class DiscoverMojo extends SafeMojo {
     }
 
     /**
-     * Get list of object names from given XML by provided xpath.
+     * Xpath for selecting objects from given xml.
+     * @param versioned Select with versions or not.
+     * @return Xpath as list of strings
+     */
+    private List<String> xpath(final boolean versioned) {
+        final List<String> xpath = new ListOf<>(
+            "//o[",
+            "not(starts-with(@base,'.'))",
+            "and @base != 'Q'",
+            "and @base != '^'",
+            "and @base != '$'",
+            "and @base != '&'",
+            "and not(@ref)"
+        );
+        final List<String> tail;
+        if (versioned) {
+            tail = new ListOf<>(
+                "and @ver",
+                "]/concat(@base,'|',@ver)"
+            );
+        } else {
+            tail = new ListOf<>();
+            if (this.withVersions) {
+                tail.add("and not(@ver)");
+            }
+            tail.add("]/@base");
+        }
+        xpath.addAll(tail);
+        return xpath;
+    }
+
+    /**
+     * Get unique list of object names from given XML by provided xpath.
      * @param xml XML.
      * @param xpath Xpath.
      * @return List of object names.
      */
-    private static List<String> names(final XML xml, final List<String> xpath) {
-        return new ListOf<>(
+    private static Set<String> names(final XML xml, final List<String> xpath) {
+        return new SetOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),
                 xml.xpath(
