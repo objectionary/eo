@@ -70,9 +70,9 @@ public final class Names {
      * Ctor.
      * @param target Directory where to serialize names.
      */
-    public Names(final Path target) {
+    public Names(final Path target, final String prefix) {
         this.dest = target.resolve("names");
-        this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
+        this.prefix = prefix;
         this.all = Names.checked(this.dest);
     }
 
