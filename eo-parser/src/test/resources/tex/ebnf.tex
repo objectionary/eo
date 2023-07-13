@@ -1,15 +1,57 @@
 \documentclass{article}
-\usepackage{xcolor}
+\usepackage[paperwidth=16in]{geometry}
+\usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{naive-ebnf}
+\usepackage{microtype}
+\pagestyle{empty}
 \begin{document}
 \renewcommand\EbnfSpecial[1]{\textcolor{MidnightBlue}{\texttt{#1}}}
 \renewcommand\EbnfTerminal[1]{\textcolor{Orange}{\texttt{"#1"}}}
 \renewcommand\EbnfRegex[1]{\textcolor{PineGreen}{\texttt{#1}}}
-\small
 \noindent
 \begin{ebnf}[8em]
+\small
 
-EBNF
+% Use native-enbf LaTeX package to render this
+<program> := [ <license> ] [ <metas> ] <objects> 'EOF' \\
+<license> := <comment> { 'EOL' <comment> } 'EOP' \\
+<metas> := <meta> { 'EOL' <meta> } 'EOP' \\
+<objects> := ( { <comment> 'EOL' } <object> 'EOL' | 'EOP' ) { { <comment> 'EOL' } <object> 'EOL' | 'EOP' } \\
+<object> := ( <abstraction> | <application> ) [ <tail> ] { 'EOL' <method> [ <htail> ] [ <suffix> ] [ <tail> ] } \\
+<abstraction> := { <comment> 'EOL' } <attributes> [ ( ( <suffix> [ "\textvisiblespace{}" "/" ( <name> | "?" ) ] ) | <htail> ) ] \\
+<attributes> := "[" [ ( ( <attribute> { "\textvisiblespace{}" <attribute> } [ "\textvisiblespace{}" <vararg> ] ) | <vararg> ) ] "]" \\
+<attribute> := <label> \\
+<vararg> := <label> "..." \\
+<label> := "@" | <name> \\
+<tail> := 'EOL' 'TAB' ( <object> ( 'EOL' | 'EOP' ) ) { <object> ( 'EOL' | 'EOP' ) } 'UNTAB' \\
+<suffix> := "\textvisiblespace{}" ">" "\textvisiblespace{}" <label> [ "!" ] \\
+<method> := "." ( <name> | "\^{}" | "\&" | "@" | "<" ) [ "'" ] \\
+<scope> := "(" <application> ")" \\
+<application> := ( ( <head> [ ( <version> | <htail> ) ] ) | ( <scope> [ <htail> ] ) ) { ( ( <method> [ ( <htail> | ( <version> [ <suffix> ] ) ) ] ) | ( ( <has> | <suffix> ) [ <htail> ] ) ) } \\
+<htail> := ( "\textvisiblespace{}" ( <application> <method> | <has> | <suffix> ) | <head> | <scope> | <abstraction> ) { "\textvisiblespace{}" ( <application> <method> | <has> | <suffix> ) | <head> | <scope> | <abstraction> } \\
+<head> := [ "..." ] ( "Q" | "QQ" | ( ( "@" | "\^{}" | "\textdollar" | "\&" ) [ "." ] ) | "*" | ( <name> [ "'" ] ) | ( ( <name> | "<" ) "." ) | <data> | <abstraction> ) \\
+<version> := "|" <ver> \\
+<has> := ":" ( <name> | "\^{}" ) \\
+<data> := <bytes> | <bool> | <text> | <string> | <int> | <float> | <hex> \\
+<comment> := "\#" [ { /[\^{}\textbackslash{}r\textbackslash{}n]/ } /[\^{}\textvisiblespace{}\textbackslash{}r\textbackslash{}n\textbackslash{}t]/ ] \\
+<meta> := "+" <name> [ "\textvisiblespace{}" /[\^{}\textbackslash{}r\textbackslash{}n]/ { /[\^{}\textbackslash{}r\textbackslash{}n]/ } ] \\
+<indent> := "\textvisiblespace{}" "\textvisiblespace{}" \\
+<linebreak> := [ "\textbackslash{}r" ] "\textbackslash{}n" \\
+<byte> := /[0-9A-F]/ /[0-9A-F]/ \\
+<empty\_bytes> := "-" "-" \\
+<line\_bytes> := <byte> ( "-" <byte> ) { "-" <byte> } \\
+<bytes> := <empty\_bytes> | ( <byte> "-" ) | ( <line\_bytes> { "-" 'EOL' <line\_bytes> } ) \\
+<bool> := "TRUE" | "FALSE" \\
+<string> := "\lq\lq" { ( /[\^{}\lq\lq\textbackslash\char`\{\char`\}\textbackslash{}r\textbackslash{}n]/ | <escape\_sequence> ) } "\lq\lq" \\
+<escape\_sequence> := "\textbackslash\char`\{\char`\}" ( /[btnfr\lq\lq'\textbackslash\char`\{\char`\}]/ | ( [ [ /[0-3]/ ] /[0-7]/ ] /[0-7]/ ) | ( "u" { "u" } <byte> <byte> ) ) \\
+<int> := [ ( "+" | "-" ) ] ( "0" | ( [ "0" ] /[1-9]/ { /[0-9]/ } ) ) \\
+<exponent> := ( "e" | "E" ) [ ( "+" | "-" ) ] /[0-9]/ { /[0-9]/ } \\
+<float> := [ ( "+" | "-" ) ] /[0-9]/ { /[0-9]/ } "." /[0-9]/ { /[0-9]/ } [ <exponent> ] \\
+<hex> := "0x" /[0-9a-fA-F]/ { /[0-9a-fA-F]/ } \\
+<name> := /[a-z]/ { /[\^{}\textvisiblespace{},.|':;!?][\char`\}\char`\{)(\textbackslash{}r\textbackslash{}n\textbackslash{}t]/ } \\
+<ver> := /[0-9]/ { /[0-9]/ } "." /[0-9]/ { /[0-9]/ } "." /[0-9]/ { /[0-9]/ } \\
+<text> := "\lq\lq\lq\lq\lq\lq" [ "\textbackslash{}r" ] "\textbackslash{}n" { ( /[\^{}\textbackslash\char`\{\char`\}]/ | <escape\_sequence> ) } "\lq\lq\lq\lq\lq\lq" \\
+
 
 \end{ebnf}
 \end{document}
