@@ -52,7 +52,7 @@ public final class Names {
     /**
      * Prefix for the names.
      */
-    public static final String PREFIX = "native_";
+    public static final String PREFIX = "native";
 
     /**
      * Target directory.
