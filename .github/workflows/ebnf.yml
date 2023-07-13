@@ -17,11 +17,11 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           sudo apt-get update
-          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils microtype
+          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils
       - uses: teatimeguest/setup-texlive-action@v2.6.0
         with:
           update-all-packages: true
-          packages: scheme-basic naive-ebnf
+          packages: scheme-basic naive-ebnf microtype
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
