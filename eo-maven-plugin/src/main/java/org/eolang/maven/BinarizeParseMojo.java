@@ -58,6 +58,9 @@ import org.eolang.parser.ParsingTrain;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2238:30min Specify directory for names via pom.xml.Now names map is
+ *  serialized in targetDir.toPath().getParent() which is a bad decision since
+ *  it must be created just as target/names.
  */
 @Mojo(
     name = "binarize_parse",
@@ -102,13 +105,6 @@ public final class BinarizeParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
-    /**
-     * Exec.
-     * @throws IOException If any issues with IO.
-     * @todo #2238: 30min Specify directory for names via pom.xml.Now names map is
-     *  serialized in targetDir.toPath().getParent() which is a bad decision since
-     *  it must be created just as target/names.
-     */
     @Override
     public void exec() throws IOException {
         final Names names = new Names(targetDir.toPath().getParent());
