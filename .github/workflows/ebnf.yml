@@ -21,7 +21,7 @@ jobs:
       - uses: teatimeguest/setup-texlive-action@v2.6.0
         with:
           update-all-packages: true
-          packages: scheme-basic naive-ebnf microtype
+          packages: geometry xcolor naive-ebnf microtype
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -41,7 +41,7 @@ jobs:
           cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
           cd eo-parser/target
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
-          pdflatex -shell-escape ebnf.tex
+          pdflatex -shell-escape -interaction=errorstopmode -halt-on-error ebnf.tex
           pdfcrop --margins '10 10 10 10' ebnf.pdf crop.pdf
           convert -density 300 -quality 100 -colorspace RGB crop.pdf ebnf.png
           mkdir gh-pages
