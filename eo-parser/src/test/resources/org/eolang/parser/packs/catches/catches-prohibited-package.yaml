@@ -1,0 +1,9 @@
+xsls:
+  - /org/eolang/parser/warnings/prohibited-package.xsl
+tests:
+  - /program/errors[count(error[@severity='warning'])=1]
+  - /program/errors/error[@line='1']
+eo: |
+  +package org.eolang
+  
+  [] > main
