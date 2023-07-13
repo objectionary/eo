@@ -26,6 +26,9 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -69,6 +72,27 @@ final class BinarizeMojoTest {
         }
         Assertions.assertThrows(
             IllegalStateException.class,
+            () -> maven.execute(new FakeMaven.Binarize())
+        );
+    }
+
+    @Test
+    @Tag("slow")
+    void savesToCache(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .with("cache", temp.resolve(".cache"))
+                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
+        }
+        final Map<String, Path> res = maven
+            .execute(new FakeMaven.Binarize())
+            .result();
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasValue(temp.resolve(".cache").resolve("Lib"))
+        );
+        Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
         );
     }

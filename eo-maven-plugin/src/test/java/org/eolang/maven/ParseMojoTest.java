@@ -35,9 +35,10 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.maven.footprint.CacheVersion;
 import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.tojos.ForeignTojos;
+import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -84,25 +85,31 @@ final class ParseMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void parsesWithCache(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp);
         final Path cache = temp.resolve("cache");
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram("invalid content")
+            .with("cache", cache);
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
-        final String hash = new ChNarrow(new ChRemote("0.25.0")).value();
+        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
         new FtCached(
-            new CacheVersion(FakeMaven.pluginVersion(), hash),
+            new CacheVersion(FakeMaven.pluginVersion(), hash.value()),
             cache.resolve(ParseMojo.PARSED),
             new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
+        final String actual = String.format(
+            "target/%s/foo/x/main.%s",
+            ParseMojo.DIR,
+            TranspileMojo.EXT
+        );
         MatcherAssert.assertThat(
+            String.format("We expect that that %s is taken from the cache, but it didn't", actual),
             new TextOf(
-                maven.withProgram("invalid content")
-                    .withTojoAttribute(ForeignTojos.Attribute.HASH, hash)
-                    .with("cache", cache)
+                maven.allTojosWithHash(hash)
                     .execute(new FakeMaven.Parse())
                     .result()
-                    .get(String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT))
+                    .get(actual)
             ).toString(),
             Matchers.equalTo(expected)
         );
