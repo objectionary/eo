@@ -102,6 +102,15 @@ public final class BinarizeParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
+    /**
+     * Exec.
+     * @throws IOException If any issues with IO.
+     * @todo: 30min Specify directory for names via
+     *  pom.xml.Now names map is serialized in
+     *  targetDir.toPath().getParent() which is a bad
+     *  decision since it must be created just as
+     *  target/names.
+     */
     @Override
     public void exec() throws IOException {
         final Names names = new Names(targetDir.toPath().getParent());
