@@ -76,7 +76,7 @@ public final class Project {
      * @throws IOException If any issues with I/O
      */
     public Project with(final Module module, final List<String> dependencies)
-            throws IOException {
+        throws IOException {
         this.modules.add(
             module
         );
@@ -93,8 +93,6 @@ public final class Project {
      * @param name Name of dependency.
      * @param content Content of dependency.
      * @return The project.
-     * Dependency can be `like jni = "0.21.1"`
-     * or `eo_env = { path = "/rust/eo_env" }`
      */
     public Project dependency(final String name, final Object content) {
         this.cargo.add(name, content);

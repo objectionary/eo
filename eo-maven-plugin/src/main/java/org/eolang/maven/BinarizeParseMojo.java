@@ -72,6 +72,7 @@ import org.eolang.parser.ParsingTrain;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
+
 @SuppressWarnings("PMD.LongVariable")
 public final class BinarizeParseMojo extends SafeMojo {
 
@@ -108,6 +109,18 @@ public final class BinarizeParseMojo extends SafeMojo {
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
+
+    /**
+     * The directory with eo_env rust project.
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        property = "eo.eo_env",
+        required = true,
+        defaultValue = "${project.build.directory}/src/main/rust/eo_env"
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private File eoEnvDir;
 
     @Override
     public void exec() throws IOException {
@@ -150,7 +163,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                     .with(new PrimeModule(function, "lib"), new ArrayList<>(1))
                     .dependency(
                         "eo_env",
-                        new MapOf<String, String>("path", this.project.getBasedir().toPath().resolve("src/main/rust/eo_env").toString())
+                        new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
                     )
                     .save();
                 new Native(function, "EOrust.natives").save(

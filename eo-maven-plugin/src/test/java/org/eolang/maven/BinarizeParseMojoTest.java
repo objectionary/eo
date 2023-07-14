@@ -48,7 +48,7 @@ final class BinarizeParseMojoTest {
 
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
+        final Path src = BinarizeMojoTest.SRC.resolve("simple-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
@@ -94,7 +94,7 @@ final class BinarizeParseMojoTest {
 
     @Test
     void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo");
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/binarize/twice-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
@@ -133,7 +133,7 @@ final class BinarizeParseMojoTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/add_rust/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
@@ -146,8 +146,8 @@ final class BinarizeParseMojoTest {
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())

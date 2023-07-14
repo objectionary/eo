@@ -25,6 +25,7 @@ package org.eolang.maven.rust;
 
 /**
  * Prime Module in the rust project. Contains the function to call from the java side.
+ * @since 0.29.7
  */
 public class PrimeModule extends Module {
 
@@ -33,7 +34,6 @@ public class PrimeModule extends Module {
      *
      * @param method How the function is named from the java side.
      * @param file File name.
-     * @since 0.29.7
      */
     public PrimeModule(final String method, final String file) {
         super(
