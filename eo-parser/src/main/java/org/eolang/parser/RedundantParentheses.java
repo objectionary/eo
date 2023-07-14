@@ -40,7 +40,7 @@ final class RedundantParentheses implements Predicate<String> {
     /**
      * Pattern for string literals.
      */
-    private static final Pattern PATTERN = Pattern.compile("(?ms)\"\"\".*?\"\"\"|\".*?\"");
+    private static final Pattern PATTERN = Pattern.compile("(?ms)#.*?\\n|\"\"\".*?\"\"\"|\".*?\"");
 
     /**
      * The callback that will be called in case if redundant parentheses is found.

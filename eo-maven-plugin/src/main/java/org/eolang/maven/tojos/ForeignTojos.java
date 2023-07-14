@@ -23,11 +23,14 @@
  */
 package org.eolang.maven.tojos;
 
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjCached;
+import com.yegor256.tojos.TjDefault;
+import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -48,7 +51,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * The delegate.
      */
-    private final Unchecked<Tojos> tojos;
+    private final Unchecked<? extends Tojos> tojos;
 
     /**
      * Scope.
@@ -58,18 +61,38 @@ public final class ForeignTojos implements Closeable {
     /**
      * Ctor.
      * @param scalar Scalar
+     * @param scope Scope
      */
-    public ForeignTojos(final Scalar<Tojos> scalar) {
+    public ForeignTojos(final Scalar<Tojos> scalar, final Supplier<String> scope) {
+        this(new Unchecked<>(new Sticky<>(scalar)), scope);
+    }
+
+    /**
+     * Constructor for tests.
+     * Keeps all tojos in memory.
+     */
+    ForeignTojos() {
+        this(() -> new TjSmart(new TjCached(new TjDefault(new MnMemory()))));
+    }
+
+    /**
+     * Ctor with the default scope.
+     * @param scalar Scalar
+     */
+    private ForeignTojos(final Scalar<Tojos> scalar) {
         this(scalar, () -> "compile");
     }
 
     /**
-     * Ctor.
-     * @param scalar Scalar
-     * @param scope Scope
+     * Main constructor.
+     * @param tojos The tojos.
+     * @param scope The scope.
      */
-    public ForeignTojos(final Scalar<Tojos> scalar, final Supplier<String> scope) {
-        this.tojos = new Unchecked<>(new Sticky<>(scalar));
+    private ForeignTojos(
+        final Unchecked<Tojos> tojos,
+        final Supplier<String> scope
+    ) {
+        this.tojos = tojos;
         this.scope = scope;
     }
 
@@ -118,18 +141,6 @@ public final class ForeignTojos implements Closeable {
             t -> t.exists(Attribute.XMIR.key())
                 && t.exists(Attribute.VERSION.key())
                 && !t.exists(Attribute.JAR.key())
-        );
-    }
-
-    /**
-     * Get the tojos for the given eo.
-     * @param source The eo object path.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> withSource(final Path source) {
-        return this.select(
-            row -> row.exists(Attribute.OPTIMIZED.key())
-                && row.get(Attribute.EO.key()).equals(source.toString())
         );
     }
 

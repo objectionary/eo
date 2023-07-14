@@ -24,13 +24,10 @@
 package org.eolang.maven.tojos;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import org.eolang.maven.FakeMaven;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -48,15 +45,10 @@ final class ForeignTojosTest {
 
     /**
      * Set up environment before each test.
-     *
-     * @param tmp Temporary dir.
-     * @todo #2213:60min Create an instance of ForeignTojos in memory.
-     *  It would be better to be able to create an instance of ForeignTojos in
-     *  memory for test purposes.
      */
     @BeforeEach
-    void setUp(@TempDir final Path tmp) {
-        this.tojos = new ForeignTojos(() -> new FakeMaven(tmp).foreign());
+    void setUp() {
+        this.tojos = new ForeignTojos();
     }
 
     @ParameterizedTest
