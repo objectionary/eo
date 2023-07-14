@@ -1,5 +1,5 @@
 xsls:
-  - /org/eolang/parser/synthetic-references.xsl
+  - /org/eolang/parser/scopes.xsl
 tests:
   - //o[@base='foo' and count(o)=2]
   - //o[@base='bar' and count(o)=2]
@@ -13,5 +13,5 @@ eo: |
     [i j] > foobar
       44 > @
     eq. > @
-      foobar (foo (bar 1 2) 3) 4
+      foobar (foo 1 2) (bar 3 4)
       44

@@ -29,7 +29,6 @@ import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -73,9 +72,7 @@ final class ResolveMojoTest {
             "    a",
             "    b"
         );
-        new ForeignTojos(() -> Catalogs.INSTANCE.make(maven.foreignPath(), "json"))
-            .add("sum")
-            .withDiscovered(0);
+        maven.foreignTojos().add("sum").withDiscovered(0);
         maven.execute(new FakeMaven.Resolve());
         final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
