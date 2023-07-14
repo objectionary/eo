@@ -201,7 +201,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("versioned", false);
+            this.params.putIfAbsent("withVersions", false);
             this.params.putIfAbsent("ignoreVersionConflict", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
@@ -339,12 +339,13 @@ public final class FakeMaven {
     }
 
     /**
-     * Specify hash for all foreign tojos.
+     * Specify hash for all foreign and external tojos.
      * @param hash Commit hash
      * @return The same maven instance.
      */
     FakeMaven allTojosWithHash(final CommitHash hash) {
         this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
+        this.externalTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 

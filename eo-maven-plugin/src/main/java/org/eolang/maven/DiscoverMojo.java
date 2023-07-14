@@ -31,11 +31,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
+import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -94,26 +96,14 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = new TreeSet<>(
-            new ListOf<>(
-                new Filtered<>(
-                    obj -> !obj.isEmpty(),
-                    xml.xpath(
-                        String.join(
-                            " ",
-                            "//o[",
-                            "not(starts-with(@base,'.'))",
-                            " and @base != 'Q'",
-                            " and @base != '^'",
-                            " and @base != '$'",
-                            " and @base != '&'",
-                            " and not(@ref)",
-                            "]/@base"
-                        )
-                    )
-                )
-            )
+        final Collection<String> names = DiscoverMojo.names(
+            xml, this.xpath(false)
         );
+        if (this.withVersions) {
+            names.addAll(
+                DiscoverMojo.names(xml, this.xpath(true))
+            );
+        }
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
@@ -131,4 +121,62 @@ public final class DiscoverMojo extends SafeMojo {
         return names;
     }
 
+    /**
+     * Xpath for selecting objects from given xml.
+     * @param versioned Select with versions or not.
+     * @return Xpath as list of strings
+     * @todo #1602:30min Simplify xpath. Current implementation for building
+     *  xpath with and without versions is quite ugly. For some reason
+     *  if we try to take `/concat(@base,'|',@ver)` and there are object without
+     *  attribute `ver` - xpath returns nothing. So we need to take `/@base`
+     *  from objects where attribute `ver` is not present in both cases and
+     *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
+     *  from objects attribute `ver` is present.
+     */
+    private List<String> xpath(final boolean versioned) {
+        final List<String> xpath = new ListOf<>(
+            "//o[",
+            "not(starts-with(@base,'.'))",
+            "and @base != 'Q'",
+            "and @base != '^'",
+            "and @base != '$'",
+            "and @base != '&'",
+            "and not(@ref)"
+        );
+        final List<String> tail;
+        if (versioned) {
+            tail = new ListOf<>(
+                "and @ver",
+                "]/concat(@base,'|',@ver)"
+            );
+        } else {
+            tail = new ListOf<>();
+            if (this.withVersions) {
+                tail.add("and not(@ver)");
+            }
+            tail.add("]/@base");
+        }
+        xpath.addAll(tail);
+        return xpath;
+    }
+
+    /**
+     * Get unique list of object names from given XML by provided xpath.
+     * @param xml XML.
+     * @param xpath Xpath.
+     * @return List of object names.
+     */
+    private static Set<String> names(final XML xml, final List<String> xpath) {
+        return new SetOf<>(
+            new Filtered<>(
+                obj -> !obj.isEmpty(),
+                xml.xpath(
+                    String.join(
+                        " ",
+                        xpath
+                    )
+                )
+            )
+        );
+    }
 }

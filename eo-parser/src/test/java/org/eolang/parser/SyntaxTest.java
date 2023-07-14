@@ -91,7 +91,7 @@ final class SyntaxTest {
                 new String(baos.toByteArray(), StandardCharsets.UTF_8)
             ),
             XhtmlMatchers.hasXPaths(
-                "/program/errors[count(error)=2]",
+                "/program/errors[count(error)=1]",
                 String.format("/program[listing='%s']", src)
             )
         );

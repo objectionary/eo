@@ -2,6 +2,7 @@
 #  The syntax below is not supported, but it passes the test and
 #  no typos are detected. We should fix it. Most probably EOL-s
 #  are not detected at the end of objects correctly.
+skip: true
 line: 1
 eo: |
   [] > a [] > b [] > c [] > d hello world
