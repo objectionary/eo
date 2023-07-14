@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-
 import org.eolang.maven.rust.Names;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
