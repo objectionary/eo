@@ -43,7 +43,7 @@ jobs:
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
           pdflatex -shell-escape -interaction=errorstopmode -halt-on-error ebnf.tex
           pdfcrop --margins '10 10 10 10' ebnf.pdf crop.pdf
-          convert -density 300 -quality 100 -colorspace RGB crop.pdf ebnf.png
+          convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf ebnf.png
           mkdir gh-pages
           cp ebnf.png gh-pages
       - uses: JamesIves/github-pages-deploy-action@v4.4.3
