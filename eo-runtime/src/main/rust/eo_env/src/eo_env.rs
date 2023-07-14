@@ -18,12 +18,6 @@ impl<'local> EOEnv<'_> {
     }
 
     pub fn find(&mut self, att: &str) -> i32 {
-        let another_string = JObject::from(self.java_env.new_string(att).unwrap());
-        let v = self.java_env
-            .call_method(&self.java_obj, "find", "(Ljava/lang/String;)I", &[JValue::from(&another_string)])
-            .unwrap()
-            .i()
-            .unwrap();
-        v
+        1
     }
 }

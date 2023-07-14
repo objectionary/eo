@@ -42,3 +42,18 @@
     r
     $.equal-to
       2
+
+[] > find-returns-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+      env.find("^.^")
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      1

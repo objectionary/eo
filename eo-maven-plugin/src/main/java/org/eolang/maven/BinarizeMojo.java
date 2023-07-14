@@ -83,7 +83,7 @@ public final class BinarizeMojo extends SafeMojo {
     @Parameter(
         property = "eo.eo_env",
         required = true,
-        defaultValue = "${project.build.directory}/src/main/rust/eo_env"
+        defaultValue = "${project.basedir}/src/main/rust/eo_env"
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File eoEnvDir;
