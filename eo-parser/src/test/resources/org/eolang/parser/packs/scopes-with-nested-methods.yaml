@@ -1,6 +1,6 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
-  - /org/eolang/parser/synthetic-references.xsl
+  - /org/eolang/parser/scopes.xsl
 tests:
   - //o[@base='.with']/o[@abstract]/o[@base='.with']/o[@abstract]/o[@base='.with']/o[@base='foobar']
   - //o[@base='.with']/o[@abstract]/o[@base='.with']/o[@abstract]/o[@base='.with' and count(o)=3]
