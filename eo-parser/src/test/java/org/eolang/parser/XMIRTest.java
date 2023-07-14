@@ -128,7 +128,7 @@ final class XMIRTest {
                 Level.FINE
             )
         ).pass(xml);
-        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" +", " ");
+        final String ebnf = after.xpath("/ebnf/text()").get(0).replaceAll(" {3,}", "  ");
         final Path target = Paths.get("target/ebnf.txt");
         Files.write(
             target,
