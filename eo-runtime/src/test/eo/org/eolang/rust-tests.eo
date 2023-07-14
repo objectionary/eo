@@ -48,7 +48,7 @@
     """
     use eo_env::EOEnv;
 
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    pub fn foo(env: EOEnv<'_>) -> i32 {
       env.find("^.^")
     }
     """

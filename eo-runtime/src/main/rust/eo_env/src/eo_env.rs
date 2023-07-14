@@ -1,5 +1,5 @@
 use jni::JNIEnv;
-use jni::objects::{JClass, JObject, JValue};
+use jni::objects::{JClass, JObject};
 
 #[allow(dead_code)]
 pub struct EOEnv<'local> {
