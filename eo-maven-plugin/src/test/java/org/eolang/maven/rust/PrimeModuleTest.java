@@ -42,8 +42,7 @@ final class PrimeModuleTest {
     void savesCorrectly(@TempDir final Path temp) throws Exception {
         final String method = "my_method";
         final String name = "name";
-        final Module module = new PrimeModule(method, name);
-        module.save(new FtDefault(temp));
+        new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
             new TextOf(
                 temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
