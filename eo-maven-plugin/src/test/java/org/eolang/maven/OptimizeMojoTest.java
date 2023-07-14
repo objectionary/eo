@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
-import org.cactoos.Text;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
