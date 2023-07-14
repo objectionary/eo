@@ -10,6 +10,7 @@ final public class VersionsMojoTest {
     @Test
     void replacesVersionsOk(@TempDir final Path tmp) throws Exception {
         final FakeMaven maven = new FakeMaven(tmp)
+            .with("withVersions", true)
             .withProgram(
                 "[] > main",
                 "  QQ.io.stdout|0.26.0 > @",
