@@ -67,7 +67,7 @@ public class Cargo {
             "crate-type", Collections.singleton("cdylib")
         );
         this.dependencies = new MapOf<>(
-                "jni", "0.21.1"
+            "jni", "0.21.1"
         );
     }
 
@@ -88,8 +88,6 @@ public class Cargo {
     public void save(final File target) throws IOException {
         final Map<String, Object> raw = new HashMap<>();
         raw.put("package", this.pack);
-        System.out.println("this.dependencies:");
-        System.out.println(this.dependencies);
         raw.put("dependencies", this.dependencies);
         raw.put("lib", this.lib);
         new TomlWriter().write(

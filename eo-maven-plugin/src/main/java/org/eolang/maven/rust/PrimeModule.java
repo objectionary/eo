@@ -33,8 +33,9 @@ public class PrimeModule extends Module {
      *
      * @param method How the function is named from the java side.
      * @param file File name.
+     * @since 0.29.7
      */
-    public PrimeModule(String method, String file) {
+    public PrimeModule(final String method, final String file) {
         super(
             String.join(
                 System.lineSeparator(),
