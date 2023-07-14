@@ -67,15 +67,15 @@ interface Objects extends Iterable<Directive> {
     void leave();
 
     /**
-     * Mark next object for aliasing.
+     * Mark next object for scoping.
      */
-    void alias();
+    void scope();
 
     /**
      * Mark current object as last inside the scope.
-     * Last object that relates to the alias.
+     * Last object that relates to the scope.
      */
-    void closeAlias();
+    void closeScope();
 
     /**
      * Xembly object tree.
@@ -91,16 +91,15 @@ interface Objects extends Iterable<Directive> {
         /**
          * Generated aliases.
          */
-        private final Deque<String> aliases = new LinkedList<>();
+        private final Deque<String> scopes = new LinkedList<>();
 
         @Override
         public void start(final int line, final int pos) {
             this.dirs.add("o");
             this.prop("line", line);
             this.prop("pos", pos);
-            if (!this.aliases.isEmpty()) {
-                final String alias = String.join("-", this.aliases);
-                this.prop("alias", alias);
+            if (!this.scopes.isEmpty()) {
+                this.prop("scope", String.join("-", this.scopes));
             }
         }
 
@@ -125,8 +124,8 @@ interface Objects extends Iterable<Directive> {
         }
 
         @Override
-        public void alias() {
-            this.aliases.push(
+        public void scope() {
+            this.scopes.push(
                 String.format(
                     "scope-%s",
                     UUID.randomUUID()
@@ -135,8 +134,8 @@ interface Objects extends Iterable<Directive> {
         }
 
         @Override
-        public void closeAlias() {
-            this.aliases.remove();
+        public void closeScope() {
+            this.scopes.remove();
         }
 
         @Override

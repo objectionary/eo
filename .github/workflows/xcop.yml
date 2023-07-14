@@ -12,7 +12,12 @@ concurrency:
   cancel-in-progress: true
 jobs:
   xcop:
+    strategy:
+      matrix:
+        glob: ["**/*.xml", "**/*.xsl"]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - uses: g4s8/xcop-action@1.1
+        with:
+          files: glob

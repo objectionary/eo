@@ -21,7 +21,7 @@ jobs:
         java: [11, 20]
     runs-on: ${{ matrix.os }}
     env:
-      CONVERT_PATH: /tmp/convert
+      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -32,11 +32,10 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
-          mkdir $CONVERT_PATH
-          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
+          mkdir -p $CONVERT_PATH
+          wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip
           unzip -o -d $CONVERT_PATH /tmp/convert.zip
         if: matrix.os == 'ubuntu-20.04'
       - run: mvn clean install -Pqulice --errors --batch-mode

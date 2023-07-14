@@ -32,19 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.bytes.Base64Bytes;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.text.Base64Decoded;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
@@ -73,7 +68,7 @@ public class EOrust extends PhDefault {
 
     static {
         try {
-            NAMES = load("target/eo-test/names");
+            NAMES = load("target/names");
         } catch (final IOException exc) {
             throw new ExFailure(
                 "Cannot read the file target/eo-test/names",

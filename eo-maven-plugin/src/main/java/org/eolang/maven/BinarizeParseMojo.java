@@ -62,6 +62,9 @@ import org.eolang.parser.ParsingTrain;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2238:30min Specify directory for names via pom.xml.Now names map is
+ *  serialized in targetDir.toPath().getParent() which is a bad decision since
+ *  it must be created just as target/names.
  */
 @Mojo(
     name = "binarize_parse",
@@ -108,7 +111,7 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(targetDir.toPath());
+        final Names names = new Names(targetDir.toPath().getParent());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
