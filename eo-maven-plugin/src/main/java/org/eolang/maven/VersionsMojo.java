@@ -1,57 +1,94 @@
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Text;
+import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.*;
-import org.eolang.maven.hash.CommitHashes;
+import org.eolang.maven.hash.ChsAsMap;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Mojo that replaces tags with hashes in XMIR.
+ * @todo #1602:30min Handle tags that are not in available versions list.
+ *  VersionsMojo goes right after OptimizeMojo and replaces all tags with
+ *  comparable hashes. EO code may contains tags that are not in available
+ *  versions list (see: <a href="https://home.objectionary.com/tags.txt"/>).
+ *  We need to catch somehow such versions and throw an exception. Or we can
+ *  place the VersionsMojo right after ParseMojo and create new xsl which is
+ *  used on optimization step and caches such invalid tags.
+ */
 public final class VersionsMojo extends SafeMojo {
+    /**
+     * Commit hashes map.
+     */
+    @Parameter(required = true, property = "eo.commitHashes")
+    private final Map<String, CommitHash> hashes = new ChsAsMap();
 
     @Override
     void exec() throws IOException {
         if (this.withVersions) {
             final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-            final CommitHashes hashes = new CommitHashes();
-            System.out.println();
-            for (final ForeignTojo tojo : tojos) {
-                final Path src = tojo.optimized(); // path to 2-optimized/*.xmir
-                final Text source = new Sticky(
-                    new UncheckedText(
-                        new TextOf(src)
-                    )
-                );
-                new SumOf(
+            final Path dir = this.targetDir.toPath();
+            final String format = "ver=\"%s\"";
+            final int total = new SumOf(
+                new Threads<>(
+                    Runtime.getRuntime().availableProcessors(),
                     new Mapped<>(
-                        tag -> {
-                            new Home().save(
-                                new Replaced(
-                                    source,
-                                    String.format("|%s", tag),
-                                    hashes.get(tag)
-                                ),
-                                src
+                        tojo -> () -> {
+                            final Path path = tojo.optimized();
+                            Text source = new UncheckedText(
+                                new TextOf(path)
                             );
-                            return 1;
+                            final Set<String> tags = new SetOf<>(
+                                new Filtered<>(
+                                    ver -> !ver.isEmpty() && Pattern.matches(
+                                        "[0-9]+\\.[0-9]+\\.[0-9]+",
+                                        ver
+                                    ),
+                                    new XMLDocument(path).xpath("//o[@ver]/@ver")
+                                )
+                            );
+                            for (final String tag : tags) {
+                                source = new Replaced(
+                                    source,
+                                    String.format(format, tag),
+                                    String.format(format, this.hashes.get(tag).value())
+                                );
+                            }
+                            new Home(dir).save(source, dir.relativize(path));
+                            return tags.size();
                         },
-                        new SetOf<>(
-                            new Filtered<>(
-                                ver -> !ver.isEmpty() && Pattern.matches("[0-9]+\\.[0-9]+\\.[0-9]+", ver),
-                                new XMLDocument(src).xpath("//o[@ver]/concat('|',@ver)")
-                            )
-                        )
+                        tojos
                     )
-                ).intValue();
+                )
+            ).intValue();
+            if (total > 0) {
+                Logger.info(
+                    this,
+                    "Tags replaced with hashes %d in %d tojos",
+                    total,
+                    tojos.size()
+                );
+            } else {
+                Logger.debug(
+                    this,
+                    "No tags replaced with hashes out of %d tojos",
+                    tojos.size()
+                );
             }
         }
     }

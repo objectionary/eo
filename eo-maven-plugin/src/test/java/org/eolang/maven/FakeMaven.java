@@ -741,6 +741,7 @@ public final class FakeMaven {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 OptimizeMojo.class,
+                VersionsMojo.class,
                 DiscoverMojo.class
             ).iterator();
         }
