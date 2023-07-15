@@ -24,47 +24,43 @@
 package org.eolang.maven.hash;
 
 import com.jcabi.log.Logger;
+import java.io.IOException;
+import java.net.URL;
 import org.cactoos.Text;
-import org.cactoos.text.Sticky;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
- * Hash of tag from objectionary.
- *
- * @since 0.26
+ * Commit hashes hash-table as text from objectionary.
  */
-public final class ChRemote implements CommitHash {
-
+public final class ChsAsText implements Text {
     /**
-     * Cached text of hashes.
+     * Cache.
      */
-    private static final Text CACHE = new Sticky(new ChsAsText());
-
+    private static String CACHE = "";
     /**
-     * Tag.
+     * Tags.
      */
-    private final String tag;
-
-    /**
-     * Constructor.
-     *
-     * @param tag Tag
-     */
-    public ChRemote(final String tag) {
-        this.tag = tag;
-    }
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     @Override
-    public String value() {
-        final String result = new ChText(ChRemote.CACHE::asString, this.tag).value();
-        if (result == null) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
-                    this.tag
-                )
-            );
+    public String asString() throws Exception {
+        if (ChsAsText.CACHE.isEmpty()) {
+            try {
+                ChsAsText.CACHE = new UncheckedText(
+                    new TextOf(
+                        new URL(ChsAsText.HOME)
+                    )
+                ).asString();
+            } catch (final IOException ex) {
+                Logger.warn(
+                    ChsAsText.class,
+                    "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
+                    ChsAsText.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+                );
+                ChsAsText.CACHE = "";
+            }
         }
-        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
-        return result;
+        return ChsAsText.CACHE;
     }
 }

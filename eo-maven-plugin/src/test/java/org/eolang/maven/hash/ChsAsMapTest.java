@@ -23,24 +23,18 @@
  */
 package org.eolang.maven.hash;
 
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 
 /**
- * Test case for {@link CommitHashes}.
+ * Test case for {@link ChsAsMap}.
  *
  * @since 0.29.5
  */
-class CommitHashesTest {
+final class ChsAsMapTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -48,7 +42,7 @@ class CommitHashesTest {
         "0.28.10, 9b88393",
     })
     void containsValidCaches(final String tag, final String hash) {
-        final CommitHashes hashes = new CommitHashes();
+        final Map<String, CommitHash> hashes = new ChsAsMap();
         MatcherAssert.assertThat(
             String.format(
             "Commit hashes should have contained tag %s, but they didn't",
