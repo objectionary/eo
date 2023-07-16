@@ -31,13 +31,16 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * Commit hashes hash-table as text from objectionary.
+ * Commit hashes table as text from objectionary.
+ *
+ * @since 0.29.6
  */
 public final class ChsAsText implements Text {
     /**
      * Cache.
      */
-    private static String CACHE = "";
+    private static String cache = "";
+
     /**
      * Tags.
      */
@@ -45,9 +48,9 @@ public final class ChsAsText implements Text {
 
     @Override
     public String asString() throws Exception {
-        if (ChsAsText.CACHE.isEmpty()) {
+        if (ChsAsText.cache.isEmpty()) {
             try {
-                ChsAsText.CACHE = new UncheckedText(
+                ChsAsText.cache = new UncheckedText(
                     new TextOf(
                         new URL(ChsAsText.HOME)
                     )
@@ -58,9 +61,9 @@ public final class ChsAsText implements Text {
                     "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
                     ChsAsText.HOME, ex.getClass().getSimpleName(), ex.getMessage()
                 );
-                ChsAsText.CACHE = "";
+                ChsAsText.cache = "";
             }
         }
-        return ChsAsText.CACHE;
+        return ChsAsText.cache;
     }
 }

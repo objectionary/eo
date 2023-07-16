@@ -23,11 +23,11 @@
  */
 package org.eolang.maven.hash;
 
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import java.util.Map;
 
 /**
  * Test case for {@link ChsAsMap}.
@@ -36,12 +36,18 @@ import java.util.Map;
  */
 final class ChsAsMapTest {
 
+    /**
+     * Check if commit hashes as map contains given tag as key and hash by tag.
+     * @param tag Tag.
+     * @param hash Hash.
+     * @checkstyle AnnotationUseStyleCheck (40 lines)
+     */
     @ParameterizedTest
     @CsvSource({
         "0.26.0, e0b7836",
         "0.28.10, 9b88393",
     })
-    void containsValidCaches(final String tag, final String hash) {
+    void containsValidHashes(final String tag, final String hash) {
         final Map<String, CommitHash> hashes = new ChsAsMap();
         MatcherAssert.assertThat(
             String.format(
@@ -57,7 +63,7 @@ final class ChsAsMapTest {
                 hash,
                 tag
             ),
-            hashes.get(tag),
+            hashes.get(tag).value(),
             Matchers.equalTo(hash)
         );
     }

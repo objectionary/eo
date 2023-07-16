@@ -24,7 +24,7 @@
 package org.eolang.maven.hash;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
@@ -34,18 +34,18 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.text.Split;
 
 /**
- * Commit hashes hash-table.
+ * Commit hashes table as map.
  * The keys - tags.
  * The values - compound hashes (7 chars)
  *
- * @since 0.29.5
+ * @since 0.29.6
  */
-final public class ChsAsMap extends MapEnvelope<String, CommitHash> {
+public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
 
     /**
      * Cached text of table of hashes.
      */
-    private static final ArrayList<Scalar<String>> CACHE = new ArrayList<>(0);
+    private static final List<Scalar<String>> CACHE = new ArrayList<>(0);
 
     /**
      * Ctor.
@@ -105,8 +105,10 @@ final public class ChsAsMap extends MapEnvelope<String, CommitHash> {
 
     /**
      * Fake commit hashes hash-table.
+     *
+     * @since 0.29.6
      */
-    final public static class Fake extends MapEnvelope<String, CommitHash> {
+    public static final class Fake extends MapEnvelope<String, CommitHash> {
         /**
          * Ctor.
          */
@@ -114,7 +116,7 @@ final public class ChsAsMap extends MapEnvelope<String, CommitHash> {
             super(
                 new ChsAsMap(
                     String.join(
-                        "\n", 
+                        "\n",
                         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
                         "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17",
                         "4b19944d86058e3c81e558340a3a13bc335a2b48 0.23.19",

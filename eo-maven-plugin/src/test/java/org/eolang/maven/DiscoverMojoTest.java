@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.hash.ChsAsMap;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
@@ -95,19 +96,20 @@ final class DiscoverMojoTest {
     void discoversWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
+            .with("commitHashes", new ChsAsMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
                 "  seq > @",
-                "    QQ.io.stdout|0.29.1",
+                "    QQ.io.stdout|0.28.9",
                 "      sprintf|0.28.5",
                 "        \"Hello world\"",
                 "          TRUE",
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|0.28.5";
-        final String stdout = "org.eolang.io.stdout|0.29.1";
+        final String sprintf = "org.eolang.txt.sprintf|9c93528";
+        final String stdout = "org.eolang.io.stdout|be83d9a";
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
@@ -140,18 +142,19 @@ final class DiscoverMojoTest {
     void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)
+            .with("commitHashes", new ChsAsMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
                 "  seq > @",
-                "    QQ.io.stdout|0.29.1",
+                "    QQ.io.stdout|0.28.9",
                 "      sprintf|0.28.5",
                 "        \"Hello world\"",
                 "          TRUE"
             )
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|0.28.5";
-        final String stdout = "org.eolang.io.stdout|0.29.1";
+        final String sprintf = "org.eolang.txt.sprintf|9c93528";
+        final String stdout = "org.eolang.io.stdout|be83d9a";
         MatcherAssert.assertThat(
             String.format(
                 "External tojos should not have contained %s object after discovering, but they did",
