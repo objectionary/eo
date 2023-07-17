@@ -172,6 +172,6 @@ public final class BinarizeMojo extends SafeMojo {
                 target
             )
         );
-        FileUtils.copyDirectory(project, cached);
+        FileUtils.copyDirectory(target, cached);
     }
 }

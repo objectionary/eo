@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.eolang.maven.rust.Names;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -85,17 +86,30 @@ final class BinarizeMojoTest {
     @Tag("slow")
     void savesToCache(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
-                .with("cache", temp.resolve(".cache"))
-                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
             .result();
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(temp.resolve(".cache").resolve("Lib"))
+            Matchers.hasValue(
+                cache.resolve("Lib")
+            )
+        );
+        MatcherAssert.assertThat(
+            res,
+            Matchers.not(
+                Matchers.hasValue(
+                    cache.resolve(
+                        String.format("Lib/%s0/target/target", Names.PREFIX)
+                    )
+                )
+            )
         );
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())

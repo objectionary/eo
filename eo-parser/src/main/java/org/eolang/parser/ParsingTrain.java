@@ -119,7 +119,9 @@ public final class ParsingTrain extends TrEnvelope {
                             Level.FINEST
                         ),
                         StEoLogged::new
-                    )
+                    ),
+                    TrFast.class,
+                    500L
                 ),
                 shift -> new StSequence(
                     shift.uid(),
