@@ -1,7 +1,7 @@
 xsls:
-  - /org/eolang/parser/critical-errors/wrong-tags.xsl
+  - /org/eolang/parser/errors/wrong-tags.xsl
 tests:
-  - /program/errors[count(error[@severity='critical'])=1]
+  - /program/errors[count(error[@severity='error'])=1]
   - /program/errors/error[@line='2']
 eo: |
   [] > main

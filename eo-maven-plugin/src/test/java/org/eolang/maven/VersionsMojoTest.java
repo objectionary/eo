@@ -54,7 +54,7 @@ final class VersionsMojoTest {
             ).execute(new FakeMaven.Versions());
         final XML xml = new XMLDocument(
             tmp.resolve(
-                String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
+                String.format("target/%s/foo/x/main.xmir", ParseMojo.DIR)
             )
         );
         final String format = "//o[@ver and (@ver='%s' or @ver='%s')]/@ver";

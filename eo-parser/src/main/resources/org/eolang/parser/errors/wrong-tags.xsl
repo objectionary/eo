@@ -36,7 +36,7 @@ SOFTWARE.
             <xsl:value-of select="@line"/>
           </xsl:attribute>
           <xsl:attribute name="severity">
-            <xsl:text>critical</xsl:text>
+            <xsl:text>error</xsl:text>
           </xsl:attribute>
           <xsl:text>The tag </xsl:text>
           <xsl:value-of select="@ver"/>

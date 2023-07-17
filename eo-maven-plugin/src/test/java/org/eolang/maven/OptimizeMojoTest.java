@@ -280,7 +280,7 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/28-duplicate-names.xml",
+                            "target/%s/foo/x/main/29-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )
@@ -355,42 +355,37 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnCriticalAfterReplacingWrongTags(@TempDir final Path tmp) {
+    void failsOnErrorAfterReplacingWrongTags(@TempDir final Path tmp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(tmp)
                 .withProgram(
                     "+package f\n",
                     "[] > main",
-                    "  seq|0.0.1 > @",
-                    "    \"Hello world\n\""
+                    "  seq|99.99.99 > @",
+                    "    nop"
                 )
                 .with("withVersions", true)
                 .with("commitHashes", new ChsAsMap.Fake())
-                .execute(new FakeMaven.Optimize())
+                .execute(new FakeMaven.Optimize()),
+            "Program should have failed on error on optimization step with wrong tag, but it didn't"
         );
     }
 
     @Test
-    void doesNotFailOnCriticalAfterReplacingTags(@TempDir final Path tmp) throws IOException {
-        new FakeMaven(tmp)
-            .withProgram(
-                "+package f\n",
-                "[] > main",
-                "  seq|0.28.10 > @",
-                "    nop"
-            )
-            .with("withVersions", true)
-            .with("commitHashes", new ChsAsMap.Fake())
-            .execute(new FakeMaven.Versions());
-        final XML xml = new XMLDocument(
-            tmp.resolve(
-                String.format("target/%s/foo/x/main.xmir", ParseMojo.DIR)
-            )
-        );
-        MatcherAssert.assertThat(
-            xml.xpath("//o[@ver and @ver='9b88393']/@ver"),
-            Matchers.hasSize(1)
+    void doesNotFailOnErrorAfterReplacingTags(@TempDir final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(tmp)
+                .withProgram(
+                    "+package f\n",
+                    "[] > main",
+                    "  seq|0.28.10 > @",
+                    "    nop"
+                )
+                .with("withVersions", true)
+                .with("commitHashes", new ChsAsMap.Fake())
+                .execute(new FakeMaven.Optimize()),
+            "Program should not have failed on error on optimization step with right tag, but it did"
         );
     }
 

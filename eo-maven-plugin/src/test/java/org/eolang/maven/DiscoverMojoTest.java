@@ -142,6 +142,7 @@ final class DiscoverMojoTest {
     void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)
+            .with("failOnError", false)
             .with("commitHashes", new ChsAsMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
