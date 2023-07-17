@@ -123,14 +123,16 @@ public class EOrust extends PhDefault {
                     final String name = NAMES.get(
                         rho.attr("code").get().locator().split(":")[0]
                     );
+                    Class[] args = new Class[1];
+                    args[0] = EOrust.class;
                     final Method method = Class.forName(
                         String.format(
                             "EOrust.natives.%s",
                             name
                         )
-                    ).getDeclaredMethod(name, null);
+                    ).getDeclaredMethod(name, args);
                     return new Data.ToPhi(
-                        Long.valueOf((int) method.invoke(null))
+                        Long.valueOf((int) method.invoke(null, this))
                     );
                 }
             )
@@ -175,5 +177,9 @@ public class EOrust extends PhDefault {
                 exc
             );
         }
+    }
+
+    public static int find(final EOrust eo, final String name) {
+        return name.length();
     }
 }
