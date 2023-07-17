@@ -48,6 +48,18 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 final class DiscoverMojoTest {
 
+    /**
+     * Default assertion message.
+     */
+    private static final String SHOULD_CONTAIN =
+        "External tojos should not contain %s object after discovering, but they didn't";
+
+    /**
+     * Default assertion message.
+     */
+    private static final String SHOULD_NOT =
+        "External tojos should not contain %s object after discovering, but they did";
+
     @ParameterizedTest
     @CsvSource({
         "org/eolang/maven/mess.eo, 7",
@@ -111,27 +123,49 @@ final class DiscoverMojoTest {
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
-            String.format(
-                "External tojos should have contained %s object after discovering, but they didn't",
-                sprintf
-            ),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, sprintf),
             tojos.contains(sprintf),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            String.format(
-                "External tojos should have not contained %s object after discovering, but they did",
-                stdout
-            ),
+            String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
             tojos.contains(stdout),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            String.format(
-                "External tojos should have contained %s object after discovering, but they didn't",
-                nop
-            ),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, nop),
             tojos.contains(nop),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void discoversWithSeveralObjectsWithDifferentVersions(
+        @TempDir final Path tmp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(tmp)
+            .with("withVersions", true)
+            .withProgram(
+                "[] > main",
+                "  seq > @",
+                "    QQ.io.stdout|0.29.1",
+                "      \"Hello from 0.29.1\"",
+                "    QQ.io.stdout|0.29.2",
+                "      \"Hello from 0.29.2\"",
+                "    nop"
+            )
+            .execute(new FakeMaven.Discover());
+        final String first = "org.eolang.io.stdout|0.29.1";
+        final String second = "org.eolang.io.stdout|0.29.2";
+        final ForeignTojos tojos = maven.externalTojos();
+        MatcherAssert.assertThat(
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
+            tojos.contains(first),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(DiscoverMojoTest.SHOULD_NOT, second),
+            tojos.contains(second),
             Matchers.is(true)
         );
     }
@@ -153,18 +187,12 @@ final class DiscoverMojoTest {
         final String sprintf = "org.eolang.txt.sprintf|0.28.5";
         final String stdout = "org.eolang.io.stdout|0.29.1";
         MatcherAssert.assertThat(
-            String.format(
-                "External tojos should not have contained %s object after discovering, but they did",
-                sprintf
-            ),
+            String.format(DiscoverMojoTest.SHOULD_NOT, sprintf),
             maven.externalTojos().contains(sprintf),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            String.format(
-                "External tojos should not have contained %s object after discovering, but they did",
-                stdout
-            ),
+            String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
             maven.externalTojos().contains(stdout),
             Matchers.is(false)
         );
