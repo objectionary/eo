@@ -52,7 +52,7 @@ final class DiscoverMojoTest {
      * Default assertion message.
      */
     private static final String SHOULD_CONTAIN =
-        "External tojos should not contain %s object after discovering, but they didn't";
+        "External tojos should contain %s object after discovering, but they didn't";
 
     /**
      * Default assertion message.
@@ -146,17 +146,22 @@ final class DiscoverMojoTest {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
             .withProgram(
+                "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
                 "  seq > @",
-                "    QQ.io.stdout|0.29.1",
-                "      \"Hello from 0.29.1\"",
-                "    QQ.io.stdout|0.29.2",
-                "      \"Hello from 0.29.2\"",
+                "    QQ.io.stdout",
+                "      sprintf|0.28.1",
+                "        \"Hello from %s\"",
+                "        \"0.28.1\"",
+                "    QQ.io.stdout",
+                "      sprintf|0.28.2",
+                "        \"Hello from %s\"",
+                "        \"0.28.1\"",
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String first = "org.eolang.io.stdout|0.29.1";
-        final String second = "org.eolang.io.stdout|0.29.2";
+        final String first = "org.eolang.txt.sprintf|0.28.1";
+        final String second = "org.eolang.txt.sprintf|0.28.2";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
@@ -164,7 +169,7 @@ final class DiscoverMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, second),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
             tojos.contains(second),
             Matchers.is(true)
         );
