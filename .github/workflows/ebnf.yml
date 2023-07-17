@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           sudo apt-get update
-          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils
+          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg
       - uses: teatimeguest/setup-texlive-action@v2.6.0
         with:
           update-all-packages: true
@@ -43,9 +43,11 @@ jobs:
           sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
           pdflatex -shell-escape -interaction=errorstopmode -halt-on-error ebnf.tex
           pdfcrop --margins '10 10 10 10' ebnf.pdf crop.pdf
+          pdf2svg crop.pdf ebnf.svg
           convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf ebnf.png
           mkdir gh-pages
           cp ebnf.png gh-pages
+          cp ebnf.svg gh-pages
       - uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
