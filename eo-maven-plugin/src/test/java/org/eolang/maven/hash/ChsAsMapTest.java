@@ -51,11 +51,11 @@ final class ChsAsMapTest {
         final Map<String, CommitHash> hashes = new ChsAsMap();
         MatcherAssert.assertThat(
             String.format(
-            "Commit hashes should have contained tag %s, but they didn't",
+                "Commit hashes should have contained tag %s, but they didn't",
                 tag
             ),
-            hashes.containsKey(tag),
-            Matchers.is(true)
+            hashes,
+            Matchers.hasKey(tag)
         );
         MatcherAssert.assertThat(
             String.format(

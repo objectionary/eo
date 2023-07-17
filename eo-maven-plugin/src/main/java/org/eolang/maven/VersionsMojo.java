@@ -29,13 +29,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Replaced;
@@ -60,6 +60,11 @@ import org.eolang.maven.util.Home;
  */
 public final class VersionsMojo extends SafeMojo {
     /**
+     * Tag pattern.
+     */
+    private static final Pattern TAG = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+");
+
+    /**
      * Commit hashes map.
      */
     @Parameter(required = true, property = "eo.commitHashes")
@@ -77,27 +82,29 @@ public final class VersionsMojo extends SafeMojo {
                     new Mapped<>(
                         tojo -> () -> {
                             final Path path = tojo.optimized();
-                            Text source = new UncheckedText(
-                                new TextOf(path)
-                            );
-                            final Set<String> tags = new SetOf<>(
-                                new Filtered<>(
-                                    ver -> !ver.isEmpty() && Pattern.matches(
-                                        "[0-9]+\\.[0-9]+\\.[0-9]+",
-                                        ver
-                                    ),
-                                    new XMLDocument(path).xpath("//o[@ver]/@ver")
+                            final Text[] source = new Text[]{
+                                new UncheckedText(new TextOf(path)),
+                            };
+                            final int size = new ListOf<Text>(
+                                new Mapped<>(
+                                    tag -> {
+                                        source[0] = new Replaced(
+                                            source[0],
+                                            String.format(format, tag),
+                                            String.format(format, this.hashes.get(tag).value())
+                                        );
+                                        return source[0];
+                                    },
+                                    new SetOf<>(
+                                        new Filtered<>(
+                                            ver -> !ver.isEmpty() && TAG.matcher(ver).matches(),
+                                            new XMLDocument(path).xpath("//o[@ver]/@ver")
+                                        )
+                                    )
                                 )
-                            );
-                            for (final String tag : tags) {
-                                source = new Replaced(
-                                    source,
-                                    String.format(format, tag),
-                                    String.format(format, this.hashes.get(tag).value())
-                                );
-                            }
-                            new Home(dir).save(source, dir.relativize(path));
-                            return tags.size();
+                            ).size();
+                            new Home(dir).save(source[0], dir.relativize(path));
+                            return size;
                         },
                         tojos
                     )
