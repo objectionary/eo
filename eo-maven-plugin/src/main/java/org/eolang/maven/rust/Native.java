@@ -80,7 +80,6 @@ public final class Native {
                 ),
                 "        (final EOrust eo);",
                 "    public static int find(final EOrust eo, final String att) {",
-                "System.out.println(\"in native find\");",
                 "        return EOrust.find(eo, att);",
                 "    }",
                 "}"
