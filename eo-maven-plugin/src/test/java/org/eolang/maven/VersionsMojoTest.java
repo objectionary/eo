@@ -40,8 +40,6 @@ import org.junit.jupiter.api.io.TempDir;
 final class VersionsMojoTest {
     @Test
     void replacesVersionsOk(@TempDir final Path tmp) throws Exception {
-        final String[] tags = new String[] {"0.23.17", "0.25.0"};
-        final String[] hashes = new String[] {"15c85d7", "0aa6875"};
         new FakeMaven(tmp)
             .with("withVersions", true)
             .with("commitHashes", new ChsAsMap.Fake())
@@ -60,12 +58,18 @@ final class VersionsMojoTest {
             )
         );
         final String format = "//o[@ver and (@ver='%s' or @ver='%s')]/@ver";
+        final int size = 2;
         MatcherAssert.assertThat(
-            xml.xpath(String.format(format, hashes[0], hashes[1])),
-            Matchers.hasSize(2)
+            String.format(
+                "XMIR after replacing the versions should have contained %d elements <o> with hashes in \"ver\" attribute, but it didn't",
+                size
+            ),
+            xml.xpath(String.format(format, "15c85d7", "0aa6875")),
+            Matchers.hasSize(size)
         );
         MatcherAssert.assertThat(
-            xml.xpath(String.format(format, tags[0], tags[1])),
+            "XMIR after replacing the versions should not have contained elements <o> with tags in \"ver\" attribute, but it did",
+            xml.xpath(String.format(format, "0.23.17", "0.25.0")),
             Matchers.empty()
         );
     }

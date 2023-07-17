@@ -35,8 +35,8 @@ import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
+import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Replaced;
 import org.cactoos.text.TextOf;
@@ -85,7 +85,7 @@ public final class VersionsMojo extends SafeMojo {
                             final Text[] source = new Text[]{
                                 new UncheckedText(new TextOf(path)),
                             };
-                            final int size = new ListOf<Text>(
+                            final long size = new LengthOf(
                                 new Mapped<>(
                                     tag -> {
                                         source[0] = new Replaced(
@@ -93,7 +93,7 @@ public final class VersionsMojo extends SafeMojo {
                                             String.format(format, tag),
                                             String.format(format, this.hashes.get(tag).value())
                                         );
-                                        return source[0];
+                                        return 1;
                                     },
                                     new SetOf<>(
                                         new Filtered<>(
@@ -102,7 +102,7 @@ public final class VersionsMojo extends SafeMojo {
                                         )
                                     )
                                 )
-                            ).size();
+                            ).value();
                             new Home(dir).save(source[0], dir.relativize(path));
                             return size;
                         },
