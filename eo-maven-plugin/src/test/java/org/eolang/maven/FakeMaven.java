@@ -538,6 +538,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class
             ).iterator();
         }
@@ -553,7 +554,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 VersionsMojo.class
             ).iterator();
         }
@@ -740,8 +740,8 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                OptimizeMojo.class,
                 VersionsMojo.class,
+                OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();
         }

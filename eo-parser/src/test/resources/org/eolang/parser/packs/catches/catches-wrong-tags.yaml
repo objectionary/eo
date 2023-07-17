@@ -1,0 +1,9 @@
+xsls:
+  - /org/eolang/parser/critical-errors/wrong-tags.xsl
+tests:
+  - /program/errors[count(error[@severity='critical'])=1]
+  - /program/errors/error[@line='2']
+eo: |
+  [] > main
+    seq|0.1.1 > @
+      "Hello world\n"

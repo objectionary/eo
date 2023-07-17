@@ -43,6 +43,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.hash.ChsAsMap;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -351,6 +352,46 @@ final class OptimizeMojoTest {
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
         }
+    }
+
+    @Test
+    void failsOnCriticalAfterReplacingWrongTags(@TempDir final Path tmp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(tmp)
+                .withProgram(
+                    "+package f\n",
+                    "[] > main",
+                    "  seq|0.0.1 > @",
+                    "    \"Hello world\n\""
+                )
+                .with("withVersions", true)
+                .with("commitHashes", new ChsAsMap.Fake())
+                .execute(new FakeMaven.Optimize())
+        );
+    }
+
+    @Test
+    void doesNotFailOnCriticalAfterReplacingTags(@TempDir final Path tmp) throws IOException {
+        new FakeMaven(tmp)
+            .withProgram(
+                "+package f\n",
+                "[] > main",
+                "  seq|0.28.10 > @",
+                "    nop"
+            )
+            .with("withVersions", true)
+            .with("commitHashes", new ChsAsMap.Fake())
+            .execute(new FakeMaven.Versions());
+        final XML xml = new XMLDocument(
+            tmp.resolve(
+                String.format("target/%s/foo/x/main.xmir", ParseMojo.DIR)
+            )
+        );
+        MatcherAssert.assertThat(
+            xml.xpath("//o[@ver and @ver='9b88393']/@ver"),
+            Matchers.hasSize(1)
+        );
     }
 
     /**

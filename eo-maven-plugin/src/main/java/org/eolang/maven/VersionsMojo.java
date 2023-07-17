@@ -73,7 +73,7 @@ public final class VersionsMojo extends SafeMojo {
     @Override
     void exec() throws IOException {
         if (this.withVersions) {
-            final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
+            final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
             final Path dir = this.targetDir.toPath();
             final String format = "ver=\"%s\"";
             final int total = new SumOf(
@@ -81,7 +81,7 @@ public final class VersionsMojo extends SafeMojo {
                     Runtime.getRuntime().availableProcessors(),
                     new Mapped<>(
                         tojo -> () -> {
-                            final Path path = tojo.optimized();
+                            final Path path = tojo.xmir();
                             final Text[] source = new Text[]{
                                 new UncheckedText(new TextOf(path)),
                             };

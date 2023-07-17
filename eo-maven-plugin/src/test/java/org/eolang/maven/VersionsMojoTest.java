@@ -59,7 +59,7 @@ final class VersionsMojoTest {
                 String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
             )
         );
-        final String format = "//o[@ver and (@ver='%s' or @ver='%s')]/@ver";
+        final String format = "";
         MatcherAssert.assertThat(
             xml.xpath(String.format(format, hashes[0], hashes[1])),
             Matchers.hasSize(2)
