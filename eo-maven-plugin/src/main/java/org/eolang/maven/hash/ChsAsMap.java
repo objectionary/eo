@@ -23,14 +23,11 @@
  */
 package org.eolang.maven.hash;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapEnvelope;
 import org.cactoos.map.MapOf;
-import org.cactoos.scalar.Sticky;
 import org.cactoos.text.Split;
 
 /**
@@ -43,15 +40,10 @@ import org.cactoos.text.Split;
 public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
 
     /**
-     * Cached text of table of hashes.
-     */
-    private static final List<Scalar<String>> CACHE = new ArrayList<>(0);
-
-    /**
      * Ctor.
      */
     public ChsAsMap() {
-        this(ChsAsMap.once());
+        this(new ChsAsText()::asString);
     }
 
     /**
@@ -85,22 +77,6 @@ public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
                 )
             )
         );
-    }
-
-    /**
-     * Load commit hashes table and cache it.
-     *
-     * @return Text with tags and hashes as scalar.
-     */
-    private static Scalar<String> once() {
-        if (ChsAsMap.CACHE.isEmpty()) {
-            ChsAsMap.CACHE.add(
-                new Sticky<>(
-                    new ChsAsText()::asString
-                )
-            );
-        }
-        return ChsAsMap.CACHE.get(0);
     }
 
     /**
