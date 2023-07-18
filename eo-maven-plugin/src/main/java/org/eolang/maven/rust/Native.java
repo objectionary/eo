@@ -79,9 +79,6 @@ public final class Native {
                     this.name
                 ),
                 "        (final EOrust eo);",
-                "    public static int find(final EOrust eo, final String att) {",
-                "        return EOrust.find(eo, att);",
-                "    }",
                 "}"
             )
         );

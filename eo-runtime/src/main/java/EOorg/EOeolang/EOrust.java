@@ -123,20 +123,32 @@ public class EOrust extends PhDefault {
                     final String name = NAMES.get(
                         rho.attr("code").get().locator().split(":")[0]
                     );
-                    Class[] args = new Class[1];
-                    args[0] = EOrust.class;
                     final Method method = Class.forName(
                         String.format(
                             "EOrust.natives.%s",
                             name
                         )
-                    ).getDeclaredMethod(name, args);
+                    ).getDeclaredMethod(name, new Class[]{EOrust.class});
                     return new Data.ToPhi(
                         Long.valueOf((int) method.invoke(null, this))
                     );
                 }
             )
         );
+    }
+
+    /**
+     * Finds vertex of eo object by its location.
+     * @param name Relative location of the object to find.
+     * @return Vertex of the object to find.
+     * @todo #2237:45min Implement finding by location.
+     *  Name argument is something like "^.^.some-obj".
+     *  This string must be splitted by '.' and then for
+     *  every part it is necessary to call this.attr().get()
+     * @checkstyle NonStaticMethodCheck (4 lines)
+     */
+    public int find(final String name) {
+        return 0;
     }
 
     /**
@@ -177,9 +189,5 @@ public class EOrust extends PhDefault {
                 exc
             );
         }
-    }
-
-    public static int find(final EOrust eo, final String name) {
-        return name.length();
     }
 }

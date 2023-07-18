@@ -51,7 +51,7 @@ final class NativeTest {
             Matchers.stringContainsInOrder(
                 "package mypackage;",
                 "public class name {",
-                "public static native int name ();",
+                "public static native int name",
                 "}"
                 )
         );
