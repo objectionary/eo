@@ -30,11 +30,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link ChsAsMap}.
+ * Test case for {@link CommitHashesMap}.
  *
  * @since 0.29.5
  */
-final class ChsAsMapTest {
+final class CommitHashesMapTest {
 
     /**
      * Check if commit hashes as map contains given tag as key and hash by tag.
@@ -48,7 +48,7 @@ final class ChsAsMapTest {
         "0.28.10, 9b88393",
     })
     void containsValidHash(final String tag, final String hash) {
-        final Map<String, CommitHash> hashes = new ChsAsMap();
+        final Map<String, CommitHash> hashes = new CommitHashesMap();
         MatcherAssert.assertThat(
             String.format(
                 "Commit hashes should have contained tag %s, but they didn't",
@@ -74,7 +74,7 @@ final class ChsAsMapTest {
         "100.100.100",
     })
     void doesNotContainTag(final String tag) {
-        final Map<String, CommitHash> hashes = new ChsAsMap();
+        final Map<String, CommitHash> hashes = new CommitHashesMap();
         MatcherAssert.assertThat(
             String.format(
                 "Commit hashes should have contained tag %s, but they didn't",

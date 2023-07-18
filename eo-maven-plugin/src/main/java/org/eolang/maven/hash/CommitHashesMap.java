@@ -37,20 +37,20 @@ import org.cactoos.text.Split;
  *
  * @since 0.29.6
  */
-public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
+public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
     /**
      * Ctor.
      */
-    public ChsAsMap() {
-        this(new ChsAsText()::asString);
+    public CommitHashesMap() {
+        this(new CommitHashesText()::asString);
     }
 
     /**
      * Ctor.
      * @param table Commit hashes table as string.
      */
-    public ChsAsMap(final String table) {
+    public CommitHashesMap(final String table) {
         this(() -> table);
     }
 
@@ -58,7 +58,7 @@ public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
      * Ctor.
      * @param table Commit hashes table.
      */
-    public ChsAsMap(final Scalar<String> table) {
+    public CommitHashesMap(final Scalar<String> table) {
         super(
             new MapOf<>(
                 new Mapped<>(
@@ -90,7 +90,7 @@ public final class ChsAsMap extends MapEnvelope<String, CommitHash> {
          */
         public Fake() {
             super(
-                new ChsAsMap(
+                new CommitHashesMap(
                     String.join(
                         "\n",
                         "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",

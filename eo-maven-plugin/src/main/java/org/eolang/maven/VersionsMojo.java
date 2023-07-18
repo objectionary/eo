@@ -28,21 +28,25 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.Joined;
+import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
-import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Reduced;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Replaced;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.hash.ChsAsMap;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 
@@ -50,31 +54,30 @@ import org.eolang.maven.util.Home;
  * Mojo that replaces tags with hashes in XMIR.
  *
  * @since 0.29.6
- * @todo #1602:30min Don't rewrite parsed xmir. VersionsMojo is executed right
- *  after ParseMojo and rewrite xmir file with replaced tags with hashes in
- *  1-parse directory which is kind of wrong because files in the directory
- *  contains xmir right after parsing. Replacing tags with versions is kind of
- *  optimization. We either should create a new folder where files with replaced
- *  tags files are stored, find another way to catch wrong versions without
- *  touching files in 1-parse directory or just accept it and don't do anything
- *  since is not really critical.
+ * @todo #1602:30min Handle tags that are not in available versions list.
+ *  VersionsMojo goes right after OptimizeMojo and replaces all tags with
+ *  comparable hashes. EO code may contains tags that are not in available
+ *  versions list (see: <a href="https://home.objectionary.com/tags.txt"/>).
+ *  We need to catch somehow such versions and throw an exception. Or we can
+ *  place the VersionsMojo right after ParseMojo and create new xsl which is
+ *  used on optimization step and caches such invalid tags.
  */
 public final class VersionsMojo extends SafeMojo {
     /**
      * Tag pattern.
      */
-    private static final Pattern TAG = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+");
+    private static final Pattern SEMVER = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+");
 
     /**
      * Commit hashes map.
      */
     @Parameter(required = true, property = "eo.commitHashes")
-    private final Map<String, CommitHash> hashes = new ChsAsMap();
+    private final Map<String, CommitHash> hashes = new CommitHashesMap();
 
     @Override
     void exec() throws IOException {
         if (this.withVersions) {
-            final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
+            final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
             final Path dir = this.targetDir.toPath();
             final String format = "ver=\"%s\"";
             final int total = new SumOf(
@@ -82,30 +85,38 @@ public final class VersionsMojo extends SafeMojo {
                     Runtime.getRuntime().availableProcessors(),
                     new Mapped<>(
                         tojo -> () -> {
-                            final Path path = tojo.xmir();
-                            final Text[] source = new Text[]{
-                                new UncheckedText(new TextOf(path)),
-                            };
-                            final long size = new LengthOf(
-                                new Mapped<>(
-                                    tag -> {
-                                        source[0] = new Replaced(
-                                            source[0],
-                                            String.format(format, tag),
-                                            String.format(format, this.hashes.get(tag).value())
-                                        );
-                                        return 1;
-                                    },
+                            final Path path = tojo.optimized();
+                            final Text source = new UncheckedText(new TextOf(path));
+                            final List<Text> tags = new ListOf<>(
+                                new Mapped<Text>(
+                                    TextOf::new,
                                     new SetOf<>(
                                         new Filtered<>(
-                                            ver -> !ver.isEmpty() && TAG.matcher(ver).matches(),
+                                            ver -> !ver.isEmpty() && SEMVER.matcher(ver).matches(),
                                             new XMLDocument(path).xpath("//o[@ver]/@ver")
                                         )
                                     )
                                 )
-                            ).value();
-                            new Home(dir).save(source[0], dir.relativize(path));
-                            return size;
+                            );
+                            new Home(dir).save(
+                                new Reduced<>(
+                                    new IterableOf<>(
+                                        new Joined<>(
+                                            source,
+                                            tags
+                                        ).iterator()
+                                    ),
+                                    (src, tag) -> new Replaced(
+                                        src,
+                                        String.format(format, tag.asString()),
+                                        String.format(
+                                            format, this.hashes.get(tag.asString()).value()
+                                        )
+                                    )
+                                ).value(),
+                                dir.relativize(path)
+                            );
+                            return tags.size();
                         },
                         tojos
                     )
