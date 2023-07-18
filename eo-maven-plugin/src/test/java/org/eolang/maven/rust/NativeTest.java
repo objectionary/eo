@@ -50,8 +50,10 @@ final class NativeTest {
             ).asString(),
             Matchers.stringContainsInOrder(
                 "package mypackage;",
+                "import EOorg.EOeolang.EOrust;",
                 "public class name {",
-                "public static native int name",
+                "    public static native int name",
+                "        (final EOrust eo);",
                 "}"
                 )
         );
