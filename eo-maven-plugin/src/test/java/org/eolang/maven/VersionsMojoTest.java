@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 final class VersionsMojoTest {
     @Test
-    void replacesVersionsOk(@TempDir final Path tmp) throws Exception {
+    void replacesVersions(@TempDir final Path tmp) throws Exception {
         new FakeMaven(tmp)
             .with("withVersions", true)
             .with("commitHashes", new CommitHashesMap.Fake())
