@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
@@ -54,13 +53,14 @@ import org.eolang.maven.util.Home;
  * Mojo that replaces tags with hashes in XMIR.
  *
  * @since 0.29.6
- * @todo #1602:30min Handle tags that are not in available versions list.
- *  VersionsMojo goes right after OptimizeMojo and replaces all tags with
- *  comparable hashes. EO code may contains tags that are not in available
- *  versions list (see: <a href="https://home.objectionary.com/tags.txt"/>).
- *  We need to catch somehow such versions and throw an exception. Or we can
- *  place the VersionsMojo right after ParseMojo and create new xsl which is
- *  used on optimization step and caches such invalid tags.
+ * @todo #1602:30min Don't rewrite parsed xmir. VersionsMojo is executed right
+ *  after ParseMojo and rewrite xmir file with replaced tags with hashes in
+ *  1-parse directory which is kind of wrong because files in the directory
+ *  contains xmir right after parsing. Replacing tags with versions is kind of
+ *  optimization. We either should create a new folder where files with replaced
+ *  tags files are stored, find another way to catch wrong versions without
+ *  touching files in 1-parse directory or just accept it and don't do anything
+ *  since is not really critical.
  */
 public final class VersionsMojo extends SafeMojo {
     /**
@@ -71,13 +71,12 @@ public final class VersionsMojo extends SafeMojo {
     /**
      * Commit hashes map.
      */
-    @Parameter(required = true, property = "eo.commitHashes")
     private final Map<String, CommitHash> hashes = new CommitHashesMap();
 
     @Override
     void exec() throws IOException {
         if (this.withVersions) {
-            final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
+            final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
             final Path dir = this.targetDir.toPath();
             final String format = "ver=\"%s\"";
             final int total = new SumOf(
@@ -85,7 +84,7 @@ public final class VersionsMojo extends SafeMojo {
                     Runtime.getRuntime().availableProcessors(),
                     new Mapped<>(
                         tojo -> () -> {
-                            final Path path = tojo.optimized();
+                            final Path path = tojo.xmir();
                             final Text source = new UncheckedText(new TextOf(path));
                             final List<Text> tags = new ListOf<>(
                                 new Mapped<Text>(

@@ -43,7 +43,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.hash.ChsAsMap;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -366,7 +366,7 @@ final class OptimizeMojoTest {
                     "    nop"
                 )
                 .with("withVersions", true)
-                .with("commitHashes", new ChsAsMap.Fake())
+                .with("commitHashes", new CommitHashesMap.Fake())
                 .execute(new FakeMaven.Optimize()),
             "Program should have failed on error on optimization step with wrong tag, but it didn't"
         );
@@ -383,7 +383,7 @@ final class OptimizeMojoTest {
                     "    nop"
                 )
                 .with("withVersions", true)
-                .with("commitHashes", new ChsAsMap.Fake())
+                .with("commitHashes", new CommitHashesMap.Fake())
                 .execute(new FakeMaven.Optimize()),
             "Program should not have failed on error on optimization step with right tag, but it did"
         );
