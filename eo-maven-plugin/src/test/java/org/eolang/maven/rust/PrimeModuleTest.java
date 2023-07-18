@@ -37,18 +37,20 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-final class ModuleTest {
+final class PrimeModuleTest {
     @Test
     void savesCorrectly(@TempDir final Path temp) throws Exception {
-        final String content = "content";
+        final String method = "my_method";
         final String name = "name";
-        final Module module = new Module(content, name);
-        module.save(new FtDefault(temp));
+        new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
             new TextOf(
                 temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
             ).asString(),
-            Matchers.equalTo(content)
+            Matchers.stringContainsInOrder(
+                String.format("Java_EOrust_natives_%s_%s", method, method),
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint"
+            )
         );
     }
 }

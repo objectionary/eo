@@ -75,6 +75,19 @@ public final class BinarizeMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
+    /**
+     * The directory with eo_env rust project. It is a necessary dependency
+     * that provides rust-eo interaction.
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        property = "eo.env",
+        required = true,
+        defaultValue = "${project.basedir}/src/main/rust/eo_env"
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private File eoEnvDir;
+
     @Override
     public void exec() throws IOException {
         new Moja<>(BinarizeParseMojo.class).copy(this).execute();

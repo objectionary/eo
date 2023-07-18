@@ -23,32 +23,35 @@
  */
 package org.eolang.maven.rust;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.FtDefault;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 /**
- * Test case for {@link Module}.
- *
- * @since 0.1
+ * Prime Module in the rust project. Contains the function to call from the java side.
+ * @since 0.29.7
  */
-final class ModuleTest {
-    @Test
-    void savesCorrectly(@TempDir final Path temp) throws Exception {
-        final String content = "content";
-        final String name = "name";
-        final Module module = new Module(content, name);
-        module.save(new FtDefault(temp));
-        MatcherAssert.assertThat(
-            new TextOf(
-                temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
-            ).asString(),
-            Matchers.equalTo(content)
+public class PrimeModule extends Module {
+
+    /**
+     * Ctor.
+     *
+     * @param method How the function is named from the java side.
+     * @param file File name.
+     */
+    public PrimeModule(final String method, final String file) {
+        super(
+            String.join(
+                System.lineSeparator(),
+                "mod foo;",
+                "use foo::foo;",
+                "use jni::JNIEnv;",
+                "use jni::objects::{JClass, JObject};",
+                "use jni::sys::{jint};",
+                "use eo_env::EOEnv;",
+                "#[no_mangle]",
+                "pub extern \"system\" fn",
+                String.format("Java_EOrust_natives_%s_%s", method, method),
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint",
+                "{ return foo(EOEnv::new(env, _class, universe)); }"
+            ),
+            file
         );
     }
 }

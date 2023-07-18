@@ -29,7 +29,9 @@
 [] > creates-object
   QQ.rust > r
     """
-    pub fn foo() -> i32 {
+    use eo_env::EOEnv;
+
+    pub fn foo(mut _env: EOEnv<'_>) -> i32 {
       println!("Hello world from rust");
       let x = 4.0_f32;
       x.sqrt() as i32
@@ -40,3 +42,18 @@
     r
     $.equal-to
       2
+
+[] > find-returns-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+      env.find("^.^")
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      1

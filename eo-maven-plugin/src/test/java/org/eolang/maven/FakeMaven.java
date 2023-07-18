@@ -229,6 +229,10 @@ public final class FakeMaven {
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent(
+                "eoEnvDir",
+                new File("src/test/resources/org/eolang/maven/binarize/eo_env")
+            );
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

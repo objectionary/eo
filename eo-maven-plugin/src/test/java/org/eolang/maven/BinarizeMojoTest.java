@@ -44,6 +44,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class BinarizeMojoTest {
 
     /**
+     * Sources for the tests.
+     */
+    public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
+
+    /**
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
@@ -55,8 +60,8 @@ final class BinarizeMojoTest {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
@@ -65,7 +70,7 @@ final class BinarizeMojoTest {
 
     @Test
     void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
+        final Path src = BinarizeMojoTest.SRC.resolve("wrong-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
@@ -84,8 +89,8 @@ final class BinarizeMojoTest {
         final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
-                .with("cache", cache)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
