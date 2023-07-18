@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,17 +54,19 @@ import org.eolang.maven.util.Rel;
 public final class DiscoverMojo extends SafeMojo {
 
     @Override
-    public void exec() throws IOException {
+    public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>(1);
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<String> names = this.discover(src);
-            for (final String name : names) {
-                this.scopedTojos().add(name).withDiscoveredAt(src);
-                discovered.add(name);
-            }
-            tojo.withDiscovered(names.size());
+            tojo.withDiscovered(
+                (int) this.discover(src)
+                    .stream()
+                    .filter(name -> !name.isEmpty())
+                    .peek(name -> this.scopedTojos().add(name).withDiscoveredAt(src))
+                    .peek(discovered::add)
+                    .count()
+            );
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -96,9 +97,7 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = DiscoverMojo.names(
-            xml, this.xpath(false)
-        );
+        final Collection<String> names = DiscoverMojo.names(xml, this.xpath(false));
         if (this.withVersions) {
             names.addAll(
                 DiscoverMojo.names(xml, this.xpath(true))
@@ -133,8 +132,8 @@ public final class DiscoverMojo extends SafeMojo {
      *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
      *  from objects attribute `ver` is present.
      */
-    private List<String> xpath(final boolean versioned) {
-        final List<String> xpath = new ListOf<>(
+    private String xpath(final boolean versioned) {
+        final Collection<String> xpath = new ListOf<>(
             "//o[",
             "not(starts-with(@base,'.'))",
             "and @base != 'Q'",
@@ -157,25 +156,23 @@ public final class DiscoverMojo extends SafeMojo {
             tail.add("]/@base");
         }
         xpath.addAll(tail);
-        return xpath;
+        return String.join(
+            " ",
+            xpath
+        );
     }
 
     /**
      * Get unique list of object names from given XML by provided xpath.
      * @param xml XML.
      * @param xpath Xpath.
-     * @return List of object names.
+     * @return Iterable of object names.
      */
-    private static Set<String> names(final XML xml, final List<String> xpath) {
+    private static Set<String> names(final XML xml, final String xpath) {
         return new SetOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),
-                xml.xpath(
-                    String.join(
-                        " ",
-                        xpath
-                    )
-                )
+                xml.xpath(xpath)
             )
         );
     }
