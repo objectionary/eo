@@ -35,6 +35,11 @@ import org.cactoos.text.UncheckedText;
  * Commit hashes table as text from objectionary.
  *
  * @since 0.29.6
+ * @todo #1602:30min Come up with a good name for the class. There are many
+ *  things we want to say with the name of the class: 1) it's commit hashes
+ *  2) it's a text 3) it's loaded from the objectionary. The result name will be
+ *  ObjectionaryCommitHashesText and it may look a bit verbose. Maybe it really
+ *  does not but we should decide anyway.
  */
 public final class CommitHashesText implements Text {
     /**

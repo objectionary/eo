@@ -74,13 +74,12 @@ final class CommitHashesMapTest {
         "100.100.100",
     })
     void doesNotContainTag(final String tag) {
-        final Map<String, CommitHash> hashes = new CommitHashesMap();
         MatcherAssert.assertThat(
             String.format(
                 "Commit hashes should have contained tag %s, but they didn't",
                 tag
             ),
-            hashes,
+            new CommitHashesMap(),
             Matchers.not(
                 Matchers.hasKey(tag)
             )

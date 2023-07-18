@@ -57,6 +57,13 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
     /**
      * Ctor.
      * @param table Commit hashes table.
+     * @todo #1602:30 min Move the code to prestructor. Some developers think
+     *  that we should keep our constructors as small as possible and move
+     *  complex logic (like in this constructor) to special static method which
+     *  is called "prestructor".
+     *  (See <a href="https://github.com/objectionary/eo/issues/1729">here</a>)
+     *  We should make a decision what logic we should always move to the
+     *  prestructor and should we at all?
      */
     public CommitHashesMap(final Scalar<String> table) {
         super(
