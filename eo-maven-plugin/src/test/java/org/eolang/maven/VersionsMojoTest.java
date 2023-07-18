@@ -26,7 +26,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Path;
-import org.eolang.maven.hash.ChsAsMap;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ final class VersionsMojoTest {
     void replacesVersionsOk(@TempDir final Path tmp) throws Exception {
         new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("commitHashes", new ChsAsMap.Fake())
+            .with("commitHashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.io.stdout\n",
                 "[] > main",

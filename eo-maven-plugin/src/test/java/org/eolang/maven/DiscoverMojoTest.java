@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.hash.ChsAsMap;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
@@ -96,7 +96,7 @@ final class DiscoverMojoTest {
     void discoversWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("commitHashes", new ChsAsMap.Fake())
+            .with("commitHashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
@@ -142,7 +142,7 @@ final class DiscoverMojoTest {
     void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)
-            .with("commitHashes", new ChsAsMap.Fake())
+            .with("commitHashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",

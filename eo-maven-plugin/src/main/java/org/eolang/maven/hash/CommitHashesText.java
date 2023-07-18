@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.URL;
 import org.cactoos.Text;
+import org.cactoos.text.Sticky;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -35,11 +36,11 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.29.6
  */
-public final class ChsAsText implements Text {
+public final class CommitHashesText implements Text {
     /**
      * Cache.
      */
-    private static String cache = "";
+    private static final Text CACHE = new Sticky(CommitHashesText.load());
 
     /**
      * Tags.
@@ -48,22 +49,31 @@ public final class ChsAsText implements Text {
 
     @Override
     public String asString() throws Exception {
-        if (ChsAsText.cache.isEmpty()) {
+        return CommitHashesText.CACHE.asString();
+    }
+
+    /**
+     * Load commit hashes from objectionary only once.
+     * @return Commit hashes from objectionary.
+     */
+    private static Text load() {
+        return () -> {
+            String text;
             try {
-                ChsAsText.cache = new UncheckedText(
+                text = new UncheckedText(
                     new TextOf(
-                        new URL(ChsAsText.HOME)
+                        new URL(CommitHashesText.HOME)
                     )
                 ).asString();
             } catch (final IOException ex) {
                 Logger.warn(
-                    ChsAsText.class,
+                    CommitHashesText.class,
                     "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                    ChsAsText.HOME, ex.getClass().getSimpleName(), ex.getMessage()
+                    CommitHashesText.HOME, ex.getClass().getSimpleName(), ex.getMessage()
                 );
-                ChsAsText.cache = "";
+                text = "";
             }
-        }
-        return ChsAsText.cache;
+            return text;
+        };
     }
 }
