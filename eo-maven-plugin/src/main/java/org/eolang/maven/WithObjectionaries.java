@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 
 /**
@@ -33,8 +34,8 @@ import org.eolang.maven.objectionary.Objectionary;
 public interface WithObjectionaries {
     /**
      * Get objectionary by given hash.
-     * @param hash Hash as string.
+     * @param hash Hash.
      * @return Objectionary by given hash.
      */
-    Objectionary objectionaryBy(String hash);
+    Objectionary objectionaryBy(CommitHash hash);
 }

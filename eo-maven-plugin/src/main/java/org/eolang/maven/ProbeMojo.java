@@ -120,7 +120,7 @@ public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
             )
         );
         if (this.objectionary == null) {
-            this.objectionary = this.objectionaryBy(hash.value());
+            this.objectionary = this.objectionaryBy(hash);
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -163,24 +163,26 @@ public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
     }
 
     @Override
-    public Objectionary objectionaryBy(final String hash) {
-        if (!this.objectionaries.containsKey(hash)) {
-            final CommitHash hsh = new CommitHash.ChConstant(hash);
+    public Objectionary objectionaryBy(final CommitHash hash) {
+        final CommitHash narrow = new ChCached(
+            new ChNarrow(hash)
+        );
+        if (!this.objectionaries.containsKey(narrow.value())) {
             this.objectionaries.put(
-                hash,
+                narrow.value(),
                 new OyFallbackSwap(
                     new OyHome(
-                        new ChNarrow(hsh),
+                        narrow,
                         this.cache
                     ),
                     new OyIndexed(
-                        new OyRemote(hsh)
+                        new OyRemote(hash)
                     ),
                     this.forceUpdate()
                 )
             );
         }
-        return this.objectionaries.get(hash);
+        return this.objectionaries.get(narrow.value());
     }
 
     /**

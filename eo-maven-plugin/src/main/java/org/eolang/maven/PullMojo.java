@@ -125,7 +125,7 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
             )
         );
         if (this.objectionary == null) {
-            this.objectionary = this.objectionaryBy(hash.value());
+            this.objectionary = this.objectionaryBy(hash);
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
@@ -139,12 +139,11 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
     }
 
     @Override
-    public Objectionary objectionaryBy(final String hash) {
-        if (!this.objectionaries.containsKey(hash)) {
-            final CommitHash hsh = new CommitHash.ChConstant(hash);
-            final CommitHash narrow = new ChCached(new ChNarrow(hsh));
+    public Objectionary objectionaryBy(final CommitHash hash) {
+        final CommitHash narrow = new ChCached(new ChNarrow(hash));
+        if (!this.objectionaries.containsKey(narrow.value())) {
             this.objectionaries.put(
-                hash,
+                narrow.value(),
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -153,13 +152,15 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
                     new OyCaching(
                         narrow,
                         this.cache,
-                        new OyIndexed(new OyRemote(hsh))
+                        new OyIndexed(
+                            new OyRemote(hash)
+                        )
                     ),
                     this.session.getRequest().isUpdateSnapshots()
                 )
             );
         }
-        return this.objectionaries.get(hash);
+        return this.objectionaries.get(narrow.value());
     }
 
     /**
