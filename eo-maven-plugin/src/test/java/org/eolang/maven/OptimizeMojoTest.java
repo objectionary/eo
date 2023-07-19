@@ -373,7 +373,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void containsValidReplacedVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
+    void containsValidVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
         throws Exception {
         new FakeMaven(tmp)
             .withProgram(
@@ -385,13 +385,22 @@ final class OptimizeMojoTest {
             .with("withVersions", true)
             .with("hashes", new CommitHashesMap.Fake())
             .execute(new FakeMaven.Optimize());
+        final String ver = "9b88393";
+        final int size = 1;
         MatcherAssert.assertThat(
+            String.format(
+                "XMIR after replacing versions and optimization should have contained %d element <o> with attribute ver='%s', but it didn't",
+                size,
+                ver
+            ),
             new XMLDocument(
                 tmp.resolve(
                     String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
                 )
-            ).xpath("//o[@name='@' and @base='org.eolang.seq' and @ver='9b88393']/@base"),
-            Matchers.hasSize(1)
+            ).xpath(
+                String.format("//o[@name='@' and @base='org.eolang.seq' and @ver='%s']/@base", ver)
+            ),
+            Matchers.hasSize(size)
         );
     }
 
