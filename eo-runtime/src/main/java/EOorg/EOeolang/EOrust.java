@@ -152,6 +152,18 @@ public class EOrust extends PhDefault {
     }
 
     /**
+     * Puts data to eo object by vertex.
+     * @param vertex Vertex off object.
+     * @param bytes Data to put.
+     * @todo #2237:45min Implement the method. Now it just
+     *  prints its arguments. This method relates to building
+     *  a new eo object in rust insert.
+     * @checkstyle NonStaticMethodCheck (4 lines)
+     */
+    public void put(final int vertex, final byte[] bytes) {
+    }
+
+    /**
      * Loads names map.
      * @param src Where to load from.
      * @return Names map.

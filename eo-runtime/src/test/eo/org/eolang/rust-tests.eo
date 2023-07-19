@@ -49,7 +49,24 @@
     use eo_env::EOEnv;
 
     pub fn foo(mut env: EOEnv<'_>) -> i32 {
-      env.find("^")
+      env.find("^");
+      0
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      0
+
+[] > rust-put-does-not-fail
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+      env.put(3, &[0x00, 0x1a, 0xEE, 0xf, 0xf3]).unwrap();
+      0
     }
     """
     *

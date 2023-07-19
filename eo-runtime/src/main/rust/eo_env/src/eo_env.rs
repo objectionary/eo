@@ -25,4 +25,20 @@ impl<'local> EOEnv<'_> {
            .i()
            .unwrap()
     }
+
+    pub fn put(&mut self, v: u32, bytes: &[u8]) -> Option<()> {
+        let jbytes = JObject::from(self.java_env.byte_array_from_slice(bytes).unwrap());
+        match self.java_env
+            .call_method(
+                &self.java_obj,
+                "put",
+                "(I[B)V",
+                &[JValue::Int(v as i32), JValue::from(&jbytes)]
+            )
+            .unwrap()
+            .v() {
+            Ok(()) => Some(()),
+            _ => None
+        }
+    }
 }
