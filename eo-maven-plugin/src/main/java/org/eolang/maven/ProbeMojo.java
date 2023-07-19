@@ -38,7 +38,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.map.MapOf;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -109,6 +108,7 @@ public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
      *  To get versioned object from objectionary firstly we need to get
      *  right objectionary by object's version and then get object from that
      *  objectionary by name.
+     * @checkstyle MemberNameCheck (5 lines)
      */
     private final Map<String, Objectionary> objectionaries = new HashMap<>();
 
@@ -166,16 +166,19 @@ public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
     public Objectionary objectionaryBy(final String hash) {
         if (!this.objectionaries.containsKey(hash)) {
             final CommitHash hsh = new CommitHash.ChConstant(hash);
-            this.objectionaries.put(hash, new OyFallbackSwap(
-                new OyHome(
-                    new ChNarrow(hsh),
-                    this.cache
-                ),
-                new OyIndexed(
-                    new OyRemote(hsh)
-                ),
-                this.forceUpdate()
-            ));
+            this.objectionaries.put(
+                hash,
+                new OyFallbackSwap(
+                    new OyHome(
+                        new ChNarrow(hsh),
+                        this.cache
+                    ),
+                    new OyIndexed(
+                        new OyRemote(hsh)
+                    ),
+                    this.forceUpdate()
+                )
+            );
         }
         return this.objectionaries.get(hash);
     }

@@ -32,7 +32,6 @@ import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.map.MapOf;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -114,6 +113,7 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
      *  To pull versioned object from objectionary firstly we need to get
      *  right objectionary by object's version and then get object from that
      *  objectionary by name.
+     * @checkstyle MemberNameCheck (5 lines)
      */
     private final Map<String, Objectionary> objectionaries = new HashMap<>();
 
@@ -143,18 +143,21 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
         if (!this.objectionaries.containsKey(hash)) {
             final CommitHash hsh = new CommitHash.ChConstant(hash);
             final CommitHash narrow = new ChCached(new ChNarrow(hsh));
-            this.objectionaries.put(hash, new OyFallbackSwap(
-                new OyHome(
-                    narrow,
-                    this.cache
-                ),
-                new OyCaching(
-                    narrow,
-                    this.cache,
-                    new OyIndexed(new OyRemote(hsh))
-                ),
-                this.session.getRequest().isUpdateSnapshots()
-            ));
+            this.objectionaries.put(
+                hash,
+                new OyFallbackSwap(
+                    new OyHome(
+                        narrow,
+                        this.cache
+                    ),
+                    new OyCaching(
+                        narrow,
+                        this.cache,
+                        new OyIndexed(new OyRemote(hsh))
+                    ),
+                    this.session.getRequest().isUpdateSnapshots()
+                )
+            );
         }
         return this.objectionaries.get(hash);
     }
