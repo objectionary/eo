@@ -60,6 +60,9 @@ public final class CommitHashesText implements Text {
     /**
      * Load commit hashes from objectionary only once.
      * @return Commit hashes from objectionary.
+     * @todo #1602:30min What is the reason for this exception swallowing and
+     *  returning an empty string? Why can't we just escalate/rethrow it?
+     *  Now it looks pretty weird/wrong.
      */
     private static Text load() {
         return () -> {
