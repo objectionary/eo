@@ -355,7 +355,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorAfterNotReplacingWrongTags(@TempDir final Path tmp) {
+    void failsOnErrorAfterNotReplacingWrongVersions(@TempDir final Path tmp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(tmp)
@@ -373,7 +373,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void doesNotFailOnErrorAfterReplacingTags(@TempDir final Path tmp) {
+    void doesNotFailOnErrorAfterReplacingVersions(@TempDir final Path tmp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(tmp)
                 .withProgram(
@@ -386,6 +386,29 @@ final class OptimizeMojoTest {
                 .with("hashes", new CommitHashesMap.Fake())
                 .execute(new FakeMaven.Optimize()),
             "Program should not have failed on error on optimization step with right tag, but it did"
+        );
+    }
+
+    @Test
+    void containsValidReplacedVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
+        throws Exception {
+        new FakeMaven(tmp)
+            .withProgram(
+                "+package f\n",
+                "[] > main",
+                "  seq|0.28.10 > @",
+                "    nop"
+            )
+            .with("withVersions", true)
+            .with("hashes", new CommitHashesMap.Fake())
+            .execute(new FakeMaven.Optimize());
+        MatcherAssert.assertThat(
+            new XMLDocument(
+                tmp.resolve(
+                    String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
+                )
+            ).xpath("//o[@name='@' and @base='org.eolang.seq' and @ver='9b88393']/@base"),
+            Matchers.hasSize(1)
         );
     }
 
