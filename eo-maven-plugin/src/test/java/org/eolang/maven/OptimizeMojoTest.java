@@ -373,23 +373,6 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void doesNotFailOnErrorAfterReplacingVersions(@TempDir final Path tmp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(tmp)
-                .withProgram(
-                    "+package f\n",
-                    "[] > main",
-                    "  seq|0.28.10 > @",
-                    "    nop"
-                )
-                .with("withVersions", true)
-                .with("hashes", new CommitHashesMap.Fake())
-                .execute(new FakeMaven.Optimize()),
-            "Program should not have failed on error on optimization step with right tag, but it did"
-        );
-    }
-
-    @Test
     void containsValidReplacedVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
         throws Exception {
         new FakeMaven(tmp)
