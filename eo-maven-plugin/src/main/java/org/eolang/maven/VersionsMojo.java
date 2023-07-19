@@ -50,24 +50,13 @@ import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 
 /**
- * Mojo that replaces tags with hashes in XMIR. Tags and hashes are loaded
- * from Objectionary.
- * See: <a href="https://home.objectionary.com/tags.txt">here</a>
+ * Find all object versions as semver in {@code .xmir} and replace them with
+ * appropriate narrow GitHub release hashes (7 lines) from Objectionary.
+ * The motivation of the mojo is to provide a safe and convenient way to resolve
+ * object versions that are used in Java class names and paths to the source
+ * files.
  *
- * The mojo is part of object versioning feature.
- * See <a href="https://github.com/objectionary/eo/issues/1602">the ticket</a>
- *
- * The motivation of the mojo: every object in EO is translated to java object.
- * The same objects with different versions in EO will be the different
- * java classes. So versions of the objects will be used in java class names.
- * Also, they will be used in .xmir and .eo files.
- * There are many pitfalls (known and unknown) where tags (like 0.28.5) may lead
- * to unexpected behaviour (for example class {@link Place} replaces all dots in
- * object full name with slashes:
- * org.eolang.stdout|0.28.6 -> org/eolang/stdout|0/28/6 which is wrong).
- * Hash (like 0c15066a2) will let us avoid such unpleasant situations at many
- * development stages.
- *
+ * @see <a href="https://home.objectionary.com/tags.txt">Tags</a>
  * @since 0.29.6
  * @todo #1602:30min Don't rewrite parsed xmir. VersionsMojo is executed right
  *  after ParseMojo and rewrite xmir file with replaced tags with hashes in
