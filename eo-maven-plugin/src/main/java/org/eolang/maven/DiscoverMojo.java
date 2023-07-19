@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.SaxonDocument;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
@@ -37,6 +38,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -97,10 +100,11 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML xml = new XMLDocument(file);
-        final Collection<String> names = DiscoverMojo.names(xml, this.xpath(false));
+        final XML saxon = new SaxonDocument(new UncheckedText(new TextOf(file)).asString());
+        final Collection<String> names = DiscoverMojo.names(saxon, this.xpath(false));
         if (this.withVersions) {
             names.addAll(
-                DiscoverMojo.names(xml, this.xpath(true))
+                DiscoverMojo.names(saxon, this.xpath(true))
             );
         }
         if (!xml.nodes("//o[@vararg]").isEmpty()) {
