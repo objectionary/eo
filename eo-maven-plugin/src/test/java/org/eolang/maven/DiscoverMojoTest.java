@@ -49,12 +49,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test case for {@link DiscoverMojo}.
  *
  * @since 0.28.11
- * @todo #2259:30min Enable discoversWithSeveralObjectsWithDifferentVersions test.
- *  The discoversWithSeveralObjectsWithDifferentVersions test is disabled because we have found
- *  a bug in jcabi-xml library. You can read more about the bug
- *  <a href="https://github.com/jcabi/jcabi-xml/issues/211">here</a>
- *  When the bug will be fixed, we have to enable discoversWithSeveralObjectsWithDifferentVersions
- *  test.
  */
 final class DiscoverMojoTest {
 
