@@ -105,7 +105,6 @@ public final class DiscoverMojo extends SafeMojo {
      */
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
-        final XML xml = new XMLDocument(file);
         final XML saxon = new SaxonDocument(new UncheckedText(new TextOf(file)).asString());
         final Collection<String> names = DiscoverMojo.names(saxon, this.xpath(false));
         if (this.withVersions) {
@@ -113,7 +112,7 @@ public final class DiscoverMojo extends SafeMojo {
                 DiscoverMojo.names(saxon, this.xpath(true))
             );
         }
-        if (!xml.nodes("//o[@vararg]").isEmpty()) {
+        if (!new XMLDocument(file).nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
         if (names.isEmpty()) {
