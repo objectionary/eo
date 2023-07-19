@@ -355,7 +355,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorAfterReplacingWrongTags(@TempDir final Path tmp) {
+    void failsOnErrorAfterNotReplacingWrongTags(@TempDir final Path tmp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(tmp)
