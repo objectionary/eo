@@ -24,11 +24,8 @@
 package org.eolang.maven.hash;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.net.URL;
 import org.cactoos.Text;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.cactoos.text.Sticky;
 
 /**
  * Hash of tag from objectionary.
@@ -40,12 +37,7 @@ public final class ChRemote implements CommitHash {
     /**
      * Cached text of hashes.
      */
-    private static final String CACHE = ChRemote.safeLoad();
-
-    /**
-     * The URL where the list is kept.
-     */
-    private static final String HOME = "https://home.objectionary.com/tags.txt";
+    private static final Text CACHE = new Sticky(new CommitHashesText());
 
     /**
      * Tag.
@@ -63,7 +55,7 @@ public final class ChRemote implements CommitHash {
 
     @Override
     public String value() {
-        final String result = new ChText(() -> ChRemote.CACHE, this.tag).value();
+        final String result = new ChText(ChRemote.CACHE::asString, this.tag).value();
         if (result == null) {
             throw new IllegalArgumentException(
                 String.format(
@@ -74,35 +66,5 @@ public final class ChRemote implements CommitHash {
         }
         Logger.debug(this, "Git sha of %s is %s", this.tag, result);
         return result;
-    }
-
-    /**
-     * Load all hashes and tags.
-     *
-     * @return Map of them (hash -> tag)
-     */
-    private static String safeLoad() {
-        String cache;
-        try {
-            cache = new UncheckedText(ChRemote.load()).asString();
-        } catch (final IOException ex) {
-            Logger.warn(
-                ChRemote.class,
-                "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                ChRemote.HOME, ex.getClass().getSimpleName(), ex.getMessage()
-            );
-            cache = "";
-        }
-        return cache;
-    }
-
-    /**
-     * Load all hashes and tags.
-     *
-     * @return Map of them (hash -> tag)
-     * @throws IOException if fails
-     */
-    private static Text load() throws IOException {
-        return new TextOf(new URL(ChRemote.HOME));
     }
 }
