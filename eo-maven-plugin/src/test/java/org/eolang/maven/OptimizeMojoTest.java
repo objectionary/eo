@@ -355,7 +355,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorAfterReplacingWrongTags(@TempDir final Path tmp) {
+    void failsOnErrorAfterNotReplacingWrongTags(@TempDir final Path tmp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(tmp)
@@ -366,7 +366,7 @@ final class OptimizeMojoTest {
                     "    nop"
                 )
                 .with("withVersions", true)
-                .with("commitHashes", new CommitHashesMap.Fake())
+                .with("hashes", new CommitHashesMap.Fake())
                 .execute(new FakeMaven.Optimize()),
             "Program should have failed on error on optimization step with wrong tag, but it didn't"
         );
@@ -383,7 +383,7 @@ final class OptimizeMojoTest {
                     "    nop"
                 )
                 .with("withVersions", true)
-                .with("commitHashes", new CommitHashesMap.Fake())
+                .with("hashes", new CommitHashesMap.Fake())
                 .execute(new FakeMaven.Optimize()),
             "Program should not have failed on error on optimization step with right tag, but it did"
         );

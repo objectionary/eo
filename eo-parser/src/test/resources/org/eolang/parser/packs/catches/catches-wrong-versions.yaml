@@ -1,8 +1,9 @@
 xsls:
-  - /org/eolang/parser/errors/wrong-tags.xsl
+  - /org/eolang/parser/errors/wrong-versions.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=1]
   - /program/errors/error[@line='2']
+  - /program/errors/error[text()='The tag 0.1.1 is not found. See https://home.objectionary.com/tags.txt']
 eo: |
   [] > main
     seq|0.1.1 > @
