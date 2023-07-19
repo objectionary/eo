@@ -29,13 +29,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
@@ -62,7 +66,7 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ProbeMojo extends SafeMojo {
+public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
 
     /**
      * The Git hash to pull objects from, in objectionary.
@@ -97,20 +101,26 @@ public final class ProbeMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
 
+    /**
+     * Hash-Objectionary map.
+     * @todo #1602:30min Use objectionaries to probe objects with different
+     *  versions. Objects with different versions are stored in different
+     *  storages (objectionaries). Every objectionary hash its own hash.
+     *  To get versioned object from objectionary firstly we need to get
+     *  right objectionary by object's version and then get object from that
+     *  objectionary by name.
+     */
+    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCompound(
-            this.offlineHashFile, this.offlineHash, this.tag
+        final CommitHash hash = new ChCached(
+            new ChCompound(
+                this.offlineHashFile, this.offlineHash, this.tag
+            )
         );
         if (this.objectionary == null) {
-            this.objectionary = new OyFallbackSwap(
-                new OyHome(
-                    new ChNarrow(hash),
-                    this.cache
-                ),
-                new OyIndexed(new OyRemote(hash)),
-                this.forceUpdate()
-            );
+            this.objectionary = this.objectionaryBy(hash.value());
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -150,6 +160,24 @@ public final class ProbeMojo extends SafeMojo {
                 probed.size(), tojos.size(), probed
             );
         }
+    }
+
+    @Override
+    public Objectionary objectionaryBy(final String hash) {
+        if (!this.objectionaries.containsKey(hash)) {
+            final CommitHash hsh = new CommitHash.ChConstant(hash);
+            this.objectionaries.put(hash, new OyFallbackSwap(
+                new OyHome(
+                    new ChNarrow(hsh),
+                    this.cache
+                ),
+                new OyIndexed(
+                    new OyRemote(hsh)
+                ),
+                this.forceUpdate()
+            ));
+        }
+        return this.objectionaries.get(hash);
     }
 
     /**
@@ -210,5 +238,4 @@ public final class ProbeMojo extends SafeMojo {
     private boolean forceUpdate() {
         return this.session.getRequest().isUpdateSnapshots();
     }
-
 }

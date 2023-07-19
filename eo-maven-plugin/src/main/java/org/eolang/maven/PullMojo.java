@@ -27,9 +27,13 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.map.MapOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
@@ -53,7 +57,7 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo {
+public final class PullMojo extends SafeMojo implements WithObjectionaries {
 
     /**
      * The directory where to process to.
@@ -102,24 +106,26 @@ public final class PullMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
 
+    /**
+     * Hash-Objectionary map.
+     * @todo #1602:30min Use objectionaries to pull objects with different
+     *  versions. Objects with different versions are stored in different
+     *  storages (objectionaries). Every objectionary hash its own hash.
+     *  To pull versioned object from objectionary firstly we need to get
+     *  right objectionary by object's version and then get object from that
+     *  objectionary by name.
+     */
+    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCompound(
-            this.offlineHashFile, this.offlineHash, this.tag
+        final CommitHash hash = new ChCached(
+            new ChCompound(
+                this.offlineHashFile, this.offlineHash, this.tag
+            )
         );
         if (this.objectionary == null) {
-            this.objectionary = new OyFallbackSwap(
-                new OyHome(
-                    new ChNarrow(hash),
-                    this.cache
-                ),
-                new OyCaching(
-                    new ChNarrow(hash),
-                    this.cache,
-                    new OyIndexed(new OyRemote(hash))
-                ),
-                this.session.getRequest().isUpdateSnapshots()
-            );
+            this.objectionary = this.objectionaryBy(hash.value());
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
@@ -130,6 +136,27 @@ public final class PullMojo extends SafeMojo {
             this, "%d program(s) pulled from %s",
             tojos.size(), this.objectionary
         );
+    }
+
+    @Override
+    public Objectionary objectionaryBy(final String hash) {
+        if (!this.objectionaries.containsKey(hash)) {
+            final CommitHash hsh = new CommitHash.ChConstant(hash);
+            final CommitHash narrow = new ChCached(new ChNarrow(hsh));
+            this.objectionaries.put(hash, new OyFallbackSwap(
+                new OyHome(
+                    narrow,
+                    this.cache
+                ),
+                new OyCaching(
+                    narrow,
+                    this.cache,
+                    new OyIndexed(new OyRemote(hsh))
+                ),
+                this.session.getRequest().isUpdateSnapshots()
+            ));
+        }
+        return this.objectionaries.get(hash);
     }
 
     /**
@@ -161,5 +188,4 @@ public final class PullMojo extends SafeMojo {
         }
         return src;
     }
-
 }

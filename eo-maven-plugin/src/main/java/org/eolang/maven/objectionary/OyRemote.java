@@ -49,9 +49,8 @@ public final class OyRemote implements Objectionary {
     /**
      * Constructor.
      * @param hash Commit hash
-     * @throws IOException if fails.
      */
-    public OyRemote(final CommitHash hash) throws IOException {
+    public OyRemote(final CommitHash hash) {
         this.template = new UrlOy(
             "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
             hash.value()
