@@ -57,8 +57,8 @@ import org.eolang.maven.util.Home;
  * object versions that are used in Java class names and paths to the source
  * files.
  *
- * @since 0.29.6
  * @see <a href="https://home.objectionary.com/tags.txt">Tags</a>
+ * @since 0.29.6
  * @todo #1602:30min Handle tags that are not in available versions list.
  *  VersionsMojo goes right after OptimizeMojo and replaces all tags with
  *  comparable hashes. EO code may contains tags that are not in available
