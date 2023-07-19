@@ -109,7 +109,7 @@ final class DiscoverMojoTest {
     void discoversWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("commitHashes", new CommitHashesMap.Fake())
+            .with("hashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
@@ -190,7 +190,8 @@ final class DiscoverMojoTest {
     void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)
-            .with("commitHashes", new CommitHashesMap.Fake())
+            .with("failOnError", false)
+            .with("hashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",

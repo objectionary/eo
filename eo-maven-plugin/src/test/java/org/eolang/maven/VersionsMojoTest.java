@@ -42,7 +42,7 @@ final class VersionsMojoTest {
     void replacesVersions(@TempDir final Path tmp) throws Exception {
         new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("commitHashes", new CommitHashesMap.Fake())
+            .with("hashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.io.stdout\n",
                 "[] > main",
@@ -54,7 +54,7 @@ final class VersionsMojoTest {
             ).execute(new FakeMaven.Versions());
         final XML xml = new XMLDocument(
             tmp.resolve(
-                String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
+                String.format("target/%s/foo/x/main.xmir", ParseMojo.DIR)
             )
         );
         final String format = "//o[@ver and (@ver='%s' or @ver='%s')]/@ver";

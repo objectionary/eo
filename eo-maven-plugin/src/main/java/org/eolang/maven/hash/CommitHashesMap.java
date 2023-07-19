@@ -64,6 +64,11 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      *  (See <a href="https://github.com/objectionary/eo/issues/1729">here</a>)
      *  We should make a decision what logic we should always move to the
      *  prestructor and should we at all?
+     * @todo #1602:30min Map with full hashes. Having done map with narrow
+     *  hashes we got the situation where we can't get full hashes back in a
+     *  simple way. We will actually need full hashes in ProbeMojo and PullMojo.
+     *  So in order to avoid problems it would be better not to cut hashes here
+     *  but when necessary.
      */
     public CommitHashesMap(final Scalar<String> table) {
         super(
