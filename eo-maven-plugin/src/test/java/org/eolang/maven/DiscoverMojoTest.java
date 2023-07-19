@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,12 +47,6 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test case for {@link DiscoverMojo}.
  *
  * @since 0.28.11
- * @todo #2259:30min Enable discoversWithSeveralObjectsWithDifferentVersions test.
- *  The discoversWithSeveralObjectsWithDifferentVersions test is disabled because we have found
- *  a bug in jcabi-xml library. You can read more about the bug
- *  <a href="https://github.com/jcabi/jcabi-xml/issues/211">here</a>
- *  When the bug will be fixed, we have to enable discoversWithSeveralObjectsWithDifferentVersions
- *  test.
  */
 final class DiscoverMojoTest {
 
@@ -149,12 +143,13 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    @Disabled
     void discoversWithSeveralObjectsWithDifferentVersions(
         @TempDir final Path tmp
     ) throws IOException {
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
+            .with("hashes", hashes)
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
@@ -170,8 +165,14 @@ final class DiscoverMojoTest {
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String first = "org.eolang.txt.sprintf|0.28.1";
-        final String second = "org.eolang.txt.sprintf|0.28.2";
+        final String first = String.format(
+            "org.eolang.txt.sprintf|%s",
+            hashes.get("0.28.1").value()
+        );
+        final String second = String.format(
+            "org.eolang.txt.sprintf|%s",
+            hashes.get("0.28.2").value()
+        );
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
