@@ -42,7 +42,7 @@ final class VersionsMojoTest {
     void replacesVersions(@TempDir final Path tmp) throws Exception {
         new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("commitHashes", new CommitHashesMap.Fake())
+            .with("hashes", new CommitHashesMap.Fake())
             .withProgram(
                 "+alias org.eolang.io.stdout\n",
                 "[] > main",
