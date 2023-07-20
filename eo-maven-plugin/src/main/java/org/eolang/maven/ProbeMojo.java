@@ -29,13 +29,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -56,6 +58,10 @@ import org.eolang.maven.util.Rel;
  * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
  * @since 0.28.11
+ * @todo #1602:30min Resolve code duplication. Probe and Pull mojos have several
+ *  identical fields, methods and lines of code. Need to resolve this code
+ *  duplication. One more abstract class is not an option. We can either join
+ *  them into one mojo, or composite them inside other mojo.
  * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(
@@ -63,7 +69,51 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class ProbeMojo extends SafeMojoWithObjectionaries {
+public final class ProbeMojo extends SafeMojo {
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     *
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
+
+    /**
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHashFile")
+    private Path offlineHashFile;
+
+    /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(property = "offlineHash")
+    private String offlineHash;
+
+    /**
+     * The objectionary.
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Objectionary objectionary;
+
+    /**
+     * Hash-Objectionary map.
+     * @todo #1602:30min Use objectionaries to probe objects with different
+     *  versions. Objects with different versions are stored in different
+     *  storages (objectionaries). Every objectionary has its own hash.
+     *  To get versioned object from objectionary firstly we need to get
+     *  right objectionary by object's version and then get object from that
+     *  objectionary by name.
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private final Map<String, Objectionary> objectionaries = new HashMap<>();
 
     @Override
     public void exec() throws IOException {
@@ -121,10 +171,11 @@ public final class ProbeMojo extends SafeMojoWithObjectionaries {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryBy(final CommitHash hash) {
-        return this.putIfAbsent(
-            hash,
-            new Unchecked<>(
-                () -> new OyFallbackSwap(
+        final String value = hash.value();
+        if (!this.objectionaries.containsKey(value)) {
+            this.objectionaries.put(
+                value,
+                new OyFallbackSwap(
                     new OyHome(
                         new ChNarrow(hash),
                         this.cache
@@ -134,8 +185,9 @@ public final class ProbeMojo extends SafeMojoWithObjectionaries {
                     ),
                     this.forceUpdate()
                 )
-            )
-        );
+            );
+        }
+        return this.objectionaries.get(value);
     }
 
     /**

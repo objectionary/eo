@@ -27,10 +27,11 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -55,11 +56,61 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojoWithObjectionaries {
+public final class PullMojo extends SafeMojo {
     /**
      * The directory where to process to.
      */
     public static final String DIR = "3-pull";
+
+    /**
+     * The Git hash to pull objects from, in objectionary.
+     *
+     * @since 0.21.0
+     * @checkstyle VisibilityModifierCheck (6 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
+
+    /**
+     * Read hashes from local file.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (6 lines)
+     */
+    @Parameter(property = "offlineHashFile")
+    private Path offlineHashFile;
+
+    /**
+     * Return hash by pattern.
+     * -DofflineHash=0.*.*:abc2sd3
+     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (6 lines)
+     */
+    @Parameter(property = "offlineHash")
+    private String offlineHash;
+
+    /**
+     * The objectionary.
+     *
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private Objectionary objectionary;
+
+    /**
+     * Hash-Objectionary map.
+     * @todo #1602:30min Use objectionaries to pull objects with different
+     *  versions. Objects with different versions are stored in different
+     *  storages (objectionaries). Every objectionary has its own hash.
+     *  To pull versioned object from objectionary firstly we need to get
+     *  right objectionary by object's version and then get object from that
+     *  objectionary by name.
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private final Map<String, Objectionary> objectionaries = new HashMap<>();
 
     /**
      * Pull again even if the .eo file is already present?
@@ -97,30 +148,28 @@ public final class PullMojo extends SafeMojoWithObjectionaries {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryBy(final CommitHash hash) {
-        return this.putIfAbsent(
-            hash,
-            new Unchecked<>(
-                () -> {
-                    final CommitHash narrow = new ChCached(
-                        new ChNarrow(hash)
-                    );
-                    return new OyFallbackSwap(
-                        new OyHome(
-                            narrow,
-                            this.cache
-                        ),
-                        new OyCaching(
-                            narrow,
-                            this.cache,
-                            new OyIndexed(
-                                new OyRemote(hash)
-                            )
-                        ),
-                        this.session.getRequest().isUpdateSnapshots()
-                    );
-                }
-            )
-        );
+        final String value = hash.value();
+        final CommitHash narrow = new ChCached(new ChNarrow(hash));
+        if (!this.objectionaries.containsKey(value)) {
+            this.objectionaries.put(
+                value,
+                new OyFallbackSwap(
+                    new OyHome(
+                        narrow,
+                        this.cache
+                    ),
+                    new OyCaching(
+                        narrow,
+                        this.cache,
+                        new OyIndexed(
+                            new OyRemote(hash)
+                        )
+                    ),
+                    this.session.getRequest().isUpdateSnapshots()
+                )
+            );
+        }
+        return this.objectionaries.get(value);
     }
 
     /**
