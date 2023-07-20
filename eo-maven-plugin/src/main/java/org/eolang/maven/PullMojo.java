@@ -30,6 +30,7 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -90,30 +91,36 @@ public final class PullMojo extends SafeMojoWithObjectionaries {
         );
     }
 
-    @Override
-    protected Objectionary objectionaryBy(final CommitHash hash) {
-        final String hsh = hash.value();
-        final CommitHash narrow = new ChCached(new ChNarrow(hash));
-        if (!this.objectionaries.containsKey(hsh)) {
-            this.objectionaries.put(
-                hsh,
-                new OyFallbackSwap(
-                    new OyHome(
-                        narrow,
-                        this.cache
-                    ),
-                    new OyCaching(
-                        narrow,
-                        this.cache,
-                        new OyIndexed(
-                            new OyRemote(hash)
-                        )
-                    ),
-                    this.session.getRequest().isUpdateSnapshots()
-                )
-            );
-        }
-        return this.objectionaries.get(hsh);
+    /**
+     * Get objectionary from the map by given hash.
+     * @param hash Hash.
+     * @return Objectionary by given hash.
+     */
+    private Objectionary objectionaryBy(final CommitHash hash) {
+        return this.putIfAbsent(
+            hash,
+            new Unchecked<>(
+                () -> {
+                    final CommitHash narrow = new ChCached(
+                        new ChNarrow(hash)
+                    );
+                    return new OyFallbackSwap(
+                        new OyHome(
+                            narrow,
+                            this.cache
+                        ),
+                        new OyCaching(
+                            narrow,
+                            this.cache,
+                            new OyIndexed(
+                                new OyRemote(hash)
+                            )
+                        ),
+                        this.session.getRequest().isUpdateSnapshots()
+                    );
+                }
+            )
+        );
     }
 
     /**

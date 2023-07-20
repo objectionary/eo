@@ -29,15 +29,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
@@ -58,10 +56,6 @@ import org.eolang.maven.util.Rel;
  * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
  * @since 0.28.11
- * @todo #1602:30min Implement full hash. While writing EO program people
- *  can use not only SEMVER as version of objects (for example 0.28.5) but
- *  hashes too (full and narrow). That's why we need a mechanism to get full
- *  hash from narrow one. Suggested names for the class: ChFull, ChWide, ChLong
  * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(
@@ -121,13 +115,16 @@ public final class ProbeMojo extends SafeMojoWithObjectionaries {
         }
     }
 
-    @Override
-    protected Objectionary objectionaryBy(final CommitHash hash) {
-        final String hsh = hash.value();
-        if (!this.objectionaries.containsKey(hsh)) {
-            this.objectionaries.put(
-                hsh,
-                new OyFallbackSwap(
+    /**
+     * Get objectionary by given hash from the map.
+     * @param hash Hash.
+     * @return Objectionary by given hash.
+     */
+    private Objectionary objectionaryBy(final CommitHash hash) {
+        return this.putIfAbsent(
+            hash,
+            new Unchecked<>(
+                () -> new OyFallbackSwap(
                     new OyHome(
                         new ChNarrow(hash),
                         this.cache
@@ -137,9 +134,8 @@ public final class ProbeMojo extends SafeMojoWithObjectionaries {
                     ),
                     this.forceUpdate()
                 )
-            );
-        }
-        return this.objectionaries.get(hsh);
+            )
+        );
     }
 
     /**
