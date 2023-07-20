@@ -112,19 +112,18 @@
         0
 
 [] > rust-dataize-not-fails
-  nop > @
-    QQ.rust > dataized
-      """
-      use eo_env::EOEnv;
-      pub fn foo(mut env: EOEnv<'_>) -> i32 {
-          let v = env.find("a") as u32;
-          let bytes = env.dataize(v).unwrap();
-          v as i32
-      }
-      """
-      *
-    assert-that
-      dataized
-      $.not
-        $.less-than
-          0
+  QQ.rust > dataized
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v = env.find("a") as u32;
+        let bytes = env.dataize(v).unwrap();
+        v as i32
+    }
+    """
+    *
+  assert-that > @
+    dataized
+    $.not
+      $.less-than
+        0
