@@ -104,10 +104,15 @@ public final class ProbeMojo extends SafeMojo implements WithObjectionaries {
      * Hash-Objectionary map.
      * @todo #1602:30min Use objectionaries to probe objects with different
      *  versions. Objects with different versions are stored in different
-     *  storages (objectionaries). Every objectionary hash its own hash.
+     *  storages (objectionaries). Every objectionary has its own hash.
      *  To get versioned object from objectionary firstly we need to get
      *  right objectionary by object's version and then get object from that
      *  objectionary by name.
+     * @todo #1602:30min Implement full hash. While writing EO program people
+     *  can use not only SEMVER as version of objects (for example 0.28.5) but
+     *  hashes too (full and narrow). That's why we need a mechanism to get full
+     *  hash from narrow one. Suggested names for the class: ChFull, ChWide,
+     *  ChLong
      * @checkstyle MemberNameCheck (5 lines)
      */
     private final Map<String, Objectionary> objectionaries = new HashMap<>();
