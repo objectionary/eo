@@ -68,7 +68,8 @@ import org.eolang.maven.util.Home;
 @SuppressWarnings({
     "PMD.TooManyMethods",
     "PMD.CouplingBetweenObjects",
-    "JTCOP.RuleAllTestsHaveProductionClass"
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
 public final class FakeMaven {
