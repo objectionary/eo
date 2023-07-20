@@ -1,5 +1,5 @@
 use jni::JNIEnv;
-use jni::objects::{JClass, JObject};
+use jni::objects::{JClass, JObject, JValue};
 
 #[allow(dead_code)]
 pub struct EOEnv<'local> {
@@ -18,6 +18,11 @@ impl<'local> EOEnv<'_> {
     }
 
     pub fn find(&mut self, att: &str) -> i32 {
-        1
+        let jstr = JObject::from(self.java_env.new_string(att).unwrap());
+        self.java_env
+           .call_method(&self.java_obj, "find", "(Ljava/lang/String;)I", &[JValue::from(&jstr)])
+           .unwrap()
+           .i()
+           .unwrap()
     }
 }
