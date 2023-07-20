@@ -54,7 +54,7 @@ public interface CommitHash {
          *
          * @param hash Hardcoded value.
          */
-        public ChConstant(final String hash) {
+        ChConstant(final String hash) {
             this.hash = hash;
         }
 
