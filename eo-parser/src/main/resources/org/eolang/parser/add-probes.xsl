@@ -73,7 +73,7 @@ SOFTWARE.
                 <xsl:text>probe</xsl:text>
               </xsl:element>
               <xsl:element name="tail">
-                <xsl:value-of select="$p"/>
+                <xsl:value-of select="concat($p,if(exists(@ver))then(concat('|',@ver))else(''))"/>
               </xsl:element>
               <xsl:element name="part">
                 <xsl:value-of select="$p"/>

@@ -1,13 +1,21 @@
+xsls:
+  - /org/eolang/parser/errors/not-empty-atoms.xsl
+  - /org/eolang/parser/errors/global-nonames.xsl
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/expand-qqs.xsl
+  - /org/eolang/parser/add-probes.xsl
 tests:
   - /program/errors[count(error)=0]
   - /program/sheets/sheet[contains(text(),'add-probes')]
-  - //metas[count(.//meta[head/text()='probe'])=6]
+  - //metas[count(.//meta[head/text()='probe'])=8]
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt' and part/text()='Q.org.eolang.txt']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.txt.sprintf' and part/text()='Q.org.eolang.txt.sprintf']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car' and part/text()='Q.org.eolang.car']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine' and part/text()='Q.org.eolang.car.engine']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.car.engine.start' and part/text()='Q.org.eolang.car.engine.start']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage' and part/text()='Q.org.eolang.cage']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage|0.28.10' and part/text()='Q.org.eolang.cage']
 eo: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom
@@ -38,3 +46,5 @@ eo: |
     [p] > set-price
       ^.price.write p > @
 
+    QQ.cage|0.28.10 > cg-versioned
+    QQ.cage > cg
