@@ -27,8 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -56,21 +54,11 @@ import org.eolang.maven.util.Rel;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PullMojo extends SafeMojo implements WithObjectionaries {
-
+public final class PullMojo extends SafeMojoWithObjectionaries {
     /**
      * The directory where to process to.
      */
     public static final String DIR = "3-pull";
-
-    /**
-     * The Git hash to pull objects from, in objectionary.
-     *
-     * @since 0.21.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
-    private String tag = "master";
 
     /**
      * Pull again even if the .eo file is already present?
@@ -80,42 +68,6 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
      */
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
-
-    /**
-     * Read hashes from local file.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHashFile")
-    private Path offlineHashFile;
-
-    /**
-     * Return hash by pattern.
-     * -DofflineHash=0.*.*:abc2sd3
-     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHash")
-    private String offlineHash;
-
-    /**
-     * The objectionary.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
-
-    /**
-     * Hash-Objectionary map.
-     * @todo #1602:30min Use objectionaries to pull objects with different
-     *  versions. Objects with different versions are stored in different
-     *  storages (objectionaries). Every objectionary hash its own hash.
-     *  To pull versioned object from objectionary firstly we need to get
-     *  right objectionary by object's version and then get object from that
-     *  objectionary by name.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
 
     @Override
     public void exec() throws IOException {
@@ -139,11 +91,12 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
     }
 
     @Override
-    public Objectionary objectionaryBy(final CommitHash hash) {
+    protected Objectionary objectionaryBy(final CommitHash hash) {
+        final String hsh = hash.value();
         final CommitHash narrow = new ChCached(new ChNarrow(hash));
-        if (!this.objectionaries.containsKey(narrow.value())) {
+        if (!this.objectionaries.containsKey(hsh)) {
             this.objectionaries.put(
-                narrow.value(),
+                hsh,
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -160,7 +113,7 @@ public final class PullMojo extends SafeMojo implements WithObjectionaries {
                 )
             );
         }
-        return this.objectionaries.get(narrow.value());
+        return this.objectionaries.get(hsh);
     }
 
     /**
