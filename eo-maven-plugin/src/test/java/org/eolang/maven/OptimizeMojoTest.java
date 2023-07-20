@@ -385,7 +385,7 @@ final class OptimizeMojoTest {
             .with("withVersions", true)
             .with("hashes", new CommitHashesMap.Fake())
             .execute(new FakeMaven.Optimize());
-        final String ver = "9b88393";
+        final String ver = "9b883935257bd59d1ba36240f7e213d4890df7ca";
         final int size = 1;
         MatcherAssert.assertThat(
             String.format(

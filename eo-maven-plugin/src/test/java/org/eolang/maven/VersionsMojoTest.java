@@ -64,7 +64,13 @@ final class VersionsMojoTest {
                 "XMIR after replacing the versions should have contained %d elements <o> with hashes in \"ver\" attribute, but it didn't",
                 size
             ),
-            xml.xpath(String.format(format, "15c85d7", "0aa6875")),
+            xml.xpath(
+                String.format(
+                    format,
+                    "15c85d7f8cffe15b0deba96e90bdac98a76293bb",
+                    "0aa6875c40d099c3f670e93d4134b629566c5643"
+                )
+            ),
             Matchers.hasSize(size)
         );
         MatcherAssert.assertThat(

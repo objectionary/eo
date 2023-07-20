@@ -121,8 +121,8 @@ final class DiscoverMojoTest {
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|9c93528";
-        final String stdout = "org.eolang.io.stdout|be83d9a";
+        final String sprintf = "org.eolang.txt.sprintf|9c9352890b5d30e1b89c9147e7c95a90c9b8709f";
+        final String stdout = "org.eolang.io.stdout|be83d9adda4b7c9e670e625fe951c80f3ead4177";
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
@@ -143,9 +143,8 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void discoversWithSeveralObjectsWithDifferentVersions(
-        @TempDir final Path tmp
-    ) throws IOException {
+    void discoversWithSeveralObjectsWithDifferentVersions(@TempDir final Path tmp)
+        throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
@@ -202,8 +201,8 @@ final class DiscoverMojoTest {
                 "          TRUE"
             )
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|9c93528";
-        final String stdout = "org.eolang.io.stdout|be83d9a";
+        final String sprintf = "org.eolang.txt.sprintf|9c9352890b5d30e1b89c9147e7c95a90c9b8709f";
+        final String stdout = "org.eolang.io.stdout|be83d9adda4b7c9e670e625fe951c80f3ead4177";
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, sprintf),
             maven.externalTojos().contains(sprintf),

@@ -33,7 +33,7 @@ import org.cactoos.text.Split;
 /**
  * Commit hashes table as map.
  * The keys - tags.
- * The values - compound hashes (7 chars)
+ * The values - full hashes (40 chars)
  *
  * @since 0.29.6
  */
@@ -64,11 +64,6 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      *  (See <a href="https://github.com/objectionary/eo/issues/1729">here</a>)
      *  We should make a decision what logic we should always move to the
      *  prestructor and should we at all?
-     * @todo #1602:30min Map with full hashes. Having done map with narrow
-     *  hashes we got the situation where we can't get full hashes back in a
-     *  simple way. We will actually need full hashes in ProbeMojo and PullMojo.
-     *  So in order to avoid problems it would be better not to cut hashes here
-     *  but when necessary.
      */
     public CommitHashesMap(final Scalar<String> table) {
         super(
@@ -78,11 +73,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         final String[] split = line.asString().split("\\s+");
                         return new MapEntry<>(
                             split[1],
-                            new ChCached(
-                                new ChNarrow(
-                                    new CommitHash.ChConstant(split[0])
-                                )
-                            )
+                            new CommitHash.ChConstant(split[0])
                         );
                     },
                     new Split(table::value, "\n")
