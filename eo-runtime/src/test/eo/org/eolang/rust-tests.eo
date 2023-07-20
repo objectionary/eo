@@ -59,7 +59,7 @@
     $.equal-to
       0
 
-[] > rust-put-does-not-fail
+[] > rust-put-not-fails
   QQ.rust > r
     """
     use eo_env::EOEnv;
@@ -72,5 +72,59 @@
     *
   assert-that > @
     r
-    $.equal-to
-      0
+    $.not
+      $.less-than
+        0
+
+[] > rust-bind-not-fails
+  QQ.rust > insert
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v1 = env.find("a") as u32;
+        let v2 = env.find("b") as u32;
+        env.bind(v1 , v2, "my-att");
+        return v1 as i32;
+    }
+    """
+    *
+  assert-that > @
+    insert
+    $.not
+      $.less-than
+        0
+
+[] > rust-copy-not-fails
+  QQ.rust > copy
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v = env.find("a") as u32;
+        let copy = env.copy(v).unwrap();
+        copy as i32
+    }
+    """
+    *
+  assert-that > @
+    copy
+    $.not
+      $.less-than
+        0
+
+[] > rust-dataize-not-fails
+  nop > @
+    QQ.rust > dataized
+      """
+      use eo_env::EOEnv;
+      pub fn foo(mut env: EOEnv<'_>) -> i32 {
+          let v = env.find("a") as u32;
+          let bytes = env.dataize(v).unwrap();
+          v as i32
+      }
+      """
+      *
+    assert-that
+      dataized
+      $.not
+        $.less-than
+          0

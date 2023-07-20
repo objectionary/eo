@@ -155,12 +155,38 @@ public class EOrust extends PhDefault {
      * Puts data to eo object by vertex.
      * @param vertex Vertex off object.
      * @param bytes Data to put.
-     * @todo #2237:45min Implement the method. Now it just
-     *  prints its arguments. This method relates to building
-     *  a new eo object in rust insert.
+     * @todo #2237:45min Implement the "put" method. Now it does
+     *  nothing and created to check rust2java interaction. This
+     *  method relates to building a new eo object in rust insert.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void put(final int vertex, final byte[] bytes) {
+    }
+
+    /**
+     * Binds child to parent.
+     * @param parent Vertex of the parent eo object.
+     * @param child Vertex of the child eo object.
+     * @param att Name of attribute.
+     * @todo #2237:45min Implement the "put" method. Now it does
+     *  nothing and created to check rust2java interaction. This
+     *  method relates to building a new eo object in rust insert.
+     * @checkstyle NonStaticMethodCheck (4 lines)
+     */
+    public void bind(final int parent, final int child, final String att) {
+    }
+
+    /**
+     * Copies the eo object.
+     * @param vertex Vertex of object to copy.
+     * @return Vertex of the copy.
+     * @todo #2237:45min Implement the "copy" method. Now it does
+     *  nothing and created to check rust2java interaction. This
+     *  method relates to building a new eo object in rust insert.
+     * @checkstyle NonStaticMethodCheck (4 lines)
+     */
+    public int copy(final int vertex) {
+        return vertex;
     }
 
     /**
