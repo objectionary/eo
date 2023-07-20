@@ -65,7 +65,8 @@ import org.eolang.maven.util.Rel;
  * @todo #1602:30min Add version to "probe" meta in xmir. To probe objects
  *  {@link ProbeMojo} gets object names from "probe" meta in xmir. Objects
  *  appear there after "add-probes.xsl" transformation. So to probe objects
- *  with versions we need to add information about version in xmir.
+ *  with versions in {@link ProbeMojo} we need to add information about these
+ *  versions in xmir before the mojo.
  * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(
