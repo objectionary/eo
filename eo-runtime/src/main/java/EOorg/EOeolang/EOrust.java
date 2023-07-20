@@ -168,9 +168,9 @@ public class EOrust extends PhDefault {
      * @param parent Vertex of the parent eo object.
      * @param child Vertex of the child eo object.
      * @param att Name of attribute.
-     * @todo #2237:45min Implement the "put" method. Now it does
-     *  nothing and created to check rust2java interaction. This
-     *  method relates to building a new eo object in rust insert.
+     * @todo #2237:45min Implement the "put" method. It has tp
+     *  put data to eo object by vertex. It does nothing now
+     *  but it is called from rust via jni call_method function.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void bind(final int parent, final int child, final String att) {
