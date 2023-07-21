@@ -42,14 +42,16 @@ public class PrimeModule extends Module {
                 "mod foo;",
                 "use foo::foo;",
                 "use jni::JNIEnv;",
-                "use jni::objects::{JClass, JObject};",
+                "use jni::objects::{JByteArray, JClass, JObject};",
                 "use jni::sys::{jint};",
                 "use eo_env::EOEnv;",
                 "#[no_mangle]",
                 "pub extern \"system\" fn",
                 String.format("Java_EOrust_natives_%s_%s", method, method),
-                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint",
-                "{ return foo(EOEnv::new(env, _class, universe)); }"
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray",
+                "{ let mut my_env = MyEnv::new(env, _class, universe); ",
+                "let arr = foo(&mut my_env).eo2vec();",
+                "my_env.java_env.byte_array_from_slice(&arr.as_slice()).unwrap() }"
             ),
             file
         );

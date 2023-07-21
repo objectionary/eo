@@ -129,8 +129,9 @@ public class EOrust extends PhDefault {
                             name
                         )
                     ).getDeclaredMethod(name, new Class[]{EOrust.class});
+                    byte[] res = (byte[]) method.invoke(null, this);
                     return new Data.ToPhi(
-                        Long.valueOf((int) method.invoke(null, this))
+                        Long.valueOf(res.length)
                     );
                 }
             )

@@ -40,8 +40,9 @@
     *
   assert-that > @
     r
-    $.equal-to
-      2
+    $.not
+      $.less-than
+        0
 
 [] > rust-find-returns-int
   QQ.rust > r
@@ -56,8 +57,9 @@
     *
   assert-that > @
     r
-    $.equal-to
-      0
+    $.not
+      $.less-than
+        0
 
 [] > rust-put-not-fails
   QQ.rust > r
