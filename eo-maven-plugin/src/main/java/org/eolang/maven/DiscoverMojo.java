@@ -35,7 +35,6 @@ import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.list.ListOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
@@ -96,13 +95,7 @@ public final class DiscoverMojo extends SafeMojo {
      */
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
-        final XML saxon = new SaxonDocument(file);
-        final Collection<String> names = DiscoverMojo.names(saxon, this.xpath());
-        if (this.withVersions) {
-            names.addAll(
-                DiscoverMojo.names(saxon, this.xpath())
-            );
-        }
+        final Collection<String> names = this.names(new SaxonDocument(file));
         if (!new XMLDocument(file).nodes("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
@@ -121,44 +114,27 @@ public final class DiscoverMojo extends SafeMojo {
     }
 
     /**
-     * Xpath for selecting objects from given xml.
-     * @return Xpath as list of strings
-     * @todo #1602:30min Simplify xpath. Current implementation for building
-     *  xpath with and without versions is quite ugly. For some reason
-     *  if we try to take `/concat(@base,'|',@ver)` and there are object without
-     *  attribute `ver` - xpath returns nothing. So we need to take `/@base`
-     *  from objects where attribute `ver` is not present in both cases and
-     *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
-     *  from objects attribute `ver` is present.
-     */
-    private String xpath() {
-        final Collection<String> xpath = new ListOf<>(
-            "//o[",
-            "not(starts-with(@base,'.'))",
-            "and @base != 'Q'",
-            "and @base != '^'",
-            "and @base != '$'",
-            "and @base != '&'",
-            "and not(@ref)",
-            "]/string-join((@base, @ver),'|')"
-        );
-        return String.join(
-            " ",
-            xpath
-        );
-    }
-
-    /**
-     * Get unique list of object names from given XML by provided xpath.
+     * Get unique list of object names from given XML.
      * @param xml XML.
-     * @param xpath Xpath.
-     * @return Iterable of object names.
+     * @return Object names.
      */
-    private static Set<String> names(final XML xml, final String xpath) {
+    private Set<String> names(final XML xml) {
         return new SetOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),
-                xml.xpath(xpath)
+                xml.xpath(
+                    String.join(
+                        " ",
+                        "//o[",
+                        "not(starts-with(@base,'.'))",
+                        "and @base != 'Q'",
+                        "and @base != '^'",
+                        "and @base != '$'",
+                        "and @base != '&'",
+                        "and not(@ref)",
+                        "]/string-join((@base, @ver),'|')"
+                    )
+                )
             )
         );
     }
