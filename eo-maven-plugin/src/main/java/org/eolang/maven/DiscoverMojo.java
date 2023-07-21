@@ -147,7 +147,7 @@ public final class DiscoverMojo extends SafeMojo {
         if (versioned) {
             tail = new ListOf<>(
                 "and @ver",
-                "]/concat(@base,'|',@ver)"
+                "]/string-join((@base, @ver),'|')"
             );
         } else {
             tail = new ListOf<>();
