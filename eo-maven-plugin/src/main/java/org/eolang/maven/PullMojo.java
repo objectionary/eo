@@ -124,7 +124,7 @@ public final class PullMojo extends SafeMojo {
             )
         );
         if (this.objectionary == null) {
-            this.objectionary = this.objectionaryBy(hash);
+            this.objectionary = this.objectionaryByHash(hash);
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
@@ -142,7 +142,7 @@ public final class PullMojo extends SafeMojo {
      * @param hash Hash.
      * @return Objectionary by given hash.
      */
-    private Objectionary objectionaryBy(final CommitHash hash) {
+    private Objectionary objectionaryByHash(final CommitHash hash) {
         final String value = hash.value();
         final CommitHash narrow = new ChCached(new ChNarrow(hash));
         if (!this.objectionaries.containsKey(value)) {

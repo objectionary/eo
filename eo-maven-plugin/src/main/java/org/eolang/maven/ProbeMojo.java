@@ -128,7 +128,7 @@ public final class ProbeMojo extends SafeMojo {
             )
         );
         if (this.objectionary == null) {
-            this.objectionary = this.objectionaryBy(hash);
+            this.objectionary = this.objectionaryByHash(hash);
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -175,7 +175,7 @@ public final class ProbeMojo extends SafeMojo {
      * @param hash Hash.
      * @return Objectionary by given hash.
      */
-    private Objectionary objectionaryBy(final CommitHash hash) {
+    private Objectionary objectionaryByHash(final CommitHash hash) {
         final String value = hash.value();
         if (!this.objectionaries.containsKey(value)) {
             this.objectionaries.put(
