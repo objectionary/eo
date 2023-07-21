@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -98,10 +97,10 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
         final XML saxon = new SaxonDocument(file);
-        final Collection<String> names = DiscoverMojo.names(saxon, this.xpath(false));
+        final Collection<String> names = DiscoverMojo.names(saxon, this.xpath());
         if (this.withVersions) {
             names.addAll(
-                DiscoverMojo.names(saxon, this.xpath(true))
+                DiscoverMojo.names(saxon, this.xpath())
             );
         }
         if (!new XMLDocument(file).nodes("//o[@vararg]").isEmpty()) {
@@ -123,7 +122,6 @@ public final class DiscoverMojo extends SafeMojo {
 
     /**
      * Xpath for selecting objects from given xml.
-     * @param versioned Select with versions or not.
      * @return Xpath as list of strings
      * @todo #1602:30min Simplify xpath. Current implementation for building
      *  xpath with and without versions is quite ugly. For some reason
@@ -133,7 +131,7 @@ public final class DiscoverMojo extends SafeMojo {
      *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
      *  from objects attribute `ver` is present.
      */
-    private String xpath(final boolean versioned) {
+    private String xpath() {
         final Collection<String> xpath = new ListOf<>(
             "//o[",
             "not(starts-with(@base,'.'))",
@@ -141,22 +139,9 @@ public final class DiscoverMojo extends SafeMojo {
             "and @base != '^'",
             "and @base != '$'",
             "and @base != '&'",
-            "and not(@ref)"
+            "and not(@ref)",
+            "]/string-join((@base, @ver),'|')"
         );
-        final List<String> tail;
-        if (versioned) {
-            tail = new ListOf<>(
-                "and @ver",
-                "]/string-join((@base, @ver),'|')"
-            );
-        } else {
-            tail = new ListOf<>();
-            if (this.withVersions) {
-                tail.add("and not(@ver)");
-            }
-            tail.add("]/@base");
-        }
-        xpath.addAll(tail);
         return String.join(
             " ",
             xpath
