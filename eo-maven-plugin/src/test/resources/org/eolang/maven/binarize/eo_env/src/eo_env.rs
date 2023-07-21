@@ -1,9 +1,10 @@
+pub mod eo_enum;
 use jni::JNIEnv;
 use jni::objects::{JClass, JObject};
 
 #[allow(dead_code)]
 pub struct EOEnv<'local> {
-    java_env: JNIEnv<'local>,
+    pub java_env: JNIEnv<'local>,
     java_class: JClass<'local>,
     java_obj: JObject<'local>
 }

@@ -32,8 +32,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
@@ -130,9 +132,7 @@ public class EOrust extends PhDefault {
                         )
                     ).getDeclaredMethod(name, new Class[]{EOrust.class});
                     byte[] res = (byte[]) method.invoke(null, this);
-                    return new Data.ToPhi(
-                        Long.valueOf(res.length)
-                    );
+                    return EOrust.translate(res);
                 }
             )
         );
@@ -228,5 +228,34 @@ public class EOrust extends PhDefault {
                 exc
             );
         }
+    }
+
+    private static Phi translate(final byte[] message) {
+        final byte determinant = message[0];
+        final byte[] content = Arrays.copyOfRange(message, 1, message.length);
+        final Phi ret;
+        switch (determinant) {
+            case 0:
+                throw new ExFailure(
+                    "Returning vertex is not implemented yet"
+                );
+            case 1:
+                ByteBuffer byteBuffer = ByteBuffer.allocate(Double.BYTES);
+                byteBuffer.put(content);
+                byteBuffer.flip();
+                ret = new Data.ToPhi(byteBuffer.getDouble());
+                break;
+            case 2:
+                byteBuffer = ByteBuffer.allocate(Long.BYTES);
+                byteBuffer.put(content);
+                byteBuffer.flip();
+                ret = new Data.ToPhi(byteBuffer.getLong());
+                break;
+            default:
+                throw new ExFailure(
+                    "Returning Strings and raw bytes is not implemented yet"
+                );
+        }
+        return ret;
     }
 }

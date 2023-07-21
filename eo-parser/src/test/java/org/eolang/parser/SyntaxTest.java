@@ -54,7 +54,7 @@ import org.yaml.snakeyaml.Yaml;
 final class SyntaxTest {
 
     @Test
-    void parsesSimpleCode() throws Exception {
+    void EOFloatpleCode() throws Exception {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Syntax syntax = new Syntax(
             "test-1",

@@ -7,7 +7,7 @@
     use rand::Rng;
     use eo_env::EOEnv;
 
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    pub fn foo(mut env: EOEnv<'_>) -> EO {
       let mut rng = rand::thread_rng();
       print!("Hello world");
       let i = rng.gen::<i32>();

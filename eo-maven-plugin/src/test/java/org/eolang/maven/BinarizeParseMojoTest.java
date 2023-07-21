@@ -71,7 +71,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo(mut env: EOEnv<'_>) -> i32 {",
+                "pub fn foo(mut env: EOEnv<'_>) -> EO {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i32>();",
@@ -88,7 +88,7 @@ final class BinarizeParseMojoTest {
                     )
                 )
             ).asString(),
-            Matchers.containsString("public static native int")
+            Matchers.containsString("public static native byte[]")
         );
     }
 

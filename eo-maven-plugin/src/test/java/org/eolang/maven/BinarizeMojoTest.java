@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,6 +49,8 @@ final class BinarizeMojoTest {
      */
     public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
 
+    public static final File ENV = new File("../eo-runtime/src/main/rust/eo_env");
+
     /**
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
@@ -60,6 +63,7 @@ final class BinarizeMojoTest {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
+                .with("eoEnvDir", BinarizeMojoTest.ENV)
                 .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
                 .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
@@ -89,6 +93,7 @@ final class BinarizeMojoTest {
         final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
+                .with("eoEnvDir", BinarizeMojoTest.ENV)
                 .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
                 .with("cache", cache);
         }
