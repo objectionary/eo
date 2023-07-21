@@ -96,16 +96,10 @@ public final class DiscoverMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
-     * @todo #2266:30min Use more convenient constructor for SaxonDocument.
-     *  The current constructor for SaxonDocument is not convenient and requires a lot of
-     *  code. It would be better to create SaxonDocument right from the file.
-     *  When the related issue will be implemented in jcabi-xml (you can check the progress
-     *  <a href="https://github.com/jcabi/jcabi-xml/issues/215">here</a>)
-     *  We have to change the constructor for SaxonDocument in this class and remove that puzzle.
      */
     private Collection<String> discover(final Path file)
         throws FileNotFoundException {
-        final XML saxon = new SaxonDocument(new UncheckedText(new TextOf(file)).asString());
+        final XML saxon = new SaxonDocument(file);
         final Collection<String> names = DiscoverMojo.names(saxon, this.xpath(false));
         if (this.withVersions) {
             names.addAll(
