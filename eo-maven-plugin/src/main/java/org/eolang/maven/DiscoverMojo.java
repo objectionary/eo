@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.SaxonDocument;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -91,12 +90,11 @@ public final class DiscoverMojo extends SafeMojo {
      *
      * @param file The .xmir file
      * @return List of foreign objects found
-     * @throws FileNotFoundException If not found
      */
-    private Collection<String> discover(final Path file)
-        throws FileNotFoundException {
-        final Collection<String> names = this.names(new SaxonDocument(file));
-        if (!new XMLDocument(file).nodes("//o[@vararg]").isEmpty()) {
+    private Collection<String> discover(final Path file) {
+        final XML saxon = new SaxonDocument(file);
+        final Collection<String> names = DiscoverMojo.names(saxon);
+        if (!saxon.xpath("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
         if (names.isEmpty()) {
@@ -118,7 +116,7 @@ public final class DiscoverMojo extends SafeMojo {
      * @param xml XML.
      * @return Object names.
      */
-    private Set<String> names(final XML xml) {
+    private static Set<String> names(final XML xml) {
         return new SetOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),
