@@ -130,9 +130,10 @@ public class EOrust extends PhDefault {
                             "EOrust.natives.%s",
                             name
                         )
-                    ).getDeclaredMethod(name, new Class[]{EOrust.class});
-                    byte[] res = (byte[]) method.invoke(null, this);
-                    return EOrust.translate(res);
+                    ).getDeclaredMethod(name, EOrust.class);
+                    return EOrust.translate(
+                        (byte[]) method.invoke(null, this)
+                    );
                 }
             )
         );
@@ -230,6 +231,17 @@ public class EOrust extends PhDefault {
         }
     }
 
+    /**
+     * Translates byte message from rust side to Phi object.
+     * @param message Message that native method returns.
+     * @return Phi object.
+     * @todo #2283:45min Implement handling of vertex returning.
+     *  It must convert message array from 1 to last byte to the int
+     *  and return eo object with corresponding vertex then.
+     * @todo #2283:45min Implement handling of String returning.
+     *  It must convert message array from 1 to last byte to the String
+     *  and return eo object with converted String Data.
+     */
     private static Phi translate(final byte[] message) {
         final byte determinant = message[0];
         final byte[] content = Arrays.copyOfRange(message, 1, message.length);
@@ -240,16 +252,16 @@ public class EOrust extends PhDefault {
                     "Returning vertex is not implemented yet"
                 );
             case 1:
-                ByteBuffer byteBuffer = ByteBuffer.allocate(Double.BYTES);
-                byteBuffer.put(content);
-                byteBuffer.flip();
-                ret = new Data.ToPhi(byteBuffer.getDouble());
+                ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getDouble());
                 break;
             case 2:
-                byteBuffer = ByteBuffer.allocate(Long.BYTES);
-                byteBuffer.put(content);
-                byteBuffer.flip();
-                ret = new Data.ToPhi(byteBuffer.getLong());
+                buffer = ByteBuffer.allocate(Long.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getLong());
                 break;
             default:
                 throw new ExFailure(
