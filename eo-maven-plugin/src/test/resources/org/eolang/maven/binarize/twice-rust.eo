@@ -5,8 +5,10 @@
   QQ.rust > r
     """
     use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(mut _env: EOEnv<'_>) -> EO {
+    pub fn foo(_env: &EOEnv) -> EO {
       let x = rand::random::<i32>();
       println!("{}", x);
       EOInt(x as i64)
@@ -20,8 +22,10 @@
   QQ.rust > r
     """
     use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(mut _env: EOEnv<'_>) -> EO {
+    pub fn foo(_env: &EOEnv) -> EO {
       print!("Hello 大 2");
       let x = rand::random::<i32>();
       EOInt(x as i64)

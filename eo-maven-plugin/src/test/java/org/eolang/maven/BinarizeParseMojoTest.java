@@ -71,11 +71,11 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo(mut env: EOEnv<'_>) -> EO {",
+                "pub fn foo(_env: &EOEnv) -> EO {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
-                "  let i = rng.gen::<i32>();",
-                "  i",
+                "  let i = rng.gen::<i64>();",
+                "  EOInt(i)",
                 "}"
             )
         );
@@ -94,7 +94,7 @@ final class BinarizeParseMojoTest {
 
     @Test
     void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/binarize/twice-rust.eo");
+        final Path src = BinarizeMojoTest.SRC.resolve("twice-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
@@ -119,14 +119,18 @@ final class BinarizeParseMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
+                "use eo_env::eo_enum::EO;",
+                "use eo_env::eo_enum::EO::{EOInt};",
+                "pub fn foo(_env: &EOEnv) -> EO {",
                 "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
+                "use eo_env::eo_enum::EO;",
+                "use eo_env::eo_enum::EO::{EOInt};",
+                "pub fn foo(_env: &EOEnv) -> EO {",
                 "print!(\"Hello 大 2\");"
             )
         );
