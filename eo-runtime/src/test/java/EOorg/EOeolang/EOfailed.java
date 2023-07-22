@@ -34,6 +34,6 @@ import org.eolang.PhDefault;
  *
  * @since 0.29
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 final class EOfailed extends PhDefault {
 }

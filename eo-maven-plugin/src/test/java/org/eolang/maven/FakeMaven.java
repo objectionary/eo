@@ -68,7 +68,8 @@ import org.eolang.maven.util.Home;
 @SuppressWarnings({
     "PMD.TooManyMethods",
     "PMD.CouplingBetweenObjects",
-    "JTCOP.RuleAllTestsHaveProductionClass"
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
 public final class FakeMaven {
@@ -542,7 +543,23 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Replaces versions as tags with versions as compound hashes.
+     *
+     * @since 0.29.5
+     */
+    static final class Versions implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                VersionsMojo.class
             ).iterator();
         }
     }
@@ -728,6 +745,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();

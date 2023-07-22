@@ -43,6 +43,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.util.Home;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -279,7 +280,7 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/28-duplicate-names.xml",
+                            "target/%s/foo/x/main/29-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )
@@ -351,6 +352,56 @@ final class OptimizeMojoTest {
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
         }
+    }
+
+    @Test
+    void failsOnErrorAfterNotReplacingWrongVersions(@TempDir final Path tmp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(tmp)
+                .withProgram(
+                    "+package f\n",
+                    "[] > main",
+                    "  seq|99.99.99 > @",
+                    "    nop"
+                )
+                .with("withVersions", true)
+                .with("hashes", new CommitHashesMap.Fake())
+                .execute(new FakeMaven.Optimize()),
+            "Program should have failed on error on optimization step with wrong tag, but it didn't"
+        );
+    }
+
+    @Test
+    void containsValidVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
+        throws Exception {
+        new FakeMaven(tmp)
+            .withProgram(
+                "+package f\n",
+                "[] > main",
+                "  seq|0.28.10 > @",
+                "    nop"
+            )
+            .with("withVersions", true)
+            .with("hashes", new CommitHashesMap.Fake())
+            .execute(new FakeMaven.Optimize());
+        final String ver = "9b88393";
+        final int size = 1;
+        MatcherAssert.assertThat(
+            String.format(
+                "XMIR after replacing versions and optimization should have contained %d element <o> with attribute ver='%s', but it didn't",
+                size,
+                ver
+            ),
+            new XMLDocument(
+                tmp.resolve(
+                    String.format("target/%s/foo/x/main.xmir", OptimizeMojo.DIR)
+                )
+            ).xpath(
+                String.format("//o[@name='@' and @base='org.eolang.seq' and @ver='%s']/@base", ver)
+            ),
+            Matchers.hasSize(size)
+        );
     }
 
     /**

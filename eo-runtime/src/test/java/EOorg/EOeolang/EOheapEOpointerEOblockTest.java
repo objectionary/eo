@@ -46,7 +46,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.19
  * @checkstyle TypeNameCheck (4 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOheapEOpointerEOblockTest {
 
     @Test
