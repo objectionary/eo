@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.eolang.maven.OnlineCondition;
+import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
@@ -73,6 +74,24 @@ final class OyRemoteTest {
         final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
             objectionary.contains("org.eolang.io.stdout"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    void checksPresenceOfObjectWithNarrowHash() throws IOException {
+        final String stdout = "org.eolang.io.stdout";
+        MatcherAssert.assertThat(
+            String.format(
+                "OyRemote with narrow hash should have contained object %s, but it didn't",
+                stdout
+            ),
+            new OyRemote(
+                new ChNarrow(
+                    new ChRemote("master")
+                )
+            ).contains(stdout),
             Matchers.is(true)
         );
     }
