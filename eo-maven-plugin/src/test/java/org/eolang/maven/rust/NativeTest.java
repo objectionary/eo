@@ -52,7 +52,7 @@ final class NativeTest {
                 "package mypackage;",
                 "import EOorg.EOeolang.EOrust;",
                 "public class name {",
-                "    public static native int name",
+                "    public static native byte[] name",
                 "        (final EOrust eo);",
                 "}"
                 )
