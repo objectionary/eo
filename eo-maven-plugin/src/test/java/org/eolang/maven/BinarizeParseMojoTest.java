@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
