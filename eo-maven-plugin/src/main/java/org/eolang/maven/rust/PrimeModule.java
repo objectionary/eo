@@ -47,7 +47,7 @@ public class PrimeModule extends Module {
                 "#[no_mangle]",
                 "pub extern \"system\" fn",
                 String.format("Java_EOrust_natives_%s_%s", method, method),
-                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray",
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray<'local>",
                 "{ let mut eo_env = EOEnv::new(env, _class, universe); ",
                 "let arr = foo(&mut eo_env).eo2vec();",
                 "eo_env.java_env.byte_array_from_slice(&arr.as_slice()).unwrap() }"
