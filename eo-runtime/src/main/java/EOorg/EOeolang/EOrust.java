@@ -58,6 +58,10 @@ import org.eolang.XmirObject;
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
+ * @todo #2283: 90min Create Universe class. now its functionality is
+ *  assigned to "EORust", which is why it is overcomplicated. "Universe"
+ *  should perform a model of interaction with "eo" objects through
+ *  methods "find", "put", "copy", "dataize" and "bind".
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
