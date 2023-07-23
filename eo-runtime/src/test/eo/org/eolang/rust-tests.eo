@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-[] > rust-returns-int
+[] > rust-returns-positive-int
   QQ.rust > r
     """
     use eo_env::EOEnv;
@@ -35,8 +35,7 @@
 
     pub fn foo(_env: &mut EOEnv) -> EO {
       println!("Hello world from rust");
-      let x = 4.0_f32;
-      EOInt(x.sqrt() as i64)
+      EOInt(2)
     }
     """
     *
@@ -45,7 +44,25 @@
     $.equal-to
       2
 
-[] > rust-returns-doable
+[] > rust-returns-negative-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      println!("Hello world from rust");
+      EOInt(-10)
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      -10
+
+[] > rust-returns-positive-doable
   QQ.rust > r
     """
     use eo_env::EOEnv;
@@ -53,16 +70,31 @@
     use eo_env::eo_enum::EO::{EOFloat};
 
     pub fn foo(_env: &mut EOEnv) -> EO {
-      println!("Hello world from EOFloat");
-      let x = 4.0_f64;
-      EOFloat(x.sqrt())
+      EOFloat(1.23456789)
     }
     """
     *
   assert-that > @
     r
     $.equal-to
-      2.0
+      1.23456789
+
+[] > rust-returns-negative-doable
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOFloat};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOFloat(-1.23456789)
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      -1.23456789
 
 [] > rust-find-returns-int
   QQ.rust > r
@@ -72,8 +104,7 @@
     use eo_env::eo_enum::EO::{EOInt};
 
     pub fn foo(env: &mut EOEnv) -> EO {
-      env.find("^");
-      EOInt(0 as i64)
+      EOInt(env.find("^").into())
     }
     """
     *
