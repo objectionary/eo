@@ -34,13 +34,19 @@ public class Commented extends Savable {
     /**
      * Ctor.
      * @param original Original object to save.
+     * @param start Prefix of commentary.
      */
-    public Commented(final Savable original) {
+    public Commented(final Savable original, final String start) {
         super(
             original.name,
             original.ext,
-            () -> new Disclaimer().toString()
-                .concat(original.content.value())
+            () -> String.format(
+                "%s %s%s%s",
+                start,
+                new Disclaimer(),
+                System.lineSeparator(),
+                original.content.value()
+            )
         );
     }
 }
