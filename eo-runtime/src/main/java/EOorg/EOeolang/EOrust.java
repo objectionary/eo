@@ -135,6 +135,14 @@ public class EOrust extends PhDefault {
                             name
                         )
                     ).getDeclaredMethod(name, EOrust.class);
+                    if (method.getReturnType() != byte[].class) {
+                        throw new ExFailure(
+                            "Return type of %s is %s, required %s",
+                            method,
+                            method.getReturnType(),
+                            byte[].class
+                        );
+                    }
                     return EOrust.translate(
                         (byte[]) method.invoke(null, this)
                     );
