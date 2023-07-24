@@ -25,10 +25,10 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.rust.Names;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -48,7 +48,7 @@ final class BinarizeParseMojoTest {
 
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
+        final Path src = BinarizeMojoTest.SRC.resolve("simple-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
@@ -58,9 +58,7 @@ final class BinarizeParseMojoTest {
             .result();
         final String function = String.format(
             "%s0",
-            temp.resolve("target").toString()
-                .toLowerCase(Locale.ENGLISH)
-                .replaceAll("[^a-z0-9]", "x")
+            Names.PREFIX
         );
         final String rust = String.format(
             "target/binarize/codes/%s.rs",
@@ -73,7 +71,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut env: EOEnv<'_>) -> i32 {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i32>();",
@@ -96,7 +94,7 @@ final class BinarizeParseMojoTest {
 
     @Test
     void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo");
+        final Path src = Paths.get("src/test/resources/org/eolang/maven/binarize/twice-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp).withProgram(src);
@@ -104,16 +102,13 @@ final class BinarizeParseMojoTest {
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString()
-            .toLowerCase(Locale.ENGLISH)
-            .replaceAll("[^a-z0-9]", "x");
         final String one = String.format(
             "target/binarize/codes/%s0.rs",
-            prefix
+            Names.PREFIX
         );
         final String two = String.format(
             "target/binarize/codes/%s1.rs",
-            prefix
+            Names.PREFIX
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(one)
@@ -124,21 +119,21 @@ final class BinarizeParseMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
                 "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "pub fn foo() -> i32 {",
+                "pub fn foo(mut _env: EOEnv<'_>) -> i32 {",
                 "print!(\"Hello 大 2\");"
             )
         );
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/add_rust/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
             new XaxStory(yaml),
@@ -148,29 +143,24 @@ final class BinarizeParseMojoTest {
 
     @Test
     void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeParseMojoTest.class) {
             maven = new FakeMaven(temp)
-                .withProgram(src)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.BinarizeParse())
             .result();
-        final String prefix = temp.resolve("target").toString()
-            .toLowerCase(Locale.ENGLISH)
-            .replaceAll("[^a-z0-9]", "x");
         final String dir = String.format(
             "target/Lib/%s1/",
-            prefix
+            Names.PREFIX
         );
         final String cargo = dir.concat("Cargo.toml");
         final String lib = dir.concat("src/lib.rs");
         final String module = String.format(
-            "%ssrc/%s1.rs",
-            dir,
-            prefix
+            "%ssrc/foo.rs",
+            dir
         );
         MatcherAssert.assertThat(
             res, Matchers.hasKey(cargo)

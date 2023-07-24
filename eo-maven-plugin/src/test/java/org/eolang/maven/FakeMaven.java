@@ -68,7 +68,8 @@ import org.eolang.maven.util.Home;
 @SuppressWarnings({
     "PMD.TooManyMethods",
     "PMD.CouplingBetweenObjects",
-    "JTCOP.RuleAllTestsHaveProductionClass"
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
 public final class FakeMaven {
@@ -201,7 +202,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("versioned", false);
+            this.params.putIfAbsent("withVersions", false);
             this.params.putIfAbsent("ignoreVersionConflict", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
@@ -229,6 +230,10 @@ public final class FakeMaven {
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent(
+                "eoEnvDir",
+                new File("src/test/resources/org/eolang/maven/binarize/eo_env")
+            );
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -339,12 +344,13 @@ public final class FakeMaven {
     }
 
     /**
-     * Specify hash for all foreign tojos.
+     * Specify hash for all foreign and external tojos.
      * @param hash Commit hash
      * @return The same maven instance.
      */
     FakeMaven allTojosWithHash(final CommitHash hash) {
         this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
+        this.externalTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 
@@ -537,7 +543,23 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Replaces versions as tags with versions as compound hashes.
+     *
+     * @since 0.29.5
+     */
+    static final class Versions implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                VersionsMojo.class
             ).iterator();
         }
     }
@@ -723,6 +745,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();

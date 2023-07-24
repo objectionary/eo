@@ -57,6 +57,7 @@ public final class ParsingTrain extends TrEnvelope {
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
         "/org/eolang/parser/critical-errors/duplicate-names.xsl",
+        "/org/eolang/parser/errors/wrong-versions.xsl",
         "/org/eolang/parser/errors/many-free-attributes.xsl",
         "/org/eolang/parser/errors/broken-aliases.xsl",
         "/org/eolang/parser/errors/duplicate-aliases.xsl",
@@ -77,7 +78,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/incorrect-version.xsl",
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
-        "/org/eolang/parser/synthetic-references.xsl",
+        "/org/eolang/parser/scopes.xsl",
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/add-default-package.xsl",
         "/org/eolang/parser/errors/broken-refs.xsl",
@@ -119,7 +120,9 @@ public final class ParsingTrain extends TrEnvelope {
                             Level.FINEST
                         ),
                         StEoLogged::new
-                    )
+                    ),
+                    TrFast.class,
+                    500L
                 ),
                 shift -> new StSequence(
                     shift.uid(),

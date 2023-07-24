@@ -275,6 +275,16 @@ SOFTWARE.
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>
+                  verify
+                </phase>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

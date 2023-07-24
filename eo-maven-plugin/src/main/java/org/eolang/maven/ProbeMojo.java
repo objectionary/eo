@@ -29,13 +29,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
@@ -55,6 +58,15 @@ import org.eolang.maven.util.Rel;
  * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
  * @since 0.28.11
+ * @todo #1602:30min Resolve code duplication. Probe and Pull mojos have several
+ *  identical fields, methods and lines of code. Need to resolve this code
+ *  duplication. One more abstract class is not an option. We can either join
+ *  them into one mojo, or composite them inside other mojo.
+ * @todo #1602:30min Add version to "probe" meta in xmir. To probe objects
+ *  {@link ProbeMojo} gets object names from "probe" meta in xmir. Objects
+ *  appear there after "add-probes.xsl" transformation. So to probe objects
+ *  with versions in {@link ProbeMojo} we need to add information about these
+ *  versions in xmir before the mojo.
  * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(
@@ -63,7 +75,6 @@ import org.eolang.maven.util.Rel;
     threadSafe = true
 )
 public final class ProbeMojo extends SafeMojo {
-
     /**
      * The Git hash to pull objects from, in objectionary.
      *
@@ -97,20 +108,27 @@ public final class ProbeMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
 
+    /**
+     * Hash-Objectionary map.
+     * @todo #1602:30min Use objectionaries to probe objects with different
+     *  versions. Objects with different versions are stored in different
+     *  storages (objectionaries). Every objectionary has its own hash.
+     *  To get versioned object from objectionary firstly we need to get
+     *  right objectionary by object's version and then get object from that
+     *  objectionary by name.
+     * @checkstyle MemberNameCheck (5 lines)
+     */
+    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCompound(
-            this.offlineHashFile, this.offlineHash, this.tag
+        final CommitHash hash = new ChCached(
+            new ChCompound(
+                this.offlineHashFile, this.offlineHash, this.tag
+            )
         );
         if (this.objectionary == null) {
-            this.objectionary = new OyFallbackSwap(
-                new OyHome(
-                    new ChNarrow(hash),
-                    this.cache
-                ),
-                new OyIndexed(new OyRemote(hash)),
-                this.forceUpdate()
-            );
+            this.objectionary = this.objectionaryByHash(hash);
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -150,6 +168,31 @@ public final class ProbeMojo extends SafeMojo {
                 probed.size(), tojos.size(), probed
             );
         }
+    }
+
+    /**
+     * Get objectionary by given hash from the map.
+     * @param hash Hash.
+     * @return Objectionary by given hash.
+     */
+    private Objectionary objectionaryByHash(final CommitHash hash) {
+        final String value = hash.value();
+        if (!this.objectionaries.containsKey(value)) {
+            this.objectionaries.put(
+                value,
+                new OyFallbackSwap(
+                    new OyHome(
+                        new ChNarrow(hash),
+                        this.cache
+                    ),
+                    new OyIndexed(
+                        new OyRemote(hash)
+                    ),
+                    this.forceUpdate()
+                )
+            );
+        }
+        return this.objectionaries.get(value);
     }
 
     /**
@@ -210,5 +253,4 @@ public final class ProbeMojo extends SafeMojo {
     private boolean forceUpdate() {
         return this.session.getRequest().isUpdateSnapshots();
     }
-
 }

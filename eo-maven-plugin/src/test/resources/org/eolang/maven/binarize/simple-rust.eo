@@ -5,8 +5,9 @@
   QQ.rust > r
     """
     use rand::Rng;
+    use eo_env::EOEnv;
 
-    pub fn foo() -> i32 {
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
       let mut rng = rand::thread_rng();
       print!("Hello world");
       let i = rng.gen::<i32>();

@@ -42,7 +42,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.23
  * @checkstyle TypeNameCheck (4 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EObytesEOconcatTest {
 
     @Test

@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,9 +46,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.map.MapOf;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.rust.Module;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.Native;
+import org.eolang.maven.rust.PrimeModule;
 import org.eolang.maven.rust.Project;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
@@ -58,6 +62,9 @@ import org.eolang.parser.ParsingTrain;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2238:30min Specify directory for names via pom.xml.Now names map is
+ *  serialized in targetDir.toPath().getParent() which is a bad decision since
+ *  it must be created just as target/names.
  */
 @Mojo(
     name = "binarize_parse",
@@ -65,6 +72,7 @@ import org.eolang.parser.ParsingTrain;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
+
 @SuppressWarnings("PMD.LongVariable")
 public final class BinarizeParseMojo extends SafeMojo {
 
@@ -102,9 +110,21 @@ public final class BinarizeParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File generatedDir;
 
+    /**
+     * The directory with eo_env rust project.
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        property = "eo.env",
+        required = true,
+        defaultValue = "${project.basedir}/src/main/rust/eo_env"
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private File eoEnvDir;
+
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(targetDir.toPath());
+        final Names names = new Names(targetDir.toPath().getParent());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.optimized();
@@ -139,7 +159,12 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(function, code, dependencies)
+                    .with(new Module(code, "foo"), dependencies)
+                    .with(new PrimeModule(function, "lib"), new ArrayList<>(1))
+                    .dependency(
+                        "eo_env",
+                        new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
+                    )
                     .save();
                 new Native(function, "EOrust.natives").save(
                     new FtDefault(

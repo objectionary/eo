@@ -51,7 +51,7 @@ public class Cargo {
     /**
      * Dependencies.
      */
-    private final Map<String, String> dependencies;
+    private final Map<String, Object> dependencies;
 
     /**
      * Ctor.
@@ -74,10 +74,10 @@ public class Cargo {
     /**
      * Adds dependency.
      * @param crate Dependency name.
-     * @param version Dependency version.
+     * @param content Dependency description.
      */
-    public void add(final String crate, final String version) {
-        this.dependencies.putIfAbsent(crate, version);
+    public void add(final String crate, final Object content) {
+        this.dependencies.putIfAbsent(crate, content);
     }
 
     /**

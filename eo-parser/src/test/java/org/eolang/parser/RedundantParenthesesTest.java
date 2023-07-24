@@ -87,6 +87,7 @@ class RedundantParenthesesTest {
             Arguments.of("[] > foo\n  \"Hello\".<.eq (\"Hello\".<)\n", true),
             Arguments.of("[] > foo\n  \"\"\"\n(-_-)\n\"\"\" > x", true),
             Arguments.of("[] > foo\n  add (-4) (-5)", true),
+            Arguments.of("# Comment().\n[] > obj\n", true),
             Arguments.of("[] > foo\n  (1.add (a.add 5) (4)) > x", false),
             Arguments.of("[] > foo\n  (1.add (a.add 5) 4) > x", false),
             Arguments.of("[] > foo\n  (1.add (a.add 5) 4)", false),
