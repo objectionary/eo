@@ -23,41 +23,24 @@
  */
 package org.eolang.maven.rust;
 
+import org.eolang.maven.Disclaimer;
+
 /**
- * Class for creating and saving class with native method.
- * Created class then is used from {@link EOrust}.
- *
+ * Commented file.
  * @since 0.30
  */
-public final class Native extends Savable {
+public class Commented extends Savable {
 
     /**
      * Ctor.
-     * @param name Name of the class.
-     * @param pack Package of the class.
+     * @param original Original object to save.
      */
-    public Native(final String name, final String pack) {
+    public Commented(final Savable original) {
         super(
-            name,
-            "java",
-            () -> String.join(
-                System.lineSeparator(),
-                String.format(
-                    "package %s;",
-                    pack
-                ),
-                "import EOorg.EOeolang.EOrust;",
-                String.format(
-                    "public class %s {",
-                    name
-                ),
-                String.format(
-                    "    public static native int %s",
-                    name
-                ),
-                "        (final EOrust eo);",
-                "}"
-            )
+            original.name,
+            original.ext,
+            () -> new Disclaimer().toString()
+                .concat(original.content.value())
         );
     }
 }

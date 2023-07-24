@@ -23,41 +23,50 @@
  */
 package org.eolang.maven.rust;
 
+import java.io.IOException;
+import org.cactoos.Scalar;
+import org.eolang.maven.footprint.Footprint;
+
 /**
- * Class for creating and saving class with native method.
- * Created class then is used from {@link EOrust}.
- *
+ * Created to be saved.
  * @since 0.30
+ * @checkstyle VisibilityModifierCheck (20 lines)
  */
-public final class Native extends Savable {
+public class Savable {
+
+    /**
+     * Name of file.
+     */
+    protected final String name;
+
+    /**
+     * Extension of the file, i.e. "rs".
+     */
+    protected final String ext;
+
+    /**
+     * Content inside file.
+     */
+    protected final Scalar<String> content;
 
     /**
      * Ctor.
-     * @param name Name of the class.
-     * @param pack Package of the class.
+     * @param name Name of the file.
+     * @param ext Extension.
+     * @param content Content.
      */
-    public Native(final String name, final String pack) {
-        super(
-            name,
-            "java",
-            () -> String.join(
-                System.lineSeparator(),
-                String.format(
-                    "package %s;",
-                    pack
-                ),
-                "import EOorg.EOeolang.EOrust;",
-                String.format(
-                    "public class %s {",
-                    name
-                ),
-                String.format(
-                    "    public static native int %s",
-                    name
-                ),
-                "        (final EOrust eo);",
-                "}"
-            )
-        );
+    public Savable(final String name, final String ext, final Scalar<String> content) {
+        this.name = name;
+        this.ext = ext;
+        this.content = content;
+    }
+
+    /**
+     * Save it by footprint.
+     * @param footprint Footprint.
+     * @throws IOException If any issues with IO.
+     */
+    public void save(final Footprint footprint) throws IOException {
+        footprint.save(this.name, this.ext, this.content);
     }
 }

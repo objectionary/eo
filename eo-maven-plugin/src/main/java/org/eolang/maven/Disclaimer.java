@@ -31,10 +31,9 @@ import java.time.format.DateTimeFormatter;
 /**
  * A piece of text generated in runtime, to be injected into the files
  * that we generate as output, for example .java and .sodg files.
- *
  * @since 0.27
  */
-final class Disclaimer {
+public final class Disclaimer {
 
     @Override
     public String toString() {
