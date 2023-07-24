@@ -73,7 +73,7 @@ public final class AssembleMojo extends SafeMojo {
     private Objectionary objectionary;
 
     /**
-     * Objectionaries.
+     * The objectionaries.
      * @checkstyle MemberNameCheck (6 lines)
      * @checkstyle ConstantUsageCheck (5 lines)
      */
