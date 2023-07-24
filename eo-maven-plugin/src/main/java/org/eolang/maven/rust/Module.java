@@ -23,8 +23,6 @@
  */
 package org.eolang.maven.rust;
 
-import java.nio.file.Paths;
-
 /**
  * Special class for converting a rust inserts
  * into a separate module of Cargo Project.
@@ -39,7 +37,7 @@ public class Module extends Savable {
      */
     public Module(final String raw, final String name) {
         super(
-            Paths.get("src").resolve(name).toString(),
+            name,
             "rs",
             () -> raw
         );

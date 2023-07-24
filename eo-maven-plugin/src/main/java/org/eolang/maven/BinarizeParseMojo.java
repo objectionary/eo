@@ -160,8 +160,8 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(new Module(code, "foo"), dependencies)
-                    .with(new PrimeModule(function, "lib"), new ArrayList<>(1))
+                    .with(new Module(code, "src/foo"), dependencies)
+                    .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
                     .dependency(
                         "eo_env",
                         new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
