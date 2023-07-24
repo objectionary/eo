@@ -371,6 +371,14 @@ public final class FakeMaven {
     }
 
     /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
+    }
+
+    /**
      * Tojo for placed.json file.
      *
      * @return TjSmart of the current placed.json file.
@@ -507,14 +515,6 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
-    }
-
-    /**
-     * Path to or eo-external.* file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    private Path externalPath() {
-        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -708,6 +708,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class

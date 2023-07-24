@@ -29,9 +29,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.objectionary.OysSimple;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -71,10 +74,12 @@ final class PullMojoTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
-        final Objectionary objectionary = new OyRemote(
+        final CommitHash hash = new ChCached(
             new ChCompound(null, null, "master")
         );
+        final Objectionary objectionary = new OyRemote(hash);
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom",
@@ -87,6 +92,8 @@ final class PullMojoTest {
                 "        228"
             )
             .with("objectionary", objectionary)
+            .with("objectionaries", new OysSimple().with(hash, objectionary))
+            .with("defaultHash", hash)
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(

@@ -27,8 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -36,12 +34,14 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.objectionary.OysSimple;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
@@ -105,7 +105,7 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+    private final Objectionaries objectionaries = new OysSimple();
 
     /**
      * Pull again even if the .eo file is already present?
@@ -143,11 +143,10 @@ public final class PullMojo extends SafeMojo {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryByHash(final CommitHash hash) {
-        final String value = hash.value();
         final CommitHash narrow = new ChCached(new ChNarrow(hash));
-        if (!this.objectionaries.containsKey(value)) {
-            this.objectionaries.put(
-                value,
+        return this.objectionaries
+            .with(
+                hash,
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -160,11 +159,10 @@ public final class PullMojo extends SafeMojo {
                             new OyRemote(hash)
                         )
                     ),
-                    this.session.getRequest().isUpdateSnapshots()
+                    () -> this.session.getRequest().isUpdateSnapshots()
                 )
-            );
-        }
-        return this.objectionaries.get(value);
+            )
+            .get(hash);
     }
 
     /**

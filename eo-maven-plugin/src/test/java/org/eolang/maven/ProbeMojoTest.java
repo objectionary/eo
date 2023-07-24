@@ -32,12 +32,19 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.objectionary.OysSimple;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -46,18 +53,27 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
+ * @todo #2302:30min Implement probing objects with versions and enable
+ *  tests. ProbeMojo uses {@link Objectionaries} but it does not search for
+ *  objects in different objectionaries. Need to implement searching objects
+ *  in different objectionaries and enable the tests belove. Don't forget to
+ *  remove this puzzle after that.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
-
     @Test
+    @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
+        final CommitHash hash = new ChCached(
+            new ChRemote("master")
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("foreignFormat", "json")
-                    .with("objectionary", new Objectionary.Fake())
+                    .with("objectionaries", new OysSimple().with(hash, new Objectionary.Fake()))
+                    .with("defaultHash", hash)
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -73,11 +89,16 @@ final class ProbeMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
+        final CommitHash hash = new ChCached(
+            new ChText(
+                temp.resolve("tags.txt"), "master"
+            )
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("offlineHashFile", temp.resolve("tags.txt"))
-                    .with("objectionary", new Objectionary.Fake())
+                    .with("defaultHash", hash)
+                    .with("objectionaries", new OysSimple().with(hash, new Objectionary.Fake()))
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -89,12 +110,14 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
+        final CommitHash hash = new ChCached(
+            new ChPattern("*.*.*:abcdefg", "1.0.0")
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("tag", "1.0.0")
-                    .with("offlineHash", "*.*.*:abcdefg")
-                    .with("objectionary", new Objectionary.Fake())
+                    .with("objectionaries", new OysSimple().with(hash, new Objectionary.Fake()))
+                    .with("defaultHash", hash)
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -108,17 +131,148 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
+        final CommitHash hash = new ChCached(
+            new ChRemote(tag)
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("tag", tag)
-                    .with("objectionary", new OyRemote(new ChCached(new ChRemote(tag))))
+                    .with("objectionaries", new OysSimple().with(hash, new OyRemote(hash)))
+                    .with("defaultHash", hash)
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
                 "probed"
             ),
             Matchers.equalTo("2")
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    @Disabled
+    void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
+        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
+        final String object = "org.eolang.io.stdout|9b88393";
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("objectionaries", new OysSimple().with(hash, new OyRemote(hash)))
+            .with("withVersions", true)
+            .withProgram(
+                "+package org.eolang.custom\n",
+                "[] > main",
+                "  QQ.io.stdout|0.28.10 > @",
+                "    \"Hello world\""
+            )
+            .execute(new FakeMaven.Probe());
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after probing, but they didn't",
+                object
+            ),
+            maven.externalTojos().contains(object),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "First entry of tojos after probing should have contained one probed object, but it didn't",
+            ProbeMojoTest.firstEntry(
+                maven.externalPath(),
+                "probed"
+            ),
+            Matchers.equalTo("1")
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    @Disabled
+    void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
+        throws IOException {
+        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
+        final CommitHash second = new CommitHashesMap.Fake().get("0.28.0");
+        final String stdout = "org.eolang.io.stdout|9b88393";
+        final String sprintf = "org.eolang.txt.sprintf|6a70071";
+        final FakeMaven maven = new FakeMaven(temp)
+            .with(
+                "objectionaries",
+                new OysSimple()
+                    .with(first, new OyRemote(first))
+                    .with(second, new OyRemote(second))
+            )
+            .with("withVersions", true)
+            .withProgram(
+                "+package org.eolang.custom\n",
+                "[] > main",
+                "  QQ.io.stdout|0.28.10 > @",
+                "    QQ.txt.sprintf|0.28.0",
+                "      \"Hello world!\""
+            )
+            .execute(new FakeMaven.Probe());
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after probing, but they didn't",
+                stdout
+            ),
+            maven.externalTojos().contains(stdout),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after probing, but they didn't",
+                sprintf
+            ),
+            maven.externalTojos().contains(stdout),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "First entry of tojos after probing should have contained two probed objects, but it didn't",
+            ProbeMojoTest.firstEntry(
+                maven.externalPath(),
+                "probed"
+            ),
+            Matchers.equalTo("2")
+        );
+    }
+
+    @Test
+    @ExtendWith(OnlineCondition.class)
+    @Disabled
+    void findsProbesWithDefaultHash(@TempDir final Path temp) throws IOException {
+        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
+        final CommitHash master = new CommitHashesMap().get("master");
+        final String stdout = "org.eolang.io.stdout|9b88393";
+        final String sprintf = "org.eolang.txt.sprintf|9c46a67";
+        final FakeMaven maven = new FakeMaven(temp)
+            .with(
+                "objectionaries",
+                new OysSimple()
+                    .with(first, new OyRemote(first))
+                    .with(master, new OyRemote(master))
+            )
+            .with("withVersions", true)
+            .with("defaultHash", master)
+            .withProgram(
+                "+package org.eolang.custom\n",
+                "[] > main",
+                "  QQ.io.stdout|0.28.10 > @",
+                "    QQ.txt.sprintf",
+                "      \"Hello world!\""
+            )
+            .execute(new FakeMaven.Probe());
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after probing, but they didn't",
+                stdout
+            ),
+            maven.externalTojos().contains(stdout),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after probing, but they didn't",
+                sprintf
+            ),
+            maven.externalTojos().contains(stdout),
+            Matchers.is(true)
         );
     }
 

@@ -33,7 +33,9 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OysSimple;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -69,6 +71,14 @@ public final class AssembleMojo extends SafeMojo {
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
+
+    /**
+     * Objectionaries.
+     * @checkstyle MemberNameCheck (6 lines)
+     * @checkstyle ConstantUsageCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    private final Objectionaries objectionaries = new OysSimple();
 
     /**
      * The central.

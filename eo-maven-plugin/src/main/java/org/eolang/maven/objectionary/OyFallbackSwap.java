@@ -25,6 +25,7 @@ package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import org.cactoos.Input;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.PullMojo;
@@ -57,18 +58,32 @@ public final class OyFallbackSwap implements Objectionary {
      * Ctor.
      * @param first Initial primary
      * @param second Initial secondary
-     * @param swap Whether to swap
+     * @param swap Whether to swap as boolean
      */
     public OyFallbackSwap(
         final Objectionary first,
         final Objectionary second,
         final boolean swap
     ) {
+        this(first, second, () -> swap);
+    }
+
+    /**
+     * Ctor.
+     * @param first Initial primary
+     * @param second Initial secondary
+     * @param swap Whether to swap as scalar
+     */
+    public OyFallbackSwap(
+        final Objectionary first,
+        final Objectionary second,
+        final Scalar<Boolean> swap
+    ) {
         this.swapped = new Unchecked<>(
             new Sticky<>(
                 () -> {
                     final Objectionary result;
-                    if (swap) {
+                    if (swap.value()) {
                         result = new OyFallback(
                             second,
                             first
