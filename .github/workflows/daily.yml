@@ -36,7 +36,7 @@ jobs:
           # Test eo-maven-plugin
           ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin
           # Test eo-runtime
-          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime
+          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime --compilation true
       # @todo #2085:90min Add GitHub action step to create an issue.
       #  It would be convenient to add github action step that will create an
       #  issue in case of any of the tests is failed. We can do it through
