@@ -4,7 +4,9 @@
 [] > hello-world-1
   QQ.rust > r
     """
-    pub fn foo() -> i32 {
+    use eo_env::EOEnv;
+
+    pub fn foo(mut _env: EOEnv<'_>) -> i32 {
       let x = rand::random::<i32>();
       println!("{}", x);
       x
@@ -17,7 +19,9 @@
 [] > hello-world-2
   QQ.rust > r
     """
-    pub fn foo() -> i32 {
+    use eo_env::EOEnv;
+
+    pub fn foo(mut _env: EOEnv<'_>) -> i32 {
       print!("Hello 大 2");
       let x = rand::random::<i32>();
       x

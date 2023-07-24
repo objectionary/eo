@@ -38,7 +38,7 @@ SOFTWARE.
           <xsl:attribute name="severity">
             <xsl:text>error</xsl:text>
           </xsl:attribute>
-          <xsl:text>The tag </xsl:text>
+          <xsl:text>The version </xsl:text>
           <xsl:value-of select="@ver"/>
           <xsl:text> is not found. See https://home.objectionary.com/tags.txt</xsl:text>
         </xsl:element>

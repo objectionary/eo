@@ -68,15 +68,17 @@ public final class Native {
                 String.format(
                     "package %s;",
                     this.pack
-                ),
+                    ),
+                "import EOorg.EOeolang.EOrust;",
                 String.format(
                     "public class %s {",
                     this.name
                 ),
                 String.format(
-                    "    public static native int %s ();",
+                    "    public static native int %s",
                     this.name
                 ),
+                "        (final EOrust eo);",
                 "}"
             )
         );

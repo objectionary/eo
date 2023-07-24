@@ -26,10 +26,12 @@
 +package org.eolang
 +version 0.0.0
 
-[] > creates-object
+[] > rust-creates-object
   QQ.rust > r
     """
-    pub fn foo() -> i32 {
+    use eo_env::EOEnv;
+
+    pub fn foo(mut _env: EOEnv<'_>) -> i32 {
       println!("Hello world from rust");
       let x = 4.0_f32;
       x.sqrt() as i32
@@ -40,3 +42,88 @@
     r
     $.equal-to
       2
+
+[] > rust-find-returns-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+      env.find("^");
+      0
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      0
+
+[] > rust-put-not-fails
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+      env.put(3, &[0x00, 0x1a, 0xEE, 0xf, 0xf3]).unwrap();
+      0
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.not
+      $.less-than
+        0
+
+[] > rust-bind-not-fails
+  QQ.rust > insert
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v1 = env.find("a") as u32;
+        let v2 = env.find("b") as u32;
+        env.bind(v1 , v2, "my-att");
+        return v1 as i32;
+    }
+    """
+    *
+  assert-that > @
+    insert
+    $.not
+      $.less-than
+        0
+
+[] > rust-copy-not-fails
+  QQ.rust > copy
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v = env.find("a") as u32;
+        let copy = env.copy(v).unwrap();
+        copy as i32
+    }
+    """
+    *
+  assert-that > @
+    copy
+    $.not
+      $.less-than
+        0
+
+[] > rust-dataize-not-fails
+  QQ.rust > dataized
+    """
+    use eo_env::EOEnv;
+    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+        let v = env.find("a") as u32;
+        let bytes = env.dataize(v).unwrap();
+        v as i32
+    }
+    """
+    *
+  assert-that > @
+    dataized
+    $.not
+      $.less-than
+        0

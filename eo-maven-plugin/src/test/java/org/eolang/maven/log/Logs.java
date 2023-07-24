@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @since 0.30
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 public final class Logs {
 
     /**

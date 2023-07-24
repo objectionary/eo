@@ -21,36 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang.maven.rust;
 
 /**
- * Test case for {@link EOint}.
- *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
+ * Prime Module in the rust project. Contains the function to call from the java side.
+ * @since 0.29.7
  */
-final class EOintEOplusTest {
+public class PrimeModule extends Module {
 
-    @Test
-    void addsNumbers() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi add = left.attr("plus").get();
-        add.attr(0).put(right);
-        MatcherAssert.assertThat(
-            new Dataized(add).take(Long.class),
-            Matchers.equalTo(55L)
+    /**
+     * Ctor.
+     *
+     * @param method How the function is named from the java side.
+     * @param file File name.
+     */
+    public PrimeModule(final String method, final String file) {
+        super(
+            String.join(
+                System.lineSeparator(),
+                "mod foo;",
+                "use foo::foo;",
+                "use jni::JNIEnv;",
+                "use jni::objects::{JClass, JObject};",
+                "use jni::sys::{jint};",
+                "use eo_env::EOEnv;",
+                "#[no_mangle]",
+                "pub extern \"system\" fn",
+                String.format("Java_EOrust_natives_%s_%s", method, method),
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint",
+                "{ return foo(EOEnv::new(env, _class, universe)); }"
+            ),
+            file
         );
     }
 }

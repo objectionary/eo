@@ -66,7 +66,6 @@ public final class PullMojo extends SafeMojo {
      * The Git hash to pull objects from, in objectionary.
      *
      * @since 0.21.0
-     * @checkstyle VisibilityModifierCheck (6 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
@@ -76,7 +75,6 @@ public final class PullMojo extends SafeMojo {
      * Read hashes from local file.
      *
      * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (6 lines)
      */
     @Parameter(property = "offlineHashFile")
     private Path offlineHashFile;
@@ -87,15 +85,12 @@ public final class PullMojo extends SafeMojo {
      * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
      *
      * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (6 lines)
      */
     @Parameter(property = "offlineHash")
     private String offlineHash;
 
     /**
      * The objectionary.
-     *
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
     private Objectionary objectionary;
@@ -129,7 +124,7 @@ public final class PullMojo extends SafeMojo {
             )
         );
         if (this.objectionary == null) {
-            this.objectionary = this.objectionaryBy(hash);
+            this.objectionary = this.objectionaryByHash(hash);
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
@@ -147,7 +142,7 @@ public final class PullMojo extends SafeMojo {
      * @param hash Hash.
      * @return Objectionary by given hash.
      */
-    private Objectionary objectionaryBy(final CommitHash hash) {
+    private Objectionary objectionaryByHash(final CommitHash hash) {
         final String value = hash.value();
         final CommitHash narrow = new ChCached(new ChNarrow(hash));
         if (!this.objectionaries.containsKey(value)) {

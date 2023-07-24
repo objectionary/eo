@@ -21,36 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.rust;
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link EOint}.
+ * Test case for {@link Module}.
  *
  * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
  */
-final class EOintEOplusTest {
-
+final class PrimeModuleTest {
     @Test
-    void addsNumbers() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi add = left.attr("plus").get();
-        add.attr(0).put(right);
+    void savesCorrectly(@TempDir final Path temp) throws Exception {
+        final String method = "my_method";
+        final String name = "name";
+        new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
-            new Dataized(add).take(Long.class),
-            Matchers.equalTo(55L)
+            new TextOf(
+                temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
+            ).asString(),
+            Matchers.stringContainsInOrder(
+                String.format("Java_EOrust_natives_%s_%s", method, method),
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint"
+            )
         );
     }
 }
