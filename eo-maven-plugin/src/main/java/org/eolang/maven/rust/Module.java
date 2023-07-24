@@ -23,46 +23,25 @@
  */
 package org.eolang.maven.rust;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import org.eolang.maven.footprint.Footprint;
 
 /**
  * Special class for converting a rust inserts
  * into a separate module of Cargo Project.
  * @since 0.1
  */
-public class Module {
-    /**
-     * Source code of rust insert.
-     */
-    private final String raw;
-
-    /**
-     * Name of file.
-     */
-    private final String name;
+public class Module extends Savable {
 
     /**
      * Ctor.
-     * @param raw Source code.
+     * @param raw Source code of rust insert.
      * @param name Name of file.
      */
     public Module(final String raw, final String name) {
-        this.raw = raw;
-        this.name = name;
-    }
-
-    /**
-     * Save it by footprint.
-     * @param footprint Footprint.
-     * @throws IOException If any issues with I/O.
-     */
-    public void save(final Footprint footprint) throws IOException {
-        footprint.save(
-            Paths.get("src").resolve(this.name).toString(),
+        super(
+            Paths.get("src").resolve(name).toString(),
             "rs",
-            () -> this.raw
+            () -> raw
         );
     }
 }

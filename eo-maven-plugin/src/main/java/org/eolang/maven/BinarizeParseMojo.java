@@ -167,7 +167,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                         new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
                     )
                     .save();
-                new Commented(new Native(function, "EOrust.natives"))
+                new Commented(new Native(function, "EOrust.natives"), "//")
                     .save(
                     new FtDefault(
                         this.generatedDir.toPath().resolve("EOrust").resolve("natives")
