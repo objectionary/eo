@@ -105,7 +105,7 @@ final class OptimizeMojoTest {
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
         final long start = System.currentTimeMillis();
-        final long old = start - TimeUnit.SECONDS.toMillis(10L);
+        final long old = start - TimeUnit.SECONDS.toMillis(20L);
         if (!tgt.toFile().setLastModified(old)) {
             Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
         }
