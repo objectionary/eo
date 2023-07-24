@@ -28,6 +28,7 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -305,7 +306,7 @@ final class SnippetTestCase {
     private static String classpath() {
         final String runtime;
         final String property = System.getProperty("runtime.jar");
-        if (Objects.isNull(property) || property.isEmpty() || StringUtils.isBlank(property)) {
+        if (SnippetTestCase.isNotRealPath(property)) {
             runtime = Paths.get(System.getProperty("user.home"))
                 .resolve(
                     String.format(
@@ -321,5 +322,24 @@ final class SnippetTestCase {
             File.pathSeparatorChar,
             runtime
         );
+    }
+
+    /**
+     * Checks if the path is real path.
+     * @param path String path to check.
+     * @return True if path is real.
+     */
+    private static boolean isNotRealPath(final String path) {
+        boolean res = false;
+        if (Objects.isNull(path) || path.isEmpty() || StringUtils.isBlank(path)) {
+            res = true;
+        } else {
+            try {
+                Paths.get(path);
+            } catch (final InvalidPathException ignore) {
+                res = true;
+            }
+        }
+        return res;
     }
 }
