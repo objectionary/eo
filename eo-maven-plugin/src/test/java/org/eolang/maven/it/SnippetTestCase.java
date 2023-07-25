@@ -58,7 +58,10 @@ import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -99,6 +102,7 @@ final class SnippetTestCase {
     @ParameterizedTest
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
+    @ExtendWith(RuntimeLibraryExists.class)
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
@@ -377,6 +381,38 @@ final class SnippetTestCase {
          */
         private static String msg(final String path) {
             return String.format("Invalid path '%s'", path);
+        }
+    }
+
+    /**
+     * Checks if runtime library exists.
+     *
+     * @since 0.30
+     */
+    public static class RuntimeLibraryExists implements ExecutionCondition {
+
+        @Override
+        public ConditionEvaluationResult evaluateExecutionCondition(final ExtensionContext ctx) {
+            ConditionEvaluationResult ret;
+            try {
+                final String classpath = SnippetTestCase.classpath();
+                if (classpath.isEmpty()) {
+                    ret = ConditionEvaluationResult.disabled("Runtime library is not found");
+                } else {
+                    ret = ConditionEvaluationResult.enabled(
+                        String.format(
+                            "Runtime library '%s' is found successfully",
+                            classpath
+                        )
+                    );
+                }
+            } catch (final IllegalStateException exception) {
+                ret = ConditionEvaluationResult.disabled(
+                    "Runtime library can't be found",
+                    exception.getMessage()
+                );
+            }
+            return ret;
         }
     }
 }
