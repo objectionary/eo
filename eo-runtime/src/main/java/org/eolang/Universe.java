@@ -101,4 +101,16 @@ public class Universe {
         return vertex;
     }
 
+    /**
+     * Dataizes the eo object by vertex and return byte array.
+     * @param vertex Vertex of eo-object.
+     * @return Raw data.
+     * @todo #2313:60min Implement the "dataize" method.
+     *  It should dataize eo object by its vertex.
+     *  This method is going to be called from rust insert
+     *  and should not be static.
+     */
+    public static byte[] dataize(final int vertex) {
+        return new byte[]{0b1111111};
+    }
 }
