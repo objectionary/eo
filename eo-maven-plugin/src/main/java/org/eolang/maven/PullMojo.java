@@ -36,12 +36,7 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyFallbackSwap;
-import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.objectionary.*;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
@@ -105,7 +100,7 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+    private final Objectionaries objectionaries = new OjsDefault();
 
     /**
      * Pull again even if the .eo file is already present?
@@ -145,8 +140,8 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionaryByHash(final CommitHash hash) {
         final String value = hash.value();
         final CommitHash narrow = new ChCached(new ChNarrow(hash));
-        if (!this.objectionaries.containsKey(value)) {
-            this.objectionaries.put(
+        return this.objectionaries
+            .with(
                 value,
                 new OyFallbackSwap(
                     new OyHome(
@@ -160,11 +155,10 @@ public final class PullMojo extends SafeMojo {
                             new OyRemote(hash)
                         )
                     ),
-                    this.session.getRequest().isUpdateSnapshots()
+                    () -> this.session.getRequest().isUpdateSnapshots()
                 )
-            );
-        }
-        return this.objectionaries.get(value);
+            )
+            .get(value);
     }
 
     /**
