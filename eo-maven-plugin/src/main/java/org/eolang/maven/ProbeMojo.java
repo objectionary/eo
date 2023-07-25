@@ -62,11 +62,6 @@ import org.eolang.maven.util.Rel;
  *  identical fields, methods and lines of code. Need to resolve this code
  *  duplication. One more abstract class is not an option. We can either join
  *  them into one mojo, or composite them inside other mojo.
- * @todo #1602:30min Add version to "probe" meta in xmir. To probe objects
- *  {@link ProbeMojo} gets object names from "probe" meta in xmir. Objects
- *  appear there after "add-probes.xsl" transformation. So to probe objects
- *  with versions in {@link ProbeMojo} we need to add information about these
- *  versions in xmir before the mojo.
  * @checkstyle CyclomaticComplexityCheck (300 lines)
  */
 @Mojo(

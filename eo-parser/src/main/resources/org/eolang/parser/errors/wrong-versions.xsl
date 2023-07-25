@@ -30,7 +30,7 @@ SOFTWARE.
       <xsl:for-each select="//o[@ver and matches(@ver,'^[0-9]+\.[0-9]+\.[0-9]+$')]">
         <xsl:element name="error">
           <xsl:attribute name="check">
-            <xsl:text>wrong-tags</xsl:text>
+            <xsl:text>wrong-versions</xsl:text>
           </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>

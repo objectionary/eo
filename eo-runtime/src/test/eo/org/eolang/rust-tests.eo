@@ -26,15 +26,16 @@
 +package org.eolang
 +version 0.0.0
 
-[] > rust-creates-object
+[] > rust-returns-positive-int
   QQ.rust > r
     """
     use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(mut _env: EOEnv<'_>) -> i32 {
+    pub fn foo(_env: &mut EOEnv) -> EO {
       println!("Hello world from rust");
-      let x = 4.0_f32;
-      x.sqrt() as i32
+      EOInt(2)
     }
     """
     *
@@ -43,30 +44,85 @@
     $.equal-to
       2
 
-[] > rust-find-returns-int
+[] > rust-returns-negative-int
   QQ.rust > r
     """
     use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
-      env.find("^");
-      0
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      println!("Hello world from rust");
+      EOInt(-10)
     }
     """
     *
   assert-that > @
     r
     $.equal-to
-      0
+      -10
+
+[] > rust-returns-positive-doable
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOFloat};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOFloat(1.23456789)
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      1.23456789
+
+[] > rust-returns-negative-doable
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOFloat};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOFloat(-1.23456789)
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.equal-to
+      -1.23456789
+
+[] > rust-find-returns-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      EOInt(env.find("^").into())
+    }
+    """
+    *
+  assert-that > @
+    r
+    $.not
+      $.less-than
+        0
 
 [] > rust-put-not-fails
   QQ.rust > r
     """
     use eo_env::EOEnv;
-
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> EO {
       env.put(3, &[0x00, 0x1a, 0xEE, 0xf, 0xf3]).unwrap();
-      0
+      EOInt(0 as i64)
     }
     """
     *
@@ -80,11 +136,13 @@
   QQ.rust > insert
     """
     use eo_env::EOEnv;
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> EO {
         let v1 = env.find("a") as u32;
         let v2 = env.find("b") as u32;
-        env.bind(v1 , v2, "my-att");
-        return v1 as i32;
+        env.bind(v1 , v2, "EO-att");
+        return EOInt(v1 as i64);
     }
     """
     *
@@ -98,10 +156,12 @@
   QQ.rust > copy
     """
     use eo_env::EOEnv;
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> EO {
         let v = env.find("a") as u32;
         let copy = env.copy(v).unwrap();
-        copy as i32
+        EOInt(copy as i64)
     }
     """
     *
@@ -115,10 +175,12 @@
   QQ.rust > dataized
     """
     use eo_env::EOEnv;
-    pub fn foo(mut env: EOEnv<'_>) -> i32 {
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> EO {
         let v = env.find("a") as u32;
-        let bytes = env.dataize(v).unwrap();
-        v as i32
+        let _bytes = env.dataize(v).unwrap();
+        EOInt(v as i64)
     }
     """
     *
