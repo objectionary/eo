@@ -42,11 +42,7 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyFallbackSwap;
-import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.objectionary.*;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -104,16 +100,10 @@ public final class ProbeMojo extends SafeMojo {
     private Objectionary objectionary;
 
     /**
-     * Hash-Objectionary map.
-     * @todo #1602:30min Use objectionaries to probe objects with different
-     *  versions. Objects with different versions are stored in different
-     *  storages (objectionaries). Every objectionary has its own hash.
-     *  To get versioned object from objectionary firstly we need to get
-     *  right objectionary by object's version and then get object from that
-     *  objectionary by name.
+     * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+    private final Objectionaries objectionaries = new OjsDefault();
 
     @Override
     public void exec() throws IOException {

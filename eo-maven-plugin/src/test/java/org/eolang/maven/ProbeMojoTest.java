@@ -36,6 +36,7 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -132,7 +133,7 @@ final class ProbeMojoTest {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
         final String object = "org.eolang.io.stdout|9b88393";
         final FakeMaven maven = new FakeMaven(temp)
-            .with("objectionaries", new OysSimple().with(hash, new OyRemote(hash)))
+            .with("objectionaries", new OjsDefault().with(hash, new OyRemote(hash)))
             .with("withVersions", true)
             .withProgram(
                 "+package org.eolang.custom\n",
@@ -171,7 +172,7 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new OysSimple()
+                new OjsDefault()
                     .with(first, new OyRemote(first))
                     .with(second, new OyRemote(second))
             )
@@ -221,7 +222,7 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new OysSimple()
+                new OjsDefault()
                     .with(first, new OyRemote(first))
                     .with(master, new OyRemote(master))
             )
