@@ -66,12 +66,6 @@ public final class AssembleMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The objectionary.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
-
-    /**
      * Objectionaries.
      */
     private Objectionaries objectionaries;

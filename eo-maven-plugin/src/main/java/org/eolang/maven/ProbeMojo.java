@@ -29,20 +29,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.*;
+import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.OyFallbackSwap;
+import org.eolang.maven.objectionary.OyHome;
+import org.eolang.maven.objectionary.OyIndexed;
+import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -67,7 +70,7 @@ import org.eolang.maven.util.Rel;
 )
 public final class ProbeMojo extends SafeMojo {
     /**
-     * The Git hash to pull objects from, in objectionary.
+     * The Git tag to pull objects from, in objectionary.
      *
      * @since 0.21.0
      */
@@ -76,28 +79,13 @@ public final class ProbeMojo extends SafeMojo {
     private String tag = "master";
 
     /**
-     * Read hashes from local file.
+     * The Git hash to pull objects from, in objectionary.
+     * If not set, will be computed from {@code tag} field.
      *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHashFile")
-    private Path offlineHashFile;
-
-    /**
-     * Return hash by pattern.
-     * -DofflineHash=0.*.*:abc2sd3
-     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHash")
-    private String offlineHash;
-
-    /**
-     * The objectionary.
+     * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
+    private CommitHash hash;
 
     /**
      * Objectionaries.
@@ -107,13 +95,8 @@ public final class ProbeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCached(
-            new ChCompound(
-                this.offlineHashFile, this.offlineHash, this.tag
-            )
-        );
-        if (this.objectionary == null) {
-            this.objectionary = this.objectionaryByHash(hash);
+        if (this.hash == null) {
+            this.hash = new ChRemote(this.tag);
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -125,7 +108,7 @@ public final class ProbeMojo extends SafeMojo {
             }
             int count = 0;
             for (final String name : names) {
-                if (!this.objectionary.contains(name)) {
+                if (!this.objectionaryByHash(this.hash).contains(name)) {
                     continue;
                 }
                 ++count;
@@ -134,7 +117,7 @@ public final class ProbeMojo extends SafeMojo {
                     .withDiscoveredAt(src);
                 probed.add(name);
             }
-            tojo.withHash(new ChNarrow(hash)).withProbed(count);
+            tojo.withHash(new ChNarrow(this.hash)).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
