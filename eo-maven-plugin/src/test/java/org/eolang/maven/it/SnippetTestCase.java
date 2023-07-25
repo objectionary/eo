@@ -51,6 +51,10 @@ import org.eolang.maven.FakeMaven;
 import org.eolang.maven.OnlineCondition;
 import org.eolang.maven.RegisterMojo;
 import org.eolang.maven.TranspileMojo;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -148,11 +152,18 @@ final class SnippetTestCase {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
+        final CommitHash hash = new ChCached(
+            new ChRemote("master")
+        );
         final FakeMaven maven = new FakeMaven(tmp)
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("objectionary", new OyFilesystem());
+            .with("hash", hash)
+            .with(
+                "objectionaries",
+                new OjsDefault().with(hash, new OyFilesystem())
+            );
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);

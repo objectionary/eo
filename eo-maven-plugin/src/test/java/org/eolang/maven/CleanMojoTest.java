@@ -28,7 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -93,8 +95,8 @@ class CleanMojoTest {
             .with("ignoreTransitive", true)
             .with("plugin", FakeMaven.pluginDescriptor())
             .with(
-                "objectionary",
-                new Objectionary.Fake()
+                "objectionaries",
+                new OjsDefault().with(new ChRemote("master"), new Objectionary.Fake())
             )
             .execute();
         new Moja<>(CleanMojo.class)
