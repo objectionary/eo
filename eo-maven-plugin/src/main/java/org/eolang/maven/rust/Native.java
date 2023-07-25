@@ -69,7 +69,7 @@ public final class Native {
                     "package %s;",
                     this.pack
                     ),
-                "import EOorg.EOeolang.EOrust;",
+                "import org.eolang.Universe;",
                 String.format(
                     "public class %s {",
                     this.name
@@ -78,7 +78,7 @@ public final class Native {
                     "    public static native byte[] %s",
                     this.name
                 ),
-                "        (final EOrust eo);",
+                "        (final Universe universe);",
                 "}"
             )
         );
