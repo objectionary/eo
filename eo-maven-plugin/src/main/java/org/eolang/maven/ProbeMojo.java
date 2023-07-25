@@ -162,8 +162,8 @@ public final class ProbeMojo extends SafeMojo {
      */
     private Objectionary objectionaryByHash(final CommitHash hash) {
         final String value = hash.value();
-        if (!this.objectionaries.containsKey(value)) {
-            this.objectionaries.put(
+        return this.objectionaries
+            .with(
                 value,
                 new OyFallbackSwap(
                     new OyHome(
@@ -173,11 +173,10 @@ public final class ProbeMojo extends SafeMojo {
                     new OyIndexed(
                         new OyRemote(hash)
                     ),
-                    this.forceUpdate()
+                    this::forceUpdate
                 )
-            );
-        }
-        return this.objectionaries.get(value);
+            )
+            .get(value);
     }
 
     /**
