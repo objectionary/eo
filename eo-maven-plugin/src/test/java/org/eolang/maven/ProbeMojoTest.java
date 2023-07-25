@@ -31,7 +31,12 @@ import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.hash.*;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChPattern;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -51,6 +56,9 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
+    /**
+     *
+     */
     private static final String MASTER = "9c46a671f2bc68e777aab031d57da5012ba807a7";
 
     @Test
