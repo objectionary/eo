@@ -25,19 +25,20 @@ package org.eolang;
 
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
+ * @since 0.30
  */
 public class Universe {
 
     /**
      * Connector to eo objects.
      */
-    final private Phi connector;
+    private final Phi connector;
 
     /**
      * Ctor.
      * @param connector Connector.
      */
-    public Universe(Phi connector) {
+    public Universe(final Phi connector) {
         this.connector = connector;
     }
 
