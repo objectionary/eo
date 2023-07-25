@@ -304,24 +304,22 @@ final class SnippetTestCase {
      * @return Classpath.
      */
     private static String classpath() {
-        final String runtime;
         final String home = System.getProperty("user.home");
         try {
             if (SnippetTestCase.isNotRealPath(home)) {
-                runtime = Paths.get(home)
-                    .resolve(
-                        String.format(
-                            ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                            "1.0-SNAPSHOT"
-                        )
-                    ).toString();
+                throw new WrongPathException(home);
+            } else {
                 return String.format(
                     ".%s%s",
                     File.pathSeparatorChar,
-                    runtime
+                    Paths.get(home)
+                        .resolve(
+                            String.format(
+                                ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                                "1.0-SNAPSHOT"
+                            )
+                        )
                 );
-            } else {
-                throw new WrongPathException(home);
             }
         } catch (final WrongPathException exception) {
             throw new IllegalStateException("Can't open classpath", exception);
