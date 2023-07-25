@@ -30,9 +30,12 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.hash.*;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyFallbackSwap;
@@ -75,7 +78,7 @@ public final class PullMojo extends SafeMojo {
      * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private CommitHash hash;
+    private CommitHash hsh;
 
     /**
      * Objectionaries.
@@ -100,17 +103,17 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.hash == null) {
-            this.hash = new ChRemote(this.tag);
+        if (this.hsh == null) {
+            this.hsh = new ChRemote(this.tag);
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
             tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
-                .withHash(new ChNarrow(this.hash));
+                .withHash(new ChNarrow(this.hsh));
         }
         Logger.info(
             this, "%d program(s) pulled from %s",
-            tojos.size(), this.objectionaryByHash(this.hash)
+            tojos.size(), this.objectionaryByHash(this.hsh)
         );
     }
 
@@ -162,7 +165,7 @@ public final class PullMojo extends SafeMojo {
             );
         } else {
             new Home(dir).save(
-                this.objectionaryByHash(this.hash).get(name),
+                this.objectionaryByHash(this.hsh).get(name),
                 dir.relativize(src)
             );
             Logger.debug(

@@ -34,7 +34,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OjsDefault;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -67,8 +67,10 @@ public final class AssembleMojo extends SafeMojo {
 
     /**
      * Objectionaries.
+     * @checkstyle MemberNameCheck (6 lines)
+     * @checkstyle ConstantUsageCheck (5 lines)
      */
-    private Objectionaries objectionaries;
+    private final Objectionaries objectionaries = new OjsDefault();
 
     /**
      * The central.
@@ -87,10 +89,15 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * The Git tag to pull objects from, in objectionary.
      * @since 0.21.0
+     * @todo #2302:30min Rename the parameter "hash". This parameter is actually
+     *  a tag, not a hash. By this tag application actually finds hash and then
+     *  uses it. So need to rename this parameter to "tag" and rename it in all
+     *  places where it's used. Also it would be better to use name "hash" for
+     *  parameter "hsh" in {@link ProbeMojo} and {@link PullMojo}
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
-    private String tag = "master";
+    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
+    private String hash = "master";
 
     /**
      * Skip artifact with the version 0.0.0.

@@ -30,7 +30,7 @@ import java.util.Map;
  * Default objectionaries.
  * @since 0.29.6
  */
-public class OjsDefault implements Objectionaries {
+public final class OjsDefault implements Objectionaries {
     /**
      * Hash-map.
      */
@@ -52,13 +52,13 @@ public class OjsDefault implements Objectionaries {
     }
 
     @Override
-    public Objectionaries with(String hash, Objectionary objectionary) {
+    public Objectionaries with(final String hash, final Objectionary objectionary) {
         this.map.putIfAbsent(hash, objectionary);
         return this;
     }
 
     @Override
-    public Objectionary get(String hash) {
+    public Objectionary get(final String hash) {
         return this.map.get(hash);
     }
 }

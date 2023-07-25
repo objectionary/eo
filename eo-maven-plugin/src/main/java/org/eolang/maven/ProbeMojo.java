@@ -39,8 +39,8 @@ import org.cactoos.list.ListOf;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
@@ -85,7 +85,7 @@ public final class ProbeMojo extends SafeMojo {
      * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private CommitHash hash;
+    private CommitHash hsh;
 
     /**
      * Objectionaries.
@@ -95,8 +95,8 @@ public final class ProbeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.hash == null) {
-            this.hash = new ChRemote(this.tag);
+        if (this.hsh == null) {
+            this.hsh = new ChRemote(this.tag);
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -108,7 +108,7 @@ public final class ProbeMojo extends SafeMojo {
             }
             int count = 0;
             for (final String name : names) {
-                if (!this.objectionaryByHash(this.hash).contains(name)) {
+                if (!this.objectionaryByHash(this.hsh).contains(name)) {
                     continue;
                 }
                 ++count;
@@ -117,7 +117,7 @@ public final class ProbeMojo extends SafeMojo {
                     .withDiscoveredAt(src);
                 probed.add(name);
             }
-            tojo.withHash(new ChNarrow(this.hash)).withProbed(count);
+            tojo.withHash(new ChNarrow(this.hsh)).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {

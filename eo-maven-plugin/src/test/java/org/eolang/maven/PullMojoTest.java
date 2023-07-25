@@ -123,7 +123,7 @@ final class PullMojoTest {
             "objectionaries",
                 new OjsDefault().with(hash, new Objectionary.Fake())
             )
-            .with("hash", hash)
+            .with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -147,10 +147,10 @@ final class PullMojoTest {
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
         maven.with(
-                "objectionaries",
+            "objectionaries",
                 new OjsDefault().with(hash, new Objectionary.Fake())
             )
-            .with("hash", hash)
+            .with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(

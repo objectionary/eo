@@ -159,7 +159,7 @@ final class SnippetTestCase {
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("hash", hash)
+            .with("hsh", hash)
             .with(
                 "objectionaries",
                 new OjsDefault().with(hash, new OyFilesystem())

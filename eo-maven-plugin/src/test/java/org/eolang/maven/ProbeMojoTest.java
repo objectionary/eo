@@ -37,6 +37,7 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -52,12 +53,17 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
+ * @todo #2302:30min Implement probing objects with versions and enable
+ *  tests. ProbeMojo uses {@link Objectionaries} but it does not search for
+ *  objects in different objectionaries. Need to implement searching objects
+ *  in different objectionaries and enable the tests belove. Don't forget to
+ *  remove this puzzle after that.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
     /**
-     *
+     * Master hash.
      */
     private static final String MASTER = "9c46a671f2bc68e777aab031d57da5012ba807a7";
 
@@ -93,7 +99,7 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("hash", hash)
+                    .with("hsh", hash)
                     .with(
                         "objectionaries",
                         new OjsDefault().with(hash, new Objectionary.Fake())
@@ -115,7 +121,7 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("hash", hash)
+                    .with("hsh", hash)
                     .with(
                         "objectionaries",
                         new OjsDefault().with(hash, new Objectionary.Fake())
