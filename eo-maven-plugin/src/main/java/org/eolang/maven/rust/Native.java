@@ -52,7 +52,7 @@ public final class Native extends Savable {
                     name
                 ),
                 String.format(
-                  "    public static native byte[] %s",
+                    "    public static native byte[] %s",
                     name
                 ),
                 "        (final EOrust eo);",
