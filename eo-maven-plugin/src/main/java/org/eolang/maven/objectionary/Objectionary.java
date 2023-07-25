@@ -24,6 +24,7 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
+
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -46,12 +47,6 @@ public interface Objectionary {
 
     /**
      * Checks whether an Objectionary contains a provided object.
-     * @param name Object name.
-     * @return Object code.
-     * @throws IOException If fails to fetch.
-     */
-    /**
-     * Checks whether an Objectionary contains a provided object.
      *
      * @param name Object name.
      * @return Boolean: "true" if found, "false" if not.
@@ -62,8 +57,8 @@ public interface Objectionary {
     /**
      * Objectionary with lambda-function Ctor-s for testing.
      *
-     * @since 0.28.11
      * @checkstyle IllegalCatchCheck (150 lines)
+     * @since 0.28.11
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     final class Fake implements Objectionary {
