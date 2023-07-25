@@ -305,7 +305,8 @@ final class SnippetTestCase {
      */
     private static String classpath() {
         final String runtime;
-        final String property = System.getProperty("runtime.jar");
+        final String env = "runtime.jar";
+        final String property = System.getProperty(env);
         if (SnippetTestCase.isNotRealPath(property)) {
             runtime = Paths.get(System.getProperty("user.home"))
                 .resolve(
@@ -314,6 +315,12 @@ final class SnippetTestCase {
                         "1.0-SNAPSHOT"
                     )
                 ).toString();
+            Logger.warn(
+                SnippetTestCase.class,
+                "The path provided by '%s' environment variable is not a real path. The default path '%' will be used",
+                env,
+                runtime
+            );
         } else {
             runtime = property;
         }
@@ -337,6 +344,11 @@ final class SnippetTestCase {
             try {
                 Paths.get(path);
             } catch (final InvalidPathException ignore) {
+                Logger.warn(
+                    SnippetTestCase.class,
+                    "The path '%s' is invalid",
+                    path
+                );
                 res = true;
             }
         }
