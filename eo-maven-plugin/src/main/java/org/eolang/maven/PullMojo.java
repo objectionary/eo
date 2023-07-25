@@ -91,7 +91,7 @@ public final class PullMojo extends SafeMojo {
     private Objectionary objectionary;
 
     /**
-     * Hash-Objectionary map.
+     * Objectionaries.
      * @todo #1602:30min Use objectionaries to pull objects with different
      *  versions. Objects with different versions are stored in different
      *  storages (objectionaries). Every objectionary has its own hash.
