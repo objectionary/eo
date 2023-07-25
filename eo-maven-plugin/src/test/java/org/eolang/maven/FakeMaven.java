@@ -232,7 +232,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("objectionary", new Objectionary.Fake());
             this.params.putIfAbsent(
                 "eoEnvDir",
-                new File("src/test/resources/org/eolang/maven/binarize/eo_env")
+                new File("../eo-runtime/src/main/rust/eo_env")
             );
         }
         final Moja<T> moja = new Moja<>(mojo);
