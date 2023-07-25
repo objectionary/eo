@@ -55,6 +55,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -229,7 +230,13 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent(
+                "objectionaries",
+                new OjsDefault().with(
+                    "9c46a671f2bc68e777aab031d57da5012ba807a7",
+                    new Objectionary.Fake()
+                )
+            );
             this.params.putIfAbsent(
                 "eoEnvDir",
                 new File("src/test/resources/org/eolang/maven/binarize/eo_env")

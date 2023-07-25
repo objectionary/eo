@@ -31,10 +31,7 @@ import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChRemote;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.hash.*;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -54,14 +51,19 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
+    private static final String MASTER = "9c46a671f2bc68e777aab031d57da5012ba807a7";
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("foreignFormat", "json")
-                    .with("objectionary", new Objectionary.Fake())
+                    .with(
+                        "objectionaries",
+                        new OjsDefault().with(ProbeMojoTest.MASTER, new Objectionary.Fake())
+                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -77,11 +79,17 @@ final class ProbeMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
+        final CommitHash hash = new ChCached(
+            new ChText(temp.resolve("tags.txt"), "master")
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("offlineHashFile", temp.resolve("tags.txt"))
-                    .with("objectionary", new Objectionary.Fake())
+                    .with("hash", hash)
+                    .with(
+                        "objectionaries",
+                        new OjsDefault().with(hash, new Objectionary.Fake())
+                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -93,12 +101,17 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
+        final CommitHash hash = new ChCached(
+            new ChPattern("*.*.*:abcdefg", "1.0.0")
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
-                    .with("tag", "1.0.0")
-                    .with("offlineHash", "*.*.*:abcdefg")
-                    .with("objectionary", new Objectionary.Fake())
+                    .with("hash", hash)
+                    .with(
+                        "objectionaries",
+                        new OjsDefault().with(hash, new Objectionary.Fake())
+                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -112,11 +125,20 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
+        final CommitHash hash = new ChCached(
+            new ChRemote(tag)
+        );
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("tag", tag)
-                    .with("objectionary", new OyRemote(new ChCached(new ChRemote(tag))))
+                    .with(
+                        "objectionaries",
+                        new OjsDefault().with(
+                            hash,
+                            new OyRemote(hash)
+                        )
+                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),

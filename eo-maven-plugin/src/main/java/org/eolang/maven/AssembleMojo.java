@@ -85,12 +85,12 @@ public final class AssembleMojo extends SafeMojo {
     private boolean overWrite;
 
     /**
-     * The Git hash to pull objects from, in objectionary.
+     * The Git tag to pull objects from, in objectionary.
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
 
     /**
      * Skip artifact with the version 0.0.0.
