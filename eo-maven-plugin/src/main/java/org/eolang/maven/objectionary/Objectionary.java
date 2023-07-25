@@ -24,7 +24,6 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
-
 import org.cactoos.Func;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
