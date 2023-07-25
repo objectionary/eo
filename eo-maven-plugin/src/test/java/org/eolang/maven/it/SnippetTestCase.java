@@ -305,53 +305,80 @@ final class SnippetTestCase {
      */
     private static String classpath() {
         final String runtime;
-        final String env = "runtime.jar";
-        final String property = System.getProperty(env);
-        if (SnippetTestCase.isNotRealPath(property)) {
-            runtime = Paths.get(System.getProperty("user.home"))
-                .resolve(
-                    String.format(
-                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                        "1.0-SNAPSHOT"
-                    )
-                ).toString();
-            Logger.warn(
-                SnippetTestCase.class,
-                "The path provided by '%s' environment variable is not a real path. The default path '%' will be used",
-                env,
-                runtime
-            );
-        } else {
-            runtime = property;
+        final String home = System.getProperty("user.home");
+        try {
+            if (SnippetTestCase.isNotRealPath(home)) {
+                runtime = Paths.get(home)
+                    .resolve(
+                        String.format(
+                            ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                            "1.0-SNAPSHOT"
+                        )
+                    ).toString();
+                return String.format(
+                    ".%s%s",
+                    File.pathSeparatorChar,
+                    runtime
+                );
+            } else {
+                throw new WrongPathException(home);
+            }
+        } catch (final WrongPathException exception) {
+            throw new IllegalStateException("Can't open classpath", exception);
         }
-        return String.format(
-            ".%s%s",
-            File.pathSeparatorChar,
-            runtime
-        );
     }
 
     /**
      * Checks if the path is real path.
      * @param path String path to check.
      * @return True if path is real.
+     * @throws WrongPathException if path is totally wrong.
      */
-    private static boolean isNotRealPath(final String path) {
+    private static boolean isNotRealPath(final String path) throws WrongPathException {
         boolean res = false;
         if (Objects.isNull(path) || path.isEmpty() || StringUtils.isBlank(path)) {
             res = true;
         } else {
             try {
                 Paths.get(path);
-            } catch (final InvalidPathException ignore) {
-                Logger.warn(
-                    SnippetTestCase.class,
-                    "The path '%s' is invalid",
-                    path
-                );
-                res = true;
+            } catch (final InvalidPathException exception) {
+                throw new WrongPathException(path, exception);
             }
         }
         return res;
+    }
+
+    /**
+     * Checked exception for wrong paths.
+     *
+     * @since 0.30
+     */
+    private static final class WrongPathException extends Exception {
+
+        /**
+         * Constructor.
+         * @param path Wrong path.
+         */
+        WrongPathException(final String path) {
+            super(WrongPathException.msg(path));
+        }
+
+        /**
+         * Constructor.
+         * @param path Wrong path.
+         * @param cause Cause.
+         */
+        WrongPathException(final String path, final Throwable cause) {
+            super(WrongPathException.msg(path), cause);
+        }
+
+        /**
+         * Informative message.
+         * @param path Invalid path.
+         * @return Error message.
+         */
+        private static String msg(final String path) {
+            return String.format("Invalid path '%s'", path);
+        }
     }
 }

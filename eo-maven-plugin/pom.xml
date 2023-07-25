@@ -263,7 +263,6 @@ SOFTWARE.
           <excludedGroups>slow</excludedGroups>
           <argLine>@{argLine} -Xss${stack-size}</argLine>
           <systemPropertyVariables>
-            <runtime.jar>${org.eolang:eo-runtime:jar}</runtime.jar>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
           </systemPropertyVariables>
           <properties>
