@@ -60,7 +60,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public int find(final String name) {
-        return 0;
+        return this.connector.hashCode();
     }
 
     /**
@@ -73,6 +73,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void put(final int vertex, final byte[] bytes) {
+        return;
     }
 
     /**
@@ -86,6 +87,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void bind(final int parent, final int child, final String att) {
+        return;
     }
 
     /**
