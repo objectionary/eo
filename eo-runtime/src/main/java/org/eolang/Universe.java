@@ -23,6 +23,9 @@
  */
 package org.eolang;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
  * @since 0.30
@@ -34,12 +37,15 @@ public class Universe {
      */
     private final Phi connector;
 
+    private final Map<Integer, Phi> indexed;
+
     /**
      * Ctor.
      * @param connector Connector.
      */
     public Universe(final Phi connector) {
         this.connector = connector;
+        this.indexed = new HashMap<>();
     }
 
     /**
@@ -51,16 +57,18 @@ public class Universe {
 
     /**
      * Finds vertex of eo object by its location.
-     * @param name Relative location of the object to find.
+     * @param name Relative location of the object to find like "^.^.some-obj".
      * @return Vertex of the object to find.
-     * @todo #2237:45min Implement finding by location.
-     *  Name argument is something like "^.^.some-obj".
-     *  This string must be splitted by '.' and then for
-     *  every part it is necessary to call this.attr().get()
-     * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public int find(final String name) {
-        return this.connector.hashCode();
+        Phi accum = this.connector;
+        final String atts[] = Universe.replace(name)
+            .split("\\.");
+        for (final String att: atts) {
+            accum = accum.attr(att).get();
+        }
+        this.indexed.putIfAbsent(accum.hashCode(), accum);
+        return accum.hashCode();
     }
 
     /**
@@ -103,6 +111,27 @@ public class Universe {
         return vertex;
     }
 
+    private static String replace(final String name) {
+        final StringBuilder builder = new StringBuilder(name.length());
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            switch (c) {
+                case '^':
+                    builder.append('ρ');
+                    break;
+                case '@':
+                    builder.append('φ');
+                    break;
+                case '&':
+                    builder.append('σ');
+                    break;
+                default:
+                    builder.append(c);
+                    break;
+            }
+        }
+        return builder.toString();
+    }
     /**
      * Dataizes the eo object by vertex and return byte array.
      * @param vertex Vertex of eo-object.
@@ -112,7 +141,7 @@ public class Universe {
      *  This method is going to be called from rust insert
      *  and should not be static.
      */
-    public static byte[] dataize(final int vertex) {
-        return new byte[]{0b1111111};
+    public byte[] dataize(final int vertex) {
+        return new Param(this.indexed.get(vertex)).asBytes().take();
     }
 }
