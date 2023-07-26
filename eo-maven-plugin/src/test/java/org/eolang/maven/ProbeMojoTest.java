@@ -39,7 +39,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -56,8 +56,21 @@ import org.junit.jupiter.api.io.TempDir;
  * @todo #2302:30min Implement probing objects with versions and enable
  *  tests. ProbeMojo uses {@link Objectionaries} but it does not search for
  *  objects in different objectionaries. Need to implement searching objects
- *  in different objectionaries and enable the tests belove. Don't forget to
- *  remove this puzzle after that.
+ *  in different objectionaries and enable disabled tests below:
+ *  findsProbesWithVersionsInOneObjectionary,
+ *  findsProbesWithVersionsInDifferentObjectionaries,
+ *  findsProbesWithDefaultHash. Don't forget to remove this puzzle after that.
+ * @todo #2302:30min Add special method to {@link FakeMaven} for versioned
+ *  program. On each compilation step we test programs with versions and such
+ *  programs looks similar or identical. We can create a separate method for it.
+ *  Something like withVersionedProgram()
+ * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
+ *  code duplication among all tests in the class. Need to reduce it somehow.
+ * @todo #2302:30min Refactor firstEntity method. The "first entity of the
+ *  foreign tojos" looks strange. It looks like we are tying to scan an
+ *  intermediate state which we are trying to read in the middle of the process.
+ *  It lead to a fragile implementation. Could we check the result somehow else?
+ *  Or to skip that check at all?
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
@@ -76,7 +89,7 @@ final class ProbeMojoTest {
                     .with("foreignFormat", "json")
                     .with(
                         "objectionaries",
-                        new OjsDefault().with(ProbeMojoTest.MASTER, new Objectionary.Fake())
+                        new ObjsDefault().with(ProbeMojoTest.MASTER, new Objectionary.Fake())
                     )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
@@ -102,7 +115,7 @@ final class ProbeMojoTest {
                     .with("hsh", hash)
                     .with(
                         "objectionaries",
-                        new OjsDefault().with(hash, new Objectionary.Fake())
+                        new ObjsDefault().with(hash, new Objectionary.Fake())
                     )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
@@ -124,7 +137,7 @@ final class ProbeMojoTest {
                     .with("hsh", hash)
                     .with(
                         "objectionaries",
-                        new OjsDefault().with(hash, new Objectionary.Fake())
+                        new ObjsDefault().with(hash, new Objectionary.Fake())
                     )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
@@ -148,7 +161,7 @@ final class ProbeMojoTest {
                     .with("tag", tag)
                     .with(
                         "objectionaries",
-                        new OjsDefault().with(
+                        new ObjsDefault().with(
                             hash,
                             new OyRemote(hash)
                         )
@@ -169,7 +182,7 @@ final class ProbeMojoTest {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
         final String object = "org.eolang.io.stdout|9b88393";
         final FakeMaven maven = new FakeMaven(temp)
-            .with("objectionaries", new OjsDefault().with(hash, new OyRemote(hash)))
+            .with("objectionaries", new ObjsDefault().with(hash, new OyRemote(hash)))
             .with("withVersions", true)
             .withProgram(
                 "+package org.eolang.custom\n",
@@ -208,7 +221,7 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new OjsDefault()
+                new ObjsDefault()
                     .with(first, new OyRemote(first))
                     .with(second, new OyRemote(second))
             )
@@ -258,12 +271,12 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new OjsDefault()
+                new ObjsDefault()
                     .with(first, new OyRemote(first))
                     .with(master, new OyRemote(master))
             )
             .with("withVersions", true)
-            .with("defaultHash", master)
+            .with("hsh", master)
             .withProgram(
                 "+package org.eolang.custom\n",
                 "[] > main",

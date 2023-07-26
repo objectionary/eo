@@ -34,7 +34,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -70,7 +70,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (6 lines)
      * @checkstyle ConstantUsageCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new OjsDefault();
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     /**
      * The central.

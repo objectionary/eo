@@ -41,7 +41,7 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
 import org.eolang.maven.objectionary.OyIndexed;
@@ -91,7 +91,7 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new OjsDefault();
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     @Override
     public void exec() throws IOException {

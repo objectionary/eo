@@ -54,7 +54,7 @@ import org.eolang.maven.TranspileMojo;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
@@ -162,7 +162,7 @@ final class SnippetTestCase {
             .with("hsh", hash)
             .with(
                 "objectionaries",
-                new OjsDefault().with(hash, new OyFilesystem())
+                new ObjsDefault().with(hash, new OyFilesystem())
             );
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);

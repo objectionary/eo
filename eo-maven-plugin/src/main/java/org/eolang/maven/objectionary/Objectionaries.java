@@ -44,9 +44,7 @@ public interface Objectionaries {
      * @param objectionary Objectionary to store.
      * @return Objectionaries with new objectionary by given hash.
      */
-    default Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
-        return this.with(hash.value(), objectionary);
-    }
+    Objectionaries with(CommitHash hash, Objectionary objectionary);
 
     /**
      * Get objectionary by given hash.
@@ -60,7 +58,5 @@ public interface Objectionaries {
      * @param hash Hash as {@link CommitHash}
      * @return Objectionary by given hash.
      */
-    default Objectionary get(CommitHash hash) {
-        return this.get(hash.value());
-    }
+    Objectionary get(CommitHash hash);
 }

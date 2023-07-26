@@ -55,7 +55,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -232,7 +232,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
                 "objectionaries",
-                new OjsDefault().with(
+                new ObjsDefault().with(
                     "9c46a671f2bc68e777aab031d57da5012ba807a7",
                     new Objectionary.Fake()
                 )

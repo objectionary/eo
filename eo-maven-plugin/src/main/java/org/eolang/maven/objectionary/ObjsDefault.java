@@ -25,12 +25,13 @@ package org.eolang.maven.objectionary;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * Default objectionaries.
  * @since 0.29.6
  */
-public final class OjsDefault implements Objectionaries {
+public final class ObjsDefault implements Objectionaries {
     /**
      * Hash-map.
      */
@@ -39,7 +40,7 @@ public final class OjsDefault implements Objectionaries {
     /**
      * Ctor.
      */
-    public OjsDefault() {
+    public ObjsDefault() {
         this(new HashMap<>());
     }
 
@@ -47,7 +48,7 @@ public final class OjsDefault implements Objectionaries {
      * Ctor.
      * @param ojs Objectionaries hash-map.
      */
-    OjsDefault(final Map<String, Objectionary> ojs) {
+    ObjsDefault(final Map<String, Objectionary> ojs) {
         this.map = ojs;
     }
 
@@ -58,7 +59,17 @@ public final class OjsDefault implements Objectionaries {
     }
 
     @Override
+    public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
+        return this.with(hash.value(), objectionary);
+    }
+
+    @Override
     public Objectionary get(final String hash) {
         return this.map.get(hash);
+    }
+
+    @Override
+    public Objectionary get(final CommitHash hash) {
+        return this.get(hash.value());
     }
 }

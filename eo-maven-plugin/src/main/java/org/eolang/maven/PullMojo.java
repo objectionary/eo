@@ -36,7 +36,7 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OjsDefault;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
@@ -90,7 +90,7 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new OjsDefault();
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     /**
      * Pull again even if the .eo file is already present?
