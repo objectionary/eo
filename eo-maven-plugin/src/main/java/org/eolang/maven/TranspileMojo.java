@@ -267,10 +267,6 @@ public final class TranspileMojo extends SafeMojo {
         for (final Path binary : unexpected) {
             try {
                 Files.deleteIfExists(binary);
-            } catch (final AccessDeniedException cause) {
-                Logger.warn(
-                    this, "Can't delete file %s due to access denied", binary
-                );
             } catch (final IOException cause) {
                 throw new IllegalStateException(
                     String.format("Can't delete file %s", binary),
