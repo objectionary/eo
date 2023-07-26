@@ -104,13 +104,13 @@ final class OptimizeMojoTest {
             .get(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
-        final long start = System.currentTimeMillis();
-        final long old = start - TimeUnit.SECONDS.toMillis(10L);
+        final long old = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10L);
         if (!tgt.toFile().setLastModified(old)) {
             Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
         }
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
+            "We expect that already optimized xmir will be replaced by a new optimized xmir, because the first xmir is outdated and should be updated",
             tgt.toFile().lastModified(),
             Matchers.greaterThan(old)
         );

@@ -241,7 +241,6 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Should fail
      */
     private boolean shouldPass(final XML xml) {
-        final List<XML> errors = xml.nodes("/program/errors/error");
-        return errors.isEmpty() || this.failOnError;
+        return xml.nodes("/program/errors/error").isEmpty() || this.failOnError;
     }
 }
