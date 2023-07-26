@@ -310,9 +310,7 @@ final class SnippetTestCase {
     private static String classpath() {
         final String home = System.getProperty("user.home");
         try {
-            if (SnippetTestCase.isNotRealPath(home)) {
-                throw new WrongPathException(home);
-            } else {
+            if (SnippetTestCase.isRealPath(home)) {
                 return String.format(
                     ".%s%s",
                     File.pathSeparatorChar,
@@ -325,6 +323,7 @@ final class SnippetTestCase {
                         )
                 );
             }
+            throw new WrongPathException(home);
         } catch (final WrongPathException exception) {
             throw new IllegalStateException("Can't open classpath", exception);
         }
@@ -336,18 +335,19 @@ final class SnippetTestCase {
      * @return True if path is real.
      * @throws WrongPathException if path is totally wrong.
      */
-    private static boolean isNotRealPath(final String path) throws WrongPathException {
-        boolean res = false;
-        if (Objects.isNull(path) || path.isEmpty() || StringUtils.isBlank(path)) {
-            res = true;
-        } else {
+    private static boolean isRealPath(final String path) throws WrongPathException {
+        final boolean result;
+        if (!Objects.isNull(path) && !path.isEmpty() && !StringUtils.isBlank(path)) {
             try {
                 Paths.get(path);
             } catch (final InvalidPathException exception) {
                 throw new WrongPathException(path, exception);
             }
+            result = true;
+        } else {
+            result = false;
         }
-        return res;
+        return result;
     }
 
     /**
