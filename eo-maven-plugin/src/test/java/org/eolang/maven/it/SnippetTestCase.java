@@ -337,15 +337,15 @@ final class SnippetTestCase {
      */
     private static boolean isRealPath(final String path) throws WrongPathException {
         final boolean result;
-        if (!Objects.isNull(path) && !path.isEmpty() && !StringUtils.isBlank(path)) {
+        if (Objects.isNull(path) || path.isEmpty() || StringUtils.isBlank(path)) {
+            result = false;
+        } else {
             try {
                 Paths.get(path);
             } catch (final InvalidPathException exception) {
                 throw new WrongPathException(path, exception);
             }
             result = true;
-        } else {
-            result = false;
         }
         return result;
     }
