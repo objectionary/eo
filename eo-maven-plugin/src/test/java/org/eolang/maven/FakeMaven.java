@@ -233,7 +233,7 @@ public final class FakeMaven {
             this.params.putIfAbsent(
                 "objectionaries",
                 new ObjsDefault().with(
-                    "9c46a671f2bc68e777aab031d57da5012ba807a7",
+                    new CommitHash.ChConstant("9c46a671f2bc68e777aab031d57da5012ba807a7"),
                     new Objectionary.Fake()
                 )
             );

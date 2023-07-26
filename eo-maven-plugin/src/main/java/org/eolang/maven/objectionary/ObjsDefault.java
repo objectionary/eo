@@ -53,23 +53,13 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public Objectionaries with(final String hash, final Objectionary objectionary) {
-        this.map.putIfAbsent(hash, objectionary);
+    public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
+        this.map.putIfAbsent(hash.value(), objectionary);
         return this;
     }
 
     @Override
-    public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
-        return this.with(hash.value(), objectionary);
-    }
-
-    @Override
-    public Objectionary get(final String hash) {
-        return this.map.get(hash);
-    }
-
-    @Override
     public Objectionary get(final CommitHash hash) {
-        return this.get(hash.value());
+        return this.map.get(hash.value());
     }
 }

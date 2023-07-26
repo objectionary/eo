@@ -32,26 +32,11 @@ import org.eolang.maven.hash.CommitHash;
 public interface Objectionaries {
     /**
      * Set new objectionary by given hash only if it's absent.
-     * @param hash Hash as {@link String}.
-     * @param objectionary Objectionary to store.
-     * @return Objectionaries with new objectionary by given hash.
-     */
-    Objectionaries with(String hash, Objectionary objectionary);
-
-    /**
-     * Set new objectionary by given hash only if it's absent.
      * @param hash Hash as {@link CommitHash}.
      * @param objectionary Objectionary to store.
      * @return Objectionaries with new objectionary by given hash.
      */
     Objectionaries with(CommitHash hash, Objectionary objectionary);
-
-    /**
-     * Get objectionary by given hash.
-     * @param hash Hash as {@link String}
-     * @return Objectionary by given hash.
-     */
-    Objectionary get(String hash);
 
     /**
      * Get objectionary by given hash.

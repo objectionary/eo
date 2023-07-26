@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
@@ -144,10 +145,10 @@ public final class ProbeMojo extends SafeMojo {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryByHash(final CommitHash hash) {
-        final String value = hash.value();
+        final CommitHash cached = new ChCached(hash);
         return this.objectionaries
             .with(
-                value,
+                cached,
                 new OyFallbackSwap(
                     new OyHome(
                         new ChNarrow(hash),
@@ -159,7 +160,7 @@ public final class ProbeMojo extends SafeMojo {
                     this::forceUpdate
                 )
             )
-            .get(value);
+            .get(cached);
     }
 
     /**

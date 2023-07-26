@@ -123,11 +123,11 @@ public final class PullMojo extends SafeMojo {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryByHash(final CommitHash hash) {
-        final String value = hash.value();
-        final CommitHash narrow = new ChCached(new ChNarrow(hash));
+        final CommitHash cached = new ChCached(hash);
+        final CommitHash narrow = new ChNarrow(cached);
         return this.objectionaries
             .with(
-                value,
+                cached,
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -137,13 +137,13 @@ public final class PullMojo extends SafeMojo {
                         narrow,
                         this.cache,
                         new OyIndexed(
-                            new OyRemote(hash)
+                            new OyRemote(cached)
                         )
                     ),
                     () -> this.session.getRequest().isUpdateSnapshots()
                 )
             )
-            .get(value);
+            .get(cached);
     }
 
     /**

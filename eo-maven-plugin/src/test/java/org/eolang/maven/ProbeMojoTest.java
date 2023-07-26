@@ -61,9 +61,11 @@ import org.junit.jupiter.api.io.TempDir;
  *  findsProbesWithVersionsInDifferentObjectionaries,
  *  findsProbesWithDefaultHash. Don't forget to remove this puzzle after that.
  * @todo #2302:30min Add special method to {@link FakeMaven} for versioned
- *  program. On each compilation step we test programs with versions and such
+ *  program. On many compilation steps we test programs with versions and such
  *  programs looks similar or identical. We can create a separate method for it.
  *  Something like withVersionedProgram()
+ *  See tests in {@link OptimizeMojoTest}, {@link VersionsMojoTest},
+ *  {@link DiscoverMojoTest}, {@link ProbeMojoTest}.
  * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
  *  code duplication among all tests in the class. Need to reduce it somehow.
  * @todo #2302:30min Refactor firstEntity method. The "first entity of the
@@ -78,7 +80,9 @@ final class ProbeMojoTest {
     /**
      * Master hash.
      */
-    private static final String MASTER = "9c46a671f2bc68e777aab031d57da5012ba807a7";
+    private static final CommitHash MASTER = new CommitHash.ChConstant(
+        "9c46a671f2bc68e777aab031d57da5012ba807a7"
+    );
 
     @Test
     @ExtendWith(OnlineCondition.class)
