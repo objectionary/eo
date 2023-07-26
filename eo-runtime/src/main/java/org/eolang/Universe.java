@@ -73,7 +73,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void put(final int vertex, final byte[] bytes) {
-        return;
+        //Empty yet.
     }
 
     /**
