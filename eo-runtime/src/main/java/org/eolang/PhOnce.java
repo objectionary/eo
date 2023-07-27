@@ -44,6 +44,11 @@ class PhOnce implements Phi {
     private final Supplier<String> exp;
 
     /**
+     * Type.
+     */
+    private final Supplier<Integer> tpe;
+
+    /**
      * Ctor.
      *
      * @param data The object
@@ -51,9 +56,10 @@ class PhOnce implements Phi {
      * @param expr The expression
      */
     PhOnce(final Data<Phi> data, final Supplier<String> blank,
-        final Supplier<String> expr) {
+        final Supplier<String> expr, final Supplier<Integer> type) {
         this.object = new Data.Once<>(data, blank);
         this.exp = expr;
+        this.tpe = type;
     }
 
     @Override
@@ -94,5 +100,10 @@ class PhOnce implements Phi {
     @Override
     public String locator() {
         return this.object.take().locator();
+    }
+
+    @Override
+    public int type() {
+        return this.tpe.get();
     }
 }

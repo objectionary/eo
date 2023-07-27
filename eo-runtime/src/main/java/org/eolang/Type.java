@@ -21,29 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
+import EOorg.EOeolang.*;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
- * A method-calling object.
+ * Type of objects.
  *
- * @since 0.1
+ * @since 0.29.6
  */
-public final class PhMethod extends PhOnce {
+public class Type {
+    /**
+     * Map of default data types.
+     */
+    private static final Map<String, Integer> DATA = new MapOf<>(
+        new MapEntry<>(EObool.class.toString(), 1),
+        new MapEntry<>(EOfloat.class.toString(), 2),
+        new MapEntry<>(EOint.class.toString(), 3),
+        new MapEntry<>(EOstring.class.toString(), 4),
+        new MapEntry<>(EObytes.class.toString(), 5)
+    );
 
     /**
-     * Ctor.
-     *
-     * @param phi The object
-     * @param mtd The name of method
+     * Type.
      */
-    public PhMethod(final Phi phi, final String mtd) {
-        super(
-            () -> new PhImmovable(phi.attr(mtd).get()),
-            () -> String.format("%s.%s", phi, mtd),
-            () -> String.format("%s.%s", phi.φTerm(), mtd),
-            phi::type
-        );
+    private final AtomicInteger type = new AtomicInteger(5);
+
+    /**
+     * Get best type for given class.
+     * @param clazz Class.
+     * @return Type for given class.
+     */
+    public int best(final Class<? extends Phi> clazz) {
+        final int tpe;
+        if (DATA.containsKey(clazz.toString())) {
+            tpe = DATA.get(clazz.toString());
+        } else {
+            tpe = this.next();
+        }
+        return tpe;
     }
 
+    /**
+     * Next type.
+     * @return Type.
+     */
+    public int next() {
+        return this.type.addAndGet(1);
+    }
 }

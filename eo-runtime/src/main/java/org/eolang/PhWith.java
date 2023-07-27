@@ -69,7 +69,8 @@ public final class PhWith extends PhOnce {
                     );
                 }
                 return txt;
-            }
+            },
+            phi::type
         );
     }
 
@@ -111,7 +112,8 @@ public final class PhWith extends PhOnce {
                     );
                 }
                 return txt;
-            }
+            },
+            phi::type
         );
     }
 

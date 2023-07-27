@@ -92,4 +92,9 @@ final class PhNamed implements Phi {
         return this.origin.locator();
     }
 
+    @Override
+    public int type() {
+        return this.origin.type();
+    }
+
 }

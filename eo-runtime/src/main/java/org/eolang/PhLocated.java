@@ -122,4 +122,9 @@ public final class PhLocated implements Phi {
         return String.format("%s:%d:%d", this.location, this.line, this.position);
     }
 
+    @Override
+    public int type() {
+        return this.origin.type();
+    }
+
 }

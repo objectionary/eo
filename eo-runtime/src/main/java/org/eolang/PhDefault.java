@@ -53,6 +53,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected static final Vertices VTX = new Vertices();
 
     /**
+     * Type.
+     */
+    protected static final Type TYPE = new Type();
+
+    /**
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(PhDefault.class.getName());
@@ -79,6 +84,12 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected int vertex;
 
     /**
+     * Type of it.
+     * @checkstyle VisibilityModifierCheck (2 lines)
+     */
+    protected int tpe;
+
+    /**
      * Order of their names.
      */
     private final List<String> order;
@@ -99,6 +110,8 @@ public abstract class PhDefault implements Phi, Cloneable {
     public PhDefault() {
         this(Phi.Φ);
     }
+
+    public PhDefault(final Phi sigma, final )
 
     /**
      * Ctor.
@@ -282,6 +295,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public String locator() {
         return "?";
+    }
+
+    @Override
+    public int type() {
+        return this.tpe;
     }
 
     /**

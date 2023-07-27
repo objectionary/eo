@@ -40,7 +40,8 @@ public final class PhUnvar extends PhOnce {
         super(
             () -> phi,
             phi::toString,
-            phi::φTerm
+            phi::φTerm,
+            phi::type
         );
     }
 
