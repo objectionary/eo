@@ -25,6 +25,7 @@ package org.eolang.maven.hash;
 
 import org.cactoos.Text;
 import org.cactoos.text.Sticky;
+import org.cactoos.text.TextEnvelope;
 
 /**
  * Commit hashes table as text from objectionary.
@@ -33,14 +34,25 @@ import org.cactoos.text.Sticky;
  *
  * @since 0.29.6
  */
-public final class CommitHashesText implements Text {
+final class CommitHashesText extends TextEnvelope {
+
     /**
      * Cache.
      */
     private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes());
 
-    @Override
-    public String asString() throws Exception {
-        return CommitHashesText.CACHE.asString();
+    /**
+     * Constructor.
+     */
+    CommitHashesText() {
+        this(CommitHashesText.CACHE);
+    }
+
+    /**
+     * Constructor.
+     * @param text The text to of commit hashes.
+     */
+    private CommitHashesText(final Text text) {
+        super(text);
     }
 }
