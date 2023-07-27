@@ -44,4 +44,42 @@ public interface Objectionaries {
      * @return Objectionary by given hash.
      */
     Objectionary get(CommitHash hash);
+
+    /**
+     * Fake objectionaries.
+     * Contains only one default objectionary that will be returned by any hash.
+     *
+     * @since 0.29.6
+     */
+    class Fake implements Objectionaries {
+        /**
+         * Default objectionary.
+         */
+        private final Objectionary objry;
+
+        /**
+         * Ctor.
+         */
+        public Fake() {
+            this(new Objectionary.Fake());
+        }
+
+        /**
+         * Ctor.
+         * @param objectionary Default objectionary
+         */
+        public Fake(final Objectionary objectionary) {
+            this.objry = objectionary;
+        }
+
+        @Override
+        public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
+            return this;
+        }
+
+        @Override
+        public Objectionary get(final CommitHash hash) {
+            return this.objry;
+        }
+    }
 }

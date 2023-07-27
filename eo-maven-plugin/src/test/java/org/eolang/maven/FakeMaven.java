@@ -54,8 +54,7 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.ObjsDefault;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -232,10 +231,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
                 "objectionaries",
-                new ObjsDefault().with(
-                    new CommitHash.ChConstant("9c46a671f2bc68e777aab031d57da5012ba807a7"),
-                    new Objectionary.Fake()
-                )
+                new Objectionaries.Fake()
             );
             this.params.putIfAbsent(
                 "eoEnvDir",

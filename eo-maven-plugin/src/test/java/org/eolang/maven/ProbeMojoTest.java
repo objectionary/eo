@@ -38,7 +38,6 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
@@ -77,13 +76,6 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
-    /**
-     * Master hash.
-     */
-    private static final CommitHash MASTER = new CommitHash.ChConstant(
-        "9c46a671f2bc68e777aab031d57da5012ba807a7"
-    );
-
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
@@ -91,10 +83,6 @@ final class ProbeMojoTest {
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("foreignFormat", "json")
-                    .with(
-                        "objectionaries",
-                        new ObjsDefault().with(ProbeMojoTest.MASTER, new Objectionary.Fake())
-                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -117,10 +105,6 @@ final class ProbeMojoTest {
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("hsh", hash)
-                    .with(
-                        "objectionaries",
-                        new ObjsDefault().with(hash, new Objectionary.Fake())
-                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -139,10 +123,6 @@ final class ProbeMojoTest {
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("hsh", hash)
-                    .with(
-                        "objectionaries",
-                        new ObjsDefault().with(hash, new Objectionary.Fake())
-                    )
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -156,20 +136,12 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
-        final CommitHash hash = new ChCached(
-            new ChRemote(tag)
-        );
+        final CommitHash hash = new ChRemote(tag);
         MatcherAssert.assertThat(
             ProbeMojoTest.firstEntry(
                 new FakeMaven(temp)
                     .with("tag", tag)
-                    .with(
-                        "objectionaries",
-                        new ObjsDefault().with(
-                            hash,
-                            new OyRemote(hash)
-                        )
-                    )
+                    .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
                     .withProgram(ProbeMojoTest.program())
                     .execute(new FakeMaven.Probe())
                     .foreignPath(),
@@ -186,7 +158,8 @@ final class ProbeMojoTest {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
         final String object = "org.eolang.io.stdout|9b88393";
         final FakeMaven maven = new FakeMaven(temp)
-            .with("objectionaries", new ObjsDefault().with(hash, new OyRemote(hash)))
+            .with("hsh", hash)
+            .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
             .with("withVersions", true)
             .withProgram(
                 "+package org.eolang.custom\n",

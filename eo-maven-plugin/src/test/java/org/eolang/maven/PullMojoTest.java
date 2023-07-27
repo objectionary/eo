@@ -35,7 +35,6 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -119,11 +118,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with(
-            "objectionaries",
-                new ObjsDefault().with(hash, new Objectionary.Fake())
-            )
-            .with("hsh", hash)
+        maven.with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -146,11 +141,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with(
-            "objectionaries",
-                new ObjsDefault().with(hash, new Objectionary.Fake())
-            )
-            .with("hsh", hash)
+        maven.with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
