@@ -24,8 +24,8 @@
 package org.eolang.maven.hash;
 
 import java.net.URL;
-import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
 /**
@@ -33,17 +33,12 @@ import org.cactoos.text.TextOf;
  *
  * @since 0.30
  */
-final class ObjectionaryCommitHashes {
+final class ObjectionaryCommitHashes extends TextEnvelope {
 
     /**
      * Tags.
      */
     private static final String HOME = "https://home.objectionary.com/tags.txt";
-
-    /**
-     * The url from which to download tags list.
-     */
-    private final URL url;
 
     /**
      * Constructor.
@@ -65,14 +60,6 @@ final class ObjectionaryCommitHashes {
      * @param tags The url from which to download tags list.
      */
     private ObjectionaryCommitHashes(final URL tags) {
-        this.url = tags;
-    }
-
-    /**
-     * Load tags (lazy).
-     * @return Tags.
-     */
-    Text load() {
-        return new TextOf(this.url);
+        super(new TextOf(tags));
     }
 }

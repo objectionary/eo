@@ -37,7 +37,7 @@ public final class CommitHashesText implements Text {
     /**
      * Cache.
      */
-    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes().load());
+    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes());
 
     @Override
     public String asString() throws Exception {
