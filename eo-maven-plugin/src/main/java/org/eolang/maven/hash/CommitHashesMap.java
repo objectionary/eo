@@ -24,7 +24,6 @@
 package org.eolang.maven.hash;
 
 import org.cactoos.Scalar;
-import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapEnvelope;
@@ -42,12 +41,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
 
     public CommitHashesMap() {
-        this(
-            new org.cactoos.scalar.Mapped<>(
-                Text::asString,
-                new ObjectionaryCommitHashes()::load
-            )
-        );
+        this(new CommitHashesText()::asString);
     }
 
     /**

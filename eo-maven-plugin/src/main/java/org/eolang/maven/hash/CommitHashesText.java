@@ -23,48 +23,24 @@
  */
 package org.eolang.maven.hash;
 
-import com.jcabi.log.Logger;
 import org.cactoos.Text;
 import org.cactoos.text.Sticky;
 
 /**
- * Hash of tag from objectionary.
+ * Commit hashes table as text from objectionary.
+ * This class serves the purpose of the global cache in order to avoid
+ * downloading the list of tags multiple times from objectionary.
  *
- * @since 0.26
+ * @since 0.29.6
  */
-public final class ChRemote implements CommitHash {
-
+public final class CommitHashesText implements Text {
     /**
-     * Cached text of hashes.
+     * Cache.
      */
-    private static final Text CACHE = new Sticky(new CommitHashesText());
-
-    /**
-     * Tag.
-     */
-    private final String tag;
-
-    /**
-     * Constructor.
-     *
-     * @param tag Tag
-     */
-    public ChRemote(final String tag) {
-        this.tag = tag;
-    }
+    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes().load());
 
     @Override
-    public String value() {
-        final String result = new ChText(ChRemote.CACHE::asString, this.tag).value();
-        if (result == null) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
-                    this.tag
-                )
-            );
-        }
-        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
-        return result;
+    public String asString() throws Exception {
+        return CommitHashesText.CACHE.asString();
     }
 }
