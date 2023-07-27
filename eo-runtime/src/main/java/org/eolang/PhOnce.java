@@ -97,7 +97,7 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public int type() {
+    public String type() {
         return this.object.take().type();
     }
 }

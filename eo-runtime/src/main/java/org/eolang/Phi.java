@@ -87,7 +87,7 @@ public interface Phi extends Term {
         }
 
         @Override
-        public int type() {
+        public String type() {
             return this.pkg.type();
         }
     };
@@ -123,7 +123,7 @@ public interface Phi extends Term {
 
     /**
      * Get type of the phi.
-     * @return Type of it as int.
+     * @return Type of it as {@link String}.
      */
-    int type();
+    String type();
 }

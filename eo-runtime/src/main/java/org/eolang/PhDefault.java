@@ -53,11 +53,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected static final Vertices VTX = new Vertices();
 
     /**
-     * Type.
-     */
-    protected static final Type TYPE = new Type();
-
-    /**
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(PhDefault.class.getName());
@@ -86,7 +81,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Type of it.
      */
-    private int tpe;
+    private String tpe;
 
     /**
      * Order of their names.
@@ -118,7 +113,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
-        this.tpe = PhDefault.TYPE.best(this);
+        this.tpe = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
@@ -297,7 +292,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public int type() {
+    public String type() {
         return this.tpe;
     }
 

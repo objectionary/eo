@@ -191,8 +191,8 @@ public interface Data<T> {
         }
 
         @Override
-        public int type() {
-            return 0;
+        public String type() {
+            return this.object.type();
         }
 
         @Override

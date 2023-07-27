@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
 import EOorg.EOeolang.EOstring$EOlength;
 import EOorg.EOeolang.EOtxt.EOsprintf;
@@ -35,6 +36,7 @@ import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -225,6 +227,53 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             new Dataized(new PhMethod(phi, "count")).take(Long.class),
             Matchers.equalTo(total)
+        );
+    }
+
+    @Test
+    void hasTheSameTypeWithBoundedData() {
+        Phi five = new EOint(Phi.Φ);
+        five = new PhWith(five, "Δ", new Data.Value<>(5L));
+        Phi six = new EOint(Phi.Φ);
+        six = new PhWith(six, "Δ", new Data.Value<>(5L));
+        MatcherAssert.assertThat(
+            five.type(),
+            Matchers.equalTo(six.type())
+        );
+    }
+
+    @Test
+    void hasDifferentTypeWithBoundedMethod() {
+        final Phi five = new Data.ToPhi(5L);
+        MatcherAssert.assertThat(
+            five.type(),
+            Matchers.not(
+                Matchers.equalTo(
+                    new PhWith(
+                        five.attr("plus").get().copy(),
+                        "x",
+                        new Data.ToPhi(5L)
+                    )
+                )
+            )
+        );
+    }
+
+    @Test
+    void hasTheSameTypeWithDifferentInstances() {
+        MatcherAssert.assertThat(
+            new PhWith(
+                new Data.ToPhi(5L).attr("plus").get().copy(),
+                "x",
+                new Data.ToPhi(5L)
+            ).type(),
+            Matchers.equalTo(
+                new PhWith(
+                    new Data.ToPhi(6L).attr("plus").get().copy(),
+                    "x",
+                    new Data.ToPhi(6L)
+                ).type()
+            )
         );
     }
 

@@ -44,4 +44,14 @@ final class PhCopyTest {
         );
     }
 
+    @Test
+    void hasTheSameTypeAsCopied() {
+        final Phi phi = new Data.ToPhi(1L);
+        MatcherAssert.assertThat(
+            phi.type(),
+            Matchers.equalTo(
+                phi.copy().type()
+            )
+        );
+    }
 }

@@ -89,7 +89,7 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public int type() {
+    public String type() {
         return this.origin.type();
     }
 
