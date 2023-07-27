@@ -53,13 +53,13 @@ public class Type {
 
     /**
      * Get best type for given class.
-     * @param clazz Class.
+     * @param phi Phi.
      * @return Type for given class.
      */
-    public int best(final Class<? extends Phi> clazz) {
+    public int best(final Phi phi) {
         final int tpe;
-        if (DATA.containsKey(clazz.toString())) {
-            tpe = DATA.get(clazz.toString());
+        if (DATA.containsKey(phi.getClass().toString())) {
+            tpe = DATA.get(phi.getClass().toString());
         } else {
             tpe = this.next();
         }

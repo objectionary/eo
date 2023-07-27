@@ -41,7 +41,7 @@ public final class PhCopy extends PhOnce {
             phi::copy,
             () -> String.format("%s'", phi),
             () -> String.format("%s", phi.φTerm()),
-            () -> PhDefault.TYPE.best(phi.getClass())
+            () -> PhDefault.TYPE.best(phi)
         );
     }
 

@@ -111,8 +111,6 @@ public abstract class PhDefault implements Phi, Cloneable {
         this(Phi.Φ);
     }
 
-    public PhDefault(final Phi sigma, final )
-
     /**
      * Ctor.
      *
@@ -121,6 +119,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
+        this.tpe = PhDefault.TYPE.best(this);
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
