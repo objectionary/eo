@@ -99,7 +99,7 @@ final class PhMethodTest {
             dummy.type(),
             Matchers.not(
                 Matchers.equalTo(
-                    new PhMethod(dummy, "foo")
+                    new PhMethod(dummy, "foo").type()
                 )
             )
         );

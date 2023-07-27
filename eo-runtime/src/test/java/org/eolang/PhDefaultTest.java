@@ -253,7 +253,7 @@ final class PhDefaultTest {
                         five.attr("plus").get().copy(),
                         "x",
                         new Data.ToPhi(5L)
-                    )
+                    ).type()
                 )
             )
         );
