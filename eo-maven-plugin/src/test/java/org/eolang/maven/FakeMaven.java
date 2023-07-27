@@ -229,10 +229,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent(
-                "objectionaries",
-                new Objectionaries.Fake()
-            );
+            this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
             this.params.putIfAbsent(
                 "eoEnvDir",
                 new File("src/test/resources/org/eolang/maven/binarize/eo_env")
