@@ -57,9 +57,10 @@ public class Type {
      * @return Type for given class.
      */
     public int best(final Phi phi) {
+        final String clazz = phi.getClass().toString();
         final int tpe;
-        if (DATA.containsKey(phi.getClass().toString())) {
-            tpe = DATA.get(phi.getClass().toString());
+        if (DATA.containsKey(clazz)) {
+            tpe = DATA.get(clazz);
         } else {
             tpe = this.next();
         }

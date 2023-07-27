@@ -41,8 +41,7 @@ public final class PhMethod extends PhOnce {
         super(
             () -> new PhImmovable(phi.attr(mtd).get()),
             () -> String.format("%s.%s", phi, mtd),
-            () -> String.format("%s.%s", phi.φTerm(), mtd),
-            phi::type
+            () -> String.format("%s.%s", phi.φTerm(), mtd)
         );
     }
 

@@ -322,11 +322,6 @@ public interface Data<T> {
         public T take() {
             return this.val;
         }
-
-        @Override
-        public int type() {
-            return PhDefault.TYPE.next();
-        }
     }
 
 }

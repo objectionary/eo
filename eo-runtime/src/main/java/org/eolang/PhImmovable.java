@@ -93,5 +93,4 @@ final class PhImmovable implements Phi {
     public int type() {
         return this.origin.type();
     }
-
 }

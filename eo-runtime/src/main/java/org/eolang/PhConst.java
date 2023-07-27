@@ -106,5 +106,4 @@ public final class PhConst implements Phi {
     public int type() {
         return this.origin.type();
     }
-
 }

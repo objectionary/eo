@@ -85,9 +85,8 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     /**
      * Type of it.
-     * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    protected int tpe;
+    private int tpe;
 
     /**
      * Order of their names.
@@ -192,6 +191,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
+            copy.tpe = this.tpe;
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
