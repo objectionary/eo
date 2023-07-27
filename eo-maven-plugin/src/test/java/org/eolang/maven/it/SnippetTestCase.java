@@ -54,6 +54,7 @@ import org.eolang.maven.TranspileMojo;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
@@ -98,6 +99,7 @@ final class SnippetTestCase {
      * @throws Exception If fails
      */
     @ParameterizedTest
+    @ExtendWith(OnlineCondition.class)
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws Exception {
@@ -152,18 +154,13 @@ final class SnippetTestCase {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
-        final CommitHash hash = new ChCached(
-            new ChRemote("master")
-        );
+        final CommitHash hash = new ChRemote("master");
         final FakeMaven maven = new FakeMaven(tmp)
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
             .with("hsh", hash)
-            .with(
-                "objectionaries",
-                new ObjsDefault().with(hash, new OyFilesystem())
-            );
+            .with("objectionaries", new Objectionaries.Fake(new OyFilesystem()));
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
