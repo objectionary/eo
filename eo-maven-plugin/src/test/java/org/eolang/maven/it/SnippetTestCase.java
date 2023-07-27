@@ -28,6 +28,7 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -307,81 +308,18 @@ final class SnippetTestCase {
      * Classpath.
      * @return Classpath.
      */
-    private static String classpath() {
-        final String home = System.getProperty("user.home");
-        try {
-            if (SnippetTestCase.isRealPath(home)) {
-                return String.format(
-                    ".%s%s",
-                    File.pathSeparatorChar,
-                    Paths.get(home)
-                        .resolve(
-                            String.format(
-                                ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                                "1.0-SNAPSHOT"
-                            )
-                        )
-                );
-            }
-            throw new WrongPathException(home);
-        } catch (final WrongPathException exception) {
-            throw new IllegalStateException("Can't open classpath", exception);
-        }
-    }
-
-    /**
-     * Checks if the path is real path.
-     * @param path String path to check.
-     * @return True if path is real.
-     * @throws WrongPathException if path is totally wrong.
-     */
-    private static boolean isRealPath(final String path) throws WrongPathException {
-        final boolean result;
-        if (Objects.isNull(path) || path.isEmpty() || StringUtils.isBlank(path)) {
-            result = false;
-        } else {
-            try {
-                Paths.get(path);
-            } catch (final InvalidPathException exception) {
-                throw new WrongPathException(path, exception);
-            }
-            result = true;
-        }
-        return result;
-    }
-
-    /**
-     * Checked exception for wrong paths.
-     *
-     * @since 0.30
-     */
-    private static final class WrongPathException extends Exception {
-
-        /**
-         * Constructor.
-         * @param path Wrong path.
-         */
-        WrongPathException(final String path) {
-            super(WrongPathException.msg(path));
-        }
-
-        /**
-         * Constructor.
-         * @param path Wrong path.
-         * @param cause Cause.
-         */
-        WrongPathException(final String path, final Throwable cause) {
-            super(WrongPathException.msg(path), cause);
-        }
-
-        /**
-         * Informative message.
-         * @param path Invalid path.
-         * @return Error message.
-         */
-        private static String msg(final String path) {
-            return String.format("Invalid path '%s'", path);
-        }
+    static String classpath() {
+        return String.format(
+            ".%s%s",
+            File.pathSeparatorChar,
+            Paths.get(System.getProperty("user.home"))
+                .resolve(
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
+                )
+        );
     }
 
     /**
@@ -396,17 +334,14 @@ final class SnippetTestCase {
             ConditionEvaluationResult ret;
             try {
                 final String classpath = SnippetTestCase.classpath();
-                if (classpath.isEmpty()) {
-                    ret = ConditionEvaluationResult.disabled("Runtime library is not found");
-                } else {
+                if (Files.exists(Paths.get(classpath))) {
                     ret = ConditionEvaluationResult.enabled(
-                        String.format(
-                            "Runtime library '%s' is found successfully",
-                            classpath
-                        )
+                        String.format("Runtime library '%s' is found successfully", classpath)
                     );
+                } else {
+                    ret = ConditionEvaluationResult.disabled("Runtime library is not found");
                 }
-            } catch (final IllegalStateException exception) {
+            } catch (final InvalidPathException exception) {
                 ret = ConditionEvaluationResult.disabled(
                     "Runtime library can't be found",
                     exception.getMessage()
