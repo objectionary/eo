@@ -35,10 +35,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.cactoos.Input;
 import org.cactoos.Output;
 import org.cactoos.io.InputOf;
@@ -133,6 +131,24 @@ final class SnippetTestCase {
                     (Iterable<String>) map.get("out")
                 )
             )
+        );
+    }
+
+    /**
+     * Classpath.
+     * @return Classpath.
+     */
+    static String classpath() {
+        return String.format(
+            ".%s%s",
+            File.pathSeparatorChar,
+            Paths.get(System.getProperty("user.home"))
+                .resolve(
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
+                )
         );
     }
 
@@ -302,24 +318,6 @@ final class SnippetTestCase {
             result = String.format(relative, property, name);
         }
         return result;
-    }
-
-    /**
-     * Classpath.
-     * @return Classpath.
-     */
-    static String classpath() {
-        return String.format(
-            ".%s%s",
-            File.pathSeparatorChar,
-            Paths.get(System.getProperty("user.home"))
-                .resolve(
-                    String.format(
-                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                        "1.0-SNAPSHOT"
-                    )
-                )
-        );
     }
 
     /**
