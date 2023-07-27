@@ -39,7 +39,9 @@ import org.cactoos.text.Split;
  */
 public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
-
+    /**
+     * Constructor.
+     */
     public CommitHashesMap() {
         this(new CommitHashesText()::asString);
     }
