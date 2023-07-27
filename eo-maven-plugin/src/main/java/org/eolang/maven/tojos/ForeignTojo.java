@@ -113,7 +113,7 @@ public final class ForeignTojo {
     }
 
     /**
-     * Checks if tojo was already optimized.
+     * Checks if tojo was not already optimized.
      *
      * @return True if optimization is required, false otherwise.
      */

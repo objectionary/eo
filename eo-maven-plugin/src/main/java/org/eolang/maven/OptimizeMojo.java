@@ -29,7 +29,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -241,7 +240,6 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Should fail
      */
     private boolean shouldPass(final XML xml) {
-        final List<XML> errors = xml.nodes("/program/errors/error");
-        return errors.isEmpty() || this.failOnError;
+        return xml.nodes("/program/errors/error").isEmpty() || this.failOnError;
     }
 }
