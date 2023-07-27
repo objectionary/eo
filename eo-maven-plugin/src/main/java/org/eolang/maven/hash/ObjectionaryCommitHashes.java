@@ -23,48 +23,56 @@
  */
 package org.eolang.maven.hash;
 
-import com.jcabi.log.Logger;
+import java.net.URL;
 import org.cactoos.Text;
-import org.cactoos.text.Sticky;
+import org.cactoos.scalar.Unchecked;
+import org.cactoos.text.TextOf;
 
 /**
- * Hash of tag from objectionary.
+ * CommitHashes which we download from Objectionary.
  *
- * @since 0.26
+ * @since 0.30
  */
-public final class ChRemote implements CommitHash {
+final class ObjectionaryCommitHashes {
 
     /**
-     * Cached text of hashes.
+     * Tags.
      */
-    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes().load());
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
-     * Tag.
+     * The url from which to download tags list.
      */
-    private final String tag;
+    private final URL url;
 
     /**
      * Constructor.
-     *
-     * @param tag Tag
      */
-    public ChRemote(final String tag) {
-        this.tag = tag;
+    ObjectionaryCommitHashes() {
+        this(ObjectionaryCommitHashes.HOME);
     }
 
-    @Override
-    public String value() {
-        final String result = new ChText(ChRemote.CACHE::asString, this.tag).value();
-        if (result == null) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
-                    this.tag
-                )
-            );
-        }
-        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
-        return result;
+    /**
+     * Constructor.
+     * @param tags The url from which to download tags list.
+     */
+    private ObjectionaryCommitHashes(final String tags) {
+        this(new Unchecked<>(() -> new URL(tags)).value());
+    }
+
+    /**
+     * Constructor.
+     * @param tags The url from which to download tags list.
+     */
+    private ObjectionaryCommitHashes(final URL tags) {
+        this.url = tags;
+    }
+
+    /**
+     * Load tags (lazy).
+     * @return Tags.
+     */
+    Text load() {
+        return new TextOf(this.url);
     }
 }
