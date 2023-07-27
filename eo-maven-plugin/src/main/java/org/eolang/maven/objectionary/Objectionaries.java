@@ -40,7 +40,7 @@ public interface Objectionaries {
 
     /**
      * Get objectionary by given hash.
-     * @param hash Hash as {@link CommitHash}
+     * @param hash Hash as {@link CommitHash}.
      * @return Objectionary by given hash.
      */
     Objectionary get(CommitHash hash);
