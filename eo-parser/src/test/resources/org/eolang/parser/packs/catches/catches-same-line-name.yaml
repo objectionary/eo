@@ -1,9 +1,0 @@
-xsls:
-  - /org/eolang/parser/errors/same-line-names.xsl
-tests:
-  - /program/errors[count(error[@severity='error'])=1]
-  - /program/errors/error[@line='2']
-  - /program/objects/o[@name='first']/o[@name='x']
-eo: |
-  [x] > first
-    a > x (b > x)

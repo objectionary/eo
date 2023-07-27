@@ -32,8 +32,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
@@ -56,6 +58,10 @@ import org.eolang.XmirObject;
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
+ * @todo #2283:90min Create Universe class. Now its functionality is
+ *  assigned to "EORust", which is why it is overcomplicated. "Universe"
+ *  should perform a model of interaction with "eo" objects through
+ *  methods "find", "put", "copy", "dataize" and "bind".
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
@@ -128,9 +134,17 @@ public class EOrust extends PhDefault {
                             "EOrust.natives.%s",
                             name
                         )
-                    ).getDeclaredMethod(name, new Class[]{EOrust.class});
-                    return new Data.ToPhi(
-                        Long.valueOf((int) method.invoke(null, this))
+                    ).getDeclaredMethod(name, EOrust.class);
+                    if (method.getReturnType() != byte[].class) {
+                        throw new ExFailure(
+                            "Return type of %s is %s, required %s",
+                            method,
+                            method.getReturnType(),
+                            byte[].class
+                        );
+                    }
+                    return EOrust.translate(
+                        (byte[]) method.invoke(null, this)
                     );
                 }
             )
@@ -227,5 +241,45 @@ public class EOrust extends PhDefault {
                 exc
             );
         }
+    }
+
+    /**
+     * Translates byte message from rust side to Phi object.
+     * @param message Message that native method returns.
+     * @return Phi object.
+     * @todo #2283:45min Implement handling of vertex returning.
+     *  It must convert message array from 1 to last byte to the int
+     *  and return eo object with corresponding vertex then.
+     * @todo #2283:45min Implement handling of String returning.
+     *  It must convert message array from 1 to last byte to the String
+     *  and return eo object with converted String Data.
+     */
+    private static Phi translate(final byte[] message) {
+        final byte determinant = message[0];
+        final byte[] content = Arrays.copyOfRange(message, 1, message.length);
+        final Phi ret;
+        switch (determinant) {
+            case 0:
+                throw new ExFailure(
+                    "Returning vertex is not implemented yet"
+                );
+            case 1:
+                ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getDouble());
+                break;
+            case 2:
+                buffer = ByteBuffer.allocate(Long.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getLong());
+                break;
+            default:
+                throw new ExFailure(
+                    "Returning Strings and raw bytes is not implemented yet"
+                );
+        }
+        return ret;
     }
 }

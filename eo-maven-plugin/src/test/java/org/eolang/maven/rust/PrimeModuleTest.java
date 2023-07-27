@@ -49,7 +49,7 @@ final class PrimeModuleTest {
             ).asString(),
             Matchers.stringContainsInOrder(
                 String.format("Java_EOrust_natives_%s_%s", method, method),
-                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint"
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray"
             )
         );
     }

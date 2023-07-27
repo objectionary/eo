@@ -21,41 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.rust;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.FtDefault;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+pub enum EO {
+    EOVertex(u32),
+    EOFloat(f64),
+    EOInt(i64),
+    EOString(String),
+    EORaw(Box<[u8]>),
+}
 
-/**
- * Test case for {@link Native}.
- *
- * @since 0.1
- */
-final class NativeTest {
-
-    @Test
-    void savesCorrectly(@TempDir final Path temp) throws Exception {
-        final Path target = Paths.get("mypackage");
-        final Native java = new Native("name", target.toString());
-        java.save(new FtDefault(temp.resolve(target)));
-        MatcherAssert.assertThat(
-            new TextOf(
-                temp.resolve(target.resolve("name.java"))
-            ).asString(),
-            Matchers.stringContainsInOrder(
-                "package mypackage;",
-                "import EOorg.EOeolang.EOrust;",
-                "public class name {",
-                "    public static native byte[] name",
-                "        (final EOrust eo);",
-                "}"
-                )
-        );
+impl EO {
+    pub fn eo2vec(&self) -> Vec<u8> {
+        match self {
+            EO::EOVertex(v) => {
+                let mut res: Vec<u8> = vec![0; 1 + 4];
+                res[0] = 0;
+                res[1..].copy_from_slice(&v.to_le_bytes());
+                res
+            }
+            EO::EOFloat(x) => {
+                let mut res = vec![0; 1 + 8];
+                res[0] = 1;
+                res[1..].copy_from_slice(&x.to_be_bytes());
+                res
+            }
+            EO::EOInt(x) => {
+                let mut res: Vec<u8> = vec![0; 1 + 8];
+                res[0] = 2;
+                res[1..].copy_from_slice(&x.to_be_bytes());
+                res
+            }
+            EO::EOString(_) => { vec![0xff] }
+            EO::EORaw(_) => { vec![0xff] }
+        }
     }
 }
