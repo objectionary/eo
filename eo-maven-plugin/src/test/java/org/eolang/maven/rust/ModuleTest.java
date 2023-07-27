@@ -46,7 +46,7 @@ final class ModuleTest {
         module.save(new FtDefault(temp));
         MatcherAssert.assertThat(
             new TextOf(
-                temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
+                temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),
             Matchers.equalTo(content)
         );
