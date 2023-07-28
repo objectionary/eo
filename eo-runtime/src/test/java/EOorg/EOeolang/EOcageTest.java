@@ -37,6 +37,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -210,6 +211,43 @@ final class EOcageTest {
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
+        );
+    }
+
+    @Test
+    void doesNotWritePrimitivesOfDifferentTypes() {
+        final Phi cage = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> EOcageTest.writeTo(cage, new Data.ToPhi("Hello world"))
+        );
+    }
+
+    @Test
+    void doesNotWriteBoundedMethod() {
+        final Phi five = new Data.ToPhi(5L);
+        final Phi ten = new PhWith(
+            five.attr("plus").get().copy(),
+            "x",
+            new Data.ToPhi(5L)
+        );
+        final Phi cage = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(cage, five);
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> EOcageTest.writeTo(cage, ten)
+        );
+    }
+
+    @Test
+    void writesBoundedCopyOfTheSameBase() {
+        final Phi dummy = new Dummy(Phi.Φ);
+        Assertions.assertDoesNotThrow(
+            () -> EOcageTest.writeTo(
+                new PhWith(new EOcage(Phi.Φ), 0, dummy),
+                new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
+            )
         );
     }
 

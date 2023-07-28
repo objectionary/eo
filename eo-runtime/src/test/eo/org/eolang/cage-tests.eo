@@ -183,3 +183,15 @@
       x.write (pyint 0)
       tmp.write (x.add (pyint 1))
       tmp.value.eq 1
+
+[] > catches-writing-objects-of-different-types
+  cage 5 > cge
+  assert-that > @
+    seq
+      try
+        cge.write "Hello world"
+        [e]
+          cge.write 10 > @
+        nop
+      cge.eq 10
+    $.equal-to TRUE
