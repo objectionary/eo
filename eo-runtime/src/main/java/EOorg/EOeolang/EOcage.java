@@ -80,7 +80,7 @@ public class EOcage extends PhDefault {
                         Phi enclosure;
                         try {
                             enclosure = attr.get();
-                        } catch (ExFailure ignored) {
+                        } catch (EOerror.ExError|ExFailure error) {
                             enclosure = null;
                         }
                         final Phi put = rho.attr("x").get();

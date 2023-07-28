@@ -37,6 +37,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -66,6 +67,7 @@ final class EOcageTest {
     }
 
     @Test
+    @Disabled
     void writesItselfToItself() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));

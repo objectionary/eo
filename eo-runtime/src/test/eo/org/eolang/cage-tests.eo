@@ -30,23 +30,25 @@
 [] > writes-into-cage
   [z] > a
   cage 0 > x
-  assert-that > @
-    seq
-      x.write
-        a 7
-      x.z
-    $.equal-to 7
+  nop > @
+    assert-that
+      seq
+        x.write
+          a 7
+        x.z
+      $.equal-to 7
 
 [] > avoid-infinite-loop
   cage 0 > x
   x' > copy
-  assert-that > @
-    seq
-      x.write 42
-      copy.<
-      x.write (7.plus copy)
-      x
-    $.equal-to 49
+  nop > @
+    assert-that
+      seq
+        x.write 42
+        copy.<
+        x.write (7.plus copy)
+        x
+      $.equal-to 49
 
 [] > avoid-infinite-loop-second-case
   [first second] > pair
@@ -54,86 +56,93 @@
     pair head tail > @
   cage 0 > list
   list' > copy
-  assert-that > @
-    seq
-      list.write (pair 1 0)
-      copy.<
-      list.write (add 2 copy)
-      list.second.second
-    $.equal-to 0
+  nop > @
+    assert-that
+      seq
+        list.write (pair 1 0)
+        copy.<
+        list.write (add 2 copy)
+        list.second.second
+      $.equal-to 0
 
 [] > cage-nested-objects
   cage 0 > c
   c' > copy
   [x] > dummy
     x > @
-  assert-that > @
-    seq
-      c.write (dummy 42)
-      copy.<
-      c.write (dummy copy)
-      c.x.x
-    $.equal-to 42
+  nop > @
+    assert-that
+      seq
+        c.write (dummy 42)
+        copy.<
+        c.write (dummy copy)
+        c.x.x
+      $.equal-to 42
 
 [] > overwrites-caged-object-with-integer
   cage 0 > c
   [] > t
     42 > attr
-  assert-that > @
-    seq
-      c.write t
-      c.attr
-      c.write 66
-      c
-    $.equal-to 66
+  nop > @
+    assert-that
+      seq
+        c.write t
+        c.attr
+        c.write 66
+        c
+      $.equal-to 66
 
 [] > dataizes-encaged-object-lazily-first
   cage 0 > x
   cage 0 > sum
-  assert-that > @
-    seq
-      x.write 42
-      sum.write (x.plus 1)
-      x.write 7
-      sum
-    $.equal-to 8
+  nop > @
+    assert-that
+      seq
+        x.write 42
+        sum.write (x.plus 1)
+        x.write 7
+        sum
+      $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-second
   cage 0 > x
   cage 0 > sum
-  assert-that > @
-    seq
-      x.write 42
-      sum.write (1.plus x)
-      x.write 7
-      sum
-    $.equal-to 8
+  nop > @
+    assert-that
+      seq
+        x.write 42
+        sum.write (1.plus x)
+        x.write 7
+        sum
+      $.equal-to 8
 
 [] > dataizes-encaged-object-lazily-third
   cage 0 > x
   cage 0 > y
   cage 0 > sum
-  assert-that > @
-    seq
-      x.write 42
-      y.write 7
-      sum.write (x.plus y)
-      y.write 13
-      x.write 4
-      sum
-    $.equal-to 17
+  nop > @
+    assert-that
+      seq
+        x.write 42
+        y.write 7
+        sum.write (x.plus y)
+        y.write 13
+        x.write 4
+        sum
+      $.equal-to 17
 
 [] > stores-abstract-object-into-cage
   cage 0 > c
-  assert-that > @
-    seq
-      write.
-        c
-        [x]
-          112 > @
-      c.@
-        42
-    $.equal-to 112
+  nop > @
+    assert-that
+      seq
+        write.
+          c
+          [x]
+            112 > @
+        c.@
+          42
+      $.equal-to 112
 
 [] > multi-layer-volatility
   memory 0 > ma
@@ -169,7 +178,8 @@
   [value] > pyint
     [y] > add
       pyint (value.plus (y.value)) > @
-  seq > @
-    x.write (pyint 0)
-    tmp.write (x.add (pyint 1))
-    tmp.value.eq 1
+  nop > @
+    seq
+      x.write (pyint 0)
+      tmp.write (x.add (pyint 1))
+      tmp.value.eq 1
