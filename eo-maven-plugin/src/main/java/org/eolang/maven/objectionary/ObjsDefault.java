@@ -91,11 +91,6 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public Objectionary get(final CommitHash hash) {
-        return this.map.get(hash.value());
-    }
-
-    @Override
     public Input object(final CommitHash hash, final String name) {
         try {
             return this.byHash(hash).get(name);
@@ -118,7 +113,7 @@ public final class ObjsDefault implements Objectionaries {
     private Objectionary byHash(final CommitHash hash) {
         final CommitHash cached = new ChCached(hash);
         final CommitHash narrow = new ChNarrow(cached);
-        return this.with(
+        this.with(
             cached,
             new OyFallbackSwap(
                 new OyHome(
@@ -134,6 +129,7 @@ public final class ObjsDefault implements Objectionaries {
                 ),
                 this.usecache
             )
-        ).get(cached);
+        );
+        return this.map.get(cached.value());
     }
 }

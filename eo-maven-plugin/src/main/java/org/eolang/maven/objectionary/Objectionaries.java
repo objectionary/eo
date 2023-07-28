@@ -40,13 +40,6 @@ public interface Objectionaries {
      */
     Objectionaries with(CommitHash hash, Objectionary objectionary);
 
-    /**
-     * Get objectionary by given hash.
-     * @param hash Hash as {@link CommitHash}.
-     * @return Objectionary by given hash.
-     */
-    Objectionary get(CommitHash hash);
-
     Input object(CommitHash hash, String name);
 
     boolean contains(CommitHash hash, String name);
@@ -81,11 +74,6 @@ public interface Objectionaries {
         @Override
         public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
             return this;
-        }
-
-        @Override
-        public Objectionary get(final CommitHash hash) {
-            return this.objry;
         }
 
         @Override
