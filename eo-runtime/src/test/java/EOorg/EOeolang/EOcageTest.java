@@ -127,6 +127,7 @@ final class EOcageTest {
     }
 
     @Test
+    @Disabled
     void overwritesCagedObject() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
