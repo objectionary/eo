@@ -140,30 +140,6 @@ public final class ProbeMojo extends SafeMojo {
     }
 
     /**
-     * Get objectionary by given hash from the map.
-     * @param hash Hash.
-     * @return Objectionary by given hash.
-     */
-    private Objectionary objectionaryByHash(final CommitHash hash) {
-        final CommitHash cached = new ChCached(hash);
-        return this.objectionaries
-            .with(
-                cached,
-                new OyFallbackSwap(
-                    new OyHome(
-                        new ChNarrow(hash),
-                        this.cache
-                    ),
-                    new OyIndexed(
-                        new OyRemote(hash)
-                    ),
-                    this::forceUpdate
-                )
-            )
-            .get(cached);
-    }
-
-    /**
      * Find all probes found in the provided XML file.
      *
      * @param file The .xmir file

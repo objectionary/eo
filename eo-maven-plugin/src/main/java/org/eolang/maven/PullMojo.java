@@ -113,39 +113,6 @@ public final class PullMojo extends SafeMojo {
             tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
                 .withHash(new ChNarrow(this.hsh));
         }
-        Logger.info(
-            this, "%d program(s) pulled from %s",
-            tojos.size(), this.objectionaryByHash(this.hsh)
-        );
-    }
-
-    /**
-     * Get objectionary from the map by given hash.
-     * @param hash Hash.
-     * @return Objectionary by given hash.
-     */
-    private Objectionary objectionaryByHash(final CommitHash hash) {
-        final CommitHash cached = new ChCached(hash);
-        final CommitHash narrow = new ChNarrow(cached);
-        return this.objectionaries
-            .with(
-                cached,
-                new OyFallbackSwap(
-                    new OyHome(
-                        narrow,
-                        this.cache
-                    ),
-                    new OyCaching(
-                        narrow,
-                        this.cache,
-                        new OyIndexed(
-                            new OyRemote(cached)
-                        )
-                    ),
-                    () -> this.session.getRequest().isUpdateSnapshots()
-                )
-            )
-            .get(cached);
     }
 
     /**
