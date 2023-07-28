@@ -23,36 +23,43 @@
  */
 package org.eolang.maven.hash;
 
-import org.cactoos.Text;
-import org.cactoos.text.Sticky;
+import java.net.URL;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextEnvelope;
+import org.cactoos.text.TextOf;
 
 /**
- * Commit hashes table as text from objectionary.
- * This class serves the purpose of the global cache in order to avoid
- * downloading the list of tags multiple times from objectionary.
+ * CommitHashes which we download from Objectionary.
  *
- * @since 0.29.6
+ * @since 0.30
  */
-final class CommitHashesText extends TextEnvelope {
+final class ObjectionaryCommitHashes extends TextEnvelope {
 
     /**
-     * Cache.
+     * Tags.
      */
-    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes());
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
      * Constructor.
      */
-    CommitHashesText() {
-        this(CommitHashesText.CACHE);
+    ObjectionaryCommitHashes() {
+        this(ObjectionaryCommitHashes.HOME);
     }
 
     /**
      * Constructor.
-     * @param text The text to of commit hashes.
+     * @param tags The url from which to download tags list.
      */
-    private CommitHashesText(final Text text) {
-        super(text);
+    private ObjectionaryCommitHashes(final String tags) {
+        this(new Unchecked<>(() -> new URL(tags)).value());
+    }
+
+    /**
+     * Constructor.
+     * @param tags The url from which to download tags list.
+     */
+    private ObjectionaryCommitHashes(final URL tags) {
+        super(new TextOf(tags));
     }
 }
