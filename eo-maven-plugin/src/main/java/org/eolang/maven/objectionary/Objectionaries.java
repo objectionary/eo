@@ -28,7 +28,7 @@ import org.cactoos.Input;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Hash-Objectionary hash map.
+ * Many objectionaries for different hashes.
  * @since 0.29.6
  */
 public interface Objectionaries {

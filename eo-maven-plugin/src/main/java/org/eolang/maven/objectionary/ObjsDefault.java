@@ -89,9 +89,9 @@ public final class ObjsDefault implements Objectionaries {
 
     /**
      * Primary constructor.
-     * @param map Objectionaries hash-map.
      * @param cache Cache path.
      * @param cached Use cache.
+     * @param map Objectionaries hash-map.
      */
     private ObjsDefault(
         final Scalar<Path> cache,

@@ -30,18 +30,11 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.ObjsDefault;
-import org.eolang.maven.objectionary.OyCaching;
-import org.eolang.maven.objectionary.OyFallbackSwap;
-import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
@@ -82,15 +75,10 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Objectionaries.
-     * @todo #1602:30min Use objectionaries to pull objects with different
-     *  versions. Objects with different versions are stored in different
-     *  storages (objectionaries). Every objectionary has its own hash.
-     *  To pull versioned object from objectionary firstly we need to get
-     *  right objectionary by object's version and then get object from that
-     *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(()->this.cache,
+    private final Objectionaries objectionaries = new ObjsDefault(
+        () -> this.cache,
         () -> this.session.getRequest().isUpdateSnapshots()
     );
 

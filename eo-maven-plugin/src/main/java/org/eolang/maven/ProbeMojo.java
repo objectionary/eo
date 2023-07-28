@@ -36,17 +36,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterator.Mapped;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.ObjsDefault;
-import org.eolang.maven.objectionary.OyFallbackSwap;
-import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -92,7 +86,10 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(()->this.cache, this::forceUpdate);
+    private final Objectionaries objectionaries = new ObjsDefault(
+        () -> this.cache,
+        () -> this.session.getRequest().isUpdateSnapshots()
+    );
 
     @Override
     public void exec() throws IOException {
@@ -189,12 +186,4 @@ public final class ProbeMojo extends SafeMojo {
         return result;
     }
 
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
-    }
 }
