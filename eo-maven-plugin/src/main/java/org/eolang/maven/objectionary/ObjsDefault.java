@@ -25,12 +25,13 @@ package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
@@ -64,10 +65,15 @@ public final class ObjsDefault implements Objectionaries {
      */
     @SafeVarargs
     public ObjsDefault(final Map.Entry<CommitHash, Objectionary>... entries) {
-        this(
-            Arrays.stream(entries)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-        );
+        this(new Mapped<>(e -> new MapEntry<>(e.getKey().value(), e.getValue()), entries));
+    }
+
+    /**
+     * Constructor for tests with predefined Objectionaries.
+     * @param entries Predefined Objectionaries.
+     */
+    private ObjsDefault(final Iterable<Map.Entry<String, Objectionary>> entries) {
+        this(new MapOf<>(entries));
     }
 
     /**
@@ -78,6 +84,7 @@ public final class ObjsDefault implements Objectionaries {
     public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> cached) {
         this(cache, cached, new HashMap<>(0));
     }
+
 
     /**
      * Constructor for tests.
