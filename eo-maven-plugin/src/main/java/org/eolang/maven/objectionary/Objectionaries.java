@@ -61,7 +61,7 @@ public interface Objectionaries {
         /**
          * Default objectionary.
          */
-        private final Objectionary objry;
+        private final Objectionary objectionary;
 
         /**
          * Ctor.
@@ -72,20 +72,20 @@ public interface Objectionaries {
 
         /**
          * Ctor.
-         * @param objectionary Default objectionary
+         * @param objry Default objectionary
          */
-        public Fake(final Objectionary objectionary) {
-            this.objry = objectionary;
+        public Fake(final Objectionary objry) {
+            this.objectionary = objry;
         }
 
         @Override
         public Input object(final CommitHash hash, final String name) throws IOException {
-            return this.objry.get(name);
+            return this.objectionary.get(name);
         }
 
         @Override
         public boolean contains(final CommitHash hash, final String name) throws IOException {
-            return this.objry.contains(name);
+            return this.objectionary.contains(name);
         }
     }
 }
