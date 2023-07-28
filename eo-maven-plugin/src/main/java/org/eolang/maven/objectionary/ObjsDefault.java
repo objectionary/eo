@@ -43,8 +43,14 @@ import org.eolang.maven.hash.CommitHash;
  */
 public final class ObjsDefault implements Objectionaries {
 
+    /**
+     * Cache path.
+     */
     private final Unchecked<Path> cache;
 
+    /**
+     * Use cache.
+     */
     private final Scalar<Boolean> cached;
 
     /**
@@ -52,16 +58,24 @@ public final class ObjsDefault implements Objectionaries {
      */
     private final Map<? super String, Objectionary> map;
 
+    /**
+     * Constructor for tests with predefined Objectionaries.
+     * @param entries Predefined Objectionaries.
+     */
     @SafeVarargs
     public ObjsDefault(final Map.Entry<CommitHash, Objectionary>... entries) {
-        this(Arrays.stream(entries).collect(
-            Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        this(
+            Arrays.stream(entries)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+        );
     }
 
-    public ObjsDefault(
-        final Scalar<Path> cache,
-        final Scalar<Boolean> cached
-    ) {
+    /**
+     * Constructor.
+     * @param cache Cache path.
+     * @param cached Use cache.
+     */
+    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> cached) {
         this(cache, cached, new HashMap<>(0));
     }
 
@@ -70,13 +84,7 @@ public final class ObjsDefault implements Objectionaries {
      * @param ojs Predefined Objectionaries.
      */
     private ObjsDefault(final Map<? super String, Objectionary> ojs) {
-        this(
-            () -> {
-                throw new UnsupportedOperationException("Caching unsupported");
-            },
-            () -> false,
-            ojs
-        );
+        this(ObjsDefault.cacheForTests(), () -> false, ojs);
     }
 
     /**
@@ -96,12 +104,6 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
-        this.map.putIfAbsent(hash.value(), objectionary);
-        return this;
-    }
-
-    @Override
     public Input object(final CommitHash hash, final String name) throws IOException {
         return this.objectionary(hash).get(name);
     }
@@ -111,12 +113,17 @@ public final class ObjsDefault implements Objectionaries {
         return this.objectionary(hash).contains(name);
     }
 
+    /**
+     * Get objectionary by hash.
+     * @param hash Commit hash.
+     * @return Objectionary.
+     */
     private Objectionary objectionary(final CommitHash hash) {
         final CommitHash sticky = new ChCached(hash);
         if (!this.map.containsKey(sticky.value())) {
             final CommitHash narrow = new ChNarrow(sticky);
-            this.with(
-                sticky,
+            this.map.put(
+                sticky.value(),
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -134,5 +141,18 @@ public final class ObjsDefault implements Objectionaries {
             );
         }
         return this.map.get(sticky.value());
+    }
+
+    /**
+     * Cache path for tests.
+     * @return Cache path.
+     */
+    private static Scalar<Path> cacheForTests() {
+        throw new UnsupportedOperationException(
+            String.format(
+                "Caching unsupported for tests! If you see this message in runtime it means that you are using wrong constructor of %s",
+                ObjsDefault.class
+            )
+        );
     }
 }

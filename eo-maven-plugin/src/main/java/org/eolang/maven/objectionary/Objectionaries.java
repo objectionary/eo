@@ -32,16 +32,23 @@ import org.eolang.maven.hash.CommitHash;
  * @since 0.29.6
  */
 public interface Objectionaries {
-    /**
-     * Set new objectionary by given hash only if it's absent.
-     * @param hash Hash as {@link CommitHash}.
-     * @param objectionary Objectionary to store.
-     * @return Objectionaries with new objectionary by given hash.
-     */
-    Objectionaries with(CommitHash hash, Objectionary objectionary);
 
+    /**
+     * Get object by hash and name.
+     * @param hash Commit hash
+     * @param name Object name
+     * @return Object
+     * @throws IOException If some I/O problem happens.
+     */
     Input object(CommitHash hash, String name) throws IOException;
 
+    /**
+     * Check if object exists.
+     * @param hash Commit hash
+     * @param name Object name
+     * @return True if object exists, false otherwise
+     * @throws IOException If some I/O problem happens.
+     */
     boolean contains(CommitHash hash, String name) throws IOException;
 
     /**
@@ -69,11 +76,6 @@ public interface Objectionaries {
          */
         public Fake(final Objectionary objectionary) {
             this.objry = objectionary;
-        }
-
-        @Override
-        public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
-            return this;
         }
 
         @Override
