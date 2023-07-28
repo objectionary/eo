@@ -91,26 +91,16 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public Input object(final CommitHash hash, final String name) {
-        try {
-            return this.byHash(hash).get(name);
-        } catch (final IOException ex) {
-            //todo
-            throw new IllegalStateException(ex);
-        }
+    public Input object(final CommitHash hash, final String name) throws IOException {
+        return this.objectionary(hash).get(name);
     }
 
     @Override
-    public boolean contains(final CommitHash hash, final String name) {
-        try {
-            return this.byHash(hash).contains(name);
-        } catch (final IOException ex) {
-            //todo
-            throw new IllegalStateException(ex);
-        }
+    public boolean contains(final CommitHash hash, final String name) throws IOException {
+        return this.objectionary(hash).contains(name);
     }
 
-    private Objectionary byHash(final CommitHash hash) {
+    private Objectionary objectionary(final CommitHash hash) {
         final CommitHash cached = new ChCached(hash);
         final CommitHash narrow = new ChNarrow(cached);
         this.with(

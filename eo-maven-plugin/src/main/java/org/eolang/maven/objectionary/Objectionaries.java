@@ -40,9 +40,9 @@ public interface Objectionaries {
      */
     Objectionaries with(CommitHash hash, Objectionary objectionary);
 
-    Input object(CommitHash hash, String name);
+    Input object(CommitHash hash, String name) throws IOException;
 
-    boolean contains(CommitHash hash, String name);
+    boolean contains(CommitHash hash, String name) throws IOException;
 
     /**
      * Fake objectionaries.
@@ -77,21 +77,13 @@ public interface Objectionaries {
         }
 
         @Override
-        public Input object(final CommitHash hash, final String name) {
-            try {
-                return this.objry.get(name);
-            } catch (final IOException ex) {
-                throw new RuntimeException(ex);
-            }
+        public Input object(final CommitHash hash, final String name) throws IOException {
+            return this.objry.get(name);
         }
 
         @Override
-        public boolean contains(final CommitHash hash, final String name) {
-            try {
-                return this.objry.contains(name);
-            } catch (final IOException ex) {
-                throw new RuntimeException(ex);
-            }
+        public boolean contains(final CommitHash hash, final String name) throws IOException {
+            return this.objry.contains(name);
         }
     }
 }
