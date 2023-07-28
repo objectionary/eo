@@ -52,7 +52,7 @@ public final class ObjsDefault implements Objectionaries {
     /**
      * Use cache.
      */
-    private final Scalar<Boolean> cached;
+    private final Scalar<Boolean> usehash;
 
     /**
      * Hash-map.
@@ -79,10 +79,10 @@ public final class ObjsDefault implements Objectionaries {
     /**
      * Constructor.
      * @param cache Cache path.
-     * @param cached Use cache.
+     * @param usehash Use cache.
      */
-    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> cached) {
-        this(cache, cached, new HashMap<>(0));
+    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> usehash) {
+        this(cache, usehash, new HashMap<>(0));
     }
 
 
@@ -97,16 +97,16 @@ public final class ObjsDefault implements Objectionaries {
     /**
      * Primary constructor.
      * @param cache Cache path.
-     * @param cached Use cache.
+     * @param usehash Use cache.
      * @param map Objectionaries hash-map.
      */
     private ObjsDefault(
         final Scalar<Path> cache,
-        final Scalar<Boolean> cached,
+        final Scalar<Boolean> usehash,
         final Map<? super String, Objectionary> map
     ) {
         this.cache = new Unchecked<>(cache);
-        this.cached = cached;
+        this.usehash = usehash;
         this.map = map;
     }
 
@@ -143,7 +143,7 @@ public final class ObjsDefault implements Objectionaries {
                             new OyRemote(sticky)
                         )
                     ),
-                    this.cached
+                    this.usehash
                 )
             );
         }
