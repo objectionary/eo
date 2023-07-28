@@ -77,7 +77,6 @@ public final class ObjsDefault implements Objectionaries {
         this(new Mapped<>(e -> new MapEntry<>(e.getKey().value(), e.getValue()), entries));
     }
 
-
     /**
      * Constructor for tests with predefined Objectionaries.
      * @param entries Predefined Objectionaries.
