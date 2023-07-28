@@ -63,7 +63,7 @@ public class EOcage extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
+    private static final class Write extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -78,20 +78,20 @@ public class EOcage extends PhDefault {
                     rho -> {
                         final Attr attr = rho.attr("σ").get().attr("enclosure");
                         Phi enclosure;
+                        final Phi writable = rho.attr("x").get();
                         try {
                             enclosure = attr.get();
-                        } catch (final EOerror.ExError error) {
-                            enclosure = null;
+                        } catch (final EOerror.ExError ignored) {
+                            enclosure = writable;
                         }
-                        final Phi put = rho.attr("x").get();
-                        if (enclosure != null && !enclosure.type().equals(put.type())) {
+                        if (!enclosure.type().equals(writable.type())) {
                             throw new ExFailure(
                                 "Can't write an object of type %s because object of type %s was saved before",
-                                put.type(),
+                                writable.type(),
                                 enclosure.type()
                             );
                         }
-                        attr.put(put);
+                        attr.put(writable);
                         return new Data.ToPhi(true);
                     }
                 )
