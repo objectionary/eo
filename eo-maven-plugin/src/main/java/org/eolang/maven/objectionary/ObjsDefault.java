@@ -60,23 +60,6 @@ public final class ObjsDefault implements Objectionaries {
     private final Map<? super String, Objectionary> map;
 
     /**
-     * Constructor for tests with predefined Objectionaries.
-     * @param entries Predefined Objectionaries.
-     */
-    @SafeVarargs
-    public ObjsDefault(final Map.Entry<CommitHash, Objectionary>... entries) {
-        this(new Mapped<>(e -> new MapEntry<>(e.getKey().value(), e.getValue()), entries));
-    }
-
-    /**
-     * Constructor for tests with predefined Objectionaries.
-     * @param entries Predefined Objectionaries.
-     */
-    private ObjsDefault(final Iterable<Map.Entry<String, Objectionary>> entries) {
-        this(new MapOf<>(entries));
-    }
-
-    /**
      * Constructor.
      * @param cache Cache path.
      * @param usehash Use cache.
@@ -85,6 +68,23 @@ public final class ObjsDefault implements Objectionaries {
         this(cache, usehash, new HashMap<>(0));
     }
 
+    /**
+     * Constructor for tests with predefined Objectionaries.
+     * @param entries Predefined Objectionaries.
+     */
+    @SafeVarargs
+    public ObjsDefault(final Map.Entry<CommitHash, Objectionary>... entries) {
+        this(new Mapped<>(e -> new MapEntry<>(e.getKey().value(), e.getValue()), entries));
+    }
+
+
+    /**
+     * Constructor for tests with predefined Objectionaries.
+     * @param entries Predefined Objectionaries.
+     */
+    private ObjsDefault(final Iterable<Map.Entry<String, Objectionary>> entries) {
+        this(new MapOf<>(entries));
+    }
 
     /**
      * Constructor for tests.
