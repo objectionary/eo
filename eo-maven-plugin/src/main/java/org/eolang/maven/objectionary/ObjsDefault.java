@@ -25,8 +25,10 @@ package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
@@ -36,51 +38,60 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Default objectionaries.
+ * The class is immutable, but NOT thread-safe.
  * @since 0.29.6
  */
 public final class ObjsDefault implements Objectionaries {
 
     private final Unchecked<Path> cache;
 
-    private final Scalar<Boolean> usecache;
+    private final Scalar<Boolean> cached;
 
     /**
      * Hash-map.
      */
-    private final Map<String, Objectionary> map;
+    private final Map<? super String, Objectionary> map;
 
-    /**
-     * Ctor.
-     */
-    public ObjsDefault() {
-        this(new HashMap<>());
+    @SafeVarargs
+    public ObjsDefault(final Map.Entry<CommitHash, Objectionary>... entries) {
+        this(Arrays.stream(entries).collect(
+            Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
-    /**
-     * Ctor.
-     * @param ojs Objectionaries hash-map.
-     */
-    ObjsDefault(final Map<String, Objectionary> ojs) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> usecache) {
-        this(cache, usecache, new HashMap<>());
-    }
-
-    /**
-     * Ctor.
-     * @param map Objectionaries hash-map.
-     * @param cache Cache path.
-     * @param usecache Use cache.
-     */
     public ObjsDefault(
         final Scalar<Path> cache,
-        final Scalar<Boolean> usecache,
-        final Map<String, Objectionary> map
+        final Scalar<Boolean> cached
+    ) {
+        this(cache, cached, new HashMap<>(0));
+    }
+
+    /**
+     * Constructor for tests.
+     * @param ojs Predefined Objectionaries.
+     */
+    private ObjsDefault(final Map<? super String, Objectionary> ojs) {
+        this(
+            () -> {
+                throw new UnsupportedOperationException("Caching unsupported");
+            },
+            () -> false,
+            ojs
+        );
+    }
+
+    /**
+     * Primary constructor.
+     * @param map Objectionaries hash-map.
+     * @param cache Cache path.
+     * @param cached Use cache.
+     */
+    private ObjsDefault(
+        final Scalar<Path> cache,
+        final Scalar<Boolean> cached,
+        final Map<? super String, Objectionary> map
     ) {
         this.cache = new Unchecked<>(cache);
-        this.usecache = usecache;
+        this.cached = cached;
         this.map = map;
     }
 
@@ -101,25 +112,27 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     private Objectionary objectionary(final CommitHash hash) {
-        final CommitHash cached = new ChCached(hash);
-        final CommitHash narrow = new ChNarrow(cached);
-        this.with(
-            cached,
-            new OyFallbackSwap(
-                new OyHome(
-                    narrow,
-                    this.cache.value()
-                ),
-                new OyCaching(
-                    narrow,
-                    this.cache.value(),
-                    new OyIndexed(
-                        new OyRemote(cached)
-                    )
-                ),
-                this.usecache
-            )
-        );
-        return this.map.get(cached.value());
+        final CommitHash sticky = new ChCached(hash);
+        if (!this.map.containsKey(sticky.value())) {
+            final CommitHash narrow = new ChNarrow(sticky);
+            this.with(
+                sticky,
+                new OyFallbackSwap(
+                    new OyHome(
+                        narrow,
+                        this.cache.value()
+                    ),
+                    new OyCaching(
+                        narrow,
+                        this.cache.value(),
+                        new OyIndexed(
+                            new OyRemote(sticky)
+                        )
+                    ),
+                    this.cached
+                )
+            );
+        }
+        return this.map.get(sticky.value());
     }
 }

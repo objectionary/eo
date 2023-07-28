@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.map.MapEntry;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
@@ -198,9 +199,10 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new ObjsDefault()
-                    .with(first, new OyRemote(first))
-                    .with(second, new OyRemote(second))
+                new ObjsDefault(
+                    new MapEntry<>(first, new OyRemote(first)),
+                    new MapEntry<>(second, new OyRemote(second))
+                )
             )
             .with("withVersions", true)
             .withProgram(
@@ -248,9 +250,10 @@ final class ProbeMojoTest {
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
-                new ObjsDefault()
-                    .with(first, new OyRemote(first))
-                    .with(master, new OyRemote(master))
+                new ObjsDefault(
+                    new MapEntry<>(first, new OyRemote(first)),
+                    new MapEntry<>(master, new OyRemote(master))
+                )
             )
             .with("withVersions", true)
             .with("hsh", master)
