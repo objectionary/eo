@@ -92,7 +92,7 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(this.cache, this::forceUpdate);
+    private final Objectionaries objectionaries = new ObjsDefault(()->this.cache, this::forceUpdate);
 
     @Override
     public void exec() throws IOException {
@@ -109,7 +109,7 @@ public final class ProbeMojo extends SafeMojo {
             }
             int count = 0;
             for (final String name : names) {
-                if (!this.objectionaryByHash(this.hsh).contains(name)) {
+                if (!this.objectionaries.contains(this.hsh, name)) {
                     continue;
                 }
                 ++count;

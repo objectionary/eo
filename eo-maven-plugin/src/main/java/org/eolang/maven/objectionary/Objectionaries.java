@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.objectionary;
 
+import java.io.IOException;
+import org.cactoos.Input;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -44,6 +46,8 @@ public interface Objectionaries {
      * @return Objectionary by given hash.
      */
     Objectionary get(CommitHash hash);
+
+    Input object(CommitHash hash, String name);
 
     boolean contains(CommitHash hash, String name);
 
@@ -85,8 +89,21 @@ public interface Objectionaries {
         }
 
         @Override
+        public Input object(final CommitHash hash, final String name) {
+            try {
+                return this.objry.get(name);
+            } catch (final IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        @Override
         public boolean contains(final CommitHash hash, final String name) {
-            return false;
+            try {
+                return this.objry.contains(name);
+            } catch (final IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

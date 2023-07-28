@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import org.cactoos.Input;
 import org.cactoos.Scalar;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
@@ -38,7 +40,7 @@ import org.eolang.maven.hash.CommitHash;
  */
 public final class ObjsDefault implements Objectionaries {
 
-    private final Path cache;
+    private final Unchecked<Path> cache;
 
     private final Scalar<Boolean> usecache;
 
@@ -62,7 +64,7 @@ public final class ObjsDefault implements Objectionaries {
         throw new UnsupportedOperationException();
     }
 
-    public ObjsDefault(final Path cache, final Scalar<Boolean> usecache) {
+    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> usecache) {
         this(cache, usecache, new HashMap<>());
     }
 
@@ -73,11 +75,11 @@ public final class ObjsDefault implements Objectionaries {
      * @param usecache Use cache.
      */
     public ObjsDefault(
-        final Path cache,
+        final Scalar<Path> cache,
         final Scalar<Boolean> usecache,
         final Map<String, Objectionary> map
     ) {
-        this.cache = cache;
+        this.cache = new Unchecked<>(cache);
         this.usecache = usecache;
         this.map = map;
     }
@@ -91,6 +93,16 @@ public final class ObjsDefault implements Objectionaries {
     @Override
     public Objectionary get(final CommitHash hash) {
         return this.map.get(hash.value());
+    }
+
+    @Override
+    public Input object(final CommitHash hash, final String name) {
+        try {
+            return this.byHash(hash).get(name);
+        } catch (final IOException ex) {
+            //todo
+            throw new IllegalStateException(ex);
+        }
     }
 
     @Override
@@ -111,11 +123,11 @@ public final class ObjsDefault implements Objectionaries {
             new OyFallbackSwap(
                 new OyHome(
                     narrow,
-                    this.cache
+                    this.cache.value()
                 ),
                 new OyCaching(
                     narrow,
-                    this.cache,
+                    this.cache.value(),
                     new OyIndexed(
                         new OyRemote(cached)
                     )

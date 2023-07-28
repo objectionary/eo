@@ -70,7 +70,7 @@ public final class AssembleMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (6 lines)
      * @checkstyle ConstantUsageCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(this.cache,  () -> this.session.getRequest().isUpdateSnapshots());
+    private final Objectionaries objectionaries = new ObjsDefault(()->this.cache,  () -> this.session.getRequest().isUpdateSnapshots());
 
     /**
      * The central.

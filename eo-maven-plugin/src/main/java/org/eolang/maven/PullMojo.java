@@ -90,7 +90,9 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(this.cache, () -> this.session.getRequest().isUpdateSnapshots());
+    private final Objectionaries objectionaries = new ObjsDefault(()->this.cache,
+        () -> this.session.getRequest().isUpdateSnapshots()
+    );
 
     /**
      * Pull again even if the .eo file is already present?
@@ -165,7 +167,7 @@ public final class PullMojo extends SafeMojo {
             );
         } else {
             new Home(dir).save(
-                this.objectionaryByHash(this.hsh).get(name),
+                this.objectionaries.object(this.hsh, name),
                 dir.relativize(src)
             );
             Logger.debug(
