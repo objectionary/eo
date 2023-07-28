@@ -117,6 +117,14 @@ final class PhPackageTest {
     }
 
     @Test
+    void doesNotGetType() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).type()
+        );
+    }
+
+    @Test
     void convertsToPhiTerm() {
         MatcherAssert.assertThat(
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).φTerm(),

@@ -191,6 +191,11 @@ public interface Data<T> {
         }
 
         @Override
+        public String type() {
+            return this.object.type();
+        }
+
+        @Override
         public String φTerm() {
             return this.object.φTerm();
         }

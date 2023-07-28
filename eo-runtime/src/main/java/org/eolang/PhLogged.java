@@ -89,6 +89,11 @@ public final class PhLogged implements Phi {
     }
 
     @Override
+    public String type() {
+        return this.origin.type();
+    }
+
+    @Override
     public boolean equals(final Object obj) {
         return this.origin.equals(obj);
     }

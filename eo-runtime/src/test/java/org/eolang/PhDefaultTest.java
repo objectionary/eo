@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
 import EOorg.EOeolang.EOstring$EOlength;
 import EOorg.EOeolang.EOtxt.EOsprintf;
@@ -225,6 +226,51 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             new Dataized(new PhMethod(phi, "count")).take(Long.class),
             Matchers.equalTo(total)
+        );
+    }
+
+    @Test
+    void hasTheSameTypeWithBoundedData() {
+        final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
+        final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
+        MatcherAssert.assertThat(
+            five.type(),
+            Matchers.equalTo(six.type())
+        );
+    }
+
+    @Test
+    void hasDifferentTypeWithBoundedMethod() {
+        final Phi five = new Data.ToPhi(5L);
+        MatcherAssert.assertThat(
+            five.type(),
+            Matchers.not(
+                Matchers.equalTo(
+                    new PhWith(
+                        five.attr("plus").get().copy(),
+                        "x",
+                        new Data.ToPhi(5L)
+                    ).type()
+                )
+            )
+        );
+    }
+
+    @Test
+    void hasTheSameTypeWithDifferentInstances() {
+        MatcherAssert.assertThat(
+            new PhWith(
+                new Data.ToPhi(5L).attr("plus").get().copy(),
+                "x",
+                new Data.ToPhi(5L)
+            ).type(),
+            Matchers.equalTo(
+                new PhWith(
+                    new Data.ToPhi(6L).attr("plus").get().copy(),
+                    "x",
+                    new Data.ToPhi(6L)
+                ).type()
+            )
         );
     }
 

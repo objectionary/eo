@@ -72,6 +72,13 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public String type() {
+        throw new ExFailure(
+            String.format("Can't #type() from package object '%s'", this.pkg)
+        );
+    }
+
+    @Override
     public String toString() {
         return String.format("Φ.%s", this.pkg);
     }
