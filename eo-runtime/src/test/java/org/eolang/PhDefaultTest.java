@@ -231,10 +231,8 @@ final class PhDefaultTest {
 
     @Test
     void hasTheSameTypeWithBoundedData() {
-        Phi five = new EOint(Phi.Φ);
-        five = new PhWith(five, "Δ", new Data.Value<>(5L));
-        Phi six = new EOint(Phi.Φ);
-        six = new PhWith(six, "Δ", new Data.Value<>(5L));
+        final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
+        final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         MatcherAssert.assertThat(
             five.type(),
             Matchers.equalTo(six.type())
