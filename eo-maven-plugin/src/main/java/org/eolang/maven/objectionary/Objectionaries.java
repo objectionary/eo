@@ -45,6 +45,8 @@ public interface Objectionaries {
      */
     Objectionary get(CommitHash hash);
 
+    boolean contains(CommitHash hash, String name);
+
     /**
      * Fake objectionaries.
      * Contains only one default objectionary that will be returned by any hash.
@@ -80,6 +82,11 @@ public interface Objectionaries {
         @Override
         public Objectionary get(final CommitHash hash) {
             return this.objry;
+        }
+
+        @Override
+        public boolean contains(final CommitHash hash, final String name) {
+            return false;
         }
     }
 }

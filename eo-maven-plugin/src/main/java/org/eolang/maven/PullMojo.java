@@ -90,7 +90,7 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault();
+    private final Objectionaries objectionaries = new ObjsDefault(this.cache, () -> this.session.getRequest().isUpdateSnapshots());
 
     /**
      * Pull again even if the .eo file is already present?

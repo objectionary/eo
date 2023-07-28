@@ -23,8 +23,13 @@
  */
 package org.eolang.maven.objectionary;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import org.cactoos.Scalar;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -32,6 +37,11 @@ import org.eolang.maven.hash.CommitHash;
  * @since 0.29.6
  */
 public final class ObjsDefault implements Objectionaries {
+
+    private final Path cache;
+
+    private final Scalar<Boolean> usecache;
+
     /**
      * Hash-map.
      */
@@ -49,7 +59,27 @@ public final class ObjsDefault implements Objectionaries {
      * @param ojs Objectionaries hash-map.
      */
     ObjsDefault(final Map<String, Objectionary> ojs) {
-        this.map = ojs;
+        throw new UnsupportedOperationException();
+    }
+
+    public ObjsDefault(final Path cache, final Scalar<Boolean> usecache) {
+        this(cache, usecache, new HashMap<>());
+    }
+
+    /**
+     * Ctor.
+     * @param map Objectionaries hash-map.
+     * @param cache Cache path.
+     * @param usecache Use cache.
+     */
+    public ObjsDefault(
+        final Path cache,
+        final Scalar<Boolean> usecache,
+        final Map<String, Objectionary> map
+    ) {
+        this.cache = cache;
+        this.usecache = usecache;
+        this.map = map;
     }
 
     @Override
@@ -61,5 +91,37 @@ public final class ObjsDefault implements Objectionaries {
     @Override
     public Objectionary get(final CommitHash hash) {
         return this.map.get(hash.value());
+    }
+
+    @Override
+    public boolean contains(final CommitHash hash, final String name) {
+        try {
+            return this.byHash(hash).contains(name);
+        } catch (final IOException ex) {
+            //todo
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    private Objectionary byHash(final CommitHash hash) {
+        final CommitHash cached = new ChCached(hash);
+        final CommitHash narrow = new ChNarrow(cached);
+        return this.with(
+            cached,
+            new OyFallbackSwap(
+                new OyHome(
+                    narrow,
+                    this.cache
+                ),
+                new OyCaching(
+                    narrow,
+                    this.cache,
+                    new OyIndexed(
+                        new OyRemote(cached)
+                    )
+                ),
+                this.usecache
+            )
+        ).get(cached);
     }
 }

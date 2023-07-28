@@ -92,7 +92,7 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault();
+    private final Objectionaries objectionaries = new ObjsDefault(this.cache, this::forceUpdate);
 
     @Override
     public void exec() throws IOException {
