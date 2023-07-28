@@ -29,7 +29,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
+import org.eolang.maven.hash.ChPattern;
+import org.eolang.maven.hash.ChText;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionary;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
@@ -107,12 +111,14 @@ final class PullMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
+        final CommitHash hash = new ChCached(
+            new ChText(temp.resolve("tags.txt"), "master")
+        );
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new Objectionary.Fake())
-            .with("offlineHashFile", temp.resolve("tags.txt"))
+        maven.with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -129,12 +135,13 @@ final class PullMojoTest {
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
+        final CommitHash hash = new ChCached(
+            new ChPattern("*.*.*:abcdefg", "1.0.0")
+        );
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new Objectionary.Fake())
-            .with("tag", "1.0.0")
-            .with("offlineHash", "*.*.*:abcdefg")
+        maven.with("hsh", hash)
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(

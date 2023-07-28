@@ -54,7 +54,7 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -229,7 +229,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
             this.params.putIfAbsent(
                 "eoEnvDir",
                 new File("../eo-runtime/src/main/rust/eo_env")
@@ -371,6 +371,14 @@ public final class FakeMaven {
     }
 
     /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
+    }
+
+    /**
      * Tojo for placed.json file.
      *
      * @return TjSmart of the current placed.json file.
@@ -507,14 +515,6 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
-    }
-
-    /**
-     * Path to or eo-external.* file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    private Path externalPath() {
-        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -708,6 +708,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class

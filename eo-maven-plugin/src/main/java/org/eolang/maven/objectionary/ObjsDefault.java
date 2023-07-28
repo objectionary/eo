@@ -21,46 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.hash;
+package org.eolang.maven.objectionary;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.eolang.maven.hash.CommitHash;
 
 /**
- * Hash of tag.
- *
- * @since 0.28.11
+ * Default objectionaries.
+ * @since 0.29.6
  */
-public interface CommitHash {
+public final class ObjsDefault implements Objectionaries {
+    /**
+     * Hash-map.
+     */
+    private final Map<String, Objectionary> map;
 
     /**
-     * SHA Hash.
-     *
-     * @return SHA of commit
+     * Ctor.
      */
-    String value();
+    public ObjsDefault() {
+        this(new HashMap<>());
+    }
 
     /**
-     * Hardcoded commit hash.
-     *
-     * @since 0.28.11
+     * Ctor.
+     * @param ojs Objectionaries hash-map.
      */
-    final class ChConstant implements CommitHash {
+    ObjsDefault(final Map<String, Objectionary> ojs) {
+        this.map = ojs;
+    }
 
-        /**
-         * Hardcoded value.
-         */
-        private final String hash;
+    @Override
+    public Objectionaries with(final CommitHash hash, final Objectionary objectionary) {
+        this.map.putIfAbsent(hash.value(), objectionary);
+        return this;
+    }
 
-        /**
-         * The main constructor.
-         *
-         * @param hash Hardcoded value.
-         */
-        public ChConstant(final String hash) {
-            this.hash = hash;
-        }
-
-        @Override
-        public String value() {
-            return this.hash;
-        }
+    @Override
+    public Objectionary get(final CommitHash hash) {
+        return this.map.get(hash.value());
     }
 }

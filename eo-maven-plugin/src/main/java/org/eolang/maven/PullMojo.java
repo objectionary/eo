@@ -27,16 +27,16 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyCaching;
 import org.eolang.maven.objectionary.OyFallbackSwap;
 import org.eolang.maven.objectionary.OyHome;
@@ -63,7 +63,7 @@ public final class PullMojo extends SafeMojo {
     public static final String DIR = "3-pull";
 
     /**
-     * The Git hash to pull objects from, in objectionary.
+     * The Git tag to pull objects from, in objectionary.
      *
      * @since 0.21.0
      */
@@ -72,31 +72,16 @@ public final class PullMojo extends SafeMojo {
     private String tag = "master";
 
     /**
-     * Read hashes from local file.
+     * The Git hash to pull objects from, in objectionary.
+     * If not set, will be computed from {@code tag} field.
      *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHashFile")
-    private Path offlineHashFile;
-
-    /**
-     * Return hash by pattern.
-     * -DofflineHash=0.*.*:abc2sd3
-     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHash")
-    private String offlineHash;
-
-    /**
-     * The objectionary.
+     * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
+    private CommitHash hsh;
 
     /**
-     * Hash-Objectionary map.
+     * Objectionaries.
      * @todo #1602:30min Use objectionaries to pull objects with different
      *  versions. Objects with different versions are stored in different
      *  storages (objectionaries). Every objectionary has its own hash.
@@ -105,7 +90,7 @@ public final class PullMojo extends SafeMojo {
      *  objectionary by name.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     /**
      * Pull again even if the .eo file is already present?
@@ -118,22 +103,17 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCached(
-            new ChCompound(
-                this.offlineHashFile, this.offlineHash, this.tag
-            )
-        );
-        if (this.objectionary == null) {
-            this.objectionary = this.objectionaryByHash(hash);
+        if (this.hsh == null) {
+            this.hsh = new ChRemote(this.tag);
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
             tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
-                .withHash(new ChNarrow(hash));
+                .withHash(new ChNarrow(this.hsh));
         }
         Logger.info(
             this, "%d program(s) pulled from %s",
-            tojos.size(), this.objectionary
+            tojos.size(), this.objectionaryByHash(this.hsh)
         );
     }
 
@@ -143,11 +123,11 @@ public final class PullMojo extends SafeMojo {
      * @return Objectionary by given hash.
      */
     private Objectionary objectionaryByHash(final CommitHash hash) {
-        final String value = hash.value();
-        final CommitHash narrow = new ChCached(new ChNarrow(hash));
-        if (!this.objectionaries.containsKey(value)) {
-            this.objectionaries.put(
-                value,
+        final CommitHash cached = new ChCached(hash);
+        final CommitHash narrow = new ChNarrow(cached);
+        return this.objectionaries
+            .with(
+                cached,
                 new OyFallbackSwap(
                     new OyHome(
                         narrow,
@@ -157,14 +137,13 @@ public final class PullMojo extends SafeMojo {
                         narrow,
                         this.cache,
                         new OyIndexed(
-                            new OyRemote(hash)
+                            new OyRemote(cached)
                         )
                     ),
-                    this.session.getRequest().isUpdateSnapshots()
+                    () -> this.session.getRequest().isUpdateSnapshots()
                 )
-            );
-        }
-        return this.objectionaries.get(value);
+            )
+            .get(cached);
     }
 
     /**
@@ -186,7 +165,7 @@ public final class PullMojo extends SafeMojo {
             );
         } else {
             new Home(dir).save(
-                this.objectionary.get(name),
+                this.objectionaryByHash(this.hsh).get(name),
                 dir.relativize(src)
             );
             Logger.debug(
