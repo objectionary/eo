@@ -101,6 +101,11 @@ public final class PullMojo extends SafeMojo {
             tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
                 .withHash(new ChNarrow(this.hsh));
         }
+        Logger.info(
+            this,
+            "%d program(s) were pulled",
+            tojos.size()
+        );
     }
 
     /**
