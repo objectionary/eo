@@ -81,7 +81,9 @@ public final class ObjsDefault implements Objectionaries {
      * Constructor for tests with predefined Objectionaries.
      * @param entries Predefined Objectionaries.
      */
-    private ObjsDefault(final Iterable<Map.Entry<String, Objectionary>> entries) {
+    private ObjsDefault(
+        final Iterable<Map.Entry<? extends String, ? extends Objectionary>> entries
+    ) {
         this(new MapOf<>(entries));
     }
 
