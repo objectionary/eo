@@ -35,7 +35,6 @@ import org.eolang.Phi;
  * An attribute that knows how to store an object inside {@link EOcage}.
  *
  * @since 0.29.6
- * @checkstyle TypeNameCheck (5 lines)
  */
 public final class AtCage implements Attr {
 
