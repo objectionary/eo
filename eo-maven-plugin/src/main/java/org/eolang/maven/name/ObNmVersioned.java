@@ -51,7 +51,7 @@ public class ObNmVersioned implements ObjectName {
     }
 
     @Override
-    public String asString() throws Exception {
+    public String asString() {
         final String result;
         if (this.versioned) {
             result = this.origin.asString();

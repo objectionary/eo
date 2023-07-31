@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
@@ -51,9 +52,9 @@ public class ObNmCached implements ObjectName {
      * @param src Origin.
      */
     public ObNmCached(final ObjectName src) {
-        this.vle = new Unchecked<>(src::value);
-        this.hsh = new Unchecked<>(src::hash);
-        this.self = new Unchecked<>(src::asString);
+        this.vle = new Unchecked<>(new Sticky<>(src::value));
+        this.hsh = new Unchecked<>(new Sticky<>(src::hash));
+        this.self = new Unchecked<>(new Sticky<>(src::asString));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ObNmCached implements ObjectName {
     }
 
     @Override
-    public String asString() throws Exception {
+    public String asString() {
         return this.self.value();
     }
 }

@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
@@ -40,31 +39,20 @@ public final class ObNmDefault implements ObjectName {
     private final Unchecked<String[]> split;
 
     /**
-     * Hash.
-     */
-    private final Unchecked<CommitHash> hsh;
-
-    /**
      * Ctor.
+     *
      * @param object Object full name (with version or not).
-     * @param def Default hash if version in full name is absent.
+     * @param def    Default hash if version in full name is absent.
      */
     public ObNmDefault(final String object, final CommitHash def) {
         this.split = new Unchecked<>(
-            new Sticky<>(
-                () -> {
-                    String[] splt = object.split("\\|");
-                    if (splt.length == 1) {
-                        splt = new String[]{splt[0], def.value()};
-                    }
-                    return splt;
+            () -> {
+                String[] splt = object.split("\\|");
+                if (splt.length == 1) {
+                    splt = new String[]{splt[0], def.value()};
                 }
-            )
-        );
-        this.hsh = new Unchecked<>(
-            new Sticky<>(
-                () -> new CommitHash.ChConstant(this.split.value()[1])
-            )
+                return splt;
+            }
         );
     }
 
@@ -75,7 +63,7 @@ public final class ObNmDefault implements ObjectName {
 
     @Override
     public CommitHash hash() {
-        return this.hsh.value();
+        return new CommitHash.ChConstant(this.split.value()[1]);
     }
 
     @Override

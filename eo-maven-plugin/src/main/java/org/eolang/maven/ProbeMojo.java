@@ -40,6 +40,9 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObNmCached;
+import org.eolang.maven.name.ObNmVersioned;
+import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -106,12 +109,12 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<ObNmDefault> objects = this.probes(src);
+            final Collection<ObjectName> objects = this.probes(src);
             if (!objects.isEmpty()) {
                 Logger.info(this, "Probing object(s): %s", objects);
             }
             int count = 0;
-            for (final ObNmDefault object : objects) {
+            for (final ObjectName object : objects) {
                 if (!this.objectionaries.contains(object.hash(), object.value())) {
                     continue;
                 }
@@ -123,7 +126,10 @@ public final class ProbeMojo extends SafeMojo {
             }
             tojo.withHash(
                 new ChNarrow(
-                    new ObNmDefault(tojo.identifier(), this.hsh, this.withVersions).hash()
+                    new ObNmVersioned(
+                        new ObNmDefault(tojo.identifier(), this.hsh),
+                        this.withVersions
+                    ).hash()
                 )
             ).withProbed(count);
         }
@@ -153,11 +159,16 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<ObNmDefault> probes(final Path file)
+    private Collection<ObjectName> probes(final Path file)
         throws FileNotFoundException {
-        final Collection<ObNmDefault> objects = new ListOf<>(
+        final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                obj -> new ObNmDefault(ProbeMojo.noPrefix(obj), this.hsh, this.withVersions),
+                obj -> new ObNmCached(
+                    new ObNmVersioned(
+                        new ObNmDefault(ProbeMojo.noPrefix(obj), this.hsh),
+                        this.withVersions
+                    )
+                ),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(

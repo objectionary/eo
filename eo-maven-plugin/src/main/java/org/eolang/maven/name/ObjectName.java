@@ -41,4 +41,7 @@ public interface ObjectName extends Text {
      * @return Hash.
      */
     CommitHash hash();
+
+    @Override
+    String asString();
 }
