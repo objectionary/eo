@@ -34,7 +34,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterator.Mapped;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
@@ -42,6 +42,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.util.ObjectFullName;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -100,20 +101,20 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<String> names = this.probes(src);
-            if (!names.isEmpty()) {
-                Logger.info(this, "Probing object(s): %s", names);
+            final Collection<ObjectFullName> objects = this.probes(src);
+            if (!objects.isEmpty()) {
+                Logger.info(this, "Probing object(s): %s", objects);
             }
             int count = 0;
-            for (final String name : names) {
-                if (!this.objectionaries.contains(this.hsh, name)) {
+            for (final ObjectFullName object : objects) {
+                if (!this.objectionaries.contains(object.hash(), object.name())) {
                     continue;
                 }
                 ++count;
                 this.scopedTojos()
-                    .add(name)
+                    .add(object.asString())
                     .withDiscoveredAt(src);
-                probed.add(name);
+                probed.add(object.asString());
             }
             tojo.withHash(new ChNarrow(this.hsh)).withProbed(count);
         }
@@ -143,16 +144,17 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<String> probes(final Path file) throws FileNotFoundException {
-        final Collection<String> objects = new ListOf<>(
+    private Collection<ObjectFullName> probes(final Path file)
+        throws FileNotFoundException {
+        final Collection<ObjectFullName> objects = new ListOf<ObjectFullName>(
             new Mapped<>(
-                ProbeMojo::noPrefix,
+                obj -> new ObjectFullName(ProbeMojo.noPrefix(obj), this.hsh),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
-                ).iterator()
+                )
             )
         );
         if (objects.isEmpty()) {
