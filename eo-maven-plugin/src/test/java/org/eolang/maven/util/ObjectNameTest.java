@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29.6
  */
-final class ObjectFullNameTest {
+final class ObjectNameTest {
     /**
      * Stdout.
      */
@@ -49,8 +49,8 @@ final class ObjectFullNameTest {
      */
     private static final String OBJECT = String.join(
         "|",
-        ObjectFullNameTest.STDOUT,
-        ObjectFullNameTest.HASH
+        ObjectNameTest.STDOUT,
+        ObjectNameTest.HASH
     );
 
     /**
@@ -61,8 +61,8 @@ final class ObjectFullNameTest {
     @Test
     void returnsTheSameValidFullName() {
         MatcherAssert.assertThat(
-            new ObjectName(ObjectFullNameTest.OBJECT, ObjectFullNameTest.FAKE).asString(),
-            Matchers.equalTo(ObjectFullNameTest.OBJECT)
+            new ObjectName(ObjectNameTest.OBJECT, ObjectNameTest.FAKE).asString(),
+            Matchers.equalTo(ObjectNameTest.OBJECT)
         );
     }
 
@@ -70,11 +70,11 @@ final class ObjectFullNameTest {
     void returnsFullNameWithoutVersion() {
         MatcherAssert.assertThat(
             new ObjectName(
-                ObjectFullNameTest.OBJECT,
-                ObjectFullNameTest.FAKE,
+                ObjectNameTest.OBJECT,
+                ObjectNameTest.FAKE,
                 false
             ).asString(),
-            Matchers.equalTo(ObjectFullNameTest.OBJECT)
+            Matchers.equalTo(ObjectNameTest.OBJECT)
         );
     }
 
@@ -82,10 +82,10 @@ final class ObjectFullNameTest {
     void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
             new ObjectName(
-                ObjectFullNameTest.OBJECT,
-                ObjectFullNameTest.FAKE
+                ObjectNameTest.OBJECT,
+                ObjectNameTest.FAKE
             ).value(),
-            Matchers.equalTo(ObjectFullNameTest.STDOUT)
+            Matchers.equalTo(ObjectNameTest.STDOUT)
         );
     }
 
@@ -93,12 +93,12 @@ final class ObjectFullNameTest {
     void takesHashFromGivenFullName() {
         MatcherAssert.assertThat(
             new ObjectName(
-                ObjectFullNameTest.OBJECT,
-                ObjectFullNameTest.FAKE
+                ObjectNameTest.OBJECT,
+                ObjectNameTest.FAKE
             )
                 .hash()
                 .value(),
-            Matchers.equalTo(ObjectFullNameTest.HASH)
+            Matchers.equalTo(ObjectNameTest.HASH)
         );
     }
 
@@ -106,11 +106,11 @@ final class ObjectFullNameTest {
     void buildsFullNameWithGivenDefaultHash() {
         MatcherAssert.assertThat(
             new ObjectName(
-                ObjectFullNameTest.STDOUT,
-                ObjectFullNameTest.FAKE
+                ObjectNameTest.STDOUT,
+                ObjectNameTest.FAKE
             ).asString(),
             Matchers.equalTo(
-                String.join("|", ObjectFullNameTest.STDOUT, ObjectFullNameTest.FAKE.value())
+                String.join("|", ObjectNameTest.STDOUT, ObjectNameTest.FAKE.value())
             )
         );
     }
@@ -119,12 +119,12 @@ final class ObjectFullNameTest {
     void takesHashFromGivenDefaultHash() {
         MatcherAssert.assertThat(
             new ObjectName(
-                ObjectFullNameTest.STDOUT,
-                ObjectFullNameTest.FAKE
+                ObjectNameTest.STDOUT,
+                ObjectNameTest.FAKE
             )
                 .hash()
                 .value(),
-            Matchers.equalTo(ObjectFullNameTest.FAKE.value())
+            Matchers.equalTo(ObjectNameTest.FAKE.value())
         );
     }
 }
