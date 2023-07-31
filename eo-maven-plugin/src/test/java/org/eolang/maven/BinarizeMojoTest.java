@@ -47,7 +47,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  15478085290?pr=2332">here</a>
  *  2) {@code binarizesWithoutErrors}, see an example
  *  <a href="https://github.com/objectionary/eo/actions/runs/5713661855/job/
- *  15479445307?pr=2332>here</a>
+ *  15479445307?pr=2332">here</a>
  */
 final class BinarizeMojoTest {
 
