@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
@@ -116,7 +115,9 @@ public final class ProbeMojo extends SafeMojo {
                     .withDiscoveredAt(src);
                 probed.add(object.asString());
             }
-            tojo.withHash(new ChNarrow(this.hsh)).withProbed(count);
+            tojo.withHash(
+                new ObjectFullName(tojo.identifier(), this.hsh).hash()
+            ).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
