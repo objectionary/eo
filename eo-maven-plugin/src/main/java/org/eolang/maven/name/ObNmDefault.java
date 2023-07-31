@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
@@ -46,13 +48,7 @@ public final class ObNmDefault implements ObjectName {
      */
     public ObNmDefault(final String object, final CommitHash def) {
         this.split = new Unchecked<>(
-            () -> {
-                String[] splt = object.split("\\|");
-                if (splt.length == 1) {
-                    splt = new String[]{splt[0], def.value()};
-                }
-                return splt;
-            }
+            new Sticky<>(ObNmDefault.split(object, def))
         );
     }
 
@@ -74,5 +70,21 @@ public final class ObNmDefault implements ObjectName {
     @Override
     public String toString() {
         return this.asString();
+    }
+
+    /**
+     * Split given object.
+     * @param object Object.
+     * @param hash Default hash.
+     * @return Split object.
+     */
+    private static Scalar<String[]> split(final String object, final CommitHash hash) {
+        return () -> {
+            String[] splt = object.split("\\|");
+            if (splt.length == 1) {
+                splt = new String[]{splt[0], hash.value()};
+            }
+            return splt;
+        };
     }
 }
