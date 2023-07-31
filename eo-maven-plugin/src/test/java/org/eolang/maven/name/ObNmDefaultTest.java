@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven.name;
 
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.name.ObNmDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -62,6 +61,10 @@ final class ObNmDefaultTest {
     @Test
     void returnsTheSameValidFullName() {
         MatcherAssert.assertThat(
+            String.format(
+                "Object name %s as string should have not been changed, but it did",
+                ObNmDefaultTest.OBJECT
+            ),
             new ObNmDefault(ObNmDefaultTest.OBJECT, ObNmDefaultTest.FAKE).asString(),
             Matchers.equalTo(ObNmDefaultTest.OBJECT)
         );
@@ -70,6 +73,11 @@ final class ObNmDefaultTest {
     @Test
     void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
+            String.format(
+                "Name of object %s should have been equal to %s, but it didn't",
+                ObNmDefaultTest.OBJECT,
+                ObNmDefaultTest.STDOUT
+            ),
             new ObNmDefault(
                 ObNmDefaultTest.OBJECT,
                 ObNmDefaultTest.FAKE
@@ -81,6 +89,11 @@ final class ObNmDefaultTest {
     @Test
     void takesHashFromGivenFullName() {
         MatcherAssert.assertThat(
+            String.format(
+                "Hash of object %s should have been equal to %s, but it didn't",
+                ObNmDefaultTest.OBJECT,
+                ObNmDefaultTest.HASH
+            ),
             new ObNmDefault(
                 ObNmDefaultTest.OBJECT,
                 ObNmDefaultTest.FAKE
@@ -93,20 +106,34 @@ final class ObNmDefaultTest {
 
     @Test
     void buildsFullNameWithGivenDefaultHash() {
+        final String built = String.join(
+            "|",
+            ObNmDefaultTest.STDOUT,
+            ObNmDefaultTest.FAKE.value()
+        );
         MatcherAssert.assertThat(
+            String.format(
+                "Object %s as string with fake hash %s should have been equal to %s, but it didn't",
+                ObNmDefaultTest.STDOUT,
+                ObNmDefaultTest.FAKE,
+                built
+            ),
             new ObNmDefault(
                 ObNmDefaultTest.STDOUT,
                 ObNmDefaultTest.FAKE
             ).asString(),
-            Matchers.equalTo(
-                String.join("|", ObNmDefaultTest.STDOUT, ObNmDefaultTest.FAKE.value())
-            )
+            Matchers.equalTo(built)
         );
     }
 
     @Test
     void takesHashFromGivenDefaultHash() {
         MatcherAssert.assertThat(
+            String.format(
+                "Hash of object %s should have been equal to default hash %s, but it didn't",
+                ObNmDefaultTest.STDOUT,
+                ObNmDefaultTest.FAKE
+            ),
             new ObNmDefault(
                 ObNmDefaultTest.STDOUT,
                 ObNmDefaultTest.FAKE
