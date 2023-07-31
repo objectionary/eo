@@ -49,7 +49,7 @@ public final class AtCage implements Attr {
     private Phi object;
 
     /**
-     * Default ctor.
+     * Ctor.
      */
     public AtCage() {
         this(null);
