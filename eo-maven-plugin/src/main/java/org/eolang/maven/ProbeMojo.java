@@ -41,12 +41,12 @@ import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.name.ObNmCached;
+import org.eolang.maven.name.ObNmDefault;
 import org.eolang.maven.name.ObNmVersioned;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.name.ObNmDefault;
 import org.eolang.maven.util.Rel;
 
 /**

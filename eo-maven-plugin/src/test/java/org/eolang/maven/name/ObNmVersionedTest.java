@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29.6
  */
-public class ObNmVersionedTest {
+final class ObNmVersionedTest {
     /**
      * Object to test.
      */

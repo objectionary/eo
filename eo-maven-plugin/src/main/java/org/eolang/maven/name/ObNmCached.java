@@ -29,8 +29,10 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Cached object name.
+ *
+ * @since 0.29.6
  */
-public class ObNmCached implements ObjectName {
+public final class ObNmCached implements ObjectName {
 
     /**
      * Value.

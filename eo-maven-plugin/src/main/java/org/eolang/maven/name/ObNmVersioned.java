@@ -27,8 +27,10 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Versioned object full name.
+ *
+ * @since 0.29.6
  */
-public class ObNmVersioned implements ObjectName {
+public final class ObNmVersioned implements ObjectName {
 
     /**
      * Origin.

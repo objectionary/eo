@@ -21,29 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.name;
-
-import org.cactoos.Text;
-import org.eolang.maven.hash.CommitHash;
-
 /**
- * Object name with version.
- *
- * @since 0.29.6
+ * Test cases for {@link org.eolang.maven.name} package.
  */
-public interface ObjectName extends Text {
-    /**
-     * Name only.
-     * @return Name.
-     */
-    String value();
-
-    /**
-     * Hash only.
-     * @return Hash.
-     */
-    CommitHash hash();
-
-    @Override
-    String asString();
-}
+package org.eolang.maven.name;
