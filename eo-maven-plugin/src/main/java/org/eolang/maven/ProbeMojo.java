@@ -43,7 +43,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.ObjectName;
+import org.eolang.maven.name.ObNmDefault;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -106,12 +106,12 @@ public final class ProbeMojo extends SafeMojo {
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<ObjectName> objects = this.probes(src);
+            final Collection<ObNmDefault> objects = this.probes(src);
             if (!objects.isEmpty()) {
                 Logger.info(this, "Probing object(s): %s", objects);
             }
             int count = 0;
-            for (final ObjectName object : objects) {
+            for (final ObNmDefault object : objects) {
                 if (!this.objectionaries.contains(object.hash(), object.value())) {
                     continue;
                 }
@@ -123,7 +123,7 @@ public final class ProbeMojo extends SafeMojo {
             }
             tojo.withHash(
                 new ChNarrow(
-                    new ObjectName(tojo.identifier(), this.hsh, this.withVersions).hash()
+                    new ObNmDefault(tojo.identifier(), this.hsh, this.withVersions).hash()
                 )
             ).withProbed(count);
         }
@@ -153,11 +153,11 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<ObjectName> probes(final Path file)
+    private Collection<ObNmDefault> probes(final Path file)
         throws FileNotFoundException {
-        final Collection<ObjectName> objects = new ListOf<>(
+        final Collection<ObNmDefault> objects = new ListOf<>(
             new Mapped<>(
-                obj -> new ObjectName(ProbeMojo.noPrefix(obj), this.hsh, this.withVersions),
+                obj -> new ObNmDefault(ProbeMojo.noPrefix(obj), this.hsh, this.withVersions),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(

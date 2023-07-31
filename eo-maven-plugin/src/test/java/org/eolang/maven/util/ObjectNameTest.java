@@ -24,12 +24,13 @@
 package org.eolang.maven.util;
 
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObNmDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link ObjectName}.
+ * Test cases for {@link ObNmDefault}.
  *
  * @since 0.29.6
  */
@@ -61,7 +62,7 @@ final class ObjectNameTest {
     @Test
     void returnsTheSameValidFullName() {
         MatcherAssert.assertThat(
-            new ObjectName(ObjectNameTest.OBJECT, ObjectNameTest.FAKE).asString(),
+            new ObNmDefault(ObjectNameTest.OBJECT, ObjectNameTest.FAKE).asString(),
             Matchers.equalTo(ObjectNameTest.OBJECT)
         );
     }
@@ -69,7 +70,7 @@ final class ObjectNameTest {
     @Test
     void returnsFullNameWithoutVersion() {
         MatcherAssert.assertThat(
-            new ObjectName(
+            new ObNmDefault(
                 ObjectNameTest.OBJECT,
                 ObjectNameTest.FAKE,
                 false
@@ -81,7 +82,7 @@ final class ObjectNameTest {
     @Test
     void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectName(
+            new ObNmDefault(
                 ObjectNameTest.OBJECT,
                 ObjectNameTest.FAKE
             ).value(),
@@ -92,7 +93,7 @@ final class ObjectNameTest {
     @Test
     void takesHashFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectName(
+            new ObNmDefault(
                 ObjectNameTest.OBJECT,
                 ObjectNameTest.FAKE
             )
@@ -105,7 +106,7 @@ final class ObjectNameTest {
     @Test
     void buildsFullNameWithGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectName(
+            new ObNmDefault(
                 ObjectNameTest.STDOUT,
                 ObjectNameTest.FAKE
             ).asString(),
@@ -118,7 +119,7 @@ final class ObjectNameTest {
     @Test
     void takesHashFromGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectName(
+            new ObNmDefault(
                 ObjectNameTest.STDOUT,
                 ObjectNameTest.FAKE
             )

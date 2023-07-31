@@ -21,19 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.util;
+package org.eolang.maven.name;
 
-import org.cactoos.Text;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * EO object full name.
+ * Object name with default hash.
  *
  * @since 0.29.6
  */
-public final class ObjectName implements Text {
+public final class ObNmDefault implements ObjectName {
 
     /**
      * Full name split.
@@ -46,26 +45,11 @@ public final class ObjectName implements Text {
     private final Unchecked<CommitHash> hsh;
 
     /**
-     * Full name with version or not.
-     */
-    private final boolean versioned;
-
-    /**
      * Ctor.
      * @param object Object full name (with version or not).
      * @param def Default hash if version in full name is absent.
      */
-    public ObjectName(final String object, final CommitHash def) {
-        this(object, def, true);
-    }
-
-    /**
-     * Ctor.
-     * @param object Object full name (with version or not).
-     * @param def Default hash if version in full name is absent.
-     * @param ver Should full name be with version or not.
-     */
-    public ObjectName(final String object, final CommitHash def, final boolean ver) {
+    public ObNmDefault(final String object, final CommitHash def) {
         this.split = new Unchecked<>(
             new Sticky<>(
                 () -> {
@@ -82,34 +66,21 @@ public final class ObjectName implements Text {
                 () -> new CommitHash.ChConstant(this.split.value()[1])
             )
         );
-        this.versioned = ver;
     }
 
-    /**
-     * Name from the full name.
-     * @return Name.
-     */
+    @Override
     public String value() {
         return this.split.value()[0];
     }
 
-    /**
-     * Hash from the full name.
-     * @return Hash.
-     */
+    @Override
     public CommitHash hash() {
         return this.hsh.value();
     }
 
     @Override
     public String asString() {
-        final String result;
-        if (this.versioned) {
-            result = String.join("|", this.split.value()[0], this.split.value()[1]);
-        } else {
-            result = this.split.value()[0];
-        }
-        return result;
+        return String.join("|", this.split.value()[0], this.split.value()[1]);
     }
 
     @Override
