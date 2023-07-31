@@ -29,9 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Volatile;
@@ -53,7 +51,7 @@ public class EOcage extends PhDefault {
      */
     public EOcage(final Phi sigma) {
         super(sigma);
-        this.add("enclosure", new AtMemoized());
+        this.add("enclosure", new AtCage());
         this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
         this.add("write", new AtComposite(this, EOcage.Write::new));
     }
@@ -76,22 +74,9 @@ public class EOcage extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        final Attr attr = rho.attr("σ").get().attr("enclosure");
-                        Phi enclosure;
-                        final Phi writable = rho.attr("x").get();
-                        try {
-                            enclosure = attr.get();
-                        } catch (final EOerror.ExError ignored) {
-                            enclosure = writable;
-                        }
-                        if (!enclosure.type().equals(writable.type())) {
-                            throw new ExFailure(
-                                "Can't write an object of type %s because object of type %s was saved before",
-                                writable.type(),
-                                enclosure.type()
-                            );
-                        }
-                        attr.put(writable);
+                        rho.attr("σ").get().attr("enclosure").put(
+                            rho.attr("x").get()
+                        );
                         return new Data.ToPhi(true);
                     }
                 )
