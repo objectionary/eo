@@ -34,66 +34,97 @@ import org.junit.jupiter.api.Test;
  * @since 0.29.6
  */
 final class ObjectFullNameTest {
+    /**
+     * Stdout.
+     */
+    private static final String STDOUT = "stdout";
+
+    /**
+     * Hash for {@code STDOUT}.
+     */
+    private static final String HASH = "1234567";
+
+    /**
+     * Test object.
+     */
+    private static final String OBJECT = String.join(
+        "|",
+        ObjectFullNameTest.STDOUT,
+        ObjectFullNameTest.HASH
+    );
+
+    /**
+     * Fake commit hash.
+     */
+    private static final CommitHash FAKE = new CommitHash.ChConstant("abcdefg");
 
     @Test
     void returnsTheSameValidFullName() {
-        final String object = "stdout|1234567";
         MatcherAssert.assertThat(
-            new ObjectFullName(object, new ObjectFullNameTest.ChFake()).asString(),
-            Matchers.equalTo(object)
+            new ObjectFullName(ObjectFullNameTest.OBJECT, ObjectFullNameTest.FAKE).asString(),
+            Matchers.equalTo(ObjectFullNameTest.OBJECT)
         );
     }
 
     @Test
     void returnsFullNameWithoutVersion() {
-        final String object = "stdout|1234567";
         MatcherAssert.assertThat(
-            new ObjectFullName(object, new ObjectFullNameTest.ChFake(), false).asString(),
-            Matchers.equalTo("stdout")
+            new ObjectFullName(
+                ObjectFullNameTest.OBJECT,
+                ObjectFullNameTest.FAKE,
+                false
+            ).asString(),
+            Matchers.equalTo(ObjectFullNameTest.OBJECT)
         );
     }
 
     @Test
     void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectFullName("stdout|1234567", new ObjectFullNameTest.ChFake()).name(),
-            Matchers.equalTo("stdout")
+            new ObjectFullName(
+                ObjectFullNameTest.OBJECT,
+                ObjectFullNameTest.FAKE
+            ).name(),
+            Matchers.equalTo(ObjectFullNameTest.STDOUT)
         );
     }
 
     @Test
     void takesHashFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectFullName("stdout|1234567", new ObjectFullNameTest.ChFake()).hash().value(),
-            Matchers.equalTo("1234567")
+            new ObjectFullName(
+                ObjectFullNameTest.OBJECT,
+                ObjectFullNameTest.FAKE
+            )
+                .hash()
+                .value(),
+            Matchers.equalTo(ObjectFullNameTest.HASH)
         );
     }
 
     @Test
     void buildsFullNameWithGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectFullName("stdout", new ObjectFullNameTest.ChFake()).asString(),
-            Matchers.equalTo("stdout|abcdefg")
+            new ObjectFullName(
+                ObjectFullNameTest.STDOUT,
+                ObjectFullNameTest.FAKE
+            ).asString(),
+            Matchers.equalTo(
+                String.join("|", ObjectFullNameTest.STDOUT, ObjectFullNameTest.FAKE.value())
+            )
         );
     }
 
     @Test
     void takesHashFromGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectFullName("stdout", new ObjectFullNameTest.ChFake()).hash().value(),
-            Matchers.equalTo("abcdefg")
+            new ObjectFullName(
+                ObjectFullNameTest.STDOUT,
+                ObjectFullNameTest.FAKE
+            )
+                .hash()
+                .value(),
+            Matchers.equalTo(ObjectFullNameTest.FAKE.value())
         );
-    }
-
-    /**
-     * Fake cache for testing.
-     *
-     * @since 0.29.6
-     */
-    private static final class ChFake implements CommitHash {
-        @Override
-        public String value() {
-            return "abcdefg";
-        }
     }
 }
