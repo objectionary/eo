@@ -23,7 +23,10 @@
  */
 package org.eolang.maven.name;
 
+import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ObNmVersioned}.
@@ -31,10 +34,46 @@ import org.hamcrest.MatcherAssert;
  * @since 0.29.6
  */
 public class ObNmVersionedTest {
+    /**
+     * Object to test.
+     */
+    private static final String OBJECT = "stdout|1234567";
 
+    /**
+     * Fake hash.
+     */
+    private static final CommitHash FAKE = new CommitHash.ChConstant("abcdefg");
+
+    @Test
     void returnsFullNameWithVersions() {
         MatcherAssert.assertThat(
+            String.format(
+                "Versioned object %s as string should have been equal to %s, but it didn't",
+                ObNmVersionedTest.OBJECT,
+                ObNmVersionedTest.OBJECT
+            ),
+            new ObNmVersioned(
+                new ObNmDefault(ObNmVersionedTest.OBJECT, ObNmVersionedTest.FAKE),
+                true
+            ).asString(),
+            Matchers.equalTo(ObNmVersionedTest.OBJECT)
+        );
+    }
 
+    @Test
+    void returnsNameWithoutVersions() {
+        final String stdout = "stdout";
+        MatcherAssert.assertThat(
+            String.format(
+                "Not versioned object %s as string should have been equal to %s, but it didn't",
+                ObNmVersionedTest.OBJECT,
+                stdout
+            ),
+            new ObNmVersioned(
+                new ObNmDefault(ObNmVersionedTest.OBJECT, ObNmVersionedTest.FAKE),
+                false
+            ).asString(),
+            Matchers.equalTo(stdout)
         );
     }
 }
