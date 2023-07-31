@@ -29,7 +29,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link ObjectFullName}.
+ * Test cases for {@link ObjectName}.
  *
  * @since 0.29.6
  */
@@ -61,7 +61,7 @@ final class ObjectFullNameTest {
     @Test
     void returnsTheSameValidFullName() {
         MatcherAssert.assertThat(
-            new ObjectFullName(ObjectFullNameTest.OBJECT, ObjectFullNameTest.FAKE).asString(),
+            new ObjectName(ObjectFullNameTest.OBJECT, ObjectFullNameTest.FAKE).asString(),
             Matchers.equalTo(ObjectFullNameTest.OBJECT)
         );
     }
@@ -69,7 +69,7 @@ final class ObjectFullNameTest {
     @Test
     void returnsFullNameWithoutVersion() {
         MatcherAssert.assertThat(
-            new ObjectFullName(
+            new ObjectName(
                 ObjectFullNameTest.OBJECT,
                 ObjectFullNameTest.FAKE,
                 false
@@ -81,10 +81,10 @@ final class ObjectFullNameTest {
     @Test
     void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectFullName(
+            new ObjectName(
                 ObjectFullNameTest.OBJECT,
                 ObjectFullNameTest.FAKE
-            ).name(),
+            ).value(),
             Matchers.equalTo(ObjectFullNameTest.STDOUT)
         );
     }
@@ -92,7 +92,7 @@ final class ObjectFullNameTest {
     @Test
     void takesHashFromGivenFullName() {
         MatcherAssert.assertThat(
-            new ObjectFullName(
+            new ObjectName(
                 ObjectFullNameTest.OBJECT,
                 ObjectFullNameTest.FAKE
             )
@@ -105,7 +105,7 @@ final class ObjectFullNameTest {
     @Test
     void buildsFullNameWithGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectFullName(
+            new ObjectName(
                 ObjectFullNameTest.STDOUT,
                 ObjectFullNameTest.FAKE
             ).asString(),
@@ -118,7 +118,7 @@ final class ObjectFullNameTest {
     @Test
     void takesHashFromGivenDefaultHash() {
         MatcherAssert.assertThat(
-            new ObjectFullName(
+            new ObjectName(
                 ObjectFullNameTest.STDOUT,
                 ObjectFullNameTest.FAKE
             )

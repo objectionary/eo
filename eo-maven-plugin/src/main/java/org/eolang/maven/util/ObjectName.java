@@ -33,7 +33,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 0.29.6
  */
-public final class ObjectFullName implements Text {
+public final class ObjectName implements Text {
 
     /**
      * Full name split.
@@ -55,7 +55,7 @@ public final class ObjectFullName implements Text {
      * @param object Object full name (with version or not).
      * @param def Default hash if version in full name is absent.
      */
-    public ObjectFullName(final String object, final CommitHash def) {
+    public ObjectName(final String object, final CommitHash def) {
         this(object, def, true);
     }
 
@@ -65,7 +65,7 @@ public final class ObjectFullName implements Text {
      * @param def Default hash if version in full name is absent.
      * @param ver Should full name be with version or not.
      */
-    public ObjectFullName(final String object, final CommitHash def, final boolean ver) {
+    public ObjectName(final String object, final CommitHash def, final boolean ver) {
         this.split = new Unchecked<>(
             new Sticky<>(
                 () -> {
@@ -89,7 +89,7 @@ public final class ObjectFullName implements Text {
      * Name from the full name.
      * @return Name.
      */
-    public String name() {
+    public String value() {
         return this.split.value()[0];
     }
 
