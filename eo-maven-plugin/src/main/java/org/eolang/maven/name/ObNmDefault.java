@@ -48,7 +48,7 @@ public final class ObNmDefault implements ObjectName {
      */
     public ObNmDefault(final String object, final CommitHash def) {
         this.split = new Unchecked<>(
-            new Sticky<>(ObNmDefault.split(object, def))
+            new Sticky<>(ObNmDefault.divided(object, def))
         );
     }
 
@@ -73,12 +73,12 @@ public final class ObNmDefault implements ObjectName {
     }
 
     /**
-     * Split given object.
+     * Divide given object.
      * @param object Object.
      * @param hash Default hash.
-     * @return Split object.
+     * @return Divided object to name and hash.
      */
-    private static Scalar<String[]> split(final String object, final CommitHash hash) {
+    private static Scalar<String[]> divided(final String object, final CommitHash hash) {
         return () -> {
             String[] splt = object.split("\\|");
             if (splt.length == 1) {
