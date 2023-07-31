@@ -32,4 +32,5 @@
  * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
+@SuppressWarnings("PMD.PackageCase")
 package EOorg.EOeolang;
