@@ -43,10 +43,31 @@ public class ObjectFullNameTest {
     }
 
     @Test
-    void takesNameFromFullName() {
+    void takesNameFromGivenFullName() {
         MatcherAssert.assertThat(
-            new EoO
+            new ObjectFullName("stdout|1234567", new ObjectFullNameTest.ChFake()).name(),
+            Matchers.equalTo("stdout")
         );
+    }
+
+    @Test
+    void takesHashFromGivenFullName() {
+        MatcherAssert.assertThat(
+            new ObjectFullName("stdout|1234567", new ObjectFullNameTest.ChFake()).hash().value(),
+            Matchers.equalTo("1234567")
+        );
+    }
+
+    @Test
+    void buildsFullNameWithGivenDefaultHash() {
+        MatcherAssert.assertThat(
+            new ObjectFullName("stdout", new ObjectFullNameTest.ChFake()).asString(),
+            Matchers.equalTo("stdout|abcdefg")
+        );
+    }
+
+    void takesHashFromGivenDefaultHash() {
+        MatcherAssert.assertThat();
     }
 
     private static final class ChFake implements CommitHash {
