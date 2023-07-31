@@ -44,7 +44,6 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -53,13 +52,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
- * @todo #2302:30min Implement probing objects with versions and enable
- *  tests. ProbeMojo uses {@link Objectionaries} but it does not search for
- *  objects in different objectionaries. Need to implement searching objects
- *  in different objectionaries and enable disabled tests below:
- *  findsProbesWithVersionsInOneObjectionary,
- *  findsProbesWithVersionsInDifferentObjectionaries,
- *  findsProbesWithDefaultHash. Don't forget to remove this puzzle after that.
  * @todo #2302:30min Add special method to {@link FakeMaven} for versioned
  *  program. On many compilation steps we test programs with versions and such
  *  programs looks similar or identical. We can create a separate method for it.
@@ -154,7 +146,6 @@ final class ProbeMojoTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    @Disabled
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
         final String object = "org.eolang.io.stdout|9b88393";
@@ -185,11 +176,18 @@ final class ProbeMojoTest {
             ),
             Matchers.equalTo("1")
         );
+        MatcherAssert.assertThat(
+            "First entry of tojos after probing should have contained given hash, but it didn't",
+            ProbeMojoTest.firstEntry(
+                maven.externalPath(),
+                "hash"
+            ),
+            Matchers.equalTo(hash.value())
+        );
     }
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    @Disabled
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
@@ -205,6 +203,7 @@ final class ProbeMojoTest {
                 )
             )
             .with("withVersions", true)
+            .with("hsh", first)
             .withProgram(
                 "+package org.eolang.custom\n",
                 "[] > main",
@@ -226,7 +225,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 sprintf
             ),
-            maven.externalTojos().contains(stdout),
+            maven.externalTojos().contains(sprintf),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -241,7 +240,6 @@ final class ProbeMojoTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    @Disabled
     void findsProbesWithDefaultHash(@TempDir final Path temp) throws IOException {
         final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
         final CommitHash master = new CommitHashesMap().get("master");
@@ -278,8 +276,16 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 sprintf
             ),
-            maven.externalTojos().contains(stdout),
+            maven.externalTojos().contains(sprintf),
             Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "First entry of tojos after probing should have contained given hash, but it didn't",
+            ProbeMojoTest.firstEntry(
+                maven.externalPath(),
+                "hash"
+            ),
+            Matchers.equalTo(master.value())
         );
     }
 

@@ -36,6 +36,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.objectionary.Objectionaries;
@@ -94,7 +96,11 @@ public final class ProbeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         if (this.hsh == null) {
-            this.hsh = new ChRemote(this.tag);
+            this.hsh = new ChCached(
+                new ChNarrow(
+                    new ChRemote(this.tag)
+                )
+            );
         }
         final Collection<String> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
@@ -116,7 +122,9 @@ public final class ProbeMojo extends SafeMojo {
                 probed.add(object.asString());
             }
             tojo.withHash(
-                new ObjectFullName(tojo.identifier(), this.hsh).hash()
+                new ChNarrow(
+                    new ObjectFullName(tojo.identifier(), this.hsh, this.withVersions).hash()
+                )
             ).withProbed(count);
         }
         if (tojos.isEmpty()) {
@@ -147,16 +155,16 @@ public final class ProbeMojo extends SafeMojo {
      */
     private Collection<ObjectFullName> probes(final Path file)
         throws FileNotFoundException {
-        final Collection<ObjectFullName> objects = new ListOf<ObjectFullName>(
+        final Collection<ObjectFullName> objects = new ListOf<>(
             new Mapped<>(
-                obj -> new ObjectFullName(ProbeMojo.noPrefix(obj), this.hsh),
+                obj -> new ObjectFullName(ProbeMojo.noPrefix(obj), this.hsh, this.withVersions),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
                 )
-            )
+            ).iterator()
         );
         if (objects.isEmpty()) {
             Logger.debug(

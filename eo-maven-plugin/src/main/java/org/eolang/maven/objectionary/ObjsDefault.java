@@ -92,7 +92,7 @@ public final class ObjsDefault implements Objectionaries {
      * @param ojs Predefined Objectionaries.
      */
     private ObjsDefault(final Map<? super String, Objectionary> ojs) {
-        this(ObjsDefault.cacheForTests(), () -> false, ojs);
+        this(ObjsDefault::cacheForTests, () -> false, ojs);
     }
 
     /**
@@ -155,7 +155,7 @@ public final class ObjsDefault implements Objectionaries {
      * Cache path for tests.
      * @return Cache path.
      */
-    private static Scalar<Path> cacheForTests() {
+    private static Path cacheForTests() {
         throw new UnsupportedOperationException(
             String.format(
                 "Caching unsupported for tests! If you see this message in runtime it means that you are using wrong constructor of %s",

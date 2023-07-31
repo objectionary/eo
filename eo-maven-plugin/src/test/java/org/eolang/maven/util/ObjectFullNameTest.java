@@ -30,8 +30,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ObjectFullName}.
+ *
+ * @since 0.29.6
  */
-public class ObjectFullNameTest {
+final class ObjectFullNameTest {
 
     @Test
     void returnsTheSameValidFullName() {
@@ -39,6 +41,15 @@ public class ObjectFullNameTest {
         MatcherAssert.assertThat(
             new ObjectFullName(object, new ObjectFullNameTest.ChFake()).asString(),
             Matchers.equalTo(object)
+        );
+    }
+
+    @Test
+    void returnsFullNameWithoutVersion() {
+        final String object = "stdout|1234567";
+        MatcherAssert.assertThat(
+            new ObjectFullName(object, new ObjectFullNameTest.ChFake(), false).asString(),
+            Matchers.equalTo("stdout")
         );
     }
 
@@ -74,6 +85,11 @@ public class ObjectFullNameTest {
         );
     }
 
+    /**
+     * Fake cache for the tests.
+     *
+     * @since 0.29.6
+     */
     private static final class ChFake implements CommitHash {
         @Override
         public String value() {

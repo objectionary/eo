@@ -43,7 +43,12 @@ public final class ObjectFullName implements Text {
     /**
      * Hash.
      */
-    private final Unchecked<CommitHash> hash;
+    private final Unchecked<CommitHash> hsh;
+
+    /**
+     * Full name with version or not.
+     */
+    private final boolean versioned;
 
     /**
      * Ctor.
@@ -51,6 +56,16 @@ public final class ObjectFullName implements Text {
      * @param def Default hash if version in full name is absent.
      */
     public ObjectFullName(final String object, final CommitHash def) {
+        this(object, def, true);
+    }
+
+    /**
+     * Ctor.
+     * @param object Object full name (with version or not).
+     * @param def Default hash if version in full name is absent.
+     * @param ver Should full name be with version or not.
+     */
+    public ObjectFullName(final String object, final CommitHash def, final boolean ver) {
         this.split = new Unchecked<>(
             new Sticky<>(
                 () -> {
@@ -62,11 +77,12 @@ public final class ObjectFullName implements Text {
                 }
             )
         );
-        this.hash = new Unchecked<>(
+        this.hsh = new Unchecked<>(
             new Sticky<>(
                 () -> new CommitHash.ChConstant(this.split.value()[1])
             )
         );
+        this.versioned = ver;
     }
 
     /**
@@ -82,12 +98,18 @@ public final class ObjectFullName implements Text {
      * @return Hash.
      */
     public CommitHash hash() {
-        return this.hash.value();
+        return this.hsh.value();
     }
 
     @Override
     public String asString() {
-        return String.join("|", this.split.value()[0], this.split.value()[1]);
+        final String result;
+        if (this.versioned) {
+            result = String.join("|", this.split.value()[0], this.split.value()[1]);
+        } else {
+            result = this.split.value()[0];
+        }
+        return result;
     }
 
     @Override
