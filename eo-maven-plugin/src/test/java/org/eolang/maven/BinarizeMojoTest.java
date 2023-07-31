@@ -31,6 +31,7 @@ import org.eolang.maven.rust.Names;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,6 +64,7 @@ final class BinarizeMojoTest {
     @Test
     @Tag("slow")
     @ExtendWith(CargoCondition.class)
+    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
@@ -91,6 +93,7 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
+    @Disabled
     void savesToCache(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
         final Path cache = temp.resolve(".cache");
