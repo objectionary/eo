@@ -86,7 +86,7 @@ final class ObjectFullNameTest {
     }
 
     /**
-     * Fake cache for the tests.
+     * Fake cache for testing.
      *
      * @since 0.29.6
      */
