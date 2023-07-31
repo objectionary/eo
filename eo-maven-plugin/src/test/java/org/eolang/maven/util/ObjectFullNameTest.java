@@ -66,8 +66,12 @@ public class ObjectFullNameTest {
         );
     }
 
+    @Test
     void takesHashFromGivenDefaultHash() {
-        MatcherAssert.assertThat();
+        MatcherAssert.assertThat(
+            new ObjectFullName("stdout", new ObjectFullNameTest.ChFake()).hash().value(),
+            Matchers.equalTo("abcdefg")
+        );
     }
 
     private static final class ChFake implements CommitHash {
