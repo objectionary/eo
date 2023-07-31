@@ -25,11 +25,9 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.Attr;
-import org.eolang.ExFailure;
-import org.eolang.Phi;
+import EOorg.EOeolang.EOcage;
 
 /**
  * An attribute that knows how to store an object inside {@link EOcage}.
