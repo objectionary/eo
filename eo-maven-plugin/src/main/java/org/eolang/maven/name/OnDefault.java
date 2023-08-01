@@ -23,9 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -36,35 +33,38 @@ import org.eolang.maven.hash.CommitHash;
 public final class OnDefault implements ObjectName {
 
     /**
-     * Full name split.
+     * Object with or without hash.
      */
-    private final Unchecked<String[]> split;
+    private final String object;
+
+    /**
+     * Default hash.
+     */
+    private final CommitHash hsh;
 
     /**
      * Ctor.
-     *
      * @param object Object full name (with version or not).
      * @param def Default hash if version in full name is absent.
      */
     public OnDefault(final String object, final CommitHash def) {
-        this.split = new Unchecked<>(
-            new Sticky<>(OnDefault.divided(object, def))
-        );
+        this.object = object;
+        this.hsh = def;
     }
 
     @Override
     public String value() {
-        return this.split.value()[0];
+        return this.split()[0];
     }
 
     @Override
     public CommitHash hash() {
-        return new CommitHash.ChConstant(this.split.value()[1]);
+        return new CommitHash.ChConstant(this.split()[1]);
     }
 
     @Override
     public String asString() {
-        return String.join("|", this.split.value()[0], this.split.value()[1]);
+        return String.join("|", this.split()[0], this.split()[1]);
     }
 
     @Override
@@ -73,18 +73,14 @@ public final class OnDefault implements ObjectName {
     }
 
     /**
-     * Divide given object.
-     * @param object Object.
-     * @param hash Default hash.
-     * @return Divided object to name and hash.
+     * Split given object.
+     * @return Split object to name and hash.
      */
-    private static Scalar<String[]> divided(final String object, final CommitHash hash) {
-        return () -> {
-            String[] splt = object.split("\\|");
-            if (splt.length == 1) {
-                splt = new String[]{splt[0], hash.value()};
-            }
-            return splt;
-        };
+    private String[] split() {
+        String[] splt = this.object.split("\\|");
+        if (splt.length == 1) {
+            splt = new String[]{splt[0], this.hsh.value()};
+        }
+        return splt;
     }
 }

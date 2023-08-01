@@ -43,7 +43,7 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
-import org.eolang.maven.name.OnVersioned;
+import org.eolang.maven.name.OnUnversioned;
 import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
@@ -130,8 +130,8 @@ public final class ProbeMojo extends SafeMojo {
                 new ChNarrow(
                     new OnSwap(
                         this.withVersions,
-                        new OnVersioned(def),
-                        def
+                        def,
+                        new OnUnversioned(def)
                     ).hash()
                 )
             ).withProbed(count);
@@ -171,8 +171,8 @@ public final class ProbeMojo extends SafeMojo {
                     return new OnCached(
                         new OnSwap(
                             this.withVersions,
-                            new OnVersioned(def),
-                            def
+                            def,
+                            new OnUnversioned(def)
                         )
                     );
                 },

@@ -23,11 +23,50 @@
  */
 package org.eolang.maven.name;
 
+import org.eolang.maven.hash.CommitHash;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 /**
  * Test cases for {@link OnSwap}.
  *
  * @since 0.29.6
  */
 public class OnSwapTest {
+    /**
+     * First.
+     */
+    private static final String first = "stdout|1234567";
 
+    /**
+     * Second.
+     */
+    private static final String second = "sprintf|7654321";
+
+    private static final CommitHash FAKE = new CommitHash.ChConstant("abcdef");
+
+    @Test
+    void behavesLikeFirst() {
+        MatcherAssert.assertThat(
+            new OnSwap(
+                true,
+                new OnDefault(first, OnSwapTest.FAKE),
+                new OnDefault(second, OnSwapTest.FAKE)
+            ).asString(),
+            Matchers.equalTo(first)
+        );
+    }
+
+    @Test
+    void behavesLikeSecond() {
+        MatcherAssert.assertThat(
+            new OnSwap(
+                false,
+                new OnDefault(first, OnSwapTest.FAKE),
+                new OnDefault(second, OnSwapTest.FAKE)
+            ).asString(),
+            Matchers.equalTo(second)
+        );
+    }
 }

@@ -73,4 +73,9 @@ public final class OnCached implements ObjectName {
     public String asString() {
         return this.self.value();
     }
+
+    @Override
+    public String toString() {
+        return this.asString();
+    }
 }

@@ -29,11 +29,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link OnVersioned}.
+ * Test cases for {@link OnUnversioned}.
  *
  * @since 0.29.6
  */
-final class OnVersionedTest {
+final class OnUnversionedTest {
     /**
      * Object to test.
      */
@@ -48,14 +48,14 @@ final class OnVersionedTest {
     void returnsFullNameWithVersions() {
         MatcherAssert.assertThat(
             String.format(
-                "Versioned object %s as string should have been equal to %s, but it didn't",
-                OnVersionedTest.OBJECT,
-                OnVersionedTest.OBJECT
+                "Unversioned object %s as string should have been equal to %s, but it didn't",
+                OnUnversionedTest.OBJECT,
+                OnUnversionedTest.OBJECT
             ),
-            new OnVersioned(
-                new OnDefault(OnVersionedTest.OBJECT, OnVersionedTest.FAKE)
+            new OnUnversioned(
+                new OnDefault(OnUnversionedTest.OBJECT, OnUnversionedTest.FAKE)
             ).asString(),
-            Matchers.equalTo(OnVersionedTest.OBJECT)
+            Matchers.equalTo(OnUnversionedTest.OBJECT)
         );
     }
 }

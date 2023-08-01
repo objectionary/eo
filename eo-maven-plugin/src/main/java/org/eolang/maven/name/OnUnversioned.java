@@ -26,11 +26,12 @@ package org.eolang.maven.name;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Versioned object full name.
+ * Unversioned object full name.
+ * Returns full name without version.
  *
  * @since 0.29.6
  */
-public final class OnVersioned implements ObjectName {
+public final class OnUnversioned implements ObjectName {
 
     /**
      * Origin.
@@ -41,7 +42,7 @@ public final class OnVersioned implements ObjectName {
      * Ctor.
      * @param src Origin object name.
      */
-    public OnVersioned(final ObjectName src) {
+    public OnUnversioned(final ObjectName src) {
         this.origin = src;
     }
 
@@ -58,5 +59,10 @@ public final class OnVersioned implements ObjectName {
     @Override
     public CommitHash hash() {
         return this.origin.hash();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
     }
 }
