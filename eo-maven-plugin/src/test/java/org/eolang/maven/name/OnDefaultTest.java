@@ -29,11 +29,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link ObNmDefault}.
+ * Test cases for {@link OnDefault}.
  *
  * @since 0.29.6
  */
-final class ObNmDefaultTest {
+final class OnDefaultTest {
     /**
      * Stdout.
      */
@@ -49,8 +49,8 @@ final class ObNmDefaultTest {
      */
     private static final String OBJECT = String.join(
         "|",
-        ObNmDefaultTest.STDOUT,
-        ObNmDefaultTest.HASH
+        OnDefaultTest.STDOUT,
+        OnDefaultTest.HASH
     );
 
     /**
@@ -63,10 +63,10 @@ final class ObNmDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "Object name %s as string should have not been changed, but it did",
-                ObNmDefaultTest.OBJECT
+                OnDefaultTest.OBJECT
             ),
-            new ObNmDefault(ObNmDefaultTest.OBJECT, ObNmDefaultTest.FAKE).asString(),
-            Matchers.equalTo(ObNmDefaultTest.OBJECT)
+            new OnDefault(OnDefaultTest.OBJECT, OnDefaultTest.FAKE).asString(),
+            Matchers.equalTo(OnDefaultTest.OBJECT)
         );
     }
 
@@ -75,14 +75,14 @@ final class ObNmDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "Name of object %s should have been equal to %s, but it didn't",
-                ObNmDefaultTest.OBJECT,
-                ObNmDefaultTest.STDOUT
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.STDOUT
             ),
-            new ObNmDefault(
-                ObNmDefaultTest.OBJECT,
-                ObNmDefaultTest.FAKE
+            new OnDefault(
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.FAKE
             ).value(),
-            Matchers.equalTo(ObNmDefaultTest.STDOUT)
+            Matchers.equalTo(OnDefaultTest.STDOUT)
         );
     }
 
@@ -91,16 +91,16 @@ final class ObNmDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "Hash of object %s should have been equal to %s, but it didn't",
-                ObNmDefaultTest.OBJECT,
-                ObNmDefaultTest.HASH
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.HASH
             ),
-            new ObNmDefault(
-                ObNmDefaultTest.OBJECT,
-                ObNmDefaultTest.FAKE
+            new OnDefault(
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.FAKE
             )
                 .hash()
                 .value(),
-            Matchers.equalTo(ObNmDefaultTest.HASH)
+            Matchers.equalTo(OnDefaultTest.HASH)
         );
     }
 
@@ -108,19 +108,19 @@ final class ObNmDefaultTest {
     void buildsFullNameWithGivenDefaultHash() {
         final String built = String.join(
             "|",
-            ObNmDefaultTest.STDOUT,
-            ObNmDefaultTest.FAKE.value()
+            OnDefaultTest.STDOUT,
+            OnDefaultTest.FAKE.value()
         );
         MatcherAssert.assertThat(
             String.format(
                 "Object %s as string with fake hash %s should have been equal to %s, but it didn't",
-                ObNmDefaultTest.STDOUT,
-                ObNmDefaultTest.FAKE,
+                OnDefaultTest.STDOUT,
+                OnDefaultTest.FAKE,
                 built
             ),
-            new ObNmDefault(
-                ObNmDefaultTest.STDOUT,
-                ObNmDefaultTest.FAKE
+            new OnDefault(
+                OnDefaultTest.STDOUT,
+                OnDefaultTest.FAKE
             ).asString(),
             Matchers.equalTo(built)
         );
@@ -131,16 +131,16 @@ final class ObNmDefaultTest {
         MatcherAssert.assertThat(
             String.format(
                 "Hash of object %s should have been equal to default hash %s, but it didn't",
-                ObNmDefaultTest.STDOUT,
-                ObNmDefaultTest.FAKE
+                OnDefaultTest.STDOUT,
+                OnDefaultTest.FAKE
             ),
-            new ObNmDefault(
-                ObNmDefaultTest.STDOUT,
-                ObNmDefaultTest.FAKE
+            new OnDefault(
+                OnDefaultTest.STDOUT,
+                OnDefaultTest.FAKE
             )
                 .hash()
                 .value(),
-            Matchers.equalTo(ObNmDefaultTest.FAKE.value())
+            Matchers.equalTo(OnDefaultTest.FAKE.value())
         );
     }
 }

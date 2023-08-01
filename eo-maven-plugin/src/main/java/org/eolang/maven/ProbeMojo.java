@@ -40,10 +40,10 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.name.ObNmCached;
-import org.eolang.maven.name.ObNmDefault;
-import org.eolang.maven.name.ObNmVersioned;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -126,8 +126,8 @@ public final class ProbeMojo extends SafeMojo {
             }
             tojo.withHash(
                 new ChNarrow(
-                    new ObNmVersioned(
-                        new ObNmDefault(tojo.identifier(), this.hsh),
+                    new OnVersioned(
+                        new OnDefault(tojo.identifier(), this.hsh),
                         this.withVersions
                     ).hash()
                 )
@@ -163,9 +163,9 @@ public final class ProbeMojo extends SafeMojo {
         throws FileNotFoundException {
         final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                obj -> new ObNmCached(
-                    new ObNmVersioned(
-                        new ObNmDefault(ProbeMojo.noPrefix(obj), this.hsh),
+                obj -> new OnCached(
+                    new OnVersioned(
+                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh),
                         this.withVersions
                     )
                 ),

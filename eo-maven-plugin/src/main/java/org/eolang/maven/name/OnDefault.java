@@ -33,7 +33,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 0.29.6
  */
-public final class ObNmDefault implements ObjectName {
+public final class OnDefault implements ObjectName {
 
     /**
      * Full name split.
@@ -46,9 +46,9 @@ public final class ObNmDefault implements ObjectName {
      * @param object Object full name (with version or not).
      * @param def Default hash if version in full name is absent.
      */
-    public ObNmDefault(final String object, final CommitHash def) {
+    public OnDefault(final String object, final CommitHash def) {
         this.split = new Unchecked<>(
-            new Sticky<>(ObNmDefault.divided(object, def))
+            new Sticky<>(OnDefault.divided(object, def))
         );
     }
 

@@ -23,53 +23,54 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Versioned object full name.
+ * Cached object name.
  *
  * @since 0.29.6
  */
-public final class ObNmVersioned implements ObjectName {
+public final class OnCached implements ObjectName {
 
     /**
-     * Origin.
+     * Value.
      */
-    private final ObjectName origin;
+    private final Unchecked<String> vle;
 
     /**
-     * Use versions or not.
+     * Hash.
      */
-    private final boolean versioned;
+    private final Unchecked<CommitHash> hsh;
+
+    /**
+     * Self.
+     */
+    private final Unchecked<String> self;
 
     /**
      * Ctor.
-     * @param src Origin object name.
-     * @param ver Use versions or not.
+     * @param src Origin.
      */
-    public ObNmVersioned(final ObjectName src, final boolean ver) {
-        this.origin = src;
-        this.versioned = ver;
-    }
-
-    @Override
-    public String asString() {
-        final String result;
-        if (this.versioned) {
-            result = this.origin.asString();
-        } else {
-            result = this.value();
-        }
-        return result;
+    public OnCached(final ObjectName src) {
+        this.vle = new Unchecked<>(new Sticky<>(src::value));
+        this.hsh = new Unchecked<>(new Sticky<>(src::hash));
+        this.self = new Unchecked<>(new Sticky<>(src::asString));
     }
 
     @Override
     public String value() {
-        return this.origin.value();
+        return this.vle.value();
     }
 
     @Override
     public CommitHash hash() {
-        return this.origin.hash();
+        return this.hsh.value();
+    }
+
+    @Override
+    public String asString() {
+        return this.self.value();
     }
 }
