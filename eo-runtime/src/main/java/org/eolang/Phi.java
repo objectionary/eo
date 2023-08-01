@@ -125,11 +125,6 @@ public interface Phi extends Term {
      * Get form of the phi.
      * Forming is the process describing an object: giving to it a name and
      * describing object's attributes.
-     * Form of the phi - base formed object name.
-     * For instance:
-     *  - 5 -> {@link EOorg.EOeolang.EOint},
-     *  - "Hello" -> {@link EOorg.EOeolang.EOstring}
-     *  -
      * @return Form of it as {@link String}.
      */
     String form();
