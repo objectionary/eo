@@ -23,5 +23,13 @@
  */
 /**
  * Object name package.
+ * The main purpose of classes under the package is to provide a way to build full name
+ * of EO object which consists of his identifier (QQ.io.stdout) and his hash.
+ *  - {@link org.eolang.maven.name.OnDefault} - default implementation that builds full name even
+ *    if given identifier does not contain hash
+ *  - {@link org.eolang.maven.name.OnUnversioned} - builds object full name without version
+ *  - {@link org.eolang.maven.name.OnCached} - caching decorator
+ *  - {@link org.eolang.maven.name.OnSwap} - behaves like one of encapsulated names depends on
+ *    encapsulated condition
  */
 package org.eolang.maven.name;
