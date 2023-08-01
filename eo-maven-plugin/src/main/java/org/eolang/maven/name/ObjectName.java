@@ -43,6 +43,5 @@ public interface ObjectName {
      */
     CommitHash hash();
 
-    @Override
     String toString();
 }
