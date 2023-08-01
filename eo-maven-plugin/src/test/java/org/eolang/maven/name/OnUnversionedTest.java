@@ -34,28 +34,20 @@ import org.junit.jupiter.api.Test;
  * @since 0.29.6
  */
 final class OnUnversionedTest {
-    /**
-     * Object to test.
-     */
-    private static final String OBJECT = "stdout|1234567";
-
-    /**
-     * Fake hash.
-     */
-    private static final CommitHash FAKE = new CommitHash.ChConstant("abcdefg");
-
     @Test
     void returnsFullNameWithVersions() {
+        final String stdout = "stdout";
+        final String object = String.join("|", stdout, "1234567");
         MatcherAssert.assertThat(
             String.format(
                 "Unversioned object %s as string should have been equal to %s, but it didn't",
-                OnUnversionedTest.OBJECT,
-                OnUnversionedTest.OBJECT
+                object,
+                stdout
             ),
             new OnUnversioned(
-                new OnDefault(OnUnversionedTest.OBJECT, OnUnversionedTest.FAKE)
+                new OnDefault(object, new CommitHash.ChConstant("abcdefg"))
             ).asString(),
-            Matchers.equalTo(OnUnversionedTest.OBJECT)
+            Matchers.equalTo(stdout)
         );
     }
 }

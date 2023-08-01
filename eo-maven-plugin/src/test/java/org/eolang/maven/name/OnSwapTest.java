@@ -33,17 +33,20 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29.6
  */
-public class OnSwapTest {
+class OnSwapTest {
     /**
      * First.
      */
-    private static final String first = "stdout|1234567";
+    private static final String FIRST = "stdout|1234567";
 
     /**
      * Second.
      */
-    private static final String second = "sprintf|7654321";
+    private static final String SECOND = "sprintf|7654321";
 
+    /**
+     * Fake hash.
+     */
     private static final CommitHash FAKE = new CommitHash.ChConstant("abcdef");
 
     @Test
@@ -51,10 +54,10 @@ public class OnSwapTest {
         MatcherAssert.assertThat(
             new OnSwap(
                 true,
-                new OnDefault(first, OnSwapTest.FAKE),
-                new OnDefault(second, OnSwapTest.FAKE)
+                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
+                new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
             ).asString(),
-            Matchers.equalTo(first)
+            Matchers.equalTo(OnSwapTest.FIRST)
         );
     }
 
@@ -63,10 +66,10 @@ public class OnSwapTest {
         MatcherAssert.assertThat(
             new OnSwap(
                 false,
-                new OnDefault(first, OnSwapTest.FAKE),
-                new OnDefault(second, OnSwapTest.FAKE)
+                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
+                new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
             ).asString(),
-            Matchers.equalTo(second)
+            Matchers.equalTo(OnSwapTest.SECOND)
         );
     }
 }

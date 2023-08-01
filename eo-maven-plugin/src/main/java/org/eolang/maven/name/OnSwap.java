@@ -30,6 +30,8 @@ import org.eolang.maven.hash.CommitHash;
 /**
  * Swapped object name.
  * Depends on encapsulated condition behaves like one of the encapsulated object names.
+ *
+ * @since 0.29.6
  */
 public final class OnSwap implements ObjectName {
     /**
