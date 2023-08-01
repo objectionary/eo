@@ -159,8 +159,7 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<ObjectName> probes(final Path file)
-        throws FileNotFoundException {
+    private Collection<ObjectName> probes(final Path file) throws FileNotFoundException {
         final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
                 obj -> new OnCached(
