@@ -23,40 +23,63 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Versioned object full name.
- *
- * @since 0.29.6
+ * Swapped object name.
+ * Depends on encapsulated condition behaves like one of the encapsulated object names.
  */
-public final class OnVersioned implements ObjectName {
-
+public final class OnSwap implements ObjectName {
     /**
-     * Origin.
+     * Swapped object name.
      */
-    private final ObjectName origin;
+    private final Unchecked<ObjectName> swapped;
 
     /**
      * Ctor.
-     * @param src Origin object name.
+     * @param condition Condition.
+     * @param first First object name.
+     * @param second Second object name.
      */
-    public OnVersioned(final ObjectName src) {
-        this.origin = src;
-    }
-
-    @Override
-    public String asString() {
-        return this.value();
+    public OnSwap(
+        final boolean condition,
+        final ObjectName first,
+        final ObjectName second
+    ) {
+        this.swapped = new Unchecked<>(
+            new Sticky<>(
+                () -> {
+                    final ObjectName name;
+                    if (condition) {
+                        name = first;
+                    } else {
+                        name = second;
+                    }
+                    return name;
+                }
+            )
+        );
     }
 
     @Override
     public String value() {
-        return this.origin.value();
+        return this.swapped.value().value();
     }
 
     @Override
     public CommitHash hash() {
-        return this.origin.hash();
+        return this.swapped.value().hash();
+    }
+
+    @Override
+    public String asString() {
+        return this.swapped.value().asString();
+    }
+
+    @Override
+    public String toString() {
+        return this.swapped.value().toString();
     }
 }

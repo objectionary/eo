@@ -44,6 +44,7 @@ import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnVersioned;
+import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -124,11 +125,13 @@ public final class ProbeMojo extends SafeMojo {
                     .withDiscoveredAt(src);
                 probed.add(object.asString());
             }
+            final ObjectName def = new OnDefault(tojo.identifier(), this.hsh);
             tojo.withHash(
                 new ChNarrow(
-                    new OnVersioned(
-                        new OnDefault(tojo.identifier(), this.hsh),
-                        this.withVersions
+                    new OnSwap(
+                        this.withVersions,
+                        new OnVersioned(def),
+                        def
                     ).hash()
                 )
             ).withProbed(count);
@@ -163,12 +166,16 @@ public final class ProbeMojo extends SafeMojo {
         throws FileNotFoundException {
         final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                obj -> new OnCached(
-                    new OnVersioned(
-                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh),
-                        this.withVersions
-                    )
-                ),
+                obj -> {
+                    final ObjectName def = new OnDefault(ProbeMojo.noPrefix(obj), this.hsh);
+                    return new OnCached(
+                        new OnSwap(
+                            this.withVersions,
+                            new OnVersioned(def),
+                            def
+                        )
+                    );
+                },
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(

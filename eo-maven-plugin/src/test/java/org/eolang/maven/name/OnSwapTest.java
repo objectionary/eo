@@ -23,40 +23,11 @@
  */
 package org.eolang.maven.name;
 
-import org.eolang.maven.hash.CommitHash;
-
 /**
- * Versioned object full name.
+ * Test cases for {@link OnSwap}.
  *
  * @since 0.29.6
  */
-public final class OnVersioned implements ObjectName {
+public class OnSwapTest {
 
-    /**
-     * Origin.
-     */
-    private final ObjectName origin;
-
-    /**
-     * Ctor.
-     * @param src Origin object name.
-     */
-    public OnVersioned(final ObjectName src) {
-        this.origin = src;
-    }
-
-    @Override
-    public String asString() {
-        return this.value();
-    }
-
-    @Override
-    public String value() {
-        return this.origin.value();
-    }
-
-    @Override
-    public CommitHash hash() {
-        return this.origin.hash();
-    }
 }

@@ -53,27 +53,9 @@ final class OnVersionedTest {
                 OnVersionedTest.OBJECT
             ),
             new OnVersioned(
-                new OnDefault(OnVersionedTest.OBJECT, OnVersionedTest.FAKE),
-                true
+                new OnDefault(OnVersionedTest.OBJECT, OnVersionedTest.FAKE)
             ).asString(),
             Matchers.equalTo(OnVersionedTest.OBJECT)
-        );
-    }
-
-    @Test
-    void returnsNameWithoutVersions() {
-        final String stdout = "stdout";
-        MatcherAssert.assertThat(
-            String.format(
-                "Not versioned object %s as string should have been equal to %s, but it didn't",
-                OnVersionedTest.OBJECT,
-                stdout
-            ),
-            new OnVersioned(
-                new OnDefault(OnVersionedTest.OBJECT, OnVersionedTest.FAKE),
-                false
-            ).asString(),
-            Matchers.equalTo(stdout)
         );
     }
 }
