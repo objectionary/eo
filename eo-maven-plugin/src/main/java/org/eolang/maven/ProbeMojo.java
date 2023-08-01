@@ -44,7 +44,6 @@ import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnSwap;
-import org.eolang.maven.name.OnUnversioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -106,7 +105,7 @@ public final class ProbeMojo extends SafeMojo {
                 )
             );
         }
-        final Collection<String> probed = new HashSet<>(1);
+        final Collection<ObjectName> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
@@ -116,22 +115,20 @@ public final class ProbeMojo extends SafeMojo {
             }
             int count = 0;
             for (final ObjectName object : objects) {
-                if (!this.objectionaries.contains(object.hash(), object.value())) {
+                if (!this.objectionaries.contains(object)) {
                     continue;
                 }
                 ++count;
                 this.scopedTojos()
-                    .add(object.asString())
+                    .add(object)
                     .withDiscoveredAt(src);
-                probed.add(object.asString());
+                probed.add(object);
             }
-            final ObjectName def = new OnDefault(tojo.identifier(), this.hsh);
             tojo.withHash(
                 new ChNarrow(
                     new OnSwap(
                         this.withVersions,
-                        def,
-                        new OnUnversioned(def)
+                        new OnDefault(tojo.identifier(), this.hsh)
                     ).hash()
                 )
             ).withProbed(count);
@@ -166,16 +163,12 @@ public final class ProbeMojo extends SafeMojo {
         throws FileNotFoundException {
         final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                obj -> {
-                    final ObjectName def = new OnDefault(ProbeMojo.noPrefix(obj), this.hsh);
-                    return new OnCached(
-                        new OnSwap(
-                            this.withVersions,
-                            def,
-                            new OnUnversioned(def)
-                        )
-                    );
-                },
+                obj -> new OnCached(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh)
+                    )
+                ),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(

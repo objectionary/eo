@@ -36,6 +36,7 @@ import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Default objectionaries.
@@ -117,8 +118,8 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public boolean contains(final CommitHash hash, final String name) throws IOException {
-        return this.objectionary(hash).contains(name);
+    public boolean contains(final ObjectName name) throws IOException {
+        return this.objectionary(name.hash()).contains(name.value());
     }
 
     /**

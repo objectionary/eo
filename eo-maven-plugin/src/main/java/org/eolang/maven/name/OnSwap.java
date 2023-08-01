@@ -30,6 +30,7 @@ import org.eolang.maven.hash.CommitHash;
 /**
  * Swapped object name.
  * Depends on encapsulated condition behaves like one of the encapsulated object names.
+ * If second object is not provided - behaves like {@link OnUnversioned}
  *
  * @since 0.29.6
  */
@@ -38,6 +39,15 @@ public final class OnSwap implements ObjectName {
      * Swapped object name.
      */
     private final Unchecked<ObjectName> swapped;
+
+    /**
+     * Ctor.
+     * @param condition Condition.
+     * @param def Default object name.
+     */
+    public OnSwap(final boolean condition, final ObjectName def) {
+        this(condition, def, new OnUnversioned(def));
+    }
 
     /**
      * Ctor.

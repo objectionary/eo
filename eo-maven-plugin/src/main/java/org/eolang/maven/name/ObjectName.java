@@ -46,4 +46,7 @@ public interface ObjectName extends Text {
 
     @Override
     String asString();
+
+    @Override
+    String toString();
 }

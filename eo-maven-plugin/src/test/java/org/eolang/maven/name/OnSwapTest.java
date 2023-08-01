@@ -52,6 +52,10 @@ class OnSwapTest {
     @Test
     void behavesLikeFirst() {
         MatcherAssert.assertThat(
+            String.format(
+                "Swap object name should have been equal to %s, but it didn't",
+                OnSwapTest.FIRST
+            ),
             new OnSwap(
                 true,
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
@@ -64,12 +68,31 @@ class OnSwapTest {
     @Test
     void behavesLikeSecond() {
         MatcherAssert.assertThat(
+            String.format(
+                "Swap object name should have been equal to %s, but it didn't",
+                OnSwapTest.SECOND
+            ),
             new OnSwap(
                 false,
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
                 new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
             ).asString(),
             Matchers.equalTo(OnSwapTest.SECOND)
+        );
+    }
+
+    void behavesLikeUnversioned() {
+        final String stdout = "stdout";
+        MatcherAssert.assertThat(
+            String.format(
+                "Default swap object name should have been equal to %s, but it didn't",
+                stdout
+            ),
+            new OnSwap(
+                false,
+                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
+            ).asString(),
+            Matchers.equalTo(stdout)
         );
     }
 }

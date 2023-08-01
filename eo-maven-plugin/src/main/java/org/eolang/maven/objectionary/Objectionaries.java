@@ -26,6 +26,7 @@ package org.eolang.maven.objectionary;
 import java.io.IOException;
 import org.cactoos.Input;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Many objectionaries for different hashes.
@@ -44,12 +45,12 @@ public interface Objectionaries {
 
     /**
      * Check if object exists.
-     * @param hash Commit hash
+     *
      * @param name Object name
      * @return True if object exists, false otherwise
      * @throws IOException If some I/O problem happens.
      */
-    boolean contains(CommitHash hash, String name) throws IOException;
+    boolean contains(ObjectName name) throws IOException;
 
     /**
      * Fake objectionaries.
@@ -84,8 +85,8 @@ public interface Objectionaries {
         }
 
         @Override
-        public boolean contains(final CommitHash hash, final String name) throws IOException {
-            return this.objectionary.contains(name);
+        public boolean contains(final ObjectName name) throws IOException {
+            return this.objectionary.contains(name.value());
         }
     }
 }

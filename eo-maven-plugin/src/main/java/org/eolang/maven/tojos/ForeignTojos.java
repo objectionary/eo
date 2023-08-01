@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Foreign tojos.
@@ -112,6 +113,15 @@ public final class ForeignTojos implements Closeable {
             tojo.set(Attribute.SCOPE.key(), this.scope.get());
         }
         return new ForeignTojo(tojo);
+    }
+
+    /**
+     * Add a foreign tojo.
+     * @param name The name of the tojo as {@link ObjectName}.
+     * @return The tojo.
+     */
+    public ForeignTojo add(final ObjectName name) {
+        return this.add(name.asString());
     }
 
     /**
