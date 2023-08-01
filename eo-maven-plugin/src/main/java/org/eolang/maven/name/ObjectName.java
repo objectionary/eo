@@ -43,5 +43,9 @@ public interface ObjectName {
      */
     CommitHash hash();
 
+    /**
+     * Full name to string.
+     * @return Full name as string.
+     */
     String toString();
 }
