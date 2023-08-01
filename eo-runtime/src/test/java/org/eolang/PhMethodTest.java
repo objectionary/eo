@@ -96,10 +96,10 @@ final class PhMethodTest {
     void hasDifferentTypesWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
-            dummy.type(),
+            dummy.form(),
             Matchers.not(
                 Matchers.equalTo(
-                    new PhMethod(dummy, "foo").type()
+                    new PhMethod(dummy, "foo").form()
                 )
             )
         );

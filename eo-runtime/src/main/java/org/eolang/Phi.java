@@ -87,8 +87,8 @@ public interface Phi extends Term {
         }
 
         @Override
-        public String type() {
-            return this.pkg.type();
+        public String form() {
+            return this.pkg.form();
         }
     };
 
@@ -122,8 +122,15 @@ public interface Phi extends Term {
     String locator();
 
     /**
-     * Get type of the phi.
-     * @return Type of it as {@link String}.
+     * Get form of the phi.
+     * Forming is the process describing an object: giving to it a name and
+     * describing object's attributes.
+     * Form of the phi - base formed object name.
+     * For instance:
+     *  - 5 -> {@link EOorg.EOeolang.EOint},
+     *  - "Hello" -> {@link EOorg.EOeolang.EOstring}
+     *  -
+     * @return Form of it as {@link String}.
      */
-    String type();
+    String form();
 }

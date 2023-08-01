@@ -72,7 +72,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public String type() {
+    public String form() {
         throw new ExFailure(
             String.format("Can't #type() from package object '%s'", this.pkg)
         );

@@ -48,9 +48,9 @@ final class PhCopyTest {
     void hasTheSameTypeAsCopied() {
         final Phi phi = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            phi.type(),
+            phi.form(),
             Matchers.equalTo(
-                phi.copy().type()
+                phi.copy().form()
             )
         );
     }

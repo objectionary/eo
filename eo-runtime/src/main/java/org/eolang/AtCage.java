@@ -78,11 +78,11 @@ public final class AtCage implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        if (this.object != null && !this.object.type().equals(phi.type())) {
+        if (this.object != null && !this.object.form().equals(phi.form())) {
             throw new ExFailure(
                 "Can't write an object of type %s because object of type %s was saved before",
-                phi.type(),
-                this.object.type()
+                phi.form(),
+                this.object.form()
             );
         }
         this.object = phi;

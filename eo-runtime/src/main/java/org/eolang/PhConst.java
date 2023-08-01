@@ -103,7 +103,7 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public String type() {
-        return this.origin.type();
+    public String form() {
+        return this.origin.form();
     }
 }

@@ -234,8 +234,8 @@ final class PhDefaultTest {
         final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         MatcherAssert.assertThat(
-            five.type(),
-            Matchers.equalTo(six.type())
+            five.form(),
+            Matchers.equalTo(six.form())
         );
     }
 
@@ -243,14 +243,14 @@ final class PhDefaultTest {
     void hasDifferentTypeWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
-            five.type(),
+            five.form(),
             Matchers.not(
                 Matchers.equalTo(
                     new PhWith(
                         five.attr("plus").get().copy(),
                         "x",
                         new Data.ToPhi(5L)
-                    ).type()
+                    ).form()
                 )
             )
         );
@@ -263,13 +263,13 @@ final class PhDefaultTest {
                 new Data.ToPhi(5L).attr("plus").get().copy(),
                 "x",
                 new Data.ToPhi(5L)
-            ).type(),
+            ).form(),
             Matchers.equalTo(
                 new PhWith(
                     new Data.ToPhi(6L).attr("plus").get().copy(),
                     "x",
                     new Data.ToPhi(6L)
-                ).type()
+                ).form()
             )
         );
     }

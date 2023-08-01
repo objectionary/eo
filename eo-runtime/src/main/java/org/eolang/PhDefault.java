@@ -292,7 +292,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public String type() {
+    public String form() {
         return this.tpe;
     }
 
