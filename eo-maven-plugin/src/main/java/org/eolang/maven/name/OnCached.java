@@ -56,7 +56,7 @@ public final class OnCached implements ObjectName {
     public OnCached(final ObjectName src) {
         this.vle = new Unchecked<>(new Sticky<>(src::value));
         this.hsh = new Unchecked<>(new Sticky<>(src::hash));
-        this.self = new Unchecked<>(new Sticky<>(src::asString));
+        this.self = new Unchecked<>(new Sticky<>(src::toString));
     }
 
     @Override
@@ -70,12 +70,7 @@ public final class OnCached implements ObjectName {
     }
 
     @Override
-    public String asString() {
-        return this.self.value();
-    }
-
-    @Override
     public String toString() {
-        return this.asString();
+        return this.self.value();
     }
 }

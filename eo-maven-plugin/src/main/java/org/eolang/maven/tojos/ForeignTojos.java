@@ -121,7 +121,7 @@ public final class ForeignTojos implements Closeable {
      * @return The tojo.
      */
     public ForeignTojo add(final ObjectName name) {
-        return this.add(name.asString());
+        return this.add(name.toString());
     }
 
     /**

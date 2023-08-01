@@ -86,12 +86,7 @@ public final class OnSwap implements ObjectName {
     }
 
     @Override
-    public String asString() {
-        return this.swapped.value().asString();
-    }
-
-    @Override
     public String toString() {
-        return this.asString();
+        return this.swapped.value().toString();
     }
 }

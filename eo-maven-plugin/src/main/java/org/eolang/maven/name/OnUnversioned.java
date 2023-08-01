@@ -47,11 +47,6 @@ public final class OnUnversioned implements ObjectName {
     }
 
     @Override
-    public String asString() {
-        return this.value();
-    }
-
-    @Override
     public String value() {
         return this.origin.value();
     }
@@ -63,6 +58,6 @@ public final class OnUnversioned implements ObjectName {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.value();
     }
 }

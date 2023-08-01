@@ -60,7 +60,7 @@ class OnSwapTest {
                 true,
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
                 new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
-            ).asString(),
+            ).toString(),
             Matchers.equalTo(OnSwapTest.FIRST)
         );
     }
@@ -76,7 +76,7 @@ class OnSwapTest {
                 false,
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
                 new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
-            ).asString(),
+            ).toString(),
             Matchers.equalTo(OnSwapTest.SECOND)
         );
     }
@@ -91,7 +91,7 @@ class OnSwapTest {
             new OnSwap(
                 false,
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
-            ).asString(),
+            ).toString(),
             Matchers.equalTo(stdout)
         );
     }

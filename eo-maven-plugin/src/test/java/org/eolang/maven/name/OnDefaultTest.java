@@ -65,7 +65,7 @@ final class OnDefaultTest {
                 "Object name %s as string should have not been changed, but it did",
                 OnDefaultTest.OBJECT
             ),
-            new OnDefault(OnDefaultTest.OBJECT, OnDefaultTest.FAKE).asString(),
+            new OnDefault(OnDefaultTest.OBJECT, OnDefaultTest.FAKE).toString(),
             Matchers.equalTo(OnDefaultTest.OBJECT)
         );
     }
@@ -121,7 +121,7 @@ final class OnDefaultTest {
             new OnDefault(
                 OnDefaultTest.STDOUT,
                 OnDefaultTest.FAKE
-            ).asString(),
+            ).toString(),
             Matchers.equalTo(built)
         );
     }

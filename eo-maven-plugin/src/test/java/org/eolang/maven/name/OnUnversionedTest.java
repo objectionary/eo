@@ -46,7 +46,7 @@ final class OnUnversionedTest {
             ),
             new OnUnversioned(
                 new OnDefault(object, new CommitHash.ChConstant("abcdefg"))
-            ).asString(),
+            ).toString(),
             Matchers.equalTo(stdout)
         );
     }

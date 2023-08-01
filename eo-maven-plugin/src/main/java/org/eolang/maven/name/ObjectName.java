@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.cactoos.Text;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -31,7 +30,7 @@ import org.eolang.maven.hash.CommitHash;
  *
  * @since 0.29.6
  */
-public interface ObjectName extends Text {
+public interface ObjectName {
     /**
      * Name only.
      * @return Name.
@@ -43,9 +42,6 @@ public interface ObjectName extends Text {
      * @return Hash.
      */
     CommitHash hash();
-
-    @Override
-    String asString();
 
     @Override
     String toString();

@@ -63,13 +63,8 @@ public final class OnDefault implements ObjectName {
     }
 
     @Override
-    public String asString() {
-        return String.join("|", this.split()[0], this.split()[1]);
-    }
-
-    @Override
     public String toString() {
-        return this.asString();
+        return String.join("|", this.split()[0], this.split()[1]);
     }
 
     /**
