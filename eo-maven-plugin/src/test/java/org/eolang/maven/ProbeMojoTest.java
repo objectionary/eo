@@ -52,12 +52,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
- * @todo #2302:30min Add special method to {@link FakeMaven} for versioned
- *  program. On many compilation steps we test programs with versions and such
- *  programs looks similar or identical. We can create a separate method for it.
- *  Something like withVersionedProgram()
- *  See tests in {@link OptimizeMojoTest}, {@link VersionsMojoTest},
- *  {@link DiscoverMojoTest}, {@link ProbeMojoTest}.
  * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
  *  code duplication among all tests in the class. Need to reduce it somehow.
  * @todo #2302:30min Refactor firstEntity method. The "first entity of the
