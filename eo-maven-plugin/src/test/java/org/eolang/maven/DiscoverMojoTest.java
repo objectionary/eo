@@ -142,10 +142,7 @@ final class DiscoverMojoTest {
             .with("withVersions", true)
             .with("hashes", hashes)
             .withProgram(
-                "+alias org.eolang.txt.sprintf",
-                "+home https://objectionary.home",
-                "+package f",
-                "+version 0.0.0\n",
+                "+alias org.eolang.txt.sprintf\n",
                 "[] > main",
                 "  seq > @",
                 "    QQ.io.stdout",
