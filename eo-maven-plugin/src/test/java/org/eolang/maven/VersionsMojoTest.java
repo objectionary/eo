@@ -26,6 +26,8 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.file.Path;
+import java.util.Map;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,36 +42,38 @@ import org.junit.jupiter.api.io.TempDir;
 final class VersionsMojoTest {
     @Test
     void replacesVersions(@TempDir final Path tmp) throws Exception {
+        final Map<String, CommitHash> fake = new CommitHashesMap.Fake();
         new FakeMaven(tmp)
             .with("withVersions", true)
-            .with("hashes", new CommitHashesMap.Fake())
-            .withProgram(
-                "+alias org.eolang.io.stdout\n",
-                "[] > main",
-                "  seq > @",
-                "    stdout|0.23.17",
-                "      QQ.txt.sprintf|0.25.0",
-                "        \"Hello world\"",
-                "    nop"
-            ).execute(new FakeMaven.Versions());
+            .with("hashes", fake)
+            .withVersionedProgram()
+            .execute(new FakeMaven.Versions());
         final XML xml = new XMLDocument(
             tmp.resolve(
                 String.format("target/%s/foo/x/main.xmir", ParseMojo.DIR)
             )
         );
-        final String format = "//o[@ver and (@ver='%s' or @ver='%s')]/@ver";
-        final int size = 2;
+        final String format = "//o[@ver and @ver=('%s','%s','%s','%s')]/@ver";
+        final int size = 4;
         MatcherAssert.assertThat(
             String.format(
                 "XMIR after replacing the versions should have contained %d elements <o> with hashes in \"ver\" attribute, but it didn't",
                 size
             ),
-            xml.xpath(String.format(format, "15c85d7", "0aa6875")),
+            xml.xpath(
+                String.format(
+                    format,
+                    fake.get("0.28.4").value(),
+                    fake.get("0.28.5").value(),
+                    fake.get("0.28.6").value(),
+                    fake.get("0.28.7").value()
+                )
+            ),
             Matchers.hasSize(size)
         );
         MatcherAssert.assertThat(
             "XMIR after replacing the versions should not have contained elements <o> with tags in \"ver\" attribute, but it did",
-            xml.xpath(String.format(format, "0.23.17", "0.25.0")),
+            xml.xpath(String.format(format, "0.28.4", "0.28.5", "0.28.6", "0.28.7")),
             Matchers.empty()
         );
     }

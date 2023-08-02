@@ -190,10 +190,10 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
-        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
-        final CommitHash second = new CommitHashesMap.Fake().get("0.28.0");
-        final String stdout = "org.eolang.io.stdout|9b88393";
-        final String sprintf = "org.eolang.txt.sprintf|6a70071";
+        final CommitHash first = new CommitHashesMap.Fake().get("0.28.5");
+        final CommitHash second = new CommitHashesMap.Fake().get("0.28.7");
+        final String stdout = "org.eolang.io.stdout|9c93528";
+        final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
@@ -203,14 +203,8 @@ final class ProbeMojoTest {
                 )
             )
             .with("withVersions", true)
-            .with("hsh", first)
-            .withProgram(
-                "+package org.eolang.custom\n",
-                "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
-                "    QQ.txt.sprintf|0.28.0",
-                "      \"Hello world!\""
-            )
+            .with("hsh", second)
+            .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
@@ -223,9 +217,9 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                sprintf
+                number
             ),
-            maven.externalTojos().contains(sprintf),
+            maven.externalTojos().contains(number),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -255,13 +249,7 @@ final class ProbeMojoTest {
             )
             .with("withVersions", true)
             .with("hsh", master)
-            .withProgram(
-                "+package org.eolang.custom\n",
-                "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
-                "    QQ.txt.sprintf",
-                "      \"Hello world!\""
-            )
+            .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(

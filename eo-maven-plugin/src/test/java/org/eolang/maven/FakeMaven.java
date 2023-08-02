@@ -319,7 +319,37 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram("+package f\n", "[args] > main", "  (stdout \"Hello!\").print");
+        return this.withProgram(
+            "+home https://objectionary.home",
+            "+package f",
+            "+version 0.0.0\n",
+            "[args] > main",
+            "  (stdout \"Hello!\").print"
+        );
+    }
+
+    /**
+     * Add correct versioned program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedProgram() throws IOException {
+        return this.withProgram(
+            "+alias org.eolang.math.number",
+            "+alias org.eolang.txt.text",
+            "+home https://objectionary.home",
+            "+package f",
+            "+version 0.0.0\n",
+            "[args] > main",
+            "  seq|0.28.4 > @",
+            "    QQ.io.stdout|0.28.5",
+            "      QQ.txt.sprintf|0.28.6",
+            "        \"Number %d, text %s\"",
+            "        number 2",
+            "        text|0.28.7",
+            "          \"text\"",
+            "    nop"
+        );
     }
 
     /**
