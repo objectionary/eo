@@ -42,10 +42,4 @@ public interface ObjectName {
      * @return Hash.
      */
     CommitHash hash();
-
-    /**
-     * Full name to string.
-     * @return Full name as string.
-     */
-    String toString();
 }

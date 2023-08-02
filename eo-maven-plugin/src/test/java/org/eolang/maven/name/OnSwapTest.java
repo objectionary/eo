@@ -81,6 +81,7 @@ class OnSwapTest {
         );
     }
 
+    @Test
     void behavesLikeUnversioned() {
         final String stdout = "stdout";
         MatcherAssert.assertThat(
@@ -93,6 +94,21 @@ class OnSwapTest {
                 new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
             ).toString(),
             Matchers.equalTo(stdout)
+        );
+    }
+
+    @Test
+    void behavesLikeDefault() {
+        MatcherAssert.assertThat(
+            String.format(
+                "Default swap object name should have been equal to %s, but it didn't",
+                OnSwapTest.FIRST
+            ),
+            new OnSwap(
+                true,
+                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
+            ).toString(),
+            Matchers.equalTo(OnSwapTest.FIRST)
         );
     }
 }

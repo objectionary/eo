@@ -97,9 +97,7 @@ final class OnDefaultTest {
             new OnDefault(
                 OnDefaultTest.OBJECT,
                 OnDefaultTest.FAKE
-            )
-                .hash()
-                .value(),
+            ).hash().value(),
             Matchers.equalTo(OnDefaultTest.HASH)
         );
     }
@@ -137,9 +135,7 @@ final class OnDefaultTest {
             new OnDefault(
                 OnDefaultTest.STDOUT,
                 OnDefaultTest.FAKE
-            )
-                .hash()
-                .value(),
+            ).hash().value(),
             Matchers.equalTo(OnDefaultTest.FAKE.value())
         );
     }
