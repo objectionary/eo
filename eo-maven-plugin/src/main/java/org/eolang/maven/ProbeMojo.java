@@ -34,11 +34,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterator.Mapped;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -94,28 +99,39 @@ public final class ProbeMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         if (this.hsh == null) {
-            this.hsh = new ChRemote(this.tag);
+            this.hsh = new ChCached(
+                new ChNarrow(
+                    new ChRemote(this.tag)
+                )
+            );
         }
-        final Collection<String> probed = new HashSet<>(1);
+        final Collection<ObjectName> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<String> names = this.probes(src);
-            if (!names.isEmpty()) {
-                Logger.info(this, "Probing object(s): %s", names);
+            final Collection<ObjectName> objects = this.probes(src);
+            if (!objects.isEmpty()) {
+                Logger.info(this, "Probing object(s): %s", objects);
             }
             int count = 0;
-            for (final String name : names) {
-                if (!this.objectionaries.contains(this.hsh, name)) {
+            for (final ObjectName object : objects) {
+                if (!this.objectionaries.contains(object)) {
                     continue;
                 }
                 ++count;
                 this.scopedTojos()
-                    .add(name)
+                    .add(object)
                     .withDiscoveredAt(src);
-                probed.add(name);
+                probed.add(object);
             }
-            tojo.withHash(new ChNarrow(this.hsh)).withProbed(count);
+            tojo.withHash(
+                new ChNarrow(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnDefault(tojo.identifier(), this.hsh)
+                    ).hash()
+                )
+            ).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -143,17 +159,22 @@ public final class ProbeMojo extends SafeMojo {
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<String> probes(final Path file) throws FileNotFoundException {
-        final Collection<String> objects = new ListOf<>(
+    private Collection<ObjectName> probes(final Path file) throws FileNotFoundException {
+        final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                ProbeMojo::noPrefix,
+                obj -> new OnCached(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh)
+                    )
+                ),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
-                ).iterator()
-            )
+                )
+            ).iterator()
         );
         if (objects.isEmpty()) {
             Logger.debug(

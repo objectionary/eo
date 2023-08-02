@@ -36,6 +36,7 @@ import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Default objectionaries.
@@ -92,7 +93,7 @@ public final class ObjsDefault implements Objectionaries {
      * @param ojs Predefined Objectionaries.
      */
     private ObjsDefault(final Map<? super String, Objectionary> ojs) {
-        this(ObjsDefault.cacheForTests(), () -> false, ojs);
+        this(ObjsDefault::cacheForTests, () -> false, ojs);
     }
 
     /**
@@ -117,8 +118,8 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public boolean contains(final CommitHash hash, final String name) throws IOException {
-        return this.objectionary(hash).contains(name);
+    public boolean contains(final ObjectName name) throws IOException {
+        return this.objectionary(name.hash()).contains(name.value());
     }
 
     /**
@@ -155,7 +156,7 @@ public final class ObjsDefault implements Objectionaries {
      * Cache path for tests.
      * @return Cache path.
      */
-    private static Scalar<Path> cacheForTests() {
+    private static Path cacheForTests() {
         throw new UnsupportedOperationException(
             String.format(
                 "Caching unsupported for tests! If you see this message in runtime it means that you are using wrong constructor of %s",
