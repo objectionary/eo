@@ -87,8 +87,8 @@ public interface Phi extends Term {
         }
 
         @Override
-        public String form() {
-            return this.pkg.form();
+        public String forma() {
+            return this.pkg.forma();
         }
     };
 
@@ -122,10 +122,8 @@ public interface Phi extends Term {
     String locator();
 
     /**
-     * Get form of the phi.
-     * Forming is the process describing an object: giving to it a name and
-     * describing object's attributes.
-     * @return Form of it as {@link String}.
+     * Get forma of the phi.
+     * @return Forma of it as {@link String}.
      */
-    String form();
+    String forma();
 }

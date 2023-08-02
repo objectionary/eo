@@ -215,7 +215,7 @@ final class EOcageTest {
     }
 
     @Test
-    void doesNotWritePrimitivesOfDifferentTypes() {
+    void doesNotWritePrimitivesFormedDifferently() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         Assertions.assertThrows(

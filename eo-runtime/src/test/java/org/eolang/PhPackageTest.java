@@ -117,10 +117,10 @@ final class PhPackageTest {
     }
 
     @Test
-    void doesNotGetType() {
+    void doesNotGetForma() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).form()
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma()
         );
     }
 

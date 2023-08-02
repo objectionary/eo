@@ -230,46 +230,46 @@ final class PhDefaultTest {
     }
 
     @Test
-    void hasTheSameTypeWithBoundedData() {
+    void hasTheSameFormaWithBoundedData() {
         final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         MatcherAssert.assertThat(
-            five.form(),
-            Matchers.equalTo(six.form())
+            five.forma(),
+            Matchers.equalTo(six.forma())
         );
     }
 
     @Test
-    void hasDifferentTypeWithBoundedMethod() {
+    void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
-            five.form(),
+            five.forma(),
             Matchers.not(
                 Matchers.equalTo(
                     new PhWith(
                         five.attr("plus").get().copy(),
                         "x",
                         new Data.ToPhi(5L)
-                    ).form()
+                    ).forma()
                 )
             )
         );
     }
 
     @Test
-    void hasTheSameTypeWithDifferentInstances() {
+    void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
             new PhWith(
                 new Data.ToPhi(5L).attr("plus").get().copy(),
                 "x",
                 new Data.ToPhi(5L)
-            ).form(),
+            ).forma(),
             Matchers.equalTo(
                 new PhWith(
                     new Data.ToPhi(6L).attr("plus").get().copy(),
                     "x",
                     new Data.ToPhi(6L)
-                ).form()
+                ).forma()
             )
         );
     }

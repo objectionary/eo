@@ -93,8 +93,8 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public String form() {
-        return this.origin.form();
+    public String forma() {
+        return this.origin.forma();
     }
 
 }

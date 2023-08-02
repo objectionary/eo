@@ -111,12 +111,12 @@ final class PhWithTest {
     }
 
     @Test
-    void hasTheSameTypeWithBoundAttribute() {
+    void hasTheSameFormaWithBoundAttribute() {
         final Phi dummy = new DummyWithAtFree("x", Phi.Φ);
         MatcherAssert.assertThat(
-            dummy.form(),
+            dummy.forma(),
             Matchers.equalTo(
-                new PhWith(dummy, "x", new Data.Value<>(5L)).form()
+                new PhWith(dummy, "x", new Data.Value<>(5L)).forma()
             )
         );
     }

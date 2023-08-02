@@ -191,8 +191,8 @@ public interface Data<T> {
         }
 
         @Override
-        public String form() {
-            return this.object.form();
+        public String forma() {
+            return this.object.forma();
         }
 
         @Override
