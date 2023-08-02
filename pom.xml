@@ -341,8 +341,9 @@ SOFTWARE.
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <configuration>
+              <ignoreGeneratedTests>true</ignoreGeneratedTests>
               <exclusions>
                 <!--
                   @todo #2171:30min Enable RuleAssertionMessage.
