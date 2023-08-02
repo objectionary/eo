@@ -185,7 +185,8 @@ final class ProbeMojoTest {
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final CommitHash first = new CommitHashesMap.Fake().get("0.28.5");
-        final CommitHash second = new CommitHashesMap.Fake().get("0.28.7");
+        final CommitHash second = new CommitHashesMap.Fake().get("0.28.6");
+        final CommitHash third = new CommitHashesMap.Fake().get("0.28.7");
         final String stdout = "org.eolang.io.stdout|9c93528";
         final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
@@ -193,11 +194,12 @@ final class ProbeMojoTest {
                 "objectionaries",
                 new ObjsDefault(
                     new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(second, new OyRemote(second))
+                    new MapEntry<>(second, new OyRemote(second)),
+                    new MapEntry<>(third, new OyRemote(third))
                 )
             )
             .with("withVersions", true)
-            .with("hsh", second)
+            .with("hsh", third)
             .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
@@ -224,50 +226,13 @@ final class ProbeMojoTest {
             ),
             Matchers.equalTo("2")
         );
-    }
-
-    @Test
-    @ExtendWith(OnlineCondition.class)
-    void findsProbesWithDefaultHash(@TempDir final Path temp) throws IOException {
-        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
-        final CommitHash master = new CommitHashesMap().get("master");
-        final String stdout = "org.eolang.io.stdout|9b88393";
-        final String sprintf = "org.eolang.txt.sprintf|9c46a67";
-        final FakeMaven maven = new FakeMaven(temp)
-            .with(
-                "objectionaries",
-                new ObjsDefault(
-                    new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(master, new OyRemote(master))
-                )
-            )
-            .with("withVersions", true)
-            .with("hsh", master)
-            .withVersionedProgram()
-            .execute(new FakeMaven.Probe());
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                stdout
-            ),
-            maven.externalTojos().contains(stdout),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                sprintf
-            ),
-            maven.externalTojos().contains(sprintf),
-            Matchers.is(true)
-        );
         MatcherAssert.assertThat(
             "First entry of tojos after probing should have contained given hash, but it didn't",
             ProbeMojoTest.firstEntry(
                 maven.externalPath(),
                 "hash"
             ),
-            Matchers.equalTo(master.value())
+            Matchers.equalTo(third.value())
         );
     }
 

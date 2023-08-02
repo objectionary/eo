@@ -116,7 +116,6 @@ final class DiscoverMojoTest {
         final String stdout = "org.eolang.stdout|9c93528";
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
-        tojos.all().forEach(tojo -> System.out.println(tojo.identifier()));
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, text),
             tojos.contains(text),
