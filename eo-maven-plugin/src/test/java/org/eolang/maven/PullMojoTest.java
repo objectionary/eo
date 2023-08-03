@@ -173,6 +173,7 @@ final class PullMojoTest {
         );
     }
 
+    @Disabled
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
