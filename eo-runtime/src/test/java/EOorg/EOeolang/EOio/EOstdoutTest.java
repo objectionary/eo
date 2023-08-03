@@ -64,23 +64,14 @@ public final class EOstdoutTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "1,2,lt",
-        "1,2,gt",
-        "1,2,lte",
-        "1,2,gte"
-    })
-    public void doesNotPrintTwiceOnIntComparisonMethods(
-        final int first,
-        final int second,
-        final String method
-    ) {
+    @CsvSource({"lt", "gt", "lte", "gte"})
+    public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
         new Dataized(
             new PhWith(
                 new PhMethod(
-                    new Data.ToPhi((long) first),
+                    new Data.ToPhi(1L),
                     method
                 ),
                 0,
@@ -95,10 +86,10 @@ public final class EOstdoutTest {
                         )
                     ),
                     0,
-                    new Data.ToPhi((long) second)
+                    new Data.ToPhi(2L)
                 )
             )
-        ).take(Boolean.class);
+        ).take();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
@@ -106,23 +97,14 @@ public final class EOstdoutTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "1.0,2.0,lt",
-        "1.0,2.0,gt",
-        "1.0,2.0,lte",
-        "1.0,2.0,gte"
-    })
-    public void doesNotPrintTwiceOnFloatComparisonMethods(
-        final double first,
-        final double second,
-        final String method
-    ) {
+    @CsvSource({"lt", "gt", "lte", "gte"})
+    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
         new Dataized(
             new PhWith(
                 new PhMethod(
-                    new Data.ToPhi(first),
+                    new Data.ToPhi(1.0),
                     method
                 ),
                 0,
@@ -137,10 +119,10 @@ public final class EOstdoutTest {
                         )
                     ),
                     0,
-                    new Data.ToPhi(second)
+                    new Data.ToPhi(2.0)
                 )
             )
-        ).take(Boolean.class);
+        ).take();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
