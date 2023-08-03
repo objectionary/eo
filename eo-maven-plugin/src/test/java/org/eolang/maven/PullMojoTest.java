@@ -171,8 +171,15 @@ final class PullMojoTest {
     }
 
     @Test
-    void pullsProbedVersionedObjectFromOneObjectionary() {
-
+    void pullsProbedVersionedObjectFromOneObjectionary(@TempDir final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("withVersions", true)
+            .withProgram(
+                "+package f\n",
+                "[] > main",
+                "  QQ.io.stdout|"
+            );
     }
 
     /**
