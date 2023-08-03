@@ -49,6 +49,10 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.28.11
  */
 final class DiscoverMojoTest {
+    /**
+     * Text.
+     */
+    private static final String TEXT = "org.eolang.txt.text|5f82cc1";
 
     /**
      * Default assertion message.
@@ -112,13 +116,12 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String text = "org.eolang.txt.text|5f82cc1";
         final String stdout = "org.eolang.stdout|9c93528";
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, text),
-            tojos.contains(text),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
+            tojos.contains(DiscoverMojoTest.TEXT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -186,15 +189,14 @@ final class DiscoverMojoTest {
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
         final String seq = "org.eolang.seq|6c6269d";
-        final String text = "org.eolang.txt.text|5f82cc1";
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
             maven.externalTojos().contains(seq),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, text),
-            maven.externalTojos().contains(text),
+            String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
+            maven.externalTojos().contains(DiscoverMojoTest.TEXT),
             Matchers.is(false)
         );
     }

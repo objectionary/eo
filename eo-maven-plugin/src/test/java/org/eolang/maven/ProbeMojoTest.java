@@ -64,6 +64,11 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
+    /**
+     * Stdout.
+     */
+    private static final String STDOUT = "org.eolang.io.stdout|9c93528";
+
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
@@ -142,8 +147,7 @@ final class ProbeMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
-        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
-        final String object = "org.eolang.io.stdout|9b88393";
+        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
             .with("hsh", hash)
             .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
@@ -151,16 +155,16 @@ final class ProbeMojoTest {
             .withProgram(
                 "+package org.eolang.custom\n",
                 "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
+                "  QQ.io.stdout|0.28.5 > @",
                 "    \"Hello world\""
             )
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                object
+                ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(object),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -189,7 +193,6 @@ final class ProbeMojoTest {
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
         final CommitHash third = hashes.get("0.28.7");
-        final String stdout = "org.eolang.io.stdout|9c93528";
         final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
             .with(
@@ -207,9 +210,9 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                stdout
+                ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(stdout),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
