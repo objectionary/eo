@@ -50,6 +50,8 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class PullMojoTest {
+    private static final String STDOUT = "org.eolang.io.stdout|9c93528";
+
 
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
@@ -173,6 +175,26 @@ final class PullMojoTest {
                 )
             ),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.foreignTojos()
+            .add("org.eolang.io.stdout|9c93528")
+            .withVersion("*.*.*");
+        maven.execute(PullMojo.class);
+        MatcherAssert.assertThat(
+            new Home(temp.resolve("target")).exists(
+                Paths.get(
+                    String.format(
+                        "%s/org/eolang/io/stdout|9c93528.eo",
+                        PullMojo.DIR
+                    )
+                )
+            ),
+            Matchers.is(true)
         );
     }
 }
