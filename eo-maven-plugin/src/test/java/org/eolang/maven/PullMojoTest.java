@@ -62,14 +62,7 @@ final class PullMojoTest {
         maven.with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, "%s/org/eolang/io/stdout.eo"),
             Matchers.is(true)
         );
     }
@@ -97,14 +90,7 @@ final class PullMojoTest {
             )
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, "%s/org/eolang/io/stdout.eo"),
             Matchers.is(true)
         );
     }
@@ -166,14 +152,7 @@ final class PullMojoTest {
         maven.with("skip", true)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, "%s/org/eolang/io/stdout.eo"),
             Matchers.is(false)
         );
     }
@@ -186,15 +165,25 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout|9c93528.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, "%s/org/eolang/io/stdout|9c93528.eo"),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void pullsProbedVersionedObjectFromOneObjectionary() {
+
+    }
+
+    /**
+     * Check if given source files exists in target directory.
+     * @param temp Test temporary directory.
+     * @param source Source file.
+     * @return If given source file exists.
+     */
+    private static boolean exists(final Path temp, final String source) {
+        return new Home(temp.resolve("target")).exists(
+            Paths.get(String.format(source, PullMojo.DIR))
         );
     }
 }
