@@ -376,16 +376,11 @@ final class OptimizeMojoTest {
     void containsValidVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
         throws Exception {
         new FakeMaven(tmp)
-            .withProgram(
-                "+package f\n",
-                "[] > main",
-                "  seq|0.28.10 > @",
-                "    nop"
-            )
+            .withVersionedProgram()
             .with("withVersions", true)
             .with("hashes", new CommitHashesMap.Fake())
             .execute(new FakeMaven.Optimize());
-        final String ver = "9b88393";
+        final String ver = "6c6269d";
         final int size = 1;
         MatcherAssert.assertThat(
             String.format(

@@ -49,6 +49,10 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.28.11
  */
 final class DiscoverMojoTest {
+    /**
+     * Text.
+     */
+    private static final String TEXT = "org.eolang.txt.text|5f82cc1";
 
     /**
      * Default assertion message.
@@ -110,24 +114,14 @@ final class DiscoverMojoTest {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
             .with("hashes", new CommitHashesMap.Fake())
-            .withProgram(
-                "+alias org.eolang.txt.sprintf\n",
-                "[] > main",
-                "  seq > @",
-                "    QQ.io.stdout|0.28.9",
-                "      sprintf|0.28.5",
-                "        \"Hello world\"",
-                "          TRUE",
-                "    nop"
-            )
+            .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|9c93528";
-        final String stdout = "org.eolang.io.stdout|be83d9a";
+        final String stdout = "org.eolang.stdout|9c93528";
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, sprintf),
-            tojos.contains(sprintf),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
+            tojos.contains(DiscoverMojoTest.TEXT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -192,26 +186,17 @@ final class DiscoverMojoTest {
             .with("withVersions", false)
             .with("failOnError", false)
             .with("hashes", new CommitHashesMap.Fake())
-            .withProgram(
-                "+alias org.eolang.txt.sprintf\n",
-                "[] > main",
-                "  seq > @",
-                "    QQ.io.stdout|0.28.9",
-                "      sprintf|0.28.5",
-                "        \"Hello world\"",
-                "          TRUE"
-            )
+            .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String sprintf = "org.eolang.txt.sprintf|9c93528";
-        final String stdout = "org.eolang.io.stdout|be83d9a";
+        final String seq = "org.eolang.seq|6c6269d";
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, sprintf),
-            maven.externalTojos().contains(sprintf),
+            String.format(DiscoverMojoTest.SHOULD_NOT, seq),
+            maven.externalTojos().contains(seq),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
-            maven.externalTojos().contains(stdout),
+            String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
+            maven.externalTojos().contains(DiscoverMojoTest.TEXT),
             Matchers.is(false)
         );
     }

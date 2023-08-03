@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.text.TextOf;
@@ -52,12 +53,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
- * @todo #2302:30min Add special method to {@link FakeMaven} for versioned
- *  program. On many compilation steps we test programs with versions and such
- *  programs looks similar or identical. We can create a separate method for it.
- *  Something like withVersionedProgram()
- *  See tests in {@link OptimizeMojoTest}, {@link VersionsMojoTest},
- *  {@link DiscoverMojoTest}, {@link ProbeMojoTest}.
  * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
  *  code duplication among all tests in the class. Need to reduce it somehow.
  * @todo #2302:30min Refactor firstEntity method. The "first entity of the
@@ -69,6 +64,11 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
+    /**
+     * Stdout.
+     */
+    private static final String STDOUT = "org.eolang.io.stdout|9c93528";
+
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
@@ -147,8 +147,7 @@ final class ProbeMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
-        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
-        final String object = "org.eolang.io.stdout|9b88393";
+        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
             .with("hsh", hash)
             .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
@@ -156,16 +155,16 @@ final class ProbeMojoTest {
             .withProgram(
                 "+package org.eolang.custom\n",
                 "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
+                "  QQ.io.stdout|0.28.5 > @",
                 "    \"Hello world\""
             )
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                object
+                ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(object),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -190,42 +189,38 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
-        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
-        final CommitHash second = new CommitHashesMap.Fake().get("0.28.0");
-        final String stdout = "org.eolang.io.stdout|9b88393";
-        final String sprintf = "org.eolang.txt.sprintf|6a70071";
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
+        final CommitHash first = hashes.get("0.28.5");
+        final CommitHash second = hashes.get("0.28.6");
+        final CommitHash third = hashes.get("0.28.7");
+        final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
                 new ObjsDefault(
                     new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(second, new OyRemote(second))
+                    new MapEntry<>(second, new OyRemote(second)),
+                    new MapEntry<>(third, new OyRemote(third))
                 )
             )
             .with("withVersions", true)
-            .with("hsh", first)
-            .withProgram(
-                "+package org.eolang.custom\n",
-                "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
-                "    QQ.txt.sprintf|0.28.0",
-                "      \"Hello world!\""
-            )
+            .with("hsh", third)
+            .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                stdout
+                ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(stdout),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                sprintf
+                number
             ),
-            maven.externalTojos().contains(sprintf),
+            maven.externalTojos().contains(number),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -236,56 +231,13 @@ final class ProbeMojoTest {
             ),
             Matchers.equalTo("2")
         );
-    }
-
-    @Test
-    @ExtendWith(OnlineCondition.class)
-    void findsProbesWithDefaultHash(@TempDir final Path temp) throws IOException {
-        final CommitHash first = new CommitHashesMap.Fake().get("0.28.10");
-        final CommitHash master = new CommitHashesMap().get("master");
-        final String stdout = "org.eolang.io.stdout|9b88393";
-        final String sprintf = "org.eolang.txt.sprintf|9c46a67";
-        final FakeMaven maven = new FakeMaven(temp)
-            .with(
-                "objectionaries",
-                new ObjsDefault(
-                    new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(master, new OyRemote(master))
-                )
-            )
-            .with("withVersions", true)
-            .with("hsh", master)
-            .withProgram(
-                "+package org.eolang.custom\n",
-                "[] > main",
-                "  QQ.io.stdout|0.28.10 > @",
-                "    QQ.txt.sprintf",
-                "      \"Hello world!\""
-            )
-            .execute(new FakeMaven.Probe());
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                stdout
-            ),
-            maven.externalTojos().contains(stdout),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                sprintf
-            ),
-            maven.externalTojos().contains(sprintf),
-            Matchers.is(true)
-        );
         MatcherAssert.assertThat(
             "First entry of tojos after probing should have contained given hash, but it didn't",
             ProbeMojoTest.firstEntry(
                 maven.externalPath(),
                 "hash"
             ),
-            Matchers.equalTo(master.value())
+            Matchers.equalTo(third.value())
         );
     }
 
