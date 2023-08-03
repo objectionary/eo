@@ -123,13 +123,11 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with(
+        maven.with("skip", false)
+            .with(
                 "hsh",
-                new ChCached(
-                    new ChText(temp.resolve("tags.txt"), "master")
-                )
+                new ChCached(new ChText(temp.resolve("tags.txt"), "master"))
             )
-            .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
@@ -148,11 +146,11 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with(
+        maven.with("skip", false)
+            .with(
                 "hsh",
                 new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
             )
-            .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
@@ -212,7 +210,7 @@ final class PullMojoTest {
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
         final CommitHash third = hashes.get("0.28.7");
-        final FakeMaven maven = new FakeMaven(temp)
+        new FakeMaven(temp)
             .with(
                 "objectionaries",
                 new ObjsDefault(
@@ -242,7 +240,7 @@ final class PullMojoTest {
     /**
      * Check if given source files exists in target directory.
      *
-     * @param temp   Test temporary directory.
+     * @param temp Test temporary directory.
      * @param source Source file.
      * @return If given source file exists.
      */
