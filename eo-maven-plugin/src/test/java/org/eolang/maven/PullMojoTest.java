@@ -33,8 +33,7 @@ import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChText;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -58,8 +57,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("objectionary", new Objectionary.Fake())
-            .with("skip", false)
+        maven.with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
@@ -76,9 +74,6 @@ final class PullMojoTest {
 
     @Test
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
-        final Objectionary objectionary = new OyRemote(
-            new ChCompound(null, null, "master")
-        );
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom",
@@ -90,7 +85,14 @@ final class PullMojoTest {
                 "        1337",
                 "        228"
             )
-            .with("objectionary", objectionary)
+            .with(
+                "objectionaries",
+                new Objectionaries.Fake(
+                    new OyRemote(
+                        new ChCompound(null, null, "master")
+                    )
+                )
+            )
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
@@ -111,14 +113,16 @@ final class PullMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
-        final CommitHash hash = new ChCached(
-            new ChText(temp.resolve("tags.txt"), "master")
-        );
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("hsh", hash)
+        maven.with(
+            "hsh",
+                new ChCached(
+                    new ChText(temp.resolve("tags.txt"), "master")
+                )
+            )
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -135,13 +139,13 @@ final class PullMojoTest {
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        final CommitHash hash = new ChCached(
-            new ChPattern("*.*.*:abcdefg", "1.0.0")
-        );
         maven.foreignTojos()
             .add("org.eolang.io.stdout")
             .withVersion("*.*.*");
-        maven.with("hsh", hash)
+        maven.with(
+            "hsh",
+                new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+            )
             .with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -158,7 +162,6 @@ final class PullMojoTest {
             .withScope("compile")
             .withVersion("*.*.*");
         maven.with("skip", true)
-            .with("objectionary", new Objectionary.Fake())
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new Home(temp.resolve("target")).exists(
