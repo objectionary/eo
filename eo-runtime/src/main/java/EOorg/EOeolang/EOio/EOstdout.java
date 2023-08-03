@@ -55,6 +55,16 @@ public class EOstdout extends PhDefault {
      * @param sigma Sigma
      */
     public EOstdout(final Phi sigma) {
+        this(sigma, EOstdout.OUT);
+    }
+
+    /**
+     * Ctor.
+     * It's supposed to used only for the test purposes.
+     * @param sigma Sigma
+     * @param out Output stream.
+     */
+    public EOstdout(final Phi sigma, final PrintStream out) {
         super(sigma);
         this.add("text", new AtFree());
         this.add(
@@ -62,7 +72,7 @@ public class EOstdout extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    EOstdout.OUT.print(
+                    out.print(
                         new Param(rho, "text").strong(String.class)
                     );
                     return new Data.ToPhi(true);

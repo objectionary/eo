@@ -27,14 +27,20 @@
  */
 package EOorg.EOeolang.EOio;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import EOorg.EOeolang.EOseq;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link EOstdout}.
@@ -57,4 +63,87 @@ public final class EOstdoutTest {
         );
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "1,2,lt",
+        "1,2,gt",
+        "1,2,lte",
+        "1,2,gte",
+    })
+    public void doesNotPrintTwiceOnIntComparisonMethods(
+        final int first,
+        final int second,
+        final String method
+    ) {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final String str = "Hello world";
+        new Dataized(
+            new PhWith(
+                new PhMethod(
+                    new Data.ToPhi((long) first),
+                    method
+                ),
+                0,
+                new PhWith(
+                    new PhWith(
+                        new EOseq(Phi.Φ),
+                        0,
+                        new PhWith(
+                            new EOstdout(Phi.Φ, new PrintStream(stream)),
+                            "text",
+                            new Data.ToPhi(str)
+                        )
+                    ),
+                    0,
+                    new Data.ToPhi((long) second)
+                )
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            stream.toString(),
+            Matchers.equalTo(str)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1.0,2.0,lt",
+        "1.0,2.0,gt",
+        "1.0,2.0,lte",
+        "1.0,2.0,gte",
+    })
+    public void doesNotPrintTwiceOnFloatComparisonMethods(
+        final double first,
+        final double second,
+        final String method
+    ) {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final String str = "Hello world";
+        new Dataized(
+            new PhWith(
+                new PhMethod(
+                    new Data.ToPhi(first),
+                    method
+                ),
+                0,
+                new PhWith(
+                    new PhWith(
+                        new EOseq(Phi.Φ),
+                        0,
+                        new PhWith(
+                            new EOstdout(Phi.Φ, new PrintStream(stream)),
+                            "text",
+                            new Data.ToPhi(str)
+                        )
+                    ),
+                    0,
+                    new Data.ToPhi(second)
+                )
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            stream.toString(),
+            Matchers.equalTo(str)
+        );
+    }
 }

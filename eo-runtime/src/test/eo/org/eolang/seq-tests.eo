@@ -27,10 +27,6 @@
 +package org.eolang
 +version 0.0.0
 
-# @todo #1299:60min Implement test that will
-#  check output of stdout. That should proven
-#  that there is no double printage, when
-#  methods lt., gt., lte., gte. are called.
 [] > seq-single-dataization-float-less-than-test
   memory 0.0 > counter
   assert-that > @
