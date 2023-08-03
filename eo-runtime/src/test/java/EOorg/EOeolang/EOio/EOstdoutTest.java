@@ -27,9 +27,9 @@
  */
 package EOorg.EOeolang.EOio;
 
+import EOorg.EOeolang.EOseq;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import EOorg.EOeolang.EOseq;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -68,7 +68,7 @@ public final class EOstdoutTest {
         "1,2,lt",
         "1,2,gt",
         "1,2,lte",
-        "1,2,gte",
+        "1,2,gte"
     })
     public void doesNotPrintTwiceOnIntComparisonMethods(
         final int first,
@@ -110,7 +110,7 @@ public final class EOstdoutTest {
         "1.0,2.0,lt",
         "1.0,2.0,gt",
         "1.0,2.0,lte",
-        "1.0,2.0,gte",
+        "1.0,2.0,gte"
     })
     public void doesNotPrintTwiceOnFloatComparisonMethods(
         final double first,
