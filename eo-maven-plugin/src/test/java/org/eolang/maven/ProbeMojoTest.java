@@ -64,11 +64,6 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
-    /**
-     * Fake hashes.
-     */
-    private static final Map<String, CommitHash> HASHES = new CommitHashesMap.Fake();
-
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
@@ -147,7 +142,7 @@ final class ProbeMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
-        final CommitHash hash = ProbeMojoTest.HASHES.get("0.28.10");
+        final CommitHash hash = new CommitHashesMap.Fake().get("0.28.10");
         final String object = "org.eolang.io.stdout|9b88393";
         final FakeMaven maven = new FakeMaven(temp)
             .with("hsh", hash)
@@ -190,9 +185,10 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
-        final CommitHash first = ProbeMojoTest.HASHES.get("0.28.5");
-        final CommitHash second = ProbeMojoTest.HASHES.get("0.28.6");
-        final CommitHash third = ProbeMojoTest.HASHES.get("0.28.7");
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
+        final CommitHash first = hashes.get("0.28.5");
+        final CommitHash second = hashes.get("0.28.6");
+        final CommitHash third = hashes.get("0.28.7");
         final String stdout = "org.eolang.io.stdout|9c93528";
         final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
