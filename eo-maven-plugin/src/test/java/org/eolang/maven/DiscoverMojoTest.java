@@ -34,6 +34,9 @@ import java.util.stream.Collectors;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
@@ -52,10 +55,11 @@ final class DiscoverMojoTest {
     /**
      * Text.
      */
-    private static final String TEXT = String.join(
-        VersionsMojo.DELIMITER,
-        "org.eolang.txt.text",
-        "5f82cc1"
+    private static final ObjectName TEXT = new OnCached(
+        new OnDefault(
+            "org.eolang.txt.text",
+            new CommitHash.ChConstant("5f82cc1")
+        )
     );
 
     /**
@@ -120,17 +124,19 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String stdout = String.join(VersionsMojo.DELIMITER, "org.eolang.stdout", "9c93528");
+        final ObjectName stdout = new OnCached(
+            new OnDefault("org.eolang.stdout", new CommitHash.ChConstant("9c93528"))
+        );
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
-            tojos.contains(DiscoverMojoTest.TEXT),
+            tojos.contains(DiscoverMojoTest.TEXT.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
-            tojos.contains(stdout),
+            tojos.contains(stdout.toString()),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
@@ -163,25 +169,21 @@ final class DiscoverMojoTest {
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String first = String.join(
-            VersionsMojo.DELIMITER,
-            "org.eolang.txt.sprintf",
-            hashes.get("0.28.1").value()
+        final ObjectName first = new OnCached(
+            new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.1"))
         );
-        final String second = String.join(
-            VersionsMojo.DELIMITER,
-            "org.eolang.txt.sprintf",
-            hashes.get("0.28.2").value()
+        final ObjectName second = new OnCached(
+            new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.2"))
         );
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
-            tojos.contains(first),
+            tojos.contains(first.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
-            tojos.contains(second),
+            tojos.contains(second.toString()),
             Matchers.is(true)
         );
     }
@@ -194,15 +196,17 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String seq = String.join(VersionsMojo.DELIMITER, "org.eolang.seq", "6c6269d");
+        final ObjectName seq = new OnCached(
+            new OnDefault("org.eolang.seq", new CommitHash.ChConstant("6c6269d"))
+        );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
-            maven.externalTojos().contains(seq),
+            maven.externalTojos().contains(seq.toString()),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
-            maven.externalTojos().contains(DiscoverMojoTest.TEXT),
+            maven.externalTojos().contains(DiscoverMojoTest.TEXT.toString()),
             Matchers.is(false)
         );
     }

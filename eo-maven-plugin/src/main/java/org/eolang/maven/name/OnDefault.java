@@ -45,8 +45,8 @@ public final class OnDefault implements ObjectName {
 
     /**
      * Ctor.
-     * @param object Object full name with version or not.
-     * @param def Default hash if version in full name is absent.
+     * @param object Object full name with a version or not.
+     * @param def Default hash if a version in full name is absent.
      */
     public OnDefault(final String object, final CommitHash def) {
         this.object = object;

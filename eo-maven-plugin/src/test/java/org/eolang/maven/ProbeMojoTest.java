@@ -39,6 +39,9 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -67,10 +70,8 @@ final class ProbeMojoTest {
     /**
      * Stdout.
      */
-    private static final String STDOUT = String.join(
-        VersionsMojo.DELIMITER,
-        "org.eolang.io.stdout",
-        "9c93528"
+    private static final ObjectName STDOUT = new OnCached(
+        new OnDefault("org.eolang.io.stdout", new CommitHash.ChConstant("9c93528"))
     );
 
     @Test
@@ -163,7 +164,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -191,7 +192,9 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final String number = String.join(VersionsMojo.DELIMITER, "org.eolang.txt.text", "5f82cc1");
+        final ObjectName number = new OnCached(
+            new OnDefault("org.eolang.txt.text", new CommitHash.ChConstant("5f82cc1"))
+        );
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
@@ -209,7 +212,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -217,7 +220,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 number
             ),
-            maven.externalTojos().contains(number),
+            maven.externalTojos().contains(number.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
