@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import org.eolang.maven.name.ObjectName;
+
 import java.io.File;
 import java.nio.file.Path;
 
@@ -37,6 +39,14 @@ public final class Place {
      * The name of the object, e.g. "org.eolang.io.stdout"
      */
     private final String name;
+
+    /**
+     * Ctor.
+     * @param obj The name of the object
+     */
+    public Place(final ObjectName obj) {
+        this(obj.toString());
+    }
 
     /**
      * Ctor.

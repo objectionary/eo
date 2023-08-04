@@ -46,7 +46,6 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -180,8 +179,8 @@ final class PullMojoTest {
 
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        maven.foreignTojos()
+        final FakeMaven maven = new FakeMaven(temp).with("withVersions", true);
+        maven.externalTojos()
             .add(new OnDefault(PullMojoTest.STDOUT, new CommitHash.ChConstant("9c93528")))
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
@@ -195,7 +194,6 @@ final class PullMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void pullsProbedVersionedObjectFromOneObjectionary(@TempDir final Path temp)
         throws IOException {
@@ -221,7 +219,6 @@ final class PullMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void pullsProbedVersionedObjectsFromDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {

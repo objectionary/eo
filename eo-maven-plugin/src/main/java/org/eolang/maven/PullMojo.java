@@ -107,16 +107,13 @@ public final class PullMojo extends SafeMojo {
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
-            tojo.withSource(
-                this.pull(
-                    new OnCached(
-                        new OnSwap(
-                            this.withVersions,
-                            new OnDefault(tojo.identifier(), this.hsh)
-                        )
-                    )
-                ).toAbsolutePath()
-            ).withHash(new ChNarrow(this.hsh));
+            final ObjectName name = new OnCached(
+                new OnSwap(
+                    this.withVersions,
+                    new OnDefault(tojo.identifier(), this.hsh)
+                )
+            );
+            tojo.withSource(this.pull(name).toAbsolutePath()).withHash(name.hash());
         }
         Logger.info(
             this,
@@ -134,22 +131,22 @@ public final class PullMojo extends SafeMojo {
      */
     private Path pull(final ObjectName object) throws IOException {
         final Path dir = this.targetDir.toPath().resolve(PullMojo.DIR);
-        final Path src = new Place(name).make(
+        final Path src = new Place(object).make(
             dir, "eo"
         );
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, new Rel(src)
+                object, new Rel(src)
             );
         } else {
             new Home(dir).save(
-                this.objectionaries.object(this.hsh, name),
+                this.objectionaries.object(object),
                 dir.relativize(src)
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, new Rel(src)
+                object, new Rel(src)
             );
         }
         return src;

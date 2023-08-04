@@ -35,19 +35,18 @@ import org.eolang.maven.name.ObjectName;
 public interface Objectionaries {
 
     /**
-     * Get object by hash and name.
-     * @param hash Commit hash
+     * Get an object by hash and name.
      * @param name Object name
      * @return Object
      * @throws IOException If some I/O problem happens.
      */
-    Input object(CommitHash hash, String name) throws IOException;
+    Input object(ObjectName name) throws IOException;
 
     /**
-     * Check if object exists.
+     * Check if an object exists.
      *
      * @param name Object name
-     * @return True if object exists, false otherwise
+     * @return True if an object exists, false otherwise
      * @throws IOException If some I/O problem happens.
      */
     boolean contains(ObjectName name) throws IOException;
@@ -80,8 +79,8 @@ public interface Objectionaries {
         }
 
         @Override
-        public Input object(final CommitHash hash, final String name) throws IOException {
-            return this.objectionary.get(name);
+        public Input object(final ObjectName name) throws IOException {
+            return this.objectionary.get(name.value());
         }
 
         @Override

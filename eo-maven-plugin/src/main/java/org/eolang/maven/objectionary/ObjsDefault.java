@@ -113,8 +113,8 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     @Override
-    public Input object(final CommitHash hash, final String name) throws IOException {
-        return this.objectionary(hash).get(name);
+    public Input object(final ObjectName name) throws IOException {
+        return this.objectionary(name.hash()).get(name.value());
     }
 
     @Override
