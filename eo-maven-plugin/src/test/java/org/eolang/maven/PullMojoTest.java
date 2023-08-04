@@ -182,6 +182,10 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
         MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
             PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
@@ -191,13 +195,23 @@ final class PullMojoTest {
     @Test
     void pullsProbedVersionedObjectFromOneObjectionary(@TempDir final Path temp)
         throws IOException {
-        final CommitHash hash = new ChCached(new CommitHashesMap.Fake().get("0.28.5"));
         new FakeMaven(temp)
             .with("withVersions", true)
-            .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
+            .with(
+                "objectionaries",
+                new Objectionaries.Fake(
+                    new OyRemote(
+                        new ChCached(new CommitHashesMap.Fake().get("0.28.5"))
+                    )
+                )
+            )
             .withVersionedHelloWorld()
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
             PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
@@ -224,16 +238,30 @@ final class PullMojoTest {
             .with("hsh", third)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
+        final String sprintf = "%s/org/eolang/io/sprintf|17f892.eo";
+        final String string = "%s/org/eolang/string|5f82cc";
         MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
             PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            PullMojoTest.exists(temp, "%s/org/eolang/io/sprintf|17f892.eo"),
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(sprintf)
+            ),
+            PullMojoTest.exists(temp, sprintf),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            PullMojoTest.exists(temp, "%s/org/eolang/string|5f82cc.eo"),
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(string)
+            ),
+            PullMojoTest.exists(temp, string),
             Matchers.is(true)
         );
     }
@@ -247,7 +275,16 @@ final class PullMojoTest {
      */
     private static boolean exists(final Path temp, final String source) {
         return new Home(temp.resolve("target")).exists(
-            Paths.get(String.format(source, PullMojo.DIR))
+            Paths.get(PullMojoTest.path(source))
         );
+    }
+
+    /**
+     * Format given source path.
+     * @param source Source path.
+     * @return Formatted source path.
+     */
+    private static String path(final String source) {
+        return String.format(source, PullMojo.DIR);
     }
 }
