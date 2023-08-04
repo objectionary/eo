@@ -26,7 +26,7 @@ package org.eolang.maven.name;
 import org.eolang.maven.hash.CommitHash;
 
 /**
- * Object name with version.
+ * Object name with a version.
  *
  * @since 0.29.6
  */
