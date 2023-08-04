@@ -67,7 +67,11 @@ final class ProbeMojoTest {
     /**
      * Stdout.
      */
-    private static final String STDOUT = "org.eolang.io.stdout|9c93528";
+    private static final String STDOUT = String.join(
+        VersionsMojo.DELIMITER,
+        "org.eolang.io.stdout",
+        "9c93528"
+    );
 
     @Test
     @ExtendWith(OnlineCondition.class)
@@ -187,7 +191,7 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final String number = "org.eolang.txt.text|5f82cc1";
+        final String number = String.join(VersionsMojo.DELIMITER, "org.eolang.txt.text", "5f82cc1");
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",

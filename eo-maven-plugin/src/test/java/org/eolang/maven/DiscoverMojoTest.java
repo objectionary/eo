@@ -52,7 +52,11 @@ final class DiscoverMojoTest {
     /**
      * Text.
      */
-    private static final String TEXT = "org.eolang.txt.text|5f82cc1";
+    private static final String TEXT = String.join(
+        VersionsMojo.DELIMITER,
+        "org.eolang.txt.text",
+        "5f82cc1"
+    );
 
     /**
      * Default assertion message.
@@ -116,7 +120,7 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String stdout = "org.eolang.stdout|9c93528";
+        final String stdout = String.join(VersionsMojo.DELIMITER, "org.eolang.stdout", "9c93528");
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
@@ -159,12 +163,14 @@ final class DiscoverMojoTest {
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final String first = String.format(
-            "org.eolang.txt.sprintf|%s",
+        final String first = String.join(
+            VersionsMojo.DELIMITER,
+            "org.eolang.txt.sprintf",
             hashes.get("0.28.1").value()
         );
-        final String second = String.format(
-            "org.eolang.txt.sprintf|%s",
+        final String second = String.join(
+            VersionsMojo.DELIMITER,
+            "org.eolang.txt.sprintf",
             hashes.get("0.28.2").value()
         );
         final ForeignTojos tojos = maven.externalTojos();
@@ -188,7 +194,7 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final String seq = "org.eolang.seq|6c6269d";
+        final String seq = String.join(VersionsMojo.DELIMITER, "org.eolang.seq", "6c6269d");
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
             maven.externalTojos().contains(seq),

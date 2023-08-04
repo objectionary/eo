@@ -69,7 +69,11 @@ final class PullMojoTest {
     /**
      * Versioned source.
      */
-    private static final String VERSIONED = "%s/org/eolang/io/stdout|9c93528.eo";
+    private static final String VERSIONED = String.join(
+        VersionsMojo.DELIMITER,
+        "%s/org/eolang/io/stdout",
+        "9c93528.eo"
+    );
 
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
@@ -173,12 +177,11 @@ final class PullMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout|9c93528")
+            .add(String.join(VersionsMojo.DELIMITER, PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -238,8 +241,16 @@ final class PullMojoTest {
             .with("hsh", third)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
-        final String sprintf = "%s/org/eolang/io/sprintf|17f892.eo";
-        final String string = "%s/org/eolang/string|5f82cc";
+        final String sprintf = String.join(
+            VersionsMojo.DELIMITER,
+            "%s/org/eolang/io/sprintf",
+            "17f892.eo"
+        );
+        final String string = String.join(
+            VersionsMojo.DELIMITER,
+            "%s/org/eolang/string",
+            "5f82cc.eo"
+        );
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
@@ -280,7 +291,7 @@ final class PullMojoTest {
     }
 
     /**
-     * Format given source path.
+     * Format given a source path.
      * @param source Source path.
      * @return Formatted source path.
      */
