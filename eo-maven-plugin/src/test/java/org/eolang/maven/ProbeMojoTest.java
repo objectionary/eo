@@ -152,12 +152,7 @@ final class ProbeMojoTest {
             .with("hsh", hash)
             .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
             .with("withVersions", true)
-            .withProgram(
-                "+package org.eolang.custom\n",
-                "[] > main",
-                "  QQ.io.stdout|0.28.5 > @",
-                "    \"Hello world\""
-            )
+            .withVersionedHelloWorld()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
@@ -192,19 +187,17 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final CommitHash third = hashes.get("0.28.7");
         final String number = "org.eolang.txt.text|5f82cc1";
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
                 new ObjsDefault(
                     new MapEntry<>(first, new OyRemote(first)),
-                    new MapEntry<>(second, new OyRemote(second)),
-                    new MapEntry<>(third, new OyRemote(third))
+                    new MapEntry<>(second, new OyRemote(second))
                 )
             )
             .with("withVersions", true)
-            .with("hsh", third)
+            .with("hsh", first)
             .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
@@ -237,7 +230,7 @@ final class ProbeMojoTest {
                 maven.externalPath(),
                 "hash"
             ),
-            Matchers.equalTo(third.value())
+            Matchers.equalTo(first.value())
         );
     }
 
