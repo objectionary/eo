@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
+import org.cactoos.text.Joined;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChPattern;
@@ -223,27 +224,29 @@ final class PullMojoTest {
     void pullsProbedVersionedObjectsFromDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final CommitHash first = hashes.get("0.28.5");
-        final CommitHash second = hashes.get("0.28.6");
-        final CommitHash third = hashes.get("0.28.7");
+        final CommitHash first = hashes.get("0.28.4");
+        final CommitHash second = hashes.get("0.28.5");
+        final CommitHash third = hashes.get("0.28.6");
+        final CommitHash fourth = hashes.get("0.28.7");
         new FakeMaven(temp)
             .with(
                 "objectionaries",
                 new ObjsDefault(
                     new MapEntry<>(first, new OyRemote(first)),
                     new MapEntry<>(second, new OyRemote(second)),
-                    new MapEntry<>(third, new OyRemote(third))
+                    new MapEntry<>(third, new OyRemote(third)),
+                    new MapEntry<>(fourth, new OyRemote(fourth))
                 )
             )
             .with("withVersions", true)
-            .with("hsh", third)
+            .with("hsh", fourth)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
         final ObjectName sprintf = new OnCached(
-            new OnDefault("%s/org/eolang/io/sprintf", new CommitHash.ChConstant("17f892.eo"))
+            new OnDefault("%s/org/eolang/txt/sprintf", new CommitHash.ChConstant("17f8929.eo"))
         );
         final ObjectName string = new OnCached(
-            new OnDefault("%s/org/eolang/string", new CommitHash.ChConstant("5f82cc.eo"))
+            new OnDefault("%s/org/eolang/string", new CommitHash.ChConstant("5f82cc1.eo"))
         );
         MatcherAssert.assertThat(
             String.format(
