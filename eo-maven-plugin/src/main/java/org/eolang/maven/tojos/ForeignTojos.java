@@ -210,7 +210,7 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
-     * Check if the tojos contains a foreign tojo with given object name.
+     * Check if the tojos contains a foreign tojo with object name.
      * @param name The name of the tojo.
      * @return True if tojo exists.
      */
