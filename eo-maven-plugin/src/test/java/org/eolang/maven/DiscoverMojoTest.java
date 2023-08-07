@@ -123,12 +123,12 @@ final class DiscoverMojoTest {
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
-            tojos.contains(DiscoverMojoTest.TEXT.toString()),
+            tojos.contains(DiscoverMojoTest.TEXT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, stdout),
-            tojos.contains(stdout.toString()),
+            tojos.contains(stdout),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
@@ -166,12 +166,12 @@ final class DiscoverMojoTest {
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
-            tojos.contains(first.toString()),
+            tojos.contains(first),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
-            tojos.contains(second.toString()),
+            tojos.contains(second),
             Matchers.is(true)
         );
     }
@@ -187,12 +187,12 @@ final class DiscoverMojoTest {
         final ObjectName seq = new OnDefault("org.eolang.seq", "6c6269d");
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
-            maven.externalTojos().contains(seq.toString()),
+            maven.externalTojos().contains(seq),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
-            maven.externalTojos().contains(DiscoverMojoTest.TEXT.toString()),
+            maven.externalTojos().contains(DiscoverMojoTest.TEXT),
             Matchers.is(false)
         );
     }

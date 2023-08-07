@@ -161,7 +161,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT.toString()),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -207,7 +207,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT.toString()),
+            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -215,7 +215,7 @@ final class ProbeMojoTest {
                 "Tojos should have contained versioned object %s after probing, but they didn't",
                 text
             ),
-            maven.externalTojos().contains(text.toString()),
+            maven.externalTojos().contains(text),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(

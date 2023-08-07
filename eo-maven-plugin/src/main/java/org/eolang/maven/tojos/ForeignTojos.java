@@ -210,6 +210,15 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
+     * Check if the tojos contains a foreign tojo with given object name.
+     * @param name The name of the tojo.
+     * @return True if tojo exists.
+     */
+    public boolean contains(final ObjectName name) {
+        return this.contains(name.toString());
+    }
+
+    /**
      * Get the size of the tojos.
      * @return The size of the tojos.
      */
