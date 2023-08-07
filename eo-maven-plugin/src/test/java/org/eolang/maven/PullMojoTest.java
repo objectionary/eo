@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
-import org.cactoos.text.Joined;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChPattern;
@@ -39,7 +38,6 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
@@ -72,8 +70,9 @@ final class PullMojoTest {
     /**
      * Versioned source.
      */
-    private static final ObjectName VERSIONED = new OnCached(
-        new OnDefault("%s/org/eolang/io/stdout", new CommitHash.ChConstant("9c93528.eo"))
+    private static final ObjectName VERSIONED = new OnDefault(
+        "%s/org/eolang/io/stdout",
+        "9c93528.eo"
     );
 
     @Test
@@ -180,9 +179,9 @@ final class PullMojoTest {
 
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).with("withVersions", true);
+        final FakeMaven maven = new FakeMaven(temp);
         maven.externalTojos()
-            .add(new OnDefault(PullMojoTest.STDOUT, new CommitHash.ChConstant("9c93528")))
+            .add(new OnDefault(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
         MatcherAssert.assertThat(
@@ -242,12 +241,8 @@ final class PullMojoTest {
             .with("hsh", fourth)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
-        final ObjectName sprintf = new OnCached(
-            new OnDefault("%s/org/eolang/txt/sprintf", new CommitHash.ChConstant("17f8929.eo"))
-        );
-        final ObjectName string = new OnCached(
-            new OnDefault("%s/org/eolang/string", new CommitHash.ChConstant("5f82cc1.eo"))
-        );
+        final ObjectName sprintf = new OnDefault("%s/org/eolang/txt/sprintf", "17f8929.eo");
+        final ObjectName string = new OnDefault("%s/org/eolang/string", "5f82cc1.eo");
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
