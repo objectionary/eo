@@ -25,7 +25,6 @@ package org.eolang.maven.objectionary;
 
 import java.io.IOException;
 import org.cactoos.Input;
-import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.name.ObjectName;
 
 /**

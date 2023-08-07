@@ -23,10 +23,9 @@
  */
 package org.eolang.maven;
 
-import org.eolang.maven.name.ObjectName;
-
 import java.io.File;
 import java.nio.file.Path;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Make the place for the object.

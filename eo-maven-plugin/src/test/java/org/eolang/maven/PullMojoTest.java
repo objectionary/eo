@@ -54,7 +54,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(OnlineCondition.class)
 final class PullMojoTest {
     /**
@@ -183,13 +183,14 @@ final class PullMojoTest {
         maven.externalTojos()
             .add(new OnDefault(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
-        maven.execute(PullMojo.class);
+        maven.with("withVersions", true)
+            .execute(PullMojo.class);
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
+                PullMojoTest.path(PullMojoTest.VERSIONED)
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
     }
@@ -212,9 +213,9 @@ final class PullMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
+                PullMojoTest.path(PullMojoTest.VERSIONED)
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
     }
@@ -246,25 +247,25 @@ final class PullMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
+                PullMojoTest.path(PullMojoTest.VERSIONED)
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(sprintf.toString())
+                PullMojoTest.path(sprintf)
             ),
-            PullMojoTest.exists(temp, sprintf.toString()),
+            PullMojoTest.exists(temp, sprintf),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(string.toString())
+                PullMojoTest.path(string)
             ),
-            PullMojoTest.exists(temp, string.toString()),
+            PullMojoTest.exists(temp, string),
             Matchers.is(true)
         );
     }
@@ -283,11 +284,30 @@ final class PullMojoTest {
     }
 
     /**
+     * Check if the given source file exists in the target directory.
+     * @param temp Test temporary directory.
+     * @param source Source file as object name.
+     * @return If given source file exists.
+     */
+    private static boolean exists(final Path temp, final ObjectName source) {
+        return PullMojoTest.exists(temp, source.toString());
+    }
+
+    /**
      * Format given a source path.
      * @param source Source path.
      * @return Formatted source path.
      */
     private static String path(final String source) {
         return String.format(source, PullMojo.DIR);
+    }
+
+    /**
+     * Format given a source path.
+     * @param source Source path as object name.
+     * @return Formatted source path.
+     */
+    private static String path(final ObjectName source) {
+        return PullMojoTest.path(source.toString());
     }
 }
