@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import org.eolang.maven.VersionsMojo;
 import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -48,7 +49,7 @@ final class OnDefaultTest {
      * Test object.
      */
     private static final String OBJECT = String.join(
-        "|",
+        VersionsMojo.DELIMITER,
         OnDefaultTest.STDOUT,
         OnDefaultTest.HASH
     );
@@ -105,7 +106,7 @@ final class OnDefaultTest {
     @Test
     void buildsFullNameWithGivenDefaultHash() {
         final String built = String.join(
-            "|",
+            VersionsMojo.DELIMITER,
             OnDefaultTest.STDOUT,
             OnDefaultTest.FAKE.value()
         );

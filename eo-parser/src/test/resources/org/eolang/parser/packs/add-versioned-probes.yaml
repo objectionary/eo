@@ -8,7 +8,7 @@ tests:
   - //metas[count(.//meta[head/text()='probe'])=3]
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
   - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage' and part/text()='Q.org.eolang.cage']
-  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage|0.28.10' and part/text()='Q.org.eolang.cage']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage#0.28.10' and part/text()='Q.org.eolang.cage']
 eo: |
   +home https://github.com/objectionary/eo
   +package org.eolang.custom

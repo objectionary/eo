@@ -68,12 +68,17 @@ import org.eolang.maven.util.Home;
  */
 public final class VersionsMojo extends SafeMojo {
     /**
+     * Delimiter between name and hash in EO object name.
+     */
+    public static final String DELIMITER = "#";
+
+    /**
      * Tag pattern.
      */
     private static final Pattern SEMVER = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+");
 
     /**
-     * Commit hashes map.
+     * Commit-hashes map.
      */
     private final Map<String, CommitHash> hashes = new CommitHashesMap();
 

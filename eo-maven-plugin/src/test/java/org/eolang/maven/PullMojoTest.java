@@ -37,6 +37,8 @@ import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -69,7 +71,10 @@ final class PullMojoTest {
     /**
      * Versioned source.
      */
-    private static final String VERSIONED = "%s/org/eolang/io/stdout|9c93528.eo";
+    private static final ObjectName VERSIONED = new OnDefault(
+        "%s/org/eolang/io/stdout",
+        "9c93528.eo"
+    );
 
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
@@ -173,20 +178,19 @@ final class PullMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout|9c93528")
+            .add(new OnDefault(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.execute(PullMojo.class);
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
+                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
             Matchers.is(true)
         );
     }
@@ -210,9 +214,9 @@ final class PullMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
+                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
             Matchers.is(true)
         );
     }
@@ -238,36 +242,36 @@ final class PullMojoTest {
             .with("hsh", third)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
-        final String sprintf = "%s/org/eolang/io/sprintf|17f892.eo";
-        final String string = "%s/org/eolang/string|5f82cc";
+        final ObjectName sprintf = new OnDefault("%s/org/eolang/io/sprintf", "17f892.eo");
+        final ObjectName string = new OnDefault("%s/org/eolang/string", "5f82cc.eo");
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(PullMojoTest.VERSIONED)
+                PullMojoTest.path(PullMojoTest.VERSIONED.toString())
             ),
-            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(sprintf)
+                PullMojoTest.path(sprintf.toString())
             ),
-            PullMojoTest.exists(temp, sprintf),
+            PullMojoTest.exists(temp, sprintf.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
-                PullMojoTest.path(string)
+                PullMojoTest.path(string.toString())
             ),
-            PullMojoTest.exists(temp, string),
+            PullMojoTest.exists(temp, string.toString()),
             Matchers.is(true)
         );
     }
 
     /**
-     * Check if given source files exists in target directory.
+     * Check if the given source file exists in the target directory.
      *
      * @param temp Test temporary directory.
      * @param source Source file.
@@ -280,7 +284,7 @@ final class PullMojoTest {
     }
 
     /**
-     * Format given source path.
+     * Format given a source path.
      * @param source Source path.
      * @return Formatted source path.
      */
