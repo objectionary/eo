@@ -272,6 +272,16 @@ final class PullMojoTest {
 
     /**
      * Check if the given source file exists in the target directory.
+     * @param temp Test temporary directory.
+     * @param source Source file as object name.
+     * @return If given source file exists.
+     */
+    private static boolean exists(final Path temp, final ObjectName source) {
+        return PullMojoTest.exists(temp, source.toString());
+    }
+
+    /**
+     * Check if the given source file exists in the target directory.
      *
      * @param temp Test temporary directory.
      * @param source Source file.
@@ -284,13 +294,12 @@ final class PullMojoTest {
     }
 
     /**
-     * Check if the given source file exists in the target directory.
-     * @param temp Test temporary directory.
-     * @param source Source file as object name.
-     * @return If given source file exists.
+     * Format given a source path.
+     * @param source Source path as object name.
+     * @return Formatted source path.
      */
-    private static boolean exists(final Path temp, final ObjectName source) {
-        return PullMojoTest.exists(temp, source.toString());
+    private static String path(final ObjectName source) {
+        return PullMojoTest.path(source.toString());
     }
 
     /**
@@ -300,14 +309,5 @@ final class PullMojoTest {
      */
     private static String path(final String source) {
         return String.format(source, PullMojo.DIR);
-    }
-
-    /**
-     * Format given a source path.
-     * @param source Source path as object name.
-     * @return Formatted source path.
-     */
-    private static String path(final ObjectName source) {
-        return PullMojoTest.path(source.toString());
     }
 }
