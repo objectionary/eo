@@ -35,7 +35,6 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -55,12 +54,7 @@ final class DiscoverMojoTest {
     /**
      * Text.
      */
-    private static final ObjectName TEXT = new OnCached(
-        new OnDefault(
-            "org.eolang.txt.text",
-            new CommitHash.ChConstant("5f82cc1")
-        )
-    );
+    private static final ObjectName TEXT = new OnDefault("org.eolang.txt.text", "5f82cc1");
 
     /**
      * Default assertion message.
@@ -124,9 +118,7 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final ObjectName stdout = new OnCached(
-            new OnDefault("org.eolang.stdout", new CommitHash.ChConstant("9c93528"))
-        );
+        final ObjectName stdout = new OnDefault("org.eolang.stdout", "9c93528");
         final String nop = "org.eolang.nop";
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
@@ -169,12 +161,8 @@ final class DiscoverMojoTest {
                 "    nop"
             )
             .execute(new FakeMaven.Discover());
-        final ObjectName first = new OnCached(
-            new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.1"))
-        );
-        final ObjectName second = new OnCached(
-            new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.2"))
-        );
+        final ObjectName first = new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.1"));
+        final ObjectName second = new OnDefault("org.eolang.txt.sprintf", hashes.get("0.28.2"));
         final ForeignTojos tojos = maven.externalTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
@@ -196,9 +184,7 @@ final class DiscoverMojoTest {
             .with("hashes", new CommitHashesMap.Fake())
             .withVersionedProgram()
             .execute(new FakeMaven.Discover());
-        final ObjectName seq = new OnCached(
-            new OnDefault("org.eolang.seq", new CommitHash.ChConstant("6c6269d"))
-        );
+        final ObjectName seq = new OnDefault("org.eolang.seq", "6c6269d");
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
             maven.externalTojos().contains(seq.toString()),

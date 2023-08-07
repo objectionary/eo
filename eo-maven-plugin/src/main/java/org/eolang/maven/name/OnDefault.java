@@ -45,6 +45,17 @@ public final class OnDefault implements ObjectName {
 
     /**
      * Ctor.
+     * Please use the constructor for tests only because it can't guarantee
+     * that {@code hash} is actually hash but not a random string.
+     * @param object Object full name with a version or not.
+     * @param hash Default hash is a version in full name is absent.
+     */
+    public OnDefault(final String object, final String hash) {
+        this(object, new CommitHash.ChConstant(hash));
+    }
+
+    /**
+     * Ctor.
      * @param object Object full name with a version or not.
      * @param def Default hash if a version in full name is absent.
      */

@@ -40,7 +40,6 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
@@ -70,9 +69,7 @@ final class ProbeMojoTest {
     /**
      * Stdout.
      */
-    private static final ObjectName STDOUT = new OnCached(
-        new OnDefault("org.eolang.io.stdout", new CommitHash.ChConstant("9c93528"))
-    );
+    private static final ObjectName STDOUT = new OnDefault("org.eolang.io.stdout", "9c93528");
 
     @Test
     @ExtendWith(OnlineCondition.class)
@@ -192,9 +189,7 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final ObjectName number = new OnCached(
-            new OnDefault("org.eolang.txt.text", new CommitHash.ChConstant("5f82cc1"))
-        );
+        final ObjectName text = new OnDefault("org.eolang.txt.text", "5f82cc1");
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
@@ -218,9 +213,9 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should have contained versioned object %s after probing, but they didn't",
-                number
+                text
             ),
-            maven.externalTojos().contains(number.toString()),
+            maven.externalTojos().contains(text.toString()),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
