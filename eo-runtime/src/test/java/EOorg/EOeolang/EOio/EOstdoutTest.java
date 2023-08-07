@@ -66,7 +66,7 @@ public final class EOstdoutTest {
     @StdIo
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte"})
-    public void doesNotPrintTwiceOnIntComparisonMethods(final String method, StdOut out) {
+    public void doesNotPrintTwiceOnIntComparisonMethods(final String method, final StdOut out) {
         final String str = "Hello world";
         new Dataized(
             new PhWith(
@@ -100,7 +100,7 @@ public final class EOstdoutTest {
     @StdIo
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte"})
-    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method, StdOut out) {
+    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method, final StdOut out) {
         final String str = "Hello world";
         new Dataized(
             new PhWith(
