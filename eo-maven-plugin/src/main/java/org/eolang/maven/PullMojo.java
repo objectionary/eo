@@ -113,7 +113,8 @@ public final class PullMojo extends SafeMojo {
                     new OnDefault(tojo.identifier(), this.hsh)
                 )
             );
-            tojo.withSource(this.pull(name).toAbsolutePath()).withHash(name.hash());
+            tojo.withSource(this.pull(name).toAbsolutePath())
+                .withHash(new ChNarrow(name.hash()));
         }
         Logger.info(
             this,
