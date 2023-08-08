@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -86,48 +87,10 @@ public final class VersionsMojo extends SafeMojo {
     void exec() throws IOException {
         if (this.withVersions) {
             final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-            final Path dir = this.targetDir.toPath();
-            final String format = "ver=\"%s\"";
             final int total = new SumOf(
                 new Threads<>(
                     Runtime.getRuntime().availableProcessors(),
-                    new Mapped<>(
-                        tojo -> () -> {
-                            final Path path = tojo.xmir();
-                            final Text source = new UncheckedText(new TextOf(path));
-                            final List<Text> tags = new ListOf<>(
-                                new Mapped<Text>(
-                                    TextOf::new,
-                                    new SetOf<>(
-                                        new Filtered<>(
-                                            ver -> !ver.isEmpty() && SEMVER.matcher(ver).matches(),
-                                            new XMLDocument(path).xpath("//o[@ver]/@ver")
-                                        )
-                                    )
-                                )
-                            );
-                            new Home(dir).save(
-                                new Reduced<>(
-                                    new IterableOf<>(
-                                        new Joined<>(
-                                            source,
-                                            tags
-                                        ).iterator()
-                                    ),
-                                    (src, tag) -> new Replaced(
-                                        src,
-                                        String.format(format, tag.asString()),
-                                        String.format(
-                                            format, this.hashes.get(tag.asString()).value()
-                                        )
-                                    )
-                                ).value(),
-                                dir.relativize(path)
-                            );
-                            return tags.size();
-                        },
-                        tojos
-                    )
+                    new Mapped<>(tojo -> () -> this.replace(tojo.xmir()), tojos)
                 )
             ).intValue();
             if (total > 0) {
@@ -145,5 +108,64 @@ public final class VersionsMojo extends SafeMojo {
                 );
             }
         }
+    }
+
+    /**
+     * Replace all versions with corresponding hashes.
+     * @param xml XMIR doc where to replace.
+     * @return Number of replaced versions.
+     * @throws Exception Is something happened.
+     */
+    private int replace(final Path xml) throws Exception {
+        final List<Text> versions = VersionsMojo.versions(xml);
+        final Path dir = this.targetDir.toPath();
+        final String format = "ver=\"%s\"";
+        new Home(dir).save(
+            new Reduced<>(
+                new IterableOf<>(
+                    new Joined<>(
+                        new UncheckedText(new TextOf(xml)),
+                        versions
+                    ).iterator()
+                ),
+                (src, version) -> new Replaced(
+                    src,
+                    String.format(format, version.asString()),
+                    String.format(format, this.hashes.get(version.asString()).value())
+                )
+            ).value(),
+            dir.relativize(xml)
+        );
+        return versions.size();
+    }
+
+    /**
+     * All versions from XML doc.
+     * @param xml Path to XML doc.
+     * @return List of versions.
+     * @throws FileNotFoundException If XML doc doesn't exist.
+     */
+    private static List<Text> versions(final Path xml) throws FileNotFoundException {
+        return new ListOf<>(
+            new Mapped<Text>(
+                TextOf::new,
+                new SetOf<>(
+                    new Filtered<>(
+                        VersionsMojo::isSemver,
+                        new XMLDocument(xml).xpath("//o[@ver]/@ver")
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * Check if version is a semver version.
+     * <a href="https://semver.org">Check</a>
+     * @param ver String version.
+     * @return True if version is semver, false otherwise.
+     */
+    private static boolean isSemver(final String ver) {
+        return !ver.isEmpty() && VersionsMojo.SEMVER.matcher(ver).matches();
     }
 }
