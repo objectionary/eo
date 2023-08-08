@@ -233,6 +233,4 @@ public final class OptimizeMojo extends SafeMojo {
         );
         return target;
     }
-
-
 }
