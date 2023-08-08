@@ -35,13 +35,9 @@ import java.util.regex.Pattern;
 import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
-import org.cactoos.scalar.Reduced;
-import org.cactoos.set.SetOf;
 import org.cactoos.text.Replaced;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -114,26 +110,22 @@ public final class VersionsMojo extends SafeMojo {
      * Replace all versions with corresponding hashes.
      * @param xml XMIR doc where to replace.
      * @return Number of replaced versions.
-     * @throws Exception Is something happened.
+     * @throws IOException Is something happened.
      */
-    private int replace(final Path xml) throws Exception {
-        final List<Text> versions = VersionsMojo.versions(xml);
+    private int replace(final Path xml) throws IOException {
+        final List<String> versions = VersionsMojo.versions(xml);
         final Path dir = this.targetDir.toPath();
         final String format = "ver=\"%s\"";
+        Text xmir = new UncheckedText(new TextOf(xml));
+        for (final String version : versions) {
+            xmir = new Replaced(
+                xmir,
+                String.format(format, version),
+                String.format(format, this.hashes.get(version).value())
+            );
+        }
         new Home(dir).save(
-            new Reduced<>(
-                new IterableOf<>(
-                    new Joined<>(
-                        new UncheckedText(new TextOf(xml)),
-                        versions
-                    ).iterator()
-                ),
-                (src, version) -> new Replaced(
-                    src,
-                    String.format(format, version.asString()),
-                    String.format(format, this.hashes.get(version.asString()).value())
-                )
-            ).value(),
+            xmir,
             dir.relativize(xml)
         );
         return versions.size();
@@ -145,16 +137,11 @@ public final class VersionsMojo extends SafeMojo {
      * @return List of versions.
      * @throws FileNotFoundException If XML doc doesn't exist.
      */
-    private static List<Text> versions(final Path xml) throws FileNotFoundException {
+    private static List<String> versions(final Path xml) throws FileNotFoundException {
         return new ListOf<>(
-            new Mapped<Text>(
-                TextOf::new,
-                new SetOf<>(
-                    new Filtered<>(
-                        VersionsMojo::isSemver,
-                        new XMLDocument(xml).xpath("//o[@ver]/@ver")
-                    )
-                )
+            new Filtered<>(
+                VersionsMojo::isSemver,
+                new XMLDocument(xml).xpath("//o[@ver]/@ver")
             )
         );
     }
