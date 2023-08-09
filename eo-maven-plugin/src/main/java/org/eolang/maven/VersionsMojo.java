@@ -55,13 +55,6 @@ import org.eolang.maven.util.Home;
  *
  * @see <a href="https://home.objectionary.com/tags.txt">Tags</a>
  * @since 0.29.6
- * @todo #1602:30min Don't rewrite parsed xmir. VersionsMojo is executed right
- *  after ParseMojo and rewrites {@code .xmir} files in "1-parse" directory.
- *  Maybe this is not quite right, because files after parsing should be
- *  untouched. We either should 1) create a new folder where files after
- *  executing VersionsMojo are stored 2) or find another way to catch wrong
- *  versions without touching files in "1-parse" directory 3) or just accept
- *  rewriting files in "1-parse" and don't do anything if is not really critical
  */
 public final class VersionsMojo extends SafeMojo {
     /**
