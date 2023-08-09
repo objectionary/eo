@@ -39,6 +39,7 @@ import org.eolang.maven.hash.CommitHash;
  *  version. In other words this class should replace the behavior of
  *  {@link org.eolang.maven.VersionsMojo} class. When this class is implemented,
  *  remove the {@link org.eolang.maven.VersionsMojo class}.
+ *  Don't forget to add tests for this class.
  */
 public final class OnVersioned implements ObjectName {
 
