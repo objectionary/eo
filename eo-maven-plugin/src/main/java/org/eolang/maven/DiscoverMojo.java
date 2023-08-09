@@ -37,7 +37,6 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnVersioned;
-import org.eolang.maven.name.OnUnversioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
