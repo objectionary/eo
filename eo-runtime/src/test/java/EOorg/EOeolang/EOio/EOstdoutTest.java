@@ -27,14 +27,20 @@
  */
 package EOorg.EOeolang.EOio;
 
+import EOorg.EOeolang.EOseq;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junitpioneer.jupiter.StdIo;
+import org.junitpioneer.jupiter.StdOut;
 
 /**
  * Test case for {@link EOstdout}.
@@ -57,4 +63,70 @@ public final class EOstdoutTest {
         );
     }
 
+    @StdIo
+    @ParameterizedTest
+    @CsvSource({"lt", "gt", "lte", "gte"})
+    public void doesNotPrintTwiceOnIntComparisonMethods(final String method, final StdOut out) {
+        final String str = "Hello world";
+        new Dataized(
+            new PhWith(
+                new PhMethod(
+                    new Data.ToPhi(1L),
+                    method
+                ),
+                0,
+                new PhWith(
+                    new PhWith(
+                        new EOseq(Phi.Φ),
+                        0,
+                        new PhWith(
+                            new EOstdout(Phi.Φ),
+                            "text",
+                            new Data.ToPhi(str)
+                        )
+                    ),
+                    0,
+                    new Data.ToPhi(2L)
+                )
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            out.capturedLines()[0],
+            Matchers.equalTo(str)
+        );
+        out.capturedLines();
+    }
+
+    @StdIo
+    @ParameterizedTest
+    @CsvSource({"lt", "gt", "lte", "gte"})
+    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method, final StdOut out) {
+        final String str = "Hello world";
+        new Dataized(
+            new PhWith(
+                new PhMethod(
+                    new Data.ToPhi(1.0),
+                    method
+                ),
+                0,
+                new PhWith(
+                    new PhWith(
+                        new EOseq(Phi.Φ),
+                        0,
+                        new PhWith(
+                            new EOstdout(Phi.Φ),
+                            "text",
+                            new Data.ToPhi(str)
+                        )
+                    ),
+                    0,
+                    new Data.ToPhi(3.0)
+                )
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            out.capturedLines()[0],
+            Matchers.equalTo(str)
+        );
+    }
 }

@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang.EOio;
 
-import java.io.PrintStream;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
@@ -44,12 +43,6 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "stdout")
 public class EOstdout extends PhDefault {
-
-    /**
-     * Default out.
-     */
-    private static final PrintStream OUT = System.out;
-
     /**
      * Ctor.
      * @param sigma Sigma
@@ -62,7 +55,7 @@ public class EOstdout extends PhDefault {
             new AtComposite(
                 this,
                 rho -> {
-                    EOstdout.OUT.print(
+                    System.out.print(
                         new Param(rho, "text").strong(String.class)
                     );
                     return new Data.ToPhi(true);
