@@ -66,7 +66,7 @@ public final class DiscoverMojo extends SafeMojo {
                     .map(OnVersioned::new)
                     .peek(
                         name -> this.scopedTojos()
-                            .add(name.toString())
+                            .add(name)
                             .withDiscoveredAt(src)
                     ).peek(discovered::add)
                     .count()
