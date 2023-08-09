@@ -35,6 +35,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnVersioned;
+import org.eolang.maven.name.OnUnversioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -54,15 +57,19 @@ public final class DiscoverMojo extends SafeMojo {
     @Override
     public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-        final Collection<String> discovered = new HashSet<>(1);
+        final Collection<ObjectName> discovered = new HashSet<>(1);
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
             tojo.withDiscovered(
                 (int) this.discover(src)
                     .stream()
                     .filter(name -> !name.isEmpty())
-                    .peek(name -> this.scopedTojos().add(name).withDiscoveredAt(src))
-                    .peek(discovered::add)
+                    .map(OnVersioned::new)
+                    .peek(
+                        name -> this.scopedTojos()
+                            .add(name.toString())
+                            .withDiscoveredAt(src)
+                    ).peek(discovered::add)
                     .count()
             );
         }
