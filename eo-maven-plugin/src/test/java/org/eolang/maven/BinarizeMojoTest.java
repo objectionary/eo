@@ -41,13 +41,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link BinarizeMojo}.
  *
  * @since 0.1
- * @todo #1307:30min Resolve flaky tests: 1) {@code savesToCache} on windows CI,
- *  see an example
- *  <a href="https://github.com/objectionary/eo/actions/runs/5713175702/job/
- *  15478085290?pr=2332">here</a>
- *  2) {@code binarizesWithoutErrors}, see an example
- *  <a href="https://github.com/objectionary/eo/actions/runs/5713661855/job/
- *  15479445307?pr=2332">here</a>
  */
 final class BinarizeMojoTest {
 
@@ -64,7 +57,6 @@ final class BinarizeMojoTest {
     @Test
     @Tag("slow")
     @ExtendWith(CargoCondition.class)
-    @Disabled
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
@@ -93,7 +85,6 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
-    @Disabled
     void savesToCache(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
         final Path cache = temp.resolve(".cache");
