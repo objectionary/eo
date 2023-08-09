@@ -41,6 +41,7 @@ create a file `pom.xml` with this content (it's just a sample):
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
             </goals>
           </execution>

@@ -86,8 +86,12 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Whether we should fail on error.
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (15 lines)
      * @since 0.23.0
+     * @todo #1708:30min Move the logic of checking errors and warnings to
+     *  {@link VerifyMojo} and remove the flag "failOnError".
+     *  There are no cases where we really need this flag in our compilation
+     *  process
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(
@@ -208,7 +212,7 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
-     * Make path with optimized XML file after parsing.
+     * Make a path with optimized XML file after parsing.
      *
      * @param xml Optimized xml
      * @param file EO file

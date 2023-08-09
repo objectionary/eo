@@ -187,7 +187,7 @@ public final class FakeMaven {
      * @param mojo Mojo to execute.
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
-     * @throws java.io.IOException If some problem with filesystem have happened.
+     * @throws java.io.IOException If some problem with filesystem has happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
