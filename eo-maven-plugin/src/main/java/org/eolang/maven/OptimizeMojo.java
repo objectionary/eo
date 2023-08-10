@@ -86,7 +86,7 @@ public final class OptimizeMojo extends SafeMojo {
     /**
      * Whether we should fail on error.
      *
-     * @checkstyle MemberNameCheck (15 lines)
+     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.23.0
      */
     @SuppressWarnings("PMD.ImmutableField")
