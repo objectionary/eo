@@ -28,8 +28,10 @@ import org.eolang.maven.hash.CommitHash;
 /**
  * Object name versioned.
  * This is object name that parses raw sting like:
- * - "org.eolang.text#0.1.0" into "org.eolang.text" and "4b19944d86058e3c81e558340a3a13bc335a2b48"
- * - "org.eolang.string#a1b2c3d" into "org.eolang.string" and "be83d9adda4b7c9e670e625fe951c80f3ead4177"
+ * - "org.eolang.text#0.1.0" into "org.eolang.text"
+ *   and "4b19944d86058e3c81e558340a3a13bc335a2b48"
+ * - "org.eolang.string#a1b2c3d" into "org.eolang.string"
+ *   and "be83d9adda4b7c9e670e625fe951c80f3ead4177"
  * Pay attention that versions transformed into hashes.
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
