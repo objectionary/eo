@@ -66,6 +66,25 @@ final class EOcageTest {
         );
     }
 
+    @Test
+    void writesItselfToItself() {
+        final Phi cage = new EOcage(Phi.Φ);
+        EOcageTest.writeTo(
+            cage,
+            new PhWith(
+                new EOcage(Phi.Φ), 0, new Data.ToPhi(1L)
+            )
+        );
+        final Phi first = cage.copy();
+        EOcageTest.writeTo(cage, first);
+        final Phi second = cage.copy();
+        EOcageTest.writeTo(cage, second);
+        MatcherAssert.assertThat(
+            new Dataized(cage).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
     // [] > test
     //   cage 0 > c
     //   [x] > dummy
