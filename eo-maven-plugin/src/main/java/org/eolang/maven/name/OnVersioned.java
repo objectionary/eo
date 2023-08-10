@@ -38,6 +38,11 @@ import org.eolang.maven.hash.CommitHashesMap;
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
+ * @todo #2376:30min Remove VersionsMojo.
+ *  It is not used anymore. Remove it and all its dependencies from all the places.
+ *  Also we need to apply {@link OnVersioned} in {@link org.eolang.maven.DiscoverMojo}
+ *  and replace all the tests from VersionsMojoTest to DiscoverMojoTest.
+ *  Don't forget to remove that puzzle after all.
  */
 public final class OnVersioned implements ObjectName {
 
@@ -46,6 +51,9 @@ public final class OnVersioned implements ObjectName {
      */
     public static final String DELIMITER = "#";
 
+    /**
+     * Default hashes.
+     */
     private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
 
     /**
@@ -57,6 +65,9 @@ public final class OnVersioned implements ObjectName {
      */
     private final String raw;
 
+    /**
+     * All hashes.
+     */
     private final Map<String, ? extends CommitHash> hashes;
 
     /**
@@ -67,19 +78,27 @@ public final class OnVersioned implements ObjectName {
         this(origin, OnVersioned.DEFAULT);
     }
 
-    OnVersioned(final String origin, final Map<String, ? extends CommitHash> all) {
+    /**
+     * Constructor.
+     * @param origin Raw string.
+     * @param all All hashes.
+     */
+    OnVersioned(
+        final String origin,
+        final Map<String, ? extends CommitHash> all
+    ) {
         this.raw = origin;
         this.hashes = all;
     }
 
     @Override
     public String value() {
-        return this.raw.split(OnVersioned.DELIMITER)[0];
+        return this.split()[0];
     }
 
     @Override
     public CommitHash hash() {
-        return this.hashes.get(this.raw.split(OnVersioned.DELIMITER)[1]);
+        return this.hashes.get(this.split()[1]);
     }
 
     @Override
@@ -96,6 +115,14 @@ public final class OnVersioned implements ObjectName {
             result = this.value();
         }
         return result;
+    }
+
+    /**
+     * Split raw string into name and hash.
+     * @return Array of two elements: name and hash.
+     */
+    private String[] split() {
+        return this.raw.split(OnVersioned.DELIMITER);
     }
 }
 
