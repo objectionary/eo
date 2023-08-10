@@ -61,7 +61,7 @@ final class OnVersionedTest {
     void retrievesName(final String expected, final String origin) {
         final OnVersioned name = new OnVersioned(origin);
         MatcherAssert.assertThat(
-            String.format("Can't retrieve object name from versioned object %s", origin),
+            String.format("Can't retrieve object name from %s, versioned object %s", name, origin),
             name.value(),
             Matchers.equalTo(expected)
         );
@@ -91,7 +91,7 @@ final class OnVersionedTest {
     void retrievesHash(final String expected, final String origin) {
         final OnVersioned name = new OnVersioned(origin);
         MatcherAssert.assertThat(
-            String.format("Can't retrieve object hash from versioned object %s", origin),
+            String.format("Can't retrieve object hash from %s versioned object %s", name, origin),
             name.hash().value(),
             Matchers.equalTo(expected)
         );
