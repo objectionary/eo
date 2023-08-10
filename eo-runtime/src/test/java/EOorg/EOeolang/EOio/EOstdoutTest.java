@@ -28,6 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOseq;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -37,18 +39,14 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junitpioneer.jupiter.StdIo;
-import org.junitpioneer.jupiter.StdOut;
 
 /**
  * Test case for {@link EOstdout}.
  *
  * @since 0.1
  */
-@Isolated
 public final class EOstdoutTest {
 
     @Test
@@ -65,10 +63,10 @@ public final class EOstdoutTest {
         );
     }
 
-    @StdIo
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte"})
-    public void doesNotPrintTwiceOnIntComparisonMethods(final String method, final StdOut out) {
+    public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
         new Dataized(
             new PhWith(
@@ -82,7 +80,7 @@ public final class EOstdoutTest {
                         new EOseq(Phi.Φ),
                         0,
                         new PhWith(
-                            new EOstdout(Phi.Φ),
+                            new EOstdout(Phi.Φ, new PrintStream(stream)),
                             "text",
                             new Data.ToPhi(str)
                         )
@@ -93,16 +91,15 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            out.capturedLines()[0],
+            stream.toString(),
             Matchers.equalTo(str)
         );
-        out.capturedLines();
     }
 
-    @StdIo
-    @ParameterizedTest
+    @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method, final StdOut out) {
+    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
         new Dataized(
             new PhWith(
@@ -116,7 +113,7 @@ public final class EOstdoutTest {
                         new EOseq(Phi.Φ),
                         0,
                         new PhWith(
-                            new EOstdout(Phi.Φ),
+                            new EOstdout(Phi.Φ, new PrintStream(stream)),
                             "text",
                             new Data.ToPhi(str)
                         )
@@ -127,7 +124,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            out.capturedLines()[0],
+            stream.toString(),
             Matchers.equalTo(str)
         );
     }
