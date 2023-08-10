@@ -36,8 +36,8 @@ jobs:
       - name: Set Cargo config (Windows)
         if: matrix.os == 'windows-2022'
         run: |
-          echo "[http]" >> .cargo/config.toml
-          echo "multiplexing = false" >> .cargo/config.toml
+          echo "[http]" >> %USERPROFILE%\.cargo\config.toml
+          echo "multiplexing = false" >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
       - run: |
           mkdir -p $CONVERT_PATH
