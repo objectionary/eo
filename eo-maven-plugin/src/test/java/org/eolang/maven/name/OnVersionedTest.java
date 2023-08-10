@@ -100,8 +100,7 @@ final class OnVersionedTest {
     @Test
     @Disabled("Enable when OnVersioned.toString() is implemented properly")
     void convertsToStringWithNonEmptyVersion() {
-        final String string = "org.eolang.string#0.23.17";
-        final OnVersioned name = new OnVersioned(string);
+        final OnVersioned name = new OnVersioned("org.eolang.string#0.23.17");
         MatcherAssert.assertThat(
             String.format("Can't convert versioned object %s to string", name),
             name.toString(),
