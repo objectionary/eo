@@ -112,7 +112,7 @@ public final class DiscoverMojo extends SafeMojo {
     }
 
     /**
-     * Get unique list of object names from given XML.
+     * Get a unique list of object names from given XML.
      * @param xml XML.
      * @return Object names.
      */
@@ -122,15 +122,17 @@ public final class DiscoverMojo extends SafeMojo {
                 obj -> !obj.isEmpty(),
                 xml.xpath(
                     String.join(
-                        " ",
+                        "",
                         "//o[",
                         "not(starts-with(@base,'.'))",
-                        "and @base != 'Q'",
-                        "and @base != '^'",
-                        "and @base != '$'",
-                        "and @base != '&'",
-                        "and not(@ref)",
-                        "]/string-join((@base, @ver),'|')"
+                        " and @base != 'Q'",
+                        " and @base != '^'",
+                        " and @base != '$'",
+                        " and @base != '&'",
+                        " and not(@ref)",
+                        "]/string-join((@base, @ver),'",
+                        VersionsMojo.DELIMITER,
+                        "')"
                     )
                 )
             )

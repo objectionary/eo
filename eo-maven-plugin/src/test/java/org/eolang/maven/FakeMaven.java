@@ -323,6 +323,20 @@ public final class FakeMaven {
     }
 
     /**
+     * Add correct versioned 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedHelloWorld() throws IOException {
+        return this.withProgram(
+            "+package f\n",
+            "[] > main",
+            "  QQ.io.stdout|0.28.5 > @",
+            "    \"Hello world\""
+        );
+    }
+
+    /**
      * Add correct versioned program to workspace.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
@@ -751,6 +765,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class,

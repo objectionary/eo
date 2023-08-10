@@ -30,6 +30,9 @@ import java.nio.file.Path;
  * parameters.
  *
  * @since 0.28.14
+ * @todo #2299:30min Do we really need the class? It seems it's used only for
+ *  the test purposes but with last updates it is no longer of value. Also it
+ *  assumes that any of its arguments may be null which is a doubtful design
  */
 public final class ChCompound implements CommitHash {
 

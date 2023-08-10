@@ -30,9 +30,14 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -94,12 +99,22 @@ public final class PullMojo extends SafeMojo {
     @Override
     public void exec() throws IOException {
         if (this.hsh == null) {
-            this.hsh = new ChRemote(this.tag);
+            this.hsh = new ChCached(
+                new ChNarrow(
+                    new ChRemote(this.tag)
+                )
+            );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
         for (final ForeignTojo tojo : tojos) {
-            tojo.withSource(this.pull(tojo.identifier()).toAbsolutePath())
-                .withHash(new ChNarrow(this.hsh));
+            final ObjectName name = new OnCached(
+                new OnSwap(
+                    this.withVersions,
+                    new OnDefault(tojo.identifier(), this.hsh)
+                )
+            );
+            tojo.withSource(this.pull(name).toAbsolutePath())
+                .withHash(new ChNarrow(name.hash()));
         }
         Logger.info(
             this,
@@ -111,28 +126,28 @@ public final class PullMojo extends SafeMojo {
     /**
      * Pull one object.
      *
-     * @param name Name of the object, e.g. "org.eolang.io.stdout"
+     * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout#5f82cc1"
      * @return The path of .eo file
      * @throws IOException If fails
      */
-    private Path pull(final String name) throws IOException {
+    private Path pull(final ObjectName object) throws IOException {
         final Path dir = this.targetDir.toPath().resolve(PullMojo.DIR);
-        final Path src = new Place(name).make(
+        final Path src = new Place(object).make(
             dir, "eo"
         );
         if (src.toFile().exists() && !this.overWrite) {
             Logger.debug(
                 this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                name, new Rel(src)
+                object, new Rel(src)
             );
         } else {
             new Home(dir).save(
-                this.objectionaries.object(this.hsh, name),
+                this.objectionaries.object(object),
                 dir.relativize(src)
             );
             Logger.debug(
                 this, "The sources of the object '%s' pulled to %s",
-                name, new Rel(src)
+                object, new Rel(src)
             );
         }
         return src;

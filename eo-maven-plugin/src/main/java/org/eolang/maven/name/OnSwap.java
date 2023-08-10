@@ -30,7 +30,7 @@ import org.eolang.maven.hash.CommitHash;
 /**
  * Swapped object name.
  * Depends on encapsulated condition behaves like one of the encapsulated object names.
- * If second object is not provided - behaves like {@link OnUnversioned}
+ * If a second object is not provided - behaves like {@link OnUnversioned}
  *
  * @since 0.29.6
  * @todo #2328:30min Inline code in {@code toString()} method. For some reason

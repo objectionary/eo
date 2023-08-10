@@ -28,13 +28,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -48,37 +54,43 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(OnlineCondition.class)
 final class PullMojoTest {
+    /**
+     * Stdout.
+     */
+    private static final String STDOUT = "org.eolang.io.stdout";
+
+    /**
+     * Stdout source.
+     */
+    private static final String SOURCE = "%s/org/eolang/io/stdout.eo";
+
+    /**
+     * Versioned source.
+     */
+    private static final ObjectName VERSIONED = new OnDefault(
+        "%s/org/eolang/io/stdout",
+        "9c93528.eo"
+    );
 
     @Test
     void pullsSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with("objectionary", new Objectionary.Fake())
-            .with("skip", false)
+        maven.with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
             Matchers.is(true)
         );
     }
 
     @Test
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
-        final Objectionary objectionary = new OyRemote(
-            new ChCompound(null, null, "master")
-        );
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom",
@@ -90,17 +102,17 @@ final class PullMojoTest {
                 "        1337",
                 "        228"
             )
-            .with("objectionary", objectionary)
-            .execute(new FakeMaven.Pull());
-        MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
+            .with(
+                "objectionaries",
+                new Objectionaries.Fake(
+                    new OyRemote(
+                        new ChCompound(null, null, "master")
                     )
                 )
-            ),
+            )
+            .execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
             Matchers.is(true)
         );
     }
@@ -111,15 +123,15 @@ final class PullMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
-        final CommitHash hash = new ChCached(
-            new ChText(temp.resolve("tags.txt"), "master")
-        );
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with("hsh", hash)
-            .with("skip", false)
+        maven.with("skip", false)
+            .with(
+                "hsh",
+                new ChCached(new ChText(temp.resolve("tags.txt"), "master"))
+            )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
@@ -135,14 +147,14 @@ final class PullMojoTest {
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        final CommitHash hash = new ChCached(
-            new ChPattern("*.*.*:abcdefg", "1.0.0")
-        );
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with("hsh", hash)
-            .with("skip", false)
+        maven.with("skip", false)
+            .with(
+                "hsh",
+                new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
+            )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
@@ -154,22 +166,148 @@ final class PullMojoTest {
     void skipsPullMojo(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.foreignTojos()
-            .add("org.eolang.io.stdout")
+            .add(PullMojoTest.STDOUT)
             .withScope("compile")
             .withVersion("*.*.*");
         maven.with("skip", true)
-            .with("objectionary", new Objectionary.Fake())
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            new Home(temp.resolve("target")).exists(
-                Paths.get(
-                    String.format(
-                        "%s/org/eolang/io/stdout.eo",
-                        PullMojo.DIR
-                    )
-                )
-            ),
+            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
             Matchers.is(false)
         );
+    }
+
+    @Test
+    void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.externalTojos()
+            .add(new OnDefault(PullMojoTest.STDOUT, "9c93528"))
+            .withVersion("*.*.*");
+        maven.with("withVersions", true)
+            .execute(PullMojo.class);
+        MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void pullsProbedVersionedObjectFromOneObjectionary(@TempDir final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .with("withVersions", true)
+            .with(
+                "objectionaries",
+                new Objectionaries.Fake(
+                    new OyRemote(
+                        new ChCached(new CommitHashesMap.Fake().get("0.28.5"))
+                    )
+                )
+            )
+            .withVersionedHelloWorld()
+            .execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void pullsProbedVersionedObjectsFromDifferentObjectionaries(@TempDir final Path temp)
+        throws IOException {
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
+        final CommitHash first = hashes.get("0.28.4");
+        final CommitHash second = hashes.get("0.28.5");
+        final CommitHash third = hashes.get("0.28.6");
+        final CommitHash fourth = hashes.get("0.28.7");
+        new FakeMaven(temp)
+            .with(
+                "objectionaries",
+                new ObjsDefault(
+                    new MapEntry<>(first, new OyRemote(first)),
+                    new MapEntry<>(second, new OyRemote(second)),
+                    new MapEntry<>(third, new OyRemote(third)),
+                    new MapEntry<>(fourth, new OyRemote(fourth))
+                )
+            )
+            .with("withVersions", true)
+            .with("hsh", fourth)
+            .withVersionedProgram()
+            .execute(new FakeMaven.Pull());
+        final ObjectName sprintf = new OnDefault("%s/org/eolang/txt/sprintf", "17f8929.eo");
+        final ObjectName string = new OnDefault("%s/org/eolang/string", "5f82cc1.eo");
+        MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(PullMojoTest.VERSIONED)
+            ),
+            PullMojoTest.exists(temp, PullMojoTest.VERSIONED),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(sprintf)
+            ),
+            PullMojoTest.exists(temp, sprintf),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "File by path %s should have existed after pulling, but it didn't",
+                PullMojoTest.path(string)
+            ),
+            PullMojoTest.exists(temp, string),
+            Matchers.is(true)
+        );
+    }
+
+    /**
+     * Check if the given source file exists in the target directory.
+     * @param temp Test temporary directory.
+     * @param source Source file as object name.
+     * @return If given source file exists.
+     */
+    private static boolean exists(final Path temp, final ObjectName source) {
+        return PullMojoTest.exists(temp, source.toString());
+    }
+
+    /**
+     * Check if the given source file exists in the target directory.
+     *
+     * @param temp Test temporary directory.
+     * @param source Source file.
+     * @return If given source file exists.
+     */
+    private static boolean exists(final Path temp, final String source) {
+        return new Home(temp.resolve("target")).exists(
+            Paths.get(PullMojoTest.path(source))
+        );
+    }
+
+    /**
+     * Format given a source path.
+     * @param source Source path as object name.
+     * @return Formatted source path.
+     */
+    private static String path(final ObjectName source) {
+        return PullMojoTest.path(source.toString());
+    }
+
+    /**
+     * Format given a source path.
+     * @param source Source path.
+     * @return Formatted source path.
+     */
+    private static String path(final String source) {
+        return String.format(source, PullMojo.DIR);
     }
 }

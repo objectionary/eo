@@ -95,16 +95,9 @@ SOFTWARE.
     <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:oneOrMore">
-    <xsl:if test="count(g:*) &gt; 1">
-      <xsl:text> ( </xsl:text>
-    </xsl:if>
-    <xsl:apply-templates select="g:*"/>
-    <xsl:if test="count(g:*) &gt; 1">
-      <xsl:text> ) </xsl:text>
-    </xsl:if>
     <xsl:text> { </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text> } </xsl:text>
+    <xsl:text> }+ </xsl:text>
   </xsl:template>
   <xsl:template match="g:sequence">
     <xsl:if test="count(g:*) &gt; 1">
