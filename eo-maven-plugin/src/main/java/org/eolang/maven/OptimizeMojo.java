@@ -209,7 +209,7 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
-     * Make path with optimized XML file after parsing.
+     * Make a path with optimized XML file after parsing.
      *
      * @param xml Optimized xml
      * @param file EO file
