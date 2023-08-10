@@ -29,26 +29,24 @@
 
 [] > writes-into-cage
   [z] > a
-  cage 0 > x
-  nop > @
-    assert-that
-      seq
-        x.write
-          a 7
-        x.z
-      $.equal-to 7
+  cage a > x
+  assert-that > @
+    seq
+      x.write
+        a 7
+      x.z
+    $.equal-to 7
 
 [] > avoid-infinite-loop
   cage 0 > x
   x' > copy
-  nop > @
-    assert-that
-      seq
-        x.write 42
-        copy.<
-        x.write (7.plus copy)
-        x
-      $.equal-to 49
+  assert-that > @
+    seq
+      x.write 42
+      copy.<
+      x.write (7.plus copy)
+      x
+    $.equal-to 49
 
 [] > avoid-infinite-loop-second-case
   [first second] > pair

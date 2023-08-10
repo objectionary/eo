@@ -38,7 +38,6 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -75,21 +74,6 @@ final class EOcageTest {
         MatcherAssert.assertThat(
             new Dataized(cage.attr("ν").get()).take(Long.class),
             Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
-    @Disabled
-    void writesItselfToItself() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
-        final Phi first = cage.copy();
-        EOcageTest.writeTo(cage, first);
-        final Phi second = cage.copy();
-        EOcageTest.writeTo(cage, second);
-        MatcherAssert.assertThat(
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(1L)
         );
     }
 
@@ -139,7 +123,6 @@ final class EOcageTest {
     }
 
     @Test
-    @Disabled
     void overwritesCagedObject() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
@@ -153,10 +136,16 @@ final class EOcageTest {
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
-        EOcageTest.writeTo(cage, new Data.ToPhi(0L));
+        EOcageTest.writeTo(
+            cage,
+            new PhWith(
+                new EOcageTest.Dummy(Phi.Φ),
+                0, new Data.ToPhi(2L)
+            )
+        );
         MatcherAssert.assertThat(
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(0L)
+            new Dataized(new PhMethod(cage, "x")).take(Long.class),
+            Matchers.equalTo(2L)
         );
     }
 
