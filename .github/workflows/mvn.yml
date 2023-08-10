@@ -37,7 +37,7 @@ jobs:
       # when running on Windows OS. For example like this one:
       # - https://github.com/objectionary/eo/issues/2336
       # The step disables http multiplexing in Cargo which cause some problems
-      #on Windows OS.
+      # on Windows OS.
       # You can read more about multiplexing right here
       # - https://stackoverflow.com/questions/36517829/what-does-multiplexing-mean-in-http-2
       # Multiplexing in Rust:
