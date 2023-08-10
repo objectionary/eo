@@ -44,17 +44,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOcage}.
  *
  * @since 0.19
- * @todo #1307:30min Refactor and enable cage tests. Since object {@link EOcage}
- *  prohibit writing objects of different types to itself (for more information
- *  see <a href="https://github.com/objectionary/eo/issues/1307">the ticket</a>)
- *  some of its tests were disabled because they fail. Need to resolve them and
- *  enable. List of disabled tests: EOcageTest.overwritesCagedObject,
- *  EOcageTest.writesItselfToItself, avoid-infinite-loop, cage-nested-objects,
- *  avoid-infinite-loop-second-case, dataizes-encaged-object-lazily-first,
- *  calling-caged-function, dataizes-encaged-object-lazily-second,
- *  dataizes-encaged-object-lazily-third. infinite-loop-checkt,
- *  overwrites-caged-object-with-integer, rho-of-add-should-not-change,
- *  stores-abstract-object-into-cage, writes-into-cage.
  */
 final class EOcageTest {
 
