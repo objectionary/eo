@@ -88,10 +88,6 @@ public final class OptimizeMojo extends SafeMojo {
      *
      * @checkstyle MemberNameCheck (15 lines)
      * @since 0.23.0
-     * @todo #1708:30min Move the logic of checking errors and warnings to
-     *  {@link VerifyMojo} and remove the flag "failOnError".
-     *  There are no cases where we really need this flag in our compilation
-     *  process
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(
