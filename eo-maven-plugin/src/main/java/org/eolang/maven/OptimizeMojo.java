@@ -152,11 +152,12 @@ public final class OptimizeMojo extends SafeMojo {
             src
         );
         return () -> {
-            final XML optimized = this.optimization(tojo, common)
-                .apply(new XMLDocument(src));
-            if (this.shouldPass(optimized)) {
-                tojo.withOptimized(this.make(optimized, src).toAbsolutePath());
-            }
+            tojo.withOptimized(
+                this.make(
+                    this.optimization(tojo, common).apply(new XMLDocument(src)),
+                    src
+                ).toAbsolutePath()
+            );
             return 1;
         };
     }
@@ -231,15 +232,5 @@ public final class OptimizeMojo extends SafeMojo {
             new Rel(file), name, new Rel(target)
         );
         return target;
-    }
-
-    /**
-     * Should optimization steps pass without errors.
-     *
-     * @param xml Optimized xml
-     * @return Should fail
-     */
-    private boolean shouldPass(final XML xml) {
-        return xml.nodes("/program/errors/error").isEmpty() || this.failOnError;
     }
 }
