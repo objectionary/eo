@@ -23,15 +23,17 @@
  */
 package org.eolang.maven.name;
 
+import java.util.Map;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
 
 /**
  * Object name versioned.
  * This is object name that parses raw sting like:
  * - "org.eolang.text#0.1.0" into "org.eolang.text"
- *   and "4b19944d86058e3c81e558340a3a13bc335a2b48"
+ *   and "4b19944"
  * - "org.eolang.string#a1b2c3d" into "org.eolang.string"
- *   and "be83d9adda4b7c9e670e625fe951c80f3ead4177"
+ *   and "be83d9a"
  * Pay attention that versions transformed into hashes.
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
@@ -46,6 +48,13 @@ import org.eolang.maven.hash.CommitHash;
 public final class OnVersioned implements ObjectName {
 
     /**
+     * Delimiter between name and hash in EO object name.
+     */
+    public static final String DELIMITER = "#";
+
+    private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
+
+    /**
      * Raw string.
      * Examples:
      * - "org.eolang.text#0.1.0"
@@ -54,30 +63,45 @@ public final class OnVersioned implements ObjectName {
      */
     private final String raw;
 
+    private final Map<String, ? extends CommitHash> hashes;
+
     /**
      * Constructor.
      * @param origin Raw string.
      */
     public OnVersioned(final String origin) {
+        this(origin, OnVersioned.DEFAULT);
+    }
+
+    OnVersioned(final String origin, final Map<String, ? extends CommitHash> all) {
         this.raw = origin;
+        this.hashes = all;
     }
 
     @Override
     public String value() {
-        throw new UnsupportedOperationException(
-            "This 'value()' method is not supported for OnVersioned yet"
-        );
+        return this.raw.split(OnVersioned.DELIMITER)[0];
     }
 
     @Override
     public CommitHash hash() {
-        throw new UnsupportedOperationException(
-            "The 'hash()' method is not supported for OnVersioned yet"
-        );
+        return this.hashes.get(this.raw.split(OnVersioned.DELIMITER)[1]);
     }
 
     @Override
     public String toString() {
-        return this.raw;
+        final String result;
+        if (this.raw.contains(OnVersioned.DELIMITER)) {
+            result = String.join(
+                "",
+                this.value(),
+                OnVersioned.DELIMITER,
+                this.hash().value()
+            );
+        } else {
+            result = this.value();
+        }
+        return result;
     }
 }
+

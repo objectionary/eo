@@ -137,7 +137,7 @@ public final class DiscoverMojo extends SafeMojo {
                         " and @base != '&'",
                         " and not(@ref)",
                         "]/string-join((@base, @ver),'",
-                        VersionsMojo.DELIMITER,
+                        OnVersioned.DELIMITER,
                         "')"
                     )
                 )

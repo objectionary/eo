@@ -57,10 +57,6 @@ import org.eolang.maven.util.Home;
  * @since 0.29.6
  */
 public final class VersionsMojo extends SafeMojo {
-    /**
-     * Delimiter between name and hash in EO object name.
-     */
-    public static final String DELIMITER = "#";
 
     /**
      * Tag pattern.

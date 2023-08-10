@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.eolang.maven.VersionsMojo;
 import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,12 +37,12 @@ class OnSwapTest {
     /**
      * First.
      */
-    private static final String FIRST = String.join(VersionsMojo.DELIMITER, "stdout", "1234567");
+    private static final String FIRST = String.join(OnVersioned.DELIMITER, "stdout", "1234567");
 
     /**
      * Second.
      */
-    private static final String SECOND = String.join(VersionsMojo.DELIMITER, "sprintf", "7654321");
+    private static final String SECOND = String.join(OnVersioned.DELIMITER, "sprintf", "7654321");
 
     /**
      * Fake hash.
