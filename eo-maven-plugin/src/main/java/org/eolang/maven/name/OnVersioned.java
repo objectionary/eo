@@ -38,12 +38,6 @@ import org.eolang.maven.hash.CommitHashesMap;
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
- * @todo #2281:30min Implement OnVersioned class.
- *  This class should parse raw string into object name and hash from object name with semver
- *  version. In other words this class should replace the behavior of
- *  {@link org.eolang.maven.VersionsMojo} class. When this class is implemented,
- *  remove the {@link org.eolang.maven.VersionsMojo class}.
- *  Don't forget to add tests for this class.
  */
 public final class OnVersioned implements ObjectName {
 
