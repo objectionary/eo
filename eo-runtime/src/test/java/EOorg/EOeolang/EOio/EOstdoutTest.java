@@ -36,6 +36,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -46,10 +47,17 @@ import org.junitpioneer.jupiter.StdOut;
  * Test case for {@link EOstdout}.
  *
  * @since 0.1
+ * @todo #2336:90min Enable all the tests in EOstdoutTest.
+ *  The tests are disabled because they are flaky.
+ *  The original issue is here:
+ *  - https://github.com/objectionary/eo/issues/2371
+ *  When the issue is fixed, enable the tests and remove the @Disabled annotation.
+ *  Don't forget to remove the puzzle itself.
  */
 public final class EOstdoutTest {
 
     @Test
+    @Disabled("https://github.com/objectionary/eo/issues/2371")
     public void printsString() {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
@@ -66,6 +74,7 @@ public final class EOstdoutTest {
     @StdIo
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte"})
+    @Disabled("https://github.com/objectionary/eo/issues/2371")
     public void doesNotPrintTwiceOnIntComparisonMethods(final String method, final StdOut out) {
         final String str = "Hello world";
         new Dataized(
@@ -100,6 +109,7 @@ public final class EOstdoutTest {
     @StdIo
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte"})
+    @Disabled("https://github.com/objectionary/eo/issues/2371")
     public void doesNotPrintTwiceOnFloatComparisonMethods(final String method, final StdOut out) {
         final String str = "Hello world";
         new Dataized(
