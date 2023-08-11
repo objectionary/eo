@@ -140,8 +140,8 @@ final class XMIRTest {
             new String(Files.readAllBytes(target), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("<byte> := /[0-9A-F]/ /[0-9A-F]/ \\\\"),
-                Matchers.containsString("<string> := 'DQ' "),
-                Matchers.containsString("<text> := 'DQ' 'DQ' 'DQ' ")
+                Matchers.containsString("<string> := 'DQ' {"),
+                Matchers.containsString("<text> := 'DQ' 'DQ' 'DQ' [")
             )
         );
     }

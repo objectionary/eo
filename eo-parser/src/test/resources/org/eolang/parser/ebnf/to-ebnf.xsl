@@ -128,9 +128,12 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="g:string">
-    <xsl:for-each select="tokenize(., '&quot;')">
+    <xsl:for-each select="tokenize(., '(?=&quot;)', ';j')">
       <xsl:choose>
         <xsl:when test=". = ''">
+          <!-- ignore it -->
+        </xsl:when>
+        <xsl:when test=". = '&quot;'">
           <xsl:text> 'DQ' </xsl:text>
         </xsl:when>
         <xsl:otherwise>
