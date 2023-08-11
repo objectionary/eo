@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.eolang.maven.VersionsMojo;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -77,7 +76,7 @@ public final class OnDefault implements ObjectName {
     @Override
     public String toString() {
         return String.join(
-            VersionsMojo.DELIMITER,
+            OnVersioned.DELIMITER,
             this.split()[0],
             this.split()[1]
         );
@@ -88,7 +87,7 @@ public final class OnDefault implements ObjectName {
      * @return Split object to name and hash.
      */
     private String[] split() {
-        String[] splt = this.object.split(VersionsMojo.DELIMITER);
+        String[] splt = this.object.split(OnVersioned.DELIMITER);
         if (splt.length == 1) {
             splt = new String[]{splt[0], this.hsh.value()};
         }

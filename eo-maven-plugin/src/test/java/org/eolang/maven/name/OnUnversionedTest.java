@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.name;
 
-import org.eolang.maven.VersionsMojo;
 import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +37,7 @@ final class OnUnversionedTest {
     @Test
     void returnsFullNameWithVersions() {
         final String stdout = "stdout";
-        final String object = String.join(VersionsMojo.DELIMITER, stdout, "1234567");
+        final String object = String.join(OnVersioned.DELIMITER, stdout, "1234567");
         MatcherAssert.assertThat(
             String.format(
                 "Unversioned object %s as string should have been equal to %s, but it didn't",
