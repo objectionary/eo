@@ -251,11 +251,12 @@ public final class TranspileMojo extends SafeMojo {
      * generated sources. In other words, if generated-sources (or generated-test-sources) folder
      * has java classes, we expect that they will be only compiled from that folder.
      * _____
-     * Synchronization in this method is needed to prevent AccessDeniedException on
-     * Windows OS. You can read more about original problem in that issue:
+     * Synchronization in this method is necessary to prevent
+     * {@link java.nio.file.AccessDeniedException} on the Windows OS.
+     * You can read more about the original problem in the following issue:
      * - <a href="https://github.com/objectionary/eo/issues/2370">issue link</a>
-     * In other words concurrent deletion of files on Windows OS can cause
-     * AccessDeniedException which can crash the build.
+     * In other words, concurrent file deletions on the Windows OS can lead to an
+     * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
      * @param java The list of java files.
      */
