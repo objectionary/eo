@@ -36,8 +36,7 @@ SOFTWARE.
     <xsl:variable name="r7" select="replace($r6, '\$', '\\textdollar')"/>
     <xsl:variable name="r8" select="replace($r7, '#', '\\#')"/>
     <xsl:variable name="r9" select="replace($r8, '_', '\\_')"/>
-    <xsl:variable name="r10" select="replace($r9, '&quot;', '\\lq\\lq')"/>
-    <xsl:value-of select="$r10"/>
+    <xsl:value-of select="$r9"/>
   </xsl:function>
   <xsl:function name="eo:term" as="xs:string">
     <xsl:param name="t" as="xs:string"/>
@@ -129,9 +128,18 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="g:string">
-    <xsl:text> "</xsl:text>
-    <xsl:value-of select="eo:escape(text())"/>
-    <xsl:text>" </xsl:text>
+    <xsl:for-each select="tokenize(., '&quot;')">
+      <xsl:choose>
+        <xsl:when test=". = ''">
+          <xsl:text> 'DQ' </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> "</xsl:text>
+          <xsl:value-of select="eo:escape(.)"/>
+          <xsl:text>" </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="g:complement">
     <xsl:apply-templates select="g:*"/>
