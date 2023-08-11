@@ -250,6 +250,13 @@ public final class TranspileMojo extends SafeMojo {
      * In order to prevent this, we remove all classes that have the java analog in the
      * generated sources. In other words, if generated-sources (or generated-test-sources) folder
      * has java classes, we expect that they will be only compiled from that folder.
+     * _____
+     * Synchronization in this method is needed to prevent AccessDeniedException on
+     * Windows OS. You can read more about original problem in that issue:
+     * - <a href="https://github.com/objectionary/eo/issues/2370">issue link</a>
+     * In other words concurrent deletion of files on Windows OS can cause
+     * AccessDeniedException which can crash the build.
+     * _____
      * @param java The list of java files.
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
@@ -260,7 +267,9 @@ public final class TranspileMojo extends SafeMojo {
             .collect(Collectors.toSet());
         for (final Path binary : unexpected) {
             try {
-                Files.deleteIfExists(binary);
+                synchronized (TranspileMojo.class) {
+                    Files.deleteIfExists(binary);
+                }
             } catch (final IOException cause) {
                 throw new IllegalStateException(
                     String.format("Can't delete file %s", binary),
