@@ -48,10 +48,15 @@ import org.eolang.maven.hash.CommitHashesMap;
  *  - {@link org.eolang.maven.DiscoverMojoTest#discoversWithSeveralObjectsWithDifferentVersions()}
  *  - {@link org.eolang.maven.DiscoverMojoTest#discoversWithVersions()}
  *  Don't forget to remove that puzzle after all.
- * @todo #2376:90min Choose correct DELIMITER for a version.
- *  I tried to apply # delimiter everywhere and failed because we use hash (#) for comments.
- *  Hence, it conflicts with the new delimiter. We need to choose another delimiter character
- *  and replace all the places where we use the old delimiters | and # with the new one.
+ * @todo #2376:90min Frontend and backend delimiters differ.
+ *  I was confused with the delimiter '#' that we use in {@link OnVersioned} and delimiter which
+ *  we use in the frontend. For example:
+ *  - "org.eolang.text|0.1.0" - frontend
+ *  - "org.eolang.text#0.1.0" - backend
+ *  The problem here is that we use  the '|' delimiter on the frontend and '#' in the backend, but
+ *  both of them mean the same thing - object name + version.
+ *  I believe that we need to use the same symbol in both places, because it will be easier to
+ *  understand the code. So, my suggestion to use '|' in both places.
  */
 public final class OnVersioned implements ObjectName {
 
