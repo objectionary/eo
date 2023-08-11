@@ -252,11 +252,6 @@ public final class TranspileMojo extends SafeMojo {
      * generated sources. In other words, if generated-sources (or generated-test-sources) folder
      * has java classes, we expect that they will be only compiled from that folder.
      * @param java The list of java files.
-     * @todo #2281:90min Remove AccessDeniedException catch block from cleanUpClasses method.
-     *  This catch block was added to prevent the build from failing when the file can't be
-     *  deleted due to access denied. This is a temporary solution and should be removed when
-     *  the root cause of the problem is found.
-     *  See <a href="https://github.com/objectionary/eo/issues/2370">issue.</a>
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
@@ -267,11 +262,6 @@ public final class TranspileMojo extends SafeMojo {
         for (final Path binary : unexpected) {
             try {
                 Files.deleteIfExists(binary);
-            } catch (final AccessDeniedException ignore) {
-                Logger.warn(
-                    this,
-                    String.format("Can't delete file %s due to access denied", binary)
-                );
             } catch (final IOException cause) {
                 throw new IllegalStateException(
                     String.format("Can't delete file %s", binary),
