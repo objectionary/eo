@@ -259,6 +259,12 @@ public final class TranspileMojo extends SafeMojo {
      * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
      * @param java The list of java files.
+     * @todo #2375:90min. Add concurrency tests for the TranspileMojo.cleanUpClasses method.
+     *  We should be sure that the method works correctly in a concurrent environment.
+     *  In order to do so we should add a test that will run the cleanUpClasses method in
+     *  multiple threads and check that the method works correctly without exceptions.
+     *  We can apply the same approach as mentioned in that post:
+     *  <a href="https://www.yegor256.com/2018/03/27/how-to-test-thread-safety.html">Post</a>
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
