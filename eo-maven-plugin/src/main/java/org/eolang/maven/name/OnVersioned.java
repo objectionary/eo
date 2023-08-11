@@ -38,11 +38,20 @@ import org.eolang.maven.hash.CommitHashesMap;
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
- * @todo #2376:30min Remove VersionsMojo.
+ * @todo #2376:90min Remove VersionsMojo.
  *  It is not used anymore. Remove it and all its dependencies from all the places.
- *  Also we need to apply {@link OnVersioned} in {@link org.eolang.maven.DiscoverMojo}
+ *  We need to apply {@link OnVersioned} in {@link org.eolang.maven.DiscoverMojo}
  *  and replace all the tests from VersionsMojoTest to DiscoverMojoTest.
+ *  Also we need to enable the next tests:
+ *  - {@link org.eolang.maven.ProbeMojoTest#findsProbesWithVersionsInDifferentObjectionaries()}
+ *  - {@link org.eolang.maven.PullMojoTest#pullsProbedVersionedObjectsFromDifferentObjectionaries()}
+ *  - {@link org.eolang.maven.DiscoverMojoTest#discoversWithSeveralObjectsWithDifferentVersions()}
+ *  - {@link org.eolang.maven.DiscoverMojoTest#discoversWithVersions()}
  *  Don't forget to remove that puzzle after all.
+ * @todo #2376:90min Choose correct DELIMITER for a version.
+ *  I tried to apply # delimiter everywhere and failed because we use hash (#) for comments.
+ *  Hence, it conflicts with the new delimiter. We need to choose another delimiter character
+ *  and replace all the places where we use the old delimiters | and # with the new one.
  */
 public final class OnVersioned implements ObjectName {
 
