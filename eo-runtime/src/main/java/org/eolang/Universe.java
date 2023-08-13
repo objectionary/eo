@@ -61,14 +61,22 @@ public class Universe {
      * @return Vertex of the object to find.
      */
     public int find(final String name) {
-        Phi accum = this.connector;
-        final String atts[] = Universe.replace(name)
-            .split("\\.");
-        for (final String att: atts) {
-            accum = accum.attr(att).get();
+        System.out.println("find");
+        try {
+            Phi accum = this.connector;
+            final String atts[] = Universe.replace(name)
+                .split("\\.");
+            for (final String att: atts) {
+                accum = accum.attr(att).get();
+            }
+            this.indexed.putIfAbsent(accum.hashCode(), accum);
+            System.out.printf("Returning " + accum.hashCode());
+            return accum.hashCode();
+        } catch (RuntimeException throwable) {
+            System.out.println("Returning -1");
+            throwable.printStackTrace(System.out);
+            return -1;
         }
-        this.indexed.putIfAbsent(accum.hashCode(), accum);
-        return accum.hashCode();
     }
 
     /**
