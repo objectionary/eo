@@ -29,24 +29,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterator.Mapped;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.objectionary.OyFallbackSwap;
-import org.eolang.maven.objectionary.OyHome;
-import org.eolang.maven.objectionary.OyIndexed;
-import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnCached;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -71,7 +70,7 @@ import org.eolang.maven.util.Rel;
 )
 public final class ProbeMojo extends SafeMojo {
     /**
-     * The Git hash to pull objects from, in objectionary.
+     * The Git tag to pull objects from, in objectionary.
      *
      * @since 0.21.0
      */
@@ -80,71 +79,59 @@ public final class ProbeMojo extends SafeMojo {
     private String tag = "master";
 
     /**
-     * Read hashes from local file.
+     * The Git hash to pull objects from, in objectionary.
+     * If not set, will be computed from {@code tag} field.
      *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHashFile")
-    private Path offlineHashFile;
-
-    /**
-     * Return hash by pattern.
-     * -DofflineHash=0.*.*:abc2sd3
-     * -DofflineHash=0.2.7:abc2sd3,0.2.8:s4se2fe
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(property = "offlineHash")
-    private String offlineHash;
-
-    /**
-     * The objectionary.
+     * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
+    private CommitHash hsh;
 
     /**
-     * Hash-Objectionary map.
-     * @todo #1602:30min Use objectionaries to probe objects with different
-     *  versions. Objects with different versions are stored in different
-     *  storages (objectionaries). Every objectionary has its own hash.
-     *  To get versioned object from objectionary firstly we need to get
-     *  right objectionary by object's version and then get object from that
-     *  objectionary by name.
+     * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Map<String, Objectionary> objectionaries = new HashMap<>();
+    private final Objectionaries objectionaries = new ObjsDefault(
+        () -> this.cache,
+        () -> this.session.getRequest().isUpdateSnapshots()
+    );
 
     @Override
     public void exec() throws IOException {
-        final CommitHash hash = new ChCached(
-            new ChCompound(
-                this.offlineHashFile, this.offlineHash, this.tag
-            )
-        );
-        if (this.objectionary == null) {
-            this.objectionary = this.objectionaryByHash(hash);
+        if (this.hsh == null) {
+            this.hsh = new ChCached(
+                new ChNarrow(
+                    new ChRemote(this.tag)
+                )
+            );
         }
-        final Collection<String> probed = new HashSet<>(1);
+        final Collection<ObjectName> probed = new HashSet<>(1);
         final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<String> names = this.probes(src);
-            if (!names.isEmpty()) {
-                Logger.info(this, "Probing object(s): %s", names);
+            final Collection<ObjectName> objects = this.probes(src);
+            if (!objects.isEmpty()) {
+                Logger.info(this, "Probing object(s): %s", objects);
             }
             int count = 0;
-            for (final String name : names) {
-                if (!this.objectionary.contains(name)) {
+            for (final ObjectName object : objects) {
+                if (!this.objectionaries.contains(object)) {
                     continue;
                 }
                 ++count;
                 this.scopedTojos()
-                    .add(name)
+                    .add(object)
                     .withDiscoveredAt(src);
-                probed.add(name);
+                probed.add(object);
             }
-            tojo.withHash(new ChNarrow(hash)).withProbed(count);
+            tojo.withHash(
+                new ChNarrow(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnDefault(tojo.identifier(), this.hsh)
+                    ).hash()
+                )
+            ).withProbed(count);
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -166,48 +153,28 @@ public final class ProbeMojo extends SafeMojo {
     }
 
     /**
-     * Get objectionary by given hash from the map.
-     * @param hash Hash.
-     * @return Objectionary by given hash.
-     */
-    private Objectionary objectionaryByHash(final CommitHash hash) {
-        final String value = hash.value();
-        if (!this.objectionaries.containsKey(value)) {
-            this.objectionaries.put(
-                value,
-                new OyFallbackSwap(
-                    new OyHome(
-                        new ChNarrow(hash),
-                        this.cache
-                    ),
-                    new OyIndexed(
-                        new OyRemote(hash)
-                    ),
-                    this.forceUpdate()
-                )
-            );
-        }
-        return this.objectionaries.get(value);
-    }
-
-    /**
      * Find all probes found in the provided XML file.
      *
      * @param file The .xmir file
      * @return List of foreign objects found
      * @throws FileNotFoundException If not found
      */
-    private Collection<String> probes(final Path file) throws FileNotFoundException {
-        final Collection<String> objects = new ListOf<>(
+    private Collection<ObjectName> probes(final Path file) throws FileNotFoundException {
+        final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
-                ProbeMojo::noPrefix,
+                obj -> new OnCached(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh)
+                    )
+                ),
                 new Filtered<>(
                     obj -> !obj.isEmpty(),
                     new XMLDocument(file).xpath(
                         "//metas/meta[head/text() = 'probe']/tail/text()"
                     )
-                ).iterator()
-            )
+                )
+            ).iterator()
         );
         if (objects.isEmpty()) {
             Logger.debug(
@@ -240,12 +207,4 @@ public final class ProbeMojo extends SafeMojo {
         return result;
     }
 
-    /**
-     * Is force update option enabled.
-     *
-     * @return True if option enabled and false otherwise
-     */
-    private boolean forceUpdate() {
-        return this.session.getRequest().isUpdateSnapshots();
-    }
 }

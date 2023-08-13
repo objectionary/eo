@@ -23,65 +23,36 @@
  */
 package org.eolang.maven.hash;
 
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.net.URL;
 import org.cactoos.Text;
 import org.cactoos.text.Sticky;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.cactoos.text.TextEnvelope;
 
 /**
  * Commit hashes table as text from objectionary.
+ * This class serves the purpose of the global cache in order to avoid
+ * downloading the list of tags multiple times from objectionary.
  *
  * @since 0.29.6
- * @todo #1602:30min Come up with a good name for the class. There are many
- *  things we want to say with the name of the class: 1) it's commit hashes
- *  2) it's a text 3) it's loaded from the objectionary. The result name will be
- *  ObjectionaryCommitHashesText and it may look a bit verbose. Maybe it really
- *  does not but we should decide anyway.
  */
-public final class CommitHashesText implements Text {
+final class CommitHashesText extends TextEnvelope {
+
     /**
      * Cache.
      */
-    private static final Text CACHE = new Sticky(CommitHashesText.load());
+    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes());
 
     /**
-     * Tags.
+     * Constructor.
      */
-    private static final String HOME = "https://home.objectionary.com/tags.txt";
-
-    @Override
-    public String asString() throws Exception {
-        return CommitHashesText.CACHE.asString();
+    CommitHashesText() {
+        this(CommitHashesText.CACHE);
     }
 
     /**
-     * Load commit hashes from objectionary only once.
-     * @return Commit hashes from objectionary.
-     * @todo #1602:30min What is the reason for this exception swallowing and
-     *  returning an empty string? Why can't we just escalate/rethrow it?
-     *  Now it looks pretty weird/wrong.
+     * Constructor.
+     * @param text The text to of commit hashes.
      */
-    private static Text load() {
-        return () -> {
-            String text;
-            try {
-                text = new UncheckedText(
-                    new TextOf(
-                        new URL(CommitHashesText.HOME)
-                    )
-                ).asString();
-            } catch (final IOException ex) {
-                Logger.warn(
-                    CommitHashesText.class,
-                    "Failed to load catalog of Git hashes from %s, because of %s: '%s'",
-                    CommitHashesText.HOME, ex.getClass().getSimpleName(), ex.getMessage()
-                );
-                text = "";
-            }
-            return text;
-        };
+    private CommitHashesText(final Text text) {
+        super(text);
     }
 }

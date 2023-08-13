@@ -23,26 +23,13 @@
  */
 package org.eolang.maven.rust;
 
-import java.io.IOException;
-import org.eolang.maven.footprint.Footprint;
-
 /**
  * Class for creating and saving class with native method.
  * Created class then is used from {@link EOrust}.
  *
  * @since 0.30
  */
-public final class Native {
-
-    /**
-     * The name of created java class.
-     */
-    private final String name;
-
-    /**
-     * Package of the class.
-     */
-    private final String pack;
+public final class Native extends Savable {
 
     /**
      * Ctor.
@@ -50,33 +37,23 @@ public final class Native {
      * @param pack Package of the class.
      */
     public Native(final String name, final String pack) {
-        this.name = name;
-        this.pack = pack;
-    }
-
-    /**
-     * Save the class.
-     * @param footprint Footprint to save.
-     * @throws IOException If any issues with IO.
-     */
-    public void save(final Footprint footprint) throws IOException {
-        footprint.save(
-            this.name,
+        super(
+            name,
             "java",
             () -> String.join(
                 System.lineSeparator(),
                 String.format(
                     "package %s;",
-                    this.pack
-                    ),
+                    pack
+                ),
                 "import org.eolang.Universe;",
                 String.format(
                     "public class %s {",
-                    this.name
+                    name
                 ),
                 String.format(
                     "    public static native byte[] %s",
-                    this.name
+                    name
                 ),
                 "        (final Universe universe);",
                 "}"

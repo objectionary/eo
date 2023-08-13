@@ -99,4 +99,9 @@ public final class PhSafe implements Phi {
         return this.origin.locator();
     }
 
+    @Override
+    public String forma() {
+        return this.origin.forma();
+    }
+
 }

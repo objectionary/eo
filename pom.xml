@@ -167,7 +167,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -341,8 +341,9 @@ SOFTWARE.
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>0.1.18</version>
+            <version>1.1.1</version>
             <configuration>
+              <ignoreGeneratedTests>true</ignoreGeneratedTests>
               <exclusions>
                 <!--
                   @todo #2171:30min Enable RuleAssertionMessage.

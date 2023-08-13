@@ -103,7 +103,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void bind(final int parent, final int child, final String att) {
-        return;
+        //Empty yet.
     }
 
     /**
