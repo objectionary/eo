@@ -74,7 +74,7 @@ final class UniverseTest {
     }
 
     @Test
-    void wrongFindThrowsEx() {
+    void throwsIfWrongFind() {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Universe(
@@ -98,7 +98,7 @@ final class UniverseTest {
     }
 
     @Test
-    void wrongDataizeThrowsEx() {
+    void throwsIfWrongDataize() {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Universe(
