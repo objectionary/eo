@@ -29,12 +29,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Universe}
+ * Test case for {@link Universe}.
  * @since 0.31
  */
 final class UniverseTest {
 
-    private static String ATT = "value";
+    /**
+     * Name of attribute.
+     */
+    private static final String ATT = "value";
 
     @Test
     void findsSimpleAtt() {
@@ -79,6 +82,7 @@ final class UniverseTest {
             ).find("wrong-name")
         );
     }
+
     @Test
     void dataizesIndexed() {
         final Universe universe = new Universe(
@@ -129,7 +133,7 @@ final class UniverseTest {
     }
 
     /**
-     * Dummy phi with {@link DummyWithAt} as attribute,
+     * Dummy phi with {@link DummyWithAt} as attribute.
      * @since 0.31
      */
     private static class DummyWithStructure extends PhDefault {

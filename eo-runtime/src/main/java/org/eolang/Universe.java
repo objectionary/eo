@@ -66,7 +66,7 @@ public class Universe {
      */
     public int find(final String name) {
         Phi accum = this.connector;
-        final String atts[] = Universe.replace(name)
+        final String[] atts = Universe.replace(name)
             .split("\\.");
         for (final String att: atts) {
             accum = accum.attr(att).get();
@@ -139,13 +139,13 @@ public class Universe {
     /**
      * Replaces specific eo symbols to java symbols.
      * @param name Name of eo object.
-     * @return correct location.
+     * @return Correct location.
      */
     private static String replace(final String name) {
         final StringBuilder builder = new StringBuilder(name.length());
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
-            switch (c) {
+        for (int iter = 0; iter < name.length(); iter += 1) {
+            final char cur = name.charAt(iter);
+            switch (cur) {
                 case '^':
                     builder.append('ρ');
                     break;
@@ -156,7 +156,7 @@ public class Universe {
                     builder.append('σ');
                     break;
                 default:
-                    builder.append(c);
+                    builder.append(cur);
                     break;
             }
         }
