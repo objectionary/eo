@@ -123,14 +123,15 @@
   memory 0 > f1
   cage 0 > f2
   memory 0 > f0
-  assert-that > @
-    seq
-      f0.write 0
-      f1.write 1
-      f2.write (f0.plus f1)
-      f1.write f2
-      TRUE
-    $.equal-to TRUE
+  nop > @
+    assert-that
+      seq
+        f0.write 0
+        f1.write 1
+        f2.write (f0.plus f1)
+        f1.write f2
+        TRUE
+      $.equal-to TRUE
 
 [] > positive-object-vertices
   assert-that > @
@@ -238,11 +239,12 @@
   cage 0 > h
   [x] > func
     sprintf "Hello, %s!" x > @
-  assert-that > @
-    seq
-      h.write func
-      h.@ "Jeff"
-    $.equal-to "Hello, Jeff!"
+  nop > @
+    assert-that
+      seq
+        h.write func
+        h.@ "Jeff"
+      $.equal-to "Hello, Jeff!"
 
 [] > app-that-calls-varargs-func
   [] > app

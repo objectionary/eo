@@ -104,13 +104,13 @@ final class OptimizeMojoTest {
             .get(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
-        final long start = System.currentTimeMillis();
-        final long old = start - TimeUnit.SECONDS.toMillis(10L);
+        final long old = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10L);
         if (!tgt.toFile().setLastModified(old)) {
             Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
         }
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
+            "We expect that already optimized xmir will be replaced by a new optimized xmir, because the first xmir is outdated and should be updated",
             tgt.toFile().lastModified(),
             Matchers.greaterThan(old)
         );
@@ -376,16 +376,11 @@ final class OptimizeMojoTest {
     void containsValidVersionAfterReplacingAndOptimization(@TempDir final Path tmp)
         throws Exception {
         new FakeMaven(tmp)
-            .withProgram(
-                "+package f\n",
-                "[] > main",
-                "  seq|0.28.10 > @",
-                "    nop"
-            )
+            .withVersionedProgram()
             .with("withVersions", true)
             .with("hashes", new CommitHashesMap.Fake())
             .execute(new FakeMaven.Optimize());
-        final String ver = "9b88393";
+        final String ver = "6c6269d";
         final int size = 1;
         MatcherAssert.assertThat(
             String.format(

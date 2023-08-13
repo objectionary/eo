@@ -95,4 +95,9 @@ class PhOnce implements Phi {
     public String locator() {
         return this.object.take().locator();
     }
+
+    @Override
+    public String forma() {
+        return this.object.take().forma();
+    }
 }

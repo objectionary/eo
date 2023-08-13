@@ -54,7 +54,7 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -187,7 +187,7 @@ public final class FakeMaven {
      * @param mojo Mojo to execute.
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
-     * @throws java.io.IOException If some problem with filesystem have happened.
+     * @throws java.io.IOException If some problem with filesystem has happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
@@ -229,7 +229,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
             this.params.putIfAbsent(
                 "eoEnvDir",
                 new File("../eo-runtime/src/main/rust/eo_env")
@@ -323,6 +323,44 @@ public final class FakeMaven {
     }
 
     /**
+     * Add correct versioned 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedHelloWorld() throws IOException {
+        return this.withProgram(
+            "+package f\n",
+            "[] > main",
+            "  QQ.io.stdout|0.28.5 > @",
+            "    \"Hello world\""
+        );
+    }
+
+    /**
+     * Add correct versioned program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedProgram() throws IOException {
+        return this.withProgram(
+            "+alias org.eolang.math.number",
+            "+alias org.eolang.txt.text",
+            "+home https://objectionary.home",
+            "+package f",
+            "+version 0.0.0\n",
+            "[args] > main",
+            "  seq|0.28.4 > @",
+            "    QQ.io.stdout|0.28.5",
+            "      QQ.txt.sprintf|0.28.6",
+            "        \"Number %d, text %s\"",
+            "        number 2",
+            "        text|0.28.7",
+            "          \"text\"",
+            "    nop"
+        );
+    }
+
+    /**
      * Adds eo program to a workspace.
      * @param program Program as a raw string.
      * @return The same maven instance.
@@ -368,6 +406,14 @@ public final class FakeMaven {
      */
     Path foreignPath() {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
+    }
+
+    /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -507,14 +553,6 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
-    }
-
-    /**
-     * Path to or eo-external.* file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    private Path externalPath() {
-        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -708,6 +746,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class
@@ -726,6 +765,7 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
+                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class,

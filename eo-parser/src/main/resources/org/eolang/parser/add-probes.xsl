@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="add-probes" version="2.0">
   <!--
-  For every object which starts with '.' add probe meta
+  For every object that starts with '.' add probe meta
   with fully qualified name of the object.
   Example:
    For object:
@@ -73,7 +73,7 @@ SOFTWARE.
                 <xsl:text>probe</xsl:text>
               </xsl:element>
               <xsl:element name="tail">
-                <xsl:value-of select="string-join(($p, @ver),'|')"/>
+                <xsl:value-of select="string-join(($p, @ver),'#')"/>
               </xsl:element>
               <xsl:element name="part">
                 <xsl:value-of select="$p"/>

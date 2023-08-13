@@ -110,6 +110,17 @@ final class PhWithTest {
         );
     }
 
+    @Test
+    void hasTheSameFormaWithBoundAttribute() {
+        final Phi dummy = new DummyWithAtFree("x", Phi.Φ);
+        MatcherAssert.assertThat(
+            dummy.forma(),
+            Matchers.equalTo(
+                new PhWith(dummy, "x", new Data.Value<>(5L)).forma()
+            )
+        );
+    }
+
     /**
      * Dummy Phi with free attribute.
      * @since 1.0

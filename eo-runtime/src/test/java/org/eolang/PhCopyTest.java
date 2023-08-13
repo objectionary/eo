@@ -44,4 +44,14 @@ final class PhCopyTest {
         );
     }
 
+    @Test
+    void hasTheSameFormaAsCopied() {
+        final Phi phi = new Data.ToPhi(1L);
+        MatcherAssert.assertThat(
+            phi.forma(),
+            Matchers.equalTo(
+                phi.copy().forma()
+            )
+        );
+    }
 }

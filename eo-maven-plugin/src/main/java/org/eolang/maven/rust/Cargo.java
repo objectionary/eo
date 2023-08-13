@@ -36,6 +36,9 @@ import org.cactoos.map.MapOf;
 /**
  * Class to manipulate Cargo.toml file.
  * @since 1.0
+ * @todo #2239:60 min. Make this class extending Savable class.
+ *  This class have save method and needs to have explanatory
+ *  comment too via Commented class.
  */
 public class Cargo {
     /**

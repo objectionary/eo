@@ -40,7 +40,7 @@ import org.cactoos.text.Split;
 public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
     /**
-     * Ctor.
+     * Constructor.
      */
     public CommitHashesMap() {
         this(new CommitHashesText()::asString);
@@ -50,7 +50,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Ctor.
      * @param table Commit hashes table as string.
      */
-    public CommitHashesMap(final String table) {
+    private CommitHashesMap(final String table) {
         this(() -> table);
     }
 
@@ -70,7 +70,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      *  So in order to avoid problems it would be better not to cut hashes here
      *  but when necessary.
      */
-    public CommitHashesMap(final Scalar<String> table) {
+    private CommitHashesMap(final Scalar<String> table) {
         super(
             new MapOf<>(
                 new Mapped<>(

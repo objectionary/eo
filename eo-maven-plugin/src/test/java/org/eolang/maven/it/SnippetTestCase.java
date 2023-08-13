@@ -28,6 +28,8 @@ import com.jcabi.log.VerboseProcess;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -51,11 +53,17 @@ import org.eolang.maven.FakeMaven;
 import org.eolang.maven.OnlineCondition;
 import org.eolang.maven.RegisterMojo;
 import org.eolang.maven.TranspileMojo;
+import org.eolang.maven.hash.ChRemote;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.OyFilesystem;
 import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -94,8 +102,10 @@ final class SnippetTestCase {
      * @throws Exception If fails
      */
     @ParameterizedTest
+    @ExtendWith(OnlineCondition.class)
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
+    @ExtendWith(RuntimeLibraryExists.class)
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
@@ -129,6 +139,24 @@ final class SnippetTestCase {
     }
 
     /**
+     * Classpath.
+     * @return Classpath.
+     */
+    static String classpath() {
+        return String.format(
+            ".%s%s",
+            File.pathSeparatorChar,
+            Paths.get(System.getProperty("user.home"))
+                .resolve(
+                    String.format(
+                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
+                        "1.0-SNAPSHOT"
+                    )
+                )
+        );
+    }
+
+    /**
      * Compile EO to Java and run.
      * @param tmp Temp dir
      * @param code EO sources
@@ -148,11 +176,13 @@ final class SnippetTestCase {
         final Output stdout
     ) throws Exception {
         final Path src = tmp.resolve("src");
+        final CommitHash hash = new ChRemote("master");
         final FakeMaven maven = new FakeMaven(tmp)
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("objectionary", new OyFilesystem());
+            .with("hsh", hash)
+            .with("objectionaries", new Objectionaries.Fake(new OyFilesystem()));
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);
         maven.execute(AssembleMojo.class);
@@ -297,22 +327,31 @@ final class SnippetTestCase {
     }
 
     /**
-     * Classpath.
-     * @return Classpath.
+     * Checks if runtime library exists.
+     *
+     * @since 0.30
      */
-    private static String classpath() {
-        return String.format(
-            ".%s%s",
-            File.pathSeparatorChar,
-            System.getProperty(
-                "runtime.jar",
-                Paths.get(System.getProperty("user.home")).resolve(
-                    String.format(
-                        ".m2/repository/org/eolang/eo-runtime/%s/eo-runtime-%1$s.jar",
-                        "1.0-SNAPSHOT"
-                    )
-                ).toString()
-            )
-        );
+    public static class RuntimeLibraryExists implements ExecutionCondition {
+
+        @Override
+        public ConditionEvaluationResult evaluateExecutionCondition(final ExtensionContext ctx) {
+            ConditionEvaluationResult ret;
+            try {
+                final String classpath = SnippetTestCase.classpath();
+                if (Files.exists(Paths.get(classpath))) {
+                    ret = ConditionEvaluationResult.enabled(
+                        String.format("Runtime library '%s' is found successfully", classpath)
+                    );
+                } else {
+                    ret = ConditionEvaluationResult.disabled("Runtime library is not found");
+                }
+            } catch (final InvalidPathException exception) {
+                ret = ConditionEvaluationResult.disabled(
+                    "Runtime library can't be found",
+                    exception.getMessage()
+                );
+            }
+            return ret;
+        }
     }
 }

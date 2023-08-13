@@ -88,6 +88,11 @@ public interface Phi extends Term {
         public String locator() {
             return "?:?";
         }
+
+        @Override
+        public String forma() {
+            return this.pkg.forma();
+        }
     };
 
     /**
@@ -118,4 +123,10 @@ public interface Phi extends Term {
      * @return String containing code locator
      */
     String locator();
+
+    /**
+     * Get forma of the phi.
+     * @return Forma of it as {@link String}.
+     */
+    String forma();
 }
