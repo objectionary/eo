@@ -25,6 +25,7 @@ package org.eolang;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
@@ -37,6 +38,9 @@ public class Universe {
      */
     private final Phi connector;
 
+    /**
+     * EO objects that were already found.
+     */
     private final Map<Integer, Phi> indexed;
 
     /**
@@ -61,22 +65,14 @@ public class Universe {
      * @return Vertex of the object to find.
      */
     public int find(final String name) {
-        System.out.println("find");
-        try {
-            Phi accum = this.connector;
-            final String atts[] = Universe.replace(name)
-                .split("\\.");
-            for (final String att: atts) {
-                accum = accum.attr(att).get();
-            }
-            this.indexed.putIfAbsent(accum.hashCode(), accum);
-            System.out.printf("Returning " + accum.hashCode());
-            return accum.hashCode();
-        } catch (RuntimeException throwable) {
-            System.out.println("Returning -1");
-            throwable.printStackTrace(System.out);
-            return -1;
+        Phi accum = this.connector;
+        final String atts[] = Universe.replace(name)
+            .split("\\.");
+        for (final String att: atts) {
+            accum = accum.attr(att).get();
         }
+        this.indexed.putIfAbsent(accum.hashCode(), accum);
+        return accum.hashCode();
     }
 
     /**
@@ -119,6 +115,32 @@ public class Universe {
         return vertex;
     }
 
+    /**
+     * Dataizes the eo object by vertex and return byte array.
+     * @param vertex Vertex of eo-object.
+     * @return Raw data.
+     */
+    public byte[] dataize(final int vertex) {
+        return new Param(
+            Optional.ofNullable(
+                this.indexed.get(vertex)
+            ).orElseThrow(
+                () -> new ExFailure(
+                    String.format(
+                        "Phi object with vertex %d was not indexed.",
+                        vertex
+                    )
+                )
+            ),
+            "Δ"
+        ).asBytes().take();
+    }
+
+    /**
+     * Replaces specific eo symbols to java symbols.
+     * @param name Name of eo object.
+     * @return correct location.
+     */
     private static String replace(final String name) {
         final StringBuilder builder = new StringBuilder(name.length());
         for (int i = 0; i < name.length(); i++) {
@@ -140,16 +162,5 @@ public class Universe {
         }
         return builder.toString();
     }
-    /**
-     * Dataizes the eo object by vertex and return byte array.
-     * @param vertex Vertex of eo-object.
-     * @return Raw data.
-     * @todo #2313:60min Implement the "dataize" method.
-     *  It should dataize eo object by its vertex.
-     *  This method is going to be called from rust insert
-     *  and should not be static.
-     */
-    public byte[] dataize(final int vertex) {
-        return new Param(this.indexed.get(vertex)).asBytes().take();
-    }
+
 }
