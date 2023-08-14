@@ -125,7 +125,7 @@ final class PhWithTest {
      * Dummy Phi with free attribute.
      * @since 1.0
      */
-    public static class DummyWithAtFree extends PhDefault {
+    private static class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.
