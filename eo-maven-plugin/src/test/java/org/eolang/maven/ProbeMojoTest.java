@@ -185,7 +185,6 @@ final class ProbeMojoTest {
 
     @Test
     @ExtendWith(OnlineCondition.class)
-    @Disabled
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
@@ -200,6 +199,7 @@ final class ProbeMojoTest {
                     new MapEntry<>(second, new OyRemote(second))
                 )
             )
+            .with("hashes", hashes)
             .with("withVersions", true)
             .with("hsh", first)
             .withVersionedProgram()

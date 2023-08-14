@@ -56,11 +56,6 @@ import org.eolang.maven.util.Rel;
     threadSafe = true
 )
 public final class DiscoverMojo extends SafeMojo {
-    /**
-     * Commit hashes.
-     */
-    private final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
-
     @Override
     public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();

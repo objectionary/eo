@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +46,8 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.scalar.Sticky;
+import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
@@ -91,7 +94,7 @@ abstract class SafeMojo extends AbstractMojo {
     protected File foreign;
 
     /**
-     * File with external "tojos".
+     * File with external "tojos."
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -255,7 +258,12 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
-     * Whether we should skip goals execution.
+     * Commit hashes.
+     */
+    protected final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
+
+    /**
+     * Whether we should skip goal execution.
      */
     @Parameter(property = "eo.skip", defaultValue = "false")
     @SuppressWarnings("PMD.ImmutableField")

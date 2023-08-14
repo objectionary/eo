@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
 /**
@@ -35,7 +36,7 @@ public final class OnDefault implements ObjectName {
     /**
      * Object with or without hash.
      */
-    private final String object;
+    private final Unchecked<String> object;
 
     /**
      * Default hash.
@@ -44,10 +45,19 @@ public final class OnDefault implements ObjectName {
 
     /**
      * Ctor.
+     * @param origin Origin object name
+     * @param hash Default hash if a version in full name is absent.
+     */
+    public OnDefault(final ObjectName origin, final CommitHash hash) {
+        this(new Unchecked<>(origin::toString), hash);
+    }
+
+    /**
+     * Ctor.
      * Please use the constructor for tests only because it can't guarantee
      * that {@code hash} is actually hash but not a random string.
      * @param object Object full name with a version or not.
-     * @param hash Default hash is a version in full name is absent.
+     * @param hash Default hash if a version in full name is absent.
      */
     public OnDefault(final String object, final String hash) {
         this(object, new CommitHash.ChConstant(hash));
@@ -59,6 +69,15 @@ public final class OnDefault implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      */
     public OnDefault(final String object, final CommitHash def) {
+        this(new Unchecked<>(() -> object), def);
+    }
+
+    /**
+     * Ctor.
+     * @param object Object full name with a version or not as scalar.
+     * @param def Default hash if a version in full name is absent.
+     */
+    private OnDefault(final Unchecked<String> object, final CommitHash def) {
         this.object = object;
         this.hsh = def;
     }
@@ -87,7 +106,7 @@ public final class OnDefault implements ObjectName {
      * @return Split object to name and hash.
      */
     private String[] split() {
-        String[] splt = this.object.split(OnVersioned.DELIMITER);
+        String[] splt = this.object.value().split(OnVersioned.DELIMITER);
         if (splt.length == 1) {
             splt = new String[]{splt[0], this.hsh.value()};
         }

@@ -44,6 +44,7 @@ import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnCached;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -165,7 +166,10 @@ public final class ProbeMojo extends SafeMojo {
                 obj -> new OnCached(
                     new OnSwap(
                         this.withVersions,
-                        new OnDefault(ProbeMojo.noPrefix(obj), this.hsh)
+                        new OnDefault(
+                            new OnVersioned(ProbeMojo.noPrefix(obj), this.hashes),
+                            this.hsh
+                        )
                     )
                 ),
                 new Filtered<>(
