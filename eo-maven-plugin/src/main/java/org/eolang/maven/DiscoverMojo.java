@@ -30,11 +30,13 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnSwap;
@@ -57,7 +59,7 @@ public final class DiscoverMojo extends SafeMojo {
     /**
      * Commit hashes.
      */
-    private final CommitHashesMap hashes = new CommitHashesMap();
+    private final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
 
     @Override
     public void exec() throws FileNotFoundException {
