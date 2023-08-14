@@ -42,9 +42,7 @@ final class UniverseTest {
     @Test
     void findsSimpleAtt() {
         final Phi phi = new DummyWithAt(Phi.Φ);
-        final Universe universe = new Universe(
-            phi
-        );
+        final Universe universe = new Universe(phi);
         MatcherAssert.assertThat(
             universe.find(UniverseTest.ATT),
             Matchers.equalTo(
@@ -56,9 +54,7 @@ final class UniverseTest {
     @Test
     void findsLongAtt() {
         final Phi phi = new DummyWithStructure(Phi.Φ);
-        final Universe universe = new Universe(
-            phi
-        );
+        final Universe universe = new Universe(phi);
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
