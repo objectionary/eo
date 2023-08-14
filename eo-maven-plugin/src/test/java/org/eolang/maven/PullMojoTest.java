@@ -32,8 +32,8 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChCompound;
 import org.eolang.maven.hash.ChPattern;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
@@ -106,7 +106,7 @@ final class PullMojoTest {
                 "objectionaries",
                 new Objectionaries.Fake(
                     new OyRemote(
-                        new ChCompound(null, null, "master")
+                        new ChRemote("master")
                     )
                 )
             )
