@@ -323,7 +323,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Add correct versioned 'Hello world' program to workspace.
+     * Add the correct versioned 'Hello world' program to workspace.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
@@ -581,7 +581,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class
             ).iterator();
         }
@@ -596,8 +595,7 @@ public final class FakeMaven {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                VersionsMojo.class
+                ParseMojo.class
             ).iterator();
         }
     }
@@ -746,7 +744,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class
@@ -755,7 +752,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Pull full pipeline.
+     * Pull a full pipeline.
      *
      * @since 0.31
      */
@@ -765,7 +762,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class,
                 ProbeMojo.class,
@@ -785,7 +781,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();
