@@ -106,7 +106,8 @@ final class ProbeMojoTest {
             new FakeMaven(temp)
                 .with("hsh", new ChPattern("*.*.*:abcdefg", "1.0.0"))
                 .withProgram(ProbeMojoTest.program())
-                .execute(new FakeMaven.Probe()).programTojo()
+                .execute(new FakeMaven.Probe())
+                .programTojo()
                 .hash(),
             Matchers.equalTo("abcdefg")
         );

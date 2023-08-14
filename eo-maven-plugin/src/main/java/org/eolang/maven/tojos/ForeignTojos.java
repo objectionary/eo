@@ -128,6 +128,9 @@ public final class ForeignTojos implements Closeable {
      * Find tojo by tojo id.
      * @param id The id of the tojo.
      * @return The tojo.
+     * @todo #2331:90min Add unit test for ForeignTojos.find method.
+     *  The test should check that the method returns the tojo with the
+     *  specified id. When the test is ready, remove that puzzle.
      */
     public ForeignTojo find(final String id) {
         return new ForeignTojo(
