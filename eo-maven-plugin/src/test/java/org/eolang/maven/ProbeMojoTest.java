@@ -23,11 +23,9 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;

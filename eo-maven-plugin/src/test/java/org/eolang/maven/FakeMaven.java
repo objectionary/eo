@@ -529,10 +529,6 @@ public final class FakeMaven {
         return this;
     }
 
-    private String tojoId(final int id) {
-        return String.format("foo.x.main%s", FakeMaven.suffix(id));
-    }
-
     /**
      * Ensures the map of allowed params for the Mojo.
      *
@@ -556,6 +552,15 @@ public final class FakeMaven {
      */
     private String scope() {
         return String.valueOf(this.params.getOrDefault("scope", "compile"));
+    }
+
+    /**
+     * The id of the program in tojos file.
+     * @param id Number of the program.
+     * @return String id.
+     */
+    private static String tojoId(final int id) {
+        return String.format("foo.x.main%s", FakeMaven.suffix(id));
     }
 
     /**
