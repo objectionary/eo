@@ -37,12 +37,12 @@ class OnSwapTest {
     /**
      * First.
      */
-    private static final String FIRST = String.join(OnVersioned.DELIMITER, "stdout", "1234567");
+    private static final String FIRST = String.join(OnReplaced.DELIMITER, "stdout", "1234567");
 
     /**
      * Second.
      */
-    private static final String SECOND = String.join(OnVersioned.DELIMITER, "sprintf", "7654321");
+    private static final String SECOND = String.join(OnReplaced.DELIMITER, "sprintf", "7654321");
 
     /**
      * Fake hash.
@@ -58,8 +58,8 @@ class OnSwapTest {
             ),
             new OnSwap(
                 true,
-                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
-                new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
+                new OnVersioned(OnSwapTest.FIRST, OnSwapTest.FAKE),
+                new OnVersioned(OnSwapTest.SECOND, OnSwapTest.FAKE)
             ).toString(),
             Matchers.equalTo(OnSwapTest.FIRST)
         );
@@ -74,8 +74,8 @@ class OnSwapTest {
             ),
             new OnSwap(
                 false,
-                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE),
-                new OnDefault(OnSwapTest.SECOND, OnSwapTest.FAKE)
+                new OnVersioned(OnSwapTest.FIRST, OnSwapTest.FAKE),
+                new OnVersioned(OnSwapTest.SECOND, OnSwapTest.FAKE)
             ).toString(),
             Matchers.equalTo(OnSwapTest.SECOND)
         );
@@ -91,7 +91,7 @@ class OnSwapTest {
             ),
             new OnSwap(
                 false,
-                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
+                new OnVersioned(OnSwapTest.FIRST, OnSwapTest.FAKE)
             ).toString(),
             Matchers.equalTo(stdout)
         );
@@ -106,7 +106,7 @@ class OnSwapTest {
             ),
             new OnSwap(
                 true,
-                new OnDefault(OnSwapTest.FIRST, OnSwapTest.FAKE)
+                new OnVersioned(OnSwapTest.FIRST, OnSwapTest.FAKE)
             ).toString(),
             Matchers.equalTo(OnSwapTest.FIRST)
         );

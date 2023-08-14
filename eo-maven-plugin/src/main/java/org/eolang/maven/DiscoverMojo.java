@@ -37,7 +37,7 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnSwap;
-import org.eolang.maven.name.OnVersioned;
+import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -66,7 +66,7 @@ public final class DiscoverMojo extends SafeMojo {
                     .map(
                         name -> new OnSwap(
                             this.withVersions,
-                            new OnVersioned(name, this.hashes)
+                            new OnReplaced(name, this.hashes)
                         )
                     )
                     .peek(
@@ -143,7 +143,7 @@ public final class DiscoverMojo extends SafeMojo {
                         " and @base != '&'",
                         " and not(@ref)",
                         "]/string-join((@base, @ver),'",
-                        OnVersioned.DELIMITER,
+                        OnReplaced.DELIMITER,
                         "')"
                     )
                 )

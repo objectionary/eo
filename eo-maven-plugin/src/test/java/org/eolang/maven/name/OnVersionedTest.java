@@ -23,99 +23,146 @@
  */
 package org.eolang.maven.name;
 
-import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.hash.CommitHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link OnVersioned}.
+ * Test cases for {@link OnVersioned}.
  *
- * @since 0.30
+ * @since 0.29.6
  */
 final class OnVersionedTest {
+    /**
+     * Stdout.
+     */
+    private static final String STDOUT = "stdout";
 
-    @ParameterizedTest
-    @CsvSource({
-        "org.eolang.string, org.eolang.string#0.23.17",
-        "org.eolang.dummy, org.eolang.dummy#0.23.19",
-        "org.eolang.text, org.eolang.text#0.25.0",
-        "org.eolang.aug, org.eolang.aug#0.25.5",
-        "org.eolang.sept, org.eolang.sept#0.26.0",
-        "org.eolang.oct, org.eolang.oct#0.27.0",
-        "org.eolang.nov, org.eolang.nov#0.27.2",
-        "org.eolang.dec, org.eolang.dec#0.28.0",
-        "org.eolang.mon, org.eolang.mon#0.28.1",
-        "org.eolang.tu, org.eolang.tu#0.28.10",
-        "org.eolang.wen, org.eolang.wen#0.28.14",
-        "org.eolang.th, org.eolang.th#0.28.2",
-        "org.eolang.fri, org.eolang.fri#0.28.4",
-        "org.eolang.sat, org.eolang.sat#0.28.5",
-        "org.eolang.sun, org.eolang.sun#0.28.6",
-        "org.eolang.penguin, org.eolang.penguin#0.28.7",
-        "org.eolang.eagle, org.eolang.eagle#0.28.9"
-    })
-    void retrievesName(final String expected, final String origin) {
-        final OnVersioned name = new OnVersioned(origin);
+    /**
+     * Hash for {@code STDOUT}.
+     */
+    private static final String HASH = "1234567";
+
+    /**
+     * Test object.
+     */
+    private static final String OBJECT = String.join(
+        OnReplaced.DELIMITER,
+        OnVersionedTest.STDOUT,
+        OnVersionedTest.HASH
+    );
+
+    /**
+     * Fake commit hash.
+     */
+    private static final CommitHash FAKE = new CommitHash.ChConstant("abcdefg");
+
+    @Test
+    void returnsTheSameValidFullName() {
         MatcherAssert.assertThat(
-            String.format("Can't retrieve object name from %s, versioned object %s", name, origin),
+            String.format(
+                "Object name %s as string should have not been changed, but it did",
+                OnVersionedTest.OBJECT
+            ),
+            new OnVersioned(OnVersionedTest.OBJECT, OnVersionedTest.FAKE).toString(),
+            Matchers.equalTo(OnVersionedTest.OBJECT)
+        );
+    }
+
+    @Test
+    void takesNameFromGivenFullName() {
+        MatcherAssert.assertThat(
+            String.format(
+                "Name of object %s should have been equal to %s, but it didn't",
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.STDOUT
+            ),
+            new OnVersioned(
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.FAKE
+            ).value(),
+            Matchers.equalTo(OnVersionedTest.STDOUT)
+        );
+    }
+
+    @Test
+    void takesHashFromGivenFullName() {
+        MatcherAssert.assertThat(
+            String.format(
+                "Hash of object %s should have been equal to %s, but it didn't",
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.HASH
+            ),
+            new OnVersioned(
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.FAKE
+            ).hash().value(),
+            Matchers.equalTo(OnVersionedTest.HASH)
+        );
+    }
+
+    @Test
+    void buildsFullNameWithGivenDefaultHash() {
+        final String built = String.join(
+            OnReplaced.DELIMITER,
+            OnVersionedTest.STDOUT,
+            OnVersionedTest.FAKE.value()
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Object %s as string with fake hash %s should have been equal to %s, but it didn't",
+                OnVersionedTest.STDOUT,
+                OnVersionedTest.FAKE,
+                built
+            ),
+            new OnVersioned(
+                OnVersionedTest.STDOUT,
+                OnVersionedTest.FAKE
+            ).toString(),
+            Matchers.equalTo(built)
+        );
+    }
+
+    @Test
+    void takesHashFromGivenDefaultHash() {
+        MatcherAssert.assertThat(
+            String.format(
+                "Hash of object %s should have been equal to default hash %s, but it didn't",
+                OnVersionedTest.STDOUT,
+                OnVersionedTest.FAKE
+            ),
+            new OnVersioned(
+                OnVersionedTest.STDOUT,
+                OnVersionedTest.FAKE
+            ).hash().value(),
+            Matchers.equalTo(OnVersionedTest.FAKE.value())
+        );
+    }
+
+    @Test
+    void takesValueAndHashFromOtherObjectName() {
+        final ObjectName name = new OnVersioned(
+            new OnVersioned(OnVersionedTest.OBJECT, OnVersionedTest.FAKE),
+            OnVersionedTest.FAKE
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Name of wrapped object %s should have been equal to inner object name %s, but it didn't",
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.STDOUT
+            ),
             name.value(),
-            Matchers.equalTo(expected)
+            Matchers.equalTo(OnVersionedTest.STDOUT)
         );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "15c85d7, org.eolang.string#0.23.17",
-        "4b19944, org.eolang.dummy#0.23.19",
-        "0aa6875, org.eolang.text#0.25.0",
-        "ff32e9f, org.eolang.aug#0.25.5",
-        "e0b7836, org.eolang.sept#0.26.0",
-        "cc554ab, org.eolang.oct#0.27.0",
-        "00b60c7, org.eolang.nov#0.27.2",
-        "6a70071, org.eolang.dec#0.28.0",
-        "0c15066, org.eolang.mon#0.28.1",
-        "9b88393, org.eolang.tu#0.28.10",
-        "a7a4556, org.eolang.wen#0.28.14",
-        "54d83d4, org.eolang.th#0.28.2",
-        "6c6269d, org.eolang.fri#0.28.4",
-        "9c93528, org.eolang.sat#0.28.5",
-        "17f8929, org.eolang.sun#0.28.6",
-        "5f82cc1, org.eolang.penguin#0.28.7",
-        "be83d9a, org.eolang.eagle#0.28.9"
-    })
-    void retrievesHash(final String expected, final String origin) {
-        final OnVersioned name = new OnVersioned(origin, new CommitHashesMap.Fake());
         MatcherAssert.assertThat(
-            String.format("Can't retrieve object hash from %s versioned object %s", name, origin),
+            String.format(
+                "Hash of wrapped object %s should have been equal to inner object hash %s, but it didn't",
+                OnVersionedTest.OBJECT,
+                OnVersionedTest.HASH
+            ),
             name.hash().value(),
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @Test
-    void convertsToStringWithNonEmptyVersion() {
-        final OnVersioned name = new OnVersioned(
-            "org.eolang.string#0.23.17",
-            new CommitHashesMap.Fake()
-        );
-        MatcherAssert.assertThat(
-            String.format("Can't convert versioned object %s to string", name),
-            name.toString(),
-            Matchers.equalTo("org.eolang.string#15c85d7")
-        );
-    }
-
-    @Test
-    void convertsToStringWithEmptyVersion() {
-        final String string = "org.eolang.string";
-        final OnVersioned name = new OnVersioned(string);
-        MatcherAssert.assertThat(
-            String.format("Can't convert versioned object %s to string", name),
-            name.toString(),
-            Matchers.equalTo(string)
+            Matchers.equalTo(OnVersionedTest.HASH)
         );
     }
 }
