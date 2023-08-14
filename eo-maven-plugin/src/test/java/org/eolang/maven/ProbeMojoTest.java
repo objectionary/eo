@@ -56,13 +56,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
  *  code duplication among all tests in the class. Need to reduce it somehow.
- * @todo #2302:30min Refactor firstEntity method. The "first entity of the
- *  foreign tojos" looks strange. It looks like we are tying to scan an
- *  intermediate state which we are trying to read in the middle of the process.
- *  It lead to a fragile implementation. Could we check the result somehow else?
- *  Or to skip that check at all?
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
     /**
