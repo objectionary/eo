@@ -35,7 +35,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
@@ -52,6 +54,10 @@ import org.eolang.maven.util.Rel;
     threadSafe = true
 )
 public final class DiscoverMojo extends SafeMojo {
+    /**
+     * Commit hashes.
+     */
+    private final CommitHashesMap hashes = new CommitHashesMap();
 
     @Override
     public void exec() throws FileNotFoundException {
@@ -63,12 +69,17 @@ public final class DiscoverMojo extends SafeMojo {
                 (int) this.discover(src)
                     .stream()
                     .filter(name -> !name.isEmpty())
-                    .map(OnVersioned::new)
+                    .map(name -> new OnSwap(
+                        this.withVersions,
+                        new OnVersioned(name, this.hashes)
+
+                    ))
                     .peek(
                         name -> this.scopedTojos()
                             .add(name)
                             .withDiscoveredAt(src)
-                    ).peek(discovered::add)
+                    )
+                    .peek(discovered::add)
                     .count()
             );
         }

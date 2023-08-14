@@ -113,7 +113,6 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    @Disabled
     void discoversWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
@@ -141,7 +140,6 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    @Disabled
     void discoversWithSeveralObjectsWithDifferentVersions(
         @TempDir final Path tmp
     ) throws IOException {

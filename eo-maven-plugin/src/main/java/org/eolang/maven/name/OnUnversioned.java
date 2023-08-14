@@ -27,7 +27,7 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Unversioned object full name.
- * Returns full name without version.
+ * Returns full name without a version.
  *
  * @since 0.29.6
  */

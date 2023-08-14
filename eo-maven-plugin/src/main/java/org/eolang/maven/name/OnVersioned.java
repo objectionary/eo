@@ -34,7 +34,7 @@ import org.eolang.maven.hash.CommitHashesMap;
  *   and "4b19944"
  * - "org.eolang.string#a1b2c3d" into "org.eolang.string"
  *   and "be83d9a"
- * Pay attention that versions transformed into hashes.
+ * Pay attention to that versions transformed into narrow hashes.
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
@@ -97,7 +97,7 @@ public final class OnVersioned implements ObjectName {
      * @param origin Raw string.
      * @param all All hashes.
      */
-    OnVersioned(
+    public OnVersioned(
         final String origin,
         final Map<String, ? extends CommitHash> all
     ) {
