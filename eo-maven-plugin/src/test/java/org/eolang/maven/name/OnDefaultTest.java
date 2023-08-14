@@ -139,4 +139,30 @@ final class OnDefaultTest {
             Matchers.equalTo(OnDefaultTest.FAKE.value())
         );
     }
+
+    @Test
+    void takesValueAndHashFromOtherObjectName() {
+        final ObjectName name = new OnDefault(
+            new OnDefault(OnDefaultTest.OBJECT, OnDefaultTest.FAKE),
+            OnDefaultTest.FAKE
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Name of wrapped object %s should have been equal to inner object name %s, but it didn't",
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.STDOUT
+            ),
+            name.value(),
+            Matchers.equalTo(OnDefaultTest.STDOUT)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Hash of wrapped object %s should have been equal to inner object hash %s, but it didn't",
+                OnDefaultTest.OBJECT,
+                OnDefaultTest.HASH
+            ),
+            name.hash().value(),
+            Matchers.equalTo(OnDefaultTest.HASH)
+        );
+    }
 }
