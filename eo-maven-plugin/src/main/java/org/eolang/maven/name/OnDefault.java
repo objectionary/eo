@@ -30,6 +30,12 @@ import org.eolang.maven.hash.CommitHash;
  * Object name with default hash.
  *
  * @since 0.29.6
+ * @todo #2381:30min Rename OnDefault and OnVersioned objects.
+ *  Both seems misleading: OnVersioned replaces tag in given object with hash,
+ *  OnDefault checks if given object contains version and if not - put the
+ *  default one.
+ *  It seems the names of the objects don't match with their behaviour.
+ *  Suggestion: OnVersioned -> OnReplaced, OnDefault -> OnVersioned
  */
 public final class OnDefault implements ObjectName {
 
