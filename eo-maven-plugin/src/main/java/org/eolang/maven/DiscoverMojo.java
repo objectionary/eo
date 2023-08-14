@@ -30,14 +30,11 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnVersioned;
@@ -66,11 +63,12 @@ public final class DiscoverMojo extends SafeMojo {
                 (int) this.discover(src)
                     .stream()
                     .filter(name -> !name.isEmpty())
-                    .map(name -> new OnSwap(
-                        this.withVersions,
-                        new OnVersioned(name, this.hashes)
-
-                    ))
+                    .map(
+                        name -> new OnSwap(
+                            this.withVersions,
+                            new OnVersioned(name, this.hashes)
+                        )
+                    )
                     .peek(
                         name -> this.scopedTojos()
                             .add(name)

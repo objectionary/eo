@@ -94,7 +94,7 @@ abstract class SafeMojo extends AbstractMojo {
     protected File foreign;
 
     /**
-     * File with external "tojos."
+     * File with external "tojos".
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -216,15 +216,6 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean withVersions;
 
     /**
-     * Cached tojos.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    private final ForeignTojos tojos = new ForeignTojos(
-        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
-        () -> this.scope
-    );
-
-    /**
      * External tojos.
      * @todo #1602:30min Use external tojos to implement object versioning.
      *  Implementation of object versioning will bring a lot significant
@@ -238,6 +229,12 @@ abstract class SafeMojo extends AbstractMojo {
         () -> Catalogs.INSTANCE.make(this.external.toPath(), this.foreignFormat),
         () -> this.scope
     );
+
+    /**
+     * Commit hashes.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    protected final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
 
     /**
      * Placed tojos.
@@ -258,9 +255,13 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
-     * Commit hashes.
+     * Cached tojos.
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
+    private final ForeignTojos tojos = new ForeignTojos(
+        () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+        () -> this.scope
+    );
 
     /**
      * Whether we should skip goal execution.
