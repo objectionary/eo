@@ -36,8 +36,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnReplaced;
+import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -125,6 +125,7 @@ public final class DiscoverMojo extends SafeMojo {
 
     /**
      * Get a unique list of object names from given XML.
+     *
      * @param xml XML.
      * @return Object names.
      */
