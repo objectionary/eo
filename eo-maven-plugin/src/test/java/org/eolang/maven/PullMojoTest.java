@@ -222,7 +222,6 @@ final class PullMojoTest {
     }
 
     @Test
-    @Disabled
     void pullsProbedVersionedObjectsFromDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
