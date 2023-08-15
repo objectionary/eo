@@ -31,6 +31,7 @@ import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -232,12 +233,12 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
-     * Check if the tojos contains a foreign tojo with object name.
+     * Check if the tojos contains a foreign tojos with object name.
      * @param name The name of the tojo.
      * @return True if tojo exists.
      */
-    public boolean contains(final ObjectName name) {
-        return this.contains(name.toString());
+    public boolean contains(final ObjectName... name) {
+        return Arrays.stream(name).map(Object::toString).allMatch(this::contains);
     }
 
     /**

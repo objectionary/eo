@@ -30,8 +30,6 @@ import java.util.Arrays;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
@@ -43,7 +41,6 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -198,14 +195,13 @@ final class ProbeMojoTest {
             .with("hsh", first)
             .withVersionedProgram()
             .execute(new FakeMaven.Probe());
-        final ForeignTojos external = maven.externalTojos();
         final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should contain versioned objects '%s' after probing, but they didn't",
                 Arrays.asList(text, ProbeMojoTest.STDOUT)
             ),
-            external.contains(text) && external.contains(ProbeMojoTest.STDOUT),
+            maven.externalTojos().contains(text, ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
@@ -229,7 +225,7 @@ final class ProbeMojoTest {
             "    QQ.txt.sprintf \"I am %d years old\"",
             "      plus.",
             "        1337",
-            "        228"
+            "        228",
         };
     }
 }
