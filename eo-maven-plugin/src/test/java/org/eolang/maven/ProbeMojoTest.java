@@ -66,14 +66,19 @@ final class ProbeMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
+        final String expected = "5";
         MatcherAssert.assertThat(
+            String.format(
+                "Number of objects that we have found during the probing phase should be equal %s",
+                expected
+            ),
             new FakeMaven(temp)
                 .with("foreignFormat", "json")
                 .withProgram(ProbeMojoTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()
                 .probed(),
-            Matchers.equalTo("5")
+            Matchers.equalTo(expected)
         );
     }
 
@@ -84,6 +89,7 @@ final class ProbeMojoTest {
             Paths.get("tags.txt")
         );
         MatcherAssert.assertThat(
+            "",
             new FakeMaven(temp)
                 .with(
                     "hsh",

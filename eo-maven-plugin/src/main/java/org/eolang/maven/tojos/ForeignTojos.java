@@ -336,7 +336,25 @@ public final class ForeignTojos implements Closeable {
         DISCOVERED_AT("discovered-at"),
 
         /**
-         * Probed.
+         * How many objects were probed in the tojo.
+         * Let's consider the next eo code:
+         * <p>
+         * {@code
+         *  [] > main
+         *   QQ.io.stdout > @
+         *     QQ.txt.sprintf "I am %d years old"
+         *       plus.
+         *         1337
+         *         228
+         * }
+         * </p>
+         * <p>In this code there are 5 objects that were probed:</p>
+         *  - "org.eolang"
+         *  - "org.eolang.io"
+         *  - "org.eolang.txt"
+         *  - "org.eolang.io.stdout"
+         *  - "org.eolang.txt.sprintf"
+         * <p>For more info see {@link org.eolang.maven.ProbeMojo}. </p>
          */
         PROBED("probed"),
 
