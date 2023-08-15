@@ -26,6 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
@@ -42,6 +43,7 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,8 +55,6 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link ProbeMojo}.
  *
  * @since 0.28.11
- * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
- *  code duplication among all tests in the class. Need to reduce it somehow.
  */
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
@@ -160,19 +160,19 @@ final class ProbeMojoTest {
             .execute(new FakeMaven.Probe());
         MatcherAssert.assertThat(
             String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
+                "Tojos should contain versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
             maven.externalTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "Program entry in tojos after probing should contain one probed object",
+            "Program tojo entry in tojos after probing should contain one probed object",
             maven.programExternalTojo().probed(),
             Matchers.equalTo("1")
         );
         MatcherAssert.assertThat(
-            "Program entry in tojos after probing should contain given hash",
+            "Program tojo entry in tojos after probing should contain given hash",
             maven.programExternalTojo().hash(),
             Matchers.equalTo(hash.value())
         );
@@ -185,7 +185,6 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
@@ -199,39 +198,38 @@ final class ProbeMojoTest {
             .with("hsh", first)
             .withVersionedProgram()
             .execute(new FakeMaven.Probe());
+        final ForeignTojos external = maven.externalTojos();
+        final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");
         MatcherAssert.assertThat(
             String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                ProbeMojoTest.STDOUT
+                "Tojos should contain versioned objects '%s' after probing, but they didn't",
+                Arrays.asList(text, ProbeMojoTest.STDOUT)
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
+            external.contains(text) && external.contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            String.format(
-                "Tojos should have contained versioned object %s after probing, but they didn't",
-                text
-            ),
-            maven.externalTojos().contains(text),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "First entry of tojos after probing should have contained two probed objects, but it didn't",
+            "Program tojo after probing should contain exactly two probed objects",
             maven.programExternalTojo().probed(),
             Matchers.equalTo("2")
         );
         MatcherAssert.assertThat(
-            "First entry of tojos after probing should have contained given hash, but it didn't",
+            "Program tojo after after probing should have given hash",
             maven.programExternalTojo().hash(),
             Matchers.equalTo(first.value())
         );
     }
 
-    private static String program() {
-        return new UncheckedText(
-            new TextOf(
-                new ResourceOf("org/eolang/maven/simple-io.eo")
-            )
-        ).asString();
+    private static String[] program() {
+        return new String[]{
+            "+package org.eolang.custom",
+            "",
+            "[] > main",
+            "  QQ.io.stdout > @",
+            "    QQ.txt.sprintf \"I am %d years old\"",
+            "      plus.",
+            "        1337",
+            "        228"
+        };
     }
 }
