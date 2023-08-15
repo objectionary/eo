@@ -210,7 +210,7 @@ final class ProbeMojoTest {
             Matchers.equalTo("2")
         );
         MatcherAssert.assertThat(
-            "Program tojo after after probing should have given hash",
+            "Program tojo after probing should have given hash",
             maven.programExternalTojo().hash(),
             Matchers.equalTo(first.value())
         );
