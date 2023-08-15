@@ -24,7 +24,6 @@
 package org.eolang.maven.name;
 
 import java.util.Map;
-
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -87,7 +86,7 @@ public final class OnVersioned implements ObjectName {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * @param origin Origin object name
      * @param all All hashes
      */

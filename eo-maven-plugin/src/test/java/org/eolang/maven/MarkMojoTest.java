@@ -44,7 +44,7 @@ final class MarkMojoTest {
     /**
      * Version.
      */
-    private static String VERSION = "0.28.0";
+    private static final String VERSION = "0.28.0";
 
     @Test
     void extendsForeignWithNewObjects(@TempDir final Path temp) throws IOException {
@@ -103,14 +103,13 @@ final class MarkMojoTest {
      * @throws IOException If couldn't save the file
      */
     private static void source(final Path temp) throws IOException {
-        new Home(temp.resolve("target").resolve(ResolveMojo.DIR))
-            .save(
-                "hi",
-                Paths.get(
-                    String.format(
-                        "foo/hello/-/%s/%s/foo/bar.eo", MarkMojoTest.VERSION, CopyMojo.DIR
-                    )
+        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+            "hi",
+            Paths.get(
+                String.format(
+                    "foo/hello/-/%s/%s/foo/bar.eo", MarkMojoTest.VERSION, CopyMojo.DIR
                 )
-            );
+            )
+        );
     }
 }

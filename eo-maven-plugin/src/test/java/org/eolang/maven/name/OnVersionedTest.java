@@ -132,12 +132,12 @@ final class OnVersionedTest {
                 "0.28.5"
             )
         );
-         MatcherAssert.assertThat(
-             String.format("Couldn't convert versioned object %s to string", name),
-             name.toString(),
-             Matchers.equalTo(
-                 String.join(OnVersioned.DELIMITER, OnVersionedTest.STRING, "9c93528")
-             )
-         );
+        MatcherAssert.assertThat(
+            String.format("Couldn't convert versioned object %s to string", name),
+            name.toString(),
+            Matchers.equalTo(
+                String.join(OnVersioned.DELIMITER, OnVersionedTest.STRING, "9c93528")
+            )
+        );
     }
 }
