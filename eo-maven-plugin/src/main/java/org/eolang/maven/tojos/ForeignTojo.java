@@ -113,6 +113,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo probed.
+     * @return The probed.
+     */
+    public String probed() {
+        return this.delegate.get(ForeignTojos.Attribute.PROBED.key());
+    }
+
+    /**
      * Checks if tojo was not already optimized.
      *
      * @return True if optimization is required, false otherwise.

@@ -23,11 +23,9 @@
  */
 package org.eolang.maven;
 
-import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
@@ -57,13 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  * @todo #2302:30min Refactor tests in the class. Looks like there is a lot of
  *  code duplication among all tests in the class. Need to reduce it somehow.
- * @todo #2302:30min Refactor firstEntity method. The "first entity of the
- *  foreign tojos" looks strange. It looks like we are tying to scan an
- *  intermediate state which we are trying to read in the middle of the process.
- *  It lead to a fragile implementation. Could we check the result somehow else?
- *  Or to skip that check at all?
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @ExtendWith(OnlineCondition.class)
 final class ProbeMojoTest {
     /**
@@ -75,14 +67,12 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            ProbeMojoTest.firstEntry(
-                new FakeMaven(temp)
-                    .with("foreignFormat", "json")
-                    .withProgram(ProbeMojoTest.program())
-                    .execute(new FakeMaven.Probe())
-                    .foreignPath(),
-                "probed"
-            ),
+            new FakeMaven(temp)
+                .with("foreignFormat", "json")
+                .withProgram(ProbeMojoTest.program())
+                .execute(new FakeMaven.Probe())
+                .programTojo()
+                .probed(),
             Matchers.equalTo("5")
         );
     }
@@ -93,36 +83,31 @@ final class ProbeMojoTest {
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
-        final CommitHash hash = new ChCached(
-            new ChText(temp.resolve("tags.txt"), "master")
-        );
         MatcherAssert.assertThat(
-            ProbeMojoTest.firstEntry(
-                new FakeMaven(temp)
-                    .with("hsh", hash)
-                    .withProgram(ProbeMojoTest.program())
-                    .execute(new FakeMaven.Probe())
-                    .foreignPath(),
-                "hash"
-            ),
+            new FakeMaven(temp)
+                .with(
+                    "hsh",
+                    new ChCached(
+                        new ChText(temp.resolve("tags.txt"), "master")
+                    )
+                )
+                .withProgram(ProbeMojoTest.program())
+                .execute(new FakeMaven.Probe())
+                .programTojo()
+                .hash(),
             Matchers.equalTo("mmmmmmm")
         );
     }
 
     @Test
     void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
-        final CommitHash hash = new ChCached(
-            new ChPattern("*.*.*:abcdefg", "1.0.0")
-        );
         MatcherAssert.assertThat(
-            ProbeMojoTest.firstEntry(
-                new FakeMaven(temp)
-                    .with("hsh", hash)
-                    .withProgram(ProbeMojoTest.program())
-                    .execute(new FakeMaven.Probe())
-                    .foreignPath(),
-                "hash"
-            ),
+            new FakeMaven(temp)
+                .with("hsh", new ChPattern("*.*.*:abcdefg", "1.0.0"))
+                .withProgram(ProbeMojoTest.program())
+                .execute(new FakeMaven.Probe())
+                .programTojo()
+                .hash(),
             Matchers.equalTo("abcdefg")
         );
     }
@@ -131,17 +116,17 @@ final class ProbeMojoTest {
     @ExtendWith(OnlineCondition.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
-        final CommitHash hash = new ChRemote(tag);
         MatcherAssert.assertThat(
-            ProbeMojoTest.firstEntry(
-                new FakeMaven(temp)
-                    .with("tag", tag)
-                    .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
-                    .withProgram(ProbeMojoTest.program())
-                    .execute(new FakeMaven.Probe())
-                    .foreignPath(),
-                "probed"
-            ),
+            new FakeMaven(temp)
+                .with("tag", tag)
+                .with(
+                    "objectionaries",
+                    new Objectionaries.Fake(new OyRemote(new ChRemote(tag)))
+                )
+                .withProgram(ProbeMojoTest.program())
+                .execute(new FakeMaven.Probe())
+                .programTojo()
+                .probed(),
             Matchers.equalTo("2")
         );
     }
@@ -165,19 +150,13 @@ final class ProbeMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "First entry of tojos after probing should have contained one probed object, but it didn't",
-            ProbeMojoTest.firstEntry(
-                maven.externalPath(),
-                "probed"
-            ),
+            "Program entry in tojos after probing should contain one probed object",
+            maven.programExternalTojo().probed(),
             Matchers.equalTo("1")
         );
         MatcherAssert.assertThat(
-            "First entry of tojos after probing should have contained given hash, but it didn't",
-            ProbeMojoTest.firstEntry(
-                maven.externalPath(),
-                "hash"
-            ),
+            "Program entry in tojos after probing should contain given hash",
+            maven.programExternalTojo().hash(),
             Matchers.equalTo(hash.value())
         );
     }
@@ -221,18 +200,12 @@ final class ProbeMojoTest {
         );
         MatcherAssert.assertThat(
             "First entry of tojos after probing should have contained two probed objects, but it didn't",
-            ProbeMojoTest.firstEntry(
-                maven.externalPath(),
-                "probed"
-            ),
+            maven.programExternalTojo().probed(),
             Matchers.equalTo("2")
         );
         MatcherAssert.assertThat(
             "First entry of tojos after probing should have contained given hash, but it didn't",
-            ProbeMojoTest.firstEntry(
-                maven.externalPath(),
-                "hash"
-            ),
+            maven.programExternalTojo().hash(),
             Matchers.equalTo(first.value())
         );
     }
@@ -243,9 +216,5 @@ final class ProbeMojoTest {
                 new ResourceOf("org/eolang/maven/simple-io.eo")
             )
         ).asString();
-    }
-
-    private static String firstEntry(final Path foreign, final String field) {
-        return new LinkedList<>(new MnCsv(foreign.toFile()).read()).getFirst().get(field);
     }
 }
