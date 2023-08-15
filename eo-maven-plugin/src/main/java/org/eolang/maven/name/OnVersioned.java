@@ -23,111 +23,64 @@
  */
 package org.eolang.maven.name;
 
-import java.util.Map;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.hash.CommitHashesMap;
 
 /**
- * Object name versioned.
- * This is object name that parses raw sting like:
- * - "org.eolang.text#0.1.0" into "org.eolang.text"
- *   and "4b19944"
- * - "org.eolang.string#a1b2c3d" into "org.eolang.string"
- *   and "be83d9a"
- * Pay attention to that versions transformed into narrow hashes.
- * If a version is not provided - behaves like {@link OnUnversioned}.
+ * Object name with default hash.
+ * If a given object does not contain a version - put the default one.
  *
- * @since 0.30
- * @todo #2376:90min Frontend and backend delimiters differ.
- *  I was confused with the delimiter '#' that we use in {@link OnVersioned} and delimiter which
- *  we use in the frontend. For example:
- *  - "org.eolang.text|0.1.0" - frontend
- *  - "org.eolang.text#0.1.0" - backend
- *  The problem here is that we use  the '|' delimiter on the frontend and '#' in the backend, but
- *  both of them mean the same thing - object name + version.
- *  I believe that we need to use the same symbol in both places, because it will be easier to
- *  understand the code. So, my suggestion to use '|' in both places.
+ * @since 0.29.6
  */
 public final class OnVersioned implements ObjectName {
 
     /**
-     * Delimiter between name and hash in EO object name.
+     * Object with or without hash.
      */
-    public static final String DELIMITER = "#";
+    private final Unchecked<String> object;
 
     /**
-     * Default hashes.
+     * Default hash.
      */
-    private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
+    private final CommitHash hsh;
 
     /**
-     * Raw string.
-     * Examples:
-     * - "org.eolang.text#0.1.0"
-     * - "org.eolang.string#1.23.1"
-     * - "org.eolang.math#3.3.3"
-     */
-    private final Unchecked<String> raw;
-
-    /**
-     * All hashes.
-     */
-    private final Map<String, ? extends CommitHash> hashes;
-
-    /**
-     * Constructor.
+     * Ctor.
      * @param origin Origin object name
+     * @param hash Default hash if a version in full name is absent.
      */
-    public OnVersioned(final ObjectName origin) {
-        this(origin, OnVersioned.DEFAULT);
+    public OnVersioned(final ObjectName origin, final CommitHash hash) {
+        this(new Unchecked<>(origin::toString), hash);
     }
 
     /**
-     * Constructor.
-     * @param origin Origin object name
-     * @param all All hashes
+     * Ctor.
+     * Please use the constructor for tests only because it can't guarantee
+     * that {@code hash} is actually hash but not a random string.
+     * @param object Object full name with a version or not.
+     * @param hash Default hash if a version in full name is absent.
      */
-    public OnVersioned(
-        final ObjectName origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
-        this(new Unchecked<>(origin::toString), all);
+    public OnVersioned(final String object, final String hash) {
+        this(object, new CommitHash.ChConstant(hash));
     }
 
     /**
-     * Constructor.
-     * @param origin Raw string.
+     * Ctor.
+     * @param object Object full name with a version or not.
+     * @param def Default hash if a version in full name is absent.
      */
-    public OnVersioned(final String origin) {
-        this(origin, OnVersioned.DEFAULT);
+    public OnVersioned(final String object, final CommitHash def) {
+        this(new Unchecked<>(() -> object), def);
     }
 
     /**
-     * Constructor.
-     * @param origin Raw string.
-     * @param all All hashes.
+     * Ctor.
+     * @param object Object full name with a version or not as scalar.
+     * @param def Default hash if a version in full name is absent.
      */
-    public OnVersioned(
-        final String origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
-        this(() -> origin, all);
-    }
-
-    /**
-     * Constructor.
-     * @param origin Raw as scalar.
-     * @param all All hashes.
-     */
-    OnVersioned(
-        final Scalar<String> origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
-        this.raw = new Unchecked<>(new Sticky<>(origin));
-        this.hashes = all;
+    private OnVersioned(final Unchecked<String> object, final CommitHash def) {
+        this.object = object;
+        this.hsh = def;
     }
 
     @Override
@@ -137,31 +90,27 @@ public final class OnVersioned implements ObjectName {
 
     @Override
     public CommitHash hash() {
-        return this.hashes.get(this.split()[1]);
+        return new CommitHash.ChConstant(this.split()[1]);
     }
 
     @Override
     public String toString() {
-        final String result;
-        if (this.raw.value().contains(OnVersioned.DELIMITER)) {
-            result = String.join(
-                "",
-                this.value(),
-                OnVersioned.DELIMITER,
-                this.hash().value()
-            );
-        } else {
-            result = this.value();
-        }
-        return result;
+        return String.join(
+            OnReplaced.DELIMITER,
+            this.split()[0],
+            this.split()[1]
+        );
     }
 
     /**
-     * Split raw string into name and hash.
-     * @return Array of two elements: name and hash.
+     * Split a given object.
+     * @return Split object to name and hash.
      */
     private String[] split() {
-        return this.raw.value().split(OnVersioned.DELIMITER);
+        String[] splt = this.object.value().split(OnReplaced.DELIMITER);
+        if (splt.length == 1) {
+            splt = new String[]{splt[0], this.hsh.value()};
+        }
+        return splt;
     }
 }
-

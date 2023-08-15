@@ -56,6 +56,7 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -448,6 +449,22 @@ public final class FakeMaven {
     }
 
     /**
+     * Retrieve the entry of the last program in the eo-foreign.csv file.
+     * @return Tojo entry.
+     */
+    ForeignTojo programTojo() {
+        return this.foreignTojos().find(this.tojoId(this.current.get() - 1));
+    }
+
+    /**
+     * Same as {@link FakeMaven#programTojo()} but for external tojos.
+     * @return Tojo entry.
+     */
+    ForeignTojo programExternalTojo() {
+        return this.externalTojos().find(this.tojoId(this.current.get() - 1));
+    }
+
+    /**
      * The version of eo-maven-plugin for tests.
      * @return Version.
      */
@@ -496,7 +513,7 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
-        final String object = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
+        final String object = this.tojoId(this.current.get());
         final String scope = this.scope();
         final String version = "0.25.0";
         final Path source = this.workspace.absolute(path);
@@ -537,6 +554,15 @@ public final class FakeMaven {
      */
     private String scope() {
         return String.valueOf(this.params.getOrDefault("scope", "compile"));
+    }
+
+    /**
+     * The id of the program in tojos file.
+     * @param id Number of the program.
+     * @return String id.
+     */
+    private static String tojoId(final int id) {
+        return String.format("foo.x.main%s", FakeMaven.suffix(id));
     }
 
     /**

@@ -36,8 +36,8 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnCached;
-import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
@@ -110,7 +110,7 @@ public final class PullMojo extends SafeMojo {
             final ObjectName name = new OnCached(
                 new OnSwap(
                     this.withVersions,
-                    new OnDefault(tojo.identifier(), this.hsh)
+                    new OnVersioned(tojo.identifier(), this.hsh)
                 )
             );
             tojo.withSource(this.pull(name).toAbsolutePath())
