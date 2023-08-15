@@ -69,7 +69,7 @@ final class ProbeMojoTest {
         final String expected = "5";
         MatcherAssert.assertThat(
             String.format(
-                "Number of objects that we have found during the probing phase should be equal %s",
+                "Number of objects that we should find during the probing phase should be equal %s",
                 expected
             ),
             new FakeMaven(temp)
@@ -84,17 +84,23 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
+        final String tag = "master";
+        final String tags = "org/eolang/maven/commits/tags.txt";
         new Home(temp).save(
-            new ResourceOf("org/eolang/maven/commits/tags.txt"),
+            new ResourceOf(tags),
             Paths.get("tags.txt")
         );
         MatcherAssert.assertThat(
-            "",
+            String.format(
+                "The hash of the program should be equal to the hash of the commit for the '%s' tag. See '%s' file",
+                tag,
+                tags
+            ),
             new FakeMaven(temp)
                 .with(
                     "hsh",
                     new ChCached(
-                        new ChText(temp.resolve("tags.txt"), "master")
+                        new ChText(temp.resolve("tags.txt"), tag)
                     )
                 )
                 .withProgram(ProbeMojoTest.program())
@@ -108,6 +114,7 @@ final class ProbeMojoTest {
     @Test
     void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
         MatcherAssert.assertThat(
+            "The hash of the program tojo should be equal to the given hash pattern",
             new FakeMaven(temp)
                 .with("hsh", new ChPattern("*.*.*:abcdefg", "1.0.0"))
                 .withProgram(ProbeMojoTest.program())
@@ -123,6 +130,10 @@ final class ProbeMojoTest {
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
         MatcherAssert.assertThat(
+            String.format(
+                "The hash of the program tojo should be equal to the hash of the commit for the '%s' tag",
+                tag
+            ),
             new FakeMaven(temp)
                 .with("tag", tag)
                 .with(

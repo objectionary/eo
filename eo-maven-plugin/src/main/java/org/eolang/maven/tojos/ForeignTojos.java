@@ -365,6 +365,7 @@ public final class ForeignTojos implements Closeable {
 
         /**
          * Hash.
+         * Object version hash from git.
          */
         HASH("hash"),
 
