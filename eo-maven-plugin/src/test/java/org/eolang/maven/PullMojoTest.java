@@ -38,7 +38,7 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -70,7 +70,7 @@ final class PullMojoTest {
     /**
      * Versioned source.
      */
-    private static final ObjectName VERSIONED = new OnDefault(
+    private static final ObjectName VERSIONED = new OnVersioned(
         "%s/org/eolang/io/stdout",
         "9c93528.eo"
     );
@@ -181,7 +181,7 @@ final class PullMojoTest {
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.externalTojos()
-            .add(new OnDefault(PullMojoTest.STDOUT, "9c93528"))
+            .add(new OnVersioned(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.with("withVersions", true)
             .execute(PullMojo.class);
@@ -242,8 +242,8 @@ final class PullMojoTest {
             .with("hsh", fourth)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
-        final ObjectName sprintf = new OnDefault("%s/org/eolang/txt/sprintf", "17f8929.eo");
-        final ObjectName string = new OnDefault("%s/org/eolang/string", "5f82cc1.eo");
+        final ObjectName sprintf = new OnVersioned("%s/org/eolang/txt/sprintf", "17f8929.eo");
+        final ObjectName string = new OnVersioned("%s/org/eolang/string", "5f82cc1.eo");
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",

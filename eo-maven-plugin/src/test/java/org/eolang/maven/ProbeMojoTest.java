@@ -38,7 +38,7 @@ import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
@@ -61,7 +61,7 @@ final class ProbeMojoTest {
     /**
      * Stdout.
      */
-    private static final ObjectName STDOUT = new OnDefault("org.eolang.io.stdout", "9c93528");
+    private static final ObjectName STDOUT = new OnVersioned("org.eolang.io.stdout", "9c93528");
 
     @Test
     @ExtendWith(OnlineCondition.class)
@@ -168,7 +168,7 @@ final class ProbeMojoTest {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");
         final CommitHash second = hashes.get("0.28.6");
-        final ObjectName text = new OnDefault("org.eolang.txt.text", "5f82cc1");
+        final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");
         final FakeMaven maven = new FakeMaven(temp)
             .with(
                 "objectionaries",
