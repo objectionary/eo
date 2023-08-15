@@ -24,6 +24,9 @@
 package org.eolang.maven.name;
 
 import java.util.Map;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 
@@ -67,12 +70,32 @@ public final class OnReplaced implements ObjectName {
      * - "org.eolang.string#1.23.1"
      * - "org.eolang.math#3.3.3"
      */
-    private final String raw;
+    private final Unchecked<String> raw;
 
     /**
      * All hashes.
      */
     private final Map<String, ? extends CommitHash> hashes;
+
+    /**
+     * Constructor.
+     * @param origin Origin object name.
+     */
+    public OnReplaced(final ObjectName origin) {
+        this(origin, OnReplaced.DEFAULT);
+    }
+
+    /**
+     * Constructor.
+     * @param origin Origin object name.
+     * @param all All hashes.
+     */
+    public OnReplaced(
+        final ObjectName origin,
+        final Map<String, ? extends CommitHash> all
+    ) {
+        this(origin::toString, all);
+    }
 
     /**
      * Constructor.
@@ -91,7 +114,19 @@ public final class OnReplaced implements ObjectName {
         final String origin,
         final Map<String, ? extends CommitHash> all
     ) {
-        this.raw = origin;
+        this(() -> origin, all);
+    }
+
+    /**
+     * Constructor.
+     * @param origin Raw string as scalar.
+     * @param all All hashes.
+     */
+    OnReplaced(
+        final Scalar<String> origin,
+        final Map<String, ? extends CommitHash> all
+    ) {
+        this.raw = new Unchecked<>(new Sticky<>(origin));
         this.hashes = all;
     }
 
@@ -108,7 +143,7 @@ public final class OnReplaced implements ObjectName {
     @Override
     public String toString() {
         final String result;
-        if (this.raw.contains(OnReplaced.DELIMITER)) {
+        if (this.raw.value().contains(OnReplaced.DELIMITER)) {
             result = String.join(
                 "",
                 this.value(),
@@ -126,7 +161,7 @@ public final class OnReplaced implements ObjectName {
      * @return Array of two elements: name and hash.
      */
     private String[] split() {
-        return this.raw.split(OnReplaced.DELIMITER);
+        return this.raw.value().split(OnReplaced.DELIMITER);
     }
 }
 

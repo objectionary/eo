@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -87,8 +87,8 @@ public final class MarkMojo extends SafeMojo {
             .map(
                 file -> new OnSwap(
                     this.withVersions,
-                    new OnVersioned(
-                        new OnDefault(
+                    new OnReplaced(
+                        new OnVersioned(
                             unplace.make(file),
                             version
                         ),
