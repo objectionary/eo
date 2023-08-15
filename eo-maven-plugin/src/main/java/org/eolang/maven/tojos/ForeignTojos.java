@@ -341,7 +341,7 @@ public final class ForeignTojos implements Closeable {
          * Let's consider the next eo code:
          * <p>
          * {@code
-         *  [] > main
+         * [] > main
          *   QQ.io.stdout > @
          *     QQ.txt.sprintf "I am %d years old"
          *       plus.
