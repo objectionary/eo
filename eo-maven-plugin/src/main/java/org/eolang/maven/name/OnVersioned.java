@@ -79,6 +79,14 @@ public final class OnVersioned implements ObjectName {
     private final Map<String, ? extends CommitHash> hashes;
 
     /**
+     * Constructor.
+     * @param origin Origin object name
+     */
+    public OnVersioned(final ObjectName origin) {
+        this(origin, OnVersioned.DEFAULT);
+    }
+
+    /**
      * Constructor
      * @param origin Origin object name
      * @param all All hashes

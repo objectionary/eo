@@ -36,6 +36,10 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.30
  */
 final class OnVersionedTest {
+    /**
+     * String.
+     */
+    private static final String STRING = "org.eolang.string";
 
     @ParameterizedTest
     @CsvSource({
@@ -87,7 +91,7 @@ final class OnVersionedTest {
         "be83d9a, org.eolang.eagle#0.28.9"
     })
     void retrievesHash(final String expected, final String origin) {
-        final OnVersioned name = new OnVersioned(origin, new CommitHashesMap.Fake());
+        final ObjectName name = new OnVersioned(origin, new CommitHashesMap.Fake());
         MatcherAssert.assertThat(
             String.format("Can't retrieve object hash from %s versioned object %s", name, origin),
             name.hash().value(),
@@ -97,25 +101,43 @@ final class OnVersionedTest {
 
     @Test
     void convertsToStringWithNonEmptyVersion() {
-        final OnVersioned name = new OnVersioned(
-            "org.eolang.string#0.23.17",
+        final ObjectName name = new OnVersioned(
+            String.join(OnVersioned.DELIMITER, OnVersionedTest.STRING, "0.23.17"),
             new CommitHashesMap.Fake()
         );
         MatcherAssert.assertThat(
             String.format("Can't convert versioned object %s to string", name),
             name.toString(),
-            Matchers.equalTo("org.eolang.string#15c85d7")
+            Matchers.equalTo(
+                String.join(OnVersioned.DELIMITER, OnVersionedTest.STRING, "15c85d7")
+            )
         );
     }
 
     @Test
     void convertsToStringWithEmptyVersion() {
-        final String string = "org.eolang.string";
-        final OnVersioned name = new OnVersioned(string);
+        final ObjectName name = new OnVersioned(OnVersionedTest.STRING);
         MatcherAssert.assertThat(
             String.format("Can't convert versioned object %s to string", name),
             name.toString(),
-            Matchers.equalTo(string)
+            Matchers.equalTo(OnVersionedTest.STRING)
         );
+    }
+
+    @Test
+    void convertsToStringFromOtherObjectName() {
+        final ObjectName name = new OnVersioned(
+            new OnDefault(
+                OnVersionedTest.STRING,
+                "0.28.5"
+            )
+        );
+         MatcherAssert.assertThat(
+             String.format("Couldn't convert versioned object %s to string", name),
+             name.toString(),
+             Matchers.equalTo(
+                 String.join(OnVersioned.DELIMITER, OnVersionedTest.STRING, "9c93528")
+             )
+         );
     }
 }

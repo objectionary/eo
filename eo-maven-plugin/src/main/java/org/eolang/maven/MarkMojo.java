@@ -40,7 +40,7 @@ import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
- * Extend current list of foreign objects with those
+ * Extend the current list of foreign objects with those
  * visible in resolved artifacts.
  *
  * @since 0.11
