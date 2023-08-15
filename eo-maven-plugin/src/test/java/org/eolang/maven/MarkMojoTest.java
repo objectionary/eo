@@ -97,11 +97,6 @@ final class MarkMojoTest {
         );
     }
 
-    /**
-     * Save foo/bar.eo file to target/hello/-/0.28.0/EO-SOURCES.
-     * @param temp Temp directory
-     * @throws IOException If couldn't save the file
-     */
     private static void source(final Path temp) throws IOException {
         new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
             "hi",

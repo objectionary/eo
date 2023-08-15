@@ -52,8 +52,8 @@ import org.eolang.maven.util.Rel;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
- * objects pointed by `probe` in Objectionary and if found, register them in
- * catalog.
+ * objects pointed by `probe` in Objectionary, and if found, register them in
+ * the catalog.
  * More about the purpose of this Mojo is in
  * <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
  *
