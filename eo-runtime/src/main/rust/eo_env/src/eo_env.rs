@@ -23,7 +23,7 @@
  */
 
 pub mod eo_enum;
-use jni::JNIEnv;K
+use jni::JNIEnv;
 use jni::objects::{JClass, JObject, JValue, JByteArray};
 
 pub struct EOEnv<'local> {
@@ -98,11 +98,6 @@ impl<'local> EOEnv<'_> {
         }
     }
 
-    /*
-     * @todo #2237:60min Implement "dataize" method. It must
-     *  call java dataizing method and get byte array from it.
-     *  Then it have to return byte array as a result of dataization.
-     */
     pub fn dataize(&mut self, v: u32) -> Option<Vec<i8>> {
         let java_array = JByteArray::from(
             self.java_env
