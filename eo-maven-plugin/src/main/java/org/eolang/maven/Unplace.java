@@ -27,7 +27,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 /**
- * Make program name from path.
+ * Make program name from a path.
  *
  * @since 0.1
  */
