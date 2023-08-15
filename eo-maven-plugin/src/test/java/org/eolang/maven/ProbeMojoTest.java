@@ -198,7 +198,6 @@ final class ProbeMojoTest {
                     new MapEntry<>(second, new OyRemote(second))
                 )
             )
-            .with("hashes", hashes)
             .with("withVersions", true)
             .with("hsh", first)
             .withVersionedProgram()

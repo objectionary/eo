@@ -54,6 +54,7 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -234,6 +235,7 @@ public final class FakeMaven {
                 "eoEnvDir",
                 new File("../eo-runtime/src/main/rust/eo_env")
             );
+            this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
