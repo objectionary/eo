@@ -93,7 +93,6 @@ public final class OnSwap implements ObjectName {
 
     @Override
     public String toString() {
-        final ObjectName name = this.swapped.value();
-        return name.toString();
+        return this.swapped.value().toString();
     }
 }
