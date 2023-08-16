@@ -28,7 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.Attr;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.PhMethod;
 import org.eolang.Phi;
 
 /**
@@ -81,6 +83,23 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
+        if (this.object != null) {
+            final byte[] enclosure = new Dataized(
+                new PhMethod(this.object, "as-bytes")
+            ).take(byte[].class);
+            final byte[] provided = new Dataized(
+                new PhMethod(phi, "as-bytes")
+            ).take(byte[].class);
+            if (provided.length > enclosure.length) {
+                throw new ExFailure(
+                    String.format(
+                        "Not enough memory to write: expected <%d> bytes, got <%d> bytes",
+                        enclosure.length,
+                        provided.length
+                    )
+                );
+            }
+        }
         this.object = phi;
     }
 

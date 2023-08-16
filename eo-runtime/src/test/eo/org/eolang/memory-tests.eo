@@ -29,13 +29,6 @@
 +package org.eolang
 +version 0.0.0
 
-# @todo #761:30min Let's make sure memory can only accept one "type" of data primitives.
-#  If we try to write a float into a memory that was initialized with an int, we should
-#  get an error. The same goes for strings and booleans. We should also make sure that
-#  we can't write a string that is longer than the memory size. We should also make sure
-#  that we can't write a number that is bigger than the memory size. And etc.
-#  We can also implement memory in EO instead of Java and let it use ram object.
-#  Let's not forget to update the "Origins of Objects" paper.
 [] > writes-into-memory
   memory 0 > x
   assert-that > @
@@ -48,7 +41,7 @@
   memory 0 > m
   assert-that > @
     seq
-      m.write "Hello, world!"
+      m.write 112
       m.write 42
       m
     $.equal-to 42
@@ -98,72 +91,66 @@
 
 [] > memory-is-strictly-typed-bool-error-overflow
   memory FALSE > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write 86124867.88 > @
-        [e]
-          e > @
-        nop
-      $.equal-to "Not enough memory to write: expected <1> byte, got <2^61>"
+  assert-that > @
+    try
+      []
+        m.write 86124867.88 > @
+      [e]
+        e > @
+      nop
+    $.contains-string "Not enough memory to write: expected <1> bytes, got <8> bytes"
 
 [] > memory-is-strictly-typed-string-error-overflow
   memory "Hello" > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write "Much longer string!" > @
-        [e]
-          e > @
-        nop
-      $.equal-to "Not enough memory to write: expected <5>, got <20>"
+  assert-that > @
+    try
+      []
+        m.write "Much longer string!" > @
+      [e]
+        e > @
+      nop
+    $.contains-string "Not enough memory to write: expected <5> bytes, got <19> bytes"
 
 [] > memory-is-strictly-typed-int
   memory 12248 > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write 2556 > @
-        [e]
-          e > @
-        nop
-      $.equal-to 2556
+  assert-that > @
+    try
+      []
+        m.write 2556 > @
+      [e]
+        e > @
+      nop
+    $.equal-to 2556
 
 [] > memory-is-strictly-typed-float
   memory 245.88 > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write 82.22 > @
-        [e]
-          e > @
-        nop
-      $.equal-to 82.22
+  assert-that > @
+    try
+      []
+        m.write 82.22 > @
+      [e]
+        e > @
+      nop
+    $.equal-to 82.22
 
 [] > memory-is-strictly-typed-string
   memory "Hello" > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write "Hell" > @
-        [e]
-          e > @
-        nop
-      $.equal-to "Hell"
+  assert-that > @
+    try
+      []
+        m.write "Hell" > @
+      [e]
+        e > @
+      nop
+    $.equal-to "Hell"
 
 [] > memory-is-strictly-typed-bool
   memory FALSE > m
-  nop > @
-    assert-that
-      try
-        []
-          m.write TRUE > @
-        [e]
-          e > @
-        nop
-      $.equal-to TRUE
+  assert-that > @
+    try
+      []
+        m.write TRUE > @
+      [e]
+        e > @
+      nop
+    $.equal-to TRUE

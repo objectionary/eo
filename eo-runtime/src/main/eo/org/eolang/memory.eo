@@ -26,5 +26,7 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
+# @todo 2211:30min We can implement memory in EO instead of Java and let it use ram object.
+#  Let's not forget to update the "Origins of Objects" paper.
 # Storage of data in memory.
 [] > memory /?

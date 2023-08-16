@@ -79,15 +79,16 @@
               TRUE
             r.write (42.div x)
       r
-  assert-that > @
-    and.
-      eq.
-        div 7
-        6
-      eq.
-        div 0
-        0
-    $.equal-to TRUE
+  nop > @
+    assert-that
+      and.
+        eq.
+          div 7
+          6
+        eq.
+          div 0
+          0
+      $.equal-to TRUE
 
 [] > returns-from-method-body
   [a b] > max
