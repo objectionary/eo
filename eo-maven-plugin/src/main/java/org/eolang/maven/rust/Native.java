@@ -31,7 +31,10 @@ package org.eolang.maven.rust;
  */
 public final class Native extends Savable {
 
-    final String pack;
+    /**
+     * Package of the java file.
+     */
+    private final String pack;
 
     /**
      * Ctor.
@@ -52,7 +55,7 @@ public final class Native extends Savable {
             System.lineSeparator(),
             String.format(
                 "package %s;",
-                pack
+                this.pack
             ),
             "import org.eolang.Universe;",
             String.format(

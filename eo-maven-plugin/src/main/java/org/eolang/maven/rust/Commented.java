@@ -29,10 +29,17 @@ import org.eolang.maven.Disclaimer;
  * Commented file.
  * @since 0.30
  */
-public class Commented extends Savable {
+public final class Commented extends Savable {
 
-    final Savable origin;
-    final String start;
+    /**
+     * Origin file.
+     */
+    private final Savable origin;
+
+    /**
+     * Commentary mark.
+     */
+    private final String start;
 
     /**
      * Ctor.

@@ -24,7 +24,6 @@
 package org.eolang.maven.rust;
 
 import java.io.IOException;
-import org.cactoos.Scalar;
 import org.eolang.maven.footprint.Footprint;
 
 /**
@@ -45,11 +44,6 @@ public abstract class Savable {
     protected final String ext;
 
     /**
-     * Content inside file.
-     */
-    abstract String content();
-
-    /**
      * Ctor.
      * @param name Name of the file.
      * @param ext Extension.
@@ -67,4 +61,10 @@ public abstract class Savable {
     public void save(final Footprint footprint) throws IOException {
         footprint.save(this.name, this.ext, this::content);
     }
+
+    /**
+     * Content inside file.
+     * @return Content.
+     */
+    abstract String content();
 }

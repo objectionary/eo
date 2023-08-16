@@ -24,16 +24,11 @@
 package org.eolang.maven.rust;
 
 import com.moandjiezana.toml.TomlWriter;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.cactoos.io.OutputStreamTo;
-import org.cactoos.io.OutputTo;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 
@@ -66,8 +61,8 @@ public class Cargo extends Savable {
      */
     public Cargo(final String name) {
         super(
-            name,
-            "rs"
+            "Cargo",
+            "toml"
         );
         this.pack = new MapOf<>(
             new MapEntry<>("name", name),
@@ -93,6 +88,7 @@ public class Cargo extends Savable {
 
     /**
      * Save it to specified folder.
+     * @return Content of built cargo.
      * @throws IOException If any issues with I/O
      */
     public String content() {

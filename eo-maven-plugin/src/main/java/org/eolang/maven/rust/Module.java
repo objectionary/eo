@@ -30,7 +30,10 @@ package org.eolang.maven.rust;
  */
 public class Module extends Savable {
 
-    final String raw;
+    /**
+     * Code in the module.
+     */
+    private final String raw;
 
     /**
      * Ctor.
@@ -46,7 +49,7 @@ public class Module extends Savable {
     }
 
     @Override
-    String content() {
+    final String content() {
         return this.raw;
     }
 
