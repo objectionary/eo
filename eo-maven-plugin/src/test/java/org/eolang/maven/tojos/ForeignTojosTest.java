@@ -24,10 +24,14 @@
 package org.eolang.maven.tojos;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -76,6 +80,39 @@ final class ForeignTojosTest {
         MatcherAssert.assertThat(
             this.tojos.contains(considered),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void findsLookingTojoCorrectly() {
+        final String looking = "looking";
+        MatcherAssert.assertThat(
+            "Found tojo should be the same as added",
+            this.tojos.add(looking),
+            Matchers.equalTo(this.tojos.find(looking))
+        );
+    }
+
+    @Test
+    void throwsExceptionIfTojoWasNotFound() {
+        final String id = "absent";
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> this.tojos.find(id),
+            String.format("Should throw an exception if tojo with id='%s' was not found", id)
+        );
+    }
+
+    @Test
+    void findsAnyTojoIfSeveralTojosWithTheSameIdWereAdded() {
+        final String same = "same";
+        final ForeignTojo first = this.tojos.add(same);
+        final ForeignTojo second = this.tojos.add(same);
+        final List<ForeignTojo> expected = Arrays.asList(first, second);
+        MatcherAssert.assertThat(
+            "We don't care which tojo will be returned, but it should be one of the added tojos",
+            expected,
+            Matchers.hasItem(this.tojos.find(same))
         );
     }
 
