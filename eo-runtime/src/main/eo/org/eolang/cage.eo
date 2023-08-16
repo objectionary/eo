@@ -59,5 +59,10 @@
 #         cge' # <--copy is made here
 #         1
 #     cge
+# @todo #1698:60min Make up with an idea how to prevent StackOverflow exception
+#  or warn a user if he writes cage into the same cage. Options: 1) xsl file
+#  that somehow checks if cage is about to write to the same cage 2) catch
+#  StackOverflow exception at the top level and say to the user that maybe he
+#  writes cage to the same cage
 [] > cage /?
 
