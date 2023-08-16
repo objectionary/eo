@@ -30,6 +30,8 @@ package org.eolang.maven.rust;
  */
 public class Module extends Savable {
 
+    final String raw;
+
     /**
      * Ctor.
      * @param raw Source code of rust insert.
@@ -38,8 +40,14 @@ public class Module extends Savable {
     public Module(final String raw, final String name) {
         super(
             name,
-            "rs",
-            () -> raw
+            "rs"
         );
+        this.raw = raw;
     }
+
+    @Override
+    String content() {
+        return this.raw;
+    }
+
 }

@@ -32,7 +32,7 @@ import org.eolang.maven.footprint.Footprint;
  * @since 0.30
  * @checkstyle VisibilityModifierCheck (20 lines)
  */
-public class Savable {
+public abstract class Savable {
 
     /**
      * Name of file.
@@ -47,18 +47,16 @@ public class Savable {
     /**
      * Content inside file.
      */
-    protected final Scalar<String> content;
+    abstract String content();
 
     /**
      * Ctor.
      * @param name Name of the file.
      * @param ext Extension.
-     * @param content Content.
      */
-    public Savable(final String name, final String ext, final Scalar<String> content) {
+    public Savable(final String name, final String ext) {
         this.name = name;
         this.ext = ext;
-        this.content = content;
     }
 
     /**
@@ -67,6 +65,6 @@ public class Savable {
      * @throws IOException If any issues with IO.
      */
     public void save(final Footprint footprint) throws IOException {
-        footprint.save(this.name, this.ext, this.content);
+        footprint.save(this.name, this.ext, this::content);
     }
 }

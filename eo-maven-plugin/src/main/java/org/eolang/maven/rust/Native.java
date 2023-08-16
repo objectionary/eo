@@ -31,6 +31,8 @@ package org.eolang.maven.rust;
  */
 public final class Native extends Savable {
 
+    final String pack;
+
     /**
      * Ctor.
      * @param name Name of the class.
@@ -39,25 +41,30 @@ public final class Native extends Savable {
     public Native(final String name, final String pack) {
         super(
             name,
-            "java",
-            () -> String.join(
-                System.lineSeparator(),
-                String.format(
-                    "package %s;",
-                    pack
-                ),
-                "import org.eolang.Universe;",
-                String.format(
-                    "public class %s {",
-                    name
-                ),
-                String.format(
-                    "    public static native byte[] %s",
-                    name
-                ),
-                "        (final Universe universe);",
-                "}"
-            )
+            "java"
+        );
+        this.pack = pack;
+    }
+
+    @Override
+    String content() {
+        return String.join(
+            System.lineSeparator(),
+            String.format(
+                "package %s;",
+                pack
+            ),
+            "import org.eolang.Universe;",
+            String.format(
+                "public class %s {",
+                name
+            ),
+            String.format(
+                "    public static native byte[] %s",
+                name
+            ),
+            "        (final Universe universe);",
+            "}"
         );
     }
 }
