@@ -46,6 +46,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -122,6 +123,7 @@ public class EOrust extends PhDefault {
         super(sigma);
         this.add("code", new AtFree());
         this.add("params", new AtFree());
+        this.add("abstract", new AtFree());
         this.add(
             "φ",
             new AtComposite(
@@ -145,7 +147,9 @@ public class EOrust extends PhDefault {
                         );
                     }
                     return EOrust.translate(
-                        (byte[]) method.invoke(null, new Universe(rho))
+                        (byte[]) method.invoke(
+                            null, new Universe(rho.attr("abstract").get())
+                        )
                     );
                 }
             )

@@ -39,6 +39,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.equal-to
@@ -57,6 +58,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.equal-to
@@ -74,6 +76,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.equal-to
@@ -91,6 +94,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.equal-to
@@ -109,6 +113,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.not
@@ -127,6 +132,7 @@
     }
     """
     *
+    []
   assert-that > @
     r
     $.not
@@ -149,6 +155,7 @@
     }
     """
     *
+    []
   assert-that > @
     insert
     $.not
@@ -169,6 +176,7 @@
     }
     """
     *
+    []
   assert-that > @
     copy
     $.not
@@ -183,14 +191,48 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("^.a") as u32;
-        let _bytes = env.dataize(v).unwrap();
-        EOInt(v as i64)
+      let v = env.find("^.a") as u32;
+      let _bytes = env.dataize(v).unwrap();
+      EOInt(v as i64)
     }
     """
     *
+    []
   assert-that > @
     dataized
     $.not
       $.less-than
         0
+
+[] > rust-plus
+  5 > a
+  10 > b
+  QQ.rust > plus
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    use byteorder::{BigEndian, ReadBytesExt};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let a = env.find("^.a") as u32;
+      let b = env.find("^.b") as u32;
+      let bytes_a = env.dataize(a).unwrap();
+      let mut arr_a = unsafe { &*(&bytes_a[0..] as *const _  as *const [u8]) };
+
+      let bytes_b = env.dataize(b).unwrap();
+      let mut arr_b = unsafe { &*(&bytes_b[0..] as *const _  as *const [u8]) };
+
+      let a = arr_a.read_i64::<BigEndian>().unwrap();
+      let b = arr_b.read_i64::<BigEndian>().unwrap();
+      println!("sum 5 + 10 = {}", a + b);
+
+      EOInt(a + b)
+    }
+    """
+    *
+      "byteorder:1.4.3"
+    []
+  assert-that > @
+    plus
+    $.equal-to 15

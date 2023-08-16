@@ -111,7 +111,9 @@ impl<'local> EOEnv<'_> {
             ).unwrap().l().unwrap());
         let size = self.java_env.get_array_length(&java_array).unwrap();
         let mut bytes = vec![0; size.try_into().unwrap()];
-        self.java_env.get_byte_array_region(&java_array, 0, &mut bytes[0..]);
+        if self.java_env.get_byte_array_region(&java_array, 0, &mut bytes[0..]).is_err() {
+            return None;
+        }
         return Some(bytes);
     }
 }
