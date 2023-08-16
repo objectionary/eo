@@ -33,12 +33,6 @@ import org.eolang.maven.hash.CommitHash;
  * If a second object is not provided - behaves like {@link OnUnversioned}
  *
  * @since 0.29.6
- * @todo #2328:30min Inline code in {@code toString()} method. For some reason
- *  Codacy static analyzer fails on {@code toString()} method and says that
- *  "it's unnecessary to call toString() on String object". It does not
- *  understand that {@code this.swapped.value()} is not a String for some
- *  reason. Codacy checks only new added files, so need to inline that code when
- *  this file is already in the codebase.
  */
 public final class OnSwap implements ObjectName {
     /**
@@ -93,7 +87,6 @@ public final class OnSwap implements ObjectName {
 
     @Override
     public String toString() {
-        final ObjectName name = this.swapped.value();
-        return name.toString();
+        return String.valueOf(this.swapped.value());
     }
 }
