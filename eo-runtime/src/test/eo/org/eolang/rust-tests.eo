@@ -97,6 +97,7 @@
       -1.23456789
 
 [] > rust-find-returns-int
+  123 > a
   QQ.rust > r
     """
     use eo_env::EOEnv;
@@ -104,7 +105,7 @@
     use eo_env::eo_enum::EO::{EOInt};
 
     pub fn foo(env: &mut EOEnv) -> EO {
-      EOInt(env.find("^").into())
+      EOInt(env.find("^.a").into())
     }
     """
     *
@@ -133,14 +134,16 @@
         0
 
 [] > rust-bind-not-fails
+  1 > a
+  2 > b
   QQ.rust > insert
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v1 = env.find("a") as u32;
-        let v2 = env.find("b") as u32;
+        let v1 = env.find("^.a") as u32;
+        let v2 = env.find("^.b") as u32;
         env.bind(v1 , v2, "EO-att");
         return EOInt(v1 as i64);
     }
@@ -153,13 +156,14 @@
         0
 
 [] > rust-copy-not-fails
+  1 > a
   QQ.rust > copy
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("a") as u32;
+        let v = env.find("^.a") as u32;
         let copy = env.copy(v).unwrap();
         EOInt(copy as i64)
     }
@@ -172,13 +176,14 @@
         0
 
 [] > rust-dataize-not-fails
+  1 > a
   QQ.rust > dataized
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("a") as u32;
+        let v = env.find("^.a") as u32;
         let _bytes = env.dataize(v).unwrap();
         EOInt(v as i64)
     }
