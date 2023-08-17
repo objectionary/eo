@@ -124,8 +124,41 @@ public class EOrust extends PhDefault {
         this.add("code", new AtFree());
         this.add("params", new AtFree());
         this.add(
-            "φ"
-
+            "φ",
+            new AtComposite(
+                this,
+                rho -> {
+                    final String name = NAMES.get(
+                        rho.attr("code").get().locator().split(":")[0]
+                    );
+                    final Method method = Class.forName(
+                        String.format(
+                            "EOrust.natives.%s",
+                            name
+                        )
+                    ).getDeclaredMethod(name, Universe.class);
+                    if (method.getReturnType() != byte[].class) {
+                        throw new ExFailure(
+                            "Return type of %s is %s, required %s",
+                            method,
+                            method.getReturnType(),
+                            byte[].class
+                        );
+                    }
+                    final Phi portal = new Dataized(
+                        rho
+                        .attr("params").get()
+                        .attr("Δ").get()
+                    ).take(Phi[].class)[0];
+                    return EOrust.translate(
+                        (byte[]) method.invoke(
+                            null, new Universe(
+                                portal
+                            )
+                        )
+                    );
+                }
+            )
         );
     }
 
