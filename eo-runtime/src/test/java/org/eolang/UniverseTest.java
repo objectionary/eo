@@ -58,7 +58,7 @@ final class UniverseTest {
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
-                    "%s.%s",
+                    "%s.%s..",
                     UniverseTest.ATT,
                     UniverseTest.ATT
                     )
@@ -103,6 +103,31 @@ final class UniverseTest {
         );
     }
 
+    @Test
+    void putsToIndexed() {
+        final Universe universe = new Universe(new DummyWithAt(Phi.Φ));
+        final int attribute = universe.find("");
+        final byte[] data = new byte[]{0x1, 0x2, 0x3};
+        universe.put(
+            attribute,
+            data
+        );
+        MatcherAssert.assertThat(
+            universe.dataize(attribute),
+            Matchers.equalTo(data)
+        );
+    }
+
+    @Test
+    void throwsIfWrongPut() {
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Universe(
+                new DummyWithStructure(Phi.Φ)
+            ).put(-1, new byte[]{0x1})
+        );
+    }
+
     /**
      * Dummy phi with plain attribute.
      * @since 0.31
@@ -116,6 +141,7 @@ final class UniverseTest {
          */
         DummyWithAt(final Phi sigma, final String att) {
             super(sigma);
+            this.add("Δ", new AtFree());
             this.add(att, new AtComposite(sigma, self -> new Data.ToPhi(1L)));
         }
 
