@@ -1,0 +1,25 @@
+name: GPT-code-review
+on:
+  pull_request:
+    branches: [master]
+permissions:
+  pull-requests: write
+  contents: read
+jobs:
+  build:
+    if: false
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install code-review-gpt
+      - run: npx code-review-gpt review --ci=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.sha }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
