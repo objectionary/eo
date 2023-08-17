@@ -63,16 +63,11 @@ final class PullMojoTest {
     private static final String STDOUT = "org.eolang.io.stdout";
 
     /**
-     * Stdout source.
-     */
-    private static final String SOURCE = "%s/org/eolang/io/stdout.eo";
-
-    /**
      * Versioned source.
      */
     private static final ObjectName VERSIONED = new OnVersioned(
-        "%s/org/eolang/io/stdout",
-        "9c93528.eo"
+        "org.eolang.io.stdout",
+        "9c93528"
     );
 
     @Test
@@ -84,7 +79,7 @@ final class PullMojoTest {
         maven.with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
+            PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
     }
@@ -112,7 +107,7 @@ final class PullMojoTest {
             )
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
-            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
+            PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
     }
@@ -172,7 +167,7 @@ final class PullMojoTest {
         maven.with("skip", true)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            PullMojoTest.exists(temp, PullMojoTest.SOURCE),
+            PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(false)
         );
     }
@@ -209,7 +204,8 @@ final class PullMojoTest {
                 )
             )
             .withVersionedHelloWorld()
-            .execute(new FakeMaven.Pull());
+            .execute(new FakeMaven.Pull())
+            .result();
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
@@ -242,8 +238,8 @@ final class PullMojoTest {
             .with("hsh", fourth)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
-        final ObjectName sprintf = new OnVersioned("%s/org/eolang/txt/sprintf", "17f8929.eo");
-        final ObjectName string = new OnVersioned("%s/org/eolang/string", "5f82cc1.eo");
+        final ObjectName sprintf = new OnVersioned("org.eolang.txt.sprintf", "17f8929");
+        final ObjectName string = new OnVersioned("org.eolang.string", "5f82cc1");
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
@@ -288,9 +284,16 @@ final class PullMojoTest {
      * @return If given source file exists.
      */
     private static boolean exists(final Path temp, final String source) {
-        return new Home(temp.resolve("target")).exists(
-            Paths.get(PullMojoTest.path(source))
-        );
+        return new Home(temp.resolve("target")).exists(PullMojoTest.path(source));
+    }
+
+    /**
+     * Format given a source path.
+     * @param name Source path as object name.
+     * @return Formatted source path.
+     */
+    private static Path path(final ObjectName name) {
+        return PullMojoTest.path(name.toString());
     }
 
     /**
@@ -298,16 +301,8 @@ final class PullMojoTest {
      * @param source Source path as object name.
      * @return Formatted source path.
      */
-    private static String path(final ObjectName source) {
-        return PullMojoTest.path(source.toString());
+    private static Path path(final String source) {
+        return new Place(source).make(Paths.get(PullMojo.DIR), "eo");
     }
 
-    /**
-     * Format given a source path.
-     * @param source Source path.
-     * @return Formatted source path.
-     */
-    private static String path(final String source) {
-        return String.format(source, PullMojo.DIR);
-    }
 }
