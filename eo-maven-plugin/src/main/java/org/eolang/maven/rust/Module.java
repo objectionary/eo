@@ -31,6 +31,11 @@ package org.eolang.maven.rust;
 public class Module extends Savable {
 
     /**
+     * Code in the module.
+     */
+    private final String raw;
+
+    /**
      * Ctor.
      * @param raw Source code of rust insert.
      * @param name Name of file.
@@ -38,8 +43,14 @@ public class Module extends Savable {
     public Module(final String raw, final String name) {
         super(
             name,
-            "rs",
-            () -> raw
+            "rs"
         );
+        this.raw = raw;
     }
+
+    @Override
+    final String content() {
+        return this.raw;
+    }
+
 }

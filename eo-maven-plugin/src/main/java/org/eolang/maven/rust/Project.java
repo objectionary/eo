@@ -108,7 +108,7 @@ public final class Project {
         for (final Module module: this.modules) {
             new Commented(module, "//").save(this.footprint);
         }
-        this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
+        new Commented(this.cargo, "#").save(this.footprint);
         return this.dest;
     }
 }

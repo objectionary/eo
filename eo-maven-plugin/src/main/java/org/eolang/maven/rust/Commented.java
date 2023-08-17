@@ -29,24 +29,40 @@ import org.eolang.maven.Disclaimer;
  * Commented file.
  * @since 0.30
  */
-public class Commented extends Savable {
+public final class Commented extends Savable {
+
+    /**
+     * Origin file.
+     */
+    private final Savable origin;
+
+    /**
+     * Commentary mark.
+     */
+    private final String start;
 
     /**
      * Ctor.
-     * @param original Original object to save.
+     * @param origin Original object to save.
      * @param start Prefix of commentary.
      */
-    public Commented(final Savable original, final String start) {
+    public Commented(final Savable origin, final String start) {
         super(
-            original.name,
-            original.ext,
-            () -> String.format(
-                "%s %s%s%s",
-                start,
-                new Disclaimer(),
-                System.lineSeparator(),
-                original.content.value()
-            )
+            origin.name,
+            origin.ext
+        );
+        this.origin = origin;
+        this.start = start;
+    }
+
+    @Override
+    String content() {
+        return String.format(
+            "%s %s%s%s",
+            this.start,
+            new Disclaimer(),
+            System.lineSeparator(),
+            this.origin.content()
         );
     }
 }
