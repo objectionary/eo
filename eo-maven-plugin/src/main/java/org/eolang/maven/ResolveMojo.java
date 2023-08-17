@@ -50,7 +50,7 @@ import org.eolang.maven.util.Walk;
  * Find all required runtime dependencies, download
  * them from Maven Central, unpack and place to target/eo.
  * The motivation for this mojo is simple: Maven doesn't have
- * a mechanism of adding .JAR files to transpile/test classpath in
+ * a mechanism for adding .JAR files to transpile/test classpath in
  * runtime.
  *
  * @since 0.1
