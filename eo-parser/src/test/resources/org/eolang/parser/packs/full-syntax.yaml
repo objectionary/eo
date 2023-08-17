@@ -21,6 +21,12 @@ eo: |
   +alias Test Test
   +bar Some text
   +foo
+  
+  [s] > text
+    s > @
+
+    # Trim it from both sides
+    [] > trim /string
 
   500.43.@ > one
 

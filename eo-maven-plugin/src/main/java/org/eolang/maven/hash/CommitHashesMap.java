@@ -33,7 +33,7 @@ import org.cactoos.map.MapOf;
 import org.cactoos.text.Split;
 
 /**
- * Commit hashes table as map.
+ * Commit hashes table as a map.
  * The keys - tags.
  * The values - compound hashes (7 chars)
  *
@@ -131,7 +131,8 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         "9c9352890b5d30e1b89c9147e7c95a90c9b8709f 0.28.5",
                         "17f89293e5ae6115e9a0234b754b22918c11c602 0.28.6",
                         "5f82cc1edffad67bf4ba816610191403eb18af5d 0.28.7",
-                        "be83d9adda4b7c9e670e625fe951c80f3ead4177 0.28.9"
+                        "be83d9adda4b7c9e670e625fe951c80f3ead4177 0.28.9",
+                        "9c46a671f2bc68e777aab031d57da5012ba807a7 master"
                     )
                 )
             );

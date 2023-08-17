@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -106,6 +107,7 @@ public final class PullMojo extends SafeMojo {
             );
         }
         final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+        final Collection<ObjectName> names = new ArrayList<>(0);
         for (final ForeignTojo tojo : tojos) {
             final ObjectName name = new OnCached(
                 new OnSwap(
@@ -113,13 +115,15 @@ public final class PullMojo extends SafeMojo {
                     new OnVersioned(tojo.identifier(), this.hsh)
                 )
             );
+            names.add(name);
             tojo.withSource(this.pull(name).toAbsolutePath())
                 .withHash(new ChNarrow(name.hash()));
         }
         Logger.info(
             this,
-            "%d program(s) were pulled",
-            tojos.size()
+            "%d program(s) were pulled: %s",
+            tojos.size(),
+            names
         );
     }
 
