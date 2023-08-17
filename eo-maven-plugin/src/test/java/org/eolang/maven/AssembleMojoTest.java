@@ -35,7 +35,6 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -115,15 +114,15 @@ final class AssembleMojoTest {
         final CommitHash five = hashes.get("0.28.5");
         final CommitHash six = hashes.get("0.28.6");
         final Map<String, Path> result = new FakeMaven(temp)
-                .withProgram(
-                    "+package org.eolang\n",
-                    "[x] > main",
-                    "  seq > @",
-                    "    QQ.io.stdout|0.28.5",
-                    "      \"Hello five\"",
-                    "    QQ.io.stdout|0.28.6",
-                    "      \"Hello six\""
-                )
+            .withProgram(
+                "+package org.eolang\n",
+                "[x] > main",
+                "  seq > @",
+                "    QQ.io.stdout|0.28.5",
+                "      \"Hello five\"",
+                "    QQ.io.stdout|0.28.6",
+                "      \"Hello six\""
+            )
             .with("withVersions", true)
             .with(
                 "objectionaries",
@@ -149,7 +148,7 @@ final class AssembleMojoTest {
         final String[] jars = new String[] {
             "**/eo-runtime-0.28.5.jar",
             "**/eo-runtime-0.28.6.jar",
-            "**/eo-runtime-0.30.0.jar"
+            "**/eo-runtime-0.30.0.jar",
         };
         MatcherAssert.assertThat(
             String.format(

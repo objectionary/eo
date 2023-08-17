@@ -35,12 +35,6 @@ import org.hamcrest.TypeSafeMatcher;
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 final class ContainsFiles extends TypeSafeMatcher<Path> {
-
-    /**
-     * Origin matches.
-     */
-    private final Iterable<ContainsFile> matchers;
-
     /**
      * Patterns.
      */
@@ -50,29 +44,24 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
      * Ctor.
      * @param glbs Patterns
      */
-    ContainsFiles(final String ...glbs) {
-        this(glbs, new Mapped<>(ContainsFile::new, glbs));
-    }
-
-    private ContainsFiles(final String[] glbs, Iterable<ContainsFile> mtchrs) {
-        this.globs = glbs;
-        this.matchers = mtchrs;
+    ContainsFiles(final String... glbs) {
+        this.globs = Arrays.copyOf(glbs, glbs.length);
     }
 
     @Override
-    protected boolean matchesSafely(final Path path) {
+    public void describeTo(final Description description) {
+        description.appendText(String.format("Matching globs: %s", Arrays.toString(this.globs)));
+    }
+
+    @Override
+    public boolean matchesSafely(final Path path) {
         boolean matches = true;
-        for (final ContainsFile matcher : this.matchers) {
+        for (final ContainsFile matcher : new Mapped<>(ContainsFile::new, this.globs)) {
             if (!matcher.matchesSafely(path)) {
                 matches = false;
                 break;
             }
         }
         return matches;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(String.format("Matching globs: %s", Arrays.toString(this.globs)));
     }
 }
