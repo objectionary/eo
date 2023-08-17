@@ -43,23 +43,23 @@ final class OnReplacedTest {
 
     @ParameterizedTest
     @CsvSource({
-        "org.eolang.string, org.eolang.string#0.23.17",
-        "org.eolang.dummy, org.eolang.dummy#0.23.19",
-        "org.eolang.text, org.eolang.text#0.25.0",
-        "org.eolang.aug, org.eolang.aug#0.25.5",
-        "org.eolang.sept, org.eolang.sept#0.26.0",
-        "org.eolang.oct, org.eolang.oct#0.27.0",
-        "org.eolang.nov, org.eolang.nov#0.27.2",
-        "org.eolang.dec, org.eolang.dec#0.28.0",
-        "org.eolang.mon, org.eolang.mon#0.28.1",
-        "org.eolang.tu, org.eolang.tu#0.28.10",
-        "org.eolang.wen, org.eolang.wen#0.28.14",
-        "org.eolang.th, org.eolang.th#0.28.2",
-        "org.eolang.fri, org.eolang.fri#0.28.4",
-        "org.eolang.sat, org.eolang.sat#0.28.5",
-        "org.eolang.sun, org.eolang.sun#0.28.6",
-        "org.eolang.penguin, org.eolang.penguin#0.28.7",
-        "org.eolang.eagle, org.eolang.eagle#0.28.9"
+        "org.eolang.string, org.eolang.string|0.23.17",
+        "org.eolang.dummy, org.eolang.dummy|0.23.19",
+        "org.eolang.text, org.eolang.text|0.25.0",
+        "org.eolang.aug, org.eolang.aug|0.25.5",
+        "org.eolang.sept, org.eolang.sept|0.26.0",
+        "org.eolang.oct, org.eolang.oct|0.27.0",
+        "org.eolang.nov, org.eolang.nov|0.27.2",
+        "org.eolang.dec, org.eolang.dec|0.28.0",
+        "org.eolang.mon, org.eolang.mon|0.28.1",
+        "org.eolang.tu, org.eolang.tu|0.28.10",
+        "org.eolang.wen, org.eolang.wen|0.28.14",
+        "org.eolang.th, org.eolang.th|0.28.2",
+        "org.eolang.fri, org.eolang.fri|0.28.4",
+        "org.eolang.sat, org.eolang.sat|0.28.5",
+        "org.eolang.sun, org.eolang.sun|0.28.6",
+        "org.eolang.penguin, org.eolang.penguin|0.28.7",
+        "org.eolang.eagle, org.eolang.eagle|0.28.9"
     })
     void retrievesName(final String expected, final String origin) {
         final ObjectName name = new OnReplaced(origin);
@@ -72,23 +72,23 @@ final class OnReplacedTest {
 
     @ParameterizedTest
     @CsvSource({
-        "15c85d7, org.eolang.string#0.23.17",
-        "4b19944, org.eolang.dummy#0.23.19",
-        "0aa6875, org.eolang.text#0.25.0",
-        "ff32e9f, org.eolang.aug#0.25.5",
-        "e0b7836, org.eolang.sept#0.26.0",
-        "cc554ab, org.eolang.oct#0.27.0",
-        "00b60c7, org.eolang.nov#0.27.2",
-        "6a70071, org.eolang.dec#0.28.0",
-        "0c15066, org.eolang.mon#0.28.1",
-        "9b88393, org.eolang.tu#0.28.10",
-        "a7a4556, org.eolang.wen#0.28.14",
-        "54d83d4, org.eolang.th#0.28.2",
-        "6c6269d, org.eolang.fri#0.28.4",
-        "9c93528, org.eolang.sat#0.28.5",
-        "17f8929, org.eolang.sun#0.28.6",
-        "5f82cc1, org.eolang.penguin#0.28.7",
-        "be83d9a, org.eolang.eagle#0.28.9"
+        "15c85d7, org.eolang.string|0.23.17",
+        "4b19944, org.eolang.dummy|0.23.19",
+        "0aa6875, org.eolang.text|0.25.0",
+        "ff32e9f, org.eolang.aug|0.25.5",
+        "e0b7836, org.eolang.sept|0.26.0",
+        "cc554ab, org.eolang.oct|0.27.0",
+        "00b60c7, org.eolang.nov|0.27.2",
+        "6a70071, org.eolang.dec|0.28.0",
+        "0c15066, org.eolang.mon|0.28.1",
+        "9b88393, org.eolang.tu|0.28.10",
+        "a7a4556, org.eolang.wen|0.28.14",
+        "54d83d4, org.eolang.th|0.28.2",
+        "6c6269d, org.eolang.fri|0.28.4",
+        "9c93528, org.eolang.sat|0.28.5",
+        "17f8929, org.eolang.sun|0.28.6",
+        "5f82cc1, org.eolang.penguin|0.28.7",
+        "be83d9a, org.eolang.eagle|0.28.9"
     })
     void retrievesHash(final String expected, final String origin) {
         final ObjectName name = new OnReplaced(origin, new CommitHashesMap.Fake());

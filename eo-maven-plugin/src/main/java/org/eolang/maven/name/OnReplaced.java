@@ -33,9 +33,9 @@ import org.eolang.maven.hash.CommitHashesMap;
 /**
  * Object name replaced.
  * This is object name that parses raw sting like:
- * - "org.eolang.text#0.1.0" into "org.eolang.text"
+ * - "org.eolang.text|0.1.0" into "org.eolang.text"
  *   and "4b19944"
- * - "org.eolang.string#a1b2c3d" into "org.eolang.string"
+ * - "org.eolang.string|a1b2c3d" into "org.eolang.string"
  *   and "be83d9a"
  * Pay attention to that versions transformed into narrow hashes.
  * If a version is not provided - behaves like {@link OnUnversioned}.
@@ -56,7 +56,7 @@ public final class OnReplaced implements ObjectName {
     /**
      * Delimiter between name and hash in EO object name.
      */
-    public static final String DELIMITER = "#";
+    public static final String DELIMITER = "|";
 
     /**
      * Default hashes.
@@ -66,9 +66,9 @@ public final class OnReplaced implements ObjectName {
     /**
      * Raw string.
      * Examples:
-     * - "org.eolang.text#0.1.0"
-     * - "org.eolang.string#1.23.1"
-     * - "org.eolang.math#3.3.3"
+     * - "org.eolang.text|0.1.0"
+     * - "org.eolang.string|1.23.1"
+     * - "org.eolang.math|3.3.3"
      */
     private final Unchecked<String> raw;
 
@@ -161,7 +161,7 @@ public final class OnReplaced implements ObjectName {
      * @return Array of two elements: name and hash.
      */
     private String[] split() {
-        return this.raw.value().split(OnReplaced.DELIMITER);
+        return this.raw.value().split(String.format("\\%s", OnReplaced.DELIMITER));
     }
 }
 
