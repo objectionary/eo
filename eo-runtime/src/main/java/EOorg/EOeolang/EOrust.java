@@ -123,7 +123,6 @@ public class EOrust extends PhDefault {
         super(sigma);
         this.add("code", new AtFree());
         this.add("params", new AtFree());
-        this.add("abstract", new AtFree());
         this.add(
             "φ",
             new AtComposite(
@@ -146,9 +145,16 @@ public class EOrust extends PhDefault {
                             byte[].class
                         );
                     }
+                    final Phi portal = new Dataized(
+                        rho
+                        .attr("params").get()
+                        .attr("Δ").get()
+                    ).take(Phi[].class)[0];
                     return EOrust.translate(
                         (byte[]) method.invoke(
-                            null, new Universe(rho.attr("abstract").get())
+                            null, new Universe(
+                                portal
+                            )
                         )
                     );
                 }

@@ -39,7 +39,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.equal-to
@@ -58,7 +58,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.equal-to
@@ -76,7 +76,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.equal-to
@@ -94,7 +94,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.equal-to
@@ -113,7 +113,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.not
@@ -132,7 +132,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     r
     $.not
@@ -155,7 +155,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     insert
     $.not
@@ -176,7 +176,7 @@
     }
     """
     *
-    []
+      []
   assert-that > @
     copy
     $.not
@@ -197,7 +197,8 @@
     }
     """
     *
-    []
+      []
+      3
   assert-that > @
     dataized
     $.not
@@ -231,8 +232,8 @@
     }
     """
     *
+      []
       "byteorder:1.4.3"
-    []
   assert-that > @
     plus
     $.equal-to 15
