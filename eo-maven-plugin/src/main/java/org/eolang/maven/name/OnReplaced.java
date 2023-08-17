@@ -55,6 +55,13 @@ public final class OnReplaced implements ObjectName {
 
     /**
      * Delimiter between name and hash in EO object name.
+     * @todo #2394:30min Hide static constant DELIMITER.
+     *  We should hide static constant DELIMITER because it creates code duplication
+     *  in many places. For example in {@link OnReplaced#split()} and {@link OnVersioned#split()}.
+     *  Apparently we have to create a class which will parse raw string into two parts value and
+     *  optional version. Maybe this new class won't implement ObjectName interface.
+     *  Why static fields are bad you can read here:
+     *  - https://www.yegor256.com/2015/07/06/public-static-literals.html
      */
     public static final String DELIMITER = "|";
 
