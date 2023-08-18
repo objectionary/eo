@@ -29,7 +29,6 @@ import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
-import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
@@ -43,12 +42,13 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
- * @todo #1602:30min Resolve abusive using of OnVersioned. There are so much
- *  examples of such code {@code new OnVersioned(stdout, "17f8929.xmir")}. in
- *  the code base. It looks like we use ObjectName to create paths. Yes, it does
- *  what we need, but is it correct usage of that object? is "17f8929.xmir" a
- *  hash? What will happen if we decide to change OnVersioned logic? Maybe it's
- *  better to introduce one more class or a method?
+ * @todo #1602:30min Create new object that will join two strings with "_".
+ *  {@link Place} object makes a path for versioned objects using "_" as
+ *  delimiter between name and hash. Here to test stored files after
+ *  {@link AssembleMojo} execution "joinedWithUnderscore" function was
+ *  introduced. So there's a code duplication and ugly design. Need to create a
+ *  new object that will join two strings with underscore and use it here and in
+ *  {@link Place}.
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
@@ -148,8 +148,8 @@ final class AssembleMojoTest {
             .execute(AssembleMojo.class)
             .result();
         final String stdout = "**/io/stdout";
-        final String fifth = new OnVersioned(stdout, "17f8929.xmir").toString();
-        final String sixth = new OnVersioned(stdout, "9c93528.xmir").toString();
+        final String fifth = AssembleMojoTest.joinedWithUnderscore(stdout, "17f8929.xmir");
+        final String sixth = AssembleMojoTest.joinedWithUnderscore(stdout, "9c93528.xmir");
         final String path = "target/%s/org/eolang";
         final String parse = String.format(path, ParseMojo.DIR);
         final String optimize = String.format(path, OptimizeMojo.DIR);
@@ -186,10 +186,10 @@ final class AssembleMojoTest {
             ),
             result.get(pull).toAbsolutePath(),
             new ContainsFiles(
-                new OnVersioned(stdout, "17f8929.eo").toString(),
-                new OnVersioned(stdout, "9c93528.eo").toString(),
-                new OnVersioned("**/seq", hash).toString(),
-                new OnVersioned("**/string", hash).toString()
+                AssembleMojoTest.joinedWithUnderscore(stdout, "17f8929.eo"),
+                AssembleMojoTest.joinedWithUnderscore(stdout, "9c93528.eo"),
+                AssembleMojoTest.joinedWithUnderscore("**/seq", hash),
+                AssembleMojoTest.joinedWithUnderscore("**/string", hash)
             )
         );
         MatcherAssert.assertThat(
@@ -235,5 +235,9 @@ final class AssembleMojoTest {
                 .execute(AssembleMojo.class),
             String.format("AssembleMojo should have failed with %s, but didn't", expected)
         );
+    }
+
+    private static String joinedWithUnderscore(final String first, final String second) {
+        return String.join("_", first, second);
     }
 }
