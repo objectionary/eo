@@ -51,7 +51,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  better to introduce one more class or a method?
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
- *  to replace them with corresponding classes, or something similar.
+ *  to replace them with corresponding classes, or something similar
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
