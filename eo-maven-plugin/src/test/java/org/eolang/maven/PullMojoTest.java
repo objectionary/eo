@@ -204,8 +204,7 @@ final class PullMojoTest {
                 )
             )
             .withVersionedHelloWorld()
-            .execute(new FakeMaven.Pull())
-            .result();
+            .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             String.format(
                 "File by path %s should have existed after pulling, but it didn't",
