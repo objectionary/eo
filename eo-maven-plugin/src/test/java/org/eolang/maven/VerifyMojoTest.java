@@ -34,7 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.31.0
  */
-public class VerifyMojoTest {
+class VerifyMojoTest {
 
     @Test
     @Disabled

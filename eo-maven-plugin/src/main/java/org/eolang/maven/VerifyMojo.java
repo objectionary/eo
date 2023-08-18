@@ -23,11 +23,10 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
-import java.io.IOException;
 
 /**
  * Mojo that checks errors and warnings after "assemble" phase.
@@ -49,7 +48,8 @@ public final class VerifyMojo extends SafeMojo {
     /**
      * Whether we should fail on warning.
      *
-     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle MemberNameCheck (11 lines)
+     * @checkstyle UnusedPrivateField (10 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(
