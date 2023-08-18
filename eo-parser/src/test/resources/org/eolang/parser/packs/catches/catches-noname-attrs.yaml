@@ -1,4 +1,5 @@
 xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/errors/noname-attributes.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=2]
