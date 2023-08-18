@@ -37,6 +37,12 @@ import org.eolang.Phi;
  * An attribute that knows how to memoize an object.
  *
  * @since 0.24
+ * @todo #2211:30min To add addition check when comparing int and float,
+ *  bool and int, etc. We should check that the types with the equal amount
+ *  of bytes or lower amount (except string object). For example, if we
+ *  have a float 1.0 and an int 1, they shouldn't be equal.
+ *  But now they have the same amount of bytes, so they are equal.
+ *  Add this check in the method put of the class AtMemoized.
  * @checkstyle TypeNameCheck (5 lines)
  */
 public final class AtMemoized implements Attr {

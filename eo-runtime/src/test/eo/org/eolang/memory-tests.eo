@@ -133,6 +133,18 @@
       nop
     $.equal-to 82.22
 
+[] > memory-is-strictly-typed-float-with-int
+  memory 22 > m
+  nop > @
+    assert-that
+      try
+        []
+          m.write 82.22 > @
+        [e]
+          e > @
+        nop
+      $.contains-string "There are incompleteble types in the memory"
+
 [] > memory-is-strictly-typed-string
   memory "Hello" > m
   assert-that > @
