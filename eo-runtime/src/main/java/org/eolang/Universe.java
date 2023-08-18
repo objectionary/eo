@@ -46,6 +46,7 @@ public class Universe {
     /**
      * Ctor.
      * @param connector Connector.
+     * @param indexed Map to index eo objects.
      */
     public Universe(final Phi connector, final Map<Integer, Phi> indexed) {
         this.connector = connector;
@@ -94,9 +95,7 @@ public class Universe {
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     public void put(final int vertex, final byte[] bytes) {
-        this.get(vertex).attr("Δ").put(
-            new Data.ToPhi(bytes)
-        );
+        //Empty yet.
     }
 
     /**
@@ -138,6 +137,12 @@ public class Universe {
         ).asBytes().take();
     }
 
+    /**
+     * Find phi by vertex.
+     * @param vertex Vertex.
+     * @return Phi.
+     * @throws ExFailure if vertex does not exist in the map.
+     */
     private Phi get(final int vertex) {
         return Optional.ofNullable(
             this.indexed.get(vertex)

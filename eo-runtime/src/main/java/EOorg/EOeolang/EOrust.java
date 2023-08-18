@@ -70,13 +70,16 @@ import org.eolang.XmirObject;
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
 
-    private final Map<Integer, Phi> phis = new HashMap<>();
-
     /**
      * Map with location of the `code` attribute as the key
      * and native method as the value.
      */
     private static final ConcurrentHashMap<String, String> NAMES;
+
+    /**
+     * All phis indexed while executing of native method.
+     */
+    private final Map<Integer, Phi> phis = new HashMap<>();
 
     static {
         try {
