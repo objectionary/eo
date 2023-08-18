@@ -24,7 +24,6 @@
 package org.eolang.maven.rust;
 
 import com.moandjiezana.toml.TomlWriter;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ import org.cactoos.map.MapOf;
  *  This class have save method and needs to have explanatory
  *  comment too via Commented class.
  */
-public class Cargo {
+public class Cargo extends Savable {
     /**
      * Package attributes.
      */
@@ -61,6 +60,10 @@ public class Cargo {
      * @param name Name of lib.
      */
     public Cargo(final String name) {
+        super(
+            "Cargo",
+            "toml"
+        );
         this.pack = new MapOf<>(
             new MapEntry<>("name", name),
             new MapEntry<>("version", "0.1.0"),
@@ -85,17 +88,16 @@ public class Cargo {
 
     /**
      * Save it to specified folder.
-     * @param target Directory where to save to.
+     * @return Content of built cargo.
      * @throws IOException If any issues with I/O
      */
-    public void save(final File target) throws IOException {
+    public String content() {
         final Map<String, Object> raw = new HashMap<>();
         raw.put("package", this.pack);
         raw.put("dependencies", this.dependencies);
         raw.put("lib", this.lib);
-        new TomlWriter().write(
-            raw,
-            target
+        return new TomlWriter().write(
+            raw
         );
     }
 }
