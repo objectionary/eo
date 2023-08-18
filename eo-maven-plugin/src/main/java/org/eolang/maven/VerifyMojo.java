@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -39,6 +40,11 @@ import java.io.IOException;
  *  {@link OptimizeMojo} and put "verify" step right after "assemble" in all
  *  pom.xml files
  */
+@Mojo(
+    name = "verify",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
 public final class VerifyMojo extends SafeMojo {
     /**
      * Whether we should fail on warning.
