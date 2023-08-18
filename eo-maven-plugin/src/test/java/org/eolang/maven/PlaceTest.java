@@ -60,10 +60,10 @@ final class PlaceTest {
 
     @Test
     void makesPathForVersionedObject() {
-        final String object = "org.eolang.io.stdout|25.0.1";
+        final String object = "org.eolang.io.stdout|15c85d7";
         final Path actual = new Place(object)
             .make(Paths.get("/tmp/test"), TranspileMojo.EXT);
-        final Path expected = Paths.get("/tmp/test/org/eolang/io/stdout_25_0_1.xmir");
+        final Path expected = Paths.get("/tmp/test/org/eolang/io/stdout_15c85d7.xmir");
         MatcherAssert.assertThat(
             String.format(
                 "Expected path for object '%s' is '%s' but got '%s'",

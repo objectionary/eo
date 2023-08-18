@@ -68,7 +68,7 @@ public final class Place {
         if (versioned.length > 1) {
             out.append(versioned[0].replace(".", File.separator));
             out.append('_');
-            out.append(versioned[1].replace(".", "_"));
+            out.append(versioned[1]);
         } else {
             out.append(this.name.replace(".", File.separator));
         }
