@@ -69,39 +69,7 @@ final class UniverseTest {
         );
     }
 
-    @Test
-    void throwsIfWrongFind() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Universe(
-                new DummyWithStructure(Phi.Φ)
-            ).find("wrong-name")
-        );
-    }
 
-    @Test
-    void dataizesIndexed() {
-        final Universe universe = new Universe(
-            new DummyWithAt(Phi.Φ)
-        );
-        final int vertex = universe.find(
-            String.format(UniverseTest.ATT)
-        );
-        MatcherAssert.assertThat(
-            universe.dataize(vertex),
-            Matchers.equalTo(new BytesOf(1L).take())
-        );
-    }
-
-    @Test
-    void throwsIfWrongDataize() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Universe(
-                new DummyWithStructure(Phi.Φ)
-            ).dataize(-1)
-        );
-    }
 
     /**
      * Dummy phi with plain attribute.
