@@ -24,7 +24,7 @@
 
 pub mod eo_enum;
 use jni::JNIEnv;
-use jni::objects::{JClass, JObject, JValue};
+use jni::objects::{JClass, JObject, JValue, JByteArray};
 
 pub struct EOEnv<'local> {
     pub java_env: JNIEnv<'local>,
@@ -98,13 +98,22 @@ impl<'local> EOEnv<'_> {
         }
     }
 
-    /*
-     * @todo #2237:60min Implement "dataize" method. It must
-     *  call java dataizing method and get byte array from it.
-     *  Then it have to return byte array as a result of dataization.
-     */
-    #[allow(unused_variables)]
-    pub fn dataize(&mut self, v: u32) -> Option<&[u32]> {
-        Some(&[0x0])
+    pub fn dataize(&mut self, v: u32) -> Option<Vec<i8>> {
+        let java_array = JByteArray::from(
+            self.java_env
+            .call_method(
+                &self.java_obj,
+                "dataize",
+                "(I)[B",
+                &[
+                    JValue::Int(v as i32),
+                ]
+            ).unwrap().l().unwrap());
+        let size = self.java_env.get_array_length(&java_array).unwrap();
+        let mut bytes = vec![0; size.try_into().unwrap()];
+        if self.java_env.get_byte_array_region(&java_array, 0, &mut bytes[0..]).is_err() {
+            return None;
+        }
+        return Some(bytes);
     }
 }
