@@ -36,7 +36,7 @@ impl EO {
             EO::EOVertex(v) => {
                 let mut res: Vec<u8> = vec![0; 1 + 4];
                 res[0] = 0;
-                res[1..].copy_from_slice(&v.to_le_bytes());
+                res[1..].copy_from_slice(&v.to_be_bytes());
                 res
             }
             EO::EOFloat(x) => {

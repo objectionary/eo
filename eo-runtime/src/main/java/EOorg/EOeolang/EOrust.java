@@ -36,6 +36,8 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
@@ -67,6 +69,8 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
+
+    private final Map<Integer, Phi> phis = new HashMap<>();
 
     /**
      * Map with location of the `code` attribute as the key
@@ -150,10 +154,10 @@ public class EOrust extends PhDefault {
                         .attr("params").get()
                         .attr("Δ").get()
                     ).take(Phi[].class)[0];
-                    return EOrust.translate(
+                    return this.translate(
                         (byte[]) method.invoke(
                             null, new Universe(
-                                portal
+                                portal, this.phis
                             )
                         )
                     );
@@ -213,17 +217,28 @@ public class EOrust extends PhDefault {
      *  It must convert message array from 1 to last byte to the String
      *  and return eo object with converted String Data.
      */
-    private static Phi translate(final byte[] message) {
+    private Phi translate(final byte[] message) {
         final byte determinant = message[0];
         final byte[] content = Arrays.copyOfRange(message, 1, message.length);
         final Phi ret;
         switch (determinant) {
             case 0:
-                throw new ExFailure(
-                    "Returning vertex is not implemented yet"
-                );
+                ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                final int vertex = buffer.getInt();
+                ret = this.phis.get(vertex);
+                if (ret == null) {
+                    throw new ExFailure(
+                        String.format(
+                            "Returned phi with vertex %d was not indexed",
+                            vertex
+                        )
+                    );
+                }
+                break;
             case 1:
-                ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+                buffer = ByteBuffer.allocate(Double.BYTES);
                 buffer.put(content);
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getDouble());

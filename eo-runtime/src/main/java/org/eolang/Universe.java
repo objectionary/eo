@@ -47,9 +47,19 @@ public class Universe {
      * Ctor.
      * @param connector Connector.
      */
-    public Universe(final Phi connector) {
+    public Universe(final Phi connector, final Map<Integer, Phi> indexed) {
         this.connector = connector;
-        this.indexed = new HashMap<>();
+        this.indexed = indexed;
+    }
+
+    /**
+     * Ctor.
+     * @param connector Connector.
+     */
+    public Universe(final Phi connector) {
+        this(
+            connector, new HashMap<>()
+        );
     }
 
     /**

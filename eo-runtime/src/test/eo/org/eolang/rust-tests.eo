@@ -120,6 +120,26 @@
       $.less-than
         0
 
+[] > rust-returns-vertex
+  "content" > book
+  QQ.rust > read
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let v = env.find("^.book") as u32;
+      EOVertex(v)
+    }
+    """
+    *
+      []
+  assert-that > @
+    read
+    $.equal-to
+      "content"
+
 [] > rust-put-not-fails
   QQ.rust > r
     """
