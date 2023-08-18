@@ -32,6 +32,12 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * Asserting that path contains a files matching provided globs.
  * @since 0.31.0
+ * @todo #1602:30min After introducing this class we are able to use
+ *  it instead of {@link ContainsFile} because we can pass varargs into
+ *  constructor. So, the next step will be exactly that - we will just remove
+ *  ContainsFile class (inline it into ContainsFiles) because we can do it,
+ *  since we don't use ContainsFile anymore and the code will become smaller and
+ *  simpler without redundant class.
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 final class ContainsFiles extends TypeSafeMatcher<Path> {

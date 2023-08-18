@@ -52,6 +52,11 @@ import org.junit.jupiter.api.io.TempDir;
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
+ * @todo #1602:30min Refactor tests. Logic of AssembleMojo is to run several
+ *  phases one-by-one in a loop. Nothing more. Everything else you are trying to
+ *  check here is related to particular mojos (and we should check their
+ *  behaviour in appropriate tests). In other words there are integration tests
+ *  here. And, probably, it is not the best place for them.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
@@ -116,7 +121,6 @@ final class AssembleMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash master = hashes.get("master");
