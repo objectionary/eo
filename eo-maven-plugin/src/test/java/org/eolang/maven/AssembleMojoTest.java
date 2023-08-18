@@ -43,6 +43,15 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link AssembleMojo}.
  *
  * @since 0.1
+ * @todo #1602:30min Resolve abusive using of OnVersioned. There are so much
+ *  examples of such code {@code new OnVersioned(stdout, "17f8929.xmir")}. in
+ *  the code base. It looks like we use ObjectName to create paths. Yes, it does
+ *  what we need, but is it correct usage of that object? is "17f8929.xmir" a
+ *  hash? What will happen if we decide to change OnVersioned logic? Maybe it's
+ *  better to introduce one more class or a method?
+ * @todo #1602:30min Make up how to get rid of excessive usage of
+ *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
+ *  to replace them with corresponding classes, or something similar.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
