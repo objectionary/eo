@@ -467,17 +467,22 @@
     plus. > @
       f.next
       s.next
-  nop > @
-    assert-that
-      calc
-        []
-          [x] > build
-            x.plus 1 > @
-            build (@.plus 1) > next
-          build 1 > @
-        []
-          [y] > build
-            y.plus 2 > @
-            build (@.plus 2) > next
-          build 2 > @
-      $.equal-to 12
+  assert-that > @
+    calc
+      []
+        [x] > build
+          x.plus 1 > @
+          build > next
+            plus.
+              x
+              1
+        build 1 > @
+      []
+        [y] > build
+          y.plus 2 > @
+          build > next
+            plus.
+              y
+              2
+        build 2 > @
+    $.equal-to 9
