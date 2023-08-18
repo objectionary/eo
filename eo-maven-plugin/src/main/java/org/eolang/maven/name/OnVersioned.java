@@ -107,7 +107,7 @@ public final class OnVersioned implements ObjectName {
      * @return Split object to name and hash.
      */
     private String[] split() {
-        String[] splt = this.object.value().split(OnReplaced.DELIMITER);
+        String[] splt = this.object.value().split(String.format("\\%s", OnReplaced.DELIMITER));
         if (splt.length == 1) {
             splt = new String[]{splt[0], this.hsh.value()};
         }

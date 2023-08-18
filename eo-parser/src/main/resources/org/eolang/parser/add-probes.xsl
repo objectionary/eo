@@ -73,7 +73,7 @@ SOFTWARE.
                 <xsl:text>probe</xsl:text>
               </xsl:element>
               <xsl:element name="tail">
-                <xsl:value-of select="string-join(($p, @ver),'#')"/>
+                <xsl:value-of select="string-join(($p, @ver),'|')"/>
               </xsl:element>
               <xsl:element name="part">
                 <xsl:value-of select="$p"/>

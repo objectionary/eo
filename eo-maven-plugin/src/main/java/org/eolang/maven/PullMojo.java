@@ -126,7 +126,7 @@ public final class PullMojo extends SafeMojo {
     /**
      * Pull one object.
      *
-     * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout#5f82cc1"
+     * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout|5f82cc1"
      * @return The path of .eo file
      * @throws IOException If fails
      */
