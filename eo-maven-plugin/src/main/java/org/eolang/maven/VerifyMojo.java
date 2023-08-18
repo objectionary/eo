@@ -49,7 +49,6 @@ public final class VerifyMojo extends SafeMojo {
      * Whether we should fail on warning.
      *
      * @checkstyle MemberNameCheck (11 lines)
-     * @checkstyle UnusedPrivateField (10 lines)
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(
@@ -62,7 +61,10 @@ public final class VerifyMojo extends SafeMojo {
     @Override
     void exec() throws IOException {
         throw new UnsupportedOperationException(
-            "The VerifyMojo is not implemented yet"
+            String.format(
+                "The VerifyMojo is not implemented yet, failOnWarning is %s",
+                this.failOnWarning
+            )
         );
     }
 }
