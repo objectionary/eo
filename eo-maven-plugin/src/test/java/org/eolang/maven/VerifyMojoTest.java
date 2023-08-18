@@ -31,6 +31,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link VerifyMojo}.
+ *
+ * @since 0.31.0
  */
 public class VerifyMojoTest {
 

@@ -23,12 +23,36 @@
  */
 package org.eolang.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 import java.io.IOException;
 
 /**
  * Mojo that checks errors and warnings after "assemble" phase.
+ *
+ * @since 0.31.0
+ * @todo #1708:30min Implement VerifyMojo. VerifyMojo should check all errors
+ *  and critical errors in xmir after {@link AssembleMojo} is finished. Also if
+ *  {@code failOnWarning} flag is set to true - mojo should check warnings. When
+ *  mojo is implemented - need to remove "failOnError" flag from
+ *  {@link OptimizeMojo} and put "verify" step right after "assemble" in all
+ *  pom.xml files
  */
 public final class VerifyMojo extends SafeMojo {
+    /**
+     * Whether we should fail on warning.
+     *
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(
+        property = "eo.failOnWarning",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean failOnWarning;
+
     @Override
     void exec() throws IOException {
         throw new UnsupportedOperationException(
