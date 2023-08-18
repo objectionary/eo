@@ -6,8 +6,13 @@ permissions:
   pull-requests: write
   contents: read
 jobs:
+  greeting:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "Hello from GPT code review"
   build:
     if: false
+    needs: [greeting]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
