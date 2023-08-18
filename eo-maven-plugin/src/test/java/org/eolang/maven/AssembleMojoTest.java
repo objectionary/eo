@@ -46,9 +46,9 @@ import org.junit.jupiter.api.io.TempDir;
  *  {@link Place} object makes a path for versioned objects using "_" as
  *  delimiter between name and hash. Here to test stored files after
  *  {@link AssembleMojo} execution "joinedWithUnderscore" function was
- *  introduced. So there's a code duplication and ugly design. Need to create a
- *  new object that will join two strings with underscore and use it here and in
- *  {@link Place}.
+ *  introduced. So there's a code duplication and an ugly design. Need to
+ *  create a new object that will join two strings with underscore and use it
+ *  here and in {@link Place}.
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
