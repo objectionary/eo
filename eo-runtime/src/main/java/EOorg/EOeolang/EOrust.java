@@ -213,9 +213,6 @@ public class EOrust extends PhDefault {
      * Translates byte message from rust side to Phi object.
      * @param message Message that native method returns.
      * @return Phi object.
-     * @todo #2283:45min Implement handling of vertex returning.
-     *  It must convert message array from 1 to last byte to the int
-     *  and return eo object with corresponding vertex then.
      * @todo #2283:45min Implement handling of String returning.
      *  It must convert message array from 1 to last byte to the String
      *  and return eo object with converted String Data.
@@ -234,9 +231,10 @@ public class EOrust extends PhDefault {
                 if (ret == null) {
                     throw new ExFailure(
                         String.format(
-                            "Returned phi with vertex %d was not indexed",
-                            vertex
-                        )
+                            "Returned phi with vertex %d (%s in bytes) was not indexed",
+                            vertex,
+                            Arrays.toString(content)
+                            )
                     );
                 }
                 break;
