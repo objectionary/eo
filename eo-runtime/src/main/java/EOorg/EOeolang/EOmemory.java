@@ -31,6 +31,7 @@ import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -60,7 +61,7 @@ public class EOmemory extends PhDefault {
      * @since 1.0
      */
     @XmirObject(oname = "memory.write")
-    private final class Write extends PhDefault {
+    private static final class Write extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -73,13 +74,10 @@ public class EOmemory extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        final Phi phi = new Data.ToPhi(
-                            new Dataized(
-                                rho.attr("x").get()
-                            ).take()
+                        rho.attr("σ").get().attr("enclosure").put(
+                            rho.attr("x").get()
                         );
-                        rho.attr("σ").get().attr("enclosure").put(phi);
-                        return phi;
+                        return new Data.ToPhi(true);
                     }
                 )
             );
