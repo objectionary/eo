@@ -65,7 +65,12 @@ public class Universe {
      * @return Vertex of the object to find.
      */
     public int find(final String name) {
-        Phi accum = this.connector;
+        Phi accum;
+        if (name.charAt(0) == 'Q') {
+            accum = Phi.Φ;
+        } else {
+            accum = this.connector;
+        }
         final String[] atts = Universe.replace(name)
             .split("\\.");
         for (final String att: atts) {
