@@ -104,9 +104,9 @@ public final class DiscoverMojo extends SafeMojo {
      * @return List of foreign objects found
      */
     private Collection<String> discover(final Path file) {
-        final XML saxon = new SaxonDocument(file);
-        final Collection<String> names = DiscoverMojo.names(saxon);
-        if (!saxon.xpath("//o[@vararg]").isEmpty()) {
+        final XML xml = new SaxonDocument(file);
+        final Collection<String> names = this.names(xml);
+        if (!xml.xpath("//o[@vararg]").isEmpty()) {
             names.add("org.eolang.tuple");
         }
         if (names.isEmpty()) {
@@ -129,7 +129,7 @@ public final class DiscoverMojo extends SafeMojo {
      * @param xml XML.
      * @return Object names.
      */
-    private static Set<String> names(final XML xml) {
+    private Set<String> names(final XML xml) {
         return new SetOf<>(
             new Filtered<>(
                 obj -> !obj.isEmpty(),
@@ -143,12 +143,30 @@ public final class DiscoverMojo extends SafeMojo {
                         " and @base != '$'",
                         " and @base != '&'",
                         " and not(@ref)",
-                        "]/string-join((@base, @ver),'",
+                        "]/string-join((@base,",
+                        this.version(xml),
+                        "),'",
                         OnReplaced.DELIMITER,
                         "')"
                     )
                 )
             )
         );
+    }
+
+    /**
+     * Get a version for an object to concatenate with
+     * @param xml XML
+     * @return Version to concatenate with
+     */
+    private String version(final XML xml) {
+        final String head = xml.xpath("//meta[head/text()='version']/tail/text()").get(0);
+        final String version;
+        if (!this.withVersions || head.isEmpty() || head.equals(ParseMojo.ZERO)) {
+            version = "@ver";
+        } else {
+            version = String.format("if(@ver)then(@ver)else('%s')", head);
+        }
+        return version;
     }
 }
