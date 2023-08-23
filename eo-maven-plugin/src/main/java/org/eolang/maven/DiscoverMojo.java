@@ -156,7 +156,7 @@ public final class DiscoverMojo extends SafeMojo {
     }
 
     /**
-     * Get a version for an object to concatenate with.
+     * Get a version to concatenate with.
      * @param xml XML
      * @return Version to concatenate with
      */
