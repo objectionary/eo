@@ -85,7 +85,8 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(
-                new PhWith(mem.attr(EOmemoryTest.WRITE).get().copy(),
+                new PhWith(
+                    mem.attr(EOmemoryTest.WRITE).get().copy(),
                     0, new Data.ToPhi(10L)
                 ).attr("as-int").get()
             ).take(),
