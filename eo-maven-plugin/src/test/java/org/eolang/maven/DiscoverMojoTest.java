@@ -208,7 +208,7 @@ final class DiscoverMojoTest {
         );
         MatcherAssert.assertThat(
             String.format(
-                "Tojos should contained unversioned %s object, but they didn't"
+                "Tojos should contained unversioned %s object, but they didn't",
                 string
             ),
             tojos.contains(string),
