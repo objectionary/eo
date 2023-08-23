@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -77,13 +79,24 @@ public class Universe {
      */
     public int find(final String name) {
         Phi accum;
-        if (name.charAt(0) == 'Q') {
-            accum = Phi.Φ;
-        } else {
-            accum = this.connector;
-        }
-        final String[] atts = Universe.replace(name)
+        String[] atts = Universe.replace(name)
             .split("\\.");
+        if (atts[0].equals("Q")) {
+            accum = Phi.Φ;
+            atts = ArrayUtils.remove(atts, 0);
+        } else if (atts[0].equals("$")) {
+            accum = this.connector;
+            atts = ArrayUtils.remove(atts, 0);
+        } else if (atts[0].equals("^")) {
+            accum = this.connector;
+        } else {
+            throw new ExFailure(
+                String.format(
+                    "Universe.find starts with %s, but it should start with Q or ^ or $ only",
+                    atts[0]
+                )
+            );
+        }
         for (final String att: atts) {
             if (!"".equals(att)) {
                 accum = accum.attr(att).get();

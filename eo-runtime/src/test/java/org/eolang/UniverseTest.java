@@ -23,11 +23,11 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOseq;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ final class UniverseTest {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final Universe universe = new Universe(phi);
         MatcherAssert.assertThat(
-            universe.find(UniverseTest.ATT),
+            universe.find("$.".concat(UniverseTest.ATT)),
             Matchers.equalTo(
                 phi.attr(UniverseTest.ATT).get().hashCode()
             )
@@ -61,7 +61,7 @@ final class UniverseTest {
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
-                    "%s.%s",
+                    "$.%s.%s",
                     UniverseTest.ATT,
                     UniverseTest.ATT
                     )
@@ -75,11 +75,12 @@ final class UniverseTest {
     @Test
     void findsByAbsoluteLoc() {
         final Map<Integer, Phi> indexed = new HashMap<>();
-        final Universe universe = new Universe();
-        final int vertex = universe.find("Q.org.eolang.int");
-        System.out.println(vertex);
-        System.out.println(indexed.get(vertex).getClass());
-        assert EOorg.EOeolang.EOint.class == indexed.get(vertex).getClass();
+        final Universe universe = new Universe(Phi.Φ, indexed);
+        final int vertex = universe.find("Q.org.eolang.seq");
+        MatcherAssert.assertThat(
+            indexed.get(vertex).getClass(),
+            Matchers.equalTo(EOseq.class)
+        );
     }
 
     @Test
@@ -88,7 +89,7 @@ final class UniverseTest {
             ExAbstract.class,
             () -> new Universe(
                 new DummyWithStructure(Phi.Φ)
-            ).find("wrong-name")
+            ).find("$.wrong-name")
         );
     }
 
@@ -98,7 +99,7 @@ final class UniverseTest {
             new DummyWithAt(Phi.Φ)
         );
         final int vertex = universe.find(
-            String.format(UniverseTest.ATT)
+            "$.".concat(UniverseTest.ATT)
         );
         MatcherAssert.assertThat(
             universe.dataize(vertex),
