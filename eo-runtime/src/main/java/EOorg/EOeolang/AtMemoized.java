@@ -28,11 +28,14 @@
 package EOorg.EOeolang;
 
 import org.eolang.Attr;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.Phi;
+
+import java.util.Arrays;
 
 /**
  * An attribute that knows how to memoize an object.
@@ -84,7 +87,7 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.object = new Data.ToPhi(new Param(phi).asBytes().take());
+        this.object = new Data.ToPhi(new Param(phi, "Δ").asBytes().take());
     }
 
     @Override
