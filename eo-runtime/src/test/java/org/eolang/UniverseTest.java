@@ -24,12 +24,12 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOseq;
+import java.util.HashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Test case for {@link Universe}.

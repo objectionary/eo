@@ -23,8 +23,6 @@
  */
 package org.eolang;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
