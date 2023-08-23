@@ -83,12 +83,12 @@ public class Universe {
             .split("\\.");
         if (atts[0].equals("Q")) {
             accum = Phi.Φ;
-            atts[0] = ".";
+            atts[0] = "";
         } else if (atts[0].equals("ρ")) {
             accum = this.connector;
         } else if (atts[0].equals("$")) {
             accum = this.connector;
-            atts[0] = ".";
+            atts[0] = "";
         } else {
             throw new ExFailure(
                 String.format(
