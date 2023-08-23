@@ -29,9 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Param;
+import org.eolang.Attr;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -74,10 +72,9 @@ public class EOmemory extends PhDefault {
                 new AtComposite(
                     this,
                     rho -> {
-                        rho.attr("σ").get().attr("enclosure").put(
-                            rho.attr("x").get()
-                        );
-                        return new Data.ToPhi(true);
+                        final Attr enclosure = rho.attr("σ").get().attr("enclosure");
+                        enclosure.put(rho.attr("x").get());
+                        return enclosure.get();
                     }
                 )
             );

@@ -69,11 +69,12 @@
   * > anArray
     1
     2
-  assert-that > @
+  assert-that > res
     anArray
     $.array-each
       $.equal-to 1
       $.equal-to 2
+  nop > @
 
 [] > tuple-with-in-seq
   [a] > foo
