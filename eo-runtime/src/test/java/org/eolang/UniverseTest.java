@@ -28,6 +28,9 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Test case for {@link Universe}.
  * @since 0.31
@@ -67,6 +70,16 @@ final class UniverseTest {
                 phi.attr(UniverseTest.ATT).get().attr(UniverseTest.ATT).get().hashCode()
             )
         );
+    }
+
+    @Test
+    void findsByAbsoluteLoc() {
+        final Map<Integer, Phi> indexed = new HashMap<>();
+        final Universe universe = new Universe();
+        final int vertex = universe.find("Q.org.eolang.int");
+        System.out.println(vertex);
+        System.out.println(indexed.get(vertex).getClass());
+        assert EOorg.EOeolang.EOint.class == indexed.get(vertex).getClass();
     }
 
     @Test
