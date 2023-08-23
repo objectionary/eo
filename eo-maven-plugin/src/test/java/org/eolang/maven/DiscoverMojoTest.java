@@ -175,24 +175,45 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(
-        @TempDir final Path tmp
-    ) throws IOException {
+    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
+        throws IOException {
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
+        final String format = "+version %s\n";
+        final String tail = "[] > main\n  \"Hello\" > x";
+        final String one = "0.28.1";
+        final String two = "0.28.2";
+        final String string = "org.eolang.string";
         final ForeignTojos tojos = new FakeMaven(tmp)
             .with("withVersions", true)
-            .withProgram(
-                "+version 0.0.1\n",
-                "[] > main",
-                "  \"Hello\" > x"
-            )
-            .withProgram(
-                "+version 0.0.2\n",
-                "[] > main",
-                "  \"Hello\" > x"
-            )
+            .withProgram(String.format(format, one), tail)
+            .withProgram(String.format(format, two), tail)
+            .withProgram(tail)
             .execute(new FakeMaven.Discover())
             .externalTojos();
-
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should contained %s object with version %s from meta, but they didn't",
+                string, one
+            ),
+            tojos.contains(new OnVersioned(string, hashes.get(one))),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should contained %s object with version %s from meta, but they didn't",
+                string, two
+            ),
+            tojos.contains(new OnVersioned(string, hashes.get(two))),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should contained unversioned %s object, but they didn't"
+                string
+            ),
+            tojos.contains(string),
+            Matchers.is(true)
+        );
     }
 
     @Test
