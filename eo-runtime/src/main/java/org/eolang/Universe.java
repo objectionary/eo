@@ -79,16 +79,16 @@ public class Universe {
      */
     public int find(final String name) {
         Phi accum;
-        String[] atts = Universe.replace(name)
+        final String[] atts = Universe.replace(name)
             .split("\\.");
         if (atts[0].equals("Q")) {
             accum = Phi.Φ;
-            atts = ArrayUtils.remove(atts, 0);
+            atts[0] = ".";
+        } else if (atts[0].equals("ρ")) {
+            accum = this.connector;
         } else if (atts[0].equals("$")) {
             accum = this.connector;
-            atts = ArrayUtils.remove(atts, 0);
-        } else if (atts[0].equals("^")) {
-            accum = this.connector;
+            atts[0] = ".";
         } else {
             throw new ExFailure(
                 String.format(
