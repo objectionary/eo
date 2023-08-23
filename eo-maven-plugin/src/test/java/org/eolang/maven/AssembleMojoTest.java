@@ -77,12 +77,7 @@ final class AssembleMojoTest {
     @Test
     void assemblesTogether(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[x] > main",
-                "  (stdout \"Hello!\" x).print"
-            )
+            .withHelloWorld()
             .execute(AssembleMojo.class)
             .result();
         final String stdout = "target/%s/org/eolang/io/stdout.%s";
