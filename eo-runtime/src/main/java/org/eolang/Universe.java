@@ -79,7 +79,7 @@ public class Universe {
         Phi accum;
         final String[] atts = Universe.replace(name)
             .split("\\.");
-        if (atts[0].equals("")) {
+        if (atts[0].equals("Q")) {
             accum = Phi.Φ;
             atts[0] = "";
         } else if (atts[0].equals("ρ")) {
