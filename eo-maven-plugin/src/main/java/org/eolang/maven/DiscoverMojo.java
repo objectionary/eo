@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -160,12 +161,13 @@ public final class DiscoverMojo extends SafeMojo {
      * @return Version to concatenate with
      */
     private String version(final XML xml) {
-        final String head = xml.xpath("//meta[head/text()='version']/tail/text()").get(0);
-        final String version;
-        if (!this.withVersions || head.isEmpty() || head.equals(ParseMojo.ZERO)) {
-            version = "@ver";
-        } else {
-            version = String.format("if(@ver)then(@ver)else('%s')", head);
+        final List<String> head = xml.xpath("//meta[head/text()='version']/tail/text()");
+        String version = "@ver";
+        if (!head.isEmpty()) {
+            final String ver = head.get(0);
+            if (this.withVersions && !ver.isEmpty() && !ver.equals(ParseMojo.ZERO)) {
+                version = String.format("if(@ver)then(@ver)else('%s')", ver);
+            }
         }
         return version;
     }

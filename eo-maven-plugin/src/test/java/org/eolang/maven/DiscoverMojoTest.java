@@ -175,6 +175,27 @@ final class DiscoverMojoTest {
     }
 
     @Test
+    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(
+        @TempDir final Path tmp
+    ) throws IOException {
+        final ForeignTojos tojos = new FakeMaven(tmp)
+            .with("withVersions", true)
+            .withProgram(
+                "+version 0.0.1\n",
+                "[] > main",
+                "  \"Hello\" > x"
+            )
+            .withProgram(
+                "+version 0.0.2\n",
+                "[] > main",
+                "  \"Hello\" > x"
+            )
+            .execute(new FakeMaven.Discover())
+            .externalTojos();
+
+    }
+
+    @Test
     void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)

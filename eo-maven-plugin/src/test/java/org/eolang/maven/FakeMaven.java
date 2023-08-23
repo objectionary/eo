@@ -453,7 +453,7 @@ public final class FakeMaven {
      * @return Tojo entry.
      */
     ForeignTojo programTojo() {
-        return this.foreignTojos().find(this.tojoId(this.current.get() - 1));
+        return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
@@ -461,7 +461,7 @@ public final class FakeMaven {
      * @return Tojo entry.
      */
     ForeignTojo programExternalTojo() {
-        return this.externalTojos().find(this.tojoId(this.current.get() - 1));
+        return this.externalTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
@@ -513,7 +513,7 @@ public final class FakeMaven {
             String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
         );
         this.workspace.save(content, path);
-        final String object = this.tojoId(this.current.get());
+        final String object = FakeMaven.tojoId(this.current.get());
         final String scope = this.scope();
         final String version = "0.25.0";
         final Path source = this.workspace.absolute(path);
