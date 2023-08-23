@@ -118,6 +118,12 @@ public final class Param {
             res = new BytesOf((String) ret);
         } else if (ret instanceof byte[]) {
             res = new BytesOf((byte[]) ret);
+        } else if (ret instanceof Boolean) {
+            final byte[] bytes = new byte[1];
+            if ((boolean) ret) {
+                bytes[0] = 1;
+            }
+            res = new BytesOf(bytes);
         } else {
             throw new ExFailure(
                 String.format(

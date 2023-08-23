@@ -51,7 +51,7 @@
   assert-that > @
     seq
       counter.write
-        counter.as-float.plus 1
+        counter.as-int.plus 1
       counter.as-int
     $.less-than 2
 
@@ -60,7 +60,7 @@
   assert-that > @
     seq
       counter.write
-        counter.as-float.plus 1
+        counter.as-int.plus 1
       counter.as-int
     $.not
       $.greater-than 1

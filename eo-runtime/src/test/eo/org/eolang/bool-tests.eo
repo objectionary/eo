@@ -73,7 +73,7 @@
           x.as-int.lt 10
           [i]
             ^.^.^ > x
-            x.write (x.plus 1) > @
+            x.write (x.as-int.plus 1) > @
     $.equal-to TRUE
 
 [] > prints-nice-formulas
@@ -84,11 +84,18 @@
       while.
         x.as-int.lt 6
         [i]
-          ^.^.^ > x
           seq > @
             stdout
-              sprintf "%dx%d = %d\n" x x ((number x.as-int).pow 2)
-            x.write (x.as-int.plus 1)
+              sprintf
+                "%dx%d = %d\n"
+                x.as-int
+                x.as-int
+                pow.
+                  number
+                    x.as-int
+                  2
+            x.write
+              x.as-int.plus 1
       TRUE
     $.equal-to TRUE
 
@@ -190,7 +197,7 @@
       while.
         x.as-int.lt 2
         [i]
-          x.write (x.plus 1) > @
+          x.write (x.as-int.plus 1) > @
       .@
       .<
       x.as-int
