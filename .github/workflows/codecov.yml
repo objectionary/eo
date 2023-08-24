@@ -7,8 +7,6 @@ on:
 concurrency:
   group: codecov-${{ github.ref }}
   cancel-in-progress: true
-ignore:
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOintTest.java"
 jobs:
   codecov:
     runs-on: ubuntu-22.04
