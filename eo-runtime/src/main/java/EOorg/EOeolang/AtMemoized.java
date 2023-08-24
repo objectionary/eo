@@ -52,23 +52,29 @@ public final class AtMemoized implements Attr {
     private Phi object;
 
     /**
+     * Allocated bytes length.
+     */
+    private Integer length;
+
+    /**
      * Ctor, needed for copying.
      */
     public AtMemoized() {
-        this(null);
+        this(null, null);
     }
 
     /**
      * Ctor, needed for copying.
      * @param obj New object
      */
-    private AtMemoized(final Phi obj) {
+    private AtMemoized(final Phi obj, final Integer size) {
         this.object = obj;
+        this.length = size;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtMemoized(this.object);
+        return new AtMemoized(this.object, this.length);
     }
 
     @Override
@@ -83,7 +89,16 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.object = new Data.ToPhi(new Param(phi, "Δ").asBytes().take());
+        final byte[] bytes = new Param(phi, "Δ").asBytes().take();
+        if (this.length != null && this.length < bytes.length) {
+            throw new ExFailure(
+                "Can't write to memory %d bytes because %d were already allocated",
+                bytes.length,
+                this.length
+            );
+        }
+        this.object = new Data.ToPhi(bytes);
+        this.length = bytes.length;
     }
 
     @Override

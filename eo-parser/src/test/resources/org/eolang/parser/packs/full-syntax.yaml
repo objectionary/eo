@@ -87,7 +87,7 @@ eo: |
 
   test
     me
-      now:i (f (f (f (f 1)))).f
+      now (f (f (f (f 1)))).f
 
   [] > ooo
     # This is one
