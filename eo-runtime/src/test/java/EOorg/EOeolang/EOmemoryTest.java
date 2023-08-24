@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import org.cactoos.scalar.True;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
