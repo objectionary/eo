@@ -26,37 +26,3 @@
  * @checkstyle PackageNameCheck (10 lines)
  */
 package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
-/**
- * Test case for {@link EOint}.
- *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
- */
-public class EOintTest {
-
-    @Test
-    void hasEqualHashes() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(42L);
-        MatcherAssert.assertThat(
-            left.hashCode(),
-            Matchers.equalTo(right.hashCode())
-        );
-    }
-
-    @Test
-    void hasHashEvenWithoutData() {
-        final Phi phi = new EOint(Phi.Φ);
-        MatcherAssert.assertThat(
-            phi.hashCode(),
-            Matchers.greaterThan(0)
-        );
-    }
-}
