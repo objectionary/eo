@@ -76,15 +76,20 @@ public class Universe {
      * @return Vertex of the object to find.
      */
     public int find(final String name) {
+        if (name == null) {
+            throw new IllegalArgumentException(
+                "Argument name is null"
+            );
+        }
         Phi accum;
         final String[] atts = Universe.replace(name)
             .split("\\.");
-        if (atts[0].equals("Q")) {
+        if ("Q".equals(atts[0])) {
             accum = Phi.Φ;
             atts[0] = "";
-        } else if (atts[0].equals("ρ")) {
+        } else if ("ρ".equals(atts[0])) {
             accum = this.connector;
-        } else if (atts[0].equals("$")) {
+        } else if ("$".equals(atts[0])) {
             accum = this.connector;
             atts[0] = "";
         } else {
