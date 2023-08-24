@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.cactoos.scalar.True;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -35,6 +36,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -250,5 +252,31 @@ public final class EOmemoryTest {
         );
     }
 
+    @Test
+    public void doesNotWriteMoreThanAllocated() {
+        final Phi mem = new EOmemory(Phi.Φ);
+        mem.attr(0).put(new Data.ToPhi(true));
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhWith(
+                    mem.attr(EOmemoryTest.WRITE).get(),
+                    0, new Data.ToPhi(8L)
+                )
+            ).take()
+        );
+    }
 
+    @Test
+    public void writesLessAndRewritesTheSame() {
+        final Phi mem = new EOmemory(Phi.Φ);
+        mem.attr(0).put(new Data.ToPhi(2L));
+        final Phi write = mem.attr(EOmemoryTest.WRITE).get().copy();
+        new Dataized(new PhWith(write, 0, new Data.ToPhi(true))).take();
+        Assertions.assertDoesNotThrow(
+            () -> new Dataized(
+                new PhWith(write, 0, new Data.ToPhi(1L))
+            ).take()
+        );
+    }
 }
