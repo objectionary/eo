@@ -45,7 +45,7 @@
     $.equal-to 10
 
 [] > double-writes
-  memory 0 > m
+  memory "1234567890123" > m
   assert-that > @
     seq
       m.write "Hello, world!"
