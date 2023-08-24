@@ -66,6 +66,7 @@ public final class AtMemoized implements Attr {
     /**
      * Ctor, needed for copying.
      * @param obj New object
+     * @param size New size
      */
     private AtMemoized(final Phi obj, final Integer size) {
         this.object = obj;
