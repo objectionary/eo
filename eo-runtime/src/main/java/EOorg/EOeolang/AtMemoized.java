@@ -90,7 +90,9 @@ public final class AtMemoized implements Attr {
     @Override
     public void put(final Phi phi) {
         final byte[] bytes = new Param(phi, "Δ").asBytes().take();
-        if (this.length != null && this.length < bytes.length) {
+        if (this.length == null) {
+            this.length = bytes.length;
+        } else if (this.length < bytes.length) {
             throw new ExFailure(
                 "Can't write to memory %d bytes because %d were already allocated",
                 bytes.length,
@@ -98,7 +100,6 @@ public final class AtMemoized implements Attr {
             );
         }
         this.object = new Data.ToPhi(bytes);
-        this.length = bytes.length;
     }
 
     @Override

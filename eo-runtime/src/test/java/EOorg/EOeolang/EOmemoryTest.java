@@ -271,11 +271,11 @@ public final class EOmemoryTest {
     public void writesLessAndRewritesTheSame() {
         final Phi mem = new EOmemory(Phi.Φ);
         mem.attr(0).put(new Data.ToPhi(2L));
-        final Phi write = mem.attr(EOmemoryTest.WRITE).get().copy();
-        new Dataized(new PhWith(write, 0, new Data.ToPhi(true))).take();
+        final Phi write = mem.attr(EOmemoryTest.WRITE).get();
+        new Dataized(new PhWith(write.copy(), 0, new Data.ToPhi(true))).take();
         Assertions.assertDoesNotThrow(
             () -> new Dataized(
-                new PhWith(write, 0, new Data.ToPhi(1L))
+                new PhWith(write.copy(), 0, new Data.ToPhi(1L))
             ).take()
         );
     }
