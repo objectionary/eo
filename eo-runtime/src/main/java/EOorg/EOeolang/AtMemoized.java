@@ -28,7 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.Attr;
+import org.eolang.Data;
 import org.eolang.ExFailure;
+import org.eolang.Param;
 import org.eolang.Phi;
 
 /**
@@ -81,7 +83,7 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.object = phi;
+        this.object = new Data.ToPhi(new Param(phi, "Δ").asBytes().take());
     }
 
     @Override
