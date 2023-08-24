@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
  */
+@SuppressWarnings("PMD.PackageCase")
 public class EOintTest {
 
     @Test
