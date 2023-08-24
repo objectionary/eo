@@ -158,6 +158,11 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
+    <xsl:if test="$literal-objects[text()=$type]">
+      <xsl:value-of select="eo:tabs(1)"/>
+      <xs:text>private final AtomicBoolean initialized;</xs:text>
+    </xsl:if>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="." mode="equals-and-hashCode"/>
     <xsl:if test="//meta[head='junit' or head='tests'] and not(@parent)">
@@ -200,7 +205,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$literal-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree());</xsl:text>
+      <xsl:text>this.add("Δ", new AtFree(new AtSimple(), this.initialized));</xsl:text>
     </xsl:if>
     <xsl:if test="$type='org.eolang.tuple'">
       <xsl:value-of select="eo:eol(2)"/>
@@ -224,6 +229,12 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>public int hashCode() {</xsl:text>
       <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>if (this.initialized.get()) {</xsl:text>
+      <xsl:value-of select="eo:eol(3)"/>
+      <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
+      <xsl:value-of select="eo:eol(2)"/>
+      <xsl:text>} else {</xsl:text>
+      <xsl:value-of select="eo:eol(3)"/>
       <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
