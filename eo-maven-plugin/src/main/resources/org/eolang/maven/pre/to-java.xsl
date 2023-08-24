@@ -158,11 +158,6 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type]">
-      <xsl:value-of select="eo:tabs(1)"/>
-      <xs:text>private final AtomicBoolean initialized;</xs:text>
-    </xsl:if>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="." mode="equals-and-hashCode"/>
     <xsl:if test="//meta[head='junit' or head='tests'] and not(@parent)">
