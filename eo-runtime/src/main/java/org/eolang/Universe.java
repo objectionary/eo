@@ -146,6 +146,11 @@ public class Universe {
         return vertex;
     }
 
+    /**
+     * Dataizes the eo object by vertex and return byte array.
+     * @param vertex Vertex of eo-object.
+     * @return Raw data.
+     */
     public byte[] dataize(final int vertex) {
         return new Param(
             this.get(vertex),
