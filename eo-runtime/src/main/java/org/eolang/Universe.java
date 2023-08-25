@@ -87,15 +87,13 @@ public class Universe {
         if ("Q".equals(atts[0])) {
             accum = Phi.Φ;
             atts[0] = "";
-        } else if ("ρ".equals(atts[0])) {
-            accum = this.connector;
         } else if ("$".equals(atts[0])) {
             accum = this.connector;
             atts[0] = "";
         } else {
             throw new ExFailure(
                 String.format(
-                    "Universe.find starts with %s, but it should start with Q or ^ or $ only",
+                    "Universe.find starts with %s, but it should start with Q or $ only",
                     atts[0]
                 )
             );
