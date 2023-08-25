@@ -59,4 +59,14 @@ public class EOintTest {
             Matchers.greaterThan(0)
         );
     }
+
+    @Test
+    void hasDifferentHash() {
+        final Phi raw = new EOint(Phi.Φ);
+        final Phi initialized = new Data.ToPhi(0L);
+        MatcherAssert.assertThat(
+            raw.hashCode(),
+            Matchers.not(initialized.hashCode())
+        );
+    }
 }
