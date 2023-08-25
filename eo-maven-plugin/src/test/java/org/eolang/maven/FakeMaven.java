@@ -620,15 +620,17 @@ public final class FakeMaven {
     }
 
     /**
-     * Replaces versions as tags with versions as compound hashes.
+     * Check errors and warnings.
      *
-     * @since 0.29.5
+     * @since 0.31.0
      */
-    static final class Versions implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Verify implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class
+                ParseMojo.class,
+                OptimizeMojo.class,
+                VerifyMojo.class
             ).iterator();
         }
     }
