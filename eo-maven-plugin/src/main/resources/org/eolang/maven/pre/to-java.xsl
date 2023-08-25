@@ -131,8 +131,6 @@ SOFTWARE.
         <xsl:apply-templates select="//meta[head='package']" mode="head"/>
         <xsl:text>import org.eolang.*;</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
-        <xsl:text>import java.util.concurrent.atomic.AtomicBoolean;</xsl:text>
-        <xsl:value-of select="eo:eol(0)"/>
         <xsl:apply-templates select="//meta[head='junit' or head='tests']" mode="head"/>
         <xsl:apply-templates select="." mode="body"/>
       </xsl:element>
@@ -182,7 +180,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$literal-objects[text()=$type]">
       <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>private final AtomicBoolean initialized = new AtomicBoolean(false);</xsl:text>
+      <xsl:text>private final java.util.concurrent.atomic.AtomicBoolean initialized = new java.util.concurrent.atomic.AtomicBoolean(false);</xsl:text>
     </xsl:if>
   </xsl:template>
   <xsl:template match="class" mode="ctors">
