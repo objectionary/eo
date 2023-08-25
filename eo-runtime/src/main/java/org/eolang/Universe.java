@@ -86,10 +86,8 @@ public class Universe {
             .split("\\.");
         if ("Q".equals(atts[0])) {
             accum = Phi.Φ;
-            atts[0] = "";
         } else if ("$".equals(atts[0])) {
             accum = this.connector;
-            atts[0] = "";
         } else {
             throw new ExFailure(
                 String.format(
@@ -98,6 +96,7 @@ public class Universe {
                 )
             );
         }
+        atts[0] = "";
         for (final String att: atts) {
             if (!"".equals(att)) {
                 accum = accum.attr(att).get();
