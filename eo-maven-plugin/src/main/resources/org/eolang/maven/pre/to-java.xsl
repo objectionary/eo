@@ -158,6 +158,7 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="." mode="fields"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="." mode="equals-and-hashCode"/>
     <xsl:if test="//meta[head='junit' or head='tests'] and not(@parent)">
@@ -174,8 +175,17 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:for-each>
   </xsl:template>
+  <xsl:template match="class" mode="fields">
+    <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
+    <xsl:if test="$literal-objects[text()=$type]">
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:text>private final java.util.concurrent.atomic.AtomicBoolean initialized = new java.util.concurrent.atomic.AtomicBoolean(false);</xsl:text>
+    </xsl:if>
+  </xsl:template>
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:choose>
       <xsl:when test="//meta[head='junit' or head='tests'] and not(@parent)">
         <xsl:text>public </xsl:text>
@@ -200,7 +210,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$literal-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree());</xsl:text>
+      <xsl:text>this.add("Δ", new AtFree(new AtSimple(), this.initialized));</xsl:text>
     </xsl:if>
     <xsl:if test="$type='org.eolang.tuple'">
       <xsl:value-of select="eo:eol(2)"/>
@@ -223,8 +233,24 @@ SOFTWARE.
       <xsl:text>@Override</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>public int hashCode() {</xsl:text>
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
+      <xsl:choose>
+        <xsl:when test="$type='org.eolang.tuple'">
+          <xsl:value-of select="eo:eol(1)"/>
+          <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="eo:eol(2)"/>
+          <xsl:text>if (this.initialized.get()) {</xsl:text>
+          <xsl:value-of select="eo:eol(3)"/>
+          <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
+          <xsl:value-of select="eo:eol(2)"/>
+          <xsl:text>} else {</xsl:text>
+          <xsl:value-of select="eo:eol(3)"/>
+          <xsl:text>return this.vertex;</xsl:text>
+          <xsl:value-of select="eo:eol(2)"/>
+          <xsl:text>}</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
