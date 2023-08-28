@@ -30,15 +30,17 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -61,15 +63,8 @@ public final class DiscoverMojo extends SafeMojo {
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
             tojo.withDiscovered(
-                (int) this.discover(src)
+                (int) this.discover(src, tojo)
                     .stream()
-                    .filter(name -> !name.isEmpty())
-                    .map(
-                        name -> new OnSwap(
-                            this.withVersions,
-                            new OnReplaced(name, this.hashes)
-                        )
-                    )
                     .peek(
                         name -> this.scopedTojos()
                             .add(name)
@@ -104,11 +99,11 @@ public final class DiscoverMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      */
-    private Collection<String> discover(final Path file) {
+    private Collection<ObjectName> discover(final Path file, final ForeignTojo tojo) {
         final XML xml = new SaxonDocument(file);
-        final Collection<String> names = this.names(xml);
+        final Collection<ObjectName> names = this.names(xml, tojo);
         if (!xml.xpath("//o[@vararg]").isEmpty()) {
-            names.add("org.eolang.tuple");
+            names.add(this.versioned("org.eolang.tuple", tojo));
         }
         if (names.isEmpty()) {
             Logger.debug(
@@ -130,45 +125,48 @@ public final class DiscoverMojo extends SafeMojo {
      * @param xml XML.
      * @return Object names.
      */
-    private Set<String> names(final XML xml) {
+    private Set<ObjectName> names(final XML xml, final ForeignTojo tojo) {
         return new SetOf<>(
-            new Filtered<>(
-                obj -> !obj.isEmpty(),
-                xml.xpath(
-                    String.join(
-                        "",
-                        "//o[",
-                        "not(starts-with(@base,'.'))",
-                        " and @base != 'Q'",
-                        " and @base != '^'",
-                        " and @base != '$'",
-                        " and @base != '&'",
-                        " and not(@ref)",
-                        "]/string-join((@base,",
-                        this.version(xml),
-                        "),'",
-                        OnReplaced.DELIMITER,
-                        "')"
+            new Mapped<>(
+                (String name) -> this.versioned(name, tojo),
+                new Filtered<>(
+                    name -> !name.isEmpty(),
+                    xml.xpath(
+                        String.join(
+                            "",
+                            "//o[",
+                            "not(starts-with(@base,'.'))",
+                            " and @base != 'Q'",
+                            " and @base != '^'",
+                            " and @base != '$'",
+                            " and @base != '&'",
+                            " and not(@ref)",
+                            "]/string-join((@base,@ver),'",
+                            OnReplaced.DELIMITER,
+                            "')"
+                        )
                     )
                 )
             )
         );
     }
 
-    /**
-     * Get a version to concatenate with.
-     * @param xml XML
-     * @return Version to concatenate with
-     */
-    private String version(final XML xml) {
-        final List<String> head = xml.xpath("//meta[head/text()='version']/tail/text()");
-        String version = "@ver";
-        if (!head.isEmpty()) {
-            final String ver = head.get(0);
-            if (this.withVersions && !ver.isEmpty() && !ver.equals(ParseMojo.ZERO)) {
-                version = String.format("if(@ver)then(@ver)else('%s')", ver);
-            }
-        }
-        return version;
+    // OnReplaced - меняет tag на хэш, если он там есть
+    // OnVersioned - если нет хэша - добавляет
+    private ObjectName versioned(final String name, final ForeignTojo tojo) {
+        final String identifier = tojo.identifier();
+        final ObjectName replaced = new OnReplaced(name, this.hashes);
+        return new OnSwap(
+            this.withVersions,
+            new OnSwap(
+                identifier.contains(OnReplaced.DELIMITER),
+                new OnVersioned(
+                    replaced,
+                    new OnDefault(identifier).hash(),
+                    true
+                ),
+                replaced
+            )
+        );
     }
 }
