@@ -90,11 +90,11 @@
       m.write 1
       try
         []
-          m.write (m.plus 1) > @
+          m.write (m.as-int.plus 1) > @
         [e]
           e > @
         nop
-      m
+      m.as-int
     $.equal-to 3
 
 [] > try-memory-update-catch

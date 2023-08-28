@@ -37,9 +37,9 @@
       goto
         [g]
           seq > @
-            i.write (i.plus 1)
+            i.write (i.as-int.plus 1)
             if.
-              i.lt 10
+              i.as-int.lt 10
               g.backward
               TRUE
       stdout "Finished!"
@@ -54,9 +54,9 @@
       goto
         [g]
           seq > @
-            i.write (i.plus 1)
+            i.write (i.as-int.plus 1)
             if.
-              i.lt 10
+              i.as-int.lt 10
               g.backward
               TRUE
       .@

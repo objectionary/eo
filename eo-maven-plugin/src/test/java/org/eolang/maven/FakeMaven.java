@@ -322,7 +322,12 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram("+package f\n", "[args] > main", "  (stdout \"Hello!\").print");
+        return this.withProgram(
+            "+alias stdout org.eolang.io.stdout",
+            "+package f\n",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @"
+        );
     }
 
     /**
@@ -615,15 +620,17 @@ public final class FakeMaven {
     }
 
     /**
-     * Replaces versions as tags with versions as compound hashes.
+     * Check errors and warnings.
      *
-     * @since 0.29.5
+     * @since 0.31.0
      */
-    static final class Versions implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Verify implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class
+                ParseMojo.class,
+                OptimizeMojo.class,
+                VerifyMojo.class
             ).iterator();
         }
     }

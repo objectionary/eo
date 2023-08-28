@@ -121,8 +121,8 @@
       [] > @
         [] > @
           seq > @
-            ma.write (ma.plus 1)
-            ma
+            ma.write (ma.as-int.plus 1)
+            ma.as-int
   memory 0 > mb
   cage b > cb
   [] > b
@@ -130,8 +130,8 @@
       [] > @
         [] > @
           seq > z
-            mb.write (mb.plus 1)
-            mb
+            mb.write (mb.as-int.plus 1)
+            mb.as-int
   assert-that > @
     seq
       ca

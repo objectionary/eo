@@ -101,7 +101,7 @@
       x.write TRUE
       eq.
         TRUE
-        x.while
+        x.as-bool.while
           [i]
             &.x.write FALSE > @
     $.equal-to FALSE
@@ -110,7 +110,7 @@
   memory 0 > x
   [] > a
     seq > @
-      x.write (x.plus 1)
+      x.write (x.as-int.plus 1)
       42
   assert-that > @
     seq
@@ -167,9 +167,9 @@
   memory 0 > n
   [] > func
     if. > @
-      n.gt 0
+      n.as-int.gt 0
       seq
-        n.write (n.minus 1)
+        n.write (n.as-int.minus 1)
         ^.func
         TRUE
       TRUE
@@ -219,7 +219,7 @@
   assert-that > @
     seq
       go.write TRUE
-      go.while
+      go.as-bool.while
         [i]
           memory 0 > m
           seq > @
@@ -264,7 +264,7 @@
       m.write 42
       Q.org.eolang.io.stdout
         "Hello, world!"
-      m.write (m.minus 2)
+      m.write (m.as-int.minus 2)
       m
     $.equal-to 40
 
@@ -275,7 +275,7 @@
       m.write 42
       QQ.io.stdout
         "Works fine!"
-      m.write (m.minus 2)
+      m.write (m.as-int.minus 2)
       m
     $.equal-to 40
 
@@ -332,8 +332,8 @@
   [x] > inc
     seq > @
       x.write
-        x.plus 1
-      x
+        x.as-int.plus 1
+      x.as-int
   inc a > n!
   assert-that > @
     times.

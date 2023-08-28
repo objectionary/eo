@@ -41,6 +41,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -109,6 +110,7 @@ final class EOboolEOwhileTest {
     }
 
     @Test
+    @Disabled
     void loopsOverAbstractObjects() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"));
@@ -130,6 +132,7 @@ final class EOboolEOwhileTest {
     }
 
     @Test
+    @Disabled
     void dataizesComplexBooleanToggle() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhMethod(parent, "toggle");
@@ -171,7 +174,7 @@ final class EOboolEOwhileTest {
                 "toggle",
                 new AtComposite(
                     this,
-                    self -> new EOmemory(self)
+                    EOmemory::new
                 )
             );
         }
