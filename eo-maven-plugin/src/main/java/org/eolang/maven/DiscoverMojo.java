@@ -151,8 +151,12 @@ public final class DiscoverMojo extends SafeMojo {
         );
     }
 
-    // OnReplaced - меняет tag на хэш, если он там есть
-    // OnVersioned - если нет хэша - добавляет
+    /**
+     * Handle versioning of given object name.
+     * @param name Object name with tag on not.
+     * @param tojo Current tojo.
+     * @return Versioned object name.
+     */
     private ObjectName versioned(final String name, final ForeignTojo tojo) {
         final String identifier = tojo.identifier();
         final ObjectName replaced = new OnReplaced(name, this.hashes);
