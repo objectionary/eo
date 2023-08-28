@@ -90,19 +90,6 @@ public final class AssembleMojo extends SafeMojo {
     private boolean overWrite;
 
     /**
-     * The Git tag to pull objects from, in objectionary.
-     * @since 0.21.0
-     * @todo #2302:30min Rename the parameter "hash". This parameter is actually
-     *  a tag, not a hash. By this tag application actually finds hash and then
-     *  uses it. So need to rename this parameter to "tag" and rename it in all
-     *  places where it's used. Also it would be better to use name "hash" for
-     *  parameter "hsh" in {@link ProbeMojo} and {@link PullMojo}
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
-
-    /**
      * Skip artifact with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
