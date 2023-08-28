@@ -28,7 +28,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,18 +39,34 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
  */
-final class EOintEOplusTest {
+public class EOintTest {
 
     @Test
-    void addsNumbers() {
+    void hasEqualHashes() {
         final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi add = left.attr("plus").get();
-        add.attr(0).put(right);
+        final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
-            new Dataized(add).take(Long.class),
-            Matchers.equalTo(55L)
+            left.hashCode(),
+            Matchers.equalTo(right.hashCode())
+        );
+    }
+
+    @Test
+    void hasHashEvenWithoutData() {
+        final Phi phi = new EOint(Phi.Φ);
+        MatcherAssert.assertThat(
+            phi.hashCode(),
+            Matchers.greaterThan(0)
+        );
+    }
+
+    @Test
+    void hasDifferentHash() {
+        final Phi raw = new EOint(Phi.Φ);
+        final Phi initialized = new Data.ToPhi(0L);
+        MatcherAssert.assertThat(
+            raw.hashCode(),
+            Matchers.not(initialized.hashCode())
         );
     }
 }
-
