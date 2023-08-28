@@ -181,7 +181,7 @@ final class SnippetTestCase {
             .withProgram(code)
             .with("sourcesDir", src.toFile())
             .with("objects", Arrays.asList("org.eolang.bool"))
-            .with("hsh", hash)
+            .with("hash", hash)
             .with("objectionaries", new Objectionaries.Fake(new OyFilesystem()));
         maven.execute(RegisterMojo.class);
         maven.execute(DemandMojo.class);

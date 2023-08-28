@@ -77,7 +77,7 @@ public final class PullMojo extends SafeMojo {
      * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
-    private CommitHash hsh;
+    private CommitHash hash;
 
     /**
      * Objectionaries.
@@ -99,8 +99,8 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        if (this.hsh == null) {
-            this.hsh = new ChCached(
+        if (this.hash == null) {
+            this.hash = new ChCached(
                 new ChNarrow(
                     new ChRemote(this.tag)
                 )
@@ -112,7 +112,7 @@ public final class PullMojo extends SafeMojo {
             final ObjectName name = new OnCached(
                 new OnSwap(
                     this.withVersions,
-                    new OnVersioned(tojo.identifier(), this.hsh)
+                    new OnVersioned(tojo.identifier(), this.hash)
                 )
             );
             names.add(name);

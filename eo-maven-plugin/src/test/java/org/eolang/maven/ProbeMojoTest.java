@@ -95,7 +95,7 @@ final class ProbeMojoTest {
             ),
             new FakeMaven(temp)
                 .with(
-                    "hsh",
+                    "hash",
                     new ChCached(
                         new ChText(temp.resolve("tags.txt"), tag)
                     )
@@ -113,7 +113,7 @@ final class ProbeMojoTest {
         MatcherAssert.assertThat(
             "The hash of the program tojo should be equal to the given hash pattern",
             new FakeMaven(temp)
-                .with("hsh", new ChPattern("*.*.*:abcdefg", "1.0.0"))
+                .with("hash", new ChPattern("*.*.*:abcdefg", "1.0.0"))
                 .withProgram(ProbeMojoTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()
@@ -150,7 +150,7 @@ final class ProbeMojoTest {
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
-            .with("hsh", hash)
+            .with("hash", hash)
             .with("objectionaries", new Objectionaries.Fake(new OyRemote(hash)))
             .with("withVersions", true)
             .withVersionedHelloWorld()
@@ -191,7 +191,7 @@ final class ProbeMojoTest {
                 )
             )
             .with("withVersions", true)
-            .with("hsh", first)
+            .with("hash", first)
             .withVersionedProgram()
             .execute(new FakeMaven.Probe());
         final ObjectName text = new OnVersioned("org.eolang.txt.text", "5f82cc1");

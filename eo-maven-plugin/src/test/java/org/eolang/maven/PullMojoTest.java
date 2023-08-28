@@ -124,7 +124,7 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.with("skip", false)
             .with(
-                "hsh",
+                "hash",
                 new ChCached(new ChText(temp.resolve("tags.txt"), "master"))
             )
             .execute(PullMojo.class);
@@ -147,7 +147,7 @@ final class PullMojoTest {
             .withVersion("*.*.*");
         maven.with("skip", false)
             .with(
-                "hsh",
+                "hash",
                 new ChCached(new ChPattern("*.*.*:abcdefg", "1.0.0"))
             )
             .execute(PullMojo.class);
@@ -234,7 +234,7 @@ final class PullMojoTest {
                 )
             )
             .with("withVersions", true)
-            .with("hsh", fourth)
+            .with("hash", fourth)
             .withVersionedProgram()
             .execute(new FakeMaven.Pull());
         final ObjectName sprintf = new OnVersioned("org.eolang.txt.sprintf", "17f8929");
