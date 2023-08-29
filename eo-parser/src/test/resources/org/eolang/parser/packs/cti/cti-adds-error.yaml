@@ -3,8 +3,7 @@ xsls:
 tests:
   - /program/errors[count(*)=1]
   - /program/errors/error[@check='cti']
-  #  '65 72 72 6F 72' == 'error'
-  - /program/errors/error[@severity='warning']
+  - /program/errors/error[@severity='error']
   - /program/errors/error[text()='This method is deprecated!']
 
 eo: |
