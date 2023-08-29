@@ -38,7 +38,6 @@ import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnDefault;
-import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -189,7 +188,7 @@ final class DiscoverMojoTest {
         final String sprintf = "foo/x/sprintf";
         final String object = "foo.x.sprintf";
         final String ext = "%s.eo";
-        final String format = String.join(OnReplaced.DELIMITER, "%s", ext);
+        final String format = String.join("_", "%s", ext);
         final ForeignTojos tojos = new FakeMaven(tmp)
             .with("withVersions", true)
             .withProgram(
