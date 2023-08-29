@@ -61,7 +61,7 @@ public final class DiscoverMojo extends SafeMojo {
         final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            final Collection<String> names = this.discover(src, tojo);
+            final Collection<String> names = this.discover(src, tojo.identifier());
             discovered.addAll(names);
             for (final String name : names) {
                 this.scopedTojos().add(name).withDiscoveredAt(src);
@@ -95,7 +95,7 @@ public final class DiscoverMojo extends SafeMojo {
      * @param tojo Current tojo.
      * @return List of foreign objects found
      */
-    private Collection<String> discover(final Path file, final ForeignTojo tojo) {
+    private Collection<String> discover(final Path file, final String tojo) {
         final XML xml = new SaxonDocument(file);
         final Collection<String> names = this.names(xml, tojo);
         if (!xml.xpath("//o[@vararg]").isEmpty()) {
@@ -122,7 +122,7 @@ public final class DiscoverMojo extends SafeMojo {
      * @param tojo Current tojo.
      * @return Object names.
      */
-    private Collection<String> names(final XML xml, final ForeignTojo tojo) {
+    private Collection<String> names(final XML xml, final String tojo) {
         return new SetOf<>(
             new Mapped<>(
                 (String name) -> this.versioned(name, tojo).toString(),
@@ -155,16 +155,15 @@ public final class DiscoverMojo extends SafeMojo {
      * @param tojo Current tojo.
      * @return Versioned object name.
      */
-    private ObjectName versioned(final String name, final ForeignTojo tojo) {
-        final String identifier = tojo.identifier();
+    private ObjectName versioned(final String name, final String tojo) {
         final ObjectName replaced = new OnReplaced(name, this.hashes);
         return new OnSwap(
             this.withVersions,
             new OnSwap(
-                identifier.contains(OnReplaced.DELIMITER),
+                tojo.contains(OnReplaced.DELIMITER),
                 new OnVersioned(
                     replaced,
-                    new OnDefault(identifier)::hash,
+                    new OnDefault(tojo)::hash,
                     true
                 ),
                 replaced
