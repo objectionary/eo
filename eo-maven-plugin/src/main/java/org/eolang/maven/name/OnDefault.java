@@ -27,6 +27,8 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Default object name that just split given raw string to name and hash.
+ *
+ * @since 0.31.0
  */
 public final class OnDefault implements ObjectName {
 
@@ -53,16 +55,16 @@ public final class OnDefault implements ObjectName {
         return new CommitHash.ChConstant(this.split()[1]);
     }
 
+    @Override
+    public String toString() {
+        return this.raw;
+    }
+
     /**
      * Split raw to name and hash.
      * @return Split raw
      */
     private String[] split() {
         return this.raw.split(String.format("\\%s", OnReplaced.DELIMITER));
-    }
-
-    @Override
-    public String toString() {
-        return this.raw;
     }
 }

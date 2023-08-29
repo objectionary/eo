@@ -172,7 +172,7 @@ final class DiscoverMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-           String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
+            String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
             tojos.contains(second),
             Matchers.is(true)
         );
@@ -213,7 +213,7 @@ final class DiscoverMojoTest {
             String.format(
                 "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
                 string,
-                Arrays.toString(new String[]{one,two})
+                Arrays.toString(new String[]{one, two})
             ),
             tojos.contains(
                 new OnVersioned(string, one),

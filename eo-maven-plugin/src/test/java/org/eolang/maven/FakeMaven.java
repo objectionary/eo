@@ -384,6 +384,7 @@ public final class FakeMaven {
             program
         );
     }
+
     /**
      * Adds eo program to a workspace.
      * @param path Path to save EO program.
@@ -391,7 +392,7 @@ public final class FakeMaven {
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final Path path, final String ...program) throws IOException {
+    FakeMaven withProgram(final Path path, final String... program) throws IOException {
         return this.withProgram(
             path,
             String.join("\n", program),
@@ -412,7 +413,9 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     * @param path Path to save EO program.
      * @param content EO program content.
+     * @param object Object name to save in tojos.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */

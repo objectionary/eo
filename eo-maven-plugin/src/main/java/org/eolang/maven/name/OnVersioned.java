@@ -99,7 +99,11 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      * @param force Put a default version forcibly.
      */
-    private OnVersioned(final Unchecked<String> object, final Unchecked<CommitHash> def, final boolean force) {
+    private OnVersioned(
+        final Unchecked<String> object,
+        final Unchecked<CommitHash> def,
+        final boolean force
+    ) {
         this.object = object;
         this.hsh = def;
         this.force = force;

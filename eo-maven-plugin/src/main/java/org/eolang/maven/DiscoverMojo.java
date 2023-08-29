@@ -92,6 +92,7 @@ public final class DiscoverMojo extends SafeMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .xmir file
+     * @param tojo Current tojo.
      * @return List of foreign objects found
      */
     private Collection<String> discover(final Path file, final ForeignTojo tojo) {
@@ -118,6 +119,7 @@ public final class DiscoverMojo extends SafeMojo {
      * Get a unique list of object names from given XML.
      *
      * @param xml XML.
+     * @param tojo Current tojo.
      * @return Object names.
      */
     private Collection<String> names(final XML xml, final ForeignTojo tojo) {
