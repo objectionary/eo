@@ -181,10 +181,12 @@ final class DiscoverMojoTest {
     void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final String program = String.join("\n", "[] > sprintf", "  \"Hello world\" > @");
+        final String first = String.join("\n", "[] > sprintf", "  text > @");
+        final String second = String.join("\n", "[] > sprintf", "  text|0.28.5 > @");
         final String one = hashes.get("0.28.1").value();
         final String two = hashes.get("0.28.2").value();
-        final String string = "org.eolang.string";
+        final String three = hashes.get("0.28.5").value();
+        final String string = "org.eolang.text";
         final String sprintf = "foo/x/sprintf";
         final String object = "foo.x.sprintf";
         final String ext = "%s.eo";
@@ -193,17 +195,17 @@ final class DiscoverMojoTest {
             .with("withVersions", true)
             .withProgram(
                 Paths.get(String.format(format, sprintf, one)),
-                program,
+                first,
                 new OnVersioned(object, one)
             )
             .withProgram(
                 Paths.get(String.format(format, sprintf, two)),
-                program,
+                second,
                 new OnVersioned(object, two)
             )
             .withProgram(
                 Paths.get(String.format(ext, sprintf)),
-                program,
+                first,
                 new OnDefault(object)
             )
             .execute(new FakeMaven.Discover())
@@ -212,11 +214,11 @@ final class DiscoverMojoTest {
             String.format(
                 "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
                 string,
-                Arrays.toString(new String[]{one, two})
+                Arrays.toString(new String[]{one, three})
             ),
             tojos.contains(
                 new OnVersioned(string, one),
-                new OnVersioned(string, two),
+                new OnVersioned(string, three),
                 new OnDefault(string)
             ),
             Matchers.is(true)
