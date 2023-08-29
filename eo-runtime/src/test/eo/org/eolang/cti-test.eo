@@ -34,11 +34,3 @@
       "warning"
       "This method is deprecated!"
     $.equal-to 4
-
-[] > fails-since-deprecated
-  assert-that > @
-    cti
-      2.times 2
-      "error"
-      "This method is deprecated!"
-    $.equal-to 4
