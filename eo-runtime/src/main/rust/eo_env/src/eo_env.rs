@@ -98,7 +98,7 @@ impl<'local> EOEnv<'_> {
         }
     }
 
-    pub fn dataize(&mut self, v: u32) -> Option<Vec<i8>> {
+    pub fn dataize(&mut self, v: u32) -> Option<Vec<u8>> {
         let java_array = JByteArray::from(
             self.java_env
             .call_method(
@@ -114,6 +114,7 @@ impl<'local> EOEnv<'_> {
         if self.java_env.get_byte_array_region(&java_array, 0, &mut bytes[0..]).is_err() {
             return None;
         }
-        return Some(bytes);
+        let unsigned = unsafe { &*(&bytes[0..] as *const _  as *const [u8]) };
+        return Some(unsigned.to_vec());
     }
 }
