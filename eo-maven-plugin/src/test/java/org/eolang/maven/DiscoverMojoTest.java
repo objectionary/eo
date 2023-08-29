@@ -26,6 +26,8 @@ package org.eolang.maven;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +37,8 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -168,7 +172,7 @@ final class DiscoverMojoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
+           String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
             tojos.contains(second),
             Matchers.is(true)
         );
@@ -178,40 +182,44 @@ final class DiscoverMojoTest {
     void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final String format = "+version %s\n";
-        final String tail = "[] > main\n  \"Hello\" > x";
-        final String one = "0.28.1";
-        final String two = "0.28.2";
+        final String program = String.join("\n", "[] > sprintf", "  \"Hello world\" > @");
+        final String one = hashes.get("0.28.1").value();
+        final String two = hashes.get("0.28.2").value();
         final String string = "org.eolang.string";
+        final String sprintf = "foo/x/sprintf";
+        final String object = "foo.x.sprintf";
+        final String ext = "%s.eo";
+        final String format = String.join(OnReplaced.DELIMITER, "%s", ext);
         final ForeignTojos tojos = new FakeMaven(tmp)
             .with("withVersions", true)
-            .withProgram(String.format(format, one), tail)
-            .withProgram(String.format(format, two), tail)
-            .withProgram(tail)
+            .withProgram(
+                Paths.get(String.format(format, sprintf, one)),
+                program,
+                new OnVersioned(object, one)
+            )
+            .withProgram(
+                Paths.get(String.format(format, sprintf, two)),
+                program,
+                new OnVersioned(object, two)
+            )
+            .withProgram(
+                Paths.get(String.format(ext, sprintf)),
+                program,
+                new OnDefault(object)
+            )
             .execute(new FakeMaven.Discover())
             .externalTojos();
         MatcherAssert.assertThat(
             String.format(
-                "Tojos should contained %s object with version %s from meta, but they didn't",
-                string, one
+                "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
+                string,
+                Arrays.toString(new String[]{one,two})
             ),
-            tojos.contains(new OnVersioned(string, hashes.get(one))),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should contained %s object with version %s from meta, but they didn't",
-                string, two
+            tojos.contains(
+                new OnVersioned(string, one),
+                new OnVersioned(string, two),
+                new OnDefault(string)
             ),
-            tojos.contains(new OnVersioned(string, hashes.get(two))),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            String.format(
-                "Tojos should contained unversioned %s object, but they didn't",
-                string
-            ),
-            tojos.contains(string),
             Matchers.is(true)
         );
     }

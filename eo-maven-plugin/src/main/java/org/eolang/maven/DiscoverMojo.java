@@ -30,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
@@ -59,20 +58,16 @@ public final class DiscoverMojo extends SafeMojo {
     @Override
     public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-        final Collection<ObjectName> discovered = new HashSet<>(1);
+        final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            tojo.withDiscovered(
-                (int) this.discover(src, tojo)
-                    .stream()
-                    .peek(
-                        name -> this.scopedTojos()
-                            .add(name)
-                            .withDiscoveredAt(src)
-                    )
-                    .peek(discovered::add)
-                    .count()
-            );
+            final Collection<String> names = this.discover(src, tojo);
+            discovered.addAll(names);
+            for (final String name : names) {
+                this.scopedTojos().add(name).withDiscoveredAt(src);
+                discovered.add(name);
+            }
+            tojo.withDiscovered(discovered.size());
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -99,11 +94,11 @@ public final class DiscoverMojo extends SafeMojo {
      * @param file The .xmir file
      * @return List of foreign objects found
      */
-    private Collection<ObjectName> discover(final Path file, final ForeignTojo tojo) {
+    private Collection<String> discover(final Path file, final ForeignTojo tojo) {
         final XML xml = new SaxonDocument(file);
-        final Collection<ObjectName> names = this.names(xml, tojo);
+        final Collection<String> names = this.names(xml, tojo);
         if (!xml.xpath("//o[@vararg]").isEmpty()) {
-            names.add(this.versioned("org.eolang.tuple", tojo));
+            names.add(this.versioned("org.eolang.tuple", tojo).toString());
         }
         if (names.isEmpty()) {
             Logger.debug(
@@ -125,10 +120,10 @@ public final class DiscoverMojo extends SafeMojo {
      * @param xml XML.
      * @return Object names.
      */
-    private Set<ObjectName> names(final XML xml, final ForeignTojo tojo) {
+    private Collection<String> names(final XML xml, final ForeignTojo tojo) {
         return new SetOf<>(
             new Mapped<>(
-                (String name) -> this.versioned(name, tojo),
+                (String name) -> this.versioned(name, tojo).toString(),
                 new Filtered<>(
                     name -> !name.isEmpty(),
                     xml.xpath(
@@ -153,6 +148,7 @@ public final class DiscoverMojo extends SafeMojo {
 
     /**
      * Handle versioning of given object name.
+     *
      * @param name Object name with tag on not.
      * @param tojo Current tojo.
      * @return Versioned object name.
@@ -166,7 +162,7 @@ public final class DiscoverMojo extends SafeMojo {
                 identifier.contains(OnReplaced.DELIMITER),
                 new OnVersioned(
                     replaced,
-                    new OnDefault(identifier).hash(),
+                    new OnDefault(identifier)::hash,
                     true
                 ),
                 replaced

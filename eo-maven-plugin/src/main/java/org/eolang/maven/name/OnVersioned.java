@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
@@ -42,7 +43,7 @@ public final class OnVersioned implements ObjectName {
     /**
      * Default hash.
      */
-    private final CommitHash hsh;
+    private final Unchecked<CommitHash> hsh;
 
     /**
      * Put default hash forcibly.
@@ -55,17 +56,21 @@ public final class OnVersioned implements ObjectName {
      * @param hash Default hash if a version in full name is absent.
      */
     public OnVersioned(final ObjectName origin, final CommitHash hash) {
-        this(origin, hash, false);
+        this(origin, () -> hash, false);
     }
 
     /**
      * Ctor.
      * @param origin Origin object name
-     * @param hash Default hash if a version in full name is absent.
-     * @param force Put a default version forcibly.
+     * @param hash Default hash if a version in full name is absent
+     * @param force Put a default version forcibly
      */
-    public OnVersioned(final ObjectName origin, final CommitHash hash, final boolean force) {
-        this(new Unchecked<>(origin::toString), hash, force);
+    public OnVersioned(
+        final ObjectName origin,
+        final Scalar<CommitHash> hash,
+        final boolean force
+    ) {
+        this(new Unchecked<>(origin::toString), new Unchecked<>(hash), force);
     }
 
     /**
@@ -85,7 +90,7 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      */
     public OnVersioned(final String object, final CommitHash def) {
-        this(new Unchecked<>(() -> object), def, false);
+        this(new Unchecked<>(() -> object), new Unchecked<>(() -> def), false);
     }
 
     /**
@@ -94,7 +99,7 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      * @param force Put a default version forcibly.
      */
-    private OnVersioned(final Unchecked<String> object, final CommitHash def, final boolean force) {
+    private OnVersioned(final Unchecked<String> object, final Unchecked<CommitHash> def, final boolean force) {
         this.object = object;
         this.hsh = def;
         this.force = force;
@@ -126,7 +131,7 @@ public final class OnVersioned implements ObjectName {
     private String[] split() {
         String[] splt = this.object.value().split(String.format("\\%s", OnReplaced.DELIMITER));
         if (splt.length == 1 || this.force) {
-            splt = new String[]{splt[0], this.hsh.value()};
+            splt = new String[]{splt[0], this.hsh.value().value()};
         }
         return splt;
     }
