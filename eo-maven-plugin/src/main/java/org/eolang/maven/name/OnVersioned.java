@@ -46,31 +46,21 @@ public final class OnVersioned implements ObjectName {
     private final Unchecked<CommitHash> hsh;
 
     /**
-     * Put default hash forcibly.
+     * Ctor.
+     * @param origin Origin object name
+     * @param hash Default hash if a version in full name is absent.
      */
-    private final boolean force;
+    public OnVersioned(final ObjectName origin, final CommitHash hash) {
+        this(origin, () -> hash);
+    }
 
     /**
      * Ctor.
      * @param origin Origin object name
      * @param hash Default hash if a version in full name is absent.
      */
-    public OnVersioned(final ObjectName origin, final CommitHash hash) {
-        this(origin, () -> hash, false);
-    }
-
-    /**
-     * Ctor.
-     * @param origin Origin object name
-     * @param hash Default hash if a version in full name is absent
-     * @param force Put a default version forcibly
-     */
-    public OnVersioned(
-        final ObjectName origin,
-        final Scalar<CommitHash> hash,
-        final boolean force
-    ) {
-        this(new Unchecked<>(origin::toString), new Unchecked<>(hash), force);
+    public OnVersioned(final ObjectName origin, final Scalar<CommitHash> hash) {
+        this(new Unchecked<>(origin::toString), new Unchecked<>(hash));
     }
 
     /**
@@ -90,23 +80,17 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      */
     public OnVersioned(final String object, final CommitHash def) {
-        this(new Unchecked<>(() -> object), new Unchecked<>(() -> def), false);
+        this(new Unchecked<>(() -> object), new Unchecked<>(() -> def));
     }
 
     /**
      * Ctor.
      * @param object Object full name with a version or not as scalar.
      * @param def Default hash if a version in full name is absent.
-     * @param force Put a default version forcibly.
      */
-    private OnVersioned(
-        final Unchecked<String> object,
-        final Unchecked<CommitHash> def,
-        final boolean force
-    ) {
+    private OnVersioned(final Unchecked<String> object, final Unchecked<CommitHash> def) {
         this.object = object;
         this.hsh = def;
-        this.force = force;
     }
 
     @Override
@@ -134,7 +118,7 @@ public final class OnVersioned implements ObjectName {
      */
     private String[] split() {
         String[] splt = this.object.value().split(String.format("\\%s", OnReplaced.DELIMITER));
-        if (splt.length == 1 || this.force) {
+        if (splt.length == 1) {
             splt = new String[]{splt[0], this.hsh.value().value()};
         }
         return splt;

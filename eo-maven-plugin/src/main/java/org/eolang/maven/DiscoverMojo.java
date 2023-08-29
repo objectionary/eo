@@ -150,6 +150,10 @@ public final class DiscoverMojo extends SafeMojo {
 
     /**
      * Handle versioning of given object name.
+     * If {@code this.withVersions} is set to FALSE - don't append a version to
+     * the object name.
+     * Otherwise, there are two options:
+     * 1. If current tojo is versioned -
      *
      * @param name Object name with tag on not.
      * @param tojo Current tojo.
@@ -163,8 +167,7 @@ public final class DiscoverMojo extends SafeMojo {
                 tojo.contains(OnReplaced.DELIMITER),
                 new OnVersioned(
                     replaced,
-                    new OnDefault(tojo)::hash,
-                    true
+                    new OnDefault(tojo)::hash
                 ),
                 replaced
             )
