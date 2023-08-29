@@ -100,7 +100,6 @@ public final class AtMemoized implements Attr {
                 this.length
             );
         }
-        System.out.println(bytes);
         this.object = new Data.ToPhi(bytes);
     }
 
