@@ -378,23 +378,6 @@ public final class FakeMaven {
      */
     FakeMaven withProgram(final String... program) throws IOException {
         return this.withProgram(
-            Paths.get(
-                String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
-            ),
-            program
-        );
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     * @param path Path to save EO program.
-     * @param program Program as a raw string.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    FakeMaven withProgram(final Path path, final String... program) throws IOException {
-        return this.withProgram(
-            path,
             String.join("\n", program),
             new OnDefault(FakeMaven.tojoId(this.current.get()))
         );
@@ -413,14 +396,16 @@ public final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
-     * @param path Path to save EO program.
      * @param content EO program content.
      * @param object Object name to save in tojos.
      * @return The same maven instance.
      * @throws IOException If method can't save eo program to the workspace.
      */
-    FakeMaven withProgram(final Path path, final String content, final ObjectName object)
+    FakeMaven withProgram(final String content, final ObjectName object)
         throws IOException {
+        final Path path = Paths.get(
+            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
+        );
         this.workspace.save(content, path);
         final String scope = this.scope();
         final String version = "0.25.0";

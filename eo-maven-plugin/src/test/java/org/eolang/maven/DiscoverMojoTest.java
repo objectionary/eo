@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -187,27 +186,12 @@ final class DiscoverMojoTest {
         final String two = hashes.get("0.28.2").value();
         final String three = hashes.get("0.28.5").value();
         final String string = "org.eolang.text";
-        final String sprintf = "foo/x/sprintf";
         final String object = "foo.x.sprintf";
-        final String ext = "%s.eo";
-        final String format = String.join("_", "%s", ext);
         final ForeignTojos tojos = new FakeMaven(tmp)
             .with("withVersions", true)
-            .withProgram(
-                Paths.get(String.format(format, sprintf, one)),
-                first,
-                new OnVersioned(object, one)
-            )
-            .withProgram(
-                Paths.get(String.format(format, sprintf, two)),
-                second,
-                new OnVersioned(object, two)
-            )
-            .withProgram(
-                Paths.get(String.format(ext, sprintf)),
-                first,
-                new OnDefault(object)
-            )
+            .withProgram(first, new OnVersioned(object, one))
+            .withProgram(second, new OnVersioned(object, two))
+            .withProgram(first, new OnDefault(object))
             .execute(new FakeMaven.Discover())
             .externalTojos();
         MatcherAssert.assertThat(
