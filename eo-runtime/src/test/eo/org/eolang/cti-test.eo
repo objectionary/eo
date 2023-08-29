@@ -35,15 +35,6 @@
       "This method is deprecated!"
     $.equal-to 4
 
-# @todo #1205:90min cti: Use normal string literals instead of hex literals.
-#  Currently we add errors for cti with hex representation of the error
-#  message which looks ugly. We should use normal string literals instead,
-#  but for now it seems impossible since during parsing we already
-#  have hex representation of the error message in cti.
-#  By that reason, the 'fails-since-deprecated' test passes
-#  successfully, but it should fail since it uses cti with "error" level.
-#  See cti-adds-error.yaml, cti-adds-warning.yaml pack tests
-#  and cti-adds-errors.xsl transformation for more details.
 [] > fails-since-deprecated
   assert-that > @
     cti
