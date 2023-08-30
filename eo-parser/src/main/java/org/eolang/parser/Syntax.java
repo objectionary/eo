@@ -133,7 +133,7 @@ public final class Syntax {
         );
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
-        final XeListener xel = new XeListener(this.name, this.redundancy);
+        final XeListener xel = new XeListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(

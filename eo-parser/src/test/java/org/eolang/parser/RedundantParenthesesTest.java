@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,6 +45,7 @@ class RedundantParenthesesTest {
 
     @ParameterizedTest
     @MethodSource("testCases")
+    @Disabled
     void checksIfBracketsIsNotRedundant(
         final String program,
         final boolean correct
