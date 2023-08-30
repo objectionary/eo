@@ -65,7 +65,6 @@ public final class DiscoverMojo extends SafeMojo {
             discovered.addAll(names);
             for (final String name : names) {
                 this.scopedTojos().add(name).withDiscoveredAt(src);
-                discovered.add(name);
             }
             tojo.withDiscovered(discovered.size());
         }
@@ -152,7 +151,7 @@ public final class DiscoverMojo extends SafeMojo {
      * Handle versioning of given object name.
      * If {@code this.withVersions} is set to FALSE - don't append a version to
      * the object name.
-     * Otherwise, try to append a version from tojo if there's no one already
+     * Otherwise, try to append a version from tojo if there's no one yet
      *
      * @param name Object name with tag on not.
      * @param tojo Current tojo.
