@@ -53,6 +53,7 @@ import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Universe;
+import org.eolang.UniverseDefault;
 import org.eolang.XmirObject;
 
 /**
@@ -159,7 +160,7 @@ public class EOrust extends PhDefault {
                     ).take(Phi[].class)[0];
                     return this.translate(
                         (byte[]) method.invoke(
-                            null, new Universe(
+                            null, new UniverseDefault(
                                 portal, this.phis
                             )
                         )
