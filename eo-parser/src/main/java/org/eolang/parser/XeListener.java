@@ -290,7 +290,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterVararg(final ProgramParser.VarargContext ctx) {
         this.startObject(ctx);
         this.objects.prop("vararg");
-        this.objects.prop("base", ctx.NAME().getText());
+        this.objects.prop("name", ctx.NAME().getText());
     }
 
     @Override
@@ -686,6 +686,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitMethodTail(final ProgramParser.MethodTailContext ctx) {
         this.objects.enter();
         this.objects.prop("method");
+        this.objects.xprop("base", "concat('.',@base)");
         this.objects.leave();
     }
 
@@ -698,6 +699,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
         this.objects.enter();
         this.objects.prop("method");
+        this.objects.xprop("base", "concat('.',@base)");
         this.objects.leave();
     }
 
