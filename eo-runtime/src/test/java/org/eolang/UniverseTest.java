@@ -117,6 +117,27 @@ final class UniverseTest {
         );
     }
 
+    @Test
+    void copies() {
+        final Universe universe = new Universe(
+            new DummyWithAt(Phi.Φ)
+        );
+        final int origin = universe.find(
+            "$"
+        );
+        final int copy = universe.copy(origin);
+        MatcherAssert.assertThat(
+            copy,
+            Matchers.not(origin)
+        );
+        MatcherAssert.assertThat(
+            universe.dataize(copy),
+            Matchers.equalTo(
+                universe.dataize(origin)
+            )
+        );
+    }
+
     /**
      * Dummy phi with plain attribute.
      * @since 0.31
@@ -130,6 +151,7 @@ final class UniverseTest {
          */
         DummyWithAt(final Phi sigma, final String att) {
             super(sigma);
+            this.add("Δ", new AtComposite(sigma, self -> new Data.ToPhi(123L)));
             this.add(att, new AtComposite(sigma, self -> new Data.ToPhi(1L)));
         }
 
