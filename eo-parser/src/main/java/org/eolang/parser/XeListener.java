@@ -268,7 +268,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.startObject(ctx);
-        this.objects.prop("base", ctx.NAME().getText());
+        this.objects.prop("name", ctx.NAME().getText());
     }
 
     @Override
