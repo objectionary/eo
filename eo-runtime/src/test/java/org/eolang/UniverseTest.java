@@ -122,9 +122,7 @@ final class UniverseTest {
         final Universe universe = new Universe(
             new DummyWithAt(Phi.Φ)
         );
-        final int origin = universe.find(
-            "$"
-        );
+        final int origin = universe.find("$");
         final int copy = universe.copy(origin);
         MatcherAssert.assertThat(
             copy,
