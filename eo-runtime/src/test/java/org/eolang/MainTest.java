@@ -23,20 +23,12 @@
  */
 package org.eolang;
 
-import com.jcabi.log.VerboseProcess;
+import com.yegor256.Jaxec;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -178,36 +170,23 @@ final class MainTest {
         );
     }
 
-    private static String exec(final String... cmds) throws Exception {
-        final Collection<String> args = new LinkedList<>();
-        args.add(MainTest.jdkExecutable("java"));
-        args.add("-Dfile.encoding=UTF-8");
-        args.add("-Dsun.stdout.encoding=UTF-8");
-        args.add("-Dsun.stderr.encoding=UTF-8");
-        args.add("-cp");
-        args.add(System.getProperty("java.class.path"));
-        args.add(Main.class.getCanonicalName());
-        args.addAll(Arrays.asList(cmds));
-        final Process proc = new ProcessBuilder().command(
-            args.toArray(new String[args.size()])
-        ).redirectErrorStream(true).start();
-        final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(vproc.stdoutQuietly()),
-                    new OutputTo(stdout)
-                )
-            ).value();
-        }
-        return new String(stdout.toByteArray(), StandardCharsets.UTF_8)
-            .replaceFirst(
-                String.format(
-                    "Picked up .*%s",
-                    System.lineSeparator()
-                ),
-                ""
-            );
+    private static String exec(final String... cmds) {
+        final String stdout = new Jaxec(
+            MainTest.jdkExecutable("java"),
+            "-Dfile.encoding=UTF-8",
+            "-Dsun.stdout.encoding=UTF-8",
+            "-Dsun.stderr.encoding=UTF-8",
+            "-cp",
+            System.getProperty("java.class.path"),
+            Main.class.getCanonicalName()
+        ).with(cmds).exec();
+        return stdout.replaceFirst(
+            String.format(
+                "Picked up .*%s",
+                System.lineSeparator()
+            ),
+            ""
+        );
     }
 
     /**

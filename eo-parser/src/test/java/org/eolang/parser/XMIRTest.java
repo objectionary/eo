@@ -24,12 +24,12 @@
 package org.eolang.parser;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseProcess;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import com.yegor256.Jaxec;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrLogged;
 import com.yegor256.xsline.Xsline;
@@ -40,15 +40,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
-import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -90,29 +87,14 @@ final class XMIRTest {
             .filter(file -> !file.isDirectory())
             .map(File::getAbsolutePath)
             .collect(Collectors.toList());
-        final List<String> args = new LinkedList<>();
-        args.add("java");
-        args.add("-cp");
-        args.add(String.join(":", jars));
-        args.add("de.bottlecaps.convert.Convert");
-        args.add("-xml");
-        args.add("src/main/antlr4/org/eolang/parser/Program.g4");
-        Logger.debug(this, "+%s", args);
-        final Process proc = new ProcessBuilder()
-            .command(args)
-            .directory(new File(System.getProperty("user.dir")))
-            .redirectErrorStream(true)
-            .start();
-        final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(vproc.stdoutQuietly()),
-                    new OutputTo(stdout)
-                )
-            ).value();
-        }
-        final String output = stdout.toString();
+        final String output = new Jaxec(
+            "java",
+            "-cp",
+            String.join(":", jars),
+            "de.bottlecaps.convert.Convert",
+            "-xml",
+            "src/main/antlr4/org/eolang/parser/Program.g4"
+        ).exec();
         if (!output.startsWith("<?xml")) {
             Logger.warn(this, "Stdout: %n%s", output);
         }
