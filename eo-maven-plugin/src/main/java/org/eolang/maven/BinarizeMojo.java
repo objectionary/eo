@@ -171,7 +171,7 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             );
             try (
-                final VerboseProcess proc = new VerboseProcess(
+                VerboseProcess proc = new VerboseProcess(
                     new ProcessBuilder("cargo", "build")
                         .directory(project)
                 )
