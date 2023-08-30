@@ -150,7 +150,8 @@ public final class BinarizeMojo extends SafeMojo {
             );
         }
         if (BinarizeMojo.sameProject(
-            project.toPath(), this.cache
+            project.toPath(),
+            this.cache
             .resolve("Lib")
             .resolve(project.getName())
         )) {
@@ -170,7 +171,7 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             );
             try (
-                VerboseProcess proc = new VerboseProcess(
+                final VerboseProcess proc = new VerboseProcess(
                     new ProcessBuilder("cargo", "build")
                         .directory(project)
                 )
@@ -222,15 +223,11 @@ public final class BinarizeMojo extends SafeMojo {
     private static boolean sameFile(final Path src, final Path cached) {
         return cached.toFile().exists() && BinarizeMojo.uncomment(
             new UncheckedText(
-                new TextOf(
-                    src
-                )
+                new TextOf(src)
             ).asString()
         ).equals(
             new UncheckedText(
-                new TextOf(
-                    cached
-                )
+                new TextOf(cached)
             ).asString()
         );
     }
