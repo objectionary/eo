@@ -183,25 +183,24 @@
         0
 
 [] > rust-copy-not-fails
-  1 > a
+  123 > a
   QQ.rust > copy
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo_env::eo_enum::EO::{EOVertex};
     pub fn foo(env: &mut EOEnv) -> EO {
         let v = env.find("$.^.a") as u32;
         let copy = env.copy(v).unwrap();
-        EOInt(copy as i64)
+        EOVertex(copy)
     }
     """
     *
       []
   assert-that > @
     copy
-    $.not
-      $.less-than
-        0
+    $.equal-to
+      123
 
 [] > rust-dataize-not-fails
   1 > a
