@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.30.0
++version 0.31.0
 
 [] > rust-returns-positive-int
   QQ.rust > r
@@ -39,6 +39,7 @@
     }
     """
     *
+      []
   assert-that > @
     r
     $.equal-to
@@ -57,6 +58,7 @@
     }
     """
     *
+      []
   assert-that > @
     r
     $.equal-to
@@ -74,6 +76,7 @@
     }
     """
     *
+      []
   assert-that > @
     r
     $.equal-to
@@ -91,12 +94,14 @@
     }
     """
     *
+      []
   assert-that > @
     r
     $.equal-to
       -1.23456789
 
 [] > rust-find-returns-int
+  123 > a
   QQ.rust > r
     """
     use eo_env::EOEnv;
@@ -104,15 +109,36 @@
     use eo_env::eo_enum::EO::{EOInt};
 
     pub fn foo(env: &mut EOEnv) -> EO {
-      EOInt(env.find("^").into())
+      EOInt(env.find("$.^.a").into())
     }
     """
     *
+      []
   assert-that > @
     r
     $.not
       $.less-than
         0
+
+[] > rust-returns-vertex
+  "content" > book
+  QQ.rust > read
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let v = env.find("$.^.book") as u32;
+      EOVertex(v)
+    }
+    """
+    *
+      []
+  assert-that > @
+    read
+    $.equal-to
+      "content"
 
 [] > rust-put-not-fails
   QQ.rust > r
@@ -126,6 +152,7 @@
     }
     """
     *
+      []
   assert-that > @
     r
     $.not
@@ -133,19 +160,22 @@
         0
 
 [] > rust-bind-not-fails
+  1 > a
+  2 > b
   QQ.rust > insert
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v1 = env.find("a") as u32;
-        let v2 = env.find("b") as u32;
+        let v1 = env.find("$.^.a") as u32;
+        let v2 = env.find("$.^.b") as u32;
         env.bind(v1 , v2, "EO-att");
         return EOInt(v1 as i64);
     }
     """
     *
+      []
   assert-that > @
     insert
     $.not
@@ -153,18 +183,20 @@
         0
 
 [] > rust-copy-not-fails
+  1 > a
   QQ.rust > copy
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("a") as u32;
+        let v = env.find("$.^.a") as u32;
         let copy = env.copy(v).unwrap();
         EOInt(copy as i64)
     }
     """
     *
+      []
   assert-that > @
     copy
     $.not
@@ -172,20 +204,53 @@
         0
 
 [] > rust-dataize-not-fails
+  1 > a
   QQ.rust > dataized
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("a") as u32;
-        let _bytes = env.dataize(v).unwrap();
-        EOInt(v as i64)
+      let v = env.find("$.^.a") as u32;
+      let _bytes = env.dataize(v).unwrap();
+      EOInt(v as i64)
     }
     """
     *
+      []
+      3
   assert-that > @
     dataized
     $.not
       $.less-than
         0
+
+[] > rust-plus
+  5 > a
+  10 > b
+  QQ.rust > plus
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    use byteorder::{BigEndian, ReadBytesExt};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let a = env.find("$.^.a") as u32;
+      let bytes_a = env.dataize(a).unwrap();
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().unwrap();
+
+      let b = env.find("$.^.b") as u32;
+      let bytes_b = env.dataize(b).unwrap();
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().unwrap();
+      println!("sum 5 + 10 = {}", a + b);
+
+      EOInt(a + b)
+    }
+    """
+    *
+      []
+      "byteorder:1.4.3"
+  assert-that > @
+    plus
+    $.equal-to 15

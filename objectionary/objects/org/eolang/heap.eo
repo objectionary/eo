@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.30.0
-+version 0.30.0
++rt jvm org.eolang:eo-runtime:0.31.0
++version 0.31.0
 
 # Emulation of random-access memory (RAM).
 [size] > heap
@@ -35,7 +35,7 @@
     memory 0 > next
     plus. > new-next!
       s
-      ^.malloc.next
+      ^.malloc.next.as-int
     if. > @
       gt.
         new-next
@@ -47,7 +47,7 @@
           ^.malloc.next
           new-next
         0.plus
-          ^.malloc.next
+          ^.malloc.next.as-int
 
   # Freed a block in memory, which is referred by the
   # given pointer, which was earlier obtained with malloc().

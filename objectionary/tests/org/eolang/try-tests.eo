@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.30.0
++version 0.31.0
 
 [] > simple-division-by-zero
   try > @
@@ -90,11 +90,11 @@
       m.write 1
       try
         []
-          m.write (m.plus 1) > @
+          m.write (m.as-int.plus 1) > @
         [e]
           e > @
         nop
-      m
+      m.as-int
     $.equal-to 3
 
 [] > try-memory-update-catch

@@ -23,12 +23,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.30.0
-+version 0.30.0
++rt jvm org.eolang:eo-runtime:0.31.0
++version 0.31.0
 
 [] > float
   # Tests that $ = x
   [x] > eq
+    x > value!
     if. > @
       and.
         eq.
@@ -39,7 +40,7 @@
           zero-as-bytes
       eq.
         ^.neg.as-bytes
-        x.neg.as-bytes
+        value.neg.as-bytes
       eq.
         self-as-bytes
         x-as-bytes
@@ -48,25 +49,27 @@
   [x] > lt
     gt. > @
       plus.
-        x
         neg.
           ^
+        x
       0.0
 
   # Tests that $ ≤ x
   [x] > lte
+    x > value!
     or. > @
-      ^.eq x
-      ^.lt x
+      ^.eq value
+      ^.lt value
 
   # Tests that $ > x
   [x] > gt /bool
 
   # Tests that $ ≥ x
   [x] > gte
+    x > value!
     or. > @
-      ^.eq x
-      ^.gt x
+      ^.eq value
+      ^.gt value
 
   # Multiplication of $ and x
   [x...] > times /float
