@@ -162,7 +162,13 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             );
         } else {
-            Logger.info(this, "Building rust project..");
+            Logger.info(
+                this,
+                String.format(
+                    "Building %s rust project..",
+                    project.getName()
+                )
+            );
             try (
                 VerboseProcess proc = new VerboseProcess(
                     new ProcessBuilder("cargo", "build")
