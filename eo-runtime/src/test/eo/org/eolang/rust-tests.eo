@@ -254,3 +254,25 @@
   assert-that > @
     plus
     $.equal-to 15
+
+[] > rust-error
+  QQ.rust > err
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOError};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOError("Error happened".to_string())
+    }
+    """
+    *
+      []
+  assert-that > @
+    try
+      []
+        err > @
+      [e]
+        e > @
+      nop
+    $.string-starts-with "Rust insert "

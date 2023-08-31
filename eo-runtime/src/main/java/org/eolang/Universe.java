@@ -25,7 +25,7 @@ package org.eolang;
 
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
- * @since 0.31
+ * @since 0.32
  */
 public interface Universe {
 
