@@ -73,6 +73,7 @@ final class XMIRTest {
      * (the ANTLR4 grammar file) to the {@code target/ebnf.txt} text file,
      * which later can be used by the {@see https://ctan.org/pkg/naive-ebnf}.</p>
      *
+     * @param temp Temp directory, where LaTeX will be compiled, just for test
      * @since 0.30.0
      */
     @Test
