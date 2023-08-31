@@ -46,11 +46,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -73,7 +76,7 @@ final class XMIRTest {
      * @since 0.30.0
      */
     @Test
-    void convertsAntlrToEbnf() throws Exception {
+    void convertsAntlrToEbnf(@TempDir final Path temp) throws Exception {
         String home = System.getenv("CONVERT_PATH");
         if (home == null) {
             home = "/code/convert-master/build/lib";
@@ -126,6 +129,20 @@ final class XMIRTest {
                 Matchers.containsString("<text> := 'DQ' 'DQ' 'DQ' [")
             )
         );
+        Files.write(
+            temp.resolve("article.tex"),
+            new TextOf(new ResourceOf("tex/ebnf.tex"))
+                .asString()
+                .replace("EBNF", ebnf)
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        new Jaxec(
+            "pdflatex",
+            "-interaction=errorstopmode",
+            "-halt-on-error",
+            "-shell-escape",
+            "article"
+        ).withHome(temp).exec();
     }
 
     @ParameterizedTest
