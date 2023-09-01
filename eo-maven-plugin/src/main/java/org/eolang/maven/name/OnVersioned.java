@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 
@@ -42,7 +43,7 @@ public final class OnVersioned implements ObjectName {
     /**
      * Default hash.
      */
-    private final CommitHash hsh;
+    private final Unchecked<CommitHash> hsh;
 
     /**
      * Ctor.
@@ -50,7 +51,16 @@ public final class OnVersioned implements ObjectName {
      * @param hash Default hash if a version in full name is absent.
      */
     public OnVersioned(final ObjectName origin, final CommitHash hash) {
-        this(new Unchecked<>(origin::toString), hash);
+        this(origin, () -> hash);
+    }
+
+    /**
+     * Ctor.
+     * @param origin Origin object name
+     * @param hash Default hash if a version in full name is absent.
+     */
+    public OnVersioned(final ObjectName origin, final Scalar<CommitHash> hash) {
+        this(new Unchecked<>(origin::toString), new Unchecked<>(hash));
     }
 
     /**
@@ -70,7 +80,7 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      */
     public OnVersioned(final String object, final CommitHash def) {
-        this(new Unchecked<>(() -> object), def);
+        this(new Unchecked<>(() -> object), new Unchecked<>(() -> def));
     }
 
     /**
@@ -78,7 +88,7 @@ public final class OnVersioned implements ObjectName {
      * @param object Object full name with a version or not as scalar.
      * @param def Default hash if a version in full name is absent.
      */
-    private OnVersioned(final Unchecked<String> object, final CommitHash def) {
+    private OnVersioned(final Unchecked<String> object, final Unchecked<CommitHash> def) {
         this.object = object;
         this.hsh = def;
     }
@@ -109,7 +119,7 @@ public final class OnVersioned implements ObjectName {
     private String[] split() {
         String[] splt = this.object.value().split(String.format("\\%s", OnReplaced.DELIMITER));
         if (splt.length == 1) {
-            splt = new String[]{splt[0], this.hsh.value()};
+            splt = new String[]{splt[0], this.hsh.value().value()};
         }
         return splt;
     }

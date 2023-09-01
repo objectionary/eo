@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -170,6 +172,39 @@ final class DiscoverMojoTest {
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, second),
             tojos.contains(second),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
+        throws IOException {
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
+        final String first = String.join("\n", "[] > sprintf", "  text > @");
+        final String second = String.join("\n", "[] > sprintf", "  text|0.28.5 > @");
+        final String one = hashes.get("0.28.1").value();
+        final String two = hashes.get("0.28.2").value();
+        final String three = hashes.get("0.28.5").value();
+        final String string = "org.eolang.text";
+        final String object = "foo.x.sprintf";
+        final ForeignTojos tojos = new FakeMaven(tmp)
+            .with("withVersions", true)
+            .withProgram(first, new OnVersioned(object, one))
+            .withProgram(second, new OnVersioned(object, two))
+            .withProgram(first, new OnDefault(object))
+            .execute(new FakeMaven.Discover())
+            .externalTojos();
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
+                string,
+                Arrays.toString(new String[]{one, three})
+            ),
+            tojos.contains(
+                new OnVersioned(string, one),
+                new OnVersioned(string, three),
+                new OnDefault(string)
+            ),
             Matchers.is(true)
         );
     }
