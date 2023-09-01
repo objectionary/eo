@@ -271,12 +271,12 @@ public class EOrust extends PhDefault {
             case 5:
                 if (this.error.get() == null) {
                     throw new ExNative(
-                        "Rust insert %s failed",
+                        "Rust insert failed in %s",
                         insert
                     );
                 } else {
                     throw new ExNative(
-                        String.format("Rust insert %s failed", insert),
+                        String.format("Rust insert failed in %s", insert),
                         this.error.get()
                     );
                 }
