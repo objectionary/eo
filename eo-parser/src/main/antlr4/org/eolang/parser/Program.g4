@@ -65,7 +65,7 @@ attribute
     : NAME
     ;
 
-type: SPACE SLASH (NAME | QUESTION)?
+type: SPACE SLASH (NAME | QUESTION)
     ;
 
 vararg
@@ -92,12 +92,14 @@ happlicationNamed
 happlicationHead
     : hmethod
     | applicable
+    | scope
     ;
 
 happlicationHeadExtended
     : vmethod
     | hmethodExtended
     | applicable
+    | scopeExtended
     ;
 
 applicable

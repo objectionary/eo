@@ -1005,22 +1005,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterScope(final ProgramParser.ScopeContext ctx) {
-        // Nothing here
+        this.objects.scope();
     }
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        // Nothing here
+        this.objects.closeScope();
     }
 
     @Override
     public void enterScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        // Nothing here
+        this.objects.scope();
     }
 
     @Override
     public void exitScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        // Nothing here
+        this.objects.closeScope();
     }
 
     @Override
