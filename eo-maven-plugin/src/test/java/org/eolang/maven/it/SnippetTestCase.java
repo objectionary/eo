@@ -23,11 +23,8 @@
  */
 package org.eolang.maven.it;
 
-import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseProcess;
-import java.io.ByteArrayOutputStream;
+import com.yegor256.Jaxec;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -38,14 +35,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.cactoos.Input;
-import org.cactoos.Output;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
-import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.list.Joined;
-import org.cactoos.list.ListOf;
-import org.cactoos.scalar.LengthOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.DemandMojo;
@@ -109,24 +100,15 @@ final class SnippetTestCase {
     void runsAllSnippets(final String yml) throws Exception {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
-        final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        final int result = SnippetTestCase.run(
+        final String stdout = SnippetTestCase.run(
             this.temp,
             new InputOf(String.format("%s\n", map.get("eo"))),
             (List<String>) map.get("args"),
-            new InputOf(map.get("in").toString()),
-            new OutputTo(stdout)
+            map.get("in").toString()
         );
-        MatcherAssert.assertThat(
-            String.format("'%s' returned wrong exit code", yml),
-            result,
-            Matchers.equalTo(map.get("exit"))
-        );
-        final String actual = new String(stdout.toByteArray(), StandardCharsets.UTF_8);
-        Logger.debug(this, "Stdout: \"%s\"", actual);
         MatcherAssert.assertThat(
             String.format("'%s' printed something wrong", yml),
-            actual,
+            stdout,
             Matchers.allOf(
                 new Mapped<>(
                     ptn -> Matchers.matchesPattern(
@@ -162,18 +144,16 @@ final class SnippetTestCase {
      * @param code EO sources
      * @param args Command line arguments
      * @param stdin The input
-     * @param stdout Where to put stdout
-     * @return All Java code
+     * @return Stdout
      * @throws Exception If fails
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     @SuppressWarnings({"unchecked", "PMD.ExcessiveMethodLength"})
-    private static int run(
+    private static String run(
         final Path tmp,
         final Input code,
         final List<String> args,
-        final Input stdin,
-        final Output stdout
+        final String stdin
     ) throws Exception {
         final Path src = tmp.resolve("src");
         final CommitHash hash = new ChRemote("master");
@@ -189,119 +169,51 @@ final class SnippetTestCase {
         maven.execute(TranspileMojo.class);
         final Path classes = maven.targetPath().resolve("classes");
         SnippetTestCase.compileJava(maven.generatedPath(), classes);
-        SnippetTestCase.runJava(args, stdin, stdout, classes);
-        return 0;
+        return SnippetTestCase.runJava(args, stdin, classes);
     }
 
     /**
      * Compile Java sources.
      * @param generated Where to find Java sources
      * @param classes Where to put compiled classes
-     * @throws Exception If fails
      */
-    private static void compileJava(final Path generated, final Path classes) throws Exception {
-        SnippetTestCase.exec(
-            String.format(
-                "%s -encoding utf-8 %s -d %s -cp %s",
-                SnippetTestCase.jdkExecutable("javac"),
-                new Walk(generated).stream()
-                    .map(Path::toAbsolutePath)
-                    .map(Path::toString)
-                    .collect(Collectors.joining(" ")),
-                classes,
-                SnippetTestCase.classpath()
-            ),
-            generated
-        );
+    private static void compileJava(final Path generated, final Path classes) {
+        new Jaxec(
+            SnippetTestCase.jdkExecutable("javac"),
+            "-encoding", "utf-8",
+            new Walk(generated).stream()
+                .map(Path::toAbsolutePath)
+                .map(Path::toString)
+                .collect(Collectors.joining(" ")),
+            "-d", classes.toString(),
+            "-cp", SnippetTestCase.classpath()
+        ).withHome(generated).exec();
     }
 
     /**
      * Run Java.
      * @param args Command line arguments
      * @param stdin The input
-     * @param stdout Where to put stdout
      * @param classes Where to find compiled classes
-     * @throws Exception If fails
+     * @return The stdout
      * @checkstyle ParameterNumberCheck (5 lines)
      */
-    private static void runJava(
-        final List<String> args,
-        final Input stdin,
-        final Output stdout,
-        final Path classes
-    ) throws Exception {
-        SnippetTestCase.exec(
-            String.join(
-                " ",
-                new Joined<String>(
-                    new ListOf<>(
-                        SnippetTestCase.jdkExecutable("java"),
-                        "-Dfile.encoding=UTF-8",
-                        "-Dsun.stdout.encoding=UTF-8",
-                        "-Dsun.stderr.encoding=UTF-8",
-                        "-cp",
-                        SnippetTestCase.classpath(),
-                        "org.eolang.Main"
-                    ),
-                    args
-                )
-            ),
-            classes, stdin, stdout
-        );
-    }
-
-    /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
-     * @throws Exception If fails
-     */
-    private static void exec(final String cmd, final Path dir) throws Exception {
-        SnippetTestCase.exec(
-            cmd,
-            dir,
-            new InputOf(""),
-            new OutputTo(new ByteArrayOutputStream())
-        );
-    }
-
-    /**
-     * Run some command and print out the output.
-     *
-     * @param cmd The command
-     * @param dir The home dir
-     * @param stdin Stdin
-     * @param stdout Stdout
-     * @throws Exception If fails
-     * @checkstyle ParameterNumberCheck (5 lines)
-     */
-    private static void exec(
-        final String cmd,
-        final Path dir,
-        final Input stdin,
-        final Output stdout
-    ) throws Exception {
-        Logger.debug(SnippetTestCase.class, "+%s", cmd);
-        final Process proc = new ProcessBuilder()
-            .command(cmd.split(" "))
-            .directory(dir.toFile())
-            .redirectErrorStream(true)
-            .start();
-        new LengthOf(
-            new TeeInput(
-                stdin,
-                new OutputTo(proc.getOutputStream())
+    private static String runJava(final List<String> args, final String stdin,
+        final Path classes) {
+        return new Jaxec()
+            .with(
+                SnippetTestCase.jdkExecutable("java"),
+                "-Dfile.encoding=UTF-8",
+                "-Dsun.stdout.encoding=UTF-8",
+                "-Dsun.stderr.encoding=UTF-8",
+                "-cp",
+                SnippetTestCase.classpath(),
+                "org.eolang.Main"
             )
-        ).value();
-        try (VerboseProcess vproc = new VerboseProcess(proc)) {
-            new LengthOf(
-                new TeeInput(
-                    new InputOf(vproc.stdout()),
-                    stdout
-                )
-            ).value();
-        }
+            .with(args)
+            .withHome(classes)
+            .withStdin(stdin)
+            .exec();
     }
 
     /**

@@ -239,6 +239,11 @@ SOFTWARE.
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jaxec</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>jucs</artifactId>
       <!-- version from parent POM -->
