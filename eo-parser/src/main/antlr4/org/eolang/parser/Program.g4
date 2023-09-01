@@ -21,6 +21,7 @@ objects
 object
     : atom
     | abstraction
+    | hanonym oname?
     | application
     | methodNamed
     | justNamed
@@ -76,17 +77,26 @@ application
     | vapplication
     ;
 
+happlicationExtended
+    : happlicationHeadExtended happlicationTailExtended
+    ;
+
 happlication
     : happlicationHead happlicationTail
     ;
 
 happlicationNamed
-    : happlication oname?
+    : happlicationExtended oname?
     ;
 
 happlicationHead
+    : hmethod
+    | applicable
+    ;
+
+happlicationHeadExtended
     : vmethod
-    | hmethod
+    | hmethodExtended
     | applicable
     ;
 
@@ -109,14 +119,28 @@ happlicationArgHas
     : happlicationArg has
     ;
 
+happlicationTailExtended
+    : (SPACE (happlicationArgExtended | happlicationArgExtendedHas))+
+    ;
+
+happlicationArgExtended
+    : beginner
+    | finisherOrCopy
+    | DOTS? (spreadable | hmethodExtended | scopeExtended)
+    ;
+
+happlicationArgExtendedHas
+    : happlicationArgExtended has
+    ;
+
 vapplication
     : vapplicationHeadNamed vapplicationArgs
     ;
 
 vapplicationHead
     : applicable
-    | hmethod
-    | hmethodVersioned
+    | hmethodExtended
+    | hmethodExtendedVersioned
     | vmethod
     | vmethodVersioned
     | reversed
@@ -131,7 +155,8 @@ vapplicationArgs
     : EOL
       TAB
       (
-        ( vapplicationArgAbstract
+        ( vapplicationArgVanonym
+        | vapplicationArgHanonym
         | vapplicationArgHapplicationNamed
         | vapplicationArgVapplicationNamed
         | justNamed
@@ -157,8 +182,8 @@ vapplicationArgSpreadable
     ;
 
 vapplicationArgHapplication
-    : happlication
-    | LB happlication RB has
+    : happlicationExtended
+    | LB happlicationExtended RB has
     ;
 
 vapplicationArgHapplicationNamed
@@ -174,15 +199,27 @@ vapplicationArgVapplicationNamed
     ;
 
 vapplicationHeadHas
-    : (applicable | hmethod | hmethodVersioned | reversed | versioned) has
+    : (applicable | hmethodExtended | hmethodExtendedVersioned | reversed | versioned) has
     ;
 
 vapplicationHeadHasNamed
     : vapplicationHeadHas oname?
     ;
 
-vapplicationArgAbstract
+vapplicationArgVanonym
     : attributes has? suffix? abstractees?
+    ;
+
+vapplicationArgHanonym
+    : (hanonym | LB hanonym RB has) suffix?
+    ;
+
+hanonym
+    : attributes hanonymInner+
+    ;
+
+hanonymInner
+    : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
 
 abstractees
@@ -201,8 +238,8 @@ ahead
     ;
 
 method
-    : hmethod
-    | hmethodVersioned
+    : hmethodExtended
+    | hmethodExtendedVersioned
     | vmethod
     | vmethodVersioned
     ;
@@ -212,7 +249,7 @@ methodNamed
     ;
 
 methodHas
-    : (hmethod | hmethodVersioned) has
+    : (hmethodExtended | hmethodExtendedVersioned) has
     ;
 
 methodHasNamed
@@ -223,14 +260,28 @@ hmethod
     : hmethodHead methodTail+
     ;
 
+hmethodExtended
+    : hmethodHeadExtended methodTail+
+    ;
+
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned
+    ;
+
+hmethodExtendedVersioned
+    : hmethodHeadExtended methodTail* methodTailVersioned
     ;
 
 hmethodHead
     : beginner
     | finisherOrCopy
     | scope
+    ;
+
+hmethodHeadExtended
+    : beginner
+    | finisherOrCopy
+    | scopeExtended
     ;
 
 vmethod
@@ -243,12 +294,12 @@ vmethodVersioned
 
 vmethodHead
     : vmethodHead (vmethodTail | vmethodTailVersioned) oname?
-    | hmethod oname?
-    | hmethodVersioned oname?
+    | hmethodExtended oname?
+    | hmethodExtendedVersioned oname?
     | vmethodHead (vmethodTail | vmethodTailVersioned) oname? vapplicationArgs oname?
-    | (applicable | hmethod | hmethodVersioned | reversed | versioned) oname? vapplicationArgs oname?
-    | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTail oname?
-    | (applicable | hmethod) happlicationTail oname?
+    | (applicable | hmethodExtended | hmethodExtendedVersioned | reversed | versioned) oname? vapplicationArgs oname?
+    | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTailExtended oname?
+    | (applicable | hmethodExtended) happlicationTailExtended oname?
     | justNamed
     ;
 
@@ -321,7 +372,11 @@ label
     ;
 
 scope
-    : LB (happlication | hmethod) RB
+    : LB (happlication | hmethod | hanonym) RB
+    ;
+
+scopeExtended
+    : LB (happlicationExtended | hmethodExtended | hanonym) RB
     ;
 
 version

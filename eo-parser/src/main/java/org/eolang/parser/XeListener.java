@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
@@ -309,6 +310,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHapplicationExtended(final ProgramParser.HapplicationExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationExtended(final ProgramParser.HapplicationExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHapplication(final ProgramParser.HapplicationContext ctx) {
         // Nothing here
     }
@@ -335,6 +346,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationHead(final ProgramParser.HapplicationHeadContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationHeadExtended(final ProgramParser.HapplicationHeadExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationHeadExtended(final ProgramParser.HapplicationHeadExtendedContext ctx) {
         // Nothing here
     }
 
@@ -396,6 +417,40 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationArgHas(final ProgramParser.HapplicationArgHasContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationTailExtended(final ProgramParser.HapplicationTailExtendedContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHapplicationTailExtended(final ProgramParser.HapplicationTailExtendedContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterHapplicationArgExtended(final ProgramParser.HapplicationArgExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationArgExtended(final ProgramParser.HapplicationArgExtendedContext ctx) {
+        if (ctx.DOTS() != null) {
+            this.objects.enter();
+            this.objects.prop("unvar");
+            this.objects.leave();
+        }
+    }
+
+    @Override
+    public void enterHapplicationArgExtendedHas(final ProgramParser.HapplicationArgExtendedHasContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationArgExtendedHas(final ProgramParser.HapplicationArgExtendedHasContext ctx) {
         // Nothing here
     }
 
@@ -514,15 +569,47 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgAbstract(final ProgramParser.VapplicationArgAbstractContext ctx) {
+    public void enterVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
         this.startObject(ctx);
         this.objects.prop("abstract");
         this.objects.leave();
     }
 
     @Override
-    public void exitVapplicationArgAbstract(final ProgramParser.VapplicationArgAbstractContext ctx) {
+    public void exitVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
         // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHanonym(final ProgramParser.VapplicationArgHanonymContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgHanonym(final ProgramParser.VapplicationArgHanonymContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHanonym(final ProgramParser.HanonymContext ctx) {
+        this.startObject(ctx);
+        this.objects.prop("abstract");
+        this.objects.leave();
+    }
+
+    @Override
+    public void exitHanonym(final ProgramParser.HanonymContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
+        this.objects.leave();
     }
 
     @Override
@@ -608,6 +695,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHmethodExtended(final ProgramParser.HmethodExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHmethodExtended(final ProgramParser.HmethodExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHmethodVersioned(final ProgramParser.HmethodVersionedContext ctx) {
         // Nothing here
     }
@@ -618,12 +715,32 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHmethodExtendedVersioned(final ProgramParser.HmethodExtendedVersionedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHmethodExtendedVersioned(final ProgramParser.HmethodExtendedVersionedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHmethodHead(final ProgramParser.HmethodHeadContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitHmethodHead(final ProgramParser.HmethodHeadContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHmethodHeadExtended(final ProgramParser.HmethodHeadExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHmethodHeadExtended(final ProgramParser.HmethodHeadExtendedContext ctx) {
         // Nothing here
     }
 
@@ -887,11 +1004,21 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterScope(final ProgramParser.ScopeContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
         // Nothing here
     }
 
