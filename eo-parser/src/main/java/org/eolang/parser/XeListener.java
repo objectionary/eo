@@ -23,7 +23,6 @@
  */
 package org.eolang.parser;
 
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
@@ -31,7 +30,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
-
 import com.jcabi.manifests.Manifests;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
@@ -361,29 +359,32 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterApplicable(final ProgramParser.ApplicableContext ctx) {
-        this.startObject(ctx);
-        final String base;
-        if (ctx.STAR() != null) {
-            base = "tuple";
-            this.objects.prop("data", "tuple");
-        } else if (ctx.NAME() != null) {
-            base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
-            base = "@";
-        } else {
-            base = "";
-        }
-        if (!base.isEmpty()) {
-            this.objects.prop("base", base);
-        }
-        if (ctx.COPY() != null) {
-            this.objects.prop("copy");
+        if (ctx.reversed() == null) {
+            this.startObject(ctx);
+            final String base;
+            if (ctx.STAR() != null) {
+                base = "tuple";
+                this.objects.prop("data", "tuple");
+            } else if (ctx.NAME() != null) {
+                base = ctx.NAME().getText();
+            } else if (ctx.AT() != null) {
+                base = "@";
+            } else {
+                base = "";
+            }
+            if (!base.isEmpty()) {
+                this.objects.prop("base", base);
+            }
+            if (ctx.COPY() != null) {
+                this.objects.prop("copy");
+            }
+            this.objects.leave();
         }
     }
 
     @Override
     public void exitApplicable(final ProgramParser.ApplicableContext ctx) {
-        this.objects.leave();
+        // Nothing here
     }
 
     @Override

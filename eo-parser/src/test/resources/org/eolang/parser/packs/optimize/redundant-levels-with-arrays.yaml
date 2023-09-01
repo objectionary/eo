@@ -65,6 +65,6 @@ tests:
 eo: |
   [] > main
     * 0 (* 1 2) > arr
-    eq > @
+    eq. > @
       * ((arr.at 1).at 1)
       * 2

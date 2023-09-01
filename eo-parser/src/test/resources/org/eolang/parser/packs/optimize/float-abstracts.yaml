@@ -10,19 +10,19 @@ tests:
   - /program/objects[count(o)=9]
   - /program/errors[count(*)=0]
   - //objects[not(.//o[@name=''])]
-  - //o[@name='first$t2$native' and @atom='int']
-  - //o[@base='first$t2$native' and @atom='int']
+  - //o[@name='first$t2$native']
+  - //o[@base='first$t2$native']
   - //o[@name='first' and not(@ancestors)]
   - //o[@name='first']/o[@base='test' and @as='foo']
-  - //o[@name='first$t2$second' and @ancestors='1' and @parent='first']
-  - //o[@name='first$t2$second$third']
-  - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
+  - //o[@name='first$t1$second' and @ancestors='1' and @parent='first']
+  - //o[@name='first$t1$second$third']
+  - //o[@name='first$t1$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
 eo: |
   [a b] > first
-    test:foo
+    test > foo
       a > yes
-      [] > native /int
+      [a] > native 
       [x b] > second
         a > no
         [b c] > third

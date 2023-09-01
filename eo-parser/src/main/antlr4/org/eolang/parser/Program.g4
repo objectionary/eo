@@ -21,7 +21,7 @@ objects
 object
     : atom
     | abstraction
-    | hanonym oname?
+    | hanonym oname
     | application
     | methodNamed
     | justNamed
@@ -103,6 +103,7 @@ happlicationHeadExtended
 applicable
     : STAR
     | (NAME | AT) COPY?
+    | reversed
     ;
 
 happlicationTail
@@ -143,7 +144,6 @@ vapplicationHead
     | hmethodExtendedVersioned
     | vmethod
     | vmethodVersioned
-    | reversed
     | versioned
     ;
 
@@ -199,7 +199,7 @@ vapplicationArgVapplicationNamed
     ;
 
 vapplicationHeadHas
-    : (applicable | hmethodExtended | hmethodExtendedVersioned | reversed | versioned) has
+    : (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) has
     ;
 
 vapplicationHeadHasNamed
@@ -297,7 +297,7 @@ vmethodHead
     | hmethodExtended oname?
     | hmethodExtendedVersioned oname?
     | vmethodHead (vmethodTail | vmethodTailVersioned) oname? vapplicationArgs oname?
-    | (applicable | hmethodExtended | hmethodExtendedVersioned | reversed | versioned) oname? vapplicationArgs oname?
+    | (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) oname? vapplicationArgs oname?
     | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTailExtended oname?
     | (applicable | hmethodExtended) happlicationTailExtended oname?
     | justNamed
