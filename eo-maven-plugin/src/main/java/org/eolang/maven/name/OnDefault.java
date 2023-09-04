@@ -21,37 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.name;
 
-package org.eolang;
+import org.eolang.maven.hash.CommitHash;
 
 /**
- * Common exception.
+ * Default object name that just split given raw string to name and hash.
  *
- * @since 0.21
+ * @since 0.31.0
  */
-public class ExFailure extends ExAbstract {
+public final class OnDefault implements ObjectName {
 
     /**
-     * Serialization identifier.
+     * Raw string.
      */
-    private static final long serialVersionUID = 597748425437017615L;
+    private final String raw;
 
     /**
      * Ctor.
-     * @param cause Exception cause
-     * @param args Arguments for {@link String#format(String, Object...)}
+     * @param object Object name with hash.
      */
-    public ExFailure(final String cause, final Object... args) {
-        super(String.format(cause, args));
+    public OnDefault(final String object) {
+        this.raw = object;
+    }
+
+    @Override
+    public String value() {
+        return this.split()[0];
+    }
+
+    @Override
+    public CommitHash hash() {
+        return new CommitHash.ChConstant(this.split()[1]);
+    }
+
+    @Override
+    public String toString() {
+        return this.raw;
     }
 
     /**
-     * Ctor.
-     * @param cause Exception cause
-     * @param root Cause exception
+     * Split raw to name and hash.
+     * @return Split raw
      */
-    public ExFailure(final String cause, final Throwable root) {
-        super(cause, root);
+    private String[] split() {
+        return this.raw.split(String.format("\\%s", OnReplaced.DELIMITER));
     }
 }
-

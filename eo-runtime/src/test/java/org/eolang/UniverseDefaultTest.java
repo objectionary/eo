@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Universe}.
+ * Test case for {@link UniverseDefault}.
  * @since 0.31
  */
-final class UniverseTest {
+final class UniverseDefaultTest {
 
     /**
      * Name of attribute.
@@ -45,11 +45,11 @@ final class UniverseTest {
     @Test
     void findsSimpleAtt() {
         final Phi phi = new DummyWithAt(Phi.Φ);
-        final Universe universe = new Universe(phi);
+        final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            universe.find("$.".concat(UniverseTest.ATT)),
+            universe.find("$.".concat(UniverseDefaultTest.ATT)),
             Matchers.equalTo(
-                phi.attr(UniverseTest.ATT).get().hashCode()
+                phi.attr(UniverseDefaultTest.ATT).get().hashCode()
             )
         );
     }
@@ -57,17 +57,20 @@ final class UniverseTest {
     @Test
     void findsLongAtt() {
         final Phi phi = new DummyWithStructure(Phi.Φ);
-        final Universe universe = new Universe(phi);
+        final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
                     "$.%s.%s",
-                    UniverseTest.ATT,
-                    UniverseTest.ATT
+                    UniverseDefaultTest.ATT,
+                    UniverseDefaultTest.ATT
                     )
                 ),
             Matchers.equalTo(
-                phi.attr(UniverseTest.ATT).get().attr(UniverseTest.ATT).get().hashCode()
+                phi
+                    .attr(UniverseDefaultTest.ATT).get()
+                    .attr(UniverseDefaultTest.ATT).get()
+                    .hashCode()
             )
         );
     }
@@ -75,7 +78,7 @@ final class UniverseTest {
     @Test
     void findsByAbsoluteLoc() {
         final Map<Integer, Phi> indexed = new HashMap<>();
-        final Universe universe = new Universe(Phi.Φ, indexed);
+        final UniverseDefault universe = new UniverseDefault(Phi.Φ, indexed);
         final int vertex = universe.find("Q.org.eolang.seq");
         MatcherAssert.assertThat(
             indexed.get(vertex).getClass(),
@@ -87,7 +90,7 @@ final class UniverseTest {
     void throwsIfWrongFind() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new Universe(
+            () -> new UniverseDefault(
                 new DummyWithStructure(Phi.Φ)
             ).find("$.wrong-name")
         );
@@ -95,11 +98,11 @@ final class UniverseTest {
 
     @Test
     void dataizesIndexed() {
-        final Universe universe = new Universe(
+        final UniverseDefault universe = new UniverseDefault(
             new DummyWithAt(Phi.Φ)
         );
         final int vertex = universe.find(
-            "$.".concat(UniverseTest.ATT)
+            "$.".concat(UniverseDefaultTest.ATT)
         );
         MatcherAssert.assertThat(
             universe.dataize(vertex),
@@ -111,7 +114,7 @@ final class UniverseTest {
     void throwsIfWrongDataize() {
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> new Universe(
+            () -> new UniverseDefault(
                 new DummyWithStructure(Phi.Φ)
             ).dataize(-1)
         );
@@ -158,7 +161,7 @@ final class UniverseTest {
          * @param sigma Sigma.
          */
         DummyWithAt(final Phi sigma) {
-            this(sigma, UniverseTest.ATT);
+            this(sigma, UniverseDefaultTest.ATT);
         }
     }
 
@@ -174,7 +177,7 @@ final class UniverseTest {
          */
         DummyWithStructure(final Phi sigma) {
             super(sigma);
-            this.add(UniverseTest.ATT, new AtComposite(this, DummyWithAt::new));
+            this.add(UniverseDefaultTest.ATT, new AtComposite(this, DummyWithAt::new));
         }
     }
 }

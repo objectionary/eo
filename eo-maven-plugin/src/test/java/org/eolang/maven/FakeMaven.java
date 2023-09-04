@@ -55,6 +55,8 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
@@ -375,7 +377,10 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withProgram(final String... program) throws IOException {
-        return this.withProgram(String.join("\n", program));
+        return this.withProgram(
+            String.join("\n", program),
+            new OnDefault(FakeMaven.tojoId(this.current.get()))
+        );
     }
 
     /**
@@ -387,6 +392,36 @@ public final class FakeMaven {
      */
     FakeMaven withProgram(final Path path) throws IOException {
         return this.withProgram(new UncheckedText(new TextOf(path)).asString());
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @param object Object name to save in tojos.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(final String content, final ObjectName object)
+        throws IOException {
+        final Path path = Paths.get(
+            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
+        );
+        this.workspace.save(content, path);
+        final String scope = this.scope();
+        final String version = "0.25.0";
+        final Path source = this.workspace.absolute(path);
+        this.foreignTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.externalTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.current.incrementAndGet();
+        return this;
     }
 
     /**
@@ -458,7 +493,7 @@ public final class FakeMaven {
      * @return Tojo entry.
      */
     ForeignTojo programTojo() {
-        return this.foreignTojos().find(this.tojoId(this.current.get() - 1));
+        return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
@@ -466,7 +501,7 @@ public final class FakeMaven {
      * @return Tojo entry.
      */
     ForeignTojo programExternalTojo() {
-        return this.externalTojos().find(this.tojoId(this.current.get() - 1));
+        return this.externalTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
@@ -505,35 +540,6 @@ public final class FakeMaven {
         descriptor.setArtifactId("eo-maven-plugin");
         descriptor.setVersion(FakeMaven.pluginVersion());
         return descriptor;
-    }
-
-    /**
-     * Adds eo program to a workspace.
-     * @param content EO program content.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    private FakeMaven withProgram(final String content) throws IOException {
-        final Path path = Paths.get(
-            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
-        );
-        this.workspace.save(content, path);
-        final String object = this.tojoId(this.current.get());
-        final String scope = this.scope();
-        final String version = "0.25.0";
-        final Path source = this.workspace.absolute(path);
-        this.foreignTojos()
-            .add(object)
-            .withScope(scope)
-            .withVersion(version)
-            .withSource(source);
-        this.externalTojos()
-            .add(object)
-            .withScope(scope)
-            .withVersion(version)
-            .withSource(source);
-        this.current.incrementAndGet();
-        return this;
     }
 
     /**

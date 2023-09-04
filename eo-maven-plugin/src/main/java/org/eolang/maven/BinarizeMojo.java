@@ -24,7 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseProcess;
+import com.yegor256.Jaxec;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -106,10 +106,7 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             )
         ).intValue();
-        Logger.info(
-            this,
-            String.format("Built in total %d cargo projects", total)
-        );
+        Logger.info(this, "Built in total %d cargo projects", total);
     }
 
     /**
@@ -134,43 +131,26 @@ public final class BinarizeMojo extends SafeMojo {
             .resolve(project.getName())
             .resolve("target").toFile();
         if (cached.exists()) {
-            Logger.info(
-                this,
-                String.format(
-                    "Copying %s to %s",
-                    cached,
-                    target
-                )
-            );
-            FileUtils.copyDirectory(
-                cached,
-                target
-            );
+            Logger.info(this, "Copying %s to %s", cached, target);
+            FileUtils.copyDirectory(cached, target);
         }
         Logger.info(this, "Building rust project..");
-        try (
-            VerboseProcess proc = new VerboseProcess(
-                new ProcessBuilder("cargo", "build")
-                    .directory(project)
-            )
-        ) {
-            proc.stdout();
-        } catch (final IllegalArgumentException exc) {
+        try {
+            new Jaxec("cargo", "build").withHome(project).execUnsafe();
+        } catch (final IOException ex) {
             throw new BuildFailureException(
                 String.format(
                     "Failed to build cargo project with dest = %s",
                     project
                 ),
-                exc
+                ex
             );
         }
         Logger.info(
             this,
-            String.format(
-                "Cargo building succeeded, update cached %s with %s",
-                cached,
-                target
-            )
+            "Cargo building succeeded, update cached %s with %s",
+            cached,
+            target
         );
         FileUtils.copyDirectory(target, cached);
     }

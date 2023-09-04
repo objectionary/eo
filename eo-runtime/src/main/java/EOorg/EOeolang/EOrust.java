@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.bytes.Base64Bytes;
@@ -50,9 +51,12 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.ExNative;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Universe;
+import org.eolang.UniverseDefault;
+import org.eolang.UniverseSafe;
 import org.eolang.XmirObject;
 
 /**
@@ -80,6 +84,11 @@ public class EOrust extends PhDefault {
      * All phis indexed while executing of native method.
      */
     private final Map<Integer, Phi> phis = new HashMap<>();
+
+    /**
+     * Error that possibly was thrown while the native function execution.
+     */
+    private final AtomicReference<Throwable> error = new AtomicReference<>();
 
     static {
         try {
@@ -159,10 +168,15 @@ public class EOrust extends PhDefault {
                     ).take(Phi[].class)[0];
                     return this.translate(
                         (byte[]) method.invoke(
-                            null, new Universe(
-                                portal, this.phis
+                            null,
+                            new UniverseSafe(
+                                new UniverseDefault(
+                                    portal, this.phis
+                                ),
+                                this.error
                             )
-                        )
+                        ),
+                        rho.attr("code").get().locator()
                     );
                 }
             )
@@ -212,12 +226,16 @@ public class EOrust extends PhDefault {
     /**
      * Translates byte message from rust side to Phi object.
      * @param message Message that native method returns.
+     * @param insert Location of the rust insert.
      * @return Phi object.
      * @todo #2283:45min Implement handling of String returning.
      *  It must convert message array from 1 to last byte to the String
      *  and return eo object with converted String Data.
+     * @todo #2442:45min Improve handling EOError returning.
+     *  It should also send a String message describing error on the
+     *  native side and handle it correctly on the java side.
      */
-    private Phi translate(final byte[] message) {
+    private Phi translate(final byte[] message, final String insert) {
         final byte determinant = message[0];
         final byte[] content = Arrays.copyOfRange(message, 1, message.length);
         final Phi ret;
@@ -250,9 +268,22 @@ public class EOrust extends PhDefault {
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getLong());
                 break;
+            case 5:
+                if (this.error.get() == null) {
+                    throw new ExNative(
+                        "Rust insert failed in %s",
+                        insert
+                    );
+                } else {
+                    throw new ExNative(
+                        String.format("Rust insert failed in %s", insert),
+                        this.error.get()
+                    );
+                }
             default:
-                throw new ExFailure(
-                    "Returning Strings and raw bytes is not implemented yet"
+                throw new ExNative(
+                    "Returning Strings and raw bytes is not implemented yet, insert %s",
+                    insert
                 );
         }
         return ret;

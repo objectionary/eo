@@ -25,23 +25,24 @@
 package org.eolang;
 
 /**
- * Common exception.
+ * Exception in native method.
  *
- * @since 0.21
+ * @since 0.32
  */
-public class ExFailure extends ExAbstract {
+public final class ExNative extends ExFailure {
+
+    private static final long serialVersionUID = 5726845593921315515L;
 
     /**
      * Serialization identifier.
      */
-    private static final long serialVersionUID = 597748425437017615L;
 
     /**
      * Ctor.
      * @param cause Exception cause
      * @param args Arguments for {@link String#format(String, Object...)}
      */
-    public ExFailure(final String cause, final Object... args) {
+    public ExNative(final String cause, final Object... args) {
         super(String.format(cause, args));
     }
 
@@ -50,7 +51,7 @@ public class ExFailure extends ExAbstract {
      * @param cause Exception cause
      * @param root Cause exception
      */
-    public ExFailure(final String cause, final Throwable root) {
+    public ExNative(final String cause, final Throwable root) {
         super(cause, root);
     }
 }

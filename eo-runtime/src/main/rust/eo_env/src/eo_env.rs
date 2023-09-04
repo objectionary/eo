@@ -32,6 +32,11 @@ pub struct EOEnv<'local> {
     java_obj: JObject<'local>
 }
 
+/*
+ * @todo #2442:45min Add correct processing of the return value of functions.
+ *  call_method returns Result<JValueOwned<'local>> which we should not just unwrap.
+ *  We need to check it instead and return None if exception in java side happened.
+*/
 impl<'local> EOEnv<'_> {
     pub fn new(java_env: JNIEnv<'local>, _java_class: JClass<'local>, java_obj: JObject<'local>) -> EOEnv<'local> {
         EOEnv {
