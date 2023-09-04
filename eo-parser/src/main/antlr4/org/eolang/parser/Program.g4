@@ -130,6 +130,7 @@ happlicationArgExtended
     : beginner
     | finisherOrCopy
     | DOTS? (spreadable | hmethodExtended | scopeExtended)
+    | LB DOTS spreadable RB
     ;
 
 happlicationArgExtendedHas

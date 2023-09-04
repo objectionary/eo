@@ -219,9 +219,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterAtom(final ProgramParser.AtomContext ctx) {
         this.startObject(ctx);
-        if (ctx.type().QUESTION() == null) {
+        if (ctx.type().NAME() != null) {
             this.objects.prop("atom", ctx.type().NAME().getText());
-        } else {
+        } else if (ctx.type().QUESTION() != null) {
             this.objects.prop("atom", ctx.type().QUESTION().getText());
         }
         this.objects.leave();

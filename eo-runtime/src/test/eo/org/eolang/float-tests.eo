@@ -497,4 +497,4 @@
     $.equal-to 3.1415926
 
 [] > inline-float-computation
-  ((4.0).plus (5.7)).eq (9.7) > @
+  (4.0.plus 5.7).eq 9.7 > @

@@ -376,12 +376,12 @@
 
 [] > xor-as-int
   assert-that > @
-    (2397719729.as-bytes.xor (4294967295.as-bytes)).as-int
+    (2397719729.as-bytes.xor 4294967295.as-bytes).as-int
     $.equal-to 1897247566
 
 [] > one-xor-one-as-int
   assert-that > @
-    (1.as-bytes.xor (1.as-bytes)).as-int
+    (1.as-bytes.xor 1.as-bytes).as-int
     $.equal-to 0
 
 [] > eight-byte-numbers-xor-as-int
@@ -396,42 +396,42 @@
 
 [] > or-neg-bytes-as-int-with-leading-zeroes
   assert-that > @
-    (2397719729.as-bytes.or (-4294967296).as-bytes).as-int
+    (2397719729.as-bytes.or -4294967296.as-bytes).as-int
     $.equal-to -1897247567
 
 [] > and-neg-bytes-as-int-with-leading-zeroes
   assert-that > @
-    (2397719729.as-bytes.and (-4294967296).as-bytes).as-int
+    (2397719729.as-bytes.and -4294967296.as-bytes).as-int
     $.equal-to 0
 
 [] > xor-neg-bytes-as-int-with-leading-zeroes
   assert-that > @
-    (2397719729.as-bytes.xor (-4294967296).as-bytes).as-int
+    (2397719729.as-bytes.xor -4294967296.as-bytes).as-int
     $.equal-to -1897247567
 
 [] > or-neg-bytes-as-int-without-leading--zeroes
   assert-that > @
-    (4294967295.as-bytes.or (-4294967296).as-bytes).as-int
+    (4294967295.as-bytes.or -4294967296.as-bytes).as-int
     $.equal-to -1
 
 [] > and-neg-bytes-as-int-without-leading--zeroes
   assert-that > @
-    (4294967295.as-bytes.and (-4294967296).as-bytes).as-int
+    (4294967295.as-bytes.and -4294967296.as-bytes).as-int
     $.equal-to 0
 
 [] > xor-neg-bytes-as-int-without-leading--zeroes
   assert-that > @
-    (4294967295.as-bytes.xor (-4294967296).as-bytes).as-int
+    (4294967295.as-bytes.xor -4294967296.as-bytes).as-int
     $.equal-to -1
 
 [] > or-neg-bytes-as-int-with-zero
   assert-that > @
-    ((-4294967296).as-bytes.or (0.as-bytes)).as-int
+    (-4294967296.as-bytes.or (0.as-bytes)).as-int
     $.equal-to -4294967296
 
 [] > or-neg-bytes-as-int-with-one
   assert-that > @
-    ((-4294967296).as-bytes.or (1.as-bytes)).as-int
+    (-4294967296.as-bytes.or (1.as-bytes)).as-int
     $.equal-to -4294967295
 
 # @todo #793:30min To enable next 4 as-bytes tests.
