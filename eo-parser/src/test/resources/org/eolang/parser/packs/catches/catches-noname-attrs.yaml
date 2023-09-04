@@ -5,12 +5,12 @@ tests:
   - /program/errors[count(error[@severity='error'])=4]
   - /program/errors/error[@line='2' and contains(text(),'pos=2')]
   - /program/errors/error[@line='3' and contains(text(),'pos=2')]
-  - /program/errors/error[@line='9' and contains(text(),'pos=19')]
-  - /program/errors/error[@line='14' and contains(text(),'pos=2')]
+  - /program/errors/error[@line='9' and contains(text(),'pos=20')]
+  - /program/errors/error[@line='14' and contains(text(),'pos=3')]
 eo: |
-  []
+  [] > abs
     first
-    second:f
+    second
     third > hey
       23
       33
