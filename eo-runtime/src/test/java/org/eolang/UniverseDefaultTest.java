@@ -122,7 +122,7 @@ final class UniverseDefaultTest {
 
     @Test
     void copies() {
-        final Universe universe = new Universe(
+        final Universe universe = new UniverseDefault(
             new DummyWithAt(Phi.Φ)
         );
         final int origin = universe.find("$");
