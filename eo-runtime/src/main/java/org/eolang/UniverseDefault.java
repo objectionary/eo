@@ -114,7 +114,9 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public int copy(final int vertex) {
-        return vertex;
+        final Phi copy = this.get(vertex).copy();
+        this.indexed.putIfAbsent(copy.hashCode(), copy);
+        return copy.hashCode();
     }
 
     @Override
