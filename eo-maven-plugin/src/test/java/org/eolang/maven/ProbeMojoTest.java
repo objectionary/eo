@@ -217,11 +217,11 @@ final class ProbeMojoTest {
 
     private static String[] program() {
         return new String[]{
-            "+package org.eolang.custom",
-            "",
+            "+package org.eolang.custom\n",
             "[] > main",
             "  QQ.io.stdout > @",
-            "    QQ.txt.sprintf \"I am %d years old\"",
+            "    QQ.txt.sprintf",
+            "      \"I am %d years old\"",
             "      plus.",
             "        1337",
             "        228",

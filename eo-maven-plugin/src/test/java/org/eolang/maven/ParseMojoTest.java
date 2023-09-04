@@ -121,7 +121,7 @@ final class ParseMojoTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
-                    .withProgram("something < is wrong here")
+                    .withProgram("something > is wrong here")
                     .with("failOnError", true)
                     .execute(ParseMojo.class)
             ).getCause().getCause().getMessage(),

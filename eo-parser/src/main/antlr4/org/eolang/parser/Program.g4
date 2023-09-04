@@ -74,7 +74,7 @@ atom: ahead suffix type
 // Comment can be placed before atom
 // Can contain any inner object
 abstraction
-    : ahead suffix inners?
+    : ahead oname inners?
     ;
 
 // Inner objects inside abstraction
@@ -253,11 +253,11 @@ vapplicationHeadHasNamed
     ;
 
 vapplicationArgVanonym
-    : attributes has? suffix? abstractees?
+    : attributes has? oname? abstractees?
     ;
 
 vapplicationArgHanonym
-    : (hanonym | LB hanonym RB has) suffix?
+    : (hanonym | LB hanonym RB has) oname?
     ;
 
 hanonym
@@ -276,7 +276,7 @@ abstractees
     ;
 
 innerabstract
-    : ahead suffix? abstractees?
+    : ahead oname? abstractees?
     ;
 
 ahead

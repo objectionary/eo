@@ -156,7 +156,6 @@ final class AssembleMojoTest {
         final String[] jars = new String[] {
             "**/eo-runtime-0.28.5.jar",
             "**/eo-runtime-0.28.6.jar",
-            "**/eo-runtime-0.30.0.jar",
         };
         MatcherAssert.assertThat(
             String.format(

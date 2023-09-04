@@ -805,6 +805,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         this.objects.enter();
         this.objects.prop("method");
         this.objects.xprop("base", "concat('.',@base)");
+        this.objects.xprop("pos", "@pos - 1");
         this.objects.leave();
     }
 
@@ -857,7 +858,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = ctx.NAME().getText();
         } else if (ctx.AT() != null) {
             base = "@";
-            this.objects.prop("data", "tuple");
         } else if (ctx.RHO() != null) {
             base = "^";
         } else if (ctx.VERTEX() != null) {
@@ -885,7 +885,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = ctx.NAME().getText();
         } else if (ctx.AT() != null) {
             base = "@";
-            this.objects.prop("data", "tuple");
         } else if (ctx.RHO() != null) {
             base = "^";
         } else if (ctx.SIGMA() != null) {
