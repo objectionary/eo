@@ -2,22 +2,33 @@ grammar Program;
 
 tokens { TAB, UNTAB }
 
+// Entry point
 program
     : license? metas? objects EOF
     ;
 
+// Licence
 license
     : (COMMENT EOL)* COMMENT EOP
     ;
 
+// Metas
 metas
     : (META EOL)* META EOP
     ;
 
+// Objects
 objects
     : ((COMMENT EOL)* object (EOL | EOP))+
     ;
 
+// Object. Can be:
+// - atom
+// - abstraction with mandatory name
+// - horizontal anonym object with mandatory name
+// - application (vertical or horizontal) with optional name
+// - method (vertical or horizontal) with optional name
+// - just (just object reference) with optional name
 object
     : atom
     | abstraction
@@ -27,66 +38,98 @@ object
     | justNamed
     ;
 
+// Just object reference without name
 just: beginner
     | finisherOrCopy
     | versioned
     ;
 
+// Just object reference with optional name
+// Can't be used with "spread" operator (DOTS)
 justNamed
     : just oname?
     ;
 
+// Just object reference with binding
+// Used only as argument in vertical application
+// Can be used with "spread" operator (DOTS)
 justHas
     : just has
     ;
 
+// Just object reference with binding with optional name
+// Used only as argument in vertical application
+// Can't be used with "spread" operator (DOTS)
 justHasNamed
     : justHas oname?
     ;
 
+// Atom - abstract object with mandatory name and type
+// Comment can be placed before atom
+// Can't contain inner objects
 atom: ahead suffix type
     ;
 
+// Abstraction - abstract object with mandatory name
+// Comment can be placed before atom
+// Can contain any inner object
 abstraction
     : ahead suffix inners?
     ;
 
+// Inner objects inside abstraction
+// Every inner object must have next indentation level
 inners
     : EOL TAB (object (EOL | EOP))+ UNTAB
     ;
 
+// Attributes of an abstract object, atom or horizontal anonym object
+// Separated by "SPACE"
+// If "vararg" object (obj...) is present - must be the last one in the list
 attributes
     : LSQ
       ((attribute (SPACE attribute)* (SPACE vararg)?)? | vararg)
       RSQ
     ;
 
+// Attribute
 attribute
     : NAME
     ;
 
+// Type of atom
 type: SPACE SLASH (NAME | QUESTION)
     ;
 
+// Vararg attribute
 vararg
     : NAME DOTS
     ;
 
+// Application
+// - horizontal with optional name
+// - vertical
 application
     : happlicationNamed
     | vapplication
     ;
 
-happlicationExtended
-    : happlicationHeadExtended happlicationTailExtended
+// Horizontal application with optional name
+happlicationNamed
+    : happlicationExtended oname?
     ;
 
+// Horizontal application
+// The whole application is written in one line
+// The head can't be anything in vertical notation
 happlication
     : happlicationHead happlicationTail
     ;
 
-happlicationNamed
-    : happlicationExtended oname?
+// Extended horizontal application
+// The head of the application can be anything in horizontal or vertical notations
+happlicationExtended
+    : happlicationHeadExtended happlicationTailExtended
     ;
 
 happlicationHead
@@ -259,18 +302,28 @@ methodHasNamed
     : methodHas oname?
     ;
 
+// Horizontal method
+// The whole method is written in one line
+// The head can't be anything in vertical notation
 hmethod
     : hmethodHead methodTail+
     ;
 
+// Extended horizontal method
+// The head of the method can be anything in horizontal or vertical notations
 hmethodExtended
     : hmethodHeadExtended methodTail+
     ;
 
+// Versioned horizontal method
+// The whole method is written in one line
+// The head can't be anything in vertical notation
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned
     ;
 
+// Versioned extended horizontal method
+// The head of the method can be anything in horizontal or vertical notations
 hmethodExtendedVersioned
     : hmethodHeadExtended methodTail* methodTailVersioned
     ;
@@ -295,33 +348,48 @@ vmethodVersioned
     : vmethodHead vmethodTailVersioned
     ;
 
+// Head of vertical method
+// The simple variation of this block leads to left recursion error
+// So in order to avoid it this block was described in more detail
+// Head of vertical method can be:
+// 1. vertical method
+// 2. horizontal method
+// 3. vertical application. Here, vertical application is split into 2 parts because
+//    vapplicationHead contains vmethod which leads to left recursion error.
+// 4. horizontal application. The same logic as with a vertical application
+// 5. just an object reference
 vmethodHead
-    : vmethodHead (vmethodTail | vmethodTailVersioned) oname?
-    | hmethodExtended oname?
-    | hmethodExtendedVersioned oname?
-    | vmethodHead (vmethodTail | vmethodTailVersioned) oname? vapplicationArgs oname?
-    | (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) oname? vapplicationArgs oname?
-    | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTailExtended oname?
-    | (applicable | hmethodExtended) happlicationTailExtended oname?
-    | justNamed
+    : vmethodHead (vmethodTail | vmethodTailVersioned) oname?                                               // vmethod
+    | (hmethodExtended | hmethodExtendedVersioned) oname?                                                   // hmethod extended
+    | vmethodHead (vmethodTail | vmethodTailVersioned) oname? vapplicationArgs oname?                       // vmethod + vapplication
+    | (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) oname? vapplicationArgs oname?  // vapplication without vmethod in head
+    | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTailExtended oname?                      // vmethod + haplication
+    | (applicable | hmethodExtended) happlicationTailExtended oname?                                        // happlication without vmethod in head
+    | justNamed                                                                                             // just
     ;
 
+// Tail of vertical method
 vmethodTail
     : EOL methodTail
     ;
 
+// Versioned tail of vertical method
 vmethodTailVersioned
     : EOL methodTailVersioned
     ;
 
+// Tail of method
 methodTail
     : DOT mtd
     ;
 
+// Versioned tail of method
 methodTailVersioned
     : DOT mtdVersioned
     ;
 
+// Can be at the beginning of the statement
+// Can't be in the middle or at the end
 beginner
     : STAR
     | ROOT
@@ -330,6 +398,7 @@ beginner
     | data
     ;
 
+// Can start or finish the statement
 finisher
     : NAME
     | AT
@@ -338,13 +407,16 @@ finisher
     | VERTEX
     ;
 
+// Something that can be spread
 spreadable
     : (NAME | AT | RHO | SIGMA) COPY?
     ;
 
+// Method after DOT
 mtd : finisherOrCopy
     ;
 
+// Method with version after DOT
 mtdVersioned
     : NAME version?
     ;
