@@ -127,7 +127,9 @@ final class XMIRTest {
             Matchers.allOf(
                 Matchers.containsString("<byte> := /[0-9A-F]/ /[0-9A-F]/ \\\\"),
                 Matchers.containsString("<string> := 'DQ' {"),
-                Matchers.containsString("<text> := 'DQ' 'DQ' 'DQ' [")
+                Matchers.containsString("<text> := 'DQ' 'DQ' 'DQ' ["),
+                Matchers.containsString("\\textvisiblespace{}"),
+                Matchers.containsString("\\textquotesingle{}")
             )
         );
         Files.write(
