@@ -37,7 +37,7 @@ SOFTWARE.
     <xsl:variable name="r8" select="replace($r7, '#', '\\#')"/>
     <xsl:variable name="r9" select="replace($r8, '_', '\\_')"/>
     <xsl:variable name="r10" select="replace($r9, '&quot;', '\\textquotedbl{}')"/>
-    <xsl:variable name="r11" select="replace($r10, '&amp;', '\\textquotesingle{}')"/>
+    <xsl:variable name="r11" select="replace($r10, &quot;'&quot;, '\\textquotesingle{}')"/>
     <xsl:value-of select="$r11"/>
   </xsl:function>
   <xsl:function name="eo:term" as="xs:string">
