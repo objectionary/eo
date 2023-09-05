@@ -22,25 +22,19 @@ objects
     : ((COMMENT EOL)* object (EOL | EOP))+
     ;
 
-// Object. Can be:
-// - atom
-// - abstraction with mandatory name
-// - horizontal anonym object with mandatory name
-// - application (vertical or horizontal) with optional name
-// - method (vertical or horizontal) with optional name
-// - just (just object reference) with optional name
+// Object
 object
-    : atom
-    | abstraction
-    | hanonym oname
-    | application
-    | methodNamed
-    | justNamed
+    : atom          // Atom
+    | abstraction   // Abstraction
+    | hanonym oname // Horizontal anonym with name
+    | application   // Application
+    | methodNamed   // Method
+    | justNamed     // Just an object reference
     ;
 
 // Just object reference without name
 just: beginner
-    | finisherOrCopy
+    | finisherCopied
     | versioned
     ;
 
@@ -48,20 +42,6 @@ just: beginner
 // Can't be used with "spread" operator (DOTS)
 justNamed
     : just oname?
-    ;
-
-// Just object reference with binding
-// Used only as argument in vertical application
-// Can be used with "spread" operator (DOTS)
-justHas
-    : just has
-    ;
-
-// Just object reference with binding with optional name
-// Used only as argument in vertical application
-// Can't be used with "spread" operator (DOTS)
-justHasNamed
-    : justHas oname?
     ;
 
 // Atom - abstract object with mandatory name and type
@@ -72,19 +52,18 @@ atom: ahead suffix type
 
 // Abstraction - abstract object with mandatory name
 // Comment can be placed before atom
-// Can contain any inner object
+// Can contain inner objects
 abstraction
     : ahead oname inners?
     ;
 
 // Inner objects inside abstraction
-// Every inner object must have next indentation level
+// Every inner object must be indented
 inners
     : EOL TAB (object (EOL | EOP))+ UNTAB
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
-// Separated by "SPACE"
 // If "vararg" object (obj...) is present - must be the last one in the list
 attributes
     : LSQ
@@ -110,34 +89,36 @@ vararg
 // - horizontal with optional name
 // - vertical
 application
-    : happlicationNamed
-    | vapplication
-    ;
-
-// Horizontal application with optional name
-happlicationNamed
     : happlicationExtended oname?
+    | vapplication
     ;
 
 // Horizontal application
 // The whole application is written in one line
-// The head can't be anything in vertical notation
+// The head does not contain elements in vertical notation
+// The division of elements into regular and extended ones is
+// due to the presence of horizontal anonymous objects where inner objects
+// must be horizontal only
 happlication
     : happlicationHead happlicationTail
     ;
 
 // Extended horizontal application
-// The head of the application can be anything in horizontal or vertical notations
+// The head can contain elements in horizontal or vertical notations
 happlicationExtended
     : happlicationHeadExtended happlicationTailExtended
     ;
 
+// Head of horizontal application
+// Does not contain elements in vertical notation
 happlicationHead
     : hmethod
     | applicable
     | scope
     ;
 
+// Extended head of horizontal application
+// Can contain elements in vertical notation
 happlicationHeadExtended
     : vmethod
     | hmethodExtended
@@ -145,45 +126,46 @@ happlicationHeadExtended
     | scopeExtended
     ;
 
+// Simple statements that can be used as head of application
 applicable
     : STAR
     | (NAME | AT) COPY?
     | reversed
     ;
 
+// Horizontal application tail
 happlicationTail
-    : (SPACE (happlicationArg | happlicationArgHas))+
+    : (SPACE (happlicationArg | happlicationArg as))+
     ;
 
+// Argument of horizontal application
+// Does not contain elements in vertical notation
 happlicationArg
     : beginner
-    | finisherOrCopy
+    | finisherCopied
     | DOTS? (spreadable | hmethod | scope)
     ;
 
-happlicationArgHas
-    : happlicationArg has
-    ;
-
+// Extended horizontal application tail
 happlicationTailExtended
-    : (SPACE (happlicationArgExtended | happlicationArgExtendedHas))+
+    : (SPACE (happlicationArgExtended | happlicationArgExtended as))+
     ;
 
+// Extended argument of horizontal application
+// Can contain elements in vertical notation
 happlicationArgExtended
     : beginner
-    | finisherOrCopy
+    | finisherCopied
     | DOTS? (spreadable | hmethodExtended | scopeExtended)
     | LB DOTS spreadable RB
     ;
 
-happlicationArgExtendedHas
-    : happlicationArgExtended has
-    ;
-
+// Vertical application
 vapplication
     : vapplicationHeadNamed vapplicationArgs
     ;
 
+// Vertical application head
 vapplicationHead
     : applicable
     | hmethodExtended
@@ -193,81 +175,81 @@ vapplicationHead
     | versioned
     ;
 
+// Vertical application head with optional name
 vapplicationHeadNamed
     : vapplicationHead oname?
     ;
 
+// Vertical application arguments
 vapplicationArgs
     : EOL
       TAB
       (
-        ( vapplicationArgVanonym
-        | vapplicationArgHanonym
-        | vapplicationArgHapplicationNamed
-        | vapplicationArgVapplicationNamed
-        | justNamed
-        | justHasNamed
-        | methodNamed
-        | methodHasNamed
-        | vapplicationArgSpreadable
+        ( vapplicationArgVanonym                                                // Vertical anonym object
+        | vapplicationArgHanonym                                                // Horizontal anonym object
+        | vapplicationArgHapplication oname?                                    // Horizontal application
+        | (vapplicationHeadNamed | vapplicationHeadAs oname?) vapplicationArgs  // Vertical application
+        | justNamed                                                             // Just an object reference
+        | just as oname?                                                        // Just an object reference with binding
+        | methodNamed                                                           // Method
+        | methodAs oname?                                                       // Method with binding
+        | vapplicationArgSpreadable                                             // Spreadable
         )
         (EOL | EOP)
       )+
       UNTAB
     ;
 
+// Vertical application arguments that can be spread
 vapplicationArgSpreadable
     : DOTS?
       ( just
-      | justHas
+      | just as
       | method
-      | methodHas
+      | methodAs
       | vapplicationArgHapplication
       | vapplicationArgVapplication
       )
     ;
 
+// Horizontal application as argument of vertical application
 vapplicationArgHapplication
     : happlicationExtended
-    | LB happlicationExtended RB has
+    | LB happlicationExtended RB as
     ;
 
-vapplicationArgHapplicationNamed
-    : vapplicationArgHapplication oname?
-    ;
-
+// Vertical application as argument of vertical application
 vapplicationArgVapplication
-    : (vapplicationHead | vapplicationHeadHas) vapplicationArgs
+    : (vapplicationHead | vapplicationHeadAs) vapplicationArgs
     ;
 
-vapplicationArgVapplicationNamed
-    : (vapplicationHeadNamed | vapplicationHeadHasNamed) vapplicationArgs
+// Vertical application head with binding
+vapplicationHeadAs
+    : (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) as
     ;
 
-vapplicationHeadHas
-    : (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) has
-    ;
-
-vapplicationHeadHasNamed
-    : vapplicationHeadHas oname?
-    ;
-
+// Vertical anonym object as argument of vertical application
 vapplicationArgVanonym
-    : attributes has? oname? abstractees?
+    : attributes as? oname? abstractees?
     ;
 
+// Horizontal anonym object as argument of vertical application
 vapplicationArgHanonym
-    : (hanonym | LB hanonym RB has) oname?
+    : (hanonym | LB hanonym RB as) oname?
     ;
 
+// Horizontal anonym object
 hanonym
     : attributes hanonymInner+
     ;
 
+// Inner object of horizontal anonym object
+// Does not contan elements in vertical notation
 hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
 
+// Abstract objects <- arguments of vertical anonym object <- argument of vertical application
 abstractees
     : EOL
       TAB
@@ -275,14 +257,17 @@ abstractees
       UNTAB
     ;
 
+// Inner abstract object of abstractees
 innerabstract
     : ahead oname? abstractees?
     ;
 
+// Optional comment + attributes
 ahead
     : (COMMENT EOL)* attributes
     ;
 
+// Method
 method
     : hmethodExtended
     | hmethodExtendedVersioned
@@ -290,60 +275,65 @@ method
     | vmethodVersioned
     ;
 
+// Method with optional name
 methodNamed
     : method oname?
     ;
 
-methodHas
-    : (hmethodExtended | hmethodExtendedVersioned) has
-    ;
-
-methodHasNamed
-    : methodHas oname?
+// Method with bindning
+methodAs
+    : (hmethodExtended | hmethodExtendedVersioned) as
     ;
 
 // Horizontal method
 // The whole method is written in one line
-// The head can't be anything in vertical notation
+// The head does not contain elements in vertical notation
 hmethod
     : hmethodHead methodTail+
     ;
 
 // Extended horizontal method
-// The head of the method can be anything in horizontal or vertical notations
+// The head can contain elements in vertical notation
 hmethodExtended
     : hmethodHeadExtended methodTail+
     ;
 
 // Versioned horizontal method
 // The whole method is written in one line
-// The head can't be anything in vertical notation
+// The head does not contain elements in vertical notation
+// The division of elements into regular and versioned ones is due to
+// the presence of horizontal application where head or agruments can't
+// contain version
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned
     ;
 
 // Versioned extended horizontal method
-// The head of the method can be anything in horizontal or vertical notations
+// The head can contain elements in vertical notation
 hmethodExtendedVersioned
     : hmethodHeadExtended methodTail* methodTailVersioned
     ;
 
+// Head of horizontal method
 hmethodHead
     : beginner
-    | finisherOrCopy
+    | finisherCopied
     | scope
     ;
 
+// Extended head of horizontal method
 hmethodHeadExtended
     : beginner
-    | finisherOrCopy
+    | finisherCopied
     | scopeExtended
     ;
 
+// Vertical method
 vmethod
     : vmethodHead vmethodTail
     ;
 
+// Vertical method with version
 vmethodVersioned
     : vmethodHead vmethodTailVersioned
     ;
@@ -380,16 +370,16 @@ vmethodTailVersioned
 
 // Tail of method
 methodTail
-    : DOT mtd
+    : DOT finisherCopied
     ;
 
 // Versioned tail of method
 methodTailVersioned
-    : DOT mtdVersioned
+    : DOT NAME version?
     ;
 
 // Can be at the beginning of the statement
-// Can't be in the middle or at the end
+// Can't be after DOT
 beginner
     : STAR
     | ROOT
@@ -412,55 +402,53 @@ spreadable
     : (NAME | AT | RHO | SIGMA) COPY?
     ;
 
-// Method after DOT
-mtd : finisherOrCopy
-    ;
-
-// Method with version after DOT
-mtdVersioned
-    : NAME version?
-    ;
-
-finisherOrCopy
+// Finisher with optional COPY
+finisherCopied
     : finisher COPY?
     ;
 
+// Name with optional version
 versioned
     : NAME version?
     ;
 
+// Reversed notation
+// Only finisher can be used in reversed notation
 reversed
     : finisher DOT
     ;
 
+// Object name
 oname
     : suffix CONST?
     ;
 
+// Suffix
 suffix
-    : SPACE ARROW SPACE label
+    : SPACE ARROW SPACE (AT | NAME)
     ;
 
-label
-    : AT
-    | NAME
-    ;
-
+// Simple scope
+// Does not contain elements in vertical notation
 scope
     : LB (happlication | hmethod | hanonym) RB
     ;
 
+// Extended scope
 scopeExtended
     : LB (happlicationExtended | hmethodExtended | hanonym) RB
     ;
 
+// Version
 version
     : BAR VER
     ;
 
-has : COLON (NAME | RHO)
+// Binding
+as  : COLON (NAME | RHO)
     ;
 
+// Data
 data: BYTES
     | BOOL
     | TEXT

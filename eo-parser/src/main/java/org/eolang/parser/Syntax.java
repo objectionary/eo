@@ -77,40 +77,21 @@ public final class Syntax {
     private final Output target;
 
     /**
-     * Checks redundant parentheses.
-     */
-    private final RedundantParentheses redundancy;
-
-    /**
      * Ctor.
      *
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
-     */
-    public Syntax(final String nme, final Input ipt, final Output tgt) {
-        this(nme, ipt, tgt, new RedundantParentheses());
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param nme The name of it
-     * @param ipt Input text
-     * @param tgt Target
-     * @param redundancy Check for redundant parentheses
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     public Syntax(
         final String nme,
         final Input ipt,
-        final Output tgt,
-        final RedundantParentheses redundancy
+        final Output tgt
     ) {
         this.name = nme;
         this.input = ipt;
         this.target = tgt;
-        this.redundancy = redundancy;
     }
 
     /**

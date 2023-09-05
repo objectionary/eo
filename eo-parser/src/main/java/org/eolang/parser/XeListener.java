@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.manifests.Manifests;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
@@ -30,7 +31,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
-import com.jcabi.manifests.Manifests;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -46,9 +46,16 @@ import org.xembly.Directives;
  *
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle FileLengthCheck (1300 lines)
+ * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals", "PMD.ExcessivePublicCount"})
+@SuppressWarnings({
+    "PMD.TooManyMethods",
+    "PMD.AvoidDuplicateLiterals",
+    "PMD.ExcessivePublicCount",
+    "PMD.ExcessiveClassLength"
+})
 public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     /**
@@ -197,26 +204,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterJustHas(final ProgramParser.JustHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitJustHas(final ProgramParser.JustHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterJustHasNamed(final ProgramParser.JustHasNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitJustHasNamed(final ProgramParser.JustHasNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAtom(final ProgramParser.AtomContext ctx) {
         this.startObject(ctx);
         if (ctx.type().NAME() != null) {
@@ -328,16 +316,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationNamed(final ProgramParser.HapplicationNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationNamed(final ProgramParser.HapplicationNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterHapplicationHead(final ProgramParser.HapplicationHeadContext ctx) {
         // Nothing here
     }
@@ -348,16 +326,21 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationHeadExtended(final ProgramParser.HapplicationHeadExtendedContext ctx) {
+    public void enterHapplicationHeadExtended(
+        final ProgramParser.HapplicationHeadExtendedContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplicationHeadExtended(final ProgramParser.HapplicationHeadExtendedContext ctx) {
+    public void exitHapplicationHeadExtended(
+        final ProgramParser.HapplicationHeadExtendedContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterApplicable(final ProgramParser.ApplicableContext ctx) {
         if (ctx.reversed() == null) {
             this.startObject(ctx);
@@ -412,47 +395,35 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHapplicationArgHas(final ProgramParser.HapplicationArgHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationArgHas(final ProgramParser.HapplicationArgHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationTailExtended(final ProgramParser.HapplicationTailExtendedContext ctx) {
+    public void enterHapplicationTailExtended(
+        final ProgramParser.HapplicationTailExtendedContext ctx
+    ) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTailExtended(final ProgramParser.HapplicationTailExtendedContext ctx) {
+    public void exitHapplicationTailExtended(
+        final ProgramParser.HapplicationTailExtendedContext ctx
+    ) {
         this.objects.leave();
     }
 
     @Override
-    public void enterHapplicationArgExtended(final ProgramParser.HapplicationArgExtendedContext ctx) {
+    public void enterHapplicationArgExtended(
+        final ProgramParser.HapplicationArgExtendedContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplicationArgExtended(final ProgramParser.HapplicationArgExtendedContext ctx) {
+    public void exitHapplicationArgExtended(
+        final ProgramParser.HapplicationArgExtendedContext ctx
+    ) {
         if (ctx.DOTS() != null) {
             this.objects.enter();
             this.objects.prop("unvar");
             this.objects.leave();
         }
-    }
-
-    @Override
-    public void enterHapplicationArgExtendedHas(final ProgramParser.HapplicationArgExtendedHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationArgExtendedHas(final ProgramParser.HapplicationArgExtendedHasContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -496,12 +467,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgSpreadable(final ProgramParser.VapplicationArgSpreadableContext ctx) {
+    public void enterVapplicationArgSpreadable(
+        final ProgramParser.VapplicationArgSpreadableContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgSpreadable(final ProgramParser.VapplicationArgSpreadableContext ctx) {
+    public void exitVapplicationArgSpreadable(
+        final ProgramParser.VapplicationArgSpreadableContext ctx
+    ) {
         if (ctx.DOTS() != null) {
             this.objects.enter();
             this.objects.prop("unvar");
@@ -510,62 +485,42 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgHapplication(final ProgramParser.VapplicationArgHapplicationContext ctx) {
+    public void enterVapplicationArgHapplication(
+        final ProgramParser.VapplicationArgHapplicationContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplication(final ProgramParser.VapplicationArgHapplicationContext ctx) {
+    public void exitVapplicationArgHapplication(
+        final ProgramParser.VapplicationArgHapplicationContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHapplicationNamed(final ProgramParser.VapplicationArgHapplicationNamedContext ctx) {
+    public void enterVapplicationArgVapplication(
+        final ProgramParser.VapplicationArgVapplicationContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplicationNamed(final ProgramParser.VapplicationArgHapplicationNamedContext ctx) {
+    public void exitVapplicationArgVapplication(
+        final ProgramParser.VapplicationArgVapplicationContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgVapplication(final ProgramParser.VapplicationArgVapplicationContext ctx) {
+    public void enterVapplicationHeadAs(
+        final ProgramParser.VapplicationHeadAsContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgVapplication(final ProgramParser.VapplicationArgVapplicationContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgVapplicationNamed(final ProgramParser.VapplicationArgVapplicationNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgVapplicationNamed(final ProgramParser.VapplicationArgVapplicationNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationHeadHas(final ProgramParser.VapplicationHeadHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadHas(final ProgramParser.VapplicationHeadHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationHeadHasNamed(final ProgramParser.VapplicationHeadHasNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationHeadHasNamed(final ProgramParser.VapplicationHeadHasNamedContext ctx) {
+    public void exitVapplicationHeadAs(final ProgramParser.VapplicationHeadAsContext ctx) {
         // Nothing here
     }
 
@@ -666,22 +621,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMethodHas(final ProgramParser.MethodHasContext ctx) {
+    public void enterMethodAs(final ProgramParser.MethodAsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMethodHas(final ProgramParser.MethodHasContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodHasNamed(final ProgramParser.MethodHasNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodHasNamed(final ProgramParser.MethodHasNamedContext ctx) {
+    public void exitMethodAs(final ProgramParser.MethodAsContext ctx) {
         // Nothing here
     }
 
@@ -716,12 +661,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHmethodExtendedVersioned(final ProgramParser.HmethodExtendedVersionedContext ctx) {
+    public void enterHmethodExtendedVersioned(
+        final ProgramParser.HmethodExtendedVersionedContext ctx
+    ) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethodExtendedVersioned(final ProgramParser.HmethodExtendedVersionedContext ctx) {
+    public void exitHmethodExtendedVersioned(
+        final ProgramParser.HmethodExtendedVersionedContext ctx
+    ) {
         // Nothing here
     }
 
@@ -811,18 +760,18 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
-        // Nothing here
+        this.startObject(ctx);
+        this.objects.prop("base", String.format(".%s", ctx.NAME().getText()));
+        this.objects.prop("method");
     }
 
     @Override
     public void exitMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
-        this.objects.enter();
-        this.objects.prop("method");
-        this.objects.xprop("base", "concat('.',@base)");
         this.objects.leave();
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBeginner(final ProgramParser.BeginnerContext ctx) {
         this.startObject(ctx);
         if (ctx.data() == null) {
@@ -851,6 +800,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterFinisher(final ProgramParser.FinisherContext ctx) {
         this.startObject(ctx);
         final String base;
@@ -878,6 +828,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSpreadable(final ProgramParser.SpreadableContext ctx) {
         this.startObject(ctx);
         final String base;
@@ -906,33 +857,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMtd(final ProgramParser.MtdContext ctx) {
+    public void enterFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMtd(final ProgramParser.MtdContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMtdVersioned(final ProgramParser.MtdVersionedContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("base", ctx.NAME().getText());
-    }
-
-    @Override
-    public void exitMtdVersioned(final ProgramParser.MtdVersionedContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterFinisherOrCopy(final ProgramParser.FinisherOrCopyContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitFinisherOrCopy(final ProgramParser.FinisherOrCopyContext ctx) {
+    public void exitFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
         this.objects.enter();
         if (ctx.COPY() != null) {
             this.objects.prop("copy");
@@ -978,28 +908,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
         this.objects.enter();
-    }
-
-    @Override
-    public void exitSuffix(final ProgramParser.SuffixContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterLabel(final ProgramParser.LabelContext ctx) {
         if (ctx.AT() != null) {
             this.objects.prop("name", ctx.AT().getText());
-        }
-        if (ctx.NAME() != null) {
+        } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
         }
     }
 
     @Override
-    public void exitLabel(final ProgramParser.LabelContext ctx) {
-        // Nothing here
+    public void exitSuffix(final ProgramParser.SuffixContext ctx) {
+        this.objects.leave();
     }
 
     @Override
@@ -1035,7 +956,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHas(final ProgramParser.HasContext ctx) {
+    public void enterAs(final ProgramParser.AsContext ctx) {
         this.objects.enter();
         final String has;
         if (ctx.RHO() == null) {
@@ -1047,11 +968,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitHas(final ProgramParser.HasContext ctx) {
+    public void exitAs(final ProgramParser.AsContext ctx) {
         this.objects.leave();
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
@@ -1134,7 +1056,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void visitTerminal(final TerminalNode terminalNode) {
+    public void visitTerminal(final TerminalNode node) {
         // This method is created by ANTLR and can't be removed
     }
 
@@ -1144,20 +1066,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     // don't do anything, to not pollute the error reporting with
     // duplicated.
     @Override
-    public void visitErrorNode(final ErrorNode errorNode) {
+    public void visitErrorNode(final ErrorNode node) {
         // This method is created by ANTLR and can't be removed
     }
 
     @Override
-    public void enterEveryRule(final ParserRuleContext parserRuleContext) {
+    public void enterEveryRule(final ParserRuleContext ctx) {
         // This method is created by ANTLR and can't be removed
     }
 
     @Override
-    public void exitEveryRule(final ParserRuleContext parserRuleContext) {
+    public void exitEveryRule(final ParserRuleContext ctx) {
         // This method is created by ANTLR and can't be removed
     }
-
 
     @Override
     public Iterator<Directive> iterator() {
@@ -1194,7 +1115,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     /**
      * Trim margin from text block.
      *
-     * @param text   Text block.
+     * @param text Text block.
      * @param indent Indentation level.
      * @return Trimmed text.
      */
