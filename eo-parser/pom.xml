@@ -184,6 +184,15 @@ SOFTWARE.
       <build>
         <plugins>
           <plugin>
+            <groupId>com.qulice</groupId>
+            <artifactId>qulice-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>checkstyle:/src/main/java/org/eolang/parser/XeListener.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
           </plugin>

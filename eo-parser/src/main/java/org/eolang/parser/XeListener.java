@@ -46,7 +46,6 @@ import org.xembly.Directives;
  *
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
- * @checkstyle FileLengthCheck (1300 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
  */
