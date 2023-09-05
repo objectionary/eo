@@ -60,9 +60,6 @@ public interface Universe {
      * Copies the eo object.
      * @param vertex Vertex of object to copy.
      * @return Vertex of the copy.
-     * @todo #2237:45min Implement the "copy" method. Now it does
-     *  nothing and created to check rust2java interaction. This
-     *  method relates to building a new eo object in rust insert.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
     int copy(int vertex);
