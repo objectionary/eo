@@ -28,6 +28,7 @@ pub enum EO {
     EOInt(i64),
     EOString(String),
     EORaw(Box<[u8]>),
+    EOError(String),
 }
 
 impl EO {
@@ -53,6 +54,12 @@ impl EO {
             }
             EO::EOString(_) => { vec![0xff] }
             EO::EORaw(_) => { vec![0xff] }
+
+            EO::EOError(_) => {
+                let mut res: Vec<u8> = vec![0; 1];
+                res[0] = 5;
+                res
+            }
         }
     }
 }

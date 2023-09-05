@@ -62,20 +62,19 @@
 
 [] > iterates-over-simple-counter
   memory 0 > x
-  assert-that > res
+  assert-that > @
     and.
       eq.
         x.write 5
         5
       eq.
-        11
         while.
           x.as-int.lt 10
           [i]
-            ^.^.^ > x
-            x.write (x.as-int.plus 1) > @
+            x.write > @
+              x.as-int.plus 1
+        11
     $.equal-to TRUE
-  nop > @
 
 [] > prints-nice-formulas
   memory 0 > x
@@ -166,7 +165,7 @@
 
 [] > complex-bool-expression-in-while
   memory 0 > m
-  assert-that > res
+  assert-that > @
     seq
       m.write 5
       while.
@@ -175,11 +174,14 @@
           TRUE
         [i]
           seq > @
-            m.write (m.as-int.minus 1)
-            stdout (sprintf "%d\n" m.as-int)
+            m.write
+              m.as-int.minus 1
+            stdout
+              sprintf
+                "%d\n"
+                m.as-int
       TRUE
     $.equal-to TRUE
-  nop > @
 
 [] > last-while-dataization-object
   memory 0 > x

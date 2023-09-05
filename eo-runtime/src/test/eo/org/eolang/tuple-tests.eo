@@ -65,6 +65,9 @@
     anArray.at 0
     $.equal-to 100
 
+# @todo #2435:30min Enable test with array-each. assert-that.array-each object
+#  uses memory. So after changing memory behaviour array-each started to work
+#  incorrectly. Need to fix the object and then enable the test
 [] > tuple-as-a-bound-attribute-size-2
   * > anArray
     1

@@ -183,25 +183,24 @@
         0
 
 [] > rust-copy-not-fails
-  1 > a
+  123 > a
   QQ.rust > copy
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo_env::eo_enum::EO::{EOVertex};
     pub fn foo(env: &mut EOEnv) -> EO {
         let v = env.find("$.^.a") as u32;
         let copy = env.copy(v).unwrap();
-        EOInt(copy as i64)
+        EOVertex(copy)
     }
     """
     *
       []
   assert-that > @
     copy
-    $.not
-      $.less-than
-        0
+    $.equal-to
+      123
 
 [] > rust-dataize-not-fails
   1 > a
@@ -237,15 +236,12 @@
 
     pub fn foo(env: &mut EOEnv) -> EO {
       let a = env.find("$.^.a") as u32;
-      let b = env.find("$.^.b") as u32;
       let bytes_a = env.dataize(a).unwrap();
-      let mut arr_a = unsafe { &*(&bytes_a[0..] as *const _  as *const [u8]) };
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().unwrap();
 
+      let b = env.find("$.^.b") as u32;
       let bytes_b = env.dataize(b).unwrap();
-      let mut arr_b = unsafe { &*(&bytes_b[0..] as *const _  as *const [u8]) };
-
-      let a = arr_a.read_i64::<BigEndian>().unwrap();
-      let b = arr_b.read_i64::<BigEndian>().unwrap();
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().unwrap();
       println!("sum 5 + 10 = {}", a + b);
 
       EOInt(a + b)
@@ -257,3 +253,25 @@
   assert-that > @
     plus
     $.equal-to 15
+
+[] > rust-error
+  QQ.rust > err
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOError};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOError("Error happened".to_string())
+    }
+    """
+    *
+      []
+  assert-that > @
+    try
+      []
+        err > @
+      [e]
+        e > @
+      nop
+    $.string-starts-with "Rust insert failed "

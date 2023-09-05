@@ -24,7 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.log.VerboseProcess;
+import com.yegor256.Jaxec;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,10 +47,6 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #2197:45min Update cached rust insert if it was changed.
- *  Now it copies cargo project to cache directory in the end of every
- *  compilation. It is better to copy the project only if it was changed
- *  with the last compilation.
  */
 @Mojo(
     name = "binarize",
@@ -108,10 +104,7 @@ public final class BinarizeMojo extends SafeMojo {
                 )
             )
         ).intValue();
-        Logger.info(
-            this,
-            String.format("Built in total %d cargo projects", total)
-        );
+        Logger.info(this, "Built in total %d cargo projects", total);
     }
 
     /**
@@ -136,18 +129,8 @@ public final class BinarizeMojo extends SafeMojo {
             .resolve(project.getName())
             .resolve("target").toFile();
         if (cached.exists()) {
-            Logger.info(
-                this,
-                String.format(
-                    "Copying %s to %s",
-                    cached,
-                    target
-                )
-            );
-            FileUtils.copyDirectory(
-                cached,
-                target
-            );
+            Logger.info(this, "Copying %s to %s", cached, target);
+            FileUtils.copyDirectory(cached, target);
         }
         if (BinarizeMojo.sameProject(
             project.toPath(),
@@ -157,42 +140,27 @@ public final class BinarizeMojo extends SafeMojo {
         )) {
             Logger.info(
                 this,
-                String.format(
-                    "content of %s was not changed since the last launch",
-                    project.getName()
-                )
+                "content of %s was not changed since the last launch",
+                project.getName()
             );
         } else {
-            Logger.info(
-                this,
-                String.format(
-                    "Building %s rust project..",
-                    project.getName()
-                )
-            );
-            try (
-                VerboseProcess proc = new VerboseProcess(
-                    new ProcessBuilder("cargo", "build")
-                        .directory(project)
-                )
-            ) {
-                proc.stdout();
-            } catch (final IllegalArgumentException exc) {
+            Logger.info(this, "Building %s rust project..", project.getName());
+            try {
+                new Jaxec("cargo", "build").withHome(project).execUnsafe();
+            } catch (final IOException ex) {
                 throw new BuildFailureException(
                     String.format(
                         "Failed to build cargo project with dest = %s",
                         project
                     ),
-                    exc
+                    ex
                 );
             }
             Logger.info(
                 this,
-                String.format(
-                    "Cargo building succeeded, update cached %s with %s",
-                    cached,
-                    target
-                )
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
             );
             FileUtils.copyDirectory(target.getParentFile(), cached.getParentFile());
         }
