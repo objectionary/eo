@@ -110,7 +110,6 @@ final class EOboolEOwhileTest {
     }
 
     @Test
-    @Disabled
     void loopsOverAbstractObjects() {
         final Phi parent = new Parent(Phi.Φ);
         final Phi toggle = new PhCopy(new PhMethod(parent, "toggle"));
@@ -123,7 +122,7 @@ final class EOboolEOwhileTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new PhCopy(new PhMethod(toggle, "while")),
+                    toggle.attr("as-bool").get().attr("while").get().copy(),
                     0, new Kid(Phi.Φ, toggle)
                 )
             ).take(),
@@ -132,10 +131,8 @@ final class EOboolEOwhileTest {
     }
 
     @Test
-    @Disabled
     void dataizesComplexBooleanToggle() {
-        final Phi parent = new Parent(Phi.Φ);
-        final Phi toggle = new PhMethod(parent, "toggle");
+        final Phi toggle = new PhMethod(new Parent(Phi.Φ), "toggle");
         new Dataized(
             new PhWith(
                 new PhMethod(toggle, "write"),

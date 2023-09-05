@@ -23,88 +23,18 @@
  */
 package org.eolang;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
  * @since 0.30
  */
-public class Universe {
-
-    /**
-     * Connector to eo objects.
-     */
-    private final Phi connector;
-
-    /**
-     * EO objects that were already found.
-     */
-    private final Map<Integer, Phi> indexed;
-
-    /**
-     * Ctor.
-     * @param connector Connector.
-     * @param indexed Map to index eo objects.
-     */
-    public Universe(final Phi connector, final Map<Integer, Phi> indexed) {
-        this.connector = connector;
-        this.indexed = indexed;
-    }
-
-    /**
-     * Ctor.
-     * @param connector Connector.
-     */
-    public Universe(final Phi connector) {
-        this(
-            connector, new HashMap<>()
-        );
-    }
-
-    /**
-     * Ctor.
-     */
-    public Universe() {
-        this(Phi.Φ);
-    }
+public interface Universe {
 
     /**
      * Finds vertex of eo object by its location.
      * @param name Relative location of the object to find like "^.^.some-obj".
      * @return Vertex of the object to find.
      */
-    public int find(final String name) {
-        if (name == null) {
-            throw new IllegalArgumentException(
-                "Argument name is null"
-            );
-        }
-        Phi accum;
-        final String[] atts = Universe.replace(name)
-            .split("\\.");
-        if ("Q".equals(atts[0])) {
-            accum = Phi.Φ;
-        } else if ("$".equals(atts[0])) {
-            accum = this.connector;
-        } else {
-            throw new ExFailure(
-                String.format(
-                    "Universe.find starts with %s, but it should start with Q or $ only",
-                    atts[0]
-                )
-            );
-        }
-        atts[0] = "";
-        for (final String att: atts) {
-            if (!"".equals(att)) {
-                accum = accum.attr(att).get();
-            }
-        }
-        this.indexed.putIfAbsent(accum.hashCode(), accum);
-        return accum.hashCode();
-    }
+    int find(String name);
 
     /**
      * Puts data to eo object by vertex.
@@ -112,9 +42,7 @@ public class Universe {
      * @param bytes Data to put.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
-    public void put(final int vertex, final byte[] bytes) {
-        //Empty yet.
-    }
+    void put(int vertex, byte[] bytes);
 
     /**
      * Binds child to parent.
@@ -126,79 +54,20 @@ public class Universe {
      *  but it is called from rust via jni call_method function.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
-    public void bind(final int parent, final int child, final String att) {
-        //Empty yet.
-    }
+    void bind(int parent, int child, String att);
 
     /**
      * Copies the eo object.
      * @param vertex Vertex of object to copy.
      * @return Vertex of the copy.
-     * @todo #2237:45min Implement the "copy" method. Now it does
-     *  nothing and created to check rust2java interaction. This
-     *  method relates to building a new eo object in rust insert.
      * @checkstyle NonStaticMethodCheck (4 lines)
      */
-    public int copy(final int vertex) {
-        return vertex;
-    }
+    int copy(int vertex);
 
     /**
      * Dataizes the eo object by vertex and return byte array.
      * @param vertex Vertex of eo-object.
      * @return Raw data.
      */
-    public byte[] dataize(final int vertex) {
-        return new Param(
-            this.get(vertex),
-            "Δ"
-        ).asBytes().take();
-    }
-
-    /**
-     * Find phi by vertex.
-     * @param vertex Vertex.
-     * @return Phi.
-     * @throws ExFailure if vertex does not exist in the map.
-     */
-    private Phi get(final int vertex) {
-        return Optional.ofNullable(
-            this.indexed.get(vertex)
-        ).orElseThrow(
-            () -> new ExFailure(
-                String.format(
-                    "Phi object with vertex %d was not indexed.",
-                    vertex
-                )
-            )
-        );
-    }
-
-    /**
-     * Replaces specific eo symbols to java symbols.
-     * @param name Name of eo object.
-     * @return Correct location.
-     */
-    private static String replace(final String name) {
-        final StringBuilder builder = new StringBuilder(name.length());
-        for (int iter = 0; iter < name.length(); iter += 1) {
-            final char cur = name.charAt(iter);
-            switch (cur) {
-                case '^':
-                    builder.append('ρ');
-                    break;
-                case '@':
-                    builder.append('φ');
-                    break;
-                case '&':
-                    builder.append('σ');
-                    break;
-                default:
-                    builder.append(cur);
-                    break;
-            }
-        }
-        return builder.toString();
-    }
-
+    byte[] dataize(int vertex);
 }

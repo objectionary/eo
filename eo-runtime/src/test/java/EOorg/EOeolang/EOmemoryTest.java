@@ -42,14 +42,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOmemory}.
  *
  * @since 0.1
- * @todo #2211:30min Enable tests that uses memory object.
- *  After memory started behave like bytes some tests had been stopped worked.
- *  Need to refactor and enable disabled tests that uses memory object:
- *  malloc-return-error, complex-bool-expression-in-while,
- *  EOboolEOwhileTest.dataizesComplexBooleanToggle,
- *  EOboolEOwhileTest.loopsOverAbstractObjects,
- *  malloc-returns-different-pointers, mallocs-do-not-overlap,
- *  tuple-as-a-bound-attribute-size-2, iterates-over-simple-counter
  */
 public final class EOmemoryTest {
 

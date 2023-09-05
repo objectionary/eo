@@ -30,14 +30,16 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -56,27 +58,15 @@ public final class DiscoverMojo extends SafeMojo {
     @Override
     public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-        final Collection<ObjectName> discovered = new HashSet<>(1);
+        final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            tojo.withDiscovered(
-                (int) this.discover(src)
-                    .stream()
-                    .filter(name -> !name.isEmpty())
-                    .map(
-                        name -> new OnSwap(
-                            this.withVersions,
-                            new OnReplaced(name, this.hashes)
-                        )
-                    )
-                    .peek(
-                        name -> this.scopedTojos()
-                            .add(name)
-                            .withDiscoveredAt(src)
-                    )
-                    .peek(discovered::add)
-                    .count()
-            );
+            final Collection<String> names = this.discover(src, tojo.identifier());
+            discovered.addAll(names);
+            for (final String name : names) {
+                this.scopedTojos().add(name).withDiscoveredAt(src);
+            }
+            tojo.withDiscovered(discovered.size());
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -101,13 +91,14 @@ public final class DiscoverMojo extends SafeMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .xmir file
+     * @param tojo Current tojo.
      * @return List of foreign objects found
      */
-    private Collection<String> discover(final Path file) {
-        final XML saxon = new SaxonDocument(file);
-        final Collection<String> names = DiscoverMojo.names(saxon);
-        if (!saxon.xpath("//o[@vararg]").isEmpty()) {
-            names.add("org.eolang.tuple");
+    private Collection<String> discover(final Path file, final String tojo) {
+        final XML xml = new SaxonDocument(file);
+        final Collection<String> names = this.names(xml, tojo);
+        if (!xml.xpath("//o[@vararg]").isEmpty()) {
+            names.add(this.versioned("org.eolang.tuple", tojo).toString());
         }
         if (names.isEmpty()) {
             Logger.debug(
@@ -127,27 +118,56 @@ public final class DiscoverMojo extends SafeMojo {
      * Get a unique list of object names from given XML.
      *
      * @param xml XML.
+     * @param tojo Current tojo.
      * @return Object names.
      */
-    private static Set<String> names(final XML xml) {
+    private Collection<String> names(final XML xml, final String tojo) {
         return new SetOf<>(
-            new Filtered<>(
-                obj -> !obj.isEmpty(),
-                xml.xpath(
-                    String.join(
-                        "",
-                        "//o[",
-                        "not(starts-with(@base,'.'))",
-                        " and @base != 'Q'",
-                        " and @base != '^'",
-                        " and @base != '$'",
-                        " and @base != '&'",
-                        " and not(@ref)",
-                        "]/string-join((@base, @ver),'",
-                        OnReplaced.DELIMITER,
-                        "')"
+            new Mapped<>(
+                (String name) -> this.versioned(name, tojo).toString(),
+                new Filtered<>(
+                    name -> !name.isEmpty(),
+                    xml.xpath(
+                        String.join(
+                            "",
+                            "//o[",
+                            "not(starts-with(@base,'.'))",
+                            " and @base != 'Q'",
+                            " and @base != '^'",
+                            " and @base != '$'",
+                            " and @base != '&'",
+                            " and not(@ref)",
+                            "]/string-join((@base,@ver),'",
+                            OnReplaced.DELIMITER,
+                            "')"
+                        )
                     )
                 )
+            )
+        );
+    }
+
+    /**
+     * Handle versioning of given object name.
+     * If {@code this.withVersions} is set to FALSE - don't append a version to
+     * the object name.
+     * Otherwise, try to append a version from tojo if there's no one yet
+     *
+     * @param name Object name with tag on not.
+     * @param tojo Current tojo.
+     * @return Versioned object name.
+     */
+    private ObjectName versioned(final String name, final String tojo) {
+        final ObjectName replaced = new OnReplaced(name, this.hashes);
+        return new OnSwap(
+            this.withVersions,
+            new OnSwap(
+                tojo.contains(OnReplaced.DELIMITER),
+                new OnVersioned(
+                    replaced,
+                    new OnDefault(tojo)::hash
+                ),
+                replaced
             )
         );
     }
