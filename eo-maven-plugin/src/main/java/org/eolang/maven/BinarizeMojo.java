@@ -172,7 +172,15 @@ public final class BinarizeMojo extends SafeMojo {
      * @param cached Directory in cache.
      * @return True if the project is the same.
      */
-
+    private static boolean sameProject(final Path src, final Path cached) {
+        return BinarizeMojo.sameFile(
+            src.resolve("src/foo.rs"), cached.resolve("src/foo.rs")
+        ) && BinarizeMojo.sameFile(
+            src.resolve("src/lib.rs"), cached.resolve("src/lib.rs")
+        ) && BinarizeMojo.sameFile(
+            src.resolve("Cargo.toml"), cached.resolve("Cargo.toml")
+        );
+    }
 
     /**
      * Check if the source file is the same as in cache.
