@@ -32,7 +32,7 @@ object
     | justNamed     // Just an object reference
     ;
 
-// Just object reference without name
+// Just an object reference without name
 just: beginner
     | finisherCopied
     | versioned
