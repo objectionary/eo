@@ -147,6 +147,7 @@ happlicationArg
     ;
 
 // Extended horizontal application tail
+// Can contain elements in vertical notation
 happlicationTailExtended
     : (SPACE (happlicationArgExtended | happlicationArgExtended as))+
     ;
