@@ -100,7 +100,7 @@ public final class BinarizeMojo extends SafeMojo {
                         return 1;
                     },
                     new Filtered<>(
-                        project -> BinarizeMojo.valid(project),
+                        BinarizeMojo::valid,
                         targetDir.toPath().resolve("Lib").toFile().listFiles()
                     )
                 )
