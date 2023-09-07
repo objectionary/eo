@@ -182,7 +182,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public Phi copy() {
+    public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();

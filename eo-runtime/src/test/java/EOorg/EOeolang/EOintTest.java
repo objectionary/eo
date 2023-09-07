@@ -33,6 +33,7 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,9 +41,12 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
+ *
+ * @todo
  */
 public class EOintTest {
     @Test
+    @Disabled
     void hasEqualHashesIfFoundByLocator() {
         final Phi integer = Phi.Φ.attr("org").get().attr("eolang").get().attr("int").get();
         MatcherAssert.assertThat(

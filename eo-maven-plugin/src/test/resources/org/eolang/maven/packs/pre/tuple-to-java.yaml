@@ -6,7 +6,7 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'Phi ret_a2_a1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("int").get()')]
+  - //java[contains(text(), 'Phi ret_a2_a1 = new EOorg.EOeolang.EOint(')]
   - //java[contains(text(), 'Phi[] ret_2_a = new Phi[0]')]
   - //java[contains(text(), 'new String(new byte[]')]
 eo: |
