@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -269,14 +270,20 @@ public class EOrust extends PhDefault {
                 ret = new Data.ToPhi(buffer.getLong());
                 break;
             case 5:
+                final String cause = new String(message, StandardCharsets.UTF_8);
                 if (this.error.get() == null) {
                     throw new ExNative(
-                        "Rust insert failed in %s",
-                        insert
+                        "Rust insert failed in %s with message '%s'",
+                        insert,
+                        cause
                     );
                 } else {
                     throw new ExNative(
-                        String.format("Rust insert failed in %s", insert),
+                        String.format(
+                            "Rust insert failed in %s with message '%s'",
+                            insert,
+                            cause
+                        ),
                         this.error.get()
                     );
                 }

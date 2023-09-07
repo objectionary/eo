@@ -54,10 +54,11 @@ impl EO {
             }
             EO::EOString(_) => { vec![0xff] }
             EO::EORaw(_) => { vec![0xff] }
-
-            EO::EOError(_) => {
-                let mut res: Vec<u8> = vec![0; 1];
+            EO::EOError(cause) => {
+                let cause_bytes = cause.clone().into_bytes();
+                let mut res: Vec<u8> = vec![0; 1 + cause_bytes.len()];
                 res[0] = 5;
+                res[1..].copy_from_slice(&cause_bytes);
                 res
             }
         }
