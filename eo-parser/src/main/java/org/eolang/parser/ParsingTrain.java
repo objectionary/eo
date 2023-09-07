@@ -93,7 +93,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
         "/org/eolang/parser/set-locators.xsl",
-        "/org/eolang/parser/explicit-data.xsl"
+        "/org/eolang/parser/explicit-data.xsl",
     };
 
     /**

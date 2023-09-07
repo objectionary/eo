@@ -22,12 +22,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="sparse-decoration" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="explicit-data" version="2.0">
   <!--
   Here we transform just data into application
-  - 5 -> org.eolang.int 5
-  - "Hello world" -> org.eolang.string "Hello world"
-  - org.eolang.float 42.1 -> org.eolang.float 42.1
+  - 5 => 5
+  - int 5 => 5
+  - float 22.4 => 22.4
+
+  In the level of xmir it looks like:
+  - <o base="int" data="int">2</o> => <o base="int" data="int">2</o>
+  - <o base="int" name="num">        <o base="int" data="int" name="num">
+      <o base="int" data="int">  =>    42
+        42                           </o>
+      </o>
+    </o>
   -->
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
