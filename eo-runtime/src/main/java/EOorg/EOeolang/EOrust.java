@@ -270,7 +270,7 @@ public class EOrust extends PhDefault {
                 ret = new Data.ToPhi(buffer.getLong());
                 break;
             case 5:
-                final String cause = new String(message, StandardCharsets.UTF_8);
+                final String cause = new String(content, StandardCharsets.UTF_8);
                 if (this.error.get() == null) {
                     throw new ExNative(
                         "Rust insert failed in %s with message '%s'",
