@@ -397,11 +397,11 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
     <xsl:choose>
-      <xsl:when test="@primitive and @base">
-        <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base, eo:suffix(@line, @pos))"/>
-        <xsl:text>(Phi.Φ)</xsl:text>
-      </xsl:when>
+<!--      <xsl:when test="@primitive and @base">-->
+<!--        <xsl:text>new </xsl:text>-->
+<!--        <xsl:value-of select="eo:class-name(@base, eo:suffix(@line, @pos))"/>-->
+<!--        <xsl:text>(Phi.Φ)</xsl:text>-->
+<!--      </xsl:when>-->
       <xsl:when test="@base='$'">
         <xsl:text>rho</xsl:text>
       </xsl:when>
