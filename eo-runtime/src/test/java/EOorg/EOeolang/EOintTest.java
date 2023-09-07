@@ -28,12 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,26 +38,8 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
- *
- * @todo
  */
 public class EOintTest {
-    @Test
-    @Disabled
-    void hasEqualHashesIfFoundByLocator() {
-        final Phi integer = Phi.Φ.attr("org").get().attr("eolang").get().attr("int").get();
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(integer.copy(), "Δ", new Data.Value<>(42L)).attr("ν").get()
-            ).take(),
-            Matchers.equalTo(
-                new Dataized(
-                    new PhWith(integer.copy(), "Δ", new Data.Value<>(42L)).attr("ν").get()
-                ).take()
-            )
-        );
-    }
-
     @Test
     void hasEqualHashes() {
         final Phi left = new Data.ToPhi(42L);
