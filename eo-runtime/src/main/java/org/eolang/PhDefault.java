@@ -127,6 +127,8 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
+//        System.out.println(this.forma());
+        System.out.println("PhDefault hashCode");
         return this.vertex;
     }
 
@@ -182,7 +184,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Phi copy() {
+    public Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
@@ -243,6 +245,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
         if ("ν".equals(name)) {
+            System.out.println(this.forma());
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
         } else {
             attr = this.attrs.get(name);

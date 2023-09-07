@@ -39,21 +39,26 @@ SOFTWARE.
   -->
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="//o[o[@data and @base=../@base]]">
+  <xsl:template match="//o[o[@data and @base=../@base and @base!='org.eolang.tuple']]">
     <xsl:variable name="base" select="@base"/>
-    <xsl:if test="$literal-objects[text()=$base]">
-      <o>
-        <xsl:for-each select="@*">
-          <xsl:attribute name="{name()}">
-            <xsl:value-of select="."/>
+    <xsl:choose>
+      <xsl:when test="$literal-objects[text()=$base]">
+        <o>
+          <xsl:for-each select="@*">
+            <xsl:attribute name="{name()}">
+              <xsl:value-of select="."/>
+            </xsl:attribute>
+          </xsl:for-each>
+          <xsl:attribute name="data">
+            <xsl:value-of select="o/@data"/>
           </xsl:attribute>
-        </xsl:for-each>
-        <xsl:attribute name="data">
-          <xsl:value-of select="o/@data"/>
-        </xsl:attribute>
-        <xsl:value-of select="o"/>
-      </o>
-    </xsl:if>
+          <xsl:value-of select="o"/>
+        </o>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

@@ -28,6 +28,8 @@
 package EOorg.EOeolang;
 
 import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,6 +42,20 @@ import org.junit.jupiter.api.Test;
  * @checkstyle TypeNameCheck (4 lines)
  */
 public class EOintTest {
+    @Test
+    void hasEqualHashesIfFoundByLocator() {
+        final Phi integer = Phi.Φ.attr("org").get().attr("eolang").get().attr("int").get();
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(integer.copy(), "Δ", new Data.Value<>(42L)).attr("ν").get()
+            ).take(),
+            Matchers.equalTo(
+                new Dataized(
+                    new PhWith(integer.copy(), "Δ", new Data.Value<>(42L)).attr("ν").get()
+                ).take()
+            )
+        );
+    }
 
     @Test
     void hasEqualHashes() {

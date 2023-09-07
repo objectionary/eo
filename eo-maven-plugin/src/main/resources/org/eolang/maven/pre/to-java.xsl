@@ -261,6 +261,18 @@ SOFTWARE.
       <xsl:text>return this.attr("Δ").get().equals(obj);</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
       <xsl:text>}</xsl:text>
+      <xsl:if test="$literal-objects[text()=$type]">
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>@Override</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>public Phi copy() {</xsl:text>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:text>return (</xsl:text>
+        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+        <xsl:text>) super.copy();</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>}</xsl:text>
+      </xsl:if>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
   </xsl:template>
@@ -614,9 +626,9 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhWith(new PhCopy(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>), "Δ", new Data.Value&lt;&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

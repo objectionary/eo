@@ -133,6 +133,30 @@
         TRUE
       $.equal-to TRUE
 
+[] > check-vertex
+  seq > @
+    QQ.io.stdout
+      QQ.txt.sprintf
+        "Ints: %d %d\n"
+        42.<
+        42.<
+    QQ.io.stdout
+      QQ.txt.sprintf
+        "Floats: %d %d\n"
+        42.2.<
+        42.2.<
+    QQ.io.stdout
+      QQ.txt.sprintf
+        "Bools: %d %d\n"
+        TRUE.<
+        TRUE.<
+    QQ.io.stdout
+      QQ.txt.sprintf
+        "Strings: %d %d\n"
+        "Hello world".<
+        "Hello world".<
+    TRUE
+
 [] > positive-object-vertices
   assert-that > @
     and.
