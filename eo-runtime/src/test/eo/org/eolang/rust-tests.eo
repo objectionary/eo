@@ -274,4 +274,6 @@
       [e]
         e > @
       nop
-    $.contains-string "Custom error"
+    $.all-of
+      $.string-starts-with "Rust insert failed "
+      $.string-ends-with "'Custom error'"
