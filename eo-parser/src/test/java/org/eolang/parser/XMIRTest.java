@@ -160,6 +160,17 @@ final class XMIRTest {
         ).withHome(temp).exec();
     }
 
+    /**
+     * Convert EO to xmir and back and compare.
+     * @param src EO source.
+     * @throws Exception If fails.
+     *
+     * @todo #2399:30min "idiomatic.eo" is not converted successfully. After introducing new grammar
+     *  ({@see Program.g4}) example with name "idiomatic.eo" is not converted successfully in the
+     *  test, so it was moved from {@link org.eolang.parser.xmir-samples} to
+     *  {@link org.eolang.parser.xmir-samples-wrong}. Need to figure what's the problem and move it
+     *  back to the origin folder.
+     */
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")
     void printsToEO(final String src) throws Exception {
