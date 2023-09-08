@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle TypeNameCheck (4 lines)
  */
 public class EOintTest {
+
     @Test
     void hasEqualHashes() {
         final Phi left = new Data.ToPhi(42L);
