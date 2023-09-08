@@ -40,6 +40,14 @@ import org.junit.jupiter.params.provider.MethodSource;
  * and situations.
  *
  * @since 0.28.12
+ *
+ * @todo #2399:30min Do we need {@link RedundantParentheses} class? After refactoring grammar
+ *  ({@see Program.g4}) parentheses are controlled at the level of grammar and can't be used in the
+ *  many ways it was allowed to use them before. This is the reason the test is disabled. Need to
+ *  check whether we really need the class with new grammar or not. If yes - return
+ *  {@link RedundantParentheses} back to {@link XeListener} and refactor the test.
+ *  If no - move the test cases below to {@link org.eolang.parser.typos} folder and remove
+ *  {@link RedundantParentheses} class from the source code.
  */
 class RedundantParenthesesTest {
 
