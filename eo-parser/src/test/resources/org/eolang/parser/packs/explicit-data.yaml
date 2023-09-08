@@ -1,0 +1,23 @@
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/expand-qqs.xsl
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/explicit-data.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@base='org.eolang.int' and @name='first' and @data]
+  - //o[@base='org.eolang.float' and @name='second' and @data and count(o)=0]
+  - //o[@base='org.eolang.bool' and @name='third' and @data and count(o)=0]
+  - //o[@base='org.eolang.bytes' and @name='fourth' and @data and count(o)=0]
+  - //o[@base='org.eolang.string' and @name='str' and @data and count(o)=0]
+  - //o[@base='org.eolang.tuple' and o[@base='org.eolang.tuple']]
+eo: |
+  42 > first
+  float 22.2 > second
+  QQ.bool TRUE > third
+  QQ.bytes > fourth
+    11-21
+  Q.org.eolang.string "Hey" > str
+  tuple
+    * 1
+    2

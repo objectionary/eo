@@ -91,9 +91,9 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/correct-package-meta.xsl",
         "/org/eolang/parser/warnings/prohibited-package.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
-        "/org/eolang/parser/errors/data-objects.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
         "/org/eolang/parser/set-locators.xsl",
+        "/org/eolang/parser/explicit-data.xsl",
     };
 
     /**
