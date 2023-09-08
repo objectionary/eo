@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,11 +40,19 @@ import org.junit.jupiter.params.provider.MethodSource;
  * and situations.
  *
  * @since 0.28.12
+ * @todo #2399:30min Do we need {@link RedundantParentheses} class? After refactoring grammar
+ *  ({@see Program.g4}) parentheses are controlled at the level of grammar and can't be used in the
+ *  many ways it was allowed to use them before. This is the reason the test is disabled. Need to
+ *  check whether we really need the class with new grammar or not. If yes - return
+ *  {@link RedundantParentheses} back to {@link XeListener} and refactor the test.
+ *  If no - move the test cases below to {@link org.eolang.parser.typos} folder and remove
+ *  {@link RedundantParentheses} class from the source code.
  */
 class RedundantParenthesesTest {
 
     @ParameterizedTest
     @MethodSource("testCases")
+    @Disabled
     void checksIfBracketsIsNotRedundant(
         final String program,
         final boolean correct
@@ -51,14 +60,7 @@ class RedundantParenthesesTest {
         final Syntax syntax = new Syntax(
             "foo",
             new InputOf(program),
-            new OutputTo(new ByteArrayOutputStream()),
-            new RedundantParentheses(
-                s -> {
-                    throw new IllegalStateException(
-                        String.format("%s contains redundant parentheses", s)
-                    );
-                }
-            )
+            new OutputTo(new ByteArrayOutputStream())
         );
         if (correct) {
             syntax.parse();

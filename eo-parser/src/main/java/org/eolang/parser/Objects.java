@@ -57,6 +57,19 @@ interface Objects extends Iterable<Directive> {
     void prop(String key, Object value);
 
     /**
+     * Empty propery.
+     * @param key Key.
+     */
+    void prop(String key);
+
+    /**
+     * Change property by given xpath.
+     * @param key Key.
+     * @param xpath Xpath.
+     */
+    void xprop(String key, Object xpath);
+
+    /**
      * Enter last object.
      */
     void enter();
@@ -67,12 +80,12 @@ interface Objects extends Iterable<Directive> {
     void leave();
 
     /**
-     * Mark next object for scoping.
+     * Mark the next object for scoping.
      */
     void scope();
 
     /**
-     * Mark current object as last inside the scope.
+     * Mark the current object as last inside the scope.
      * Last object that relates to the scope.
      */
     void closeScope();
@@ -111,6 +124,16 @@ interface Objects extends Iterable<Directive> {
         @Override
         public void prop(final String key, final Object type) {
             this.dirs.attr(key, type);
+        }
+
+        @Override
+        public void prop(final String key) {
+            this.prop(key, "");
+        }
+
+        @Override
+        public void xprop(final String key, final Object xpath) {
+            this.dirs.xattr(key, xpath);
         }
 
         @Override

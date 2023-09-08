@@ -98,7 +98,7 @@ public final class BinarizeMojo extends SafeMojo {
                         return 1;
                     },
                     new Filtered<>(
-                        project -> BinarizeMojo.valid(project),
+                        BinarizeMojo::valid,
                         targetDir.toPath().resolve("Lib").toFile().listFiles()
                     )
                 )
@@ -110,7 +110,7 @@ public final class BinarizeMojo extends SafeMojo {
     /**
      * Is the project valid?
      * @param project File to check.
-     * @return True if valid. Otherwise false.
+     * @return True if valid. Otherwise, false.
      */
     private static boolean valid(final File project) {
         return project.isDirectory()

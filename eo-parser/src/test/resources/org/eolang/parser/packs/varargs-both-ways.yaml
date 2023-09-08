@@ -5,7 +5,7 @@ tests:
   - //o[@base='b' and @unvar]
 eo: |
   +package test
-  
+
   [a b...] > foo
     hello > @
       42
