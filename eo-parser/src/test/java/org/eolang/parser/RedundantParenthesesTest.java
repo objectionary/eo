@@ -40,7 +40,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * and situations.
  *
  * @since 0.28.12
- *
  * @todo #2399:30min Do we need {@link RedundantParentheses} class? After refactoring grammar
  *  ({@see Program.g4}) parentheses are controlled at the level of grammar and can't be used in the
  *  many ways it was allowed to use them before. This is the reason the test is disabled. Need to

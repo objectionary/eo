@@ -76,16 +76,14 @@ final class XMIRTest {
      *
      * @param temp Temp directory, where LaTeX will be compiled, just for test
      * @since 0.30.0
-     *
      * @todo #2399:30min The test fails on GitHub Actions CI. Need to figure out what's the problem
-     *  Stack trace:
-     *  java.lang.IllegalArgumentException: Non-zero exit code 1: This is pdfTeX,
-     *  Version 3.141592653-2.6-1.40.25 (T..4496..duced!\nTranscript written on article.log.\n
-     * 	  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:298)
-     * 	  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:185)
-     * 	  at com.yegor256.Jaxec.execUnsafe(Jaxec.java:289)
-     * 	  at com.yegor256.Jaxec.exec(Jaxec.java:258)
-     * 	  at org.eolang.parser.XMIRTest.convertsAntlrToEbnf(XMIRTest.java:148)
+     *  Stack trace: java.lang.IllegalArgumentException: Non-zero exit code 1: This is pdfTeX,
+     *  Version 3.141592653-2.6-1.40.25 (T..4496..duced!Transcript written on article.log.
+     *  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:298)
+     *  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:185)
+     *  at com.yegor256.Jaxec.execUnsafe(Jaxec.java:289)
+     *  at com.yegor256.Jaxec.exec(Jaxec.java:258)
+     *  at org.eolang.parser.XMIRTest.convertsAntlrToEbnf(XMIRTest.java:148)
      */
     @Test
     @Disabled
@@ -164,11 +162,10 @@ final class XMIRTest {
      * Convert EO to xmir and back and compare.
      * @param src EO source.
      * @throws Exception If fails.
-     *
      * @todo #2399:30min "idiomatic.eo" is not converted successfully. After introducing new grammar
      *  ({@see Program.g4}) example with name "idiomatic.eo" is not converted successfully in the
-     *  test, so it was moved from {@link org.eolang.parser.xmir-samples} to
-     *  {@link org.eolang.parser.xmir-samples-wrong}. Need to figure what's the problem and move it
+     *  test, so it was moved from {@see org.eolang.parser.xmir-samples} to
+     *  {@see org.eolang.parser.xmir-samples-wrong}. Need to figure what's the problem and move it
      *  back to the origin folder.
      */
     @ParameterizedTest
