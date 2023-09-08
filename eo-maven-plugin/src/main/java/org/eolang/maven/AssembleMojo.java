@@ -33,7 +33,8 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.objectionary.ObjsDefault;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -65,10 +66,14 @@ public final class AssembleMojo extends SafeMojo {
     private File outputDir;
 
     /**
-     * The objectionary.
+     * Objectionaries.
+     * @checkstyle MemberNameCheck (6 lines)
+     * @checkstyle ConstantUsageCheck (5 lines)
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Objectionary objectionary;
+    private final Objectionaries objectionaries = new ObjsDefault(
+        () -> this.cache,
+        () -> this.session.getRequest().isUpdateSnapshots()
+    );
 
     /**
      * The central.
@@ -83,14 +88,6 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
-
-    /**
-     * The Git hash to pull objects from, in objectionary.
-     * @since 0.21.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(property = "eo.hash", required = true, defaultValue = "master")
-    private String hash = "master";
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -198,7 +195,6 @@ public final class AssembleMojo extends SafeMojo {
         int cycle = 0;
         final Moja<?>[] mojas = {
             new Moja<>(ParseMojo.class),
-            new Moja<>(VersionsMojo.class),
             new Moja<>(OptimizeMojo.class),
             new Moja<>(DiscoverMojo.class),
             new Moja<>(ProbeMojo.class),

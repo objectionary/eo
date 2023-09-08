@@ -26,6 +26,8 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -39,6 +41,10 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.11
  */
 final class MarkMojoTest {
+    /**
+     * Version.
+     */
+    private static final String VERSION = "0.28.0";
 
     @Test
     void extendsForeignWithNewObjects(@TempDir final Path temp) throws IOException {
@@ -51,7 +57,7 @@ final class MarkMojoTest {
                 .iterator()
                 .next()
                 .version(),
-            Matchers.equalTo("0.1.8")
+            Matchers.equalTo(MarkMojoTest.VERSION)
         );
     }
 
@@ -65,7 +71,7 @@ final class MarkMojoTest {
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
             foreign.all().iterator().next().version(),
-            Matchers.equalTo("0.1.8")
+            Matchers.equalTo(MarkMojoTest.VERSION)
         );
         MatcherAssert.assertThat(
             foreign.size(),
@@ -73,8 +79,32 @@ final class MarkMojoTest {
         );
     }
 
+    @Test
+    void extendsTojosWithVersionedOne(@TempDir final Path temp) throws IOException {
+        MarkMojoTest.source(temp);
+        final ForeignTojos tojos = new FakeMaven(temp)
+            .with("withVersions", true)
+            .execute(MarkMojo.class)
+            .externalTojos();
+        final ObjectName object = new OnVersioned("foo.bar", "6a70071");
+        MatcherAssert.assertThat(
+            String.format(
+                "Tojos should have contained versioned object %s after extending, but they didn't",
+                object
+            ),
+            tojos.contains(object),
+            Matchers.is(true)
+        );
+    }
+
     private static void source(final Path temp) throws IOException {
-        new Home(temp.resolve("target").resolve(ResolveMojo.DIR))
-            .save("hi", Paths.get(String.format("foo/hello/-/0.1.8/%s/foo/bar.eo", CopyMojo.DIR)));
+        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+            "hi",
+            Paths.get(
+                String.format(
+                    "foo/hello/-/%s/%s/foo/bar.eo", MarkMojoTest.VERSION, CopyMojo.DIR
+                )
+            )
+        );
     }
 }

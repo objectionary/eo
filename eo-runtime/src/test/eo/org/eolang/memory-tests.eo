@@ -45,7 +45,7 @@
     $.equal-to 10
 
 [] > double-writes
-  memory 0 > m
+  memory "1234567890123" > m
   assert-that > @
     seq
       m.write "Hello, world!"
@@ -58,7 +58,7 @@
   assert-that > @
     seq
       m.write 1
-      m.write (m.plus 5)
+      m.write (m.as-int.plus 5)
       m
     $.equal-to 6
 
@@ -71,7 +71,7 @@
     stdout
       sprintf
         "%d"
-        a.x
+        a.x.as-int
 
 [] > writes-into-two-memory-objects
   memory 0 > a

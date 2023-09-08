@@ -54,7 +54,11 @@ import org.cactoos.Input;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.hash.CommitHash;
-import org.eolang.maven.objectionary.Objectionary;
+import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.Home;
@@ -68,7 +72,8 @@ import org.eolang.maven.util.Home;
 @SuppressWarnings({
     "PMD.TooManyMethods",
     "PMD.CouplingBetweenObjects",
-    "JTCOP.RuleAllTestsHaveProductionClass"
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName"
 })
 @NotThreadSafe
 public final class FakeMaven {
@@ -186,7 +191,7 @@ public final class FakeMaven {
      * @param mojo Mojo to execute.
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
-     * @throws java.io.IOException If some problem with filesystem have happened.
+     * @throws java.io.IOException If some problem with filesystem has happened.
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
@@ -202,7 +207,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("discoverSelf", false);
             this.params.putIfAbsent("withVersions", false);
-            this.params.putIfAbsent("ignoreVersionConflict", false);
+            this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
             final Path placed = Paths.get("placed.json");
@@ -228,11 +233,12 @@ public final class FakeMaven {
             this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent("objectionary", new Objectionary.Fake());
+            this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
             this.params.putIfAbsent(
                 "eoEnvDir",
-                new File("src/test/resources/org/eolang/maven/binarize/eo_env")
+                new File("../eo-runtime/src/main/rust/eo_env")
             );
+            this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -318,7 +324,50 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withHelloWorld() throws IOException {
-        return this.withProgram("+package f\n", "[args] > main", "  (stdout \"Hello!\").print");
+        return this.withProgram(
+            "+alias stdout org.eolang.io.stdout",
+            "+package f\n",
+            "[x] > main",
+            "  (stdout \"Hello!\" x).print > @"
+        );
+    }
+
+    /**
+     * Add the correct versioned 'Hello world' program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedHelloWorld() throws IOException {
+        return this.withProgram(
+            "+package f\n",
+            "[] > main",
+            "  QQ.io.stdout|0.28.5 > @",
+            "    \"Hello world\""
+        );
+    }
+
+    /**
+     * Add correct versioned program to workspace.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withVersionedProgram() throws IOException {
+        return this.withProgram(
+            "+alias org.eolang.math.number",
+            "+alias org.eolang.txt.text",
+            "+home https://objectionary.home",
+            "+package f",
+            "+version 0.0.0\n",
+            "[args] > main",
+            "  seq|0.28.4 > @",
+            "    QQ.io.stdout|0.28.5",
+            "      QQ.txt.sprintf|0.28.6",
+            "        \"Number %d, text %s\"",
+            "        number 2",
+            "        text|0.28.7",
+            "          \"text\"",
+            "    nop"
+        );
     }
 
     /**
@@ -328,7 +377,10 @@ public final class FakeMaven {
      * @throws IOException If method can't save eo program to the workspace.
      */
     FakeMaven withProgram(final String... program) throws IOException {
-        return this.withProgram(String.join("\n", program));
+        return this.withProgram(
+            String.join("\n", program),
+            new OnDefault(FakeMaven.tojoId(this.current.get()))
+        );
     }
 
     /**
@@ -340,6 +392,36 @@ public final class FakeMaven {
      */
     FakeMaven withProgram(final Path path) throws IOException {
         return this.withProgram(new UncheckedText(new TextOf(path)).asString());
+    }
+
+    /**
+     * Adds eo program to a workspace.
+     * @param content EO program content.
+     * @param object Object name to save in tojos.
+     * @return The same maven instance.
+     * @throws IOException If method can't save eo program to the workspace.
+     */
+    FakeMaven withProgram(final String content, final ObjectName object)
+        throws IOException {
+        final Path path = Paths.get(
+            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
+        );
+        this.workspace.save(content, path);
+        final String scope = this.scope();
+        final String version = "0.25.0";
+        final Path source = this.workspace.absolute(path);
+        this.foreignTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.externalTojos()
+            .add(object)
+            .withScope(scope)
+            .withVersion(version)
+            .withSource(source);
+        this.current.incrementAndGet();
+        return this;
     }
 
     /**
@@ -370,6 +452,14 @@ public final class FakeMaven {
     }
 
     /**
+     * Path to or eo-external.* file after all changes.
+     * @return Path to eo-foreign.* file.
+     */
+    Path externalPath() {
+        return this.workspace.absolute(Paths.get("eo-external.csv"));
+    }
+
+    /**
      * Tojo for placed.json file.
      *
      * @return TjSmart of the current placed.json file.
@@ -396,6 +486,22 @@ public final class FakeMaven {
                 Function.identity()
             )
         );
+    }
+
+    /**
+     * Retrieve the entry of the last program in the eo-foreign.csv file.
+     * @return Tojo entry.
+     */
+    ForeignTojo programTojo() {
+        return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
+    }
+
+    /**
+     * Same as {@link FakeMaven#programTojo()} but for external tojos.
+     * @return Tojo entry.
+     */
+    ForeignTojo programExternalTojo() {
+        return this.externalTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
@@ -437,35 +543,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Adds eo program to a workspace.
-     * @param content EO program content.
-     * @return The same maven instance.
-     * @throws IOException If method can't save eo program to the workspace.
-     */
-    private FakeMaven withProgram(final String content) throws IOException {
-        final Path path = Paths.get(
-            String.format("foo/x/main%s.eo", FakeMaven.suffix(this.current.get()))
-        );
-        this.workspace.save(content, path);
-        final String object = String.format("foo.x.main%s", FakeMaven.suffix(this.current.get()));
-        final String scope = this.scope();
-        final String version = "0.25.0";
-        final Path source = this.workspace.absolute(path);
-        this.foreignTojos()
-            .add(object)
-            .withScope(scope)
-            .withVersion(version)
-            .withSource(source);
-        this.externalTojos()
-            .add(object)
-            .withScope(scope)
-            .withVersion(version)
-            .withSource(source);
-        this.current.incrementAndGet();
-        return this;
-    }
-
-    /**
      * Ensures the map of allowed params for the Mojo.
      *
      * @param mojo Mojo
@@ -491,6 +568,15 @@ public final class FakeMaven {
     }
 
     /**
+     * The id of the program in tojos file.
+     * @param id Number of the program.
+     * @return String id.
+     */
+    private static String tojoId(final int id) {
+        return String.format("foo.x.main%s", FakeMaven.suffix(id));
+    }
+
+    /**
      * Looks for all declared fields for mojo and its parents.
      *
      * @param mojo Mojo or mojo parent.
@@ -506,14 +592,6 @@ public final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
-    }
-
-    /**
-     * Path to or eo-external.* file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    private Path externalPath() {
-        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -542,23 +620,23 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class
             ).iterator();
         }
     }
 
     /**
-     * Replaces versions as tags with versions as compound hashes.
+     * Check errors and warnings.
      *
-     * @since 0.29.5
+     * @since 0.31.0
      */
-    static final class Versions implements Iterable<Class<? extends AbstractMojo>> {
+    static final class Verify implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class
+                OptimizeMojo.class,
+                VerifyMojo.class
             ).iterator();
         }
     }
@@ -715,7 +793,7 @@ public final class FakeMaven {
     }
 
     /**
-     * Pull full pipeline.
+     * Pull a full pipeline.
      *
      * @since 0.31
      */
@@ -744,7 +822,6 @@ public final class FakeMaven {
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
-                VersionsMojo.class,
                 OptimizeMojo.class,
                 DiscoverMojo.class
             ).iterator();

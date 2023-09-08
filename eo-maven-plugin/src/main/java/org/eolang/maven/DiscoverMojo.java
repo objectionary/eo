@@ -26,20 +26,20 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.SaxonDocument;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.list.ListOf;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnDefault;
+import org.eolang.maven.name.OnReplaced;
+import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
 
@@ -55,21 +55,18 @@ import org.eolang.maven.util.Rel;
     threadSafe = true
 )
 public final class DiscoverMojo extends SafeMojo {
-
     @Override
     public void exec() throws FileNotFoundException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
-        final Collection<String> discovered = new HashSet<>(1);
+        final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {
             final Path src = tojo.optimized();
-            tojo.withDiscovered(
-                (int) this.discover(src)
-                    .stream()
-                    .filter(name -> !name.isEmpty())
-                    .peek(name -> this.scopedTojos().add(name).withDiscoveredAt(src))
-                    .peek(discovered::add)
-                    .count()
-            );
+            final Collection<String> names = this.discover(src, tojo.identifier());
+            discovered.addAll(names);
+            for (final String name : names) {
+                this.scopedTojos().add(name).withDiscoveredAt(src);
+            }
+            tojo.withDiscovered(discovered.size());
         }
         if (tojos.isEmpty()) {
             if (this.scopedTojos().size() == 0) {
@@ -94,26 +91,14 @@ public final class DiscoverMojo extends SafeMojo {
      * Pull all deps found in the provided XML file.
      *
      * @param file The .xmir file
+     * @param tojo Current tojo.
      * @return List of foreign objects found
-     * @throws FileNotFoundException If not found
-     * @todo #2266:30min Use more convenient constructor for SaxonDocument.
-     *  The current constructor for SaxonDocument is not convenient and requires a lot of
-     *  code. It would be better to create SaxonDocument right from the file.
-     *  When the related issue will be implemented in jcabi-xml (you can check the progress
-     *  <a href="https://github.com/jcabi/jcabi-xml/issues/215">here</a>)
-     *  We have to change the constructor for SaxonDocument in this class and remove that puzzle.
      */
-    private Collection<String> discover(final Path file)
-        throws FileNotFoundException {
-        final XML saxon = new SaxonDocument(new UncheckedText(new TextOf(file)).asString());
-        final Collection<String> names = DiscoverMojo.names(saxon, this.xpath(false));
-        if (this.withVersions) {
-            names.addAll(
-                DiscoverMojo.names(saxon, this.xpath(true))
-            );
-        }
-        if (!new XMLDocument(file).nodes("//o[@vararg]").isEmpty()) {
-            names.add("org.eolang.tuple");
+    private Collection<String> discover(final Path file, final String tojo) {
+        final XML xml = new SaxonDocument(file);
+        final Collection<String> names = this.names(xml, tojo);
+        if (!xml.xpath("//o[@vararg]").isEmpty()) {
+            names.add(this.versioned("org.eolang.tuple", tojo).toString());
         }
         if (names.isEmpty()) {
             Logger.debug(
@@ -130,58 +115,59 @@ public final class DiscoverMojo extends SafeMojo {
     }
 
     /**
-     * Xpath for selecting objects from given xml.
-     * @param versioned Select with versions or not.
-     * @return Xpath as list of strings
-     * @todo #1602:30min Simplify xpath. Current implementation for building
-     *  xpath with and without versions is quite ugly. For some reason
-     *  if we try to take `/concat(@base,'|',@ver)` and there are object without
-     *  attribute `ver` - xpath returns nothing. So we need to take `/@base`
-     *  from objects where attribute `ver` is not present in both cases and
-     *  then if flag `withVersions` is `true` - take `concat(@base,'|',@ver)`
-     *  from objects attribute `ver` is present.
+     * Get a unique list of object names from given XML.
+     *
+     * @param xml XML.
+     * @param tojo Current tojo.
+     * @return Object names.
      */
-    private String xpath(final boolean versioned) {
-        final Collection<String> xpath = new ListOf<>(
-            "//o[",
-            "not(starts-with(@base,'.'))",
-            "and @base != 'Q'",
-            "and @base != '^'",
-            "and @base != '$'",
-            "and @base != '&'",
-            "and not(@ref)"
-        );
-        final List<String> tail;
-        if (versioned) {
-            tail = new ListOf<>(
-                "and @ver",
-                "]/concat(@base,'|',@ver)"
-            );
-        } else {
-            tail = new ListOf<>();
-            if (this.withVersions) {
-                tail.add("and not(@ver)");
-            }
-            tail.add("]/@base");
-        }
-        xpath.addAll(tail);
-        return String.join(
-            " ",
-            xpath
+    private Collection<String> names(final XML xml, final String tojo) {
+        return new SetOf<>(
+            new Mapped<>(
+                (String name) -> this.versioned(name, tojo).toString(),
+                new Filtered<>(
+                    name -> !name.isEmpty(),
+                    xml.xpath(
+                        String.join(
+                            "",
+                            "//o[",
+                            "not(starts-with(@base,'.'))",
+                            " and @base != 'Q'",
+                            " and @base != '^'",
+                            " and @base != '$'",
+                            " and @base != '&'",
+                            " and not(@ref)",
+                            "]/string-join((@base,@ver),'",
+                            OnReplaced.DELIMITER,
+                            "')"
+                        )
+                    )
+                )
+            )
         );
     }
 
     /**
-     * Get unique list of object names from given XML by provided xpath.
-     * @param xml XML.
-     * @param xpath Xpath.
-     * @return Iterable of object names.
+     * Handle versioning of given object name.
+     * If {@code this.withVersions} is set to FALSE - don't append a version to
+     * the object name.
+     * Otherwise, try to append a version from tojo if there's no one yet
+     *
+     * @param name Object name with tag on not.
+     * @param tojo Current tojo.
+     * @return Versioned object name.
      */
-    private static Set<String> names(final XML xml, final String xpath) {
-        return new SetOf<>(
-            new Filtered<>(
-                obj -> !obj.isEmpty(),
-                xml.xpath(xpath)
+    private ObjectName versioned(final String name, final String tojo) {
+        final ObjectName replaced = new OnReplaced(name, this.hashes);
+        return new OnSwap(
+            this.withVersions,
+            new OnSwap(
+                tojo.contains(OnReplaced.DELIMITER),
+                new OnVersioned(
+                    replaced,
+                    new OnDefault(tojo)::hash
+                ),
+                replaced
             )
         );
     }

@@ -106,9 +106,9 @@ public final class Project {
      */
     public Path save() throws IOException {
         for (final Module module: this.modules) {
-            module.save(this.footprint);
+            new Commented(module, "//").save(this.footprint);
         }
-        this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
+        new Commented(this.cargo, "#").save(this.footprint);
         return this.dest;
     }
 }

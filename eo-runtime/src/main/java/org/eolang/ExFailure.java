@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
-public final class ExFailure extends ExAbstract {
+public class ExFailure extends ExAbstract {
 
     /**
      * Serialization identifier.

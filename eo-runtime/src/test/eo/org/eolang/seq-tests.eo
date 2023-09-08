@@ -27,17 +27,13 @@
 +package org.eolang
 +version 0.0.0
 
-# @todo #1299:60min Implement test that will
-#  check output of stdout. That should proven
-#  that there is no double printage, when
-#  methods lt., gt., lte., gte. are called.
 [] > seq-single-dataization-float-less-than-test
   memory 0.0 > counter
   assert-that > @
     seq
       counter.write
-        counter.plus 1.0
-      counter
+        counter.as-float.plus 1.0
+      counter.as-float
     $.less-than 2.0
 
 [] > seq-single-dataization-float-greater-than-test
@@ -45,8 +41,8 @@
   assert-that > @
     seq
       counter.write
-        counter.plus 1.0
-      counter
+        counter.as-float.plus 1.0
+      counter.as-float
     $.not
       $.greater-than 1.1
 
@@ -55,8 +51,8 @@
   assert-that > @
     seq
       counter.write
-        counter.plus 1
-      counter
+        counter.as-int.plus 1
+      counter.as-int
     $.less-than 2
 
 [] > seq-single-dataization-int-greater-than-test
@@ -64,7 +60,7 @@
   assert-that > @
     seq
       counter.write
-        counter.plus 1
-      counter
+        counter.as-int.plus 1
+      counter.as-int
     $.not
       $.greater-than 1

@@ -48,6 +48,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.map.MapOf;
 import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.rust.Commented;
 import org.eolang.maven.rust.Module;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.Native;
@@ -159,14 +160,15 @@ public final class BinarizeParseMojo extends SafeMojo {
                     input.xpath("/program/@name").get(0)
                 );
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(new Module(code, "foo"), dependencies)
-                    .with(new PrimeModule(function, "lib"), new ArrayList<>(1))
+                    .with(new Module(code, "src/foo"), dependencies)
+                    .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
                     .dependency(
                         "eo_env",
                         new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
                     )
                     .save();
-                new Native(function, "EOrust.natives").save(
+                new Commented(new Native(function, "EOrust.natives"), "//")
+                    .save(
                     new FtDefault(
                         this.generatedDir.toPath().resolve("EOrust").resolve("natives")
                     )

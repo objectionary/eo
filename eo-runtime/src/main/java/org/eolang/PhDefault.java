@@ -79,6 +79,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected int vertex;
 
     /**
+     * Forma of it.
+     */
+    private String form;
+
+    /**
      * Order of their names.
      */
     private final List<String> order;
@@ -108,6 +113,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault(final Phi sigma) {
         this.vertex = PhDefault.VTX.next();
+        this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
         this.add("ρ", new AtSimple(sigma));
@@ -180,6 +186,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
+            copy.form = this.form;
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
@@ -282,6 +289,11 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public String locator() {
         return "?";
+    }
+
+    @Override
+    public String forma() {
+        return this.form;
     }
 
     /**

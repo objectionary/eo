@@ -45,11 +45,11 @@ final class PrimeModuleTest {
         new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
             new TextOf(
-                temp.resolve(Paths.get("src").resolve(name.concat(".rs")))
+                temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),
             Matchers.stringContainsInOrder(
                 String.format("Java_EOrust_natives_%s_%s", method, method),
-                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> jint"
+                "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray"
             )
         );
     }

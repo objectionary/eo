@@ -36,8 +36,9 @@ SOFTWARE.
     <xsl:variable name="r7" select="replace($r6, '\$', '\\textdollar')"/>
     <xsl:variable name="r8" select="replace($r7, '#', '\\#')"/>
     <xsl:variable name="r9" select="replace($r8, '_', '\\_')"/>
-    <xsl:variable name="r10" select="replace($r9, '&quot;', '\\lq\\lq')"/>
-    <xsl:value-of select="$r10"/>
+    <xsl:variable name="r10" select="replace($r9, '&quot;', '\\textquotedbl{}')"/>
+    <xsl:variable name="r11" select="replace($r10, &quot;'&quot;, '\\textquotesingle{}')"/>
+    <xsl:value-of select="$r11"/>
   </xsl:function>
   <xsl:function name="eo:term" as="xs:string">
     <xsl:param name="t" as="xs:string"/>
@@ -95,16 +96,9 @@ SOFTWARE.
     <xsl:text> } </xsl:text>
   </xsl:template>
   <xsl:template match="g:oneOrMore">
-    <xsl:if test="count(g:*) &gt; 1">
-      <xsl:text> ( </xsl:text>
-    </xsl:if>
-    <xsl:apply-templates select="g:*"/>
-    <xsl:if test="count(g:*) &gt; 1">
-      <xsl:text> ) </xsl:text>
-    </xsl:if>
     <xsl:text> { </xsl:text>
     <xsl:apply-templates select="g:*"/>
-    <xsl:text> } </xsl:text>
+    <xsl:text> }+ </xsl:text>
   </xsl:template>
   <xsl:template match="g:sequence">
     <xsl:if test="count(g:*) &gt; 1">
@@ -136,9 +130,21 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <xsl:template match="g:string">
-    <xsl:text> "</xsl:text>
-    <xsl:value-of select="eo:escape(text())"/>
-    <xsl:text>" </xsl:text>
+    <xsl:for-each select="tokenize(., '(?=&quot;)', ';j')">
+      <xsl:choose>
+        <xsl:when test=". = ''">
+          <!-- ignore it -->
+        </xsl:when>
+        <xsl:when test=". = '&quot;'">
+          <xsl:text> 'DQ' </xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text> "</xsl:text>
+          <xsl:value-of select="eo:escape(.)"/>
+          <xsl:text>" </xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="g:complement">
     <xsl:apply-templates select="g:*"/>

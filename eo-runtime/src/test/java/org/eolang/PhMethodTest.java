@@ -92,6 +92,19 @@ final class PhMethodTest {
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(total));
     }
 
+    @Test
+    void hasDifferentFormasWithOwnMethod() {
+        final Phi dummy = new Dummy();
+        MatcherAssert.assertThat(
+            dummy.forma(),
+            Matchers.not(
+                Matchers.equalTo(
+                    new PhMethod(dummy, "foo").forma()
+                )
+            )
+        );
+    }
+
     /**
      * Dummy default.
      * @since 1.0
@@ -101,6 +114,13 @@ final class PhMethodTest {
          * Count.
          */
         private int count;
+
+        /**
+         * Ctor.
+         */
+        Dummy() {
+            this(Phi.Φ);
+        }
 
         /**
          * Ctor.

@@ -68,12 +68,12 @@
         x.write 5
         5
       eq.
-        11
         while.
-          x.lt 10
+          x.as-int.lt 10
           [i]
-            ^.^.^ > x
-            x.write (x.plus 1) > @
+            x.write > @
+              x.as-int.plus 1
+        11
     $.equal-to TRUE
 
 [] > prints-nice-formulas
@@ -82,13 +82,20 @@
     seq
       x.write 2
       while.
-        x.lt 6
+        x.as-int.lt 6
         [i]
-          ^.^.^ > x
           seq > @
             stdout
-              sprintf "%dx%d = %d\n" x x ((number x).pow 2)
-            x.write (x.plus 1)
+              sprintf
+                "%dx%d = %d\n"
+                x.as-int
+                x.as-int
+                pow.
+                  number
+                    x.as-int
+                  2
+            x.write
+              x.as-int.plus 1
       TRUE
     $.equal-to TRUE
 
@@ -97,7 +104,7 @@
 [] > and-short-circuiting
   memory 0 > mFirst
   memory 0 > mThird
-  assert-that > @
+  assert-that > res
     and.
       not.
         and.
@@ -113,6 +120,7 @@
       mFirst.eq 1
       mThird.eq 3
     $.equal-to TRUE
+  nop > @
 
 # tests that bool.or stops calculations if its i'th
 # object is true (including the base object)
@@ -162,12 +170,16 @@
       m.write 5
       while.
         eq.
-          m.gt 0
+          m.as-int.gt 0
           TRUE
         [i]
           seq > @
-            m.write (m.minus 1)
-            stdout (sprintf "%d\n" m)
+            m.write
+              m.as-int.minus 1
+            stdout
+              sprintf
+                "%d\n"
+                m.as-int
       TRUE
     $.equal-to TRUE
 
@@ -175,11 +187,11 @@
   memory 0 > x
   assert-that > @
     while.
-      x.lt 2
+      x.as-int.lt 2
       [i]
         seq > @
-          x.write (x.plus 1)
-          x
+          x.write (x.as-int.plus 1)
+          x.as-int
     $.equal-to 3
 
 [] > while-without-last-dataization
@@ -187,21 +199,21 @@
   assert-that > @
     seq
       while.
-        x.lt 2
+        x.as-int.lt 2
         [i]
-          x.write (x.plus 1) > @
+          x.write (x.as-int.plus 1) > @
       .@
       .<
-      x
+      x.as-int
     $.equal-to 2
 
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
   assert-that > @
     while.
-      x.lt 1
+      x.as-int.lt 1
       [i]
         seq > @
-          x.write (x.plus 1)
+          x.write (x.as-int.plus 1)
           x
     $.equal-to FALSE

@@ -31,6 +31,9 @@ package org.eolang;
  * name would be "Object", but it's already occupied by Java. That's why
  * we call it Phi.
  *
+ * It is guaranteed that the hash codes of different Phi are different,
+ * and equal to the vertex.
+ *
  * @since 0.1
  */
 public interface Phi extends Term {
@@ -85,6 +88,11 @@ public interface Phi extends Term {
         public String locator() {
             return "?:?";
         }
+
+        @Override
+        public String forma() {
+            return this.pkg.forma();
+        }
     };
 
     /**
@@ -115,4 +123,10 @@ public interface Phi extends Term {
      * @return String containing code locator
      */
     String locator();
+
+    /**
+     * Get forma of the phi.
+     * @return Forma of it as {@link String}.
+     */
+    String forma();
 }

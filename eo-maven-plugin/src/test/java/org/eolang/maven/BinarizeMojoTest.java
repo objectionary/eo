@@ -115,4 +115,28 @@ final class BinarizeMojoTest {
             () -> maven.execute(new FakeMaven.Binarize())
         );
     }
+
+    @Test
+    @Tag("slow")
+    void boostsSecondCompilation(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
+        }
+        long start = System.currentTimeMillis();
+        maven.execute(new FakeMaven.Binarize());
+        long finish = System.currentTimeMillis();
+        final long first = finish - start;
+        start = finish;
+        maven.execute(new FakeMaven.Binarize());
+        finish = System.currentTimeMillis();
+        final long second = finish - start;
+        MatcherAssert.assertThat(
+            second,
+            Matchers.lessThan(first)
+        );
+    }
 }

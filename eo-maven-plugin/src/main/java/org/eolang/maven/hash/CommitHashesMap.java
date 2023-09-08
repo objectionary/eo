@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.hash;
 
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
@@ -31,16 +33,21 @@ import org.cactoos.map.MapOf;
 import org.cactoos.text.Split;
 
 /**
- * Commit hashes table as map.
+ * Commit hashes table as a map.
  * The keys - tags.
- * The values - full hashes (40 chars)
+ * The values - compound hashes (7 chars)
  *
  * @since 0.29.6
  */
 public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
 
     /**
-     * Ctor.
+     * Whitespace pattern.
+     */
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
+
+    /**
+     * Constructor.
      */
     public CommitHashesMap() {
         this(new CommitHashesText()::asString);
@@ -50,34 +57,45 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Ctor.
      * @param table Commit hashes table as string.
      */
-    public CommitHashesMap(final String table) {
+    private CommitHashesMap(final String table) {
         this(() -> table);
     }
 
     /**
      * Ctor.
      * @param table Commit hashes table.
-     * @todo #1602:30 min Move the code to prestructor. Some developers think
-     *  that we should keep our constructors as small as possible and move
-     *  complex logic (like in this constructor) to special static method which
-     *  is called "prestructor".
-     *  (See <a href="https://github.com/objectionary/eo/issues/1729">here</a>)
-     *  We should make a decision what logic we should always move to the
-     *  prestructor and should we at all?
+     * @todo #1602:30min Map with full hashes. Having done map with narrow
+     *  hashes we got the situation where we can't get full hashes back in a
+     *  simple way. We will actually need full hashes in ProbeMojo and PullMojo.
+     *  So in order to avoid problems it would be better not to cut hashes here
+     *  but when necessary.
      */
-    public CommitHashesMap(final Scalar<String> table) {
-        super(
-            new MapOf<>(
-                new Mapped<>(
-                    line -> {
-                        final String[] split = line.asString().split("\\s+");
-                        return new MapEntry<>(
-                            split[1],
-                            new CommitHash.ChConstant(split[0])
-                        );
-                    },
-                    new Split(table::value, "\n")
-                )
+    private CommitHashesMap(final Scalar<String> table) {
+        super(CommitHashesMap.fromTable(table));
+    }
+
+    /**
+     * Prestructor from hashes table.
+     * You can read more about prestructors and why they are needed right
+     * <a href="https://www.yegor256.com/2021/08/04/prestructors.html">here</a>
+     * @param table Commit hashes table as string value.
+     * @return Map of commit hashes.
+     */
+    private static Map<String, CommitHash> fromTable(final Scalar<String> table) {
+        return new MapOf<>(
+            new Mapped<>(
+                rows -> {
+                    final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
+                    return new MapEntry<>(
+                        row[1],
+                        new ChCached(
+                            new ChNarrow(
+                                new CommitHash.ChConstant(row[0])
+                            )
+                        )
+                    );
+                },
+                new Split(table::value, "\n")
             )
         );
     }
@@ -113,7 +131,8 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         "9c9352890b5d30e1b89c9147e7c95a90c9b8709f 0.28.5",
                         "17f89293e5ae6115e9a0234b754b22918c11c602 0.28.6",
                         "5f82cc1edffad67bf4ba816610191403eb18af5d 0.28.7",
-                        "be83d9adda4b7c9e670e625fe951c80f3ead4177 0.28.9"
+                        "be83d9adda4b7c9e670e625fe951c80f3ead4177 0.28.9",
+                        "9c46a671f2bc68e777aab031d57da5012ba807a7 master"
                     )
                 )
             );

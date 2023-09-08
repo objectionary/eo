@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-    paths-ignore: ['paper/**', 'sandbox/**']
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
-    paths-ignore: ['paper/**', 'sandbox/**']
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: mvn-${{ github.ref }}
   cancel-in-progress: true
@@ -17,13 +17,17 @@ jobs:
     name: mvn
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2022, macos-12]
-        java: [11, 20]
+        os: [ ubuntu-20.04, windows-2022, macos-12 ]
+        java: [ 11, 20 ]
     runs-on: ${{ matrix.os }}
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: teatimeguest/setup-texlive-action@v2.6.2
+        with:
+          update-all-packages: true
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -33,6 +37,21 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      # The next step is required to avoid some exceptions that occur
+      # when running on Windows OS. For example like this one:
+      # - https://github.com/objectionary/eo/issues/2336
+      # The step disables http multiplexing in Cargo which cause some problems
+      # on Windows OS.
+      # You can read more about multiplexing right here
+      # - https://stackoverflow.com/questions/36517829/what-does-multiplexing-mean-in-http-2
+      # Multiplexing in Rust:
+      # - https://doc.rust-lang.org/cargo/reference/config.html#httpmultiplexing
+      - name: Set Cargo config (Windows)
+        if: matrix.os == 'windows-2022'
+        run: |
+          echo [http] >> %USERPROFILE%\.cargo\config.toml
+          echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
+        shell: cmd
       - run: |
           mkdir -p $CONVERT_PATH
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip

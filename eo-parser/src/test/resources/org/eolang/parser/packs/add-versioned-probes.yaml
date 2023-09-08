@@ -1,0 +1,19 @@
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/expand-qqs.xsl
+  - /org/eolang/parser/add-probes.xsl
+tests:
+  - /program/errors[count(error)=0]
+  - /program/sheets/sheet[contains(text(),'add-probes')]
+  - //metas[count(.//meta[head/text()='probe'])=3]
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang' and part/text()='Q.org.eolang']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage' and part/text()='Q.org.eolang.cage']
+  - //meta[head/text()='probe' and tail/text()='Q.org.eolang.cage|0.28.10' and part/text()='Q.org.eolang.cage']
+eo: |
+  +home https://github.com/objectionary/eo
+  +package org.eolang.custom
+  +version 0.0.0
+
+  [] > app
+    QQ.cage|0.28.10 > cg-versioned
+    QQ.cage > cg-simple

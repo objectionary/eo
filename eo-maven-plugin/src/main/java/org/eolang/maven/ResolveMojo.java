@@ -50,7 +50,7 @@ import org.eolang.maven.util.Walk;
  * Find all required runtime dependencies, download
  * them from Maven Central, unpack and place to target/eo.
  * The motivation for this mojo is simple: Maven doesn't have
- * a mechanism of adding .JAR files to transpile/test classpath in
+ * a mechanism for adding .JAR files to transpile/test classpath in
  * runtime.
  *
  * @since 0.1
@@ -109,8 +109,9 @@ public final class ResolveMojo extends SafeMojo {
      *
      * That property is useful only for eo-runtime library compilation.
      * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
-     * (since you compile eo-runtime library and classpath will anyway have all required classes)
-     * and in this case you should set this property to false. In any other cases the eo-runtime
+     * (since you compile an eo-runtime library and classpath will anyway have all required classes)
+     * and in this case, you should set this property to false.
+     * In any other cases, the eo-runtime
      * dependency will be downloaded and added to the classpath automatically.
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -224,7 +225,7 @@ public final class ResolveMojo extends SafeMojo {
         } else {
             deps = new DcsWithoutRuntime(deps);
         }
-        if (!this.ignoreVersionConflicts) {
+        if (!this.withVersions && !this.ignoreVersionConflicts) {
             deps = new DcsUniquelyVersioned(deps);
         }
         if (!this.ignoreTransitive) {

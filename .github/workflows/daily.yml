@@ -5,10 +5,24 @@ on:
     - cron: '30 1 * * *'
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: teatimeguest/setup-texlive-action@v2.6.2
+        with:
+          update-all-packages: true
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
+          # Clean the test classes to avoid caching issues and prepare testing environment
+          # without running the tests
+          mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
+          # Find script
           SCRIPT="${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh"
           # Check that script is exists
           if [ ! -f "${SCRIPT}" ]; then
@@ -22,7 +36,7 @@ jobs:
           # Test eo-maven-plugin
           ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin
           # Test eo-runtime
-          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime
+          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime --compilation true
       # @todo #2085:90min Add GitHub action step to create an issue.
       #  It would be convenient to add github action step that will create an
       #  issue in case of any of the tests is failed. We can do it through
