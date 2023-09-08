@@ -175,7 +175,7 @@ final class PullMojoTest {
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.externalTojos()
+        maven.foreignTojos()
             .add(new OnVersioned(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.with("withVersions", true)

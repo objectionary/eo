@@ -85,7 +85,7 @@ final class MarkMojoTest {
         final ForeignTojos tojos = new FakeMaven(temp)
             .with("withVersions", true)
             .execute(MarkMojo.class)
-            .externalTojos();
+            .foreignTojos();
         final ObjectName object = new OnVersioned("foo.bar", "6a70071");
         MatcherAssert.assertThat(
             String.format(
