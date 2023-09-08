@@ -26,7 +26,6 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
@@ -99,61 +98,6 @@ final class RegisterMojoTest {
         MatcherAssert.assertThat(
             maven.foreign().getById("org.eolang.maven..abc").exists("id"),
             Matchers.is(true)
-        );
-    }
-
-    @Test
-    void registersInExternal(@TempDir final Path temp) throws IOException {
-        new Home(temp).save(
-            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
-            Paths.get("src/eo/org/eolang/maven/foo.eo")
-        );
-        final String name = "org.eolang.maven.foo";
-        final FakeMaven maven = new FakeMaven(temp)
-            .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
-            .with("withVersions", true)
-            .execute(new FakeMaven.Register());
-        MatcherAssert.assertThat(
-            String.format(
-                "Source object %s placed in %s should have been registered in external tojos but it didn't",
-                name,
-                RegisterMojoTest.SOURCES
-            ),
-            maven.external()
-                .getById(name)
-                .exists("id"),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "External and foreign tojos should not have the same status after registering because external should replace foreign but they didn't",
-            maven.foreignTojos().status(),
-            Matchers.not(
-                Matchers.equalTo(
-                    maven.externalTojos().status()
-                )
-            )
-        );
-    }
-
-    @Test
-    void doesNotRegisterInExternal(@TempDir final Path temp) throws IOException {
-        new Home(temp).save(
-            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
-            Paths.get("src/eo/org/eolang/maven/foo.eo")
-        );
-        final String name = "org.eolang.maven.foo";
-        Assertions.assertThrows(
-            NoSuchElementException.class,
-            () -> new FakeMaven(temp)
-                .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
-                .with("withVersions", false)
-                .execute(new FakeMaven.Register())
-                .external()
-                .getById(name),
-            String.format(
-                "External tojos should not have contained %s because \"withVersions\" is FALSE, but they did",
-                name
-            )
         );
     }
 

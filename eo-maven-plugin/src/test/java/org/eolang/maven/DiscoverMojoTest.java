@@ -62,13 +62,13 @@ final class DiscoverMojoTest {
      * Default assertion message.
      */
     private static final String SHOULD_CONTAIN =
-        "External tojos should contain %s object after discovering, but they didn't";
+        "Tojos should contain %s object after discovering, but they didn't";
 
     /**
      * Default assertion message.
      */
     private static final String SHOULD_NOT =
-        "External tojos should not contain %s object after discovering, but they did";
+        "Tojos should not contain %s object after discovering, but they did";
 
     @ParameterizedTest
     @CsvSource({
@@ -121,7 +121,7 @@ final class DiscoverMojoTest {
             .execute(new FakeMaven.Discover());
         final ObjectName stdout = new OnVersioned("org.eolang.stdout", "9c93528");
         final String nop = "org.eolang.nop";
-        final ForeignTojos tojos = maven.externalTojos();
+        final ForeignTojos tojos = maven.foreignTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, DiscoverMojoTest.TEXT),
             tojos.contains(DiscoverMojoTest.TEXT),
@@ -163,7 +163,7 @@ final class DiscoverMojoTest {
             .execute(new FakeMaven.Discover());
         final ObjectName first = new OnVersioned("org.eolang.txt.sprintf", hashes.get("0.28.1"));
         final ObjectName second = new OnVersioned("org.eolang.txt.sprintf", hashes.get("0.28.2"));
-        final ForeignTojos tojos = maven.externalTojos();
+        final ForeignTojos tojos = maven.foreignTojos();
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_CONTAIN, first),
             tojos.contains(first),
@@ -193,7 +193,7 @@ final class DiscoverMojoTest {
             .withProgram(second, new OnVersioned(object, two))
             .withProgram(first, new OnDefault(object))
             .execute(new FakeMaven.Discover())
-            .externalTojos();
+            .foreignTojos();
         MatcherAssert.assertThat(
             String.format(
                 "Tojos should contained 3 similar objects %s: 2 with different hashes %s and one without; but they didn't",
@@ -219,12 +219,12 @@ final class DiscoverMojoTest {
         final ObjectName seq = new OnVersioned("org.eolang.seq", "6c6269d");
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, seq),
-            maven.externalTojos().contains(seq),
+            maven.foreignTojos().contains(seq),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
             String.format(DiscoverMojoTest.SHOULD_NOT, DiscoverMojoTest.TEXT),
-            maven.externalTojos().contains(DiscoverMojoTest.TEXT),
+            maven.foreignTojos().contains(DiscoverMojoTest.TEXT),
             Matchers.is(false)
         );
     }
