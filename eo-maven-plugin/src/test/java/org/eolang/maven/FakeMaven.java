@@ -197,7 +197,6 @@ public final class FakeMaven {
         if (this.defaults) {
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
-            this.params.putIfAbsent("external", this.externalPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
             final Path transpiled = Paths.get("transpiled");
@@ -282,28 +281,6 @@ public final class FakeMaven {
         return new ForeignTojos(
             () -> Catalogs.INSTANCE.make(this.foreignPath()),
             this::scope
-        );
-    }
-
-    /**
-     * External tojos for eo-external.* file.
-     * @return External tojos.
-     */
-    ForeignTojos externalTojos() {
-        return new ForeignTojos(
-            () -> Catalogs.INSTANCE.make(this.externalPath()),
-            this::scope
-        );
-    }
-
-    /**
-     * Tojo for eo-external.* file.
-     *
-     * @return TjSmart of the current eo-external.file.
-     */
-    TjSmart external() {
-        return new TjSmart(
-            Catalogs.INSTANCE.make(this.externalPath())
         );
     }
 
@@ -415,23 +392,17 @@ public final class FakeMaven {
             .withScope(scope)
             .withVersion(version)
             .withSource(source);
-        this.externalTojos()
-            .add(object)
-            .withScope(scope)
-            .withVersion(version)
-            .withSource(source);
         this.current.incrementAndGet();
         return this;
     }
 
     /**
-     * Specify hash for all foreign and external tojos.
+     * Specify hash for all foreign tojos.
      * @param hash Commit hash
      * @return The same maven instance.
      */
     FakeMaven allTojosWithHash(final CommitHash hash) {
         this.foreignTojos().all().forEach(tojo -> tojo.withHash(hash));
-        this.externalTojos().all().forEach(tojo -> tojo.withHash(hash));
         return this;
     }
 
@@ -449,14 +420,6 @@ public final class FakeMaven {
      */
     Path foreignPath() {
         return this.workspace.absolute(Paths.get("eo-foreign.csv"));
-    }
-
-    /**
-     * Path to or eo-external.* file after all changes.
-     * @return Path to eo-foreign.* file.
-     */
-    Path externalPath() {
-        return this.workspace.absolute(Paths.get("eo-external.csv"));
     }
 
     /**
@@ -494,14 +457,6 @@ public final class FakeMaven {
      */
     ForeignTojo programTojo() {
         return this.foreignTojos().find(FakeMaven.tojoId(this.current.get() - 1));
-    }
-
-    /**
-     * Same as {@link FakeMaven#programTojo()} but for external tojos.
-     * @return Tojo entry.
-     */
-    ForeignTojo programExternalTojo() {
-        return this.externalTojos().find(FakeMaven.tojoId(this.current.get() - 1));
     }
 
     /**
