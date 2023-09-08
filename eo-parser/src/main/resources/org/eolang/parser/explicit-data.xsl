@@ -28,19 +28,38 @@ SOFTWARE.
   - 5 => 5
   - int 5 => 5
   - float 22.4 => 22.4
+  - QQ.bool TRUE > TRUE
 
   In the level of xmir it looks like:
-  - <o base="int" data="int">2</o> => <o base="int" data="int">2</o>
-  - <o base="int" name="num">        <o base="int" data="int" name="num">
-      <o base="int" data="int">  =>    42
-        42                           </o>
+  - <o base="org.eolang.int" data="int">2</o>    =>  <o base="org.eolang.int" data="int">2</o>
+  - <o base="org.eolang.int" name="num">             <o base="org.eolang.int" data="int" name="num">
+      <o base="org.eolang.int" data="int">       =>    42
+        42                                           </o>
+      </o>
+    </o>
+  - <o base=".bool" name="b">                        <o base="org.eolang.bool" data="bytes" name="b">
+      <o base=".eolang">                         =>    01
+        <o base=".org">                              </o>
+          <o base="Q"></o>
+        </o>
+      </o
+      <o base="org.eolang.bool" data="bytes">
+        01
       </o>
     </o>
   -->
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="//o[o[@data and @base=../@base and @base!='org.eolang.tuple']]">
+  <xsl:variable name="reversed" as="element()*">
+    <xsl:for-each select="$literal-objects">
+      <a>
+        <xsl:value-of select="replace(./text(), 'org\.eolang\.', '.')"/>
+      </a>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:template match="//o[o[last() and @data] and @base!='org.eolang.tuple']">
     <xsl:variable name="base" select="@base"/>
+    <xsl:variable name="last-base" select="o[last()]/@base"/>
     <xsl:choose>
       <xsl:when test="$literal-objects[text()=$base]">
         <o>
@@ -53,6 +72,22 @@ SOFTWARE.
             <xsl:value-of select="o/@data"/>
           </xsl:attribute>
           <xsl:value-of select="o"/>
+        </o>
+      </xsl:when>
+      <xsl:when test="$reversed[text()=$base] and count(o)=2 and o[position()=1 and @base='.eolang' and o[@base='.org' and o[@base='Q']]] and o[last() and @data] and $literal-objects[text()=$last-base]">
+        <o>
+          <xsl:for-each select="@*[name()!='base']">
+            <xsl:attribute name="{name()}">
+              <xsl:value-of select="."/>
+            </xsl:attribute>
+          </xsl:for-each>
+          <xsl:attribute name="data">
+            <xsl:value-of select="o[last()]/@data"/>
+          </xsl:attribute>
+          <xsl:attribute name="base">
+            <xsl:value-of select="o[last()]/@base"/>
+          </xsl:attribute>
+          <xsl:value-of select="o[last()]"/>
         </o>
       </xsl:when>
       <xsl:otherwise>
