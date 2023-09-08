@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -267,6 +268,11 @@ public class EOrust extends PhDefault {
                 buffer.put(content);
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getLong());
+                break;
+            case 3:
+                ret = new Data.ToPhi(
+                    new String(content, StandardCharsets.UTF_8)
+                );
                 break;
             case 5:
                 if (this.error.get() == null) {
