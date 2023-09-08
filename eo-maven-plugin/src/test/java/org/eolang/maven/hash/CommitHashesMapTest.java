@@ -45,7 +45,7 @@ final class CommitHashesMapTest {
     @ParameterizedTest
     @CsvSource({
         "0.26.0, e0b7836",
-        "0.28.10, 9b88393#",
+        "0.28.10, 9b88393",
     })
     void containsValidHash(final String tag, final String hash) {
         final Map<String, CommitHash> hashes = new CommitHashesMap();
