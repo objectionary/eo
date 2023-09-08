@@ -76,6 +76,16 @@ final class XMIRTest {
      *
      * @param temp Temp directory, where LaTeX will be compiled, just for test
      * @since 0.30.0
+     *
+     * @todo #2399:30min The test fails on GitHub Actions CI. Need to figure out what's the problem
+     *  Stack trace:
+     *  java.lang.IllegalArgumentException: Non-zero exit code 1: This is pdfTeX,
+     *  Version 3.141592653-2.6-1.40.25 (T..4496..duced!\nTranscript written on article.log.\n
+     * 	  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:298)
+     * 	  at com.jcabi.log.VerboseProcess.stdout(VerboseProcess.java:185)
+     * 	  at com.yegor256.Jaxec.execUnsafe(Jaxec.java:289)
+     * 	  at com.yegor256.Jaxec.exec(Jaxec.java:258)
+     * 	  at org.eolang.parser.XMIRTest.convertsAntlrToEbnf(XMIRTest.java:148)
      */
     @Test
     @Disabled
