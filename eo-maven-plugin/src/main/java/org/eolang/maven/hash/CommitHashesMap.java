@@ -34,7 +34,7 @@ import org.cactoos.text.Split;
 
 /**
  * Commit hashes table as a map.
- * The keys - tags.
+ * The keys - tags
  * The values - narrow hashes (7 chars)
  *
  * @since 0.29.6
