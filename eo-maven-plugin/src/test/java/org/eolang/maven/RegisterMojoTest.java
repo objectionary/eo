@@ -26,7 +26,6 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
