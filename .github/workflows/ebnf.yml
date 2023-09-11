@@ -32,14 +32,14 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
-          mkdir -p $CONVERT_PATH
+          mkdir -p "$CONVERT_PATH"
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip
-          unzip -o -d $CONVERT_PATH /tmp/convert.zip
+          unzip -o -d "$CONVERT_PATH" /tmp/convert.zip
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
           mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.3:generate \
             -pl :eo-parser --errors --batch-mode --quiet \
-            -Dantlr2ebnf.convertDir=/tmp/convert
+            "-Dantlr2ebnf.convertDir=$CONVERT_PATH"
       - run: |
           cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
           pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
