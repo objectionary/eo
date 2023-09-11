@@ -194,9 +194,11 @@ public final class BinarizeMojo extends SafeMojo {
                 new TextOf(src)
             ).asString()
         ).equals(
-            new UncheckedText(
-                new TextOf(cached)
-            ).asString()
+            BinarizeMojo.uncomment(
+                new UncheckedText(
+                    new TextOf(cached)
+                ).asString()
+            )
         );
     }
 

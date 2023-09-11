@@ -23,10 +23,12 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.apache.commons.lang3.SystemUtils;
 import org.eolang.maven.rust.Names;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -137,6 +139,39 @@ final class BinarizeMojoTest {
         MatcherAssert.assertThat(
             second,
             Matchers.lessThan(first)
+        );
+    }
+
+    @Test
+    @Tag("slow")
+    void doesNotRecompile(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
+        }
+        maven.execute(new FakeMaven.Binarize());
+        final String lib;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            lib = "common.dll";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            lib = "libcommon.so";
+        } else {
+            lib = "libcommon.dylib";
+        }
+        final File executable = cache
+            .resolve("Lib/native0/target/debug/")
+            .resolve(lib)
+            .toFile();
+        final long first = executable.lastModified();
+        maven.execute(new FakeMaven.Binarize());
+        final long second = executable.lastModified();
+        MatcherAssert.assertThat(first, Matchers.not(0L));
+        MatcherAssert.assertThat(
+            second,
+            Matchers.equalTo(first)
         );
     }
 }
