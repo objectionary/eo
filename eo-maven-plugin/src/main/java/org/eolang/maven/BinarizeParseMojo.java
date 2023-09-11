@@ -155,8 +155,9 @@ public final class BinarizeParseMojo extends SafeMojo {
                 );
                 Logger.info(
                     this,
-                    "Binarized %s from %s",
+                    "Binarized %s from %s:%s",
                     filename,
+                    input.xpath("/program/@name").get(0),
                     node.xpath("@code_loc").get(0)
                 );
                 new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
