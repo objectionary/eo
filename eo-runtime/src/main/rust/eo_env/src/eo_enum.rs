@@ -59,8 +59,12 @@ impl EO {
                 res[1..].copy_from_slice(&content_bytes);
                 res
             }
-            EO::EORaw(_) => { vec![0xff] }
-
+            EO::EORaw(content) => {
+                let mut res: Vec<u8> = vec![0; 1 + content.len()];
+                res[0] = 4;
+                res[1..].copy_from_slice(&content.to_vec());
+                res
+            }
             EO::EOError(_) => {
                 let mut res: Vec<u8> = vec![0; 1];
                 res[0] = 5;

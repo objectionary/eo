@@ -269,6 +269,9 @@ public class EOrust extends PhDefault {
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getLong());
                 break;
+            case 4:
+                ret = new Data.ToPhi(content);
+                break;
             case 3:
                 ret = new Data.ToPhi(
                     new String(content, StandardCharsets.UTF_8)
