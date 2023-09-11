@@ -38,7 +38,7 @@ jobs:
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
           mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.3:generate \
-            -pl :eo-parser --errors --batch-mode --quiet \
+            -pl :eo-parser --debug --errors --batch-mode --quiet \
             "-Dantlr2ebnf.convertDir=$CONVERT_PATH"
       - run: |
           cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
