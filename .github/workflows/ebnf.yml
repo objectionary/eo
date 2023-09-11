@@ -46,6 +46,7 @@ jobs:
           pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
           pdf2svg crop.pdf ebnf.svg
           convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf ebnf.png
+          ls -al
           mkdir gh-pages
           cp ebnf.png gh-pages
           cp ebnf.svg gh-pages
