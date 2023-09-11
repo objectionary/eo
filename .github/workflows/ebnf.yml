@@ -39,7 +39,7 @@ jobs:
       - run: |
           mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.3:generate \
             -pl :eo-parser --errors --batch-mode --quiet \
-            -Dantlr2ebnf.sourceDir=/tmp/convert
+            -Dantlr2ebnf.convertDir=/tmp/convert
       - run: |
           cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
           pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
