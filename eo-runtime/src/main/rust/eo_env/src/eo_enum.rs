@@ -52,7 +52,13 @@ impl EO {
                 res[1..].copy_from_slice(&x.to_be_bytes());
                 res
             }
-            EO::EOString(_) => { vec![0xff] }
+            EO::EOString(content) => {
+                let content_bytes = content.clone().into_bytes();
+                let mut res: Vec<u8> = vec![0; 1 + content_bytes.len()];
+                res[0] = 3;
+                res[1..].copy_from_slice(&content_bytes);
+                res
+            }
             EO::EORaw(content) => {
                 let mut res: Vec<u8> = vec![0; 1 + content.len()];
                 res[0] = 4;

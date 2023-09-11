@@ -162,6 +162,23 @@
     $.equal-to
       "content"
 
+[] > rust-is-string
+  QQ.rust > content
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOString};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOString("Привет world".to_string())
+    }
+    """
+    *
+      []
+  assert-that > @
+    content
+    $.equal-to "Привет world"
+
 [] > rust-put-not-fails
   QQ.rust > r
     """
