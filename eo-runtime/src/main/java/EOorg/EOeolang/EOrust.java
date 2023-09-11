@@ -268,6 +268,9 @@ public class EOrust extends PhDefault {
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getLong());
                 break;
+            case 4:
+                ret = new Data.ToPhi(content);
+                break;
             case 5:
                 if (this.error.get() == null) {
                     throw new ExNative(
