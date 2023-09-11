@@ -41,6 +41,7 @@ jobs:
             -pl :eo-parser --debug --errors --batch-mode --quiet \
             "-Dantlr2ebnf.convertDir=$CONVERT_PATH"
       - run: |
+          set -x
           cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
           pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
           pdf2svg crop.pdf ebnf.svg
