@@ -45,14 +45,14 @@ final class SafeMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
-                .withProgram("something < is definitely wrong here")
+                .withProgram("something > is definitely wrong here")
                 .with("failOnError", true)
                 .execute(ParseMojo.class)
         );
         MatcherAssert.assertThat(
             String.join("\n", out.captured()),
             Matchers.allOf(
-                Matchers.containsString("no viable alternative at input"),
+                Matchers.containsString("mismatched input ' ' expecting {'!', EOL, EOP}"),
                 Matchers.containsString("Failed to parse")
             )
         );

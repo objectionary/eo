@@ -67,10 +67,6 @@ import org.eolang.XmirObject;
  * @checkstyle MethodNameCheck (100 lines)
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
- * @todo #2283:90min Create Universe class. Now its functionality is
- *  assigned to "EORust", which is why it is overcomplicated. "Universe"
- *  should perform a model of interaction with "eo" objects through
- *  methods "find", "put", "copy", "dataize" and "bind".
  */
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
@@ -229,12 +225,6 @@ public class EOrust extends PhDefault {
      * @param message Message that native method returns.
      * @param insert Location of the rust insert.
      * @return Phi object.
-     * @todo #2283:45min Implement handling of String returning.
-     *  It must convert message array from 1 to last byte to the String
-     *  and return eo object with converted String Data.
-     * @todo #2442:45min Improve handling EOError returning.
-     *  It should also send a String message describing error on the
-     *  native side and handle it correctly on the java side.
      */
     private Phi translate(final byte[] message, final String insert) {
         final byte determinant = message[0];
@@ -268,6 +258,14 @@ public class EOrust extends PhDefault {
                 buffer.put(content);
                 buffer.flip();
                 ret = new Data.ToPhi(buffer.getLong());
+                break;
+            case 4:
+                ret = new Data.ToPhi(content);
+                break;
+            case 3:
+                ret = new Data.ToPhi(
+                    new String(content, StandardCharsets.UTF_8)
+                );
                 break;
             case 5:
                 final String cause = new String(content, StandardCharsets.UTF_8);

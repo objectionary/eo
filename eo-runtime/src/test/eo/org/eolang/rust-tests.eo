@@ -100,6 +100,28 @@
     $.equal-to
       -1.23456789
 
+[] > rust-is-byte-array
+  QQ.rust > my-bytes
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EORaw};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EORaw(
+        Box::from(
+          [0x00, 0x1a, 0xEE]
+        )
+      )
+    }
+    """
+    *
+      []
+  assert-that > @
+    my-bytes
+    $.equal-to
+      00-1A-EE
+
 [] > rust-find-returns-int
   123 > a
   QQ.rust > r
@@ -139,6 +161,23 @@
     read
     $.equal-to
       "content"
+
+[] > rust-is-string
+  QQ.rust > content
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOString};
+
+    pub fn foo(_env: &mut EOEnv) -> EO {
+      EOString("Привет world".to_string())
+    }
+    """
+    *
+      []
+  assert-that > @
+    content
+    $.equal-to "Привет world"
 
 [] > rust-put-not-fails
   QQ.rust > r

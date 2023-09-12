@@ -1,11 +1,11 @@
 xsls: []
 tests:
   - //o[@base='one' and @name='test']
-  - //o[@base='one' and count(o)=2]
+  - //o[@base='one' and count(o)=1]
   - //o[@base='.two' and @method and o[@base='int']]
   - //o[@base='.three' and @method and o[@base='int']]
 eo: |
-  one 1 > test
+  one > test
     "hello"
   .two 2
   .three 3

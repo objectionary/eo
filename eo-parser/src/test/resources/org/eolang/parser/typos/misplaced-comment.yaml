@@ -1,7 +1,0 @@
-line: 4
-eo: |
-  [] > hello
-    stdout
-      # This is a wrong place for a comment
-      sprintf
-        "Hello, world!"

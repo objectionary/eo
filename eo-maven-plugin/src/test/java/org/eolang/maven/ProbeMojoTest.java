@@ -160,17 +160,17 @@ final class ProbeMojoTest {
                 "Tojos should contain versioned object %s after probing, but they didn't",
                 ProbeMojoTest.STDOUT
             ),
-            maven.externalTojos().contains(ProbeMojoTest.STDOUT),
+            maven.foreignTojos().contains(ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             "Program tojo entry in tojos after probing should contain one probed object",
-            maven.programExternalTojo().probed(),
+            maven.programTojo().probed(),
             Matchers.equalTo("1")
         );
         MatcherAssert.assertThat(
             "Program tojo entry in tojos after probing should contain given hash",
-            maven.programExternalTojo().hash(),
+            maven.programTojo().hash(),
             Matchers.equalTo(hash.value())
         );
     }
@@ -200,28 +200,28 @@ final class ProbeMojoTest {
                 "Tojos should contain versioned objects '%s' after probing, but they didn't",
                 Arrays.asList(text, ProbeMojoTest.STDOUT)
             ),
-            maven.externalTojos().contains(text, ProbeMojoTest.STDOUT),
+            maven.foreignTojos().contains(text, ProbeMojoTest.STDOUT),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
             "Program tojo after probing should contain exactly two probed objects",
-            maven.programExternalTojo().probed(),
+            maven.programTojo().probed(),
             Matchers.equalTo("2")
         );
         MatcherAssert.assertThat(
             "Program tojo after probing should have given hash",
-            maven.programExternalTojo().hash(),
+            maven.programTojo().hash(),
             Matchers.equalTo(first.value())
         );
     }
 
     private static String[] program() {
         return new String[]{
-            "+package org.eolang.custom",
-            "",
+            "+package org.eolang.custom\n",
             "[] > main",
             "  QQ.io.stdout > @",
-            "    QQ.txt.sprintf \"I am %d years old\"",
+            "    QQ.txt.sprintf",
+            "      \"I am %d years old\"",
             "      plus.",
             "        1337",
             "        228",

@@ -2,6 +2,7 @@ xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/set-locators.xsl
+  - /org/eolang/parser/explicit-data.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
@@ -15,6 +16,7 @@ tests:
   - //java[contains(text(), 'new PhLocated(ret_base, 7, 2, "Φ.bar.φ.ρ")')]
   - //java[contains(text(), 'new PhLocated(ret, 7, 4, "Φ.bar.φ")')]
   - //java[contains(text(), 'new PhLocated(ret_1, 7, 10, "Φ.bar.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret, 8, 2, "Φ.bar.five")')]
 eo: |
   [] > foo
     42 > @
@@ -23,3 +25,4 @@ eo: |
 
   [] > bar
     42.plus 43 > @
+    int 5 > five

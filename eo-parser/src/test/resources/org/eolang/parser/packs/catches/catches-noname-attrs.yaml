@@ -8,9 +8,9 @@ tests:
   - /program/errors/error[@line='9' and contains(text(),'pos=19')]
   - /program/errors/error[@line='14' and contains(text(),'pos=2')]
 eo: |
-  []
+  [] > abs
     first
-    second:f
+    second
     third > hey
       23
       33

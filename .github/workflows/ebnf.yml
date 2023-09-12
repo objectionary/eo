@@ -32,25 +32,27 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
-          mkdir -p $CONVERT_PATH
+          mkdir -p "$CONVERT_PATH"
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip
-          unzip -o -d $CONVERT_PATH /tmp/convert.zip
-      - run: mvn clean test '-P!jacoco' -Dtest=XMIRTest -pl :eo-parser --errors --batch-mode --quiet
+          unzip -o -d "$CONVERT_PATH" /tmp/convert.zip
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
-          cp eo-parser/src/test/resources/tex/ebnf.tex eo-parser/target/ebnf.tex
-          cd eo-parser/target
-          sed -i -e '/EBNF/{r ebnf.txt' -e 'd}' ebnf.tex
-          pdflatex -shell-escape -interaction=errorstopmode -halt-on-error ebnf.tex
-          pdfcrop --margins '10 10 10 10' ebnf.pdf crop.pdf
+          mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.4:generate \
+            -pl :eo-parser --debug --errors --batch-mode --quiet \
+            "-Dantlr2ebnf.convertDir=$CONVERT_PATH"
+      - run: |
+          set -x
+          cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
+          pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
           pdf2svg crop.pdf ebnf.svg
           convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf ebnf.png
+          ls -al
           mkdir gh-pages
           cp ebnf.png gh-pages
           cp ebnf.svg gh-pages
       - uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
-          folder: eo-parser/target/gh-pages
+          folder: gh-pages
           clean: false
         if: github.ref == 'refs/heads/master'

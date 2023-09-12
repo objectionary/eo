@@ -88,11 +88,11 @@ final class PullMojoTest {
     void pullsFromProbes(@TempDir final Path temp) throws IOException {
         new FakeMaven(temp)
             .withProgram(
-                "+package org.eolang.custom",
-                "",
+                "+package org.eolang.custom\n",
                 "[] > main",
                 "  QQ.io.stdout > @",
-                "    QQ.txt.sprintf \"I am %d years old\"",
+                "    QQ.txt.sprintf",
+                "      \"I am %d years old\"",
                 "      plus.",
                 "        1337",
                 "        228"
@@ -175,7 +175,7 @@ final class PullMojoTest {
     @Test
     void pullsVersionedObjectSuccessfully(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.externalTojos()
+        maven.foreignTojos()
             .add(new OnVersioned(PullMojoTest.STDOUT, "9c93528"))
             .withVersion("*.*.*");
         maven.with("withVersions", true)

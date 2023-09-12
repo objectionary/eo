@@ -38,6 +38,8 @@ import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.maven.rust.BuildFailureException;
 
 /**
@@ -45,10 +47,6 @@ import org.eolang.maven.rust.BuildFailureException;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #2197:45min Update cached rust insert if it was changed.
- *  Now it copies cargo project to cache directory in the end of every
- *  compilation. It is better to copy the project only if it was changed
- *  with the last compilation.
  */
 @Mojo(
     name = "binarize",
@@ -100,7 +98,7 @@ public final class BinarizeMojo extends SafeMojo {
                         return 1;
                     },
                     new Filtered<>(
-                        project -> BinarizeMojo.valid(project),
+                        BinarizeMojo::valid,
                         targetDir.toPath().resolve("Lib").toFile().listFiles()
                     )
                 )
@@ -112,7 +110,7 @@ public final class BinarizeMojo extends SafeMojo {
     /**
      * Is the project valid?
      * @param project File to check.
-     * @return True if valid. Otherwise false.
+     * @return True if valid. Otherwise, false.
      */
     private static boolean valid(final File project) {
         return project.isDirectory()
@@ -134,24 +132,84 @@ public final class BinarizeMojo extends SafeMojo {
             Logger.info(this, "Copying %s to %s", cached, target);
             FileUtils.copyDirectory(cached, target);
         }
-        Logger.info(this, "Building rust project..");
-        try {
-            new Jaxec("cargo", "build").withHome(project).execUnsafe();
-        } catch (final IOException ex) {
-            throw new BuildFailureException(
-                String.format(
-                    "Failed to build cargo project with dest = %s",
-                    project
-                ),
-                ex
+        if (BinarizeMojo.sameProject(
+            project.toPath(),
+            this.cache
+            .resolve("Lib")
+            .resolve(project.getName())
+        )) {
+            Logger.info(
+                this,
+                "content of %s was not changed since the last launch",
+                project.getName()
             );
+        } else {
+            Logger.info(this, "Building %s rust project..", project.getName());
+            try {
+                new Jaxec("cargo", "build").withHome(project).execUnsafe();
+            } catch (final IOException ex) {
+                throw new BuildFailureException(
+                    String.format(
+                        "Failed to build cargo project with dest = %s",
+                        project
+                    ),
+                    ex
+                );
+            }
+            Logger.info(
+                this,
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
+            );
+            FileUtils.copyDirectory(target.getParentFile(), cached.getParentFile());
         }
-        Logger.info(
-            this,
-            "Cargo building succeeded, update cached %s with %s",
-            cached,
-            target
+    }
+
+    /**
+     * Check if the project was not changed.
+     * @param src Directory in current target.
+     * @param cached Directory in cache.
+     * @return True if the project is the same.
+     */
+    private static boolean sameProject(final Path src, final Path cached) {
+        return BinarizeMojo.sameFile(
+            src.resolve("src/foo.rs"), cached.resolve("src/foo.rs")
+        ) && BinarizeMojo.sameFile(
+            src.resolve("src/lib.rs"), cached.resolve("src/lib.rs")
+        ) && BinarizeMojo.sameFile(
+            src.resolve("Cargo.toml"), cached.resolve("Cargo.toml")
         );
-        FileUtils.copyDirectory(target, cached);
+    }
+
+    /**
+     * Check if the source file is the same as in cache.
+     * @param src Source file.
+     * @param cached Cache file.
+     * @return True if the same.
+     */
+    private static boolean sameFile(final Path src, final Path cached) {
+        return cached.toFile().exists() && BinarizeMojo.uncomment(
+            new UncheckedText(
+                new TextOf(src)
+            ).asString()
+        ).equals(
+            new UncheckedText(
+                new TextOf(cached)
+            ).asString()
+        );
+    }
+
+    /**
+     * Removed the first line from the string.
+     * We need it because generated files are disclaimed.
+     * @param content Content.
+     * @return String without the first line.
+     * @checkstyle StringLiteralsConcatenationCheck (8 lines)
+     */
+    private static String uncomment(final String content) {
+        return content.substring(
+            1 + content.indexOf(System.getProperty("line.separator"))
+        );
     }
 }
