@@ -73,7 +73,7 @@ public final class BinarizeMojo extends SafeMojo {
         } else {
             throw new IllegalArgumentException(
                 String.format(
-                    "Rust inserts are not supported by %s os. Only windows, linux and macos are allowed.",
+                    "Rust inserts are not supported in %s os. Only windows, linux and macos are allowed.",
                     System.getProperty("os.name")
                 )
             );
