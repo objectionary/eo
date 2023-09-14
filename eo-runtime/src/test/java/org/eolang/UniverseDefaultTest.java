@@ -24,8 +24,6 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOseq;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
@@ -44,6 +42,9 @@ final class UniverseDefaultTest {
      */
     private static final String ATT = "value";
 
+    /**
+     * Data byte array.
+     */
     private static final byte[] DATA = new BytesOf(123456789L).take();
 
     @Test
