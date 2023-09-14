@@ -1,0 +1,27 @@
+xsls: []
+tests:
+  - /program/errors[count(*)=0]
+eo: |
+  1.add (a.add 5) 4 > x
+  add. 1 (a.add 5) > x
+  add. 1 2 3 4 > x
+  add. 1 2 3 4
+  add 1 2 3 4
+  1.add 4 > x
+  (add 1).add 2
+  1.add (1.add (1.add (1.add 1))) > x
+  (1.add 1).add (1.add 1) > x
+  add > x
+    1
+    1
+  1.with-text "(text) with parentheses a(n)..." > x
+  "=(" > x
+  "=)" > x
+  ")" > x
+  "(-_-)" > x
+  "Hello".<.eq ("Hello".<) > a
+  """
+  (-_-)
+  """ > x
+  # Comment().
+  [] > obj
