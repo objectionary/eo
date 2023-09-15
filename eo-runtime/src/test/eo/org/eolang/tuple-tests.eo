@@ -121,9 +121,9 @@
   concat. > res
     list a
     b
-  assert-that > @
+  eq. > @
     res.length
-    $.equal-to 3
+    3
 
 [] > tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr

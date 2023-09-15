@@ -33,11 +33,10 @@
     TRUE
 
 [] > compares-two-different-types
-  assert-that > @
-    not. > @
-      eq.
-        TRUE
-        42
+  not. > @
+    eq.
+      TRUE
+      42
 
 [] > joins-many-ands
   and. > @

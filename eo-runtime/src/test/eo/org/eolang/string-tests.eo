@@ -65,9 +65,8 @@
 
 [] > compares-string-with-positive-infinity
   eq. > @
-    positive-infinity
-    $.not
-      "друг"
+    positive-infinity.eq "друг"
+    FALSE
 
 [] > compares-string-with-negative-infinity
   not. > @

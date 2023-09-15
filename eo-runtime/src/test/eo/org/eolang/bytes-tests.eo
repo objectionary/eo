@@ -75,10 +75,10 @@
 
 [] > left-with-minus-one
   eq. > @
-    -1.as-bytes.left 3
-    $.not
-      $.equal-to
-        7.as-bytes
+    eq.
+      -1.as-bytes.left 3
+      7.as-bytes
+    FALSE
 
 [] > left-with-even-neg
   eq. > @
@@ -123,10 +123,10 @@
 
 [] > right-with-even-plus
   eq. > @
-    36.as-bytes.right 2
-    $.not
-      $.equal-to
-        -10.as-bytes
+    eq.
+      36.as-bytes.right 2
+      -10.as-bytes
+    FALSE
 
 [] > right-with-odd-plus
   not. > @

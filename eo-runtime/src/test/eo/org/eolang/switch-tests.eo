@@ -81,9 +81,9 @@
   try > @
     switch
     [ex]
-      assert-that > @
+      eq. > @
         ex
-        $.equal-to "switch cases are empty"
+        "switch cases are empty"
     nop
 
 [] > switch-complex-case
