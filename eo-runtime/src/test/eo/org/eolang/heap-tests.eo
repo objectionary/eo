@@ -44,17 +44,10 @@
   heap 1024 > h!
   h.malloc 64 > p1!
   h.malloc 32 > p2!
-  eq. > @
+  not. > @
     eq.
-      seq
-        QQ.io.stdout
-          QQ.txt.sprintf
-            "p1 = %d\np2 = %d\n"
-            p1
-            p2
-        p1
+      p1
       p2
-    FALSE
 
 [] > mallocs-do-not-overlap
   heap 1024 > h!

@@ -115,16 +115,6 @@
       nop
     "Can't #at(20) the 21th element of the tuple, there are just 4 of them"
 
-[] > concat-tuple-with-empty-tuple-2
-  * > a
-  * 1 2 3 > b
-  concat. > res
-    list a
-    b
-  eq. > @
-    res.length
-    3
-
 [] > tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr
   and. > @

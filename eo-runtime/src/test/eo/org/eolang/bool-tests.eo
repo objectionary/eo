@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -67,27 +66,6 @@
           x.write > @
             x.as-int.plus 1
       11
-
-[] > prints-nice-formulas
-  memory 0 > x
-  seq > @
-    x.write 2
-    while.
-      x.as-int.lt 6
-      [i]
-        seq > @
-          stdout
-            sprintf
-              "%dx%d = %d\n"
-              x.as-int
-              x.as-int
-              pow.
-                number
-                  x.as-int
-                2
-          x.write
-            x.as-int.plus 1
-    TRUE
 
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)
@@ -155,10 +133,7 @@
         seq > @
           m.write
             m.as-int.minus 1
-          stdout
-            sprintf
-              "%d\n"
-              m.as-int
+          TRUE
     TRUE
 
 [] > last-while-dataization-object

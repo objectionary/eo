@@ -119,7 +119,7 @@
   cage 0 > f2
   memory 0 > f0
   nop > @
-    seq > @
+    seq
       f0.write 0
       f1.write 1
       f2.write (f0.plus f1)
@@ -185,7 +185,8 @@
       args.at 0
       args.at 1
   eq. > @
-    sum ...* 2 7
+    sum
+      ...* 2 7
     9
 
 [] > returns-same-object
@@ -230,13 +231,13 @@
 [] > calling-caged-function
   cage 0 > h
   [x] > func
-    sprintf "Hello, %s!" x > @
+    2.plus x > @
   nop > @
     eq.
       seq
         h.write func
-        h.@ "Jeff"
-      "Hello, Jeff!"
+        h.@ 8
+      10
 
 [] > app-that-calls-varargs-func
   [] > app
