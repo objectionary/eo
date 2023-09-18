@@ -101,7 +101,7 @@ final class PhiTest {
             new PhWith(
                 new PhLocated(
                     new PhMethod(
-                        Phi.Φfig,
+                        Phi.Φ,
                         "x"
                     ),
                     123,
