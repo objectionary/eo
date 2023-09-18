@@ -42,6 +42,11 @@ final class UniverseDefaultTest {
      */
     private static final String ATT = "value";
 
+    /**
+     * Data byte array.
+     */
+    private static final byte[] DATA = new BytesOf(123456789L).take();
+
     @Test
     void findsSimpleAtt() {
         final Phi phi = new DummyWithAt(Phi.Φ);
@@ -135,6 +140,21 @@ final class UniverseDefaultTest {
             universe.dataize(copy),
             Matchers.equalTo(
                 universe.dataize(origin)
+            )
+        );
+    }
+
+    @Test
+    void outsToCopy() {
+        final Map<Integer, Phi> indexed = new HashMap<>();
+        final Universe universe = new UniverseDefault(Phi.Φ, indexed);
+        final int eoint = universe.find("Q.org.eolang.int");
+        final int copy = universe.copy(eoint);
+        universe.put(copy, UniverseDefaultTest.DATA);
+        MatcherAssert.assertThat(
+            new Dataized(indexed.get(copy)).take(),
+            Matchers.equalTo(
+                UniverseDefaultTest.DATA
             )
         );
     }

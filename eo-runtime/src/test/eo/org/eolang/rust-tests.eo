@@ -130,9 +130,10 @@
     """
     *
       []
-  gte. > @
-    r
-    0
+  not. > @
+    lt.
+      r
+      0
 
 [] > rust-returns-vertex
   "content" > book
@@ -171,21 +172,29 @@
     "Привет world"
 
 [] > rust-put-not-fails
-  QQ.rust > r
+  QQ.rust > put
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo_env::eo_enum::EO::{EOInt, EOError};
     pub fn foo(env: &mut EOEnv) -> EO {
-      env.put(3, &[0x00, 0x1a, 0xEE, 0xf, 0xf3]).unwrap();
-      EOInt(0 as i64)
+      if(env.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])).is_none(){
+        return EOError("put failed".to_string());
+      } else {
+        EOInt(0 as i64)
+      }
     }
     """
     *
       []
-  gte. > @
-    r
-    0
+  eq. > @
+    try
+      []
+        put > @
+      [e]
+        e > @
+      nop
+    "Rust insert failed in Φ.org.eolang.rust-put-not-fails.put.α0:184:4 with message 'put failed'; caused by Phi object with vertex -1 was not indexed."
 
 [] > rust-bind-not-fails
   1 > a
@@ -204,9 +213,10 @@
     """
     *
       []
-  gte. > @
-    insert
-    0
+  not. > @
+    lt.
+      insert
+      0
 
 [] > rust-copy-not-fails
   123 > a
@@ -243,9 +253,10 @@
     *
       []
       3
-  gte. > @
-    dataized
-    0
+  not. > @
+    lt.
+      dataized
+      0
 
 [] > rust-plus
   5 > a
@@ -306,3 +317,26 @@
       eq.
         res
         "'Custom error'"
+
+[] > rust-put-to-copy
+  QQ.rust > data
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex, EOError};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let eobytes = env.find("Q.org.eolang.bytes");
+      let copy = env.copy(eobytes as u32).unwrap();
+      if env.put(copy.clone(), &[0x00, 0x1a, 0xEE]).is_none() {
+        EOError("put failed".to_string())
+      } else {
+        EOVertex(copy)
+      }
+    }
+    """
+    *
+      []
+  eq. > @
+    data
+    00-1A-EE
