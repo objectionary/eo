@@ -71,8 +71,8 @@
 
 [] > positive-infinity-not-lt-negative-infinity
   eq. > @
-    positive-infinity.lt
-    negative-infinity
+    positive-infinity.lt negative-infinity
+    FALSE
 
 [] > positive-infinity-not-lt-nan
   eq. > @

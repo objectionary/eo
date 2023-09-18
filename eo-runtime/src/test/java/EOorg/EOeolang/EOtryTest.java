@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;

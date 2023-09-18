@@ -37,12 +37,13 @@
 
 [] > seq-single-dataization-float-greater-than-test
   memory 0.0 > counter
-  lte. > @
-    seq
-      counter.write
-        counter.as-float.plus 1.0
-      counter.as-float
-    1.1
+  not. > @
+    gt.
+      seq
+        counter.write
+          counter.as-float.plus 1.0
+        counter.as-float
+      1.1
 
 [] > seq-single-dataization-int-less-than-test
   memory 0 > counter

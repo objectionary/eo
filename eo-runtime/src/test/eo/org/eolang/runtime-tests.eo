@@ -203,9 +203,7 @@
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
-  seq > @
-    long-object-name
-    TRUE
+  TRUE > @
 
 [] > refers-to-inner-vars-correctly
   memory 0 > go

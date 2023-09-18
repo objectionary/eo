@@ -368,7 +368,7 @@
 [] > minus-one-div-zero-is-negative-infinity
   eq. > @
     -1.0.div 0.0
-    @.equal-to negative-infinity
+    negative-infinity
 
 [] > positive-float-plus-positive-infinity
   positive-infinity > pos-inf!

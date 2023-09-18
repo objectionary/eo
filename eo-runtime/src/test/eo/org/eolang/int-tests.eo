@@ -195,7 +195,6 @@
   eq. > @
     fibonacci 4
     3
-    "calculates fibonacci number with tail "
   [n] > fibonacci
     if. > @
       n.lt 3

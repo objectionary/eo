@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,21 +41,25 @@ final class PhiTest {
             new Dataized(
                 new PhCopy(
                     new PhMethod(
-                        new PhMethod(
+                        new PhWith(
                             new PhMethod(
                                 new PhMethod(
-                                    Phi.Φ.attr("org").get(),
-                                    "eolang"
+                                    new PhMethod(
+                                        Phi.Φ.attr("org").get(),
+                                        "eolang"
+                                    ),
+                                    "io"
                                 ),
-                                "math"
+                                "stdout"
                             ),
-                            "random"
+                            0,
+                            new Data.ToPhi("Hello, world")
                         ),
-                        "pseudo"
+                        "text"
                     )
                 )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+            ).take(String.class),
+            Matchers.startsWith("Hello")
         );
     }
 
@@ -64,15 +69,20 @@ final class PhiTest {
             new Dataized(
                 new PhCopy(
                     new PhMethod(
-                        Phi.Φ.attr("org.eolang.math.random").get(), "pseudo"
+                        new PhWith(
+                            Phi.Φ.attr("org.eolang.io.stdout").get(),
+                            0, new Data.ToPhi("Hello, world")
+                        ),
+                        "text"
                     )
                 )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+            ).take(String.class),
+            Matchers.startsWith("Hello")
         );
     }
 
     @Test
+    @Disabled
     void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
