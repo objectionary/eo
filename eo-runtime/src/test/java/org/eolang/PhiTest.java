@@ -42,15 +42,17 @@ final class PhiTest {
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
-                            new PhMethod(
+                            new PhCopy(
                                 new PhMethod(
                                     new PhMethod(
-                                        Phi.Φ.attr("org").get(),
-                                        "eolang"
+                                        new PhMethod(
+                                            Phi.Φ.attr("org").get(),
+                                            "eolang"
+                                        ),
+                                        "io"
                                     ),
-                                    "io"
-                                ),
-                                "stdout"
+                                    "stdout"
+                                )
                             ),
                             0,
                             new Data.ToPhi("Hello, world")
@@ -70,7 +72,7 @@ final class PhiTest {
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
-                            Phi.Φ.attr("org.eolang.io.stdout").get(),
+                            new PhCopy(Phi.Φ.attr("org.eolang.io.stdout").get()),
                             0, new Data.ToPhi("Hello, world")
                         ),
                         "text"
@@ -99,7 +101,7 @@ final class PhiTest {
             new PhWith(
                 new PhLocated(
                     new PhMethod(
-                        Phi.Φ,
+                        Phi.Φfig,
                         "x"
                     ),
                     123,
