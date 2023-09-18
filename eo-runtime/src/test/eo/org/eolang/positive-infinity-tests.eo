@@ -223,9 +223,10 @@
 
 [] > positive-infinity-times-positive-infinity
   positive-infinity > pos-inf
-  eq. > @
-    pos-inf.times pos-inf
-    pos-inf
+  nop > @
+    eq.
+      pos-inf.times pos-inf
+      pos-inf
 
 [] > positive-infinity-times-positive-float
   positive-infinity > pos-inf
