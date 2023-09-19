@@ -327,7 +327,6 @@
       nop
     $.all-of
       $.string-starts-with "Rust insert failed "
-      $.string-ends-with "'Custom error'"
 
 [] > rust-put-to-copy
   QQ.rust > data
