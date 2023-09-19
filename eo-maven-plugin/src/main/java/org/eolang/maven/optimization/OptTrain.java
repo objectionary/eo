@@ -32,6 +32,7 @@ import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import org.eolang.parser.ParsingTrain;
+import java.util.function.Function;
 
 /**
  * Optimisation train of XLS`s.
@@ -47,9 +48,9 @@ public final class OptTrain implements Optimization {
      * thread since {@link com.jcabi.xml.XSLDocument}, which is used under
      * the hood in {@link TrClasspath}, is not thread-safe.
      */
-    static final Train<Shift> DEFAULT_TRAIN = new TrFast(
+    static final Function<Boolean, Train<Shift>> DEFAULT_TRAIN = versioned -> new TrFast(
         new TrClasspath<>(
-            new ParsingTrain(),
+            new ParsingTrain(versioned),
             "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
             "/org/eolang/parser/optimize/remove-refs.xsl",
             "/org/eolang/parser/optimize/abstracts-float-up.xsl",
@@ -79,7 +80,15 @@ public final class OptTrain implements Optimization {
      * The default constructor with the default preset of xsl optimizations.
      */
     public OptTrain() {
-        this(OptTrain.DEFAULT_TRAIN);
+        this(false);
+    }
+
+    /**
+     * Ctor.
+     * @param versioned Apply versions shifts or not
+     */
+    public OptTrain(final boolean versioned) {
+        this(OptTrain.DEFAULT_TRAIN.apply(versioned));
     }
 
     /**

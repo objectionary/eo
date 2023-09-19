@@ -42,11 +42,26 @@ public final class OptSpy implements Optimization {
     private final Path target;
 
     /**
-     * The main constructor.
-     * @param target Where to track optimization steps.
+     * Apply versions shifts or not.
+     */
+    private final boolean versioned;
+
+    /**
+     * Ctor.
+     * @param target Where to track optimization steps
      */
     public OptSpy(final Path target) {
+        this(target, false);
+    }
+
+    /**
+     * The main constructor.
+     * @param target Where to track optimization steps
+     * @param versioned Apply versions shifts or not
+     */
+    public OptSpy(final Path target, final boolean versioned) {
         this.target = target;
+        this.versioned = versioned;
     }
 
     @Override
@@ -57,6 +72,8 @@ public final class OptSpy implements Optimization {
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)
         );
-        return new OptTrain(new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)).apply(xml);
+        return new OptTrain(
+            new SpyTrain(OptTrain.DEFAULT_TRAIN.apply(this.versioned), dir)
+        ).apply(xml);
     }
 }

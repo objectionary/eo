@@ -57,8 +57,8 @@ public final class ParsingTrain extends TrEnvelope {
      * Apply changes to each XML after processing all shifts.
      */
     private static final XSL VERSIONS = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("versions-down.xsl"),
-        "versions.xsl"
+        ParsingTrain.class.getResourceAsStream("move-versions-down.xsl"),
+        "move-versions-down.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -105,6 +105,14 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/set-locators.xsl",
         "/org/eolang/parser/explicit-data.xsl",
     };
+
+    /**
+     * Ctor.
+     * @param versioned Apply versions shifts or not
+     */
+    public ParsingTrain(final boolean versioned) {
+        this(versioned, ParsingTrain.SHEETS);
+    }
 
     /**
      * Ctor.

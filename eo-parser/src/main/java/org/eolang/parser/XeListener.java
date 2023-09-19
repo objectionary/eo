@@ -78,12 +78,25 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private final long start;
 
     /**
+     * Add versions to all objects or not.
+     */
+    private final boolean versioned;
+
+    /**
      * Ctor.
-     *
      * @param name The name of it
      */
     public XeListener(final String name) {
+        this(name, false);
+    }
+
+    /**
+     * Ctor.
+     * @param name The name of it
+     */
+    public XeListener(final String name, final boolean versioned) {
         this.name = name;
+        this.versioned = versioned;
         this.dirs = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
@@ -347,10 +360,10 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             if (ctx.STAR() != null) {
                 base = "tuple";
                 this.objects.prop("data", "tuple");
-                this.objects.prop("ver");
+                this.objects.oprop(this.versioned, "ver");
             } else if (ctx.NAME() != null) {
                 base = ctx.NAME().getText();
-                this.objects.prop("ver");
+                this.objects.oprop(this.versioned, "ver");
             } else if (ctx.AT() != null) {
                 base = "@";
             } else {
@@ -764,7 +777,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         this.startObject(ctx);
         this.objects.prop("base", String.format(".%s", ctx.NAME().getText()));
         this.objects.prop("method");
-        this.objects.prop("ver");
+        this.objects.oprop(this.versioned, "ver");
     }
 
     @Override
@@ -783,7 +796,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             } else if (ctx.STAR() != null) {
                 base = "tuple";
                 this.objects.prop("data", "tuple");
-                this.objects.prop("ver");
+                this.objects.oprop(this.versioned, "ver");
             } else if (ctx.ROOT() != null) {
                 base = "Q";
             } else if (ctx.HOME() != null) {
@@ -809,7 +822,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-            this.objects.prop("ver");
+            this.objects.oprop(this.versioned, "ver");
         } else if (ctx.AT() != null) {
             base = "@";
         } else if (ctx.RHO() != null) {
@@ -838,7 +851,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-            this.objects.prop("ver");
+            this.objects.oprop(this.versioned, "ver");
         } else if (ctx.AT() != null) {
             base = "@";
         } else if (ctx.RHO() != null) {
@@ -871,7 +884,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         this.objects.enter();
         if (ctx.COPY() != null) {
             this.objects.prop("copy");
-            this.objects.prop("ver");
+            this.objects.oprop(this.versioned, "ver");
         }
         this.objects.leave();
     }
@@ -1054,7 +1067,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         }
         this.objects.prop("data", type);
         this.objects.prop("base", base);
-        this.objects.prop("ver");
+        this.objects.oprop(this.versioned, "ver");
         this.objects.data(data);
     }
 

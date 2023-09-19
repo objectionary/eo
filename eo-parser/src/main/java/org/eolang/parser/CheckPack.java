@@ -72,15 +72,17 @@ public final class CheckPack {
         final Map<String, Object> map = yaml.load(this.script);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = map.get("eo").toString();
+        final boolean versioned = map.containsKey("versioned");
         new Syntax(
             "scenario",
             new InputOf(String.format("%s\n", src)),
-            new OutputTo(baos)
+            new OutputTo(baos),
+            versioned
         ).parse();
         final XML xml = new XMLDocument(baos.toByteArray());
         baos.reset();
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
-        Train<Shift> train = new ParsingTrain();
+        Train<Shift> train = new ParsingTrain(versioned);
         if (xsls != null) {
             if (!map.containsKey("defaults")) {
                 train = train.empty();

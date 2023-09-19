@@ -77,8 +77,26 @@ public final class Syntax {
     private final Output target;
 
     /**
+     * Add versions to all objects or not.
+     */
+    private final boolean versioned;
+
+    /**
      * Ctor.
-     *
+     * @param nme The name of it
+     * @param ipt Input text
+     * @param tgt Target
+     */
+    public Syntax(
+        final String nme,
+        final Input ipt,
+        final Output tgt
+    ) {
+        this(nme, ipt, tgt, false);
+    }
+
+    /**
+     * Ctor.
      * @param nme The name of it
      * @param ipt Input text
      * @param tgt Target
@@ -87,11 +105,13 @@ public final class Syntax {
     public Syntax(
         final String nme,
         final Input ipt,
-        final Output tgt
+        final Output tgt,
+        final boolean versioned
     ) {
         this.name = nme;
         this.input = ipt;
         this.target = tgt;
+        this.versioned = versioned;
     }
 
     /**
@@ -114,7 +134,7 @@ public final class Syntax {
         );
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
-        final XeListener xel = new XeListener(this.name);
+        final XeListener xel = new XeListener(this.name, this.versioned);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(
