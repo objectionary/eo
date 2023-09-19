@@ -110,7 +110,7 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Ctor.
-     * @param versioned Apply versions shifts or not.
+     * @param versioned Apply versions shifts or not
      */
     public ParsingTrain(final boolean versioned) {
         this(versioned, ParsingTrain.SHEETS);
@@ -126,7 +126,7 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Ctor.
-     * @param sheets Sheets.
+     * @param sheets Sheets
      */
     public ParsingTrain(final String... sheets) {
         this(false, sheets);
@@ -134,8 +134,8 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Ctor.
-     * @param versioned Apply versions shifts or not.
-     * @param sheets Sheets.
+     * @param versioned Apply versions shifts or not
+     * @param sheets Sheets
      */
     ParsingTrain(final boolean versioned, final String... sheets) {
         super(
