@@ -145,7 +145,7 @@ final class UniverseDefaultTest {
     }
 
     @Test
-    void outsToCopy() {
+    void putsToCopy() {
         final Map<Integer, Phi> indexed = new HashMap<>();
         final Universe universe = new UniverseDefault(Phi.Φ, indexed);
         final int eoint = universe.find("Q.org.eolang.int");
