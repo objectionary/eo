@@ -126,7 +126,7 @@ public final class ParsingTrain extends TrEnvelope {
      * Ctor.
      * @param sheets Sheets
      */
-    public ParsingTrain(final String ...sheets) {
+    public ParsingTrain(final String... sheets) {
         this(false, sheets);
     }
 

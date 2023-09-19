@@ -34,6 +34,7 @@ import org.xembly.Directives;
  * Object tree.
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 interface Objects extends Iterable<Directive> {
 
     /**
