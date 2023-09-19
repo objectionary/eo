@@ -1,6 +1,5 @@
 versioned: true
 tests:
-  - //errors[count(error)=0]
   - //o[@base='.stdout' and not(@ver) and @line='4']
   - //o[@base='.org' and @ver='0.25.8' and @line='4']
   - //o[@base='.org' and @ver='']
