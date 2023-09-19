@@ -28,6 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
@@ -168,16 +169,18 @@ public final class ParsingTrain extends TrEnvelope {
                     )
                 ),
                 new TrDefault<>(
-                    new StLambda(
-                        xml -> {
-                            final XML result;
-                            if (versioned) {
-                                result = ParsingTrain.VERSIONS.transform(xml);
-                            } else {
-                                result = xml;
+                    new StEndless(
+                        new StLambda(
+                            xml -> {
+                                final XML result;
+                                if (versioned) {
+                                    result = ParsingTrain.VERSIONS.transform(xml);
+                                } else {
+                                    result = xml;
+                                }
+                                return result;
                             }
-                            return result;
-                        }
+                        )
                     )
                 )
             )
