@@ -24,11 +24,13 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.ClasspathSources;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
+import com.yegor256.xsline.TrAfter;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
@@ -44,11 +46,19 @@ import java.util.logging.Level;
 public final class ParsingTrain extends TrEnvelope {
 
     /**
-     * Apply changes to each XML after processing.
+     * Apply changes to each XML after processing each shift.
      */
     private static final XSL EACH = new XSLDocument(
         ParsingTrain.class.getResourceAsStream("_each.xsl"),
         "each.xsl"
+    ).with(new ClasspathSources(ParsingTrain.class));
+
+    /**
+     * Apply changes to each XML after processing all shifts.
+     */
+    private static final XSL VERSIONS = new XSLDocument(
+        ParsingTrain.class.getResourceAsStream("versions-down.xsl"),
+        "versions.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -94,7 +104,6 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
         "/org/eolang/parser/set-locators.xsl",
         "/org/eolang/parser/explicit-data.xsl",
-        "/org/eolang/parser/default-empty-versions.xsl",
     };
 
     /**
@@ -102,40 +111,63 @@ public final class ParsingTrain extends TrEnvelope {
      */
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
-        this(ParsingTrain.SHEETS);
+        this(false, ParsingTrain.SHEETS);
     }
 
     /**
      * Ctor.
      * @param sheets Sheets
      */
-    ParsingTrain(final String... sheets) {
+    public ParsingTrain(final String ...sheets) {
+        this(false, sheets);
+    }
+
+    /**
+     * Ctor.
+     * @param versioned Apply versions shifts or not
+     * @param sheets Sheets
+     */
+    ParsingTrain(final boolean versioned, final String... sheets) {
         super(
-            new TrLambda(
-                new TrFast(
-                    new TrLambda(
-                        new TrLogged(
-                            new TrClasspath<>(sheets).back(),
-                            ParsingTrain.class,
-                            Level.FINEST
+            new TrAfter(
+                new TrLambda(
+                    new TrFast(
+                        new TrLambda(
+                            new TrLogged(
+                                new TrClasspath<>(sheets).back(),
+                                ParsingTrain.class,
+                                Level.FINEST
+                            ),
+                            StEoLogged::new
                         ),
-                        StEoLogged::new
+                        TrFast.class,
+                        500L
                     ),
-                    TrFast.class,
-                    500L
-                ),
-                shift -> new StSequence(
-                    shift.uid(),
-                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                    new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
+                    shift -> new StSequence(
+                        shift.uid(),
+                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                        new StAfter(
+                            shift,
+                            new StLambda(
+                                shift::uid,
+                                (pos, xml) -> ParsingTrain.EACH
+                                    .with("step", pos)
+                                    .with("sheet", shift.uid())
+                                    .transform(xml)
+                            )
                         )
                     )
+                ),
+                new StLambda(
+                    xml -> {
+                        final XML result;
+                        if (versioned) {
+                            result = ParsingTrain.VERSIONS.transform(xml);
+                        } else {
+                            result = xml;
+                        }
+                        return result;
+                    }
                 )
             )
         );
