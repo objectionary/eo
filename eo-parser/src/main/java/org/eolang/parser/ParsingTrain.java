@@ -30,10 +30,11 @@ import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
-import com.yegor256.xsline.TrAfter;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import java.util.logging.Level;
@@ -137,7 +138,7 @@ public final class ParsingTrain extends TrEnvelope {
      */
     ParsingTrain(final boolean versioned, final String... sheets) {
         super(
-            new TrAfter(
+            new TrJoined<>(
                 new TrLambda(
                     new TrFast(
                         new TrLambda(
@@ -166,19 +167,20 @@ public final class ParsingTrain extends TrEnvelope {
                         )
                     )
                 ),
-                new StLambda(
-                    xml -> {
-                        final XML result;
-                        if (versioned) {
-                            result = ParsingTrain.VERSIONS.transform(xml);
-                        } else {
-                            result = xml;
+                new TrDefault<>(
+                    new StLambda(
+                        xml -> {
+                            final XML result;
+                            if (versioned) {
+                                result = ParsingTrain.VERSIONS.transform(xml);
+                            } else {
+                                result = xml;
+                            }
+                            return result;
                         }
-                        return result;
-                    }
+                    )
                 )
             )
         );
     }
-
 }
