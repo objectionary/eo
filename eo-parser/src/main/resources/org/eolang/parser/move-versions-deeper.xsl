@@ -22,9 +22,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="move-versions-down" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="move-versions-deeper" version="2.0">
   <!--
-  Here we add empty "ver" attribute for all objects, which "base" starts with "org.eolang."
+  Here we move "ver" attribute from the top object deeper to pre-last one (before <o base="Q"/>)
+  <o ver="123">            <o>
+    <o>                      <o>
+      <o>                      <o>
+        <o base="org">           <o base="org" ver="123">
+          <o base="Q"/>    =>      <base="Q"/>
+        </o>                     </o>
+      </o>                     </o>
+    </o>                     </o>
+  </o>                     </o>
+
+  Or:
+
+  <o>                      <o>
+    <o ver="123">            <o>
+      <o>                      <o>
+        <o base="org">           <o base="org" ver="123">
+          <o base="Q"/>    =>      <base="Q"/>
+        </o>                     </o>
+      </o>                     </o>
+    </o>                     </o>
+  </o>                     </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="//o[starts-with(@base,'.') and @ver and parent::o[not(starts-with(@base,'.')) or not(@ver)] and o[position()=1 and starts-with(@base,'.')]]">

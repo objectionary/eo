@@ -71,6 +71,7 @@ interface Objects extends Iterable<Directive> {
     void xprop(String key, Object xpath);
 
     /**
+     * Optional property.
      * Add property depends on given condition.
      * @param condition Condition
      * @param key Key

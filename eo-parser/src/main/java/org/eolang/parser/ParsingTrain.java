@@ -59,8 +59,8 @@ public final class ParsingTrain extends TrEnvelope {
      * Apply changes to each XML after processing all shifts.
      */
     private static final XSL VERSIONS = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("move-versions-down.xsl"),
-        "move-versions-down.xsl"
+        ParsingTrain.class.getResourceAsStream("move-versions-deeper.xsl"),
+        "move-versions-deeper.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
