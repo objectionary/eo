@@ -211,21 +211,27 @@
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo_env::eo_enum::EO::{EOError, EOInt};
     pub fn foo(env: &mut EOEnv) -> EO {
-        let v1 = env.find("$.^.a") as u32;
-        let v2 = env.find("$.^.b") as u32;
-        env.bind(v1 , v2, "EO-att");
-        return EOInt(v1 as i64);
+      let v1 = env.find("$.^.a") as u32;
+      let v2 = env.find("$.^.b") as u32;
+      if(env.bind(v1 , v2, "EO-att")).is_none(){
+        return EOError("bind failed".to_string());
+      } else {
+        return EOInt(0 as i64);
+      }
     }
     """
     *
       []
   assert-that > @
-    insert
-    $.not
-      $.less-than
-        0
+    try
+      []
+        insert > @
+      [e]
+        e > @
+      nop
+    $.string-starts-with "Rust insert failed"
 
 [] > rust-copy-not-fails
   123 > a
@@ -321,7 +327,6 @@
       nop
     $.all-of
       $.string-starts-with "Rust insert failed "
-      $.string-ends-with "'Custom error'"
 
 [] > rust-put-to-copy
   QQ.rust > data
@@ -346,3 +351,30 @@
     data
     $.equal-to
       00-1A-EE
+
+[] > rust-bind-to-copy
+  [content] > book
+  "qwerty" > line
+  QQ.rust > applied
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex, EOError};
+
+    pub fn foo(env: &mut EOEnv) -> EO {
+      let eobook = env.find("$.^.book");
+      let copy = env.copy(eobook as u32).unwrap();
+      let eoline = env.find("$.^.line") as u32;
+      if env.bind(copy.clone(), eoline, "content").is_none() {
+        EOError("bind failed".to_string())
+      } else {
+        EOVertex(copy)
+      }
+    }
+    """
+    *
+      []
+  assert-that > @
+    applied.content
+    $.equal-to
+      "qwerty"

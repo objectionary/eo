@@ -26,6 +26,7 @@ package org.eolang;
 import EOorg.EOeolang.EOseq;
 import java.util.HashMap;
 import java.util.Map;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -145,7 +146,7 @@ final class UniverseDefaultTest {
     }
 
     @Test
-    void outsToCopy() {
+    void putsToCopy() {
         final Map<Integer, Phi> indexed = new HashMap<>();
         final Universe universe = new UniverseDefault(Phi.Φ, indexed);
         final int eoint = universe.find("Q.org.eolang.int");
@@ -153,6 +154,25 @@ final class UniverseDefaultTest {
         universe.put(copy, UniverseDefaultTest.DATA);
         MatcherAssert.assertThat(
             new Dataized(indexed.get(copy)).take(),
+            Matchers.equalTo(
+                UniverseDefaultTest.DATA
+            )
+        );
+    }
+
+    @Test
+    void bindsCopyToAbstract() {
+        final Phi dummy = new DummyAbstract(Phi.Φ);
+        final Map<Integer, Phi> indexed = new MapOf<>(dummy.hashCode(), dummy);
+        final Universe universe = new UniverseDefault(dummy, indexed);
+        final int eoint = universe.find("Q.org.eolang.int");
+        final int copy = universe.copy(eoint);
+        universe.put(copy, UniverseDefaultTest.DATA);
+        universe.bind(
+            dummy.hashCode(), copy, UniverseDefaultTest.ATT
+        );
+        MatcherAssert.assertThat(
+            new Dataized(dummy.attr(UniverseDefaultTest.ATT).get()).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
             )
@@ -198,6 +218,22 @@ final class UniverseDefaultTest {
         DummyWithStructure(final Phi sigma) {
             super(sigma);
             this.add(UniverseDefaultTest.ATT, new AtComposite(this, DummyWithAt::new));
+        }
+    }
+
+    /**
+     * Dummy phi with free attribute.
+     * @since 0.31
+     */
+    private static class DummyAbstract extends PhDefault {
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        DummyAbstract(final Phi sigma) {
+            super(sigma);
+            this.add(UniverseDefaultTest.ATT, new AtFree());
         }
     }
 }
