@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.manifests.Manifests;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
@@ -104,9 +105,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs.add("program")
             .attr("name", this.name)
-//            .attr("version", Manifests.read("EO-Version"))
-//            .attr("revision", Manifests.read("EO-Revision"))
-//            .attr("dob", Manifests.read("EO-Dob"))
+            .attr("version", Manifests.read("EO-Version"))
+            .attr("revision", Manifests.read("EO-Revision"))
+            .attr("dob", Manifests.read("EO-Dob"))
             .attr(
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(
