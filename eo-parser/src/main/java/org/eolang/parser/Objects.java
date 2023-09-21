@@ -75,6 +75,10 @@ interface Objects extends Iterable<Directive> {
      * Add property depends on given condition.
      * @param condition Condition
      * @param key Key
+     * @todo #2503:30min Remove the method. This method is temporary used in {@link XeListener}
+     *  while implementing object versioning feature. When it's done - need to remove it and replace
+     *  all its occurrences in {@link XeListener} with {@code prop} method calls. Also need to
+     *  remove {@code versioned} field from {@link XeListener} since it won't be used anymore.
      */
     void oprop(boolean condition, String key);
 
