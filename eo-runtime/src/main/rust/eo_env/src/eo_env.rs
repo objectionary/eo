@@ -73,7 +73,7 @@ impl<'local> EOEnv<'_> {
     }
 
     pub fn bind(&mut self, v1: u32, v2: u32, name: &str) -> Option<()> {
-        match self.java_env
+        let java_val =  self.java_env
             .call_method(
                 &self.java_obj,
                 "bind",
@@ -83,10 +83,13 @@ impl<'local> EOEnv<'_> {
                     JValue::Int(v2 as i32),
                     JValue::from(&JObject::from(self.java_env.new_string(name).unwrap()))
                 ]
-            ).unwrap().v() {
-            Ok(()) => Some(()),
-            _ => None,
-        }
+            );
+        return if java_val.is_err() {
+            self.java_env.exception_clear().ok()?;
+            None
+        } else {
+            java_val.unwrap().v().ok()
+        };
     }
 
     pub fn copy(&mut self, v: u32) -> Option<u32> {

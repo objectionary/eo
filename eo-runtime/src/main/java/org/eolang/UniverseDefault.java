@@ -111,7 +111,9 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void bind(final int parent, final int child, final String att) {
-        //Empty yet.
+        this.get(parent)
+            .attr(att)
+            .put(this.get(child));
     }
 
     @Override
