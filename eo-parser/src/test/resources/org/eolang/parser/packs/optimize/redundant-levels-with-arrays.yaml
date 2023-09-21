@@ -1,66 +1,49 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
-  - /org/eolang/parser/scopes.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
 tests:
   - /program/errors[count(*)=0]
   # 'main' object
   - //o[@name='main']
+  - //o[@name='main' and count(o)=5]
   - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[@base='int']
   - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[not(@base='int')]
   - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]
-  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple']/o/o[@base='arr']
+  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple']/o[starts-with(@base,'synth-')]
   - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple']/o[@base='int']
-  # The first generated object: 'constant-array' from the example below
-  - //o[@abstract and count(o)=2 and @name]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '2')]
-  - //o[@abstract and count(o)=2 and @name]/o[@name='@']
-  # The second generated object: 'second' from the example below
-  - //o[@abstract and count(o)=3 and @name]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o/o[@base='arr']
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=3 and @name]/o[@name='@']
-  # The third generated object: 'first' from the example below
-  - //o[@abstract and count(o)=3 and @name]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='arr']
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=3 and @name]/o[@name='@']
+  # The first generated object: 'synth-1' from the example below
+  - //o[@base='tuple' and count(o)=2 and @name]
+  - //o[@base='tuple' and count(o)=2 and @name]/o[@base='int' and contains(text(), '1')]
+  - //o[@base='tuple' and count(o)=2 and @name]/o[@base='int' and contains(text(), '2')]
+  # The second generated object: 'synth-2' from the example below
+  - //o[@base='.at' and count(o)=2 and @name]
+  - //o[@base='.at' and count(o)=2 and @name]/o[starts-with(@base,'synth-')]
+  - //o[@base='.at' and count(o)=2 and @name]/o[@base='int' and contains(text(), '1')]
+  # The third generated object: 'synth-3' from the example below
+  - //o[@base='.at' and count(o)=2 and @name]
+  - //o[@base='.at' and count(o)=2 and @name]/o[@base='arr']
+  - //o[@base='.at' and count(o)=2 and @name]/o[@base='int' and contains(text(), '1')]
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > main
 #   tuple > arr
 #     0
-#     constant-array
+#     synth-1
 #   eq > @
 #     tuple
-#       second
-#         arr
+#       synth-2
 #     tuple
 #       2
-#
-# [] > constant-array
-#   tuple > local-element
+#   .at > synth-2
+#     synth-3
 #     1
-#     2
-#   local-element > @
-#
-# [arr] > second
-#   .at > local-element
-#     first
-#       arr
-#     1
-#   local-element > @
-#
-# [arr] > first
-#   .at > local-element
+#   .at > synth-3
 #     arr
 #     1
-#   local-element > @
+#   tuple > synth-1
+#     1
+#     2
 # ____
 eo: |
   [] > main
