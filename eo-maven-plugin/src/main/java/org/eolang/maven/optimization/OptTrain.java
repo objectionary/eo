@@ -76,7 +76,7 @@ public final class OptTrain implements Optimization {
     private final Train<Shift> shifts;
 
     /**
-     * Ctor.
+     * The default constructor with the default preset of xsl optimizations.
      */
     public OptTrain() {
         this(OptTrain.DEFAULT_TRAIN);

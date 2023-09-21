@@ -43,7 +43,7 @@ public final class OptSpy implements Optimization {
 
     /**
      * The main constructor.
-     * @param target Where to track optimization steps
+     * @param target Where to track optimization steps.
      */
     public OptSpy(final Path target) {
         this.target = target;
@@ -57,8 +57,6 @@ public final class OptSpy implements Optimization {
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)
         );
-        return new OptTrain(
-            new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)
-        ).apply(xml);
+        return new OptTrain(new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)).apply(xml);
     }
 }
