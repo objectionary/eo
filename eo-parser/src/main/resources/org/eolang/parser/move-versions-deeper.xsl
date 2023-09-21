@@ -25,6 +25,16 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="move-versions-deeper" version="2.0">
   <!--
   Here we move "ver" attribute from the top object deeper to pre-last one (before <o base="Q"/>)
+
+  1. The reason of transformation - move version to pre-last object ("org"). Then on "transpile"
+     step "to-java.xsl" will add extra {@code attr("some-hash).get()} java code.
+     More details here: https://github.com/objectionary/eo/issues/2503
+  2. This transformation should be applied in the end, after all other transformations are done.
+  3. The one application of transformation moves version to one level deeper
+  4. Because of point 3 this transformation should be applied many times, until it does not affect
+     xml anymore
+
+  The result of applying transformation several times:
   <o ver="123">            <o>
     <o>                      <o>
       <o>                      <o>

@@ -73,7 +73,7 @@ public final class OptSpy implements Optimization {
             new Rel(dir)
         );
         return new OptTrain(
-            new SpyTrain(OptTrain.DEFAULT_TRAIN.apply(this.versioned), dir)
+            new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)
         ).apply(xml);
     }
 }

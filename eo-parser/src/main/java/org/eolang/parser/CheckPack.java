@@ -82,7 +82,7 @@ public final class CheckPack {
         final XML xml = new XMLDocument(baos.toByteArray());
         baos.reset();
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
-        Train<Shift> train = new ParsingTrain(versioned);
+        Train<Shift> train = new ParsingTrain();
         if (xsls != null) {
             if (!map.containsKey("defaults")) {
                 train = train.empty();

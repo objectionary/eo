@@ -170,12 +170,9 @@ public final class OptimizeMojo extends SafeMojo {
     private Optimization optimization() {
         Optimization opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(
-                this.targetDir.toPath().resolve(OptimizeMojo.STEPS),
-                this.withVersions
-            );
+            opt = new OptSpy(this.targetDir.toPath().resolve(OptimizeMojo.STEPS));
         } else {
-            opt = new OptTrain(this.withVersions);
+            opt = new OptTrain();
         }
         if (this.failOnError) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-errors.xsl");

@@ -1,7 +1,7 @@
 versioned: true
 tests:
   - //o[@base='.stdout' and not(@ver) and @line='4' and @name='@']
-  - //o[@base='.stdout' and not(@ver) and @line='6' and @name='std']
+  - //o[@base='.stdout' and not(@ver) and @line='6' and @name='std ']
   - //o[@base='.org' and @ver='0.25.8' and @line='4']
   - //o[@base='.org' and @ver='']
   - //o[@base='org.eolang.math.number' and @ver='1.1.1' and @name='five']

@@ -24,7 +24,6 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.ClasspathSources;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
@@ -110,34 +109,17 @@ public final class ParsingTrain extends TrEnvelope {
 
     /**
      * Ctor.
-     * @param versioned Apply versions shifts or not
-     */
-    public ParsingTrain(final boolean versioned) {
-        this(versioned, ParsingTrain.SHEETS);
-    }
-
-    /**
-     * Ctor.
      */
     @SuppressWarnings("unchecked")
     public ParsingTrain() {
-        this(false, ParsingTrain.SHEETS);
+        this(ParsingTrain.SHEETS);
     }
 
     /**
      * Ctor.
      * @param sheets Sheets
      */
-    public ParsingTrain(final String... sheets) {
-        this(false, sheets);
-    }
-
-    /**
-     * Ctor.
-     * @param versioned Apply versions shifts or not
-     * @param sheets Sheets
-     */
-    ParsingTrain(final boolean versioned, final String... sheets) {
+    ParsingTrain(final String... sheets) {
         super(
             new TrJoined<>(
                 new TrLambda(
@@ -170,17 +152,7 @@ public final class ParsingTrain extends TrEnvelope {
                 ),
                 new TrDefault<>(
                     new StEndless(
-                        new StLambda(
-                            xml -> {
-                                final XML result;
-                                if (versioned) {
-                                    result = ParsingTrain.VERSIONS.transform(xml);
-                                } else {
-                                    result = xml;
-                                }
-                                return result;
-                            }
-                        )
+                        new StLambda(ParsingTrain.VERSIONS::transform)
                     )
                 )
             )
