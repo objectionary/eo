@@ -27,12 +27,13 @@ SOFTWARE.
   Here we move "ver" attribute from the top object deeper to pre-last one (before <o base="Q"/>)
 
   1. The reason of transformation - move version to pre-last object ("org"). Then on "transpile"
-     step "to-java.xsl" will add extra {@code attr("some-hash).get()} java code.
-     More details here: https://github.com/objectionary/eo/issues/2503
-  2. This transformation should be applied in the end, after all other transformations are done.
-  3. The one application of transformation moves version to one level deeper
-  4. Because of point 3 this transformation should be applied many times, until it does not affect
-     xml anymore
+     step "to-java.xsl" will add extra {@code attr("some-hash").get()} java code. It will allow us
+     to claim version as separated "package" object.
+     More details here (solution, point 3): https://github.com/objectionary/eo/issues/2503
+  2. The one application of transformation moves version to one level deeper.
+  3. Since we need to move the version from the top object to the deepest object, transformation
+     must be applied many times until xml is not changed after applying anymore. The best way to
+     do it - place the transformation in the end, after all other transformations are done.
 
   The result of applying transformation several times:
   <o ver="123">            <o>
