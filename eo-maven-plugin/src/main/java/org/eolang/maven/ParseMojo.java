@@ -158,7 +158,8 @@ public final class ParseMojo extends SafeMojo {
                 new Syntax(
                     name,
                     new InputOf(source),
-                    new OutputTo(baos)
+                    new OutputTo(baos),
+                    this.withVersions
                 ).parse();
                 final String parsed = new XMLDocument(
                     new Xembler(

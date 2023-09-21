@@ -27,11 +27,14 @@ import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import java.util.logging.Level;
@@ -44,11 +47,19 @@ import java.util.logging.Level;
 public final class ParsingTrain extends TrEnvelope {
 
     /**
-     * Apply changes to each XML after processing.
+     * Apply changes to each XML after processing each shift.
      */
     private static final XSL EACH = new XSLDocument(
         ParsingTrain.class.getResourceAsStream("_each.xsl"),
         "each.xsl"
+    ).with(new ClasspathSources(ParsingTrain.class));
+
+    /**
+     * Apply changes to each XML after processing all shifts.
+     */
+    private static final XSL VERSIONS = new XSLDocument(
+        ParsingTrain.class.getResourceAsStream("move-versions-deeper.xsl"),
+        "move-versions-deeper.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -110,34 +121,41 @@ public final class ParsingTrain extends TrEnvelope {
      */
     ParsingTrain(final String... sheets) {
         super(
-            new TrLambda(
-                new TrFast(
-                    new TrLambda(
-                        new TrLogged(
-                            new TrClasspath<>(sheets).back(),
-                            ParsingTrain.class,
-                            Level.FINEST
+            new TrJoined<>(
+                new TrLambda(
+                    new TrFast(
+                        new TrLambda(
+                            new TrLogged(
+                                new TrClasspath<>(sheets).back(),
+                                ParsingTrain.class,
+                                Level.FINEST
+                            ),
+                            StEoLogged::new
                         ),
-                        StEoLogged::new
+                        TrFast.class,
+                        500L
                     ),
-                    TrFast.class,
-                    500L
-                ),
-                shift -> new StSequence(
-                    shift.uid(),
-                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                    new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
+                    shift -> new StSequence(
+                        shift.uid(),
+                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                        new StAfter(
+                            shift,
+                            new StLambda(
+                                shift::uid,
+                                (pos, xml) -> ParsingTrain.EACH
+                                    .with("step", pos)
+                                    .with("sheet", shift.uid())
+                                    .transform(xml)
+                            )
                         )
+                    )
+                ),
+                new TrDefault<>(
+                    new StEndless(
+                        new StLambda(ParsingTrain.VERSIONS::transform)
                     )
                 )
             )
         );
     }
-
 }

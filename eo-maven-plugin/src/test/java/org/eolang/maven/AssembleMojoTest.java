@@ -34,6 +34,7 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -57,6 +58,18 @@ import org.junit.jupiter.api.io.TempDir;
  *  check here is related to particular mojos (and we should check their
  *  behaviour in appropriate tests). In other words there are integration tests
  *  here. And, probably, it is not the best place for them.
+ * @todo #1602:30min Enable tests related to object versioning. The main concept of object
+ *  versioned was changed: now we don't add suffix with version to object, but want to make version
+ *  as prefix (before org.eolang) so it would be transpiled to {@link org.eolang.PhPackage}. Need
+ *  either to refactor tests or remove them after object versioning is implemented. Tests are:
+ *  - {@link AssembleMojoTest#assemblesTogetherWithVersions}
+ *  - {@link DiscoverMojoTest#discoversWithVersions}
+ *  - {@link DiscoverMojoTest#discoversWithSeveralObjectsWithDifferentVersions}
+ *  - {@link DiscoverMojoTest#discoversDifferentUnversionedObjectsFromDifferentVersionedObjects}
+ *  - {@link ProbeMojoTest#findsProbesWithVersionsInDifferentObjectionaries}
+ *  - {@link ProbeMojoTest#findsProbesWithVersionsInOneObjectionary}
+ *  - {@link PullMojoTest#pullsProbedVersionedObjectsFromDifferentObjectionaries}
+ *  - {@link PullMojoTest#pullsProbedVersionedObjectFromOneObjectionary}
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
@@ -116,6 +129,7 @@ final class AssembleMojoTest {
     }
 
     @Test
+    @Disabled
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash master = hashes.get("master");

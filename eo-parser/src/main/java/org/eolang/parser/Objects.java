@@ -34,6 +34,7 @@ import org.xembly.Directives;
  * Object tree.
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 interface Objects extends Iterable<Directive> {
 
     /**
@@ -68,6 +69,18 @@ interface Objects extends Iterable<Directive> {
      * @param xpath Xpath.
      */
     void xprop(String key, Object xpath);
+
+    /**
+     * Optional property.
+     * Add property depends on given condition.
+     * @param condition Condition
+     * @param key Key
+     * @todo #2503:30min Remove the method. This method is temporary used in {@link XeListener}
+     *  while implementing object versioning feature. When it's done - need to remove it and replace
+     *  all its occurrences in {@link XeListener} with {@code prop} method calls. Also need to
+     *  remove {@code versioned} field from {@link XeListener} since it won't be used anymore.
+     */
+    void oprop(boolean condition, String key);
 
     /**
      * Enter last object.
@@ -134,6 +147,13 @@ interface Objects extends Iterable<Directive> {
         @Override
         public void xprop(final String key, final Object xpath) {
             this.dirs.xattr(key, xpath);
+        }
+
+        @Override
+        public void oprop(final boolean condition, final String key) {
+            if (condition) {
+                this.prop(key);
+            }
         }
 
         @Override
