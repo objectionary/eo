@@ -29,6 +29,24 @@
 +package org.eolang
 +version 0.0.0
 
+[] > goto-simple
+  assert-that > @
+    goto
+      [g]
+        seq > @
+          g.forward 256
+          128
+    $.equal-to 256
+
+[] > goto-no-jump
+  assert-that > @
+    goto
+      [g]
+        seq > @
+          nop
+          "abc"
+    $.equal-to "abc"
+
 [] > goto-jumps-backwards
   memory 0 > i
   assert-that > @
@@ -44,7 +62,7 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 11
+    $.equal-to 12
 
 [] > goto-jumps-backwards-without-last-datization
   memory 0 > i
