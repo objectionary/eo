@@ -23,10 +23,7 @@
  */
 package org.eolang.parser;
 
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.UUID;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -40,55 +37,58 @@ interface Objects extends Iterable<Directive> {
      * Start new object.
      * @param line At line.
      * @param pos At position.
+     * @return Self.
      */
-    void start(int line, int pos);
+    Objects start(int line, int pos);
 
     /**
      * Add data.
      * @param data Data.
+     * @return Self.
      */
-    void data(String data);
+    Objects data(String data);
+
+    /**
+     * Append given directives.
+     * @param dirs Directives to append.
+     * @return Self.
+     */
+    Objects append(Iterable<Directive> dirs);
 
     /**
      * Property.
      * @param key Key.
      * @param value Value.
+     * @return Self.
      */
-    void prop(String key, Object value);
+    Objects prop(String key, Object value);
 
     /**
      * Empty propery.
      * @param key Key.
+     * @return Self.
      */
-    void prop(String key);
+    Objects prop(String key);
 
     /**
      * Change property by given xpath.
      * @param key Key.
      * @param xpath Xpath.
+     * @return Self.
      */
-    void xprop(String key, Object xpath);
+    Objects xprop(String key, Object xpath);
 
     /**
      * Enter last object.
+     * @return Self.
      */
-    void enter();
+    Objects enter();
 
     /**
      * Leave current object.
+     * @return Self.
      */
-    void leave();
-
-    /**
-     * Mark the next object for scoping.
-     */
-    void scope();
-
-    /**
-     * Mark the current object as last inside the scope.
-     * Last object that relates to the scope.
-     */
-    void closeScope();
+    Objects leave();
 
     /**
      * Xembly object tree.
@@ -99,66 +99,68 @@ interface Objects extends Iterable<Directive> {
         /**
          * Collected directives.
          */
-        private final Directives dirs = new Directives();
+        private final Directives dirs;
 
         /**
-         * Generated aliases.
+         * Default constructor.
          */
-        private final Deque<String> scopes = new LinkedList<>();
+        public ObjXembly() {
+            this(new Directives());
+        }
+
+        /**
+         * Ctor.
+         * @param drs Directives.
+         */
+        public ObjXembly(final Directives drs) {
+            this.dirs = drs;
+        }
 
         @Override
-        public void start(final int line, final int pos) {
+        public Objects start(final int line, final int pos) {
             this.dirs.add("o");
-            this.prop("line", line);
-            this.prop("pos", pos);
-            if (!this.scopes.isEmpty()) {
-                this.prop("scope", String.join("-", this.scopes));
-            }
+            return this.prop("line", line).prop("pos", pos);
         }
 
         @Override
-        public void data(final String data) {
+        public Objects data(final String data) {
             this.dirs.set(data);
+            return this;
         }
 
         @Override
-        public void prop(final String key, final Object type) {
+        public Objects append(Iterable<Directive> dirs) {
+            this.dirs.append(dirs);
+            return this;
+        }
+
+        @Override
+        public Objects prop(final String key, final Object type) {
             this.dirs.attr(key, type);
+            return this;
         }
 
         @Override
-        public void prop(final String key) {
-            this.prop(key, "");
+        public Objects prop(final String key) {
+            return this.prop(key, "");
         }
 
         @Override
-        public void xprop(final String key, final Object xpath) {
+        public Objects xprop(final String key, final Object xpath) {
             this.dirs.xattr(key, xpath);
+            return this;
         }
 
         @Override
-        public void enter() {
+        public Objects enter() {
             this.dirs.xpath("o[last()]").strict(1);
+            return this;
         }
 
         @Override
-        public void leave() {
+        public Objects leave() {
             this.dirs.up();
-        }
-
-        @Override
-        public void scope() {
-            this.scopes.push(
-                String.format(
-                    "scope-%s",
-                    UUID.randomUUID()
-                )
-            );
-        }
-
-        @Override
-        public void closeScope() {
-            this.scopes.remove();
+            return this;
         }
 
         @Override
