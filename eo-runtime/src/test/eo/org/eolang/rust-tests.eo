@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
@@ -197,6 +196,9 @@
       nop
     "Rust insert failed in Φ.org.eolang.rust-put-not-fails.put.α0:176:4 with message 'put failed'; caused by Phi object with vertex -1 was not indexed."
 
+# @todo #2498:30min Enable the tests. After removing assert-that from eo-runtime
+#  $.string-starts-with it not allowed anymore. Need to refactor the next tests and enable them:
+#  - rust-bind-not-fails, - rust-error
 [] > rust-bind-not-fails
   1 > a
   2 > b
@@ -217,14 +219,16 @@
     """
     *
       []
-  assert-that > @
-    try
-      []
-        insert > @
-      [e]
-        e > @
-      nop
-    $.string-starts-with "Rust insert failed"
+  try > res
+    []
+      insert > @
+    [e]
+      e > @
+    nop
+  nop > @
+    eq.
+      res
+      "Rust insert failed"
 
 [] > rust-copy-not-fails
   123 > a
@@ -296,8 +300,6 @@
     plus
     15
 
-# @todo #2498:30min Enable the test. After removing assert-that from eo-runtime $.string-starts-with
-#  it not allowed anymore. Need to refactor the test and enable it
 [] > rust-error
   QQ.rust > err!
     """
@@ -371,7 +373,6 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     applied.content
-    $.equal-to
-      "qwerty"
+    "qwerty"
