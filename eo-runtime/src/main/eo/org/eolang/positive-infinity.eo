@@ -137,7 +137,7 @@
           is-term-gt-zero
         if.
           is-nan-or-zero
-            x.at zero > first!
+            x.at zero > first
           nan
           if.
             is-term-gt-zero first
