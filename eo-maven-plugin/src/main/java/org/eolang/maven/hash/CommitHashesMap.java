@@ -34,8 +34,8 @@ import org.cactoos.text.Split;
 
 /**
  * Commit hashes table as a map.
- * The keys - tags.
- * The values - compound hashes (7 chars)
+ * The keys - tags
+ * The values - narrow hashes (7 chars)
  *
  * @since 0.29.6
  */
@@ -64,11 +64,6 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
     /**
      * Ctor.
      * @param table Commit hashes table.
-     * @todo #1602:30min Map with full hashes. Having done map with narrow
-     *  hashes we got the situation where we can't get full hashes back in a
-     *  simple way. We will actually need full hashes in ProbeMojo and PullMojo.
-     *  So in order to avoid problems it would be better not to cut hashes here
-     *  but when necessary.
      */
     private CommitHashesMap(final Scalar<String> table) {
         super(CommitHashesMap.fromTable(table));
