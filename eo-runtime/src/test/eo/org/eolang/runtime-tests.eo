@@ -478,3 +478,11 @@
               2
         build 2 > @
     $.equal-to 9
+
+[] > application-to-abstract-inside-tuple
+  [x] > add
+    x.plus 1 > @
+  * add > arr
+  assert-that > @
+    (arr.at 0).@ 5
+    $.equal-to 6

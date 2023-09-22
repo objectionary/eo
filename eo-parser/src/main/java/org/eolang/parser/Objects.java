@@ -49,13 +49,6 @@ interface Objects extends Iterable<Directive> {
     Objects data(String data);
 
     /**
-     * Append given directives.
-     * @param dirs Directives to append.
-     * @return Self.
-     */
-    Objects append(Iterable<Directive> dirs);
-
-    /**
      * Property.
      * @param key Key.
      * @param value Value.
@@ -99,22 +92,7 @@ interface Objects extends Iterable<Directive> {
         /**
          * Collected directives.
          */
-        private final Directives dirs;
-
-        /**
-         * Default constructor.
-         */
-        public ObjXembly() {
-            this(new Directives());
-        }
-
-        /**
-         * Ctor.
-         * @param drs Directives.
-         */
-        public ObjXembly(final Directives drs) {
-            this.dirs = drs;
-        }
+        private final Directives dirs = new Directives();
 
         @Override
         public Objects start(final int line, final int pos) {
@@ -125,12 +103,6 @@ interface Objects extends Iterable<Directive> {
         @Override
         public Objects data(final String data) {
             this.dirs.set(data);
-            return this;
-        }
-
-        @Override
-        public Objects append(Iterable<Directive> dirs) {
-            this.dirs.append(dirs);
             return this;
         }
 
