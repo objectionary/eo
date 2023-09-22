@@ -29,19 +29,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Stack;
 import java.util.StringJoiner;
-import java.util.UUID;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.map.MapEntry;
 import org.cactoos.text.Joined;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -73,20 +68,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     private final Directives dirs;
 
     /**
+     * Xembly directives for objects (mutable).
+     */
+    private final Objects objects;
+
+    /**
      * When we start.
      */
     private final long start;
-
-
-    /**
-     * Stack of Xembly directives for objects (mutable)
-     */
-    private final Stack<Objects> stack;
-
-    /**
-     * Stack of sequences of scopes.
-     */
-    private final Stack<Deque<MapEntry<String, Objects>>> scopes;
 
     /**
      * Ctor.
@@ -96,9 +85,8 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public XeListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
+        this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
-        this.stack = new Stack<>();
-        this.scopes = new Stack<>();
     }
 
     @Override
@@ -176,14 +164,11 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void enterObjects(final ProgramParser.ObjectsContext ctx) {
         this.dirs.add("objects");
-        this.stack.add(new Objects.ObjXembly());
-        this.scopes.push(new LinkedList<>());
     }
 
     @Override
     public void exitObjects(final ProgramParser.ObjectsContext ctx) {
-        this.dirs.append(this.stack.pop());
-        this.appendScopes(new Objects.ObjXembly(this.dirs));
+        this.dirs.append(this.objects);
         this.dirs.up();
     }
 
@@ -222,11 +207,11 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterAtom(final ProgramParser.AtomContext ctx) {
         this.startObject(ctx);
         if (ctx.type().NAME() != null) {
-            this.objects().prop("atom", ctx.type().NAME().getText());
+            this.objects.prop("atom", ctx.type().NAME().getText());
         } else if (ctx.type().QUESTION() != null) {
-            this.objects().prop("atom", ctx.type().QUESTION().getText());
+            this.objects.prop("atom", ctx.type().QUESTION().getText());
         }
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -236,9 +221,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
-        this.startObject(ctx)
-            .prop("abstract")
-            .leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -248,24 +231,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterInners(final ProgramParser.InnersContext ctx) {
-        this.objects().enter();
-        this.scopes.push(new LinkedList<>());
+        this.objects.enter();
     }
 
     @Override
     public void exitInners(final ProgramParser.InnersContext ctx) {
-        this.appendScopes(this.objects());
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
     public void enterAttributes(final ProgramParser.AttributesContext ctx) {
-        this.objects().enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitAttributes(final ProgramParser.AttributesContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -275,7 +256,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitAttribute(final ProgramParser.AttributeContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -297,7 +278,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitVararg(final ProgramParser.VarargContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -362,7 +343,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             final String base;
             if (ctx.STAR() != null) {
                 base = "tuple";
-                this.objects().prop("data", "tuple");
+                this.objects.prop("data", "tuple");
             } else if (ctx.NAME() != null) {
                 base = ctx.NAME().getText();
             } else if (ctx.AT() != null) {
@@ -371,12 +352,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 base = "";
             }
             if (!base.isEmpty()) {
-                this.objects().prop("base", base);
+                this.objects.prop("base", base);
             }
             if (ctx.COPY() != null) {
-                this.objects().prop("copy");
+                this.objects.prop("copy");
             }
-            this.objects().leave();
+            this.objects.leave();
         }
     }
 
@@ -387,12 +368,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterHapplicationTail(final ProgramParser.HapplicationTailContext ctx) {
-        this.objects().enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitHapplicationTail(final ProgramParser.HapplicationTailContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -403,10 +384,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitHapplicationArg(final ProgramParser.HapplicationArgContext ctx) {
         if (ctx.DOTS() != null) {
-            this.objects()
-                .enter()
-                .prop("unvar")
-                .leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -414,14 +392,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void enterHapplicationTailExtended(
         final ProgramParser.HapplicationTailExtendedContext ctx
     ) {
-        this.objects().enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitHapplicationTailExtended(
         final ProgramParser.HapplicationTailExtendedContext ctx
     ) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -436,10 +414,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final ProgramParser.HapplicationArgExtendedContext ctx
     ) {
         if (ctx.DOTS() != null) {
-            this.objects()
-                .enter()
-                .prop("unvar")
-                .leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -475,12 +450,12 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgs(final ProgramParser.VapplicationArgsContext ctx) {
-        this.objects().enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitVapplicationArgs(final ProgramParser.VapplicationArgsContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -495,10 +470,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final ProgramParser.VapplicationArgSpreadableContext ctx
     ) {
         if (ctx.DOTS() != null) {
-            this.objects()
-                .enter()
-                .prop("unvar")
-                .leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -544,9 +516,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
-        this.startObject(ctx)
-            .prop("abstract")
-            .leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -566,9 +536,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterHanonym(final ProgramParser.HanonymContext ctx) {
-        this.startObject(ctx)
-            .prop("abstract")
-            .leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -578,33 +546,27 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
-        this.scopes.push(new LinkedList<>());
-        this.objects().enter();
+        this.objects.enter();
     }
 
     @Override
     public void exitHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
-        this.appendScopes(this.objects());
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
     public void enterAbstractees(final ProgramParser.AbstracteesContext ctx) {
-        this.objects().enter();
-        this.scopes.push(new LinkedList<>());
+        this.objects.enter();
     }
 
     @Override
     public void exitAbstractees(final ProgramParser.AbstracteesContext ctx) {
-        this.appendScopes(this.objects());
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
     public void enterInnerabstract(final ProgramParser.InnerabstractContext ctx) {
-        this.startObject(ctx)
-            .prop("abstract")
-            .leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -773,7 +735,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitMethodTail(final ProgramParser.MethodTailContext ctx) {
-        this.objects()
+        this.objects
             .enter()
             .prop("method")
             .xprop("base", "concat('.',@base)")
@@ -790,7 +752,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -803,7 +765,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 base = "$";
             } else if (ctx.STAR() != null) {
                 base = "tuple";
-                this.objects().prop("data", "tuple");
+                this.objects.prop("data", "tuple");
             } else if (ctx.ROOT() != null) {
                 base = "Q";
             } else if (ctx.HOME() != null) {
@@ -812,14 +774,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 base = "";
             }
             if (!base.isEmpty()) {
-                this.objects().prop("base", base);
+                this.objects.prop("base", base);
             }
         }
     }
 
     @Override
     public void exitBeginner(final ProgramParser.BeginnerContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -841,13 +803,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "";
         }
         if (!base.isEmpty()) {
-            this.objects().prop("base", base);
+            this.objects.prop("base", base);
         }
     }
 
     @Override
     public void exitFinisher(final ProgramParser.FinisherContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -867,16 +829,16 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             base = "";
         }
         if (!base.isEmpty()) {
-            this.objects().prop("base", base);
+            this.objects.prop("base", base);
         }
         if (ctx.COPY() != null) {
-            this.objects().prop("copy");
+            this.objects.prop("copy");
         }
     }
 
     @Override
     public void exitSpreadable(final ProgramParser.SpreadableContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -886,11 +848,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
-        this.objects().enter();
         if (ctx.COPY() != null) {
-            this.objects().prop("copy");
+            this.objects.enter().prop("copy").leave();
         }
-        this.objects().leave();
     }
 
     @Override
@@ -900,7 +860,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitVersioned(final ProgramParser.VersionedContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -910,10 +870,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitReversed(final ProgramParser.ReversedContext ctx) {
-        this.objects()
-            .enter()
-            .xprop("base", "concat('.',@base)")
-            .leave();
+        this.objects.enter().xprop("base", "concat('.',@base)").leave();
     }
 
     @Override
@@ -924,61 +881,50 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitOname(final ProgramParser.OnameContext ctx) {
         if (ctx.CONST() != null) {
-            this.objects()
-                .enter()
-                .prop("const")
-                .leave();
+            this.objects.enter().prop("const").leave();
         }
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final ProgramParser.SuffixContext ctx) {
-        this.objects().enter();
+        this.objects.enter();
         if (ctx.AT() != null) {
-            this.objects().prop("name", ctx.AT().getText());
+            this.objects.prop("name", ctx.AT().getText());
         } else if (ctx.NAME() != null) {
-            this.objects().prop("name", ctx.NAME().getText());
+            this.objects.prop("name", ctx.NAME().getText());
         }
     }
 
     @Override
     public void exitSuffix(final ProgramParser.SuffixContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
     public void enterScope(final ProgramParser.ScopeContext ctx) {
-        this.startObject(ctx);
-        this.stack.push(new Objects.ObjXembly());
+        // Nothing here
     }
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        final String scope = this.synthetic();
-        final Objects current = this.stack.pop();
-        this.objects().prop("base", scope).leave();
-        this.scopes.peek().push(new MapEntry<>(scope, current));
+        // Nothing here
     }
 
     @Override
     public void enterScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        this.startObject(ctx);
-        this.stack.push(new Objects.ObjXembly());
+        // Nothing here
     }
 
     @Override
     public void exitScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        final String scope = this.synthetic();
-        final Objects current = this.stack.pop();
-        this.objects().prop("base", scope).leave();
-        this.scopes.peek().push(new MapEntry<>(scope, current));
+        // Nothing here
     }
 
     @Override
     public void enterVersion(final ProgramParser.VersionContext ctx) {
         if (ctx.VER() != null) {
-            this.objects().prop("ver", ctx.VER().getText());
+            this.objects.prop("ver", ctx.VER().getText());
         }
     }
 
@@ -989,20 +935,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterAs(final ProgramParser.AsContext ctx) {
+        this.objects.enter();
         final String has;
         if (ctx.RHO() == null) {
             has = ctx.NAME().getText();
         } else {
             has = "^";
         }
-        this.objects()
-            .enter()
-            .prop("as", has);
+        this.objects.prop("as", has);
     }
 
     @Override
     public void exitAs(final ProgramParser.AsContext ctx) {
-        this.objects().leave();
+        this.objects.leave();
     }
 
     @Override
@@ -1078,10 +1023,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 ctx.getStart().getLine()
             );
         }
-        this.objects()
-            .prop("data", type)
-            .prop("base", base)
-            .data(data);
+        this.objects.prop("data", type);
+        this.objects.prop("base", base);
+        this.objects.data(data);
     }
 
     @Override
@@ -1120,46 +1064,13 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     /**
-     * Get last objects directives.
-     *
-     * @return Last objects directives.
-     */
-    private Objects objects() {
-        return this.stack.peek();
-    }
-
-    /**
-     * Generate name for synthetic object.
-     *
-     * @return Generated name for synthetic object.
-     */
-    private String synthetic() {
-        return String.format("synth-%s", UUID.randomUUID());
-    }
-
-    /**
-     * Append scopes to the given objects.
-     * @param objects Current objects
-     */
-    private void appendScopes(final Objects objects) {
-        final Deque<MapEntry<String, Objects>> deque = this.scopes.pop();
-        while (!deque.isEmpty()) {
-            final MapEntry<String, Objects> entry = deque.pop();
-            objects
-                .append(entry.getValue())
-                .enter()
-                .prop("name", entry.getKey())
-                .leave();
-        }
-    }
-
-    /**
      * Start object.
      *
      * @param ctx Context.
+     * @return Started object.
      */
     private Objects startObject(final ParserRuleContext ctx) {
-        return this.objects().start(
+        return this.objects.start(
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
@@ -1183,7 +1094,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     /**
      * Trim margin from text block.
      *
-     * @param text   Text block.
+     * @param text Text block.
      * @param indent Indentation level.
      * @return Trimmed text.
      */

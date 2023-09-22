@@ -1,8 +1,8 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
 tests:
-  - //o[@base='.foo' and count(o[starts-with(@base,'synth-')])=2]
-  - //o[@base='.bar' and count(o)=2 and starts-with(@name,'synth-')]
+  - //o[@base='.foo' and count(o)=2]
+  - //o[@base='.bar' and count(o)=2]
 eo: |
   [] > aliases
     eq. > @

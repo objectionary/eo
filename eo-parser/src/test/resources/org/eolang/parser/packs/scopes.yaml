@@ -1,7 +1,6 @@
 xsls: []
 tests:
-  - //o[@abstract and count(o)=3]
-  - //o[@abstract and count(o[starts-with(@name,'synth-')])=2]
+  - //o[@abstract and count(o)=1]
 eo: |
   [] > aliases
     a (b (c d))

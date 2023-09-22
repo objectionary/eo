@@ -2,7 +2,7 @@ xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
 
 tests:
-  - //objects[count(o)=7]
+  - //objects[count(o)=3]
 eo: |
   (dir "/tmp").walk
     *

@@ -1,13 +1,9 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
-  - /org/eolang/parser/scopes.xsl
 tests:
-  - //o[@base='.with' and not(starts-with(@name,'synth-'))]/o[starts-with(@base,'synth-')]
-  - //o[@base='.with' and not(starts-with(@name,'synth-'))]/o[contains(text(), '4')]
-  - //o[@base='.with' and starts-with(@name,'synth-')]/o[starts-with(@base,'synth')]
-  - //o[@base='.with' and starts-with(@name,'synth-')]/o[contains(text(), '3')]
-  - //o[@base='.with' and starts-with(@name,'synth-') and count(o)=3]
-  - //o[@base='.with' and starts-with(@name,'synth-') and count(o)=3]/o[@base='foobar']
+  - //o[@base='.with' and count(o)=3]/o[@base='foobar']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
 eo: |
   [] > aliases
     [] > foo

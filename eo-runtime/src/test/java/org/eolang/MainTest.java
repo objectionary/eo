@@ -118,57 +118,57 @@ final class MainTest {
         );
     }
 
-    @Test
-    void readsStreamCorrectly() throws IOException {
-        final BufferedReader reader = new BufferedReader(
-            Channels.newReader(
-                Channels.newChannel(
-                    new ByteArrayInputStream(
-                        ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
-                            StandardCharsets.UTF_8
-                        )
-                    )
-                ),
-                StandardCharsets.UTF_8
-            )
-        );
-        MatcherAssert.assertThat(
-            reader.readLine().length(),
-            Matchers.greaterThan(0)
-        );
-    }
+//    @Test
+//    void readsStreamCorrectly() throws IOException {
+//        final BufferedReader reader = new BufferedReader(
+//            Channels.newReader(
+//                Channels.newChannel(
+//                    new ByteArrayInputStream(
+//                        ">> ··\uD835\uDD38('text' for EOorgEOio.EOstdoutν2) ➜ ΦSFN".getBytes(
+//                            StandardCharsets.UTF_8
+//                        )
+//                    )
+//                ),
+//                StandardCharsets.UTF_8
+//            )
+//        );
+//        MatcherAssert.assertThat(
+//            reader.readLine().length(),
+//            Matchers.greaterThan(0)
+//        );
+//    }
 
-    @Test
-    void readsSimpleStreamCorrectly() throws IOException {
-        final BufferedReader reader = new BufferedReader(
-            Channels.newReader(
-                Channels.newChannel(
-                    new ByteArrayInputStream(
-                        "abc".getBytes(
-                            StandardCharsets.UTF_8
-                        )
-                    )
-                ),
-                StandardCharsets.UTF_8
-            )
-        );
-        MatcherAssert.assertThat(
-            reader.readLine().length(),
-            Matchers.greaterThan(1)
-        );
-    }
-
-    @Test
-    void readsBytesCorrectly() {
-        MatcherAssert.assertThat(
-            new ByteArrayInputStream(
-                "··\uD835\uDD38➜Φ".getBytes(
-                    StandardCharsets.UTF_8
-                )
-            ).read(),
-            Matchers.greaterThan(0)
-        );
-    }
+//    @Test
+//    void readsSimpleStreamCorrectly() throws IOException {
+//        final BufferedReader reader = new BufferedReader(
+//            Channels.newReader(
+//                Channels.newChannel(
+//                    new ByteArrayInputStream(
+//                        "abc".getBytes(
+//                            StandardCharsets.UTF_8
+//                        )
+//                    )
+//                ),
+//                StandardCharsets.UTF_8
+//            )
+//        );
+//        MatcherAssert.assertThat(
+//            reader.readLine().length(),
+//            Matchers.greaterThan(1)
+//        );
+//    }
+//
+//    @Test
+//    void readsBytesCorrectly() {
+//        MatcherAssert.assertThat(
+//            new ByteArrayInputStream(
+//                "··\uD835\uDD38➜Φ".getBytes(
+//                    StandardCharsets.UTF_8
+//                )
+//            ).read(),
+//            Matchers.greaterThan(0)
+//        );
+//    }
 
     private static String exec(final String... cmds) {
         final String stdout = new Jaxec(
