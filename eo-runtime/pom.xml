@@ -106,6 +106,7 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <runOrder>random</runOrder>
           <argLine>
             @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>

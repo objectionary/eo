@@ -371,7 +371,7 @@
     negative-infinity
 
 [] > positive-float-plus-positive-infinity
-  positive-infinity > pos-inf!
+  positive-infinity > pos-inf
   eq. > @
     42.5.plus pos-inf
     pos-inf
@@ -382,7 +382,7 @@
     negative-infinity
 
 [] > positive-float-times-positive-infinity
-  positive-infinity > pos-inf!
+  positive-infinity > pos-inf
   eq. > @
     42.5.times pos-inf
     pos-inf
@@ -393,7 +393,7 @@
     0.0
 
 [] > negative-float-plus-positive-infinity
-  positive-infinity > pos-inf!
+  positive-infinity > pos-inf
   eq. > @
     -42.5.plus pos-inf
     pos-inf
@@ -414,7 +414,7 @@
     -0.0
 
 [] > positive-float-plus-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     42.5.plus neg-inf
     neg-inf
@@ -425,7 +425,7 @@
     positive-infinity
 
 [] > positive-float-times-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     42.5.times neg-inf
     neg-inf
@@ -436,7 +436,7 @@
     -0.0
 
 [] > negative-float-plus-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     -42.5.plus neg-inf
     neg-inf

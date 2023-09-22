@@ -28,7 +28,7 @@
 
 # Positive infinity
 [] > positive-infinity
-  1.0.div 0.0 > @!
+  1.0.div 0.0 > @
 
   # Tests that $ = x
   [x] > eq
@@ -60,7 +60,6 @@
 
   # Multiplication of $ and x
   [x...] > times
-    negative-infinity > neg-inf!
     0 > zero!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
@@ -132,7 +131,7 @@
         terms-count.gt 1
         times-rec
           * ^ zero x
-          * ^ neg-inf
+          * ^ negative-infinity
           is-nan-or-zero
           is-term-gt-zero
         if.
@@ -142,7 +141,7 @@
           if.
             is-term-gt-zero first
             ^
-            neg-inf
+            negative-infinity
 
   # Sum of $ and x
   [x...] > plus
@@ -242,8 +241,6 @@
 
   # Quotient of the division of $ by x
   [x...] > div
-    negative-infinity > neg-inf!
-    ^ > pos-inf!
     0 > zero!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
@@ -255,8 +252,8 @@
       or. > @
         is-nan
           term > t!
-        t.eq pos-inf
-        t.eq neg-inf
+        t.eq positive-infinity
+        t.eq negative-infinity
 
     [term] > is-term-gte-zero
       try > @
@@ -309,19 +306,19 @@
       eq.
         x.length > terms-count!
         zero
-      pos-inf
+      ^
       if.
         terms-count.gt 1
         div-rec
-          * pos-inf zero x
-          * pos-inf neg-inf
+          * ^ zero x
+          * ^ negative-infinity
           is-nan-or-infinite
           is-term-gte-zero
         if.
           is-nan-or-infinite
-            x.at zero > first!
+            x.at zero > first
           nan
           if.
             is-term-gte-zero first
-            pos-inf
-            neg-inf
+            ^
+            negative-infinity
