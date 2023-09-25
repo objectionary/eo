@@ -70,7 +70,7 @@
     [term] > is-nan-or-zero
       or. > @
         is-nan
-          term > t!
+          term > t
         t.eq -0.0
         t.eq 0.0
         t.eq 0
@@ -84,7 +84,7 @@
         FALSE
 
     [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
-      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 0 > acc
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
       infs.at 0 > neg-inf
@@ -95,7 +95,7 @@
         acc
         if.
           is-nan-or-zero
-            terms.at index > term!
+            terms.at index > term
           nan
           if.
             acc.gt 0.0
@@ -156,7 +156,7 @@
     [term] > is-nan-or-pos-inf
       or. > @
         is-nan
-          term > t!
+          term > t
         t.as-bytes.eq pos-inf-as-bytes
 
     [acc index terms is-nan-or-pos-inf] > plus-rec
@@ -204,7 +204,7 @@
     [term] > is-nan-or-neg-inf
       or. > @
         is-nan
-          term > t!
+          term > t
         t.as-bytes.eq neg-inf-as-bytes
 
     [acc index terms is-nan-or-neg-inf] > minus-rec
@@ -251,7 +251,7 @@
     [term] > is-nan-or-infinite
       or. > @
         is-nan
-          term > t!
+          term > t
         t.eq positive-infinity
         t.eq negative-infinity
 
@@ -264,7 +264,7 @@
         FALSE
 
     [acc-index-terms infs is-nan-or-infinite is-term-gte-zero] > div-rec
-      acc-index-terms.at 0 > acc!
+      acc-index-terms.at 0 > acc
       acc-index-terms.at 1 > index!
       acc-index-terms.at 2 > terms
       infs.at 0 > pos-inf
@@ -275,7 +275,7 @@
         acc
         if.
           is-nan-or-infinite
-            terms.at index > term!
+            terms.at index > term
           nan
           if.
             acc.gt 0.0
@@ -316,7 +316,7 @@
           is-term-gte-zero
         if.
           is-nan-or-infinite
-            x.at zero > first!
+            x.at zero > first
           nan
           if.
             is-term-gte-zero first
