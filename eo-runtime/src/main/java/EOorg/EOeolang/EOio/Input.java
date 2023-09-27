@@ -30,8 +30,8 @@
  */
 package EOorg.EOeolang.EOio;
 
-import org.eolang.Versionize;
 import java.util.Scanner;
+import org.eolang.Versionize;
 
 /**
  * All system inputs.
