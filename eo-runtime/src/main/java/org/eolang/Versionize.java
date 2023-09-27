@@ -25,6 +25,8 @@
 package org.eolang;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -34,6 +36,6 @@ import java.lang.annotation.Target;
  * @since 0.32.0
  */
 @Target(ElementType.TYPE)
-@Versionize
+@Retention(RetentionPolicy.CLASS)
 public @interface Versionize {
 }
