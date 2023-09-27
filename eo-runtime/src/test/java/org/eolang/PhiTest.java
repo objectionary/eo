@@ -84,14 +84,13 @@ final class PhiTest {
     }
 
     @Test
-    @Disabled
     void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("math")
-                    .get().attr("random").get().attr("pseudo").get()
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+                Phi.Φ.attr("org").get().attr("eolang").get().attr("nan")
+                    .get().attr("gt").get()
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
 
