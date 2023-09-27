@@ -87,8 +87,8 @@ public final class AtOnce implements Attr {
             if (this.cached.get() == null) {
                 this.cached.set(this.origin.get());
             }
+            return this.cached.get();
         }
-        return this.cached.get();
     }
 
     @Override
