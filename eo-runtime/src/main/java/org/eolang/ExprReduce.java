@@ -46,6 +46,7 @@ import java.util.function.Function;
  * @param <T> Type of arguments that are going to be reduced
  * @since 1.0
  */
+@Versionize
 public final class ExprReduce<T> implements Expr {
 
     /**

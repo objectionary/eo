@@ -58,6 +58,7 @@ import org.eolang.Phi;
 import org.eolang.Universe;
 import org.eolang.UniverseDefault;
 import org.eolang.UniverseSafe;
+import org.eolang.Versionize;
 import org.eolang.XmirObject;
 
 /**
@@ -68,6 +69,7 @@ import org.eolang.XmirObject;
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
 

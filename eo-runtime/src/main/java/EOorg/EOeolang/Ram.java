@@ -36,12 +36,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.Dataized;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 
 /**
  * Random access.
  *
  * @since 0.19
  */
+@Versionize
 public enum Ram {
     /**
      * Ram instance.

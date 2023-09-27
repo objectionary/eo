@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@Versionize
 final class AtLocated implements Attr {
 
     /**

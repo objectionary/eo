@@ -37,6 +37,7 @@ import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 import org.eolang.XmirObject;
 
 /**
@@ -45,6 +46,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 @XmirObject(oname = "int.div")
 public class EOint$EOdiv extends PhDefault {
 

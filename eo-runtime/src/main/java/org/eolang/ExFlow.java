@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOgoto;
  *
  * @since 0.21
  */
+@Versionize
 public final class ExFlow extends ExAbstract {
 
     /**

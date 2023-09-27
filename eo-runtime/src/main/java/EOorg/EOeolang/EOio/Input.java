@@ -30,6 +30,7 @@
  */
 package EOorg.EOeolang.EOio;
 
+import org.eolang.Versionize;
 import java.util.Scanner;
 
 /**
@@ -37,6 +38,7 @@ import java.util.Scanner;
  *
  * @since 0.28.0
  */
+@Versionize
 public final class Input {
     /**
      * Default input.

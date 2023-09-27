@@ -32,6 +32,7 @@ import java.util.Arrays;
  *
  * @since 1.0
  */
+@Versionize
 public final class BytesOf implements Bytes {
 
     /**

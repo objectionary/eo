@@ -33,6 +33,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 import org.eolang.XmirObject;
 
 /**
@@ -41,6 +42,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 @XmirObject(oname = "seq")
 public class EOseq extends PhDefault {
 

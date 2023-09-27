@@ -33,6 +33,7 @@ import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 
 /**
  * Standard Input. Consumes only one line.
@@ -40,6 +41,7 @@ import org.eolang.Phi;
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 public class EOstdin$EOnext_line extends PhDefault {
     /**
      * Ctor.

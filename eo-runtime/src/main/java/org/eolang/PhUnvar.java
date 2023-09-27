@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@Versionize
 public final class PhUnvar extends PhOnce {
 
     /**

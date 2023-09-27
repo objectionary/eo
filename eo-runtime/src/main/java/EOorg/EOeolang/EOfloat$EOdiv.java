@@ -32,6 +32,7 @@ import org.eolang.AtVararg;
 import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 import org.eolang.XmirObject;
 
 /**
@@ -40,6 +41,7 @@ import org.eolang.XmirObject;
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 @XmirObject(oname = "float.div")
 public class EOfloat$EOdiv extends PhDefault {
 

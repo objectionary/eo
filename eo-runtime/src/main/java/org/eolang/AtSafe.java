@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOerror;
  *
  * @since 0.26
  */
+@Versionize
 public final class AtSafe implements Attr {
 
     /**

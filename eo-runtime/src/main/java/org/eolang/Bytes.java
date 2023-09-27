@@ -34,6 +34,7 @@ import EOorg.EOeolang.EObytes;
  *
  * @since 1.0
  */
+@Versionize
 public interface Bytes extends Data<byte[]> {
     /**
      * NOT operation.

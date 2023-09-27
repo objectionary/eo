@@ -32,12 +32,14 @@ import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 
 /**
  * Read from memory.
  * @since 0.25
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 public class EOram$EOram_slice$EOφ extends PhDefault {
     /**
      * Ctor.

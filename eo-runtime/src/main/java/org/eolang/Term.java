@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.17
  */
+@Versionize
 public interface Term {
 
     /**

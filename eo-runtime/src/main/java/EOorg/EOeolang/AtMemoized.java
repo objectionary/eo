@@ -32,6 +32,7 @@ import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 
 /**
  * An attribute that knows how to memoize an object.
@@ -39,6 +40,7 @@ import org.eolang.Phi;
  * @since 0.24
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 public final class AtMemoized implements Attr {
 
     /**

@@ -32,6 +32,7 @@ package org.eolang;
  *
  * @since 0.24
  */
+@Versionize
 public final class PhLogged implements Phi {
 
     /**

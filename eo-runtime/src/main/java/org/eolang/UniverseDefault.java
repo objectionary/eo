@@ -31,6 +31,7 @@ import java.util.Optional;
  * Default implementation that can be used on the java side.
  * @since 0.32
  */
+@Versionize
 public final class UniverseDefault implements Universe {
 
     /**

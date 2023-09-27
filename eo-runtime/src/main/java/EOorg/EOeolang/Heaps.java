@@ -30,12 +30,14 @@ package EOorg.EOeolang;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.Dataized;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 
 /**
  * All heaps.
  *
  * @since 0.19
  */
+@Versionize
 final class Heaps {
 
     /**

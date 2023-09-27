@@ -33,6 +33,7 @@ import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionize;
 import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
@@ -42,6 +43,7 @@ import org.eolang.XmirObject;
  * @since 0.17
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionize
 @Volatile
 @XmirObject(oname = "cage")
 public class EOcage extends PhDefault {

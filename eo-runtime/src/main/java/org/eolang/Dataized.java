@@ -43,6 +43,7 @@ import java.util.logging.Logger;
  * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  * @since 0.1
  */
+@Versionize
 public final class Dataized {
 
     /**
