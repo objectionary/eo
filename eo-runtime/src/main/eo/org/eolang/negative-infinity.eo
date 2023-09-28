@@ -83,16 +83,13 @@
         FALSE
 
     [acc index terms] > times-rec
-      switch > @
-        *
-          index.eq terms.length
-          acc
-        *
+      if. > @
+        index.eq terms.length
+        acc
+        if.
           $.&.is-nan-or-zero
             terms.at index > term!
           nan
-        *
-          TRUE
           $.&.times-rec
             if.
               $.&.is-term-gt-zero term
@@ -103,13 +100,12 @@
                 positive-infinity
             index.plus 1
             terms
-    switch > @
-      *
-        eq.
-          x.length > terms-count!
-          0
-        negative-infinity
-      *
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      negative-infinity
+      if.
         terms-count.eq 1
         if.
           is-nan-or-zero
@@ -119,8 +115,6 @@
             is-term-gt-zero first
             negative-infinity
             positive-infinity
-      *
-        terms-count.gt 1
         times-rec
           negative-infinity
           0
@@ -153,21 +147,18 @@
             acc
             index.plus 1
             terms
-    switch > @
-      *
-        eq.
-          x.length > terms-count!
-          0
-        negative-infinity
-      *
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      negative-infinity
+      if.
         terms-count.eq 1
         if.
           is-nan-or-pos-inf
             x.at 0
           nan
           negative-infinity
-      *
-        terms-count.gt 1
         plus-rec
           negative-infinity
           0
@@ -201,21 +192,18 @@
             index.plus 1
             terms
 
-    switch > @
-      *
-        eq.
-          x.length > terms-count!
-          0
-        negative-infinity
-      *
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      negative-infinity
+      if.
         terms-count.eq 1
         if.
           is-nan-or-neg-inf
             x.at 0
           nan
           negative-infinity
-      *
-        terms-count.gt 1
         minus-rec
           negative-infinity
           0
@@ -244,16 +232,13 @@
         FALSE
 
     [acc index terms] > div-rec
-      switch > @
-        *
-          index.eq terms.length
-          acc
-        *
+      if. > @
+        index.eq terms.length
+        acc
+        if.
           $.&.is-nan-or-infinite
             terms.at index > term!
           nan
-        *
-          TRUE
           $.&.div-rec
             if.
               $.&.is-term-gte-zero term
@@ -264,13 +249,12 @@
                 positive-infinity
             index.plus 1
             terms
-    switch > @
-      *
-        eq.
-          x.length > terms-count!
-          0
-        negative-infinity
-      *
+    if. > @
+      eq.
+        x.length > terms-count!
+        0
+      negative-infinity
+      if.
         terms-count.eq 1
         if.
           is-nan-or-infinite
@@ -280,8 +264,6 @@
             is-term-gte-zero first
             negative-infinity
             positive-infinity
-      *
-        terms-count.gt 1
         div-rec
           negative-infinity
           0
