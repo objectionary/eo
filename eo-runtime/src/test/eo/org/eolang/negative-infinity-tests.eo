@@ -170,6 +170,9 @@
     negative-infinity.gte 42.5
     FALSE
 
+# @todo #2497:30min Uncomment infinites tests. For some reason times, plus, minus and div object of
+#  positive-infinity and negative-infinity causes flaky tests that mostly fail on CI/CD pipeline.
+#  Need to find a reason, fix it and uncomment all tests here and in positive-infinity-tests.eo file
 # Times
 #[] > negative-infinity-times-float-zero
 #  eq. > @
@@ -235,53 +238,45 @@
 #  eq. > res
 #    neg-inf.times 25 11.2 51
 #    neg-inf
-#  nop > @
 #
 #[] > negative-infinity-times-two-negative-numbers
 #  negative-infinity > neg-inf
-#  eq. > res
+#  eq. > @
 #    neg-inf.times -11.2 -5
 #    neg-inf
-#  nop > @
 #
 #[] > negative-infinity-times-three-negative-numbers
-#  eq. > res
+#  eq. > @
 #    negative-infinity.times -11.2 -5 -3
 #    positive-infinity
-#  nop > @
 #
 #[] > negative-infinity-times-multiple-numbers-with-nan
 #  nan > not-a-number!
-#  eq. > res
+#  eq. > @
 #    (negative-infinity.times -25 not-a-number 51).as-bytes
 #    not-a-number.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-times-multiple-numbers-with-float-zero
-#  eq. > res
+#  eq. > @
 #    (negative-infinity.times -25 0.0 51).as-bytes
 #    nan.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-times-multiple-numbers-with-neg-float-zero
-#  eq. > res
+#  eq. > @
 #    (negative-infinity.times -25 -0.0 51).as-bytes
 #    nan.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-times-multiple-numbers-with-int-zero
-#  eq. > res
+#  eq. > @
 #    (negative-infinity.times -25 0 51).as-bytes
 #    nan.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-times-multiple-infinites
 #  negative-infinity > neg-inf
 #  positive-infinity > pos-inf
-#  eq. > res
+#  eq. > @
 #    neg-inf.times pos-inf neg-inf pos-inf pos-inf
 #    pos-inf
-#  nop > @
 #
 ## Plus
 #[] > negative-infinity-plus-nan
@@ -499,47 +494,41 @@
 #
 #[] > negative-infinity-div-multiple-positive-numbers
 #  negative-infinity > neg-inf
-#  eq. > res
+#  eq. > @
 #    neg-inf.div 42.2 5 12.5
 #    neg-inf
-#  nop > @
 #
 #[] > negative-infinity-div-multiple-numbers
-#  eq. > res
+#  eq. > @
 #    negative-infinity.div 43.2 0 -13.2
 #    positive-infinity
-#  nop > @
 #
 #[] > negative-infinity-div-multiple-numbers-with-neg-float-zero
 #  negative-infinity > neg-inf
-#  eq. > res
+#  eq. > @
 #    neg-inf.div 43.2 -0.0 -13.2
 #    neg-inf
-#  nop > @
 #
 #[] > negative-infinity-div-multiple-infinities
 #  negative-infinity > neg-inf
 #  positive-infinity > pos-inf
-#  eq. > res
+#  eq. > @
 #    as-bytes.
 #      neg-inf.div neg-inf pos-inf pos-inf
 #    nan.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-div-multiple-numbers-with-nan
 #  nan > not-a-number!
-#  eq. > res
+#  eq. > @
 #    as-bytes.
 #      negative-infinity.div -243 not-a-number 43.1
 #    not-a-number.as-bytes
-#  nop > @
 #
 #[] > negative-infinity-div-multiple-numbers-with-infinity
-#  eq. > res
+#  eq. > @
 #    as-bytes.
 #      negative-infinity.div 22 positive-infinity -11
 #    nan.as-bytes
-#  nop > @
 # Bytes
 [] > negative-infinity-as-bytes-is-valid
   eq. > @
