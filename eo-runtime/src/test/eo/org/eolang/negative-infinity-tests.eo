@@ -63,7 +63,7 @@
 
 # Less than
 [] > negative-infinity-lt-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.lt neg-inf
     FALSE
@@ -90,7 +90,7 @@
 
 # Less or equal than
 [] > negative-infinity-lte-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.lte neg-inf
     TRUE
@@ -117,7 +117,7 @@
 
 # Greater than
 [] > negative-infinity-gt-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   not. > @
     gt.
       neg-inf
@@ -145,7 +145,7 @@
 
 # Greater or equal than
 [] > negative-infinity-gte-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.gte neg-inf
     TRUE
@@ -197,25 +197,25 @@
     not-a-number.as-bytes
 
 [] > negative-infinity-times-positive-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times positive-infinity
     neg-inf
 
 [] > negative-infinity-times-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times neg-inf
     positive-infinity
 
 [] > negative-infinity-times-positive-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times 42.5
     neg-inf
 
 [] > negative-infinity-times-positive-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times 42
     neg-inf
@@ -231,13 +231,13 @@
     positive-infinity
 
 [] > negative-infinity-times-multiple-positive-numbers
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times 25 11.2 51
     neg-inf
 
 [] > negative-infinity-times-two-negative-numbers
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.times -11.2 -5
     neg-inf
@@ -269,8 +269,8 @@
     nan.as-bytes
 
 [] > negative-infinity-times-multiple-infinites
-  negative-infinity > neg-inf!
-  positive-infinity > pos-inf!
+  negative-infinity > neg-inf
+  positive-infinity > pos-inf
   eq. > @
     neg-inf.times pos-inf neg-inf pos-inf pos-inf
     pos-inf
@@ -290,25 +290,25 @@
     nan.as-bytes
 
 [] > negative-infinity-plus-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf
     neg-inf.plus neg-inf
 
 [] > negative-infinity-plus-positive-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus 42.5
     neg-inf
 
 [] > negative-infinity-plus-multiple-floats
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus 42.5 22.2 51.5
     neg-inf
 
 [] > negative-infinity-plus-multiple-numbers
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus 42.5 -22 11 -1.2
     neg-inf
@@ -325,19 +325,19 @@
     nan.as-bytes
 
 [] > negative-infinity-plus-positive-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus 42
     neg-inf
 
 [] > negative-infinity-plus-negative-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus -42.5
     neg-inf
 
 [] > negative-infinity-plus-negative-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.plus -42
     neg-inf
@@ -357,50 +357,50 @@
     not-a-number.as-bytes
 
 [] > negative-infinity-minus-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     as-bytes.
       neg-inf.minus neg-inf
     nan.as-bytes
 
 [] > negative-infinity-minus-positive-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus positive-infinity
     neg-inf
 
 [] > negative-infinity-minus-positive-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus 42.5
     neg-inf
 
 [] > negative-infinity-minus-positive-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus 42
     neg-inf
 
 [] > negative-infinity-minus-negative-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus -42.5
     neg-inf
 
 [] > negative-infinity-minus-negative-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus -42
     neg-inf
 
 [] > negative-infinity-minus-multiple-floats
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus 42.5 22.2 51.5
     neg-inf
 
 [] > negative-infinity-minus-multiple-numbers
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus 42.5 -22 11 -1.2
     neg-inf
@@ -412,20 +412,20 @@
     not-a-number.as-bytes
 
 [] > negative-infinity-minus-multiple-numbers-with-positive-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.minus 42 positive-infinity 30
     neg-inf
 
 [] > negative-infinity-minus-multiple-numbers-with-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     (neg-inf.minus 42 neg-inf 30).as-bytes
     nan.as-bytes
 
 # Division
 [] > negative-infinity-div-float-zero
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div 0.0
     neg-inf
@@ -436,13 +436,13 @@
     positive-infinity
 
 [] > negative-infinity-div-int-zero
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div 0
     neg-inf
 
 [] > negative-infinity-div-neg-int-zero
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div -0
     neg-inf
@@ -461,20 +461,20 @@
     nan.as-bytes
 
 [] > negative-infinity-div-negative-infinity
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     as-bytes.
       neg-inf.div neg-inf
     nan.as-bytes
 
 [] > negative-infinity-div-positive-float
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div 42.5
     neg-inf
 
 [] > negative-infinity-div-positive-int
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div 42
     neg-inf
@@ -501,14 +501,14 @@
     positive-infinity
 
 [] > negative-infinity-div-multiple-numbers-with-neg-float-zero
-  negative-infinity > neg-inf!
+  negative-infinity > neg-inf
   eq. > @
     neg-inf.div 43.2 -0.0 -13.2
     neg-inf
 
 [] > negative-infinity-div-multiple-infinities
-  negative-infinity > neg-inf!
-  positive-infinity > pos-inf!
+  negative-infinity > neg-inf
+  positive-infinity > pos-inf
   eq. > @
     as-bytes.
       neg-inf.div neg-inf pos-inf pos-inf
