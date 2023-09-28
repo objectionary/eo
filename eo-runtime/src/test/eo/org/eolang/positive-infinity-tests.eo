@@ -64,7 +64,7 @@
 
 # Less than
 [] > positive-infinity-lt-positive-infinity
-  positive-infinity > pos-inf!
+  positive-infinity > pos-inf
   eq. > @
     pos-inf.lt pos-inf
     FALSE
