@@ -253,48 +253,56 @@
 
 [] > positive-infinity-times-multiple-positive-numbers
   positive-infinity > pos-inf
-  eq. > @
+  eq. > res
     pos-inf.times 25 11.2 51
     pos-inf
+  nop > @
 
 [] > positive-infinity-times-two-negative-numbers
   positive-infinity > pos-inf
-  eq. > @
+  eq. > res
     pos-inf.times -11.2 -5
     pos-inf
+  nop > @
 
 [] > positive-infinity-times-three-negative-numbers
-  eq. > @
+  eq. > res
     positive-infinity.times -11.2 -5 -3
     negative-infinity
+  nop > @
 
 [] > positive-infinity-times-multiple-numbers-with-nan
   nan > not-a-number
-  eq. > @
+  eq. > res
     (positive-infinity.times -25 not-a-number 51).as-bytes
     not-a-number.as-bytes
+  nop > @
 
 [] > positive-infinity-times-multiple-numbers-with-float-zero
-  eq. > @
+  eq. > res
     (positive-infinity.times -25 0.0 51).as-bytes
     nan.as-bytes
+  nop > @
 
 [] > positive-infinity-times-multiple-numbers-with-neg-float-zero
-  eq. > @
+  eq. > res
     (positive-infinity.times -25 -0.0 51).as-bytes
     nan.as-bytes
+  nop > @
 
 [] > positive-infinity-times-multiple-numbers-with-int-zero
-  eq. > @
+  eq. > res
     (positive-infinity.times -25 0 51).as-bytes
     nan.as-bytes
+  nop > @
 
 [] > positive-infinity-times-multiple-infinites
   positive-infinity > pos-inf
   negative-infinity > neg-inf
-  eq. > @
+  eq. > res
     pos-inf.times neg-inf pos-inf neg-inf neg-inf
     neg-inf
+  nop > @
 
 # Plus
 [] > positive-infinity-plus-nan
@@ -500,41 +508,47 @@
 
 [] > positive-infinity-div-multiple-positive-numbers
   positive-infinity > pos-inf
-  eq. > @
+  eq. > res
     pos-inf.div 42.2 5 12.5
     pos-inf
+  nop > @
 
 [] > positive-infinity-div-multiple-numbers
-  eq. > @
+  eq. > res
     positive-infinity.div 43.2 0 -13.2
     negative-infinity
+  nop > @
 
 [] > positive-infinity-div-multiple-numbers-with-neg-float-zero
   positive-infinity > pos-inf
-  eq. > @
+  eq. > res
     pos-inf.div 43.2 -0.0 -13.2
     pos-inf
+  nop > @
 
 [] > positive-infinity-div-multiple-infinities
   positive-infinity > pos-inf
   negative-infinity > neg-inf
-  eq. > @
+  eq. > res
     as-bytes.
       pos-inf.div pos-inf neg-inf neg-inf
     nan.as-bytes
+  nop > @
 
 [] > positive-infinity-div-multiple-numbers-with-nan
   nan > not-a-number!
-  eq. > @
+  eq. > res
     as-bytes.
       positive-infinity.div -243 not-a-number 43.1
     not-a-number.as-bytes
+  nop > @
 
 [] > positive-infinity-div-multiple-numbers-with-infinity
-  eq. > @
+  eq. > res
     as-bytes.
       positive-infinity.div 22 negative-infinity -11
     nan.as-bytes
+  nop > @
 
 # Bytes
 [] > positive-infinity-as-bytes-is-valid
