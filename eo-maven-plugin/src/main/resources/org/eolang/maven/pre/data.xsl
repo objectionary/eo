@@ -37,55 +37,15 @@ SOFTWARE.
         <xsl:element name="value">
           <xsl:choose>
             <xsl:when test="@data='bytes'">
-<!--              <xsl:variable name="array">-->
-                <xsl:text>new byte[] {</xsl:text>
-                <xsl:for-each select="tokenize(text(), ' ')">
-                  <xsl:if test="position() &gt; 1">
-                    <xsl:text>, </xsl:text>
-                  </xsl:if>
-                  <xsl:text>(byte) 0x</xsl:text>
-                  <xsl:value-of select="."/>
-                </xsl:for-each>
-                <xsl:text>}</xsl:text>
-<!--              </xsl:variable>-->
-<!--              <xsl:choose>-->
-<!--                <xsl:when test="@base='org.eolang.string' or @base='string'">-->
-<!--                  <xsl:text>new String(</xsl:text>-->
-<!--                  <xsl:value-of select="$array"/>-->
-<!--                  <xsl:text>, java.nio.charset.StandardCharsets.UTF_8</xsl:text>-->
-<!--                  <xsl:text>)</xsl:text>-->
-<!--                </xsl:when>-->
-<!--                <xsl:when test="@base='org.eolang.bool' or @base='bool'">-->
-<!--                  <xsl:choose>-->
-<!--                    <xsl:when test="text() = '01'">-->
-<!--                      <xsl:text>Boolean.TRUE</xsl:text>-->
-<!--                    </xsl:when>-->
-<!--                    <xsl:otherwise>-->
-<!--                      <xsl:text>Boolean.FALSE</xsl:text>-->
-<!--                    </xsl:otherwise>-->
-<!--                  </xsl:choose>-->
-<!--                </xsl:when>-->
-<!--                <xsl:when test="@base='org.eolang.bytes' or @base='bytes'">-->
-<!--                  <xsl:value-of select="$array"/>-->
-<!--                </xsl:when>-->
-<!--                <xsl:when test="@base='org.eolang.int' or @base='int'">-->
-<!--                  <xsl:text>java.nio.ByteBuffer.wrap(</xsl:text>-->
-<!--                  <xsl:value-of select="$array"/>-->
-<!--                  <xsl:text>).getLong()</xsl:text>-->
-<!--                </xsl:when>-->
-<!--                <xsl:when test="@base='org.eolang.float' or @base='float'">-->
-<!--                  <xsl:text>java.nio.ByteBuffer.wrap(</xsl:text>-->
-<!--                  <xsl:value-of select="$array"/>-->
-<!--                  <xsl:text>).getDouble()</xsl:text>-->
-<!--                </xsl:when>-->
-<!--                <xsl:otherwise>-->
-<!--                  <xsl:message terminate="yes">-->
-<!--                    <xsl:text>Unsupported type: '</xsl:text>-->
-<!--                    <xsl:value-of select="@base"/>-->
-<!--                    <xsl:text>'</xsl:text>-->
-<!--                  </xsl:message>-->
-<!--                </xsl:otherwise>-->
-<!--              </xsl:choose>-->
+              <xsl:text>new byte[] {</xsl:text>
+              <xsl:for-each select="tokenize(text(), ' ')">
+                <xsl:if test="position() &gt; 1">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+                <xsl:text>(byte) 0x</xsl:text>
+                <xsl:value-of select="."/>
+              </xsl:for-each>
+              <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:when test="@data='string'">
               <xsl:text>"</xsl:text>

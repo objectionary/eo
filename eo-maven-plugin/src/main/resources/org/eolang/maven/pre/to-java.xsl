@@ -208,7 +208,6 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-<!--    <xsl:if test="$literal-objects[text()=$type]">-->
     <xsl:if test="$type='org.eolang.bytes'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree(new AtSimple(), this.initialized));</xsl:text>
