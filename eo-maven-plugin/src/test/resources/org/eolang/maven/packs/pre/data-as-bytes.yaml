@@ -1,15 +1,25 @@
 xsls:
   - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/parser/explicit-data.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/attrs.xsl
   - /org/eolang/maven/pre/data.xsl
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'Boolean.TRUE')]
-  - //java[contains(text(), 'Boolean.FALSE')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x01}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x00}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x2A}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 eo: |
   [] > t
     TRUE > @
   [] > f
     FALSE > @
+  [] > i
+    42 > @
+  [] > f
+    float 3.5 > @
+  [] > b
+    01-AF > @

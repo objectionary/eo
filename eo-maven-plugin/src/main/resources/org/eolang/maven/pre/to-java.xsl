@@ -208,7 +208,8 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type]">
+<!--    <xsl:if test="$literal-objects[text()=$type]">-->
+    <xsl:if test="$type='org.eolang.bytes'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree(new AtSimple(), this.initialized));</xsl:text>
     </xsl:if>
@@ -621,7 +622,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, 0, new Data.Value&lt;&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

@@ -26,7 +26,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[] > string
+[data] > string
+  bytes data > @
+
   # Is true if both objects are equal
   [x] > eq
     eq. > @
@@ -35,9 +37,6 @@
 
   # Get the length of it
   [] > length /int
-
-  # Turn it into bytes.
-  [] > as-bytes /bytes
 
   # Takes a piece of a string as another string
   [start len] > slice /string
