@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 public final class AtVararg implements Attr {
 
     /**

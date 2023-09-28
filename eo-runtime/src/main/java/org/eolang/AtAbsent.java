@@ -33,7 +33,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 final class AtAbsent implements Attr {
 
     /**

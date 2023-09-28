@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 public interface Expr {
 
     /**

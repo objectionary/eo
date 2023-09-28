@@ -31,7 +31,7 @@ import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 
 /**
  * Standard Input. Consumes all data.
@@ -39,7 +39,7 @@ import org.eolang.Versionize;
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 public class EOstdin$EOφ extends PhDefault {
     /**
      * Ctor.

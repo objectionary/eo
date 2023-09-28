@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.28.3
  */
-@Versionize
+@Versionized
 public class ExInterrupted extends ExAbstract {
     /**
      * Serialization identifier.

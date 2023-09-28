@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 public final class AtFree implements Attr {
     /**
      * Origin.

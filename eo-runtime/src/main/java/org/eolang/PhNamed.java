@@ -29,7 +29,7 @@ package org.eolang;
  *
  * @since 0.17
  */
-@Versionize
+@Versionized
 final class PhNamed implements Phi {
 
     /**

@@ -27,13 +27,12 @@
  */
 package EOorg.EOeolang;
 
-import java.nio.ByteBuffer;
 import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -42,7 +41,7 @@ import org.eolang.XmirObject;
  * @since 0.18
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "bytes.as-float")
 public class EObytes$EOas_float extends PhDefault {
 

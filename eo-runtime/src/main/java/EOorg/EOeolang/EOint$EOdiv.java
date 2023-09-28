@@ -28,16 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
 import org.eolang.AtVararg;
-import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.ExprReduce;
-import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -46,7 +41,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "int.div")
 public class EOint$EOdiv extends PhDefault {
 

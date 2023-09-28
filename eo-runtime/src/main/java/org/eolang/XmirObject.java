@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Versionize
+@Versionized
 public @interface XmirObject {
 
     /**

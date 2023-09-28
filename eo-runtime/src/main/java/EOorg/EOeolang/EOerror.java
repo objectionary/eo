@@ -33,7 +33,7 @@ import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -47,7 +47,7 @@ import org.eolang.XmirObject;
  * @since 0.22
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "error")
 public final class EOerror extends PhDefault {
 

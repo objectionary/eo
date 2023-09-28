@@ -32,7 +32,7 @@ import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "string.length")
 public class EOstring$EOlength extends PhDefault {
 

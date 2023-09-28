@@ -30,7 +30,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 public final class AtComposite implements Attr {
 
     /**

@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 public final class AtOnce implements Attr {
 
     /**

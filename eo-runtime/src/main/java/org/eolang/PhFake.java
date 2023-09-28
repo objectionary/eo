@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  *
  * @since 0.29
  */
-@Versionize
+@Versionized
 public final class PhFake extends PhDefault {
 
     /**

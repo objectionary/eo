@@ -37,7 +37,7 @@ package org.eolang;
  *
  * @since 0.20
  */
-@Versionize
+@Versionized
 public final class Param {
 
     /**

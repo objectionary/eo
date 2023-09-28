@@ -34,7 +34,7 @@ import EOorg.EOeolang.EOcage;
  *
  * @since 0.29.6
  */
-@Versionize
+@Versionized
 public final class AtCage implements Attr {
 
     /**

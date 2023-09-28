@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 class PhOnce implements Phi {
 
     /**

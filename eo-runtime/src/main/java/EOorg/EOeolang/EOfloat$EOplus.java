@@ -32,7 +32,7 @@ import org.eolang.AtVararg;
 import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "float.plus")
 public class EOfloat$EOplus extends PhDefault {
 

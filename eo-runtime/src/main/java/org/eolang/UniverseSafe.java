@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 0.32
  * @checkstyle IllegalCatchCheck (200 lines)
  */
-@Versionize
+@Versionized
 public final class UniverseSafe implements Universe {
 
     /**

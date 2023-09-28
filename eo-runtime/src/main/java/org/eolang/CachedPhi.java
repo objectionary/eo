@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  *
  * @since 0.17
  */
-@Versionize
+@Versionized
 final class CachedPhi {
 
     /**

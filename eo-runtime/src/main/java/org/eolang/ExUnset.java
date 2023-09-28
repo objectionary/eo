@@ -30,7 +30,7 @@ package org.eolang;
  *
  * @since 0.21
  */
-@Versionize
+@Versionized
 public final class ExUnset extends ExAbstract {
 
     /**

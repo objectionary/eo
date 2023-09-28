@@ -32,7 +32,7 @@ import org.eolang.AtVararg;
 import org.eolang.Bytes;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionize;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -41,7 +41,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (15 lines)
  */
-@Versionize
+@Versionized
 @XmirObject(oname = "bytes.or")
 public class EObytes$EOor extends PhDefault {
 

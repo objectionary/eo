@@ -31,7 +31,7 @@ package org.eolang;
  *
  * @since 0.22
  */
-@Versionize
+@Versionized
 final class AtPhiSensitive implements Attr {
 
     /**

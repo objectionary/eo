@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.1
  */
-@Versionize
+@Versionized
 final class Indented {
 
     /**
