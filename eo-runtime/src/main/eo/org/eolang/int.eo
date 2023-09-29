@@ -26,9 +26,7 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[data] > int
-  bytes data > @
-
+[] > int
   # Tests that $ = x
   [x] > eq
     if. > @
@@ -100,3 +98,6 @@
 
   # Divide this one by another int
   [x...] > div /int
+
+  # Converts this to bytes
+  [] > as-bytes /bytes

@@ -26,9 +26,7 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[data] > float
-  bytes data > @
-
+[] > float
   # Tests that $ = x
   [x] > eq
     x > value!
@@ -105,3 +103,6 @@
 
   # Quotient of the division of $ by x
   [x...] > div /float
+
+  # Converts this to bytes
+  [] > as-bytes /bytes
