@@ -107,7 +107,7 @@ SOFTWARE.
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>
-            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
+            @{argLine} -Xmx512m -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemPropertyVariables>
             <java.util.logging.config.file>
