@@ -34,12 +34,14 @@ import org.eolang.Dataized;
 import org.eolang.Expr;
 import org.eolang.Param;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 
 /**
  * Reduce on BYTES.
  *
  * @since 1.0
  */
+@Versionized
 final class ExReduceBytes implements Expr {
     /**
      * Reduce operation.

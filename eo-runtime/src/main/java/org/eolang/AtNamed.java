@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.1
  */
+@Versionized
 final class AtNamed implements Attr {
 
     /**

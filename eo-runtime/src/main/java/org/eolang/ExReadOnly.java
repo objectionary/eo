@@ -30,6 +30,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@Versionized
 public final class ExReadOnly extends ExAbstract {
 
     /**

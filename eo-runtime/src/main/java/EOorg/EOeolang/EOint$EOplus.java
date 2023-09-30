@@ -29,13 +29,10 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtVararg;
-import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.ExprReduce;
-import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -44,6 +41,7 @@ import org.eolang.XmirObject;
  * @since 0.23
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "int.plus")
 public class EOint$EOplus extends PhDefault {
 

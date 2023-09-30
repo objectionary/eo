@@ -33,6 +33,7 @@ import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -41,6 +42,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (15 lines)
  */
+@Versionized
 @XmirObject(oname = "bytes.right")
 public class EObytes$EOright extends PhDefault {
 
