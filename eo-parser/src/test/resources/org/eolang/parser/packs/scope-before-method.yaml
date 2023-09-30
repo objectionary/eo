@@ -1,5 +1,4 @@
-xsls:
-  - /org/eolang/parser/scopes.xsl
+xsls: []
 tests:
   - //o[@base='foo' and count(o)=1]
 eo: |
@@ -8,5 +7,5 @@ eo: |
       [y] > @
         42 > @
     eq. > @
-      (foo 1) 2
+      (foo 1).@ 2
       42

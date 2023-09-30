@@ -1,9 +1,8 @@
-xsls:
-  - /org/eolang/parser/scopes.xsl
+xsls: []
 tests:
   - //o[@base='foo' and count(o)=2]
   - //o[@base='bar' and count(o)=2]
-  - //o[@base='foobar' and count(o)=2]
+  - //o[@base='foobar' and count(o)=2 and o[@base='foo' and count(o)=2]]
 eo: |
   [] > aliases
     [x y] > foo
