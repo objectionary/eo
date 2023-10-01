@@ -36,6 +36,7 @@ import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -44,6 +45,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "bytes.eq")
 public class EObytes$EOeq extends PhDefault {
 

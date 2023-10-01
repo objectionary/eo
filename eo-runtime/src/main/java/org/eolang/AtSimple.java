@@ -31,6 +31,7 @@ package org.eolang;
  *
  * @since 0.1
  */
+@Versionized
 public final class AtSimple implements Attr {
 
     /**

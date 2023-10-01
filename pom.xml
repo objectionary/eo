@@ -95,7 +95,7 @@ SOFTWARE.
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <antlr.version>4.13.0</antlr.version>
+    <antlr.version>4.13.1</antlr.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -126,7 +126,7 @@ SOFTWARE.
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.13.0</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>

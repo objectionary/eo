@@ -1,66 +1,42 @@
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
-  - /org/eolang/parser/scopes.xsl
   - /org/eolang/parser/optimize/abstracts-float-up.xsl
   - /org/eolang/parser/optimize/remove-levels.xsl
 tests:
   - /program/errors[count(*)=0]
   # 'main' object
   - //o[@name='main']
+  - //o[@name='main' and count(o)=2]
   - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[@base='int']
   - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[not(@base='int')]
   - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]
-  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple']/o/o[@base='arr']
-  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple']/o[@base='int']
-  # The first generated object: 'constant-array' from the example below
-  - //o[@abstract and count(o)=2 and @name]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=2 and @name]/o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '2')]
-  - //o[@abstract and count(o)=2 and @name]/o[@name='@']
-  # The second generated object: 'second' from the example below
-  - //o[@abstract and count(o)=3 and @name]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o/o[@base='arr']
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=3 and @name]/o[@name='@']
-  # The third generated object: 'first' from the example below
-  - //o[@abstract and count(o)=3 and @name]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='arr']
-  - //o[@abstract and count(o)=3 and @name]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@abstract and count(o)=3 and @name]/o[@name='@']
+  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple' and count(o)=1]/o[@base='int']
+  # The first tuple - argument of arr from the example below
+  - //o[@base='tuple' and count(o)=2]
+  - //o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '1')]
+  - //o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '2')]
+  # The second tuple - first argument of eq from the example below
+  - //o[@base='tuple' and count(o)=1]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
+  - //o[@base='tuple' and count(o)=1]/o[@base='.at' and count(o)=2]/o[@base='.at' and count(o)=2]/o[@base='arr']
+  # The third tuple - second argument of eq from the example below
+  - //o[@base='tuple' and count(o)=1]/o[@base='int' and contains(text(), '2')]
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > main
 #   tuple > arr
 #     0
-#     constant-array
+#     tuple
+#       1
+#       2
 #   eq > @
 #     tuple
-#       second
-#         arr
+#       .at
+#         .at
+#           arr
+#           1
+#         1
 #     tuple
 #       2
-#
-# [] > constant-array
-#   tuple > local-element
-#     1
-#     2
-#   local-element > @
-#
-# [arr] > second
-#   .at > local-element
-#     first
-#       arr
-#     1
-#   local-element > @
-#
-# [arr] > first
-#   .at > local-element
-#     arr
-#     1
-#   local-element > @
 # ____
 eo: |
   [] > main

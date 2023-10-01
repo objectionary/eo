@@ -32,6 +32,7 @@ package org.eolang;
 
  * @since 0.21
  */
+@Versionized
 public abstract class ExAbstract extends RuntimeException {
 
     /**

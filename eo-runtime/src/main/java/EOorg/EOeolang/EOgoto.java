@@ -29,11 +29,11 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -42,6 +42,7 @@ import org.eolang.XmirObject;
  * @since 0.17
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "goto")
 public class EOgoto extends PhDefault {
 

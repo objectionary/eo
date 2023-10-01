@@ -114,7 +114,6 @@ happlicationExtended
 happlicationHead
     : hmethod
     | applicable
-    | scope
     ;
 
 // Extended head of horizontal application
@@ -123,7 +122,6 @@ happlicationHeadExtended
     : vmethod
     | hmethodExtended
     | applicable
-    | scopeExtended
     ;
 
 // Simple statements that can be used as head of application

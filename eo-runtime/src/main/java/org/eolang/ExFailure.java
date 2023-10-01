@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@Versionized
 public class ExFailure extends ExAbstract {
 
     /**

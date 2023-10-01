@@ -49,6 +49,7 @@ import java.util.logging.Logger;
  *
  * @since 0.1
  */
+@Versionized
 public final class Main {
 
     /**

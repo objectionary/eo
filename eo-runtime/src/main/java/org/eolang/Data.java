@@ -39,6 +39,7 @@ import java.util.function.Supplier;
  * @param <T> Data type.
  * @since 0.1
  */
+@Versionized
 public interface Data<T> {
 
     /**
