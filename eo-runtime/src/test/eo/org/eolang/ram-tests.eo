@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.ram
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -30,28 +28,28 @@
 
 [] > writes-and-slice-ram
   ram 1024 > r
-  assert-that > @
+  eq. > @
     seq
       write.
         r.slice 200 13 > s
         "Hello, world!".as-bytes
       as-string.
         s.slice 0 5
-    $.equal-to "Hello"
+    "Hello"
 
 [] > writes-integer-to-ram
   ram 1024 > r
   3.as-bytes > b
   r.write 0 b > w
-  assert-that > @
+  eq. > @
     and.
       w.eq TRUE
       (r.slice 0 8).as-int.eq 3
-    $.equal-to TRUE
+    TRUE
 
 [] > several-slices-ram
   ram 1024 > r
-  assert-that > @
+  eq. > @
     seq
       write.
         r.slice 10 3
@@ -61,11 +59,11 @@
         "def".as-bytes
       as-string.
         (r.slice 10 6).slice 0 6
-    $.equal-to "abcdef"
+    "abcdef"
 
 [] > intersection-writes-in-ram
   ram 64 > r
-  assert-that > @
+  eq. > @
     seq
       write.
         r.slice 0 10
@@ -75,7 +73,7 @@
         "-----".as-bytes
       as-string.
         (r.slice 0 10).slice 0 10
-    $.equal-to "12345-----"
+    "12345-----"
 
 [] > slice-chain
   ram 1024 > r
@@ -87,6 +85,6 @@
       s.slice 0 5
       .slice 0 4
       .slice 0 1
-  assert-that > @
+  eq. > @
     cut-hello
-    $.equal-to "H"
+    "H"

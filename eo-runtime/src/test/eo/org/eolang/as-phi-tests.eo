@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -29,10 +28,10 @@
 +version 0.0.0
 
 [] > prints-itself
-  assert-that > @
+  gt. > @
     length.
       as-phi $
-    $.greater-than 0
+    0
 
 [] > prints-itself-to-console
   42 > x

@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @todo #1614:30min This class don't have enough tests. We need to add more, at least for
  *  the next methods: toString(), φTerm(), copy(), put().
  */
+@Versionized
 final class AtConst implements Attr {
 
     /**

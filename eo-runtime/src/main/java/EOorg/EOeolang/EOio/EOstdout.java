@@ -34,6 +34,7 @@ import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -42,6 +43,7 @@ import org.eolang.XmirObject;
  * @since 0.1
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "stdout")
 public class EOstdout extends PhDefault {
     /**

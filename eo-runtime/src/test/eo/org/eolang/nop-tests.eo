@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.nop
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -29,14 +27,14 @@
 +version 0.0.0
 
 [] > nop-is-true
-  assert-that > @
+  eq. > @
     nop
-    $.equal-to TRUE
+    TRUE
 
 [] > nop-is-true-despite-arguments
-  assert-that > @
+  eq. > @
     nop
       "abc"
       1
       1.0
-    $.equal-to TRUE
+    TRUE

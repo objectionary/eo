@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.try
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -40,7 +38,7 @@
         "\nfinally"
 
 [] > catches-simple-exception
-  assert-that > @
+  eq. > @
     try
       []
         slice. > @
@@ -51,11 +49,10 @@
         e > @
       []
         FALSE > @
-    $.equal-to
-      "Start index + length must not exceed string length but was 12 > 11"
+    "Start index + length must not exceed string length but was 12 > 11"
 
 [] > two-nested-try-blocks
-  assert-that > @
+  eq. > @
     try
       []
         try > @
@@ -70,22 +67,21 @@
       [e]
         e > @
       nop
-    $.equal-to
-      "Start index + length must not exceed string length but was 12 > 11"
+    "Start index + length must not exceed string length but was 12 > 11"
 
 [] > try-without-error-block
-  assert-that > @
+  eq. > @
     try
       []
         30.plus 2 > @
       [e]
         e > @
       nop
-    $.equal-to 32
+    32
 
 [] > try-memory-update
   memory 0 > m
-  assert-that > @
+  eq. > @
     seq
       m.write 1
       try
@@ -95,11 +91,11 @@
           e > @
         nop
       m.as-int
-    $.equal-to 3
+    3
 
 [] > try-memory-update-catch
   memory 0 > m
-  assert-that > @
+  eq. > @
     seq
       m.write 1
       try
@@ -111,4 +107,4 @@
           e > @
         nop
       m
-    $.equal-to 1
+    1

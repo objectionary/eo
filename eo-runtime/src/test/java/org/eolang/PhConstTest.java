@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
 import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -42,10 +41,7 @@ final class PhConstTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhConst(
-                    new PhWith(
-                        new EOsprintf(Phi.Φ),
-                        0, new Data.ToPhi("Hello, world!")
-                    )
+                    new Data.ToPhi("Hello, world!")
                 )
             ).take(String.class),
             Matchers.startsWith("Hello")

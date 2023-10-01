@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.23
  */
+@Versionized
 final class PhImmovable implements Phi {
 
     /**

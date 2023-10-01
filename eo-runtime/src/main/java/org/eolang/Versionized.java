@@ -22,46 +22,20 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtVararg;
-import org.eolang.Bytes;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * BYTES.OR.
+ * Annotation for an object which location should be extended with version package.
+ * More details <a href="https://github.com/objectionary/eo/issues/2506">here</a>
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (15 lines)
+ * @since 0.32.0
  */
-@Versionized
-@XmirObject(oname = "bytes.or")
-public class EObytes$EOor extends PhDefault {
-
-    /**
-     * Ctor.
-     *
-     * @param sigma Sigma
-     */
-    public EObytes$EOor(final Phi sigma) {
-        super(sigma);
-        this.add("b", new AtVararg());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                new ExReduceBytes(
-                    Bytes::or
-                )
-            )
-        );
-    }
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.CLASS)
+public @interface Versionized {
 }
-

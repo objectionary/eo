@@ -221,9 +221,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("abstract");
-        this.objects.leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -253,8 +251,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterAttribute(final ProgramParser.AttributeContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("name", ctx.NAME().getText());
+        this.startObject(ctx).prop("name", ctx.NAME().getText());
     }
 
     @Override
@@ -274,9 +271,9 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterVararg(final ProgramParser.VarargContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("vararg");
-        this.objects.prop("name", ctx.NAME().getText());
+        this.startObject(ctx)
+            .prop("vararg")
+            .prop("name", ctx.NAME().getText());
     }
 
     @Override
@@ -387,9 +384,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitHapplicationArg(final ProgramParser.HapplicationArgContext ctx) {
         if (ctx.DOTS() != null) {
-            this.objects.enter();
-            this.objects.prop("unvar");
-            this.objects.leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -419,9 +414,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final ProgramParser.HapplicationArgExtendedContext ctx
     ) {
         if (ctx.DOTS() != null) {
-            this.objects.enter();
-            this.objects.prop("unvar");
-            this.objects.leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -477,9 +470,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
         final ProgramParser.VapplicationArgSpreadableContext ctx
     ) {
         if (ctx.DOTS() != null) {
-            this.objects.enter();
-            this.objects.prop("unvar");
-            this.objects.leave();
+            this.objects.enter().prop("unvar").leave();
         }
     }
 
@@ -525,9 +516,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("abstract");
-        this.objects.leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -547,9 +536,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterHanonym(final ProgramParser.HanonymContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("abstract");
-        this.objects.leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -579,9 +566,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterInnerabstract(final ProgramParser.InnerabstractContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("abstract");
-        this.objects.leave();
+        this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
@@ -750,18 +735,19 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitMethodTail(final ProgramParser.MethodTailContext ctx) {
-        this.objects.enter();
-        this.objects.prop("method");
-        this.objects.xprop("base", "concat('.',@base)");
-        this.objects.xprop("pos", "@pos - 1");
-        this.objects.leave();
+        this.objects
+            .enter()
+            .prop("method")
+            .xprop("base", "concat('.',@base)")
+            .xprop("pos", "@pos - 1")
+            .leave();
     }
 
     @Override
     public void enterMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("base", String.format(".%s", ctx.NAME().getText()));
-        this.objects.prop("method");
+        this.startObject(ctx)
+            .prop("base", String.format(".%s", ctx.NAME().getText()))
+            .prop("method");
     }
 
     @Override
@@ -862,17 +848,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
-        this.objects.enter();
         if (ctx.COPY() != null) {
-            this.objects.prop("copy");
+            this.objects.enter().prop("copy").leave();
         }
-        this.objects.leave();
     }
 
     @Override
     public void enterVersioned(final ProgramParser.VersionedContext ctx) {
-        this.startObject(ctx);
-        this.objects.prop("base", ctx.NAME().getText());
+        this.startObject(ctx).prop("base", ctx.NAME().getText());
     }
 
     @Override
@@ -887,9 +870,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitReversed(final ProgramParser.ReversedContext ctx) {
-        this.objects.enter();
-        this.objects.xprop("base", "concat('.',@base)");
-        this.objects.leave();
+        this.objects.enter().xprop("base", "concat('.',@base)").leave();
     }
 
     @Override
@@ -900,9 +881,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitOname(final ProgramParser.OnameContext ctx) {
         if (ctx.CONST() != null) {
-            this.objects.enter();
-            this.objects.prop("const");
-            this.objects.leave();
+            this.objects.enter().prop("const").leave();
         }
     }
 
@@ -924,22 +903,22 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void enterScope(final ProgramParser.ScopeContext ctx) {
-        this.objects.scope();
+        // Nothing here
     }
 
     @Override
     public void exitScope(final ProgramParser.ScopeContext ctx) {
-        this.objects.closeScope();
+        // Nothing here
     }
 
     @Override
     public void enterScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        this.objects.scope();
+        // Nothing here
     }
 
     @Override
     public void exitScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
-        this.objects.closeScope();
+        // Nothing here
     }
 
     @Override
@@ -1088,9 +1067,10 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
      * Start object.
      *
      * @param ctx Context.
+     * @return Started object.
      */
-    private void startObject(final ParserRuleContext ctx) {
-        this.objects.start(
+    private Objects startObject(final ParserRuleContext ctx) {
+        return this.objects.start(
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );

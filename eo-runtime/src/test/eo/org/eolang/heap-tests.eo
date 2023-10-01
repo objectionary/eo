@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.heap
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -36,43 +34,36 @@
   p.block > data
     bytes.size
     [b] (b.as-string > @)
-  assert-that > @
+  eq. > @
     seq
       data.write bytes
       data
-    $.equal-to txt
+    txt
 
 [] > malloc-returns-different-pointers
   heap 1024 > h!
   h.malloc 64 > p1!
   h.malloc 32 > p2!
-  assert-that > @
+  not. > @
     eq.
-      seq
-        QQ.io.stdout
-          QQ.txt.sprintf
-            "p1 = %d\np2 = %d\n"
-            p1
-            p2
-        p1
+      p1
       p2
-    $.equal-to FALSE
 
 [] > mallocs-do-not-overlap
   heap 1024 > h!
   h.malloc 64 > p1!
   h.malloc 32 > p2!
-  assert-that > @
+  eq. > @
     or.
       p2.gte
         p1.plus 64
       p2.lte
         p1.minus 32
-    $.equal-to TRUE
+    TRUE
 
 [] > malloc-return-error
   heap 2 > h!
-  assert-that > @
+  eq. > @
     try
       []
         h.malloc > @
@@ -80,24 +71,23 @@
       [e]
         e > @
       nop
-    $.equal-to
-      "Allocation failed: bad alloc (not enough memory in the heap)"
+    "Allocation failed: bad alloc (not enough memory in the heap)"
 
 [] > write-and-read-without-error
   heap 1024 > h
   h.pointer 0 8 > p
   [] > mem
     p.block 8 > @
-  assert-that > @
+  eq. > @
     mem.write 01-02-03
-    $.equal-to TRUE
+    TRUE
 
 [] > increments-pointer
   heap 1024 > h
   h.pointer 0 2 > p1
   p1.add 2 > p2
   p2.sub 1 > p3
-  assert-that > @
+  eq. > @
     and.
       (p1.block 6).write ("HELLO!".as-bytes)
       eq.
@@ -110,4 +100,4 @@
           2
           [b] (b.as-string > @)
         "LL"
-    $.equal-to TRUE
+    TRUE

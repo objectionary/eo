@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
@@ -40,10 +39,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     r
-    $.equal-to
-      2
+    2
 
 [] > rust-returns-negative-int
   QQ.rust > r
@@ -59,10 +57,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     r
-    $.equal-to
-      -10
+    -10
 
 [] > rust-returns-positive-doable
   QQ.rust > r
@@ -77,10 +74,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     r
-    $.equal-to
-      1.23456789
+    1.23456789
 
 [] > rust-returns-negative-doable
   QQ.rust > r
@@ -95,10 +91,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     r
-    $.equal-to
-      -1.23456789
+    -1.23456789
 
 [] > rust-is-byte-array
   QQ.rust > my-bytes
@@ -119,10 +114,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     my-bytes
-    $.equal-to
-      00-1A-EE
+    00-1A-EE
 
 [] > rust-find-returns-int
   123 > a
@@ -140,11 +134,10 @@
     """
     *
       []
-  assert-that > @
-    r
-    $.not
-      $.less-than
-        0
+  not. > @
+    lt.
+      r
+      0
 
 [] > rust-returns-vertex
   "content" > book
@@ -161,10 +154,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     read
-    $.equal-to
-      "content"
+    "content"
 
 [] > rust-is-string
   QQ.rust > content
@@ -179,9 +171,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     content
-    $.equal-to "Привет world"
+    "Привет world"
 
 [] > rust-invalid-put
   QQ.rust > put
@@ -196,16 +188,22 @@
     """
     *
       []
-  assert-that > @
-    try
-      []
-        put > @
-      [e]
-        e > @
-      nop
-    $.string-starts-with "Rust insert failed"
+  eq. > @
+    slice.
+      try
+        []
+          put > @
+        [e]
+          e > @
+        nop
+      0
+      18
+    "Rust insert failed"
 
-[] > rust-invalid-bind-fails
+# @todo #2498:30min Enable the tests. After removing assert-that from eo-runtime
+#  $.string-starts-with it not allowed anymore. Need to refactor the next tests and enable them:
+#  - rust-bind-not-fails, - rust-error
+[] > rust-bind-not-fails
   1 > a
   2 > b
   QQ.rust > insert
@@ -222,14 +220,16 @@
     """
     *
       []
-  assert-that > @
-    try
-      []
-        insert > @
-      [e]
-        e > @
-      nop
-    $.string-starts-with "Rust insert failed"
+  try > res
+    []
+      insert > @
+    [e]
+      e > @
+    nop
+  nop > @
+    eq.
+      res
+      "Rust insert failed"
 
 [] > rust-copy-not-fails
   123 > a
@@ -246,10 +246,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     copy
-    $.equal-to
-      123
+    123
 
 [] > rust-dataize-not-fails
   1 > a
@@ -267,11 +266,10 @@
     *
       []
       3
-  assert-that > @
-    dataized
-    $.not
-      $.less-than
-        0
+  not. > @
+    lt.
+      dataized
+      0
 
 [] > rust-plus
   5 > a
@@ -299,9 +297,9 @@
     *
       []
       "byteorder:1.4.3"
-  assert-that > @
+  eq. > @
     plus
-    $.equal-to 15
+    15
 
 [] > rust-error
   QQ.rust > err!
@@ -316,15 +314,20 @@
     """
     *
       []
-  assert-that > @
-    try
-      []
-        err > @
-      [e]
-        e > @
-      nop
-    $.all-of
-      $.string-starts-with "Rust insert failed "
+  try > res
+    []
+      err > @
+    [e]
+      e > @
+    nop
+  nop > @
+    and.
+      eq.
+        res
+        "Rust insert failed "
+      eq.
+        res
+        "'Custom error'"
 
 [] > rust-put-to-copy
   QQ.rust > data
@@ -342,10 +345,9 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     data
-    $.equal-to
-      00-1A-EE
+    00-1A-EE
 
 [] > rust-bind-to-copy
   [content] > book
@@ -366,7 +368,6 @@
     """
     *
       []
-  assert-that > @
+  eq. > @
     applied.content
-    $.equal-to
-      "qwerty"
+    "qwerty"
