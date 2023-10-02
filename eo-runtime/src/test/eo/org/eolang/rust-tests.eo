@@ -239,9 +239,9 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOVertex};
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
-        let v = env.find("$.^.a")?;
-        let copy = env.copy(v)?;
-        Some(EOVertex(copy))
+      let v = env.find("$.^.a")?;
+      let copy = env.copy(v)?;
+      Some(EOVertex(copy))
     }
     """
     *
@@ -282,16 +282,16 @@
     use byteorder::{BigEndian, ReadBytesExt};
 
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
-        let a = env.find("$.^.a")?;
-        let bytes_a = env.dataize(a).unwrap();
-        let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
+      let a = env.find("$.^.a")?;
+      let bytes_a = env.dataize(a).unwrap();
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
-        let b = env.find("$.^.b")?;
-        let bytes_b = env.dataize(b)?;
-        let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
-        println!("sum 5 + 10 = {}", a + b);
+      let b = env.find("$.^.b")?;
+      let bytes_b = env.dataize(b)?;
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
+      println!("sum 5 + 10 = {}", a + b);
 
-        Some(EOInt(a + b))
+      Some(EOInt(a + b))
     }
     """
     *
