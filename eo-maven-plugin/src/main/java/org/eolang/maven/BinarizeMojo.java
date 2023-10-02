@@ -61,24 +61,7 @@ public final class BinarizeMojo extends SafeMojo {
     /**
      * Name of executable file which is result of cargo building.
      */
-    public static final String LIB;
-
-    static {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            LIB = "common.dll";
-        } else if (SystemUtils.IS_OS_LINUX) {
-            LIB = "libcommon.so";
-        } else if (SystemUtils.IS_OS_MAC) {
-            LIB = "libcommon.dylib";
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Rust inserts are not supported in %s os. Only windows, linux and macos are allowed.",
-                    System.getProperty("os.name")
-                )
-            );
-        }
-    }
+    public static final String LIB = BinarizeMojo.common();
 
     /**
      * The directory where to binarize to.
@@ -128,6 +111,29 @@ public final class BinarizeMojo extends SafeMojo {
             )
         ).intValue();
         Logger.info(this, "Built in total %d cargo projects", total);
+    }
+
+    /**
+     * Calculates name for Rust shared library depending on OS.
+     * @return Name.
+     */
+    private static String common() {
+        final String result;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            result = "common.dll";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            result = "libcommon.so";
+        } else if (SystemUtils.IS_OS_MAC) {
+            result = "libcommon.dylib";
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Rust inserts are not supported in %s os. Only windows, linux and macos are allowed.",
+                    System.getProperty("os.name")
+                )
+            );
+        }
+        return result;
     }
 
     /**
