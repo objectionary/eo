@@ -29,6 +29,8 @@ import java.util.Map;
 import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
@@ -228,6 +230,23 @@ final class AssembleMojoTest {
                 .withProgram(AssembleMojoTest.INVALID_PROGRAM)
                 .execute(AssembleMojo.class),
             String.format("AssembleMojo should have failed with %s, but didn't", expected)
+        );
+    }
+
+    @CaptureLogs
+    @Test
+    void assemblesSuccessfullyInOfflineMode(final Logs out, @TempDir final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .withHelloWorld()
+                .with("offline", true)
+                .execute(AssembleMojo.class),
+            "AssembleMojo should have executed successfully with eo.offline=TRUE, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
+            String.join("\n", out.captured()),
+            Matchers.containsString("No programs were pulled because eo.offline flag is TRUE")
         );
     }
 

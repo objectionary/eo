@@ -243,13 +243,6 @@ abstract class SafeMojo extends AbstractMojo {
     private boolean skip;
 
     /**
-     * Pull objects from objectionaries or not.
-     * @since 0.32.0
-     */
-    @Parameter(property = "eo.offline", required = true, defaultValue = "false")
-    private boolean offline;
-
-    /**
      * Execute it.
      * @throws MojoFailureException If fails during build
      * @throws MojoExecutionException If fails during execution
