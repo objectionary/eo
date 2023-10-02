@@ -102,7 +102,6 @@ public final class PullMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        System.out.println(this.offline);
         if (this.offline) {
             Logger.info(
                 this,

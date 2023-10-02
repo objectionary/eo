@@ -244,7 +244,6 @@ public final class FakeMaven {
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
             moja.with(entry.getKey(), entry.getValue());
         }
-        System.out.println("execute");
         moja.execute();
         return this;
     }
