@@ -47,7 +47,6 @@ import org.eolang.maven.util.Rel;
 
 /**
  * Pull EO files from Objectionary.
- *
  * @since 0.1
  */
 @Mojo(
@@ -63,7 +62,6 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * The Git tag to pull objects from, in objectionary.
-     *
      * @since 0.21.0
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -73,7 +71,6 @@ public final class PullMojo extends SafeMojo {
     /**
      * The Git hash to pull objects from, in objectionary.
      * If not set, will be computed from {@code tag} field.
-     *
      * @since 0.29.6
      */
     @SuppressWarnings("PMD.ImmutableField")
@@ -90,46 +87,58 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Pull again even if the .eo file is already present?
-     *
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
      */
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
 
+    /**
+     * Pull objects from objectionaries or not.
+     * @since 0.32.0
+     */
+    @Parameter(property = "eo.offline", required = true, defaultValue = "false")
+    private final boolean offline = false;
+
     @Override
     public void exec() throws IOException {
-        if (this.hash == null) {
-            this.hash = new ChCached(
-                new ChNarrow(
-                    new ChRemote(this.tag)
-                )
+        if (this.offline) {
+            Logger.info(
+                this,
+                "No programs were pulled because eo.offline flag is TRUE"
+            );
+        } else {
+            if (this.hash == null) {
+                this.hash = new ChCached(
+                    new ChNarrow(
+                        new ChRemote(this.tag)
+                    )
+                );
+            }
+            final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
+            final Collection<ObjectName> names = new ArrayList<>(0);
+            for (final ForeignTojo tojo : tojos) {
+                final ObjectName name = new OnCached(
+                    new OnSwap(
+                        this.withVersions,
+                        new OnVersioned(tojo.identifier(), this.hash)
+                    )
+                );
+                names.add(name);
+                tojo.withSource(this.pull(name).toAbsolutePath())
+                    .withHash(new ChNarrow(name.hash()));
+            }
+            Logger.info(
+                this,
+                "%d program(s) were pulled: %s",
+                tojos.size(),
+                names
             );
         }
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
-        final Collection<ObjectName> names = new ArrayList<>(0);
-        for (final ForeignTojo tojo : tojos) {
-            final ObjectName name = new OnCached(
-                new OnSwap(
-                    this.withVersions,
-                    new OnVersioned(tojo.identifier(), this.hash)
-                )
-            );
-            names.add(name);
-            tojo.withSource(this.pull(name).toAbsolutePath())
-                .withHash(new ChNarrow(name.hash()));
-        }
-        Logger.info(
-            this,
-            "%d program(s) were pulled: %s",
-            tojos.size(),
-            names
-        );
     }
 
     /**
      * Pull one object.
-     *
      * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout|5f82cc1"
      * @return The path of .eo file
      * @throws IOException If fails

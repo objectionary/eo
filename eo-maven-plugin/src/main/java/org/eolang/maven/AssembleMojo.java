@@ -186,6 +186,13 @@ public final class AssembleMojo extends SafeMojo {
     @SuppressWarnings("PMD.LongVariable")
     private boolean placeBinariesThatHaveSources;
 
+    /**
+     * Pull objects from objectionaries or not.
+     * @since 0.32.0
+     */
+    @Parameter(property = "eo.offline", required = true, defaultValue = "false")
+    private final boolean offline = false;
+
     @Override
     public void exec() throws IOException {
         if (this.central == null) {
