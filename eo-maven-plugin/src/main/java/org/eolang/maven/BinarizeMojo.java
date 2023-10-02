@@ -55,7 +55,7 @@ import org.eolang.maven.rust.BuildFailureException;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-@SuppressWarnings({"PMD.LongVariable", "PMD.StaticAccessToStaticFields"})
+@SuppressWarnings("PMD.LongVariable")
 public final class BinarizeMojo extends SafeMojo {
 
     /**
