@@ -433,7 +433,7 @@ public final class FakeMaven {
 
     /**
      * Creates of the result map with all files and folders that was created
-     *  or compiled during mojo execution.
+     * or compiled during mojo execution.
      *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.

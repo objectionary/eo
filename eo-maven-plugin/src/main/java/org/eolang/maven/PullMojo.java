@@ -98,10 +98,11 @@ public final class PullMojo extends SafeMojo {
      * @since 0.32.0
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")
-    private final boolean offline = false;
+    private boolean offline;
 
     @Override
     public void exec() throws IOException {
+        System.out.println(this.offline);
         if (this.offline) {
             Logger.info(
                 this,

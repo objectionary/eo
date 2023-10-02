@@ -191,7 +191,7 @@ public final class AssembleMojo extends SafeMojo {
      * @since 0.32.0
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")
-    private final boolean offline = false;
+    private boolean offline;
 
     @Override
     public void exec() throws IOException {

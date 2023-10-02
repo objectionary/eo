@@ -42,9 +42,11 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -262,6 +264,28 @@ final class PullMojoTest {
             ),
             PullMojoTest.exists(temp, string),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotPullInOfflineMode(@TempDir final Path tmp) throws IOException {
+        final Map<String, Path> result = new FakeMaven(tmp)
+            .withHelloWorld()
+            .with("offline", true)
+            .execute(new FakeMaven.Pull())
+            .result();
+        final String format = "%s folder should not contain %s file, but it did";
+        final String stdout = "org/eolang/io/stdout.eo";
+        final String string = "org/eolang/string.eo";
+        MatcherAssert.assertThat(
+            String.format(format, PullMojo.DIR, stdout),
+            result.containsKey(String.format("%s/%s", PullMojo.DIR, stdout)),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            String.format(format, PullMojo.DIR, string),
+            result.containsKey(String.format("%s/%s", PullMojo.DIR, string)),
+            Matchers.is(false)
         );
     }
 
