@@ -138,6 +138,7 @@ SOFTWARE.
           <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>true</failOnWarning>
+          <offline>true</offline>
         </configuration>
         <executions>
           <execution>
