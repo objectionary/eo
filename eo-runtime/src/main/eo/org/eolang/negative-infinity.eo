@@ -191,7 +191,6 @@
             acc
             index.plus 1
             terms
-
     if. > @
       eq.
         x.length > terms-count!
