@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.collections.list
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -29,55 +27,53 @@
 +version 0.0.0
 
 [] > makes-tuple-through-special-syntax
-  assert-that > @
+  eq. > @
     (* 1 2).length
-    $.equal-to 2
+    2
 
 [] > gets-lengths-of-empty-tuple-through-special-syntax
-  assert-that > @
+  eq. > @
     *.length
-    $.equal-to 0
+    0
 
 # check that an empty tuples .length equals to zero
 [] > empty-tuple-length
   [elements...] > arr
-  assert-that > @
+  eq. > @
     arr.elements.length
-    $.equal-to 0
+    0
 
 # check that tuple.length works properly for non-empty tuples
 [] > non-empty-tuple-length-test
   [elements...] > arr
-  assert-that > @
+  eq. > @
     (arr "a" "b" "c" "d" "e").elements.length
-    $.equal-to 5
+    5
 
 [] > tuple-as-a-bound-attribute-size-0
   * > anArray
-  assert-that > @
+  eq. > @
     anArray.length
-    $.equal-to 0
+    0
 
 [] > tuple-as-a-bound-attribute-size-1
   * > anArray
     100
-  assert-that > @
+  eq. > @
     anArray.at 0
-    $.equal-to 100
+    100
 
-# @todo #2435:30min Enable test with array-each. assert-that.array-each object
-#  uses memory. So after changing memory behaviour array-each started to work
-#  incorrectly. Need to fix the object and then enable the test
 [] > tuple-as-a-bound-attribute-size-2
-  * > anArray
+  * > arr!
     1
     2
-  assert-that > res
-    anArray
-    $.array-each
-      $.equal-to 1
-      $.equal-to 2
-  nop > @
+  and. > @
+    eq.
+      arr.at 0
+      1
+    eq.
+      arr.at 1
+      2
 
 [] > tuple-with-in-seq
   [a] > foo
@@ -90,16 +86,25 @@
     TRUE
 
 [] > tuple-with
-  assert-that > @
-    with.
-      * 1 2 3
+  with. > arr!
+    * 1 2 3
+    "with"
+  and. > @
+    eq.
+      arr.at 0
+      1
+    eq.
+      arr.at 1
+      2
+    eq.
+      arr.at 2
+      3
+    eq.
+      arr.at 3
       "with"
-    $.equal-to
-      list
-        * 1 2 3 "with"
 
 [] > tuple-at-with-error
-  assert-that > @
+  eq. > @
     try
       []
         at. > @
@@ -108,147 +113,89 @@
       [e]
         e > @
       nop
-    $.is
-      $.equal-to
-        "Can't #at(20) the 21th element of the tuple, there are just 4 of them"
-
-[] > concat-tuple-with-empty-tuple-1
-  * 1 2 3 > a
-  * > b
-  concat. > res
-    list a
-    b
-  assert-that > @
-    res.length
-    $.equal-to 3
-
-[] > concat-tuple-with-empty-tuple-2
-  * > a
-  * 1 2 3 > b
-  concat. > res
-    list a
-    b
-  assert-that > @
-    res.length
-    $.equal-to 3
-
-[] > concat-tuple-with-empty-tuple-3
-  * > a
-  * > b
-  concat. > res
-    list a
-    b
-  assert-that > @
-    res.length
-    $.equal-to 0
-
-[] > concat-tuples
-  * 1 2 3 > a
-  * 100 200 > b
-  concat. > res
-    list a
-    b
-  assert-that > @
-    plus.
-      res.at 2
-      res.at 4
-    $.equal-to 203
-
-[] > concat-three-tuples
-  * 0 1 2 > a
-  * 3 4 > b
-  * (* "five" "six") (* "siven") > c
-  concat. > res
-    list a
-    concat.
-      list b
-      c
-  assert-that > @
-    * (res.length) ((res.at 5).at 1)
-    $.equal-to
-      list
-        * 7 "six"
+    "Can't #at(20) the 21th element of the tuple, there are just 4 of them"
 
 [] > tuple-fluent-with
-  assert-that > @
-    ((*.with 1).with 2).with 3
-    $.equal-to
-      list
-        * 1 2 3
+  ((*.with 1).with 2).with 3 > arr
+  and. > @
+    eq.
+      arr.at 0
+      1
+    eq.
+      arr.at 1
+      2
+    eq.
+      arr.at 2
+      3
 
 [] > tuple-fluent-with-indented
   *
   .with 1
   .with 2
-  .with 3 > a
-  assert-that > @
-    list a
-    $.equal-to
-      list
-        * 1 2 3
-
-[] > gets-lengths-of-empty-tuple-asterisk
-  assert-that > @
-    *.length
-    $.equal-to 0
+  .with 3 > arr
+  and. > @
+    eq.
+      arr.at 0
+      1
+    eq.
+      arr.at 1
+      2
+    eq.
+      arr.at 2
+      3
 
 [] > gets-lengths-of-empty-tuple
   tuple > a
-  assert-that > @
+  eq. > @
     a.length
-    $.equal-to 0
+    0
 
 [] > gets-lengths-of-empty-tuple-without-additional-obj
-  assert-that > @
+  eq. > @
     tuple.length
-    $.equal-to 0
+    0
 
 [] > creates-empty-tuple-with-number
   tuple.with 3 > a
-  assert-that > @
+  eq. > @
     a.at 0
-    $.equal-to 3
-
-[] > tuple-fluent-with-indented-keyword
-  *
-  .with 1
-  .with 2
-  .with 3 > a
-  assert-that > @
-    list a
-    $.equal-to
-      list (* 1 2 3)
+    3
 
 [] > tuple-empty-fluent-with-indented-keyword
   tuple
   .with 1
   .with 2
-  .with 3 > a
-  assert-that > @
-    list a
-    $.equal-to
-      list (* 1 2 3)
+  .with 3 > arr
+  and. > @
+    eq.
+      arr.at 0
+      1
+    eq.
+      arr.at 1
+      2
+    eq.
+      arr.at 2
+      3
 
 [] > tuple-with-negative-index-gets-last
   * 0 1 2 3 4 > arr
-  assert-that > @
+  eq. > @
     arr.at -1
-    $.equal-to 4
+    4
 
 [] > tuple-with-negative-index-gets-first
   * 0 1 2 3 4 > arr
-  assert-that > @
+  eq. > @
     arr.at -5
-    $.equal-to 0
+    0
 
 [] > tuple-with-negative-index-out-of-bounds
   * 0 1 2 3 4 > arr
-  assert-that > @
+  eq. > @
     try
       []
         arr.at -6 > @
       [e]
         e > @
       nop
-    $.equal-to
-      "Can't #at(-6) the -1th element of the tuple"
+    "Can't #at(-6) the -1th element of the tuple"

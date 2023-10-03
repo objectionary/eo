@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOerror;
  *
  * @since 0.26
  */
+@Versionized
 public final class PhSafe implements Phi {
 
     /**

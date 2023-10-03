@@ -233,6 +233,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
+            this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent(
                 "eoEnvDir",
                 new File("../eo-runtime/src/main/rust/eo_env")
@@ -433,7 +434,7 @@ public final class FakeMaven {
 
     /**
      * Creates of the result map with all files and folders that was created
-     *  or compiled during mojo execution.
+     * or compiled during mojo execution.
      *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value).
      * @throws IOException If some problem with filesystem have happened.

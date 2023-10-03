@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
+@Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
 public abstract class PhDefault implements Phi, Cloneable {
 

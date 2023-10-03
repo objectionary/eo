@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -56,6 +57,11 @@ import org.eolang.maven.rust.BuildFailureException;
 )
 @SuppressWarnings("PMD.LongVariable")
 public final class BinarizeMojo extends SafeMojo {
+
+    /**
+     * Name of executable file which is result of cargo building.
+     */
+    public static final String LIB = BinarizeMojo.common();
 
     /**
      * The directory where to binarize to.
@@ -108,6 +114,29 @@ public final class BinarizeMojo extends SafeMojo {
     }
 
     /**
+     * Calculates name for Rust shared library depending on OS.
+     * @return Name.
+     */
+    private static String common() {
+        final String result;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            result = "common.dll";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            result = "libcommon.so";
+        } else if (SystemUtils.IS_OS_MAC) {
+            result = "libcommon.dylib";
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Rust inserts are not supported in %s os. Only windows, linux and macos are allowed.",
+                    System.getProperty("os.name")
+                )
+            );
+        }
+        return result;
+    }
+
+    /**
      * Is the project valid?
      * @param project File to check.
      * @return True if valid. Otherwise, false.
@@ -123,15 +152,10 @@ public final class BinarizeMojo extends SafeMojo {
      * @throws IOException If any issues with IO.
      */
     private void build(final File project) throws IOException {
-        final File target = project.toPath().resolve("target").toFile();
         final File cached = this.cache
             .resolve("Lib")
             .resolve(project.getName())
             .resolve("target").toFile();
-        if (cached.exists()) {
-            Logger.info(this, "Copying %s to %s", cached, target);
-            FileUtils.copyDirectory(cached, target);
-        }
         if (BinarizeMojo.sameProject(
             project.toPath(),
             this.cache
@@ -143,11 +167,30 @@ public final class BinarizeMojo extends SafeMojo {
                 "content of %s was not changed since the last launch",
                 project.getName()
             );
+            final File executable = cached.toPath()
+                .resolve("debug")
+                .resolve(BinarizeMojo.LIB)
+                .toFile();
+            if (executable.exists()) {
+                FileUtils.copyFile(
+                    executable,
+                    project.toPath()
+                        .resolve("target")
+                        .resolve("debug")
+                        .resolve(BinarizeMojo.LIB)
+                        .toFile()
+                );
+            }
         } else {
+            final File target = project.toPath().resolve("target").toFile();
+            if (cached.exists()) {
+                Logger.info(this, "Copying %s to %s", cached, target);
+                FileUtils.copyDirectory(cached, target);
+            }
             Logger.info(this, "Building %s rust project..", project.getName());
             try {
                 new Jaxec("cargo", "build").withHome(project).execUnsafe();
-            } catch (final IOException ex) {
+            } catch (final IOException | IllegalArgumentException ex) {
                 throw new BuildFailureException(
                     String.format(
                         "Failed to build cargo project with dest = %s",
@@ -194,9 +237,11 @@ public final class BinarizeMojo extends SafeMojo {
                 new TextOf(src)
             ).asString()
         ).equals(
-            new UncheckedText(
-                new TextOf(cached)
-            ).asString()
+            BinarizeMojo.uncomment(
+                new UncheckedText(
+                    new TextOf(cached)
+                ).asString()
+            )
         );
     }
 

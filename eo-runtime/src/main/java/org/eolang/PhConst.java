@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.16
  */
+@Versionized
 public final class PhConst implements Phi {
 
     /**

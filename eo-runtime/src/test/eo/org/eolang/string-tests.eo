@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -28,183 +27,182 @@
 +version 0.0.0
 
 [] > calculates-length-of-spaces-only
-  assert-that > @
+  eq. > @
     " ".length
-    $.equal-to 1
+    1
 
 [] > turns-string-into-bytes
-  assert-that > @
+  eq. > @
     "€ друг".as-bytes
-    $.equal-to E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
+    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
 [] > bytes-equal-to-string
-  assert-that > @
+  eq. > @
     D0-B4-D1-80-D1-83-D0-B3
-    $.equal-to "друг"
+    "друг"
 
 [] > string-equals-to-bytes
-  assert-that > @
+  eq. > @
     "друг"
-    $.equal-to D0-B4-D1-80-D1-83-D0-B3
+    D0-B4-D1-80-D1-83-D0-B3
 
 [] > reads-the-length
-  assert-that > @
+  eq. > @
     "Hello, друг!".length
-    $.equal-to 12
+    12
 
 [] > compares-two-different-types
-  assert-that > @
-    "Hello"
-    $.not
-      $.equal-to 42
+  not. > @
+    eq.
+      "Hello"
+      42
 
 [] > compares-string-with-nan
-  assert-that > @
-    nan
-    $.not
-      $.equal-to "друг"
+  not. > @
+    eq.
+      nan
+      "друг"
 
 [] > compares-string-with-positive-infinity
-  assert-that > @
-    positive-infinity
-    $.not
-      $.equal-to "друг"
+  eq. > @
+    positive-infinity.eq "друг"
+    FALSE
 
 [] > compares-string-with-negative-infinity
-  assert-that > @
-    negative-infinity
-    $.not
-      $.equal-to "друг"
+  not. > @
+    eq.
+      negative-infinity
+      "друг"
 
 [] > text-block-one-line
-  assert-that > @
+  eq. > @
     """
     Abc
     """
-    $.equal-to "Abc"
+    "Abc"
 
 [] > text-block-tree-lines
-  assert-that > @
+  eq. > @
     """
     e
     e
     e
     """.as-bytes
-    $.equal-to 65-0A-65-0A-65
+    65-0A-65-0A-65
 
 [] > text-block-with-margin
-  assert-that > @
+  eq. > @
     """
      z
       y
      x
     """.as-bytes
-    $.equal-to 7A-0A-20-20-79-0A-20-78
+    7A-0A-20-20-79-0A-20-78
 
 [] > compares-two-different-strings
-  assert-that > @
-    "Hello"
-    $.not
-      $.equal-to "Good bye"
+  not. > @
+    eq.
+      "Hello"
+      "Good bye"
 
 [] > supports-escape-sequences
-  assert-that > @
+  eq. > @
     "Hello, \u0434\u0440\u0443\u0433!\n"
-    $.equal-to "Hello, друг!\n"
+    "Hello, друг!\n"
 
 [] > supports-escape-sequences-in-text
-  assert-that > @
+  eq. > @
     """
     Hello, \u0434\u0440\u0443\u0433!\n
     """
-    $.equal-to "Hello, друг!\n"
+    "Hello, друг!\n"
 
 [] > preserves-indentation-in-text
-  assert-that > @
+  eq. > @
     """
     a
      b
       c
     """
-    $.equal-to "a\n b\n  c"
+    "a\n b\n  c"
 
 [] > compares-two-strings
-  assert-that > @
+  eq. > @
     eq.
       "x"
       "x"
-    $.equal-to TRUE
+    TRUE
 
 [] > one-symbol-string-compares
-  assert-that > @
+  eq. > @
     "Ф"
-    $.equal-to "Ф"
+    "Ф"
 
 [] > supports-escape-sequences-line-break
-  assert-that > @
+  eq. > @
     "\n"
-    $.equal-to "\012"
+    "\012"
 
 [] > supports-escape-sequences-unicode
-  assert-that > @
+  eq. > @
     "\u0424"
-    $.equal-to "Ф"
+    "Ф"
 
 [] > slice-from-start
-  assert-that > @
+  eq. > @
     "hello".slice 0 1
-    $.equal-to "h"
+    "h"
 
 [] > slice-in-the-middle
-  assert-that > @
+  eq. > @
     "hello".slice 2 3
-    $.equal-to "llo"
+    "llo"
 
 [] > slice-from-the-end
-  assert-that > @
+  eq. > @
     "hello".slice 4 1
-    $.equal-to "o"
+    "o"
 
 [] > slice-empty-string
-  assert-that > @
+  eq. > @
     "".slice 0 0
-    $.equal-to ""
+    ""
 
 [] > no-slice-string
-  assert-that > @
+  eq. > @
     "no slice".slice 0 0
-    $.equal-to ""
+    ""
 
 [] > slice-escape-sequences-line-break
-  assert-that > @
+  eq. > @
     "\n".slice
       0
       "\n".length
-    $.equal-to "\012"
+    "\012"
 
 [] > slice-escape-sequences-unicode
-  assert-that > @
+  eq. > @
     "\u0424".slice
       0
       "\u0424".length
-    $.equal-to "Ф"
+    "Ф"
 
 [] > slice-foreign-literals
-  assert-that > @
+  eq. > @
     "привет".slice
       0
       1
-    $.equal-to "п"
+    "п"
 
 [] > slice-foreign-literals-2
-  assert-that > @
+  eq. > @
     "hello, 大家!".slice
       7
       1
-    $.equal-to "大"
+    "大"
 
 [] > slice-start-below-zero
-  assert-that > @
+  eq. > @
     try
       []
         slice. > @
@@ -214,11 +212,10 @@
       [e]
         e > @
       nop
-    $.equal-to
-      "Start index must be greater than 0 but was -1"
+    "Start index must be greater than 0 but was -1"
 
 [] > slice-end-below-start
-  assert-that > @
+  eq. > @
     try
       []
         slice. > @
@@ -228,11 +225,10 @@
       [e]
         e > @
       nop
-    $.equal-to
-      "End index must be greater or equal to start but was 1 < 2"
+    "End index must be greater or equal to start but was 1 < 2"
 
 [] > slice-end-greater-actual
-  assert-that > @
+  eq. > @
     try
       []
         slice. > @
@@ -242,5 +238,4 @@
       [e]
         e > @
       nop
-    $.equal-to
-      "Start index + length must not exceed string length but was 12 > 11"
+    "Start index + length must not exceed string length but was 12 > 11"

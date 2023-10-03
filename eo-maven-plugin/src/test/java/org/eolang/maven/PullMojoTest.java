@@ -265,6 +265,28 @@ final class PullMojoTest {
         );
     }
 
+    @Test
+    void doesNotPullInOfflineMode(@TempDir final Path tmp) throws IOException {
+        final Map<String, Path> result = new FakeMaven(tmp)
+            .withHelloWorld()
+            .with("offline", true)
+            .execute(new FakeMaven.Pull())
+            .result();
+        final String format = "%s folder should not contain %s file, but it did";
+        final String stdout = "org/eolang/io/stdout.eo";
+        final String string = "org/eolang/string.eo";
+        MatcherAssert.assertThat(
+            String.format(format, PullMojo.DIR, stdout),
+            result.containsKey(String.format("%s/%s", PullMojo.DIR, stdout)),
+            Matchers.is(false)
+        );
+        MatcherAssert.assertThat(
+            String.format(format, PullMojo.DIR, string),
+            result.containsKey(String.format("%s/%s", PullMojo.DIR, string)),
+            Matchers.is(false)
+        );
+    }
+
     /**
      * Check if the given source file exists in the target directory.
      * @param temp Test temporary directory.

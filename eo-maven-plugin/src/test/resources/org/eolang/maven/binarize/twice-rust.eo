@@ -8,10 +8,10 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &EOEnv) -> EO {
+    pub fn foo(_env: &EOEnv) -> Option<EO> {
       let x = rand::random::<i32>();
       println!("{}", x);
-      EOInt(x as i64)
+      Some(EOInt(x as i64))
     }
     """
     *
@@ -25,10 +25,10 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &EOEnv) -> EO {
+    pub fn foo(_env: &EOEnv) -> Option<EO> {
       print!("Hello 大 2");
       let x = rand::random::<i32>();
-      EOInt(x as i64)
+      Some(EOInt(x as i64))
     }
     """
     *

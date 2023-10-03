@@ -106,6 +106,7 @@ SOFTWARE.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <runOrder>random</runOrder>
           <argLine>
             @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
@@ -137,6 +138,7 @@ SOFTWARE.
           <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
           <failOnWarning>true</failOnWarning>
+          <offline>true</offline>
         </configuration>
         <executions>
           <execution>

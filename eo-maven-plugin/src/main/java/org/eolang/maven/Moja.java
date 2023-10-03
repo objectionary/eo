@@ -37,6 +37,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.set.SetOf;
 
 /**
  * Mutable mojo builder.
@@ -91,7 +92,7 @@ public final class Moja<T extends AbstractMojo> {
                 Moja.fields(this.type)
             )
         );
-        for (final Field field : Moja.fields(mojo.getClass())) {
+        for (final Field field : new SetOf<>(Moja.fields(mojo.getClass()))) {
             if (!mine.contains(field.getName())) {
                 continue;
             }

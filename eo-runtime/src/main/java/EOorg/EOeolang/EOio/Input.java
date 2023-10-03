@@ -31,12 +31,14 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.Scanner;
+import org.eolang.Versionized;
 
 /**
  * All system inputs.
  *
  * @since 0.28.0
  */
+@Versionized
 public final class Input {
     /**
      * Default input.

@@ -1,5 +1,4 @@
-xsls:
-  - /org/eolang/parser/scopes.xsl
+xsls: []
 tests:
   - //o[@base='foo' and count(o)=2]
   - //o[@base='bar' and count(o)=2]
