@@ -51,7 +51,6 @@
         check-case-at
           index.plus 1
           cases
-
   if. > @
     cases.length.eq 0
     error "switch cases are empty"

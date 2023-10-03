@@ -92,12 +92,10 @@
             (terms.at index).neg
           index.plus 1
           terms
-
     rec-terms > neg-terms
       *
       0
       x
-
     ^.plus > @
       ...neg-terms
 
