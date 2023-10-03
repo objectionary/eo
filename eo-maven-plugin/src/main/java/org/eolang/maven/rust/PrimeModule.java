@@ -44,12 +44,15 @@ public class PrimeModule extends Module {
                 "use jni::JNIEnv;",
                 "use jni::objects::{JByteArray, JClass, JObject};",
                 "use eo_env::EOEnv;",
+                "use eo_env::eo_enum::EO::EOError;",
                 "#[no_mangle]",
                 "pub extern \"system\" fn",
                 String.format("Java_EOrust_natives_%s_%s", method, method),
                 "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray<'local>",
                 "{ let mut eo_env = EOEnv::new(env, _class, universe); ",
-                "let arr = foo(&mut eo_env).eo2vec();",
+                "let arr = foo(&mut eo_env)",
+                ".unwrap_or_else(||EOError(\"Rust function returned None\".to_string()))",
+                ".eo2vec();",
                 "eo_env.java_env.byte_array_from_slice(&arr.as_slice()).unwrap() }"
             ),
             file

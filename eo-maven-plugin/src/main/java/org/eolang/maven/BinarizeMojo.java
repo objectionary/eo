@@ -190,7 +190,7 @@ public final class BinarizeMojo extends SafeMojo {
             Logger.info(this, "Building %s rust project..", project.getName());
             try {
                 new Jaxec("cargo", "build").withHome(project).execUnsafe();
-            } catch (final IOException ex) {
+            } catch (final IOException | IllegalArgumentException ex) {
                 throw new BuildFailureException(
                     String.format(
                         "Failed to build cargo project with dest = %s",

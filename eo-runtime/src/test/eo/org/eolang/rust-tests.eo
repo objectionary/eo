@@ -32,9 +32,9 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
       println!("Hello world from rust");
-      EOInt(2)
+      Some(EOInt(2))
     }
     """
     *
@@ -50,9 +50,9 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
       println!("Hello world from rust");
-      EOInt(-10)
+      Some(EOInt(-10))
     }
     """
     *
@@ -68,8 +68,8 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOFloat};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
-      EOFloat(1.23456789)
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOFloat(1.23456789))
     }
     """
     *
@@ -85,8 +85,8 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOFloat};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
-      EOFloat(-1.23456789)
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOFloat(-1.23456789))
     }
     """
     *
@@ -102,10 +102,12 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EORaw};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
-      EORaw(
-        Box::from(
-          [0x00, 0x1a, 0xEE]
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(
+        EORaw(
+          Box::from(
+            [0x00, 0x1a, 0xEE]
+          )
         )
       )
     }
@@ -124,8 +126,10 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
 
-    pub fn foo(env: &mut EOEnv) -> EO {
-      EOInt(env.find("$.^.a").into())
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      Some(
+        EOInt(env.find("$.^.a").unwrap() as i64)
+      )
     }
     """
     *
@@ -143,9 +147,9 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOVertex};
 
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let v = env.find("$.^.book") as u32;
-      EOVertex(v)
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.book")?;
+      Some(EOVertex(v))
     }
     """
     *
@@ -161,8 +165,8 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOString};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
-      EOString("Привет world".to_string())
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOString("Привет world".to_string()))
     }
     """
     *
@@ -171,30 +175,30 @@
     content
     "Привет world"
 
-[] > rust-put-not-fails
+[] > rust-invalid-put
   QQ.rust > put
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt, EOError};
-    pub fn foo(env: &mut EOEnv) -> EO {
-      if(env.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])).is_none(){
-        return EOError("put failed".to_string());
-      } else {
-        EOInt(0 as i64)
-      }
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      env.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
+      Some(EOError("put failed".to_string()))
     }
     """
     *
       []
   eq. > @
-    try
-      []
-        put > @
-      [e]
-        e > @
-      nop
-    "Rust insert failed in Φ.org.eolang.rust-put-not-fails.put.α0:176:4 with message 'put failed'; caused by Phi object with vertex -1 was not indexed."
+    slice.
+      try
+        []
+          put > @
+        [e]
+          e > @
+        nop
+      0
+      18
+    "Rust insert failed"
 
 # @todo #2498:30min Enable the tests. After removing assert-that from eo-runtime
 #  $.string-starts-with it not allowed anymore. Need to refactor the next tests and enable them:
@@ -206,15 +210,12 @@
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOError, EOInt};
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let v1 = env.find("$.^.a") as u32;
-      let v2 = env.find("$.^.b") as u32;
-      if(env.bind(v1 , v2, "EO-att")).is_none(){
-        return EOError("bind failed".to_string());
-      } else {
-        return EOInt(0 as i64);
-      }
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v1 = env.find("$.^.a")?;
+      let v2 = env.find("$.^.b")?;
+      env.bind(v1 , v2, "EO-att")?;
+      Some(EOInt(0 as i64))
     }
     """
     *
@@ -237,10 +238,10 @@
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOVertex};
-    pub fn foo(env: &mut EOEnv) -> EO {
-        let v = env.find("$.^.a") as u32;
-        let copy = env.copy(v).unwrap();
-        EOVertex(copy)
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.a")?;
+      let copy = env.copy(v)?;
+      Some(EOVertex(copy))
     }
     """
     *
@@ -256,10 +257,10 @@
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOInt};
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let v = env.find("$.^.a") as u32;
-      let _bytes = env.dataize(v).unwrap();
-      EOInt(v as i64)
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.a")?;
+      let _bytes = env.dataize(v)?;
+      Some(EOInt(v as i64))
     }
     """
     *
@@ -280,17 +281,17 @@
     use eo_env::eo_enum::EO::{EOInt};
     use byteorder::{BigEndian, ReadBytesExt};
 
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let a = env.find("$.^.a") as u32;
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let a = env.find("$.^.a")?;
       let bytes_a = env.dataize(a).unwrap();
-      let a = bytes_a.as_slice().read_i64::<BigEndian>().unwrap();
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
-      let b = env.find("$.^.b") as u32;
-      let bytes_b = env.dataize(b).unwrap();
-      let b = bytes_b.as_slice().read_i64::<BigEndian>().unwrap();
+      let b = env.find("$.^.b")?;
+      let bytes_b = env.dataize(b)?;
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
       println!("sum 5 + 10 = {}", a + b);
 
-      EOInt(a + b)
+      Some(EOInt(a + b))
     }
     """
     *
@@ -307,8 +308,8 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOError};
 
-    pub fn foo(_env: &mut EOEnv) -> EO {
-      EOError("Custom error".to_string())
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOError("Custom error".to_string()))
     }
     """
     *
@@ -335,14 +336,11 @@
     use eo_env::eo_enum::EO;
     use eo_env::eo_enum::EO::{EOVertex, EOError};
 
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let eobytes = env.find("Q.org.eolang.bytes");
-      let copy = env.copy(eobytes as u32).unwrap();
-      if env.put(copy.clone(), &[0x00, 0x1a, 0xEE]).is_none() {
-        EOError("put failed".to_string())
-      } else {
-        EOVertex(copy)
-      }
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let eobytes = env.find("Q.org.eolang.bytes")?;
+      let copy = env.copy(eobytes)?;
+      env.put(copy.clone(), &[0x00, 0x1a, 0xEE])?;
+      Some(EOVertex(copy))
     }
     """
     *
@@ -358,17 +356,14 @@
     """
     use eo_env::EOEnv;
     use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOVertex, EOError};
+    use eo_env::eo_enum::EO::{EOVertex};
 
-    pub fn foo(env: &mut EOEnv) -> EO {
-      let eobook = env.find("$.^.book");
-      let copy = env.copy(eobook as u32).unwrap();
-      let eoline = env.find("$.^.line") as u32;
-      if env.bind(copy.clone(), eoline, "content").is_none() {
-        EOError("bind failed".to_string())
-      } else {
-        EOVertex(copy)
-      }
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let eobook = env.find("$.^.book")?;
+      let copy = env.copy(eobook)?;
+      let eoline = env.find("$.^.line")?;
+      env.bind(copy.clone(), eoline, "content")?;
+      Some(EOVertex(copy))
     }
     """
     *
