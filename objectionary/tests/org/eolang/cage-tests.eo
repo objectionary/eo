@@ -20,28 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > writes-into-cage
   [z] > a
   cage a > x
-  assert-that > @
+  eq. > @
     seq
       x.write
         a 7
       x.z
-    $.equal-to 7
+    7
 
 [] > avoid-infinite-loop
   cage > x
     TRUE.if
   x' > copy
-  assert-that > @
+  eq. > @
     seq
       x.write
         TRUE.if 1 0
@@ -49,50 +48,50 @@
       x.write
         TRUE.if copy 0
       x
-    $.equal-to 1
+    1
 
 [] > cage-nested-objects
   [x] > dummy
     x > @
   cage dummy > c
   c' > copy
-  assert-that > @
+  eq. > @
     seq
       c.write (dummy 42)
       copy.<
       c.write (dummy copy)
       c.x.x
-    $.equal-to 42
+    42
 
 [] > dataizes-encaged-object-lazily-first
   cage 0 > x
   cage 0.plus > sum
-  assert-that > @
+  eq. > @
     seq
       x.write 42
       sum.write
         x.plus 1
       x.write 7
       sum
-    $.equal-to 8
+    8
 
 [] > dataizes-encaged-object-lazily-second
   cage 0 > x
   cage 0.plus > sum
-  assert-that > @
+  eq. > @
     seq
       x.write 42
       sum.write
         1.plus x
       x.write 7
       sum
-    $.equal-to 8
+    8
 
 [] > dataizes-encaged-object-lazily-third
   cage 0 > x
   cage 0 > y
   cage 0.plus > sum
-  assert-that > @
+  eq. > @
     seq
       x.write 42
       y.write 7
@@ -101,17 +100,17 @@
       y.write 13
       x.write 4
       sum
-    $.equal-to 17
+    17
 
 [] > stores-abstract-object-into-cage
-  assert-that > @
+  eq. > @
     seq
       cage > c
         [x]
           112 > @
       c.@
         42
-    $.equal-to 112
+    112
 
 [] > multi-layer-volatility
   memory 0 > ma
@@ -132,14 +131,13 @@
           seq > z
             mb.write (mb.as-int.plus 1)
             mb.as-int
-  assert-that > @
+  eq. > @
     seq
       ca
       ca.plus 40
-    $.equal-to
-      seq
-        cb.z
-        cb.z.plus 40
+    seq
+      cb.z
+      cb.z.plus 40
 
 [] > infinite-loop-check
   [value] > pyint
@@ -148,18 +146,18 @@
   cage pyint > x
   cage > tmp
     x.add
-  assert-that > @
+  eq. > @
     seq
       x.write
         pyint 0
       tmp.write
         x.add (pyint 1)
       tmp.value
-    $.equal-to 1
+    1
 
 [] > catches-writing-objects-of-different-types
   cage 5 > cge
-  assert-that > @
+  eq. > @
     seq
       try
         cge.write "Hello world"
@@ -167,4 +165,4 @@
           cge.write 10 > @
         nop
       cge.eq 10
-    $.equal-to TRUE
+    TRUE

@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.31.0
-+version 0.31.0
++rt jvm org.eolang:eo-runtime:0.32.0
++version 0.32.0
 
 [] > float
   # Tests that $ = x
@@ -36,7 +36,7 @@
           ^.as-bytes > self-as-bytes!
           00-00-00-00-00-00-00-00 > zero-as-bytes!
         eq.
-          x.as-bytes > x-as-bytes!
+          value.as-bytes > x-as-bytes!
           zero-as-bytes
       eq.
         ^.neg.as-bytes
@@ -92,12 +92,10 @@
             (terms.at index).neg
           index.plus 1
           terms
-
     rec-terms > neg-terms
       *
       0
       x
-
     ^.plus > @
       ...neg-terms
 

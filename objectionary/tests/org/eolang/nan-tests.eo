@@ -20,129 +20,124 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.31.0
++version 0.32.0
 
 [] > nan-not-eq-number
-  assert-that > @
-    nan
-    $.not
-      $.equal-to 42
+  not. > @
+    eq.
+      nan
+      42
 
 [] > nan-not-eq-nan
   nan > not-a-number!
-  assert-that > @
-    not-a-number
-    $.not
-      $.equal-to not-a-number
+  not. > @
+    eq.
+      not-a-number
+      not-a-number
 
 [] > nan-not-lt-number
-  assert-that > @
-    nan
-    $.not
-      $.less-than 42
+  eq. > @
+    nan.lt 42
+    FALSE
 
 [] > nan-not-lt-nan
   nan > not-a-number!
-  assert-that > @
-    not-a-number
-    $.not
-      $.less-than not-a-number
+  eq. > @
+    not-a-number.lt not-a-number
+    FALSE
 
 [] > nan-not-lte-number
-  assert-that > @
+  eq. > @
     nan.lte 42
-    $.equal-to FALSE
+    FALSE
 
 [] > nan-not-lte-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     not-a-number.lte not-a-number
-    $.equal-to FALSE
+    FALSE
 
 [] > nan-not-gt-number
-  assert-that > @
-    nan
-    $.not
-      $.greater-than 42
+  eq. > @
+    nan.gt 42
+    FALSE
 
 [] > nan-not-gt-nan
   nan > not-a-number!
-  assert-that > @
-    not-a-number
-    $.not
-      $.greater-than not-a-number
+  eq. > @
+    not-a-number.gt not-a-number
+    FALSE
 
 [] > nan-not-gte-number
-  assert-that > @
+  eq. > @
     nan.gte 42
-    $.equal-to FALSE
+    FALSE
 
 [] > nan-not-gte-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     not-a-number.gte not-a-number
-    $.equal-to FALSE
+    FALSE
 
 [] > nan-times-number-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.times 42).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-times-nan-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.times not-a-number).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-div-number-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.div 42).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-div-nan-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.div not-a-number).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-plus-number-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.plus 42).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-plus-nan-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.plus not-a-number).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-neg-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     not-a-number.neg.as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-minus-number-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.minus 42).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-minus-nan-is-nan
   nan > not-a-number!
-  assert-that > @
+  eq. > @
     (not-a-number.minus not-a-number).as-bytes
-    $.equal-to not-a-number.as-bytes
+    not-a-number.as-bytes
 
 [] > nan-as-bytes-is-bytes-of-zero-div-zero
-  assert-that > @
+  eq. > @
     nan.as-bytes
-    $.equal-to (0.0.div 0.0).as-bytes
+    (0.0.div 0.0).as-bytes

@@ -20,17 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > just-prints-warning
-  assert-that > @
+  eq. > @
     cti
       2.times 2
       "warning"
       "This method is deprecated!"
-    $.equal-to 4
+    4

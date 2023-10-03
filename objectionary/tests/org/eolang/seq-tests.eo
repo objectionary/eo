@@ -20,47 +20,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > seq-single-dataization-float-less-than-test
   memory 0.0 > counter
-  assert-that > @
+  lt. > @
     seq
       counter.write
         counter.as-float.plus 1.0
       counter.as-float
-    $.less-than 2.0
+    2.0
 
 [] > seq-single-dataization-float-greater-than-test
   memory 0.0 > counter
-  assert-that > @
-    seq
-      counter.write
-        counter.as-float.plus 1.0
-      counter.as-float
-    $.not
-      $.greater-than 1.1
+  not. > @
+    gt.
+      seq
+        counter.write
+          counter.as-float.plus 1.0
+        counter.as-float
+      1.1
 
 [] > seq-single-dataization-int-less-than-test
   memory 0 > counter
-  assert-that > @
+  lt. > @
     seq
       counter.write
         counter.as-int.plus 1
       counter.as-int
-    $.less-than 2
+    2
 
 [] > seq-single-dataization-int-greater-than-test
   memory 0 > counter
-  assert-that > @
+  lte. > @
     seq
       counter.write
         counter.as-int.plus 1
       counter.as-int
-    $.not
-      $.greater-than 1
+    1

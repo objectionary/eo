@@ -20,117 +20,116 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > less-true
-  assert-that > @
+  eq. > @
     lt.
       10
       50
-    $.equal-to TRUE
+    TRUE
     "check int.lt"
 
 [] > less-equal
-  assert-that > @
+  eq. > @
     not.
       lt.
         10
         10
-    $.equal-to TRUE
+    TRUE
     "check int.less.not equal"
 
 [] > less-false
-  assert-that > @
+  eq. > @
     not.
       lt.
         10
         -5
-    $.equal-to TRUE
+    TRUE
     "check int.lt.not lt"
 
 [] > greater-true
-  assert-that > @
+  eq. > @
     gt.
       -200
       -1000
-    $.equal-to TRUE
+    TRUE
     "check int.gt"
 
 [] > greater-false
-  assert-that > @
+  eq. > @
     not.
       gt.
         0
         100
-    $.equal-to TRUE
+    TRUE
     "check int.gt.not"
 
 [] > greater-equal
-  assert-that > @
+  eq. > @
     not.
       gt.
         0
         0
-    $.equal-to TRUE
+    TRUE
     "check int.gt.not zero"
 
 [] > leq-true
-  assert-that > @
+  eq. > @
     lte.
       -200
       -100
-    $.equal-to TRUE
+    TRUE
     "check int.lte"
 
 [] > leq-equal
-  assert-that > @
+  eq. > @
     lte.
       50
       50
-    $.equal-to TRUE
+    TRUE
     "check int.lte equal"
 
 [] > leq-false
-  assert-that > @
+  eq. > @
     not.
       lte.
         0
         -10
-    $.equal-to TRUE
+    TRUE
     "check int.lte.not"
 
 [] > gte-true
-  assert-that > @
+  eq. > @
     gte.
       -1000
       -1100
-    $.equal-to TRUE
+    TRUE
     "check int.gte negative int"
 
 [] > gte-equal
-  assert-that > @
+  eq. > @
     gte.
       113
       113
-    $.equal-to TRUE
+    TRUE
     "check int.gte positive int"
 
 [] > gte-false
-  assert-that > @
+  eq. > @
     not.
       gte.
         0
         10
-    $.equal-to TRUE
+    TRUE
     "check int.gte.not"
 
 [] > int-equal-to-nan-and-infinites-is-false
-  assert-that > @
+  eq. > @
     and.
       (0.eq nan).eq FALSE
       (0.eq positive-infinity).eq FALSE
@@ -138,46 +137,46 @@
       (42.eq nan).eq FALSE
       (42.eq positive-infinity).eq FALSE
       (42.eq negative-infinity).eq FALSE
-    $.equal-to TRUE
+    TRUE
 
 [] > zero-eq-to-zero
-  assert-that > @
+  eq. > @
     eq.
       0
       0
-    $.equal-to TRUE
+    TRUE
 
 [] > int-zero-not-eq-to-float-zero
-  assert-that > @
+  eq. > @
     eq.
       0
       0.0
-    $.equal-to FALSE
+    FALSE
 
 [] > eq-true
-  assert-that > @
+  eq. > @
     eq.
       123
       123
-    $.equal-to TRUE
+    TRUE
     "check int.eq"
 
 [] > eq-false
-  assert-that > @
+  eq. > @
     not.
       eq.
         123
         42
-    $.equal-to TRUE
+    TRUE
     "check int.eq.not"
 
 [] > compares-two-different-types
-  assert-that > @
+  eq. > @
     not.
       eq.
         42
         "Hello!"
-    $.equal-to TRUE
+    TRUE
     "check int.eq.not string"
 
 [] > calculates-fibonacci-number-with-recursion
@@ -188,15 +187,14 @@
       plus.
         fibo (n.minus 1)
         fibo (n.minus 2)
-  assert-that > @
+  eq. > @
     fibo 4
-    $.equal-to 3
+    3
 
 [] > calculates-fibonacci-number-with-tail
-  assert-that > @
+  eq. > @
     fibonacci 4
-    $.equal-to 3
-    "calculates fibonacci number with tail "
+    3
   [n] > fibonacci
     if. > @
       n.lt 3
@@ -215,111 +213,107 @@
 
 # Checks that division by zero returns an error object
 [] > zero-division
-  assert-that > @
+  eq. > @
     try
       []
         2.div 0 > @
       [e]
         e > @
       nop
-    $.equal-to
-      "The 1th argument of 'int.div' is invalid: division by zero is infinity"
+    "The 1th argument of 'int.div' is invalid: division by zero is infinity"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
   -235 > dividend
-  assert-that > @
+  eq. > @
     dividend.div 1
-    $.equal-to
-      dividend
+    dividend
 
 # Checks that div works properly with dividends greater than zero
 [] > div-for-dividend-greater-than-zero
-  assert-that > @
+  eq. > @
     256.div 16
-    $.equal-to 16
+    16
 
 # Checks div with remainder
 [] > div-with-remainder
-  assert-that > @
+  eq. > @
     13.div -5
-    $.equal-to -2
+    -2
 
 [] > div-less-than-one
-  assert-that > @
+  eq. > @
     1.div 5
-    $.equal-to 0
+    0
 
 [] > div-with-multiple
-  assert-that > @
+  eq. > @
     100.div 5 2 -5
-    $.equal-to -2
+    -2
 
 [] > div-wrong-args
-  assert-that > @
+  eq. > @
     try
       []
         100.div 1 2 3.0 > @
       [e]
         e > @
       nop
-    $.equal-to "The 3th argument of 'int.div' is not a(n) Long: 3.0"
+    "The 3th argument of 'int.div' is not a(n) Long: 3.0"
 
 [] > to-bytes-and-backwards
-  assert-that > @
+  eq. > @
     as-int.
       as-bytes.
         42
-    $.equal-to 42
+    42
 
 [] > as-bytes-equals-to-int
-  assert-that > @
+  eq. > @
     42
-    $.equal-to
-      42.as-bytes
+    42.as-bytes
 
 [] > as-bytes-equals-to-int-backwards
-  assert-that > @
+  eq. > @
     42.as-bytes
-    $.equal-to 42
+    42
 
 [] > sum-up-several-arguments
-  assert-that > @
+  eq. > @
     1982
-    $.equal-to
-      1000.plus 900 80 2
+    1000.plus 900 80 2
 
 [] > sum-up-wrong-args
-  assert-that > @
+  eq. > @
     try
       []
         100.plus 1 2 3.0 > @
       [e]
         e > @
       nop
-    $.equal-to "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
+    "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
 
 [] > multiply-several-arguments
-  assert-that > @
+  eq. > @
     1000.times 2 5
-    $.equal-to 10000
+    10000
 
 [] > multiply-wrong-args
-  assert-that > @
+  eq. > @
     try
       []
         100.times 1 2 3.0 > @
       [e]
         e > @
       nop
-    $.equal-to "The 3th argument of 'int.times' is not a(n) Long: 3.0"
+    "The 3th argument of 'int.times' is not a(n) Long: 3.0"
 
 [] > multiply-by-zero
-  assert-that > @
+  eq. > @
     1000.times 0
-    $.equal-to 0
+    0
 
 [] > minus-multiple-args
-  assert-that > @
+  eq. > @
     123.minus -12 135 235 0
-    $.equal-to -235
+    -235

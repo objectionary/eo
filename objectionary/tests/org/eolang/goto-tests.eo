@@ -20,18 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.goto
-+alias org.eolang.hamcrest.assert-that
 +alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > goto-jumps-backwards
   memory 0 > i
-  assert-that > @
+  eq. > @
     seq
       i.write 1
       goto
@@ -44,11 +42,11 @@
               TRUE
       stdout "Finished!"
       i
-    $.equal-to 11
+    11
 
 [] > goto-jumps-backwards-without-last-datization
   memory 0 > i
-  assert-that > @
+  eq. > @
     seq
       i.write 1
       goto
@@ -63,7 +61,7 @@
       .<
       stdout "Finished!"
       i
-    $.equal-to 10
+    10
 
 [] > goto-jumps-forward
   [x] > div
@@ -79,7 +77,7 @@
               TRUE
             r.write (42.div x)
       r
-  assert-that > @
+  eq. > @
     and.
       eq.
         div 7
@@ -87,7 +85,7 @@
       eq.
         div 0
         0
-    $.equal-to TRUE
+    TRUE
 
 [] > returns-from-method-body
   [a b] > max
@@ -99,12 +97,12 @@
             g.forward a
             TRUE
           b
-  assert-that > @
+  eq. > @
     max 7 42
-    $.equal-to 42
+    42
 
 [] > nested-goto
-  assert-that > @
+  eq. > @
     goto
       [g1]
         seq > @
@@ -112,4 +110,4 @@
             [g2]
               g1.forward 42 > @
           7
-    $.equal-to 42
+    42

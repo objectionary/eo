@@ -20,106 +20,72 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.io.stdout
-+alias org.eolang.math.number
-+alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.31.0
++version 0.32.0
 
 [] > compares-two-bools
-  assert-that > @
+  eq. > @
     TRUE
-    $.equal-to TRUE
+    TRUE
 
 [] > compares-two-different-types
-  assert-that > @
-    TRUE
-    $.is
-      $.not
-        $.equal-to 42
+  not. > @
+    eq.
+      TRUE
+      42
 
-[] > joins-many-ANDs
-  assert-that > @
-    and.
-      TRUE
-      5.lt 10
-      4.gt -6
-      TRUE
-      0.eq 0
-    $.equal-to TRUE
+[] > joins-many-ands
+  and. > @
+    TRUE
+    5.lt 10
+    4.gt -6
+    TRUE
+    0.eq 0
 
 [] > forks-on-condition
-  assert-that > @
+  eq. > @
     if.
       5.eq 8
       123
       42
-    $.equal-to 42
+    42
 
 [] > iterates-over-simple-counter
   memory 0 > x
-  assert-that > @
-    and.
-      eq.
-        x.write 5
-        5
-      eq.
-        while.
-          x.as-int.lt 10
-          [i]
-            x.write > @
-              x.as-int.plus 1
-        11
-    $.equal-to TRUE
-
-[] > prints-nice-formulas
-  memory 0 > x
-  assert-that > @
-    seq
-      x.write 2
+  and. > @
+    eq.
+      x.write 5
+      5
+    eq.
       while.
-        x.as-int.lt 6
+        x.as-int.lt 10
         [i]
-          seq > @
-            stdout
-              sprintf
-                "%dx%d = %d\n"
-                x.as-int
-                x.as-int
-                pow.
-                  number
-                    x.as-int
-                  2
-            x.write
-              x.as-int.plus 1
-      TRUE
-    $.equal-to TRUE
+          x.write > @
+            x.as-int.plus 1
+      11
 
 # tests that bool.and stops calculations if its i'th
 # object is false (including the base object)
 [] > and-short-circuiting
   memory 0 > mFirst
   memory 0 > mThird
-  assert-that > res
-    and.
-      not.
-        and.
-          (mFirst.write 1).eq 100
-          (mFirst.write 2).eq 2
-          (mFirst.write 3).eq 3
-      not.
-        and.
-          (mThird.write 1).eq 1
-          (mThird.write 2).eq 2
-          (mThird.write 3).eq 300
-          (mThird.write 4).eq 4
-      mFirst.eq 1
-      mThird.eq 3
-    $.equal-to TRUE
+  and. > res
+    not.
+      and.
+        (mFirst.write 1).eq 100
+        (mFirst.write 2).eq 2
+        (mFirst.write 3).eq 3
+    not.
+      and.
+        (mThird.write 1).eq 1
+        (mThird.write 2).eq 2
+        (mThird.write 3).eq 300
+        (mThird.write 4).eq 4
+    mFirst.eq 1
+    mThird.eq 3
   nop > @
 
 # tests that bool.or stops calculations if its i'th
@@ -127,76 +93,63 @@
 [] > or-short-circuiting
   memory 0 > mFirst
   memory 0 > mThird
-  assert-that > @
-    and.
-      or.
-        (mFirst.write 1).eq 1
-        mFirst.write 2
-        mFirst.write 3
-      or.
-        (mThird.write 1).eq 100
-        (mThird.write 2).eq 200
-        (mThird.write 3).eq 3
-        mThird.write 4
-      mFirst.eq 1
-      mThird.eq 3
-    $.equal-to TRUE
+  and. > @
+    or.
+      (mFirst.write 1).eq 1
+      mFirst.write 2
+      mFirst.write 3
+    or.
+      (mThird.write 1).eq 100
+      (mThird.write 2).eq 200
+      (mThird.write 3).eq 3
+      mThird.write 4
+    mFirst.eq 1
+    mThird.eq 3
 
 [] > compares-bool-to-bytes
-  assert-that > @
-    and.
-      TRUE.eq 01-
-      FALSE.eq 00-
-    $.equal-to TRUE
+  and. > @
+    TRUE.eq 01-
+    FALSE.eq 00-
 
 [] > compares-bool-to-string
-  assert-that > @
-    and.
-      TRUE.eq "\001"
-      FALSE.eq "\000"
-    $.equal-to TRUE
+  and. > @
+    TRUE.eq "\001"
+    FALSE.eq "\000"
 
 [] > compares-bool-to-bytes-reverse
-  assert-that > @
-    and.
-      01-.as-bytes.eq TRUE
-      00-.as-bytes.eq FALSE
-    $.equal-to TRUE
+  and. > @
+    01-.as-bytes.eq TRUE
+    00-.as-bytes.eq FALSE
 
 [] > complex-bool-expression-in-while
   memory 0 > m
-  assert-that > @
-    seq
-      m.write 5
-      while.
-        eq.
-          m.as-int.gt 0
+  seq > @
+    m.write 5
+    while.
+      eq.
+        m.as-int.gt 0
+        TRUE
+      [i]
+        seq > @
+          m.write
+            m.as-int.minus 1
           TRUE
-        [i]
-          seq > @
-            m.write
-              m.as-int.minus 1
-            stdout
-              sprintf
-                "%d\n"
-                m.as-int
-      TRUE
-    $.equal-to TRUE
+    TRUE
 
 [] > last-while-dataization-object
   memory 0 > x
-  assert-that > @
+  eq. > @
     while.
       x.as-int.lt 2
       [i]
         seq > @
           x.write (x.as-int.plus 1)
           x.as-int
-    $.equal-to 3
+    3
 
 [] > while-without-last-dataization
   memory 0 > x
-  assert-that > @
+  eq. > @
     seq
       while.
         x.as-int.lt 2
@@ -205,15 +158,15 @@
       .@
       .<
       x.as-int
-    $.equal-to 2
+    2
 
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
-  assert-that > @
+  eq. > @
     while.
       x.as-int.lt 1
       [i]
         seq > @
           x.write (x.as-int.plus 1)
           x
-    $.equal-to FALSE
+    FALSE

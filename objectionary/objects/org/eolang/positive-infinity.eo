@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.31.0
-+version 0.31.0
++rt jvm org.eolang:eo-runtime:0.32.0
++version 0.32.0
 
 # Positive infinity
 [] > positive-infinity
@@ -46,10 +46,11 @@
 
   # Tests that $ > x
   [x] > gt
+    x > value!
     not. > @
       or.
-        x.as-bytes.eq (nan.as-bytes)
-        ^.eq x
+        value.as-bytes.eq (nan.as-bytes)
+        ^.eq value
 
   # Tests that $ ≥ x
   [x] > gte
@@ -60,9 +61,6 @@
 
   # Multiplication of $ and x
   [x...] > times
-    negative-infinity > neg-inf!
-    0 > zero!
-
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
@@ -84,70 +82,47 @@
           term.gt 0.0 > @
         FALSE
 
-    [acc-index-terms infs is-nan-or-zero is-term-gt-zero] > times-rec
-      acc-index-terms.at 0 > acc!
-      acc-index-terms.at 1 > index!
-      acc-index-terms.at 2 > terms
-      infs.at 0 > pos-inf
-      infs.at 1 > neg-inf
-
+    [acc index terms] > times-rec
       if. > @
         index.eq terms.length
         acc
         if.
-          is-nan-or-zero
+          $.&.is-nan-or-zero
             terms.at index > term!
           nan
-          if.
-            acc.gt 0.0
-            times-rec
-              *
-                if.
-                  is-term-gt-zero term > term-gt-zero
-                  acc
-                  neg-inf
-                index.plus 1 > next-index
-                terms
-              infs
-              is-nan-or-zero
-              is-term-gt-zero
-            times-rec
-              *
-                if.
-                  term-gt-zero
-                  acc
-                  pos-inf
-                next-index
-                terms
-              infs
-              is-nan-or-zero
-              is-term-gt-zero
-
+          $.&.times-rec
+            if.
+              $.&.is-term-gt-zero term > term-gt-zero
+              acc
+              if.
+                acc.gt 0.0
+                negative-infinity
+                positive-infinity
+            index.plus 1
+            terms
     if. > @
       eq.
         x.length > terms-count!
-        zero
-      ^
+        0
+      positive-infinity
       if.
-        terms-count.gt 1
-        times-rec
-          * ^ zero x
-          * ^ neg-inf
-          is-nan-or-zero
-          is-term-gt-zero
+        terms-count.eq 1
         if.
           is-nan-or-zero
-            x.at zero > first!
+            x.at 0 > first!
           nan
           if.
             is-term-gt-zero first
-            ^
-            neg-inf
+            positive-infinity
+            negative-infinity
+        times-rec
+          positive-infinity
+          0
+          x
 
   # Sum of $ and x
   [x...] > plus
     negative-infinity.as-bytes > neg-inf-as-bytes!
-    0 > zero!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
@@ -160,42 +135,38 @@
           term > t!
         t.as-bytes.eq neg-inf-as-bytes
 
-    [acc index terms is-nan-or-neg-inf] > plus-rec
+    [acc index terms] > plus-rec
       if. > @
         index.eq terms.length
         acc
         if.
-          is-nan-or-neg-inf
+          $.&.is-nan-or-neg-inf
             terms.at index
           nan
-          plus-rec
+          $.&.plus-rec
             acc
             index.plus 1
             terms
-            is-nan-or-neg-inf
-
     if. > @
       eq.
         x.length > terms-count!
-        zero
-      ^
+        0
+      positive-infinity
       if.
-        terms-count.gt 1
-        plus-rec
-          ^
-          zero
-          x
-          is-nan-or-neg-inf
+        terms-count.eq 1
         if.
           is-nan-or-neg-inf
-            x.at zero
+            x.at 0
           nan
-          ^
+          positive-infinity
+        plus-rec
+          positive-infinity
+          0
+          x
 
   # Difference between $ and x
   [x...] > minus
-    ^.as-bytes > pos-inf-as-bytes!
-    0 > zero!
+    positive-infinity.as-bytes > pos-inf-as-bytes!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
@@ -208,44 +179,37 @@
           term > t!
         t.as-bytes.eq pos-inf-as-bytes
 
-    [acc index terms is-nan-or-pos-inf] > minus-rec
+    [acc index terms] > minus-rec
       if. > @
         index.eq terms.length
         acc
         if.
-          is-nan-or-pos-inf
+          $.&.is-nan-or-pos-inf
             terms.at index
           nan
-          minus-rec
+          $.&.minus-rec
             acc
             index.plus 1
             terms
-            is-nan-or-pos-inf
-
     if. > @
       eq.
         x.length > terms-count!
-        zero
-      ^
+        0
+      positive-infinity
       if.
-        terms-count.gt 1
-        minus-rec
-          ^
-          zero
-          x
-          is-nan-or-pos-inf
+        terms-count.eq 1
         if.
           is-nan-or-pos-inf
-            x.at zero
+            x.at 0
           nan
-          ^
+          positive-infinity
+        minus-rec
+          positive-infinity
+          0
+          x
 
   # Quotient of the division of $ by x
   [x...] > div
-    negative-infinity > neg-inf!
-    ^ > pos-inf!
-    0 > zero!
-
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
@@ -255,8 +219,8 @@
       or. > @
         is-nan
           term > t!
-        t.eq pos-inf
-        t.eq neg-inf
+        t.eq positive-infinity
+        t.eq negative-infinity
 
     [term] > is-term-gte-zero
       try > @
@@ -266,62 +230,40 @@
           term.gte 0.0 > @
         FALSE
 
-    [acc-index-terms infs is-nan-or-infinite is-term-gte-zero] > div-rec
-      acc-index-terms.at 0 > acc!
-      acc-index-terms.at 1 > index!
-      acc-index-terms.at 2 > terms
-      infs.at 0 > pos-inf
-      infs.at 1 > neg-inf
-
+    [acc index terms] > div-rec
       if. > @
         index.eq terms.length
         acc
         if.
-          is-nan-or-infinite
+          $.&.is-nan-or-infinite
             terms.at index > term!
           nan
-          if.
-            acc.gt 0.0
-            div-rec
-              *
-                if.
-                  is-term-gte-zero term > term-gte-zero
-                  acc
-                  neg-inf
-                index.plus 1 > next-index
-                terms
-              infs
-              is-nan-or-infinite
-              is-term-gte-zero
-            div-rec
-              *
-                if.
-                  term-gte-zero
-                  acc
-                  pos-inf
-                next-index
-                terms
-              infs
-              is-nan-or-infinite
-              is-term-gte-zero
-
+          $.&.div-rec
+            if.
+              $.&.is-term-gte-zero term
+              acc
+              if.
+                acc.gt 0.0
+                negative-infinity
+                positive-infinity
+            index.plus 1
+            terms
     if. > @
       eq.
         x.length > terms-count!
-        zero
-      pos-inf
+        0
+      positive-infinity
       if.
-        terms-count.gt 1
-        div-rec
-          * pos-inf zero x
-          * pos-inf neg-inf
-          is-nan-or-infinite
-          is-term-gte-zero
+        terms-count.eq 1
         if.
           is-nan-or-infinite
-            x.at zero > first!
+            x.at 0 > first!
           nan
           if.
             is-term-gte-zero first
-            pos-inf
-            neg-inf
+            positive-infinity
+            negative-infinity
+        div-rec
+          positive-infinity
+          0
+          x
