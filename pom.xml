@@ -100,12 +100,6 @@ SOFTWARE.
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.28</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
         <version>0.55.0</version>
