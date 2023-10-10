@@ -45,7 +45,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.22
  */
-final class HmDefaultTest {
+final class HmBaseTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest

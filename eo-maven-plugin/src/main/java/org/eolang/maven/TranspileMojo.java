@@ -275,9 +275,6 @@ public final class TranspileMojo extends SafeMojo {
         for (final Path binary : unexpected) {
             try {
                 synchronized (TranspileMojo.class) {
-                    if (Files.exists(binary)) {
-                        System.out.println("Delete binary " + binary);
-                    }
                     Files.deleteIfExists(binary);
                 }
             } catch (final IOException cause) {

@@ -96,18 +96,6 @@ public final class PlaceMojo extends SafeMojo {
     @SuppressWarnings("PMD.LongVariable")
     private boolean placeBinariesThatHaveSources;
 
-    /**
-     * Rewrite binaries in output directory or not.
-     * @since 0.32.0
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        name = "rewriteBinaries",
-        required = true,
-        defaultValue = "true"
-    )
-    private boolean rewriteBinaries;
-
     @Override
     public void exec() throws IOException {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);

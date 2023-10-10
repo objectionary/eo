@@ -40,33 +40,11 @@ private static boolean online() {
   return online
 }
 
-//[
-//  'target/eo/foreign.csv',
-//  'target/generated-sources/EOorg/EOeolang/EOexamples/EOapp.java',
-//  'target/eo/1-parse/org/eolang/examples/app.xmir',
-//  'target/eo/2-optimization-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
-//  'target/eo/2-optimize/org/eolang/examples/app.xmir',
-//  'target/eo/5-pre/org/eolang/examples/app/01-classes.xml',
-//  'target/eo/6-transpile/org/eolang/examples/app.xmir',
-//  'target/eo/sodg/org/eolang/error.sodg',
-//  'target/eo/sodg/org/eolang/error.sodg.xe',
-//  'target/eo/sodg/org/eolang/error.sodg.graph.xml',
-//  'target/eo/sodg/org/eolang/error.sodg.dot',
-//].each { assert new File(basedir, it).exists() }
-//
-//[
-//  'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
-//  'target/eo/placed.json',
-//  'target/eo/3-pull/org/eolang/tuple.eo',
-//].each { assert new File(basedir, it).exists() || !online() }
-//
-//String log = new File(basedir, 'build.log').text
-//
-//[
-//  'org.eolang:eo-runtime:',
-//  ' unpacked to ',
-//  '6th Fibonacci number is 8',
-//  'BUILD SUCCESS',
-//].each { assert log.contains(it) || !online() }
+if (online()) {
+  assert new File(basedir, 'target/classes/EOorg/EOeolang/EOmath/EOe.class').exists()
+  assert new File(basedir, 'build.log').text.contains(
+    'target/classes/EOorg/EOeolang/EOmath/EOe.class file was skipped'
+  )
+}
 
 true

@@ -23,26 +23,28 @@
  */
 package org.eolang.maven.util;
 
-import org.cactoos.Bytes;
-import org.cactoos.Input;
-import org.cactoos.Text;
-import org.cactoos.io.InputOf;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import org.cactoos.Bytes;
+import org.cactoos.Input;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 
 /**
  * Location for files that saves optionally.
+ * @since 0.32.0
  */
-public class HmOptional implements Home {
+@SuppressWarnings("PMD.TooManyMethods")
+public final class HmOptional implements Home {
     /**
      * Original home.
      */
     private final Home origin;
 
     /**
-     * Rewrite files or not
+     * Rewrite files or not.
      */
     private final boolean rewrite;
 
@@ -80,12 +82,10 @@ public class HmOptional implements Home {
     @Override
     public void save(final Input input, final Path path) throws IOException {
         final Path target = this.absolute(this.onlyRelative(path));
-        System.out.println("Flag " + this.rewrite);
-        System.out.println("Path " + path);
         if (!target.toFile().exists() || this.rewrite) {
             this.origin.save(input, path);
         } else {
-            Logger.info(this, "Saving of %s file was skipped", target);
+            Logger.info(this, "Rewriting of the %s file was skipped", target);
         }
     }
 

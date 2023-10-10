@@ -108,6 +108,7 @@ SOFTWARE.
               <addTestSourcesRoot>true</addTestSourcesRoot>
               <generatedDir>${project.build.directory}/generated-test-sources</generatedDir>
               <failOnWarning>false</failOnWarning>
+              <rewriteBinaries>false</rewriteBinaries>
             </configuration>
           </execution>
         </executions>
