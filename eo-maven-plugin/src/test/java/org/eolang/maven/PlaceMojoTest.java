@@ -236,7 +236,7 @@ final class PlaceMojoTest {
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
             maven.placed().jars().size(),
@@ -253,7 +253,7 @@ final class PlaceMojoTest {
                 .execute(new FakeMaven.Place())
                 .result()
                 .get(PlaceMojoTest.TARGET_CLASSES),
-            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(
             maven.placed().jars().isEmpty(),
