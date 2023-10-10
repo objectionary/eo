@@ -35,6 +35,8 @@ import org.cactoos.io.InputOf;
 /**
  * Location for files that saves optionally.
  * @since 0.32.0
+ * @todo #2528:30min Add tests for {@link HmOptional}. It would be nice to test the functionality
+ *  of the {@link HmOptional} class. Don't forget to remove the puzzle after introducing the tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class HmOptional implements Home {
