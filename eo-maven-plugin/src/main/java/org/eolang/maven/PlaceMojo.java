@@ -80,7 +80,7 @@ public final class PlaceMojo extends SafeMojo {
     private Set<String> includeBinaries = new SetOf<>("**");
 
     /**
-     * List of exclusion GLOB filters for finding class files
+     * List of exclusion GLOB filters for finding class files.
      * @since 0.15
      * @checkstyle MemberNameCheck (7 lines)
      */
