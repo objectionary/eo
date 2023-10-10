@@ -42,7 +42,7 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 
 /**
@@ -154,7 +154,7 @@ public final class PullMojo extends SafeMojo {
                 object, new Rel(src)
             );
         } else {
-            new Home(dir).save(
+            new HmBase(dir).save(
                 this.objectionaries.object(object),
                 dir.relativize(src)
             );

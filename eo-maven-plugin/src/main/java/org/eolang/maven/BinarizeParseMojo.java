@@ -55,7 +55,7 @@ import org.eolang.maven.rust.Native;
 import org.eolang.maven.rust.PrimeModule;
 import org.eolang.maven.rust.Project;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -149,7 +149,7 @@ public final class BinarizeParseMojo extends SafeMojo {
                 final Path target = BinarizeMojo.DIR
                     .resolve(BinarizeParseMojo.CODES)
                     .resolve(filename);
-                new Home(this.targetDir.toPath()).save(
+                new HmBase(this.targetDir.toPath()).save(
                     code,
                     target
                 );

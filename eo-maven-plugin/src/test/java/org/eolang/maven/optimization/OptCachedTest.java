@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -82,7 +82,7 @@ class OptCachedTest {
     private static Path save(final Path tmp, final XML xml) throws IOException {
         final Path path = Paths.get("main.xmir");
         final Path res = tmp.resolve(path);
-        new Home(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
+        new HmBase(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
         return res;
     }
 

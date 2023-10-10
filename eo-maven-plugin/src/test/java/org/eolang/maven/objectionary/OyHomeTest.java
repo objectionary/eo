@@ -26,7 +26,7 @@ package org.eolang.maven.objectionary;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ final class OyHomeTest {
     @Test
     void resolvesObjectInLocalStorage(@TempDir final Path path) throws Exception {
         final String content = "[] > main\n";
-        new Home(path).save(
+        new HmBase(path).save(
             content,
             Paths.get("pulled/master/org/example/main.eo")
         );
@@ -58,7 +58,7 @@ final class OyHomeTest {
     @Test
     void checksPresenceOfObjectInLocalStorage(@TempDir final Path path) throws Exception {
         final String content = "[] > main\n";
-        new Home(path).save(
+        new HmBase(path).save(
             content,
             Paths.get("pulled/master/org/example/main.eo")
         );

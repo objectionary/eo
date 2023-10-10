@@ -43,7 +43,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -128,7 +128,7 @@ final class OptimizeMojoTest {
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        new Home(cache).save(
+        new HmBase(cache).save(
             cached,
             Paths.get(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
@@ -141,7 +141,7 @@ final class OptimizeMojoTest {
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
-                new Home(temp).load(
+                new HmBase(temp).load(
                     Paths.get(
                         String.format(
                             "target/%s/foo/x/main.%s",
@@ -367,6 +367,6 @@ final class OptimizeMojoTest {
                             new ResourceOf(xsl).stream()
                         )))
         ).pass(new XMLDocument(xml));
-        new Home(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
+        new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
     }
 }

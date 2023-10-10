@@ -36,7 +36,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -108,7 +108,7 @@ public final class CopyMojo extends SafeMojo {
         final Path target = this.outputDir.toPath().resolve(CopyMojo.DIR);
         final Collection<Path> sources = new Walk(this.sourcesDir.toPath());
         for (final Path src : sources) {
-            new Home(target).save(
+            new HmBase(target).save(
                 CopyMojo.REPLACE
                     .matcher(new UncheckedText(new TextOf(new InputOf(src))).asString())
                     .replaceAll(String.format("$1:%s$2", this.version)),

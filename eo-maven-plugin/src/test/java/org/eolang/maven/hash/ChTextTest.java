@@ -26,7 +26,7 @@ package org.eolang.maven.hash;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +51,7 @@ class ChTextTest {
     @BeforeAll
     static void setUp(@TempDir final Path dir) throws IOException {
         ChTextTest.file = dir.resolve("tags.txt");
-        new Home(dir).save(
+        new HmBase(dir).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             dir.relativize(ChTextTest.file)
         );

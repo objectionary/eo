@@ -33,7 +33,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -318,7 +318,7 @@ final class PlaceMojoTest {
         final String content,
         final String binary
     ) throws IOException {
-        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+        new HmBase(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
             content,
             Paths.get(String.format("%s/%s", PlaceMojoTest.LIBRARY, binary))
         );
@@ -353,7 +353,7 @@ final class PlaceMojoTest {
         final String content,
         final String binary
     ) throws IOException {
-        new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES)).save(content, Paths.get(binary));
+        new HmBase(temp.resolve(PlaceMojoTest.TARGET_CLASSES)).save(content, Paths.get(binary));
     }
 
     /**
@@ -363,7 +363,7 @@ final class PlaceMojoTest {
      * @return Path to the placed binary.
      */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
-        final Home home = new Home(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
+        final HmBase home = new HmBase(temp.resolve(PlaceMojoTest.TARGET_CLASSES));
         return home.absolute(Paths.get(binary));
     }
 

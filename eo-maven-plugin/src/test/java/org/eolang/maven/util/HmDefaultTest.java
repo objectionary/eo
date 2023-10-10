@@ -41,18 +41,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test for {@link Home}.
+ * Test for {@link HmBase}.
  *
  * @since 0.22
  */
-final class HomeTest {
+final class HmDefaultTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
     void saves(final int size, @TempDir final Path temp) throws IOException {
         final Path resolve = Paths.get("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
-        new Home(temp).save(content, resolve);
+        new HmBase(temp).save(content, resolve);
         MatcherAssert.assertThat(
             new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
@@ -64,7 +64,7 @@ final class HomeTest {
         final Path path = Paths.get("file.txt");
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home(temp).exists(path),
+            new HmBase(temp).exists(path),
             Matchers.is(true)
         );
     }
@@ -75,7 +75,7 @@ final class HomeTest {
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
-            new Home(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
+            new HmBase(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
     }
@@ -86,9 +86,9 @@ final class HomeTest {
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
         final Path directory = temp.resolve("directory");
-        new Home(directory).save("any content", Paths.get(decoded));
+        new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(directory).exists(Paths.get(filename)),
+            new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
@@ -99,16 +99,16 @@ final class HomeTest {
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
         final Path directory = temp.resolve("directory");
-        new Home(directory).save("any content", Paths.get(decoded));
+        new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
-            new Home(directory).exists(Paths.get(filename)),
+            new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
     }
 
     @Test
     void loadsBytesFromExistingFile(@TempDir final Path temp) throws IOException {
-        final Home home = new Home(temp);
+        final HmBase home = new HmBase(temp);
         final String content = "bar";
         final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
@@ -122,7 +122,7 @@ final class HomeTest {
     void loadsFromAbsentFile(@TempDir final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
-            () -> new Home(temp).load(Paths.get("nonexistent"))
+            () -> new HmBase(temp).load(Paths.get("nonexistent"))
         );
     }
 
@@ -130,7 +130,7 @@ final class HomeTest {
     void throwsExceptionOnAbsolute(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new Home(temp).exists(temp.toAbsolutePath())
+            () -> new HmBase(temp).exists(temp.toAbsolutePath())
         );
     }
 }

@@ -67,7 +67,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.StXPath;
 import org.xembly.Directive;
@@ -453,13 +453,13 @@ public final class SodgMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "SODGs:\n%s", instructions);
         }
-        new Home(sodg.getParent()).save(
+        new HmBase(sodg.getParent()).save(
             String.format("# %s\n\n%s", new Disclaimer(), instructions),
             sodg.getParent().relativize(sodg)
         );
         if (this.generateSodgXmlFiles) {
             final Path sibling = sodg.resolveSibling(String.format("%s.xml", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
+            new HmBase(sibling.getParent()).save(
                 after.toString(),
                 sibling.getParent().relativize(sibling)
             );
@@ -469,7 +469,7 @@ public final class SodgMojo extends SafeMojo {
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
             final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
+            new HmBase(sibling.getParent()).save(
                 String.format("# %s\n\n%s\n", new Disclaimer(), xembly),
                 sibling.getParent().relativize(sibling)
             );
@@ -507,7 +507,7 @@ public final class SodgMojo extends SafeMojo {
             final Path sibling = sodg.resolveSibling(
                 String.format("%s.graph.xml", sodg.getFileName())
             );
-            new Home(sibling.getParent()).save(
+            new HmBase(sibling.getParent()).save(
                 graph.toString(),
                 sibling.getParent().relativize(sibling)
             );
@@ -532,7 +532,7 @@ public final class SodgMojo extends SafeMojo {
                 Logger.trace(this, "Dot:\n%s", dot);
             }
             final Path sibling = sodg.resolveSibling(String.format("%s.dot", sodg.getFileName()));
-            new Home(sibling.getParent()).save(
+            new HmBase(sibling.getParent()).save(
                 String.format("/%s %s %1$s/\n\n%s", "*", new Disclaimer(), dot),
                 sibling.getParent().relativize(sibling)
             );
