@@ -88,7 +88,7 @@ public final class PlaceMojo extends SafeMojo {
     private Set<String> excludeBinaries = new SetOf<>();
 
     /**
-     * Place only binaries that have EO sources inside jar.
+     * Place only binaries that have EO sources inside jar
      * @since 0.31
      * @checkstyle MemberNameCheck (7 lines)
      */
