@@ -30,9 +30,6 @@
 +tests
 +version 0.0.0
 
-# @todo #99:30min. To fix failed tests.
-#  Some tests here are wrapped by nop object. We need
-#  find out the reason and fix them as soon as possible.
 [] > check-is-int-positive-int
   assert-that > @
     (number 3).is-int

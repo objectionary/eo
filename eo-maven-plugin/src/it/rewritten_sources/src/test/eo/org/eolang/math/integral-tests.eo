@@ -28,9 +28,6 @@
 +tests
 +version 0.0.0
 
-# @todo #99:30min. To fix failed tests.
-#  Sometests here are wrapped by nop object. We need
-#  find out the reason and fix them all.
 [] > linear-integral-test
   [x] > lin
     x > @
@@ -74,11 +71,6 @@
         2499.75
         0.0000001
 
-# @todo #93:30min This test fails due to
-#  Incorrect choose of steps in the
-#  integral implementation. For excluding
-#  this error, Simpson's rule for
-#  determing n should be written.
 [] > logarithm-integral-test
   nop > @
     [x] > logarithm
