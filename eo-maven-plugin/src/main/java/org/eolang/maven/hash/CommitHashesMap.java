@@ -127,7 +127,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         "17f89293e5ae6115e9a0234b754b22918c11c602 0.28.6",
                         "5f82cc1edffad67bf4ba816610191403eb18af5d 0.28.7",
                         "be83d9adda4b7c9e670e625fe951c80f3ead4177 0.28.9",
-                        "9c46a671f2bc68e777aab031d57da5012ba807a7 master"
+                        "61bd846cacbee90ee02e9eee5debca567440c40f master"
                     )
                 )
             );
