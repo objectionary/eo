@@ -113,7 +113,7 @@ final class AssembleMojoTest {
         MatcherAssert.assertThat(
             "AssembleMojo should have placed runtime library under classes directory, but didn't",
             result.get("target/classes").toAbsolutePath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -212,12 +212,12 @@ final class AssembleMojoTest {
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
-            new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT))
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
         MatcherAssert.assertThat(
             "Since the eo program invalid we shouldn't have optimized it, but we did",
             result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            Matchers.not(new ContainsFile(String.format("**/main.%s", TranspileMojo.EXT)))
+            Matchers.not(new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT)))
         );
     }
 
