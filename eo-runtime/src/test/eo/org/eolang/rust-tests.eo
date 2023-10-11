@@ -128,7 +128,7 @@
 
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
       Some(
-        EOInt(env.find("$.^.a").unwrap() as i64)
+        EOInt(env.find("$.^.a")? as i64)
       )
     }
     """
@@ -282,7 +282,7 @@
 
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
       let a = env.find("$.^.a")?;
-      let bytes_a = env.dataize(a).unwrap();
+      let bytes_a = env.dataize(a)?;
       let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
       let b = env.find("$.^.b")?;
