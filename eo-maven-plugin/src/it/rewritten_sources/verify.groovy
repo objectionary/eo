@@ -43,7 +43,7 @@ private static boolean online() {
 if (online()) {
   assert new File(basedir, 'target/classes/EOorg/EOeolang/EOmath/EOe.class').exists()
   assert new File(basedir, 'build.log').text.contains(
-    'target/classes/EOorg/EOeolang/EOmath/EOe.class file was skipped'
+    String.join(File.separator, 'target', 'classes', 'EOorg', 'EOeolang', 'EOmath', 'EOe.class file was skipped')
   )
 }
 
