@@ -78,7 +78,7 @@ final class ResolveMojoTest {
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -88,7 +88,7 @@ final class ResolveMojoTest {
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -100,7 +100,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
     }
 
@@ -112,7 +112,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-0.22.1.jar")
+            new ContainsFiles("**/eo-runtime-0.22.1.jar")
         );
     }
 
@@ -126,7 +126,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
     }
 
@@ -144,7 +144,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-0.7.0.jar")
+            new ContainsFiles("**/eo-runtime-0.7.0.jar")
         );
     }
 
@@ -160,7 +160,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -243,7 +243,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 }

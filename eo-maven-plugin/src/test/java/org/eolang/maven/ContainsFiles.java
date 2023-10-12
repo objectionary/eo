@@ -23,21 +23,17 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import org.cactoos.iterable.Mapped;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Asserting that path contains a files matching provided globs.
  * @since 0.31.0
- * @todo #1602:30min After introducing this class we are able to use
- *  it instead of {@link ContainsFile} because we can pass varargs into
- *  constructor. So, the next step will be exactly that - we will just remove
- *  ContainsFile class (inline it into ContainsFiles) because we can do it,
- *  since we don't use ContainsFile anymore and the code will become smaller and
- *  simpler without redundant class.
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 final class ContainsFiles extends TypeSafeMatcher<Path> {
@@ -61,13 +57,43 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
 
     @Override
     public boolean matchesSafely(final Path path) {
-        boolean matches = true;
-        for (final ContainsFile matcher : new Mapped<>(ContainsFile::new, this.globs)) {
-            if (!matcher.matchesSafely(path)) {
-                matches = false;
-                break;
-            }
+        return Arrays.stream(this.globs)
+            .anyMatch(
+                glob -> matchesGlob(
+                    path,
+                    glob
+                )
+            );
+    }
+
+    /**
+     * Returns whether a path matches a file pattern.
+     * @param item The path.
+     * @param glob The file pattern.
+     * @return True if the item matches the glob.
+     */
+    private static boolean matchesGlob(final Path item, final String glob) {
+        try {
+            return Files.walk(item)
+                .anyMatch(
+                    FileSystems
+                        .getDefault()
+                        .getPathMatcher(
+                            String.format(
+                                "glob:%s",
+                                glob
+                            )
+                        )::matches
+                );
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                String.format(
+                    "Error while matching glob=`%s` for %s",
+                    glob,
+                    item
+                ),
+                ex
+            );
         }
-        return matches;
     }
 }
