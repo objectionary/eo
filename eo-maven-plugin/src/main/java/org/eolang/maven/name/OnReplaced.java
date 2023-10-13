@@ -25,7 +25,6 @@ package org.eolang.maven.name;
 
 import java.util.Map;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
@@ -72,6 +71,8 @@ public final class OnReplaced implements ObjectName {
      */
     private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
 
+    private static final CommitHash EMPTY_HASH = new CommitHash.ChConstant("");
+
     /**
      * Raw string.
      * Examples:
@@ -79,12 +80,13 @@ public final class OnReplaced implements ObjectName {
      * - "org.eolang.string|1.23.1"
      * - "org.eolang.math|3.3.3"
      */
-    private final Unchecked<String> raw;
+    private final DelimitedName name;
 
+    private final Unchecked<DelimitedName> stringify;
     /**
      * All hashes.
      */
-    private final Map<String, ? extends CommitHash> hashes;
+    private final Map<String, CommitHash> hashes;
 
     /**
      * Constructor.
@@ -101,7 +103,7 @@ public final class OnReplaced implements ObjectName {
      */
     public OnReplaced(
         final ObjectName origin,
-        final Map<String, ? extends CommitHash> all
+        final Map<String, CommitHash> all
     ) {
         this(origin::toString, all);
     }
@@ -121,7 +123,7 @@ public final class OnReplaced implements ObjectName {
      */
     public OnReplaced(
         final String origin,
-        final Map<String, ? extends CommitHash> all
+        final Map<String, CommitHash> all
     ) {
         this(() -> origin, all);
     }
@@ -129,48 +131,40 @@ public final class OnReplaced implements ObjectName {
     /**
      * Constructor.
      * @param origin Raw string as scalar.
-     * @param all All hashes.
+     * @param all    All hashes.
      */
     OnReplaced(
         final Scalar<String> origin,
-        final Map<String, ? extends CommitHash> all
+        final Map<String, CommitHash> all
     ) {
-        this.raw = new Unchecked<>(new Sticky<>(origin));
+        this.name = new DelimitedName(origin);
+        this.stringify = new Unchecked<>(
+            () -> new DelimitedName(
+                name.title(),
+                name.label()
+                    .map(
+                        label -> hash().value()
+                    )
+            )
+        );
         this.hashes = all;
     }
 
     @Override
     public String value() {
-        return this.split()[0];
+        return this.name.title();
     }
 
     @Override
     public CommitHash hash() {
-        return this.hashes.get(this.split()[1]);
+        return name.label()
+            .map(this.hashes::get)
+            .orElse(EMPTY_HASH);
     }
 
     @Override
     public String toString() {
-        final String result;
-        if (this.raw.value().contains(OnReplaced.DELIMITER)) {
-            result = String.join(
-                "",
-                this.value(),
-                OnReplaced.DELIMITER,
-                this.hash().value()
-            );
-        } else {
-            result = this.value();
-        }
-        return result;
-    }
-
-    /**
-     * Split raw string into name and hash.
-     * @return Array of two elements: name and hash.
-     */
-    private String[] split() {
-        return this.raw.value().split(String.format("\\%s", OnReplaced.DELIMITER));
-    }
+        return stringify.value().toString();
+     }
 }
 
