@@ -7,7 +7,6 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
 public final class DelimitedName {
-
     private static final String DELIMITER = "|";
 
     private static final Pattern DELIMITER_REGEX = Pattern.compile("\\" + DELIMITER);
@@ -21,9 +20,7 @@ public final class DelimitedName {
     public DelimitedName(final Scalar<String> raw) {
         this(
             new Unchecked<>(
-                new Sticky<>(
-                    () -> DELIMITER_REGEX.split(raw.value(), 2)
-                )
+                () -> DELIMITER_REGEX.split(raw.value(), 2)
             )
         );
     }
@@ -31,20 +28,18 @@ public final class DelimitedName {
     public DelimitedName(final String title, final Optional<String> label) {
         this(
             new Unchecked<>(
-                new Sticky<>(
-                    () -> label.map(
-                            labelee -> new String[]{title, labelee}
-                        )
-                        .orElseGet(
-                            () -> new String[]{title}
-                        )
-                )
+                () -> label.map(
+                        labelee -> new String[]{title, labelee}
+                    )
+                    .orElseGet(
+                        () -> new String[]{title}
+                    )
             )
         );
     }
 
-    private DelimitedName(Unchecked<String[]> pair) {
-        this.pair = pair;
+    private DelimitedName(final Unchecked<String[]> pair) {
+        this.pair = new Unchecked<>(new Sticky<>(pair));
     }
 
     public String title() {
