@@ -40,15 +40,6 @@ import org.eolang.maven.hash.CommitHashesMap;
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
- * @todo #2376:90min Frontend and backend delimiters differ.
- *  I was confused with the delimiter '#' that we use in {@link OnReplaced} and delimiter which
- *  we use in the frontend. For example:
- *  - "org.eolang.text|0.1.0" - frontend
- *  - "org.eolang.text#0.1.0" - backend
- *  The problem here is that we use  the '|' delimiter on the frontend and '#' in the backend, but
- *  both of them mean the same thing - object name + version.
- *  I believe that we need to use the same symbol in both places, because it will be easier to
- *  understand the code. So, my suggestion to use '|' in both places.
  */
 public final class OnReplaced implements ObjectName {
 
