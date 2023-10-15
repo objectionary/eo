@@ -41,7 +41,7 @@ import org.junit.jupiter.api.io.TempDir;
 class CleanMojoTest {
 
     @Test
-    void cleanhsSuccessfully(@TempDir final Path temp) throws IOException {
+    void cleansSuccessfully(@TempDir final Path temp) throws IOException {
         final Path dir = Files.createDirectories(temp.resolve("target"));
         final Path out = Files.createDirectories(dir.resolve("child"));
         final Path small = Files.createDirectories(out.resolve("child.eo"));
