@@ -206,7 +206,7 @@ abstract class SafeMojo extends AbstractMojo {
      * Commit hashes.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected final Map<String, CommitHash> hashes = new CommitHashesMap();
+    protected final Map<String, ? extends CommitHash> hashes = new CommitHashesMap();
 
     /**
      * Placed tojos.

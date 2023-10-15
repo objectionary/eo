@@ -24,6 +24,7 @@
 package org.eolang.maven.name;
 
 import java.util.Map;
+import java.util.Optional;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
@@ -45,15 +46,12 @@ public final class OnReplaced implements ObjectName {
 
     /**
      * Delimiter between name and hash in EO object name.
-     * @todo #2394:30min Hide static constant DELIMITER.
-     *  We should hide static constant DELIMITER because it creates code duplication
-     *  in many places. For example in {@link OnReplaced#split()}, {@link OnVersioned#split()},
-     *  {@link OnDefault#split()} and
-     *  {@link org.eolang.maven.Place#make(java.nio.file.Path, String)}.
-     *  Apparently we have to create a class which will parse raw string into two parts value and
-     *  optional version. Maybe this new class won't implement ObjectName interface.
-     *  Why static fields are bad you can read here:
-     *  - https://www.yegor256.com/2015/07/06/public-static-literals.html
+     * @todo #2463:30min Remove static constant DELIMITER.
+     * The static constant DELIMITER was hidden in the {@link DelimitedName} class
+     * and {@link OnReplaced} was switched to the new delimiting approach.
+     * Switch from DELIMITER to {@link DelimitedName} all the other classes, such as
+     * {@link OnVersioned}, {@link OnDefault} and
+     * {@link org.eolang.maven.Place#make(java.nio.file.Path, String)}.
      */
     public static final String DELIMITER = "|";
 
@@ -62,22 +60,29 @@ public final class OnReplaced implements ObjectName {
      */
     private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
 
+    /**
+     * Hash if the {@link DelimitedName#label()} is empty.
+     */
     private static final CommitHash EMPTY_HASH = new CommitHash.ChConstant("");
 
     /**
-     * Raw string.
+     * Name that represents value as title and version as label.
      * Examples:
-     * - "org.eolang.text|0.1.0"
-     * - "org.eolang.string|1.23.1"
-     * - "org.eolang.math|3.3.3"
+     * - "org.eolang.text", "0.1.0"
+     * - "org.eolang.string", "1.23.1"
+     * - "org.eolang.math", "3.3.3"
      */
     private final DelimitedName name;
 
+    /**
+     * Name that represents value as title and hash of version as label.
+     */
     private final Unchecked<DelimitedName> stringify;
+
     /**
      * All hashes.
      */
-    private final Map<String, CommitHash> hashes;
+    private final Map<String, ? extends CommitHash> hashes;
 
     /**
      * Constructor.
@@ -94,7 +99,7 @@ public final class OnReplaced implements ObjectName {
      */
     public OnReplaced(
         final ObjectName origin,
-        final Map<String, CommitHash> all
+        final Map<String, ? extends CommitHash> all
     ) {
         this(origin::toString, all);
     }
@@ -114,7 +119,7 @@ public final class OnReplaced implements ObjectName {
      */
     public OnReplaced(
         final String origin,
-        final Map<String, CommitHash> all
+        final Map<String, ? extends CommitHash> all
     ) {
         this(() -> origin, all);
     }
@@ -122,19 +127,19 @@ public final class OnReplaced implements ObjectName {
     /**
      * Constructor.
      * @param origin Raw string as scalar.
-     * @param all    All hashes.
+     * @param all All hashes.
      */
     OnReplaced(
         final Scalar<String> origin,
-        final Map<String, CommitHash> all
+        final Map<String, ? extends CommitHash> all
     ) {
         this.name = new DelimitedName(origin);
         this.stringify = new Unchecked<>(
             () -> new DelimitedName(
-                name.title(),
-                name.label()
+                this.name.title(),
+                this.name.label()
                     .map(
-                        label -> hash().value()
+                        label -> this.hash().value()
                     )
             )
         );
@@ -148,14 +153,13 @@ public final class OnReplaced implements ObjectName {
 
     @Override
     public CommitHash hash() {
-        return name.label()
-            .map(this.hashes::get)
-            .orElse(EMPTY_HASH);
+        final Optional<CommitHash> label = this.name.label().map(this.hashes::get);
+        return label.orElse(OnReplaced.EMPTY_HASH);
     }
 
     @Override
     public String toString() {
-        return stringify.value().toString();
-     }
+        return this.stringify.value().toString();
+    }
 }
 
