@@ -23,13 +23,13 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import java.io.File;
-import java.io.IOException;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
 
@@ -56,7 +56,6 @@ public class CopySourcesMojo extends SafeMojo {
     )
     private File javaSources;
 
-
     /**
      * Directory with generated sources.
      * @checkstyle MemberNameCheck (10 lines)
@@ -68,6 +67,14 @@ public class CopySourcesMojo extends SafeMojo {
     )
     private File generatedDir;
 
+    /**
+     * Hash to deploy.
+     * @todo #2506:30min Replace hash with tag or remove it at all. This mojo should be executed
+     *  on "deploy" phase and copy sources with dynamic hash. The hash should be taken from tag
+     *  that is provided with command `mvn versions:set "-DnewVersion=${tag}"` which is executed
+     *  before actual `mvn deploy`. Now for the test purposes we can specify deployHash from
+     *  pom.xml but it should be remade or removed in the future.
+     */
     @Parameter(
         property = "deployHash",
         required = true
