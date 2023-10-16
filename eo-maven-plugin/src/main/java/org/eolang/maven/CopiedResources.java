@@ -62,6 +62,8 @@ public final class CopiedResources implements BiConsumer<Path, Path> {
 
     @Override
     public void accept(final Path sources, final Path destination) {
+        final String src = sources.toString();
+        final String dst = destination.toString();
         try {
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
@@ -70,12 +72,12 @@ public final class CopiedResources implements BiConsumer<Path, Path> {
                 ),
                 MojoExecutor.goal("copy-resources"),
                 MojoExecutor.configuration(
-                    MojoExecutor.element("outputDirectory", destination.toString()),
+                    MojoExecutor.element("outputDirectory", dst),
                     MojoExecutor.element(
                         "resources",
                         MojoExecutor.element(
                             "resource",
-                            MojoExecutor.element("directory", sources.toString()),
+                            MojoExecutor.element("directory", src),
                             MojoExecutor.element("filtering", "true")
                         )
                     )
@@ -83,12 +85,11 @@ public final class CopiedResources implements BiConsumer<Path, Path> {
                 this.environment
             );
         } catch (final MojoExecutionException ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException(
+                String.format("Couldn't copy resources from %s to %s", src, dst), ex
+            );
         }
-        Logger.info(
-            this, "Resources from %s were copied to %s",
-            sources.toString(), destination.toString()
-        );
+        Logger.info(this, "Resources from %s were copied to %s", src, dst);
     }
 
     @Override
