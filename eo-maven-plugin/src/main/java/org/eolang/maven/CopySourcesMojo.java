@@ -38,13 +38,15 @@ import org.eolang.maven.hash.CommitHash;
  * This mojo is about to be used only on deployment step.
  * See more details
  * <a href="https://github.com/objectionary/eo/issues/2506#issuecomment-1759609269">here</a>
+ *
+ * @since 0.33.0
  */
 @Mojo(
     name = "copy-sources",
     defaultPhase = LifecyclePhase.DEPLOY,
     threadSafe = true
 )
-public class CopySourcesMojo extends SafeMojo {
+public final class CopySourcesMojo extends SafeMojo {
     /**
      * Directory with java sources.
      * @checkstyle MemberNameCheck (10 lines)
@@ -74,6 +76,7 @@ public class CopySourcesMojo extends SafeMojo {
      *  that is provided with command `mvn versions:set "-DnewVersion=${tag}"` which is executed
      *  before actual `mvn deploy`. Now for the test purposes we can specify deployHash from
      *  pom.xml but it should be remade or removed in the future.
+     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         property = "deployHash",

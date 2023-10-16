@@ -36,9 +36,9 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
  * Copied resources via maven-resources-plugin.
  * @since 0.33.0
  */
-public class CopiedResources implements BiConsumer<Path, Path> {
+public final class CopiedResources implements BiConsumer<Path, Path> {
     /**
-     * Maven executor environment;
+     * Maven executor environment.
      */
     private final MojoExecutor.ExecutionEnvironment environment;
 
