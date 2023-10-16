@@ -37,9 +37,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 final class DelimitedNameTest {
     @ParameterizedTest
-    @MethodSource("titleLabelOrigin")
-    void retrievesTitle(final String expected, final Optional<String> label, final String origin) {
-        final DelimitedName name = new DelimitedName(origin);
+    @MethodSource("titleLabelConcat")
+    void retrievesTitle(final String expected, final Optional<String> label, final String concat) {
+        final DelimitedName name = new DelimitedName(concat);
         MatcherAssert.assertThat(
             String.format("Can't retrieve title from %s", name),
             name.title(),
@@ -48,9 +48,9 @@ final class DelimitedNameTest {
     }
 
     @ParameterizedTest
-    @MethodSource("titleLabelOrigin")
-    void retrievesLabel(final String title, final Optional<String> expected, final String origin) {
-        final DelimitedName name = new DelimitedName(origin);
+    @MethodSource("titleLabelConcat")
+    void retrievesLabel(final String title, final Optional<String> expected, final String concat) {
+        final DelimitedName name = new DelimitedName(concat);
         MatcherAssert.assertThat(
             String.format("Can't retrieve label from %s", name),
             name.label(),
@@ -59,7 +59,7 @@ final class DelimitedNameTest {
     }
 
     @ParameterizedTest
-    @MethodSource("titleLabelOrigin")
+    @MethodSource("titleLabelConcat")
     void convertsToString(final String title, final Optional<String> label, final String expected) {
         final DelimitedName name = new DelimitedName(title, label);
         MatcherAssert.assertThat(
@@ -70,7 +70,7 @@ final class DelimitedNameTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Stream<Arguments> titleLabelOrigin() {
+    private static Stream<Arguments> titleLabelConcat() {
         return Stream.of(
             Arguments.of("org.eolang.string", Optional.of("0.23.17"), "org.eolang.string|0.23.17"),
             Arguments.of("org.eolang.eagle", Optional.of(""), "org.eolang.eagle|"),

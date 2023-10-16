@@ -75,9 +75,9 @@ public final class OnReplaced implements ObjectName {
     private final DelimitedName name;
 
     /**
-     * Name that represents value as title and hash of version as label.
+     * Name for text representation with version hash as label.
      */
-    private final Unchecked<DelimitedName> stringify;
+    private final Unchecked<DelimitedName> concat;
 
     /**
      * All hashes.
@@ -134,7 +134,7 @@ public final class OnReplaced implements ObjectName {
         final Map<String, ? extends CommitHash> all
     ) {
         this.name = new DelimitedName(origin);
-        this.stringify = new Unchecked<>(
+        this.concat = new Unchecked<>(
             () -> new DelimitedName(
                 this.name.title(),
                 this.name.label()
@@ -159,7 +159,7 @@ public final class OnReplaced implements ObjectName {
 
     @Override
     public String toString() {
-        return this.stringify.value().toString();
+        return this.concat.value().toString();
     }
 }
 

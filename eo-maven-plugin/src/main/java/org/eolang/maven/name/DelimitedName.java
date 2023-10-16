@@ -30,13 +30,13 @@ import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 
 /**
- * A class which encapsulates delimiting.
+ * A class which encapsulates delimiter.
  * It parses a raw string into two parts: title and optional label,
  * dividing by means of the delimiter.
  * It also does a reverse operation, concatenation of two strings
  * with the delimiter (method {@link #toString()}).
  * <p>
- * E.g. it divides a raw string as:
+ * E.g. it divides a raw (concat) string as:
  * - "org.eolang.text|0.1.0" into "org.eolang.text" and "0.1.0"
  * - "org.eolang.text" into "org.eolang.text" and empty {@link Optional}
  * <p>
@@ -68,20 +68,20 @@ public final class DelimitedName {
 
     /**
      * Ctor.
-     * @param raw Raw string.
+     * @param concat Raw string.
      */
-    DelimitedName(final String raw) {
-        this(() -> raw);
+    DelimitedName(final String concat) {
+        this(() -> concat);
     }
 
     /**
      * Ctor.
-     * @param raw Raw string as scalar.
+     * @param concat Raw string as scalar.
      */
-    public DelimitedName(final Scalar<String> raw) {
+    public DelimitedName(final Scalar<String> concat) {
         this(
             new Unchecked<>(
-                () -> DELIMITER_REGEX.split(raw.value(), 2)
+                () -> DELIMITER_REGEX.split(concat.value(), 2)
             )
         );
     }
@@ -94,7 +94,7 @@ public final class DelimitedName {
     public DelimitedName(final String title, final Optional<String> label) {
         this(
             new Unchecked<>(
-                () -> label.map(labelee -> new String[]{title, labelee})
+                () -> label.map(unwrap -> new String[]{title, unwrap})
                     .orElseGet(() -> new String[]{title})
             )
         );
