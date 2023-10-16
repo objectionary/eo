@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,14 @@
  * SOFTWARE.
  */
 
-
-
-true
+/*
+ * @checkstyle PackageNameCheck (20 lines)
+ */
+/**
+ * EO runtime.
+ *
+ * @since 0.1
+ * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
+ * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
+ */
+package EOorg.EOeolang;

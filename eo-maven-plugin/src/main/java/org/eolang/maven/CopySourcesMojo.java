@@ -30,6 +30,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.IOException;
+import org.eolang.maven.hash.ChNarrow;
+import org.eolang.maven.hash.CommitHash;
 
 /**
  * Copy source files from source directory with extra package on top.
@@ -38,7 +40,7 @@ import java.io.IOException;
  * <a href="https://github.com/objectionary/eo/issues/2506#issuecomment-1759609269">here</a>
  */
 @Mojo(
-    name = "copySources",
+    name = "copy-sources",
     defaultPhase = LifecyclePhase.DEPLOY,
     threadSafe = true
 )
@@ -81,7 +83,9 @@ public class CopySourcesMojo extends SafeMojo {
         );
         copied.accept(
             this.javaSources.toPath(),
-            this.generatedDir.toPath().resolve(this.deployHash)
+            this.generatedDir.toPath().resolve(
+                new ChNarrow(new CommitHash.ChConstant(this.deployHash)).value()
+            )
         );
         copied.accept(
             this.javaSources.toPath(),

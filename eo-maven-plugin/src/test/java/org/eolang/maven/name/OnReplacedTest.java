@@ -23,10 +23,12 @@
  */
 package org.eolang.maven.name;
 
+import org.eolang.maven.OnlineCondition;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -42,6 +44,7 @@ final class OnReplacedTest {
     private static final String STRING = "org.eolang.string";
 
     @ParameterizedTest
+    @ExtendWith(OnlineCondition.class)
     @CsvSource({
         "org.eolang.string, org.eolang.string|0.23.17",
         "org.eolang.dummy, org.eolang.dummy|0.23.19",
@@ -71,6 +74,7 @@ final class OnReplacedTest {
     }
 
     @ParameterizedTest
+    @ExtendWith(OnlineCondition.class)
     @CsvSource({
         "15c85d7, org.eolang.string|0.23.17",
         "4b19944, org.eolang.dummy|0.23.19",

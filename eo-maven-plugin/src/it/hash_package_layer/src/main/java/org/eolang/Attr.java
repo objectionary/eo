@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,36 @@
  * SOFTWARE.
  */
 
+package org.eolang;
 
+/**
+ * Attribute.
+ *
+ * @since 0.1
+ */
+@Versionized
+public interface Attr extends Term {
 
-true
+    /**
+     * Make a copy of it.
+     *
+     * @param self The object that this attribute will belong to
+     * @return A copy
+     */
+    Attr copy(Phi self);
+
+    /**
+     * Take the object out.
+     *
+     * @return The object
+     */
+    Phi get();
+
+    /**
+     * Put a new object in.
+     *
+     * @param phi The object to put
+     */
+    void put(Phi phi);
+
+}

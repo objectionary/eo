@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,20 @@
  * SOFTWARE.
  */
 
+package org.eolang;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-true
+/**
+ * Annotation for an object which location should be extended with version package.
+ * More details <a href="https://github.com/objectionary/eo/issues/2506">here</a>
+ *
+ * @since 0.32.0
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.CLASS)
+public @interface Versionized {
+}

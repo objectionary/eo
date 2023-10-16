@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
-
-
-true
+/**
+ * EO runtime.
+ *
+ * @since 0.2
+ */
+package org.eolang;

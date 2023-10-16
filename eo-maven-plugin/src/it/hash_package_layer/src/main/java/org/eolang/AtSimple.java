@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,61 @@
  * SOFTWARE.
  */
 
+package org.eolang;
 
+/**
+ * Default attribute.
+ *
+ * The class is NOT thread-safe.
+ *
+ * @since 0.1
+ */
+@Versionized
+public final class AtSimple implements Attr {
 
-true
+    /**
+     * Parent φ.
+     */
+    private Phi phi;
+
+    /**
+     * Ctor.
+     */
+    public AtSimple() {
+        this(Phi.Φ);
+    }
+
+    /**
+     * Ctor.
+     * @param src Source φ
+     */
+    public AtSimple(final Phi src) {
+        this.phi = src;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%sS", this.phi.toString());
+    }
+
+    @Override
+    public String φTerm() {
+        return this.phi.φTerm();
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return new AtSimple(this.phi);
+    }
+
+    @Override
+    public Phi get() {
+        return this.phi;
+    }
+
+    @Override
+    public void put(final Phi src) {
+        this.phi = src;
+    }
+
+}

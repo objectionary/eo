@@ -73,8 +73,11 @@ public class CopiedResources implements BiConsumer<Path, Path> {
                     MojoExecutor.element("outputDirectory", destination.toString()),
                     MojoExecutor.element(
                         "resources",
-                        MojoExecutor.element("resource", sources.toString()),
-                        MojoExecutor.element("filtering", "true")
+                        MojoExecutor.element(
+                            "resource",
+                            MojoExecutor.element("directory", sources.toString()),
+                            MojoExecutor.element("filtering", "true")
+                        )
                     )
                 ),
                 this.environment

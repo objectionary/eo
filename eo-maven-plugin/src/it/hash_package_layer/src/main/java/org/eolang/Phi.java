@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -22,6 +22,54 @@
  * SOFTWARE.
  */
 
+package org.eolang;
 
+/**
+ * A simple object.
+ *
+ * We call it Phi because of the name of the φ-calculus. Actually, a better
+ * name would be "Object", but it's already occupied by Java. That's why
+ * we call it Phi.
+ *
+ * It is guaranteed that the hash codes of different Phi are different,
+ * and equal to the vertex.
+ *
+ * @since 0.1
+ */
+public interface Phi extends Term {
 
-true
+    /**
+     * Make a copy, leaving it at the same parent.
+     *
+     * @return A copy
+     */
+    Phi copy();
+
+    /**
+     * Get attribute by position.
+     *
+     * @param pos The position of the attribute
+     * @return The attr
+     */
+    Attr attr(int pos);
+
+    /**
+     * Get attribute.
+     *
+     * @param name The name of the attribute
+     * @return The attr
+     */
+    Attr attr(String name);
+
+    /**
+     * Get code locator of the phi.
+     * @return String containing code locator
+     */
+    String locator();
+
+    /**
+     * Get forma of the phi.
+     * @return Forma of it as {@link String}.
+     */
+    String forma();
+}

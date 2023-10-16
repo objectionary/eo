@@ -33,20 +33,21 @@ SOFTWARE.
   <artifactId>examples</artifactId>
   <version>@project.version@</version>
   <packaging>jar</packaging>
-  <name>Fibonacci Numbers Calculator</name>
+  <name>Hash-package layer</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-resources-plugin</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-maven-plugin</artifactId>
+      <version>@project.version@</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration combine.self="override"/>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <failIfNoTests>false</failIfNoTests>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
@@ -54,48 +55,12 @@ SOFTWARE.
         <executions>
           <execution>
             <goals>
-              <goal>register</goal>
-              <goal>assemble</goal>
-              <goal>transpile</goal>
-              <goal>sodg</goal>
+              <goal>copy-sources</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <unrollExitError>true</unrollExitError>
-          <sodgIncludes>
-            <o>org.eolang.error</o>
-          </sodgIncludes>
-          <foreign>${project.build.directory}/eo/foreign.csv</foreign>
-          <foreignFormat>csv</foreignFormat>
-          <placed>${project.build.directory}/eo/placed.json</placed>
-          <placedFormat>json</placedFormat>
-          <trackOptimizationSteps>true</trackOptimizationSteps>
-          <generateSodgXmlFiles>true</generateSodgXmlFiles>
-          <generateGraphFiles>true</generateGraphFiles>
-          <generateXemblyFiles>true</generateXemblyFiles>
-          <generateDotFiles>true</generateDotFiles>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.eolang.Main</mainClass>
-          <arguments>
-            <argument>org.eolang.examples.app</argument>
-            <argument>6</argument>
-            <argument>8</argument>
-          </arguments>
+          <deployHash>9c46a671f2bc68e777aab031d57da5012ba807a7</deployHash>
         </configuration>
       </plugin>
     </plugins>
