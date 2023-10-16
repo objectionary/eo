@@ -22,6 +22,19 @@
  * SOFTWARE.
  */
 
+final String sources = "target/generated-sources"
+final String hash = "9c46a67"
+final String[] files = [
+  'EOorg/EOeolang/Heaps.java',
+  'EOorg/EOeolang/package-info.java',
+  'org/eolang/package-info.java',
+  'org/eolang/AtSimple.java',
+  'org/eolang/Attr.java',
+  'org/eolang/Phi.java',
+  'org/eolang/Versionized.java',
+]
 
+files.each { assert new File(basedir, String.join(File.separator, sources, it)).exists() }
+files.each {assert new File(basedir, String.join(File.separator, sources, hash, it)).exists()}
 
 true
