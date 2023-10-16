@@ -159,7 +159,7 @@ public final class OnReplaced implements ObjectName {
 
     @Override
     public String toString() {
-        return this.concat.value().toString();
+        return String.valueOf(this.concat.value());
     }
 }
 
