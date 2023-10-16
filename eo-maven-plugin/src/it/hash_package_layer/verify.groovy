@@ -35,6 +35,6 @@ final String[] files = [
 ]
 
 files.each { assert new File(basedir, String.join(File.separator, sources, it)).exists() }
-files.each {assert new File(basedir, String.join(File.separator, sources, hash, it)).exists()}
+files.each { assert new File(basedir, String.join(File.separator, sources, hash, it)).exists() }
 
 true

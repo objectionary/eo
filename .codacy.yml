@@ -4,3 +4,5 @@
 exclude_paths:
   - "eo-runtime/src/main/java/EOorg/EOeolang/EOrust.java"
   - "eo-runtime/src/test/java/EOorg/EOeolang/EOintTest.java"
+  - "eo-maven-plugin/src/it/hash_package_layer/src/main/java/EOorg/EOeolang/Heaps.java"
+  - "eo-maven-plugin/src/it/hash_package_layer/src/main/java/EOorg/EOeolang/package-info.java"
