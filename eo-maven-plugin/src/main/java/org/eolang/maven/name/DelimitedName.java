@@ -121,10 +121,12 @@ public final class DelimitedName {
      * @return The label.
      */
     public Optional<String> label() {
-        Optional<String> res = Optional.empty();
+        final Optional<String> res;
         final String[] unwrap = this.pair.value();
         if (unwrap.length > 1) {
             res = Optional.of(unwrap[1]);
+        } else {
+            res = Optional.empty();
         }
         return res;
     }
