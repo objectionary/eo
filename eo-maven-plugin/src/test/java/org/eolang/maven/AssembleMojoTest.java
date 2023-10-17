@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import org.cactoos.map.MapEntry;
+import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.log.CaptureLogs;
@@ -118,9 +120,10 @@ final class AssembleMojoTest {
     }
 
     @Test
+    @ExtendWith(OnlineCondition.class)
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final CommitHash master = hashes.get("master");
+        final CommitHash master = new ChCached(new ChRemote("master"));
         final CommitHash five = hashes.get("0.28.5");
         final CommitHash six = hashes.get("0.28.6");
         final Map<String, Path> result = new FakeMaven(temp)
@@ -142,6 +145,7 @@ final class AssembleMojoTest {
                     new MapEntry<>(six, new OyRemote(six))
                 )
             )
+            .with("hash", master)
             .execute(AssembleMojo.class)
             .result();
         final String stdout = "**/io/stdout";
