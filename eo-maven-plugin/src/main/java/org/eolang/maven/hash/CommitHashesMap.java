@@ -99,10 +99,6 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * Fake commit hashes hash-table.
      *
      * @since 0.29.6
-     * @todo #2528:30min Remove "master" pair from the table. Hash of "master" tag is not static
-     *  and is being updated dynamically. That's why we should not use it in fake CommitHashesMap
-     *  with {@link org.eolang.maven.objectionary.OyRemote}. That's why it would be better to remove
-     *  it from the table and assure that all tests are green. Don't forget to remove the puzzle.
      */
     public static final class Fake extends MapEnvelope<String, CommitHash> {
         /**
