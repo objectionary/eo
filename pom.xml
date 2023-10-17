@@ -100,12 +100,6 @@ SOFTWARE.
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.28</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
         <version>0.55.0</version>
@@ -193,7 +187,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-matchers</artifactId>
-        <version>1.6.0</version>
+        <version>1.7.0</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>

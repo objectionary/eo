@@ -14,11 +14,11 @@ jobs:
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg
-      - uses: teatimeguest/setup-texlive-action@v2.6.2
+      - uses: teatimeguest/setup-texlive-action@v2.6.3
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
@@ -37,10 +37,11 @@ jobs:
           unzip -o -d "$CONVERT_PATH" /tmp/convert.zip
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
-          mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.6:generate \
+          mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.7:generate \
             -pl :eo-parser --debug --errors --batch-mode --quiet \
             "-Dantlr2ebnf.convertDir=$CONVERT_PATH" \
-            "-Dantlr2ebnf.specials=eol,eop,tab,untab"
+            "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
+            "-Dantlr2ebnf.margin=40"
       - run: |
           set -x
           cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .

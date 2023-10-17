@@ -26,7 +26,6 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSDDocument;
-import java.io.IOException;
 import java.util.Collection;
 import javax.xml.transform.dom.DOMSource;
 import org.cactoos.io.ResourceOf;
@@ -56,9 +55,8 @@ public final class Schema {
 
     /**
      * Check and crash if mistakes.
-     * @throws IOException If fails
      */
-    public void check() throws IOException {
+    public void check() {
         final Collection<SAXParseException> violations = new XSDDocument(
             new UncheckedText(
                 new TextOf(new ResourceOf("XMIR.xsd"))

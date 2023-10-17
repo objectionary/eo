@@ -32,7 +32,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.parser.Syntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -65,7 +65,7 @@ class JavaFilesTest {
 
     @Test
     void convertsXmirtoJavaSuccessfully(@TempDir final Path temp) throws Exception {
-        new Home(temp.resolve("xml")).save(
+        new HmBase(temp.resolve("xml")).save(
             new Xsline(TranspileMojo.TRAIN).pass(this.xmir).toString(),
             Paths.get("sum.xmir")
         );
@@ -84,7 +84,7 @@ class JavaFilesTest {
 
     @Test
     void convertsXmirtoJavaWithoutJavaClasses(@TempDir final Path temp) throws Exception {
-        new Home(temp.resolve("xml")).save(
+        new HmBase(temp.resolve("xml")).save(
             this.xmir.toString(),
             Paths.get("sum.xmir")
         );

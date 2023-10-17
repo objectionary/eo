@@ -128,7 +128,7 @@
 
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
       Some(
-        EOInt(env.find("$.^.a").unwrap() as i64)
+        EOInt(env.find("$.^.a")? as i64)
       )
     }
     """
@@ -200,12 +200,10 @@
       18
     "Rust insert failed"
 
-# @todo #2498:30min Enable the tests. After removing assert-that from eo-runtime
-#  $.string-starts-with it not allowed anymore. Need to refactor the next tests and enable them:
-#  - rust-bind-not-fails, - rust-error
 [] > rust-bind-not-fails
   1 > a
   2 > b
+  "Rust insert failed" > to-check!
   QQ.rust > insert
     """
     use eo_env::EOEnv;
@@ -220,16 +218,17 @@
     """
     *
       []
-  try > res
+  try > res!
     []
       insert > @
     [e]
       e > @
     nop
-  nop > @
-    eq.
-      res
-      "Rust insert failed"
+  eq. > @
+    res.slice
+      0
+      to-check.length
+    to-check
 
 [] > rust-copy-not-fails
   123 > a
@@ -283,7 +282,7 @@
 
     pub fn foo(env: &mut EOEnv) -> Option<EO> {
       let a = env.find("$.^.a")?;
-      let bytes_a = env.dataize(a).unwrap();
+      let bytes_a = env.dataize(a)?;
       let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
       let b = env.find("$.^.b")?;

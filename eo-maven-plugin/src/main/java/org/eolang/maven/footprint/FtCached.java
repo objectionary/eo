@@ -33,7 +33,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.Place;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * Program footprint of EO compilation process.
@@ -113,7 +113,7 @@ public final class FtCached implements Footprint {
                 text = this.load(program, ext);
             } else {
                 text = new IoChecked<>(content).value();
-                new Home(this.cache).save(text, this.path(program, ext));
+                new HmBase(this.cache).save(text, this.path(program, ext));
             }
         } else {
             text = new IoChecked<>(content).value();

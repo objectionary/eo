@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,10 +42,10 @@ final class DepDirsTest {
 
     @Test
     void findsDirs(@TempDir final Path temp) throws IOException {
-        new Home(temp).save("", Paths.get("a/b/c/f/test.txt"));
-        new Home(temp).save("", Paths.get("a/b/f.txt"));
-        new Home(temp).save("", Paths.get("test/f.txt"));
-        new Home(temp).save("", Paths.get("a/g"));
+        new HmBase(temp).save("", Paths.get("a/b/c/f/test.txt"));
+        new HmBase(temp).save("", Paths.get("a/b/f.txt"));
+        new HmBase(temp).save("", Paths.get("test/f.txt"));
+        new HmBase(temp).save("", Paths.get("a/g"));
         MatcherAssert.assertThat(
             new DepDirs(temp),
             Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))

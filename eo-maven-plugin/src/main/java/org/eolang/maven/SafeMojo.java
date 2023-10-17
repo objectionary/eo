@@ -203,6 +203,16 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean withVersions;
 
     /**
+     * Rewrite binaries in output directory or not.
+     * @since 0.32.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
+     */
+    @Parameter(property = "rewriteBinaries", defaultValue = "true")
+    @SuppressWarnings("PMD.ImmutableField")
+    protected boolean rewriteBinaries = true;
+
+    /**
      * Commit hashes.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */

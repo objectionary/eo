@@ -35,7 +35,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -205,7 +205,7 @@ final class TranspileMojoTest {
         final Path sources = target.resolve("generated-sources");
         final FakeMaven maven = new FakeMaven(temp);
         final Path binary = Paths.get("classes", "EOf", "EOmain.class");
-        new Home(maven.targetPath()).save(new Randomized(), binary);
+        new HmBase(maven.targetPath()).save(new Randomized(), binary);
         maven.with("generatedDir", sources.toFile())
             .with("targetDir", target.resolve("eo").toFile())
             .withHelloWorld()

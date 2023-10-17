@@ -35,7 +35,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.Place;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * Default implementation of a Footprint.
@@ -71,7 +71,7 @@ public final class FtDefault implements Footprint {
     @Override
     public void save(final String program, final String ext, final Scalar<String> content)
         throws IOException {
-        new Home(this.main).save(
+        new HmBase(this.main).save(
             new IoChecked<>(content).value(),
             this.main.relativize(new Place(program).make(this.main, ext))
         );

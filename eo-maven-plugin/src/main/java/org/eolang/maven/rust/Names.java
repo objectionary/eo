@@ -38,7 +38,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.eolang.maven.footprint.FtDefault;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * The class for storing and assigning names to
@@ -139,7 +139,7 @@ public final class Names {
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(this.all.value());
         oos.flush();
-        new Home(this.dest.getParent()).save(
+        new HmBase(this.dest.getParent()).save(
             new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8),
             this.dest.getFileName()
         );
