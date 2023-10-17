@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
@@ -21,39 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.eolang.maven.util.HmBase;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link DepDirs}.
+ * Check the internet connection.
  *
- * @since 0.11
+ * @return Is the internet connection available
  */
-final class DepDirsTest {
-
-    @Test
-    void findsDirs(@TempDir final Path temp) throws IOException {
-        new HmBase(temp).save("", Paths.get("a/b/c/f/test.txt"));
-        new HmBase(temp).save("", Paths.get("a/b/f.txt"));
-        new HmBase(temp).save("", Paths.get("test/f.txt"));
-        new HmBase(temp).save("", Paths.get("a/g"));
-        MatcherAssert.assertThat(
-            new DepDirs(temp),
-            Matchers.contains(String.format("a%sb%1$sc%1$sf", File.separator))
-        );
-        MatcherAssert.assertThat(
-            new DepDirs(temp),
-            Matchers.iterableWithSize(1)
-        );
-    }
-
+private static boolean online() {
+  boolean online = true
+  try {
+    final URL url = new URL("http://www.google.com")
+    final URLConnection conn = url.openConnection()
+    conn.connect()
+    conn.inputStream.close()
+  } catch (final IOException ignored) {
+    online = false
+  }
+  return online
 }
+
+/**
+ * Here we check if EOe.class exists and if it contains "EOorg/EOeolang/EOint" which means that is
+ * wasn't overwritten.
+ */
+if (online()) {
+  File euler =  new File(basedir, 'target/classes/EOorg/EOeolang/EOmath/EOe.class')
+  assert euler.exists()
+  assert euler.text.contains('EOorg/EOeolang/EOint')
+}
+
+true

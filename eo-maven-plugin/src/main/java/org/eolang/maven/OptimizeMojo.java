@@ -42,7 +42,7 @@ import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 
@@ -223,7 +223,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = place.make(
             dir.resolve(OptimizeMojo.DIR), TranspileMojo.EXT
         );
-        new Home(dir).save(
+        new HmBase(dir).save(
             xml.toString(),
             dir.relativize(target)
         );

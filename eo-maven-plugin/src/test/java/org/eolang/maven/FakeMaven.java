@@ -61,7 +61,7 @@ import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
@@ -81,7 +81,7 @@ public final class FakeMaven {
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
-    private final Home workspace;
+    private final HmBase workspace;
 
     /**
      * Mojos params.
@@ -117,7 +117,7 @@ public final class FakeMaven {
      */
     private FakeMaven(final Path workspace, final boolean defaults) {
         this(
-            new Home(workspace),
+            new HmBase(workspace),
             new HashMap<>(),
             new AtomicInteger(0),
             defaults
@@ -133,7 +133,7 @@ public final class FakeMaven {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
-        final Home workspace,
+        final HmBase workspace,
         final Map<String, Object> params,
         final AtomicInteger current,
         final boolean defaults
@@ -233,6 +233,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent("objectionaries", new Objectionaries.Fake());
+            this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent(
                 "eoEnvDir",

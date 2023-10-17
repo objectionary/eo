@@ -42,7 +42,7 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -114,7 +114,7 @@ final class PullMojoTest {
 
     @Test
     void pullsUsingOfflineHashFile(@TempDir final Path temp) throws IOException {
-        new Home(temp).save(
+        new HmBase(temp).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
             Paths.get("tags.txt")
         );
@@ -305,7 +305,7 @@ final class PullMojoTest {
      * @return If given source file exists.
      */
     private static boolean exists(final Path temp, final String source) {
-        return new Home(temp.resolve("target")).exists(PullMojoTest.path(source));
+        return new HmBase(temp.resolve("target")).exists(PullMojoTest.path(source));
     }
 
     /**

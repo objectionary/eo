@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -98,7 +98,7 @@ final class MarkMojoTest {
     }
 
     private static void source(final Path temp) throws IOException {
-        new Home(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
+        new HmBase(temp.resolve("target").resolve(ResolveMojo.DIR)).save(
             "hi",
             Paths.get(
                 String.format(

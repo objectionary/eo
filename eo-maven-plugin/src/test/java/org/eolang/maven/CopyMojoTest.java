@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ final class CopyMojoTest {
     void copiesSources(@TempDir final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
-        new Home(src).save(
+        new HmBase(src).save(
             "+rt foo:0.0.0\n\n[args] > main\n  \"0.0.0\" > @\n",
             Paths.get("foo/main.eo")
         );
@@ -57,11 +57,11 @@ final class CopyMojoTest {
             .execute();
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            new Home(classes).exists(classes.relativize(out)),
+            new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            new TextOf(new Home(classes).load(classes.relativize(out))).asString(),
+            new TextOf(new HmBase(classes).load(classes.relativize(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
                 Matchers.containsString("0.0.0"),
@@ -88,7 +88,7 @@ final class CopyMojoTest {
             .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
-            new Home(classes).exists(classes.relativize(out)),
+            new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(false)
         );
     }

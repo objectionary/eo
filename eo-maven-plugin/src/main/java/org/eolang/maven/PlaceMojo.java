@@ -40,7 +40,8 @@ import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.eolang.maven.tojos.PlacedTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
+import org.eolang.maven.util.HmOptional;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
@@ -134,7 +135,7 @@ public final class PlaceMojo extends SafeMojo {
             Logger.info(this, "Found placed binaries from %s", dep);
         }
         final Path dir = home.resolve(dep);
-        final long copied = new BinariesDependency(dir, dep).place();
+        final long copied = new BinariesDependency(dir, dep, this.rewriteBinaries).place();
         this.placedTojos.placeJar(dep);
         if (copied > 0) {
             Logger.info(
@@ -168,13 +169,24 @@ public final class PlaceMojo extends SafeMojo {
         private final String dep;
 
         /**
+         * Rewrite binary or not.
+         */
+        private final boolean rewrite;
+
+        /**
          * Ctor.
          * @param directory The directory to read from
          * @param dependency The name of dependency
+         * @param rwte Rewrite binaries in output directory or not
          */
-        private BinariesDependency(final Path directory, final String dependency) {
+        private BinariesDependency(
+            final Path directory,
+            final String dependency,
+            final boolean rwte
+        ) {
             this.dir = directory;
             this.dep = dependency;
+            this.rewrite = rwte;
         }
 
         /**
@@ -318,7 +330,10 @@ public final class PlaceMojo extends SafeMojo {
             final Path path = this.dir.relativize(file);
             try {
                 final Path target = PlaceMojo.this.outputDir.toPath().resolve(path);
-                new Home(PlaceMojo.this.outputDir).save(new InputOf(file), path);
+                new HmOptional(
+                    new HmBase(PlaceMojo.this.outputDir),
+                    this.rewrite
+                ).save(new InputOf(file), path);
                 PlaceMojo.this.placedTojos.placeClass(
                     target,
                     PlaceMojo.this.outputDir.toPath().relativize(target).toString(),

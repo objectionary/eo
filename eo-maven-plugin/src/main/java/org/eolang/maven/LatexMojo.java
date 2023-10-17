@@ -31,7 +31,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.eolang.maven.latex.LatexTemplate;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * Take .xmir files from target/eo/03-optimize directory and
@@ -90,7 +90,7 @@ public final class LatexMojo extends SafeMojo {
             final Path target = place.make(
                 dir.resolve(LatexMojo.DIR), LatexMojo.EXT
             );
-            new Home(dir).save(
+            new HmBase(dir).save(
                 new LatexTemplate(
                     new XMLDocument(file).nodes("/program/listing").get(0).toString()
                 ).asString(),

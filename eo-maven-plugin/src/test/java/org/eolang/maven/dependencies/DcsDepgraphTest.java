@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.LengthOf;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.io.TempDir;
@@ -61,7 +61,7 @@ final class DcsDepgraphTest {
     private Path file(final Path tmp, final String name) {
         try {
             final Path res = tmp.resolve(name);
-            new Home(tmp).save(
+            new HmBase(tmp).save(
                 new ResourceOf(
                     String.format("org/eolang/maven/dependencies/%s", name)
                 ),

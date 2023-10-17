@@ -51,7 +51,7 @@ import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 import org.eolang.parser.ParsingTrain;
 import org.eolang.parser.StUnhex;
@@ -232,7 +232,7 @@ public final class TranspileMojo extends SafeMojo {
             place.make(this.targetDir.toPath().resolve(TranspileMojo.PRE), "")
         );
         final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        new Home(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
+        new HmBase(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
         final List<Path> javas = new JavaFiles(target, this.generatedDir.toPath()).save();
         this.cleanUpClasses(javas);
         return javas;
