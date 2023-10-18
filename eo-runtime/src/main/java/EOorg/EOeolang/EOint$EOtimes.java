@@ -32,6 +32,7 @@ import org.eolang.AtVararg;
 import org.eolang.ExprReduce;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -40,6 +41,7 @@ import org.eolang.XmirObject;
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "int.times")
 public class EOint$EOtimes extends PhDefault {
 

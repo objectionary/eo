@@ -39,31 +39,16 @@ import org.junit.jupiter.api.io.TempDir;
  */
 final class ModuleTest {
     @Test
-    void transformsCorrectly(@TempDir final Path temp) throws Exception {
-        final Module module = new Module(
-            String.join(
-                System.lineSeparator(),
-                "pub fn foo() -> i32 {",
-                "  let mut rng = rand::thread_rng();",
-                "  print!(\"Hello world\");",
-                "  let i = rng.gen::<i32>();",
-                "  i",
-                "}"
-            ),
-            "simple"
-        );
-        module.save(new FtDefault(temp.resolve(Paths.get("qwerty"))));
+    void savesCorrectly(@TempDir final Path temp) throws Exception {
+        final String content = "content";
+        final String name = "name";
+        final Module module = new Module(content, name);
+        module.save(new FtDefault(temp));
         MatcherAssert.assertThat(
             new TextOf(
-                temp.resolve(Paths.get("qwerty").resolve("src").resolve("simple.rs"))
+                temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),
-            Matchers.stringContainsInOrder(
-                "use jni::objects::{JClass};",
-                "use jni::sys::{jint};",
-                "use jni::JNIEnv;",
-                "#[no_mangle]",
-                "pub extern \"system\" fn Java_EOrust_natives_simple_simple(_env: JNIEnv, _class: JClass,) -> jint {"
-            )
+            Matchers.equalTo(content)
         );
     }
 }

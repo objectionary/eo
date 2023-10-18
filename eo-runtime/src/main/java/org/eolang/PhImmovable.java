@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.23
  */
+@Versionized
 final class PhImmovable implements Phi {
 
     /**
@@ -89,4 +90,8 @@ final class PhImmovable implements Phi {
         return this.origin.locator();
     }
 
+    @Override
+    public String forma() {
+        return this.origin.forma();
+    }
 }

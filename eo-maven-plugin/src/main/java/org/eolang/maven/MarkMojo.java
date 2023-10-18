@@ -32,12 +32,16 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnReplaced;
+import org.eolang.maven.name.OnSwap;
+import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
- * Extend current list of foreign objects with those
+ * Extend the current list of foreign objects with those
  * visible in resolved artifacts.
  *
  * @since 0.11
@@ -78,11 +82,11 @@ public final class MarkMojo extends SafeMojo {
     private long scan(final Path dir, final String version) {
         final Unplace unplace = new Unplace(dir);
         final Collection<Path> sources = new Walk(dir);
-        final ForeignTojos scoped = this.scopedTojos();
+        final ForeignTojos tojos = this.scopedTojos();
         final long done = sources.stream()
             .filter(src -> src.toString().endsWith(".eo"))
-            .map(unplace::make)
-            .map(scoped::add)
+            .map(file -> this.objectName(file, unplace, version))
+            .map(tojos::add)
             .map(tojo -> tojo.withVersion(version))
             .count();
         Logger.info(
@@ -92,4 +96,23 @@ public final class MarkMojo extends SafeMojo {
         return done;
     }
 
+    /**
+     * Convert given file to object name.
+     * @param file File name
+     * @param unplace Unplace for given file
+     * @param version Version
+     * @return Object name from given file
+     */
+    private ObjectName objectName(final Path file, final Unplace unplace, final String version) {
+        return new OnSwap(
+            this.withVersions,
+            new OnReplaced(
+                new OnVersioned(
+                    unplace.make(file),
+                    version
+                ),
+                this.hashes
+            )
+        );
+    }
 }

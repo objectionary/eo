@@ -26,10 +26,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionary;
-import org.eolang.maven.util.Home;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -64,44 +61,20 @@ class CleanMojoTest {
     @Test
     @ExtendWith(OnlineCondition.class)
     void makesFullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
-        final Path src = temp.resolve("src");
-        new Home(src).save(
-            String.join(
-                "\n",
-                "+alias stdout org.eolang.io.stdout",
-                "",
-                "[x] > main\n  (stdout \"Hello!\" x).print\n"
-            ),
-            Paths.get("main.eo")
-        );
-        final Path target = temp.resolve("target");
-        new Moja<>(RegisterMojo.class)
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
-            .with("sourcesDir", src.toFile())
+        new FakeMaven(temp)
+            .withHelloWorld()
             .with("includeSources", new SetOf<>("**.eo"))
-            .execute();
-        new Moja<>(AssembleMojo.class)
             .with("outputDir", temp.resolve("out").toFile())
-            .with("targetDir", target.toFile())
-            .with("foreign", temp.resolve("eo-foreign.json").toFile())
-            .with("foreignFormat", "json")
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed"))
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)
-            .with("plugin", FakeMaven.pluginDescriptor())
-            .with(
-                "objectionary",
-                new Objectionary.Fake()
-            )
-            .execute();
-        new Moja<>(CleanMojo.class)
-            .with("targetDir", target.toFile())
-            .execute();
+            .execute(RegisterMojo.class)
+            .execute(AssembleMojo.class)
+            .execute(CleanMojo.class);
         MatcherAssert.assertThat(
-            target.toFile().exists(),
+            temp.resolve("target").toFile().exists(),
             Matchers.is(false)
         );
     }

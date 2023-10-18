@@ -20,23 +20,353 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
 +version 0.0.0
 
-[] > creates-object
+[] > rust-returns-positive-int
   QQ.rust > r
     """
-    pub fn foo() -> i32 {
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
       println!("Hello world from rust");
-      let x = 4.0_f32;
-      x.sqrt() as i32
+      Some(EOInt(2))
     }
     """
     *
-  assert-that > @
+      []
+  eq. > @
     r
-    $.equal-to
-      2
+    2
+
+[] > rust-returns-negative-int
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      println!("Hello world from rust");
+      Some(EOInt(-10))
+    }
+    """
+    *
+      []
+  eq. > @
+    r
+    -10
+
+[] > rust-returns-positive-doable
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOFloat};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOFloat(1.23456789))
+    }
+    """
+    *
+      []
+  eq. > @
+    r
+    1.23456789
+
+[] > rust-returns-negative-doable
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOFloat};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOFloat(-1.23456789))
+    }
+    """
+    *
+      []
+  eq. > @
+    r
+    -1.23456789
+
+[] > rust-is-byte-array
+  QQ.rust > my-bytes
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EORaw};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(
+        EORaw(
+          Box::from(
+            [0x00, 0x1a, 0xEE]
+          )
+        )
+      )
+    }
+    """
+    *
+      []
+  eq. > @
+    my-bytes
+    00-1A-EE
+
+[] > rust-find-returns-int
+  123 > a
+  QQ.rust > r
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      Some(
+        EOInt(env.find("$.^.a")? as i64)
+      )
+    }
+    """
+    *
+      []
+  not. > @
+    lt.
+      r
+      0
+
+[] > rust-returns-vertex
+  "content" > book
+  QQ.rust > read
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex};
+
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.book")?;
+      Some(EOVertex(v))
+    }
+    """
+    *
+      []
+  eq. > @
+    read
+    "content"
+
+[] > rust-is-string
+  QQ.rust > content
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOString};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOString("Привет world".to_string()))
+    }
+    """
+    *
+      []
+  eq. > @
+    content
+    "Привет world"
+
+[] > rust-invalid-put
+  QQ.rust > put
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt, EOError};
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      env.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
+      Some(EOError("put failed".to_string()))
+    }
+    """
+    *
+      []
+  eq. > @
+    slice.
+      try
+        []
+          put > @
+        [e]
+          e > @
+        nop
+      0
+      18
+    "Rust insert failed"
+
+[] > rust-bind-not-fails
+  1 > a
+  2 > b
+  "Rust insert failed" > to-check!
+  QQ.rust > insert
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v1 = env.find("$.^.a")?;
+      let v2 = env.find("$.^.b")?;
+      env.bind(v1 , v2, "EO-att")?;
+      Some(EOInt(0 as i64))
+    }
+    """
+    *
+      []
+  try > res!
+    []
+      insert > @
+    [e]
+      e > @
+    nop
+  eq. > @
+    res.slice
+      0
+      to-check.length
+    to-check
+
+[] > rust-copy-not-fails
+  123 > a
+  QQ.rust > copy
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex};
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.a")?;
+      let copy = env.copy(v)?;
+      Some(EOVertex(copy))
+    }
+    """
+    *
+      []
+  eq. > @
+    copy
+    123
+
+[] > rust-dataize-not-fails
+  1 > a
+  QQ.rust > dataized
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let v = env.find("$.^.a")?;
+      let _bytes = env.dataize(v)?;
+      Some(EOInt(v as i64))
+    }
+    """
+    *
+      []
+      3
+  not. > @
+    lt.
+      dataized
+      0
+
+[] > rust-plus
+  5 > a
+  10 > b
+  QQ.rust > plus
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+    use byteorder::{BigEndian, ReadBytesExt};
+
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let a = env.find("$.^.a")?;
+      let bytes_a = env.dataize(a)?;
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
+
+      let b = env.find("$.^.b")?;
+      let bytes_b = env.dataize(b)?;
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
+      println!("sum 5 + 10 = {}", a + b);
+
+      Some(EOInt(a + b))
+    }
+    """
+    *
+      []
+      "byteorder:1.4.3"
+  eq. > @
+    plus
+    15
+
+[] > rust-error
+  QQ.rust > err!
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOError};
+
+    pub fn foo(_env: &mut EOEnv) -> Option<EO> {
+      Some(EOError("Custom error".to_string()))
+    }
+    """
+    *
+      []
+  try > res
+    []
+      err > @
+    [e]
+      e > @
+    nop
+  nop > @
+    and.
+      eq.
+        res
+        "Rust insert failed "
+      eq.
+        res
+        "'Custom error'"
+
+[] > rust-put-to-copy
+  QQ.rust > data
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex, EOError};
+
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let eobytes = env.find("Q.org.eolang.bytes")?;
+      let copy = env.copy(eobytes)?;
+      env.put(copy.clone(), &[0x00, 0x1a, 0xEE])?;
+      Some(EOVertex(copy))
+    }
+    """
+    *
+      []
+  eq. > @
+    data
+    00-1A-EE
+
+[] > rust-bind-to-copy
+  [content] > book
+  "qwerty" > line
+  QQ.rust > applied
+    """
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOVertex};
+
+    pub fn foo(env: &mut EOEnv) -> Option<EO> {
+      let eobook = env.find("$.^.book")?;
+      let copy = env.copy(eobook)?;
+      let eoline = env.find("$.^.line")?;
+      env.bind(copy.clone(), eoline, "content")?;
+      Some(EOVertex(copy))
+    }
+    """
+    *
+      []
+  eq. > @
+    applied.content
+    "qwerty"

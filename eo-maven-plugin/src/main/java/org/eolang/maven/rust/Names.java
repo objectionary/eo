@@ -32,14 +32,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.eolang.maven.footprint.FtDefault;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 
 /**
  * The class for storing and assigning names to
@@ -49,6 +48,11 @@ import org.eolang.maven.util.Home;
  * @since 0.30
  */
 public final class Names {
+
+    /**
+     * Prefix for the names.
+     */
+    public static final String PREFIX = "native";
 
     /**
      * Target directory.
@@ -62,17 +66,11 @@ public final class Names {
     private final IoChecked<ConcurrentHashMap<String, String>> all;
 
     /**
-     * Prefix for the name.
-     */
-    private final String prefix;
-
-    /**
      * Ctor.
      * @param target Directory where to serialize names.
      */
     public Names(final Path target) {
         this.dest = target.resolve("names");
-        this.prefix = target.toString().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9]", "x");
         this.all = Names.checked(this.dest);
     }
 
@@ -98,7 +96,7 @@ public final class Names {
             loc,
             key -> String.format(
                 "%s%d",
-                this.prefix,
+                Names.PREFIX,
                 cached.size()
             )
         );
@@ -116,7 +114,6 @@ public final class Names {
         final Names names = (Names) object;
         try {
             return this.dest.equals(names.dest)
-                && this.prefix.equals(names.prefix)
                 && this.all.value().equals(names.all.value());
         } catch (final IOException exc) {
             throw new IllegalArgumentException(
@@ -129,7 +126,6 @@ public final class Names {
     @Override
     public int hashCode() {
         return 31 * this.dest.hashCode()
-            + 829 * this.prefix.hashCode()
             + 9719 * this.all.hashCode();
     }
 
@@ -143,7 +139,7 @@ public final class Names {
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(this.all.value());
         oos.flush();
-        new Home(this.dest.getParent()).save(
+        new HmBase(this.dest.getParent()).save(
             new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8),
             this.dest.getFileName()
         );

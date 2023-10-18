@@ -3,7 +3,7 @@ xsls:
 tests:
   - /program/errors[count(error[@severity='error'])=1]
 eo: |
-  [a b c d e f]
+  [a b c d e f] > with-many
     something > @
 
   [x y z] > main

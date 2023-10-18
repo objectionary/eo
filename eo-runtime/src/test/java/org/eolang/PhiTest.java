@@ -40,21 +40,27 @@ final class PhiTest {
             new Dataized(
                 new PhCopy(
                     new PhMethod(
-                        new PhMethod(
-                            new PhMethod(
+                        new PhWith(
+                            new PhCopy(
                                 new PhMethod(
-                                    Phi.Φ.attr("org").get(),
-                                    "eolang"
-                                ),
-                                "math"
+                                    new PhMethod(
+                                        new PhMethod(
+                                            Phi.Φ.attr("org").get(),
+                                            "eolang"
+                                        ),
+                                        "io"
+                                    ),
+                                    "stdout"
+                                )
                             ),
-                            "random"
+                            0,
+                            new Data.ToPhi("Hello, world")
                         ),
-                        "pseudo"
+                        "text"
                     )
                 )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+            ).take(String.class),
+            Matchers.startsWith("Hello")
         );
     }
 
@@ -64,11 +70,15 @@ final class PhiTest {
             new Dataized(
                 new PhCopy(
                     new PhMethod(
-                        Phi.Φ.attr("org.eolang.math.random").get(), "pseudo"
+                        new PhWith(
+                            new PhCopy(Phi.Φ.attr("org.eolang.io.stdout").get()),
+                            0, new Data.ToPhi("Hello, world")
+                        ),
+                        "text"
                     )
                 )
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+            ).take(String.class),
+            Matchers.startsWith("Hello")
         );
     }
 
@@ -76,10 +86,10 @@ final class PhiTest {
     void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("math")
-                    .get().attr("random").get().attr("pseudo").get()
-            ).take(Double.class),
-            Matchers.greaterThan(-1.0d)
+                Phi.Φ.attr("org").get().attr("eolang").get().attr("nan")
+                    .get().attr("gt").get()
+            ).take(Boolean.class),
+            Matchers.equalTo(false)
         );
     }
 

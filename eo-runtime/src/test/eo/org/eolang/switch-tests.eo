@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -28,7 +27,7 @@
 +version 0.0.0
 
 [] > switch-simple-case
-  assert-that > @
+  eq. > @
     switch
       *
         FALSE
@@ -36,11 +35,11 @@
       *
         TRUE
         "2"
-    $.equal-to "2"
+    "2"
 
 [] > switch-strings-case
   memory "swordfish" > password
-  assert-that > @
+  eq. > @
     switch
       *
         password.eq "swordfish"
@@ -51,10 +50,10 @@
       *
         FALSE
         "password is wrong"
-    $.equal-to "password is correct!"
+    "password is correct!"
 
 [] > switch-with-several-true-cases
-  assert-that > @
+  eq. > @
     switch
       *
         TRUE
@@ -65,10 +64,10 @@
       *
         TRUE
         "TRUE2"
-    $.equal-to "TRUE1"
+    "TRUE1"
 
 [] > switch-with-all-false-cases
-  assert-that > @
+  eq. > @
     switch
       *
         FALSE
@@ -76,15 +75,15 @@
       *
         FALSE
         "FALSE2"
-    $.equal-to TRUE
+    TRUE
 
 [] > switch-case-with-error
   try > @
     switch
     [ex]
-      assert-that > @
+      eq. > @
         ex
-        $.equal-to "switch cases are empty"
+        "switch cases are empty"
     nop
 
 [] > switch-complex-case
@@ -94,7 +93,7 @@
     "1".eq "2" > @
   [] > c3
     TRUE > @
-  assert-that > @
+  eq. > @
     switch
       *
         []
@@ -109,4 +108,4 @@
           c3 > @
         []
           "true case" > @
-    $.equal-to "true case"
+    "true case"

@@ -23,69 +23,34 @@
  */
 package org.eolang.maven.rust;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import org.eolang.maven.footprint.Footprint;
-
 /**
  * Special class for converting a rust inserts
  * into a separate module of Cargo Project.
  * @since 0.1
  */
-public class Module {
+public class Module extends Savable {
+
     /**
-     * Source code of rust insert.
+     * Code in the module.
      */
     private final String raw;
 
     /**
-     * Name of file.
-     */
-    private final String name;
-
-    /**
      * Ctor.
-     * @param raw Source code.
+     * @param raw Source code of rust insert.
      * @param name Name of file.
      */
     public Module(final String raw, final String name) {
+        super(
+            name,
+            "rs"
+        );
         this.raw = raw;
-        this.name = name;
     }
 
-    /**
-     * Save it by footprint.
-     * @param footprint Footprint.
-     * @throws IOException If any issues with I/O.
-     */
-    public void save(final Footprint footprint) throws IOException {
-        footprint.save(
-            Paths.get("src").resolve(this.name).toString(),
-            "rs",
-            this::transform
-        );
+    @Override
+    final String content() {
+        return this.raw;
     }
 
-    /**
-     * Transform raw to compilable file.
-     * @return Content for file.
-     */
-    private String transform() {
-        final String signature = String.format(
-            "#[no_mangle]%spub extern \"system\" fn Java_EOrust_natives_%s_%s(_env: JNIEnv, _class: JClass,) -> jint {",
-            System.lineSeparator(),
-            this.name,
-            this.name
-        );
-        return String.join(
-            System.lineSeparator(),
-            "use jni::objects::{JClass};",
-            "use jni::sys::{jint};",
-            "use jni::JNIEnv;",
-            this.raw.replaceFirst(
-                "[ ]*pub[ ]+fn[ ]+foo\\(\\)[ ]+->[ ]*i32[ ]*\\{",
-                signature
-            )
-        );
-    }
 }

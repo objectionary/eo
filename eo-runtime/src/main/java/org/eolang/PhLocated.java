@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@Versionized
 public final class PhLocated implements Phi {
 
     /**
@@ -120,6 +121,11 @@ public final class PhLocated implements Phi {
     @Override
     public String locator() {
         return String.format("%s:%d:%d", this.location, this.line, this.position);
+    }
+
+    @Override
+    public String forma() {
+        return this.origin.forma();
     }
 
 }

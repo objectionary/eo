@@ -77,7 +77,6 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/incorrect-version.xsl",
         "/org/eolang/parser/expand-aliases.xsl",
         "/org/eolang/parser/resolve-aliases.xsl",
-        "/org/eolang/parser/synthetic-references.xsl",
         "/org/eolang/parser/add-refs.xsl",
         "/org/eolang/parser/add-default-package.xsl",
         "/org/eolang/parser/errors/broken-refs.xsl",
@@ -92,9 +91,9 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/prohibited-package.xsl",
         "/org/eolang/parser/errors/external-weak-typed-atoms.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
-        "/org/eolang/parser/errors/data-objects.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
         "/org/eolang/parser/set-locators.xsl",
+        "/org/eolang/parser/explicit-data.xsl",
     };
 
     /**
@@ -120,7 +119,9 @@ public final class ParsingTrain extends TrEnvelope {
                             Level.FINEST
                         ),
                         StEoLogged::new
-                    )
+                    ),
+                    TrFast.class,
+                    500L
                 ),
                 shift -> new StSequence(
                     shift.uid(),

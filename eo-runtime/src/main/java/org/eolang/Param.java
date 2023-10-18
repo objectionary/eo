@@ -24,15 +24,12 @@
 
 package org.eolang;
 
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-
 /**
  * Param of an object (convenient retrieval mechanism).
  *
  * <p>The job of the utility object is to help our EO objects retrieve
  * attributes from other objects and from their own \rho (owners). On top of
- * retrieval this object also does simple type checking. When an attribute
+ * retrieval, this object also does simple type checking. When an attribute
  * is expected to be of some type, we use {@link #strong(Class)}. This method
  * will throw a runtime exception if types don't match. If just a simple
  * retrieval without type checking is necessary, just use the method
@@ -40,6 +37,7 @@ import java.nio.ByteBuffer;
  *
  * @since 0.20
  */
+@Versionized
 public final class Param {
 
     /**
@@ -111,14 +109,22 @@ public final class Param {
     public Bytes asBytes() {
         final Object ret = this.weak();
         final Bytes res;
-        if (Long.class.isInstance(ret)) {
+        if (ret instanceof Long) {
             res = new BytesOf((long) ret);
-        } else if (Character.class.isInstance(ret)) {
-            res = new BytesOf((char) ret);
-        } else if (Double.class.isInstance(ret)) {
+        } else if (ret instanceof Double) {
             res = new BytesOf((double) ret);
-        } else if (byte[].class.isInstance(ret)) {
+        } else if (ret instanceof Character) {
+            res = new BytesOf((char) ret);
+        } else if (ret instanceof String) {
+            res = new BytesOf((String) ret);
+        } else if (ret instanceof byte[]) {
             res = new BytesOf((byte[]) ret);
+        } else if (ret instanceof Boolean) {
+            final byte[] bytes = new byte[1];
+            if ((boolean) ret) {
+                bytes[0] = 1;
+            }
+            res = new BytesOf(bytes);
         } else {
             throw new ExFailure(
                 String.format(

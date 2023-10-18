@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
+import EOorg.EOeolang.EOstring;
 import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -55,8 +55,8 @@ final class PhWithTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    new EOsprintf(Phi.Φ),
-                    0, new Data.ToPhi("Hello, world!")
+                    new EOstring(Phi.Φ),
+                    "Δ", new Data.Value<>("Hello, world!")
                 )
             ).take(String.class),
             Matchers.startsWith("Hello, ")
@@ -110,11 +110,22 @@ final class PhWithTest {
         );
     }
 
+    @Test
+    void hasTheSameFormaWithBoundAttribute() {
+        final Phi dummy = new DummyWithAtFree("x", Phi.Φ);
+        MatcherAssert.assertThat(
+            dummy.forma(),
+            Matchers.equalTo(
+                new PhWith(dummy, "x", new Data.Value<>(5L)).forma()
+            )
+        );
+    }
+
     /**
      * Dummy Phi with free attribute.
      * @since 1.0
      */
-    public static class DummyWithAtFree extends PhDefault {
+    private static class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.

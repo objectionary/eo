@@ -1,0 +1,22 @@
++package org.eolang.custom
++version 0.0.0
+
+[] > creates-object
+  QQ.rust > r
+    """
+    use rand::Rng;
+    use eo_env::EOEnv;
+    use eo_env::eo_enum::EO;
+    use eo_env::eo_enum::EO::{EOInt};
+
+    pub fn foo(_env: &EOEnv) -> Option<EO> {
+      let mut rng = rand::thread_rng();
+      print!("Hello world");
+      let i = rng.gen::<i64>();
+      Some(EOInt(i))
+    }
+    """
+    *
+      "rand= \"0.5.5\""
+  TRUE > @
+

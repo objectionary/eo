@@ -32,6 +32,7 @@ import java.util.logging.Logger;
  *
  * @since 0.24
  */
+@Versionized
 final class AtLogged implements Attr {
 
     /**

@@ -1,0 +1,6 @@
+xsls: []
+tests:
+  - //o[@abstract and count(o)=1]
+eo: |
+  [] > aliases
+    a (b (c d))

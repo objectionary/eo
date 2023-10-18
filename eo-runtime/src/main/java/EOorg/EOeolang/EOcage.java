@@ -27,11 +27,13 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCage;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
@@ -41,6 +43,7 @@ import org.eolang.XmirObject;
  * @since 0.17
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @Volatile
 @XmirObject(oname = "cage")
 public class EOcage extends PhDefault {
@@ -51,7 +54,7 @@ public class EOcage extends PhDefault {
      */
     public EOcage(final Phi sigma) {
         super(sigma);
-        this.add("enclosure", new AtMemoized());
+        this.add("enclosure", new AtCage());
         this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
         this.add("write", new AtComposite(this, EOcage.Write::new));
     }
@@ -61,7 +64,7 @@ public class EOcage extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "cage.write")
-    private final class Write extends PhDefault {
+    private static final class Write extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma

@@ -6,6 +6,7 @@ set -x
 # Initialize variables
 max="10"
 folder="../eo-runtime"
+compilation=false
 # Process command-line options
 while [ $# -gt 0 ]
 do
@@ -18,8 +19,12 @@ do
       shift
       folder=$1
       ;;
+    --compilation)
+      shift
+      compilation=$1
+      ;;
     *)
-      echo "Invalid option: $1. Please, specify --max or --folder options, for example, --max 15 --folder /some/path"
+      echo "Invalid option: $1. Please, specify --max, --folder or --compilation options, for example, --max 15 --folder /some/path"
       exit 1
       ;;
   esac
@@ -39,5 +44,11 @@ max=10
 for i in $(seq 1 $max)
 do
   echo "Test repetition #$i of $max"
-  MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e --batch-mode
+  if [ "$compilation" = true ]; then
+    echo "Compiling the module and running the tests"
+    MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn test -e --batch-mode
+  else
+    echo "Running the tests"
+    MAVEN_OPTS=-Dorg.slf4j.simpleLogger.showThreadName=true mvn surefire:test -e --batch-mode
+  fi
 done

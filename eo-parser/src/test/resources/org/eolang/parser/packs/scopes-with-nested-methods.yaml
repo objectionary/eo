@@ -1,0 +1,20 @@
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+tests:
+  - //o[@base='.with' and count(o)=3]/o[@base='foobar']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
+  - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
+eo: |
+  [] > aliases
+    [] > foo
+      [y] > with
+        42 > @
+    [] > bar
+      [x] > with
+        foo > @
+    [] > foobar
+      [z d] > with
+        bar > @
+    eq. > @
+      ((foobar.with 1 2).with 3).with 4
+      42

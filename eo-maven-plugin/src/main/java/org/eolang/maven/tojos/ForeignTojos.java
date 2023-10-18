@@ -23,11 +23,15 @@
  */
 package org.eolang.maven.tojos;
 
+import com.yegor256.tojos.MnMemory;
+import com.yegor256.tojos.TjCached;
+import com.yegor256.tojos.TjDefault;
+import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -36,6 +40,7 @@ import java.util.stream.Collectors;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.name.ObjectName;
 
 /**
  * Foreign tojos.
@@ -48,7 +53,7 @@ public final class ForeignTojos implements Closeable {
     /**
      * The delegate.
      */
-    private final Unchecked<Tojos> tojos;
+    private final Unchecked<? extends Tojos> tojos;
 
     /**
      * Scope.
@@ -58,18 +63,38 @@ public final class ForeignTojos implements Closeable {
     /**
      * Ctor.
      * @param scalar Scalar
+     * @param scope Scope
      */
-    public ForeignTojos(final Scalar<Tojos> scalar) {
+    public ForeignTojos(final Scalar<Tojos> scalar, final Supplier<String> scope) {
+        this(new Unchecked<>(new Sticky<>(scalar)), scope);
+    }
+
+    /**
+     * Constructor for tests.
+     * Keeps all tojos in memory.
+     */
+    ForeignTojos() {
+        this(() -> new TjSmart(new TjCached(new TjDefault(new MnMemory()))));
+    }
+
+    /**
+     * Ctor with the default scope.
+     * @param scalar Scalar
+     */
+    private ForeignTojos(final Scalar<Tojos> scalar) {
         this(scalar, () -> "compile");
     }
 
     /**
-     * Ctor.
-     * @param scalar Scalar
-     * @param scope Scope
+     * Main constructor.
+     * @param tojos The tojos.
+     * @param scope The scope.
      */
-    public ForeignTojos(final Scalar<Tojos> scalar, final Supplier<String> scope) {
-        this.tojos = new Unchecked<>(new Sticky<>(scalar));
+    private ForeignTojos(
+        final Unchecked<Tojos> tojos,
+        final Supplier<String> scope
+    ) {
+        this.tojos = tojos;
         this.scope = scope;
     }
 
@@ -89,6 +114,34 @@ public final class ForeignTojos implements Closeable {
             tojo.set(Attribute.SCOPE.key(), this.scope.get());
         }
         return new ForeignTojo(tojo);
+    }
+
+    /**
+     * Add a foreign tojo.
+     * @param name The name of the tojo as {@link ObjectName}.
+     * @return The tojo.
+     */
+    public ForeignTojo add(final ObjectName name) {
+        return this.add(name.toString());
+    }
+
+    /**
+     * Find tojo by tojo id.
+     * @param id The id of the tojo.
+     * @return The tojo.
+     */
+    public ForeignTojo find(final String id) {
+        return new ForeignTojo(
+            this.tojos.value()
+                .select(tojo -> tojo.get(Attribute.ID.key()).equals(id))
+                .stream()
+                .findFirst()
+                .orElseThrow(
+                    () -> new IllegalArgumentException(
+                        String.format("Tojo '%s' not found", id)
+                    )
+                )
+        );
     }
 
     /**
@@ -118,18 +171,6 @@ public final class ForeignTojos implements Closeable {
             t -> t.exists(Attribute.XMIR.key())
                 && t.exists(Attribute.VERSION.key())
                 && !t.exists(Attribute.JAR.key())
-        );
-    }
-
-    /**
-     * Get the tojos for the given eo.
-     * @param source The eo object path.
-     * @return The tojos.
-     */
-    public Collection<ForeignTojo> withSource(final Path source) {
-        return this.select(
-            row -> row.exists(Attribute.OPTIMIZED.key())
-                && row.get(Attribute.EO.key()).equals(source.toString())
         );
     }
 
@@ -186,6 +227,15 @@ public final class ForeignTojos implements Closeable {
      */
     public boolean contains(final String name) {
         return !this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
+    }
+
+    /**
+     * Check if the tojos contains a foreign tojos with object name.
+     * @param name The name of the tojo.
+     * @return True if tojo exists.
+     */
+    public boolean contains(final ObjectName... name) {
+        return Arrays.stream(name).map(Object::toString).allMatch(this::contains);
     }
 
     /**
@@ -284,7 +334,25 @@ public final class ForeignTojos implements Closeable {
         DISCOVERED_AT("discovered-at"),
 
         /**
-         * Probed.
+         * How many objects were probed in the tojo.
+         * Let's consider the next eo code:
+         * <p>
+         * {@code
+         * [] > main
+         *   QQ.io.stdout > @
+         *     QQ.txt.sprintf "I am %d years old"
+         *       plus.
+         *         1337
+         *         228
+         * }
+         * </p>
+         * <p>In this code there are 5 objects that were probed:</p>
+         *  - "org.eolang"
+         *  - "org.eolang.io"
+         *  - "org.eolang.txt"
+         *  - "org.eolang.io.stdout"
+         *  - "org.eolang.txt.sprintf"
+         * <p>For more info see {@link org.eolang.maven.ProbeMojo}. </p>
          */
         PROBED("probed"),
 
@@ -295,6 +363,7 @@ public final class ForeignTojos implements Closeable {
 
         /**
          * Hash.
+         * Object version hash from git.
          */
         HASH("hash"),
 

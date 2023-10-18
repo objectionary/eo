@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
 +alias equality
 +home https://github.com/objectionary/eo
 +tests
@@ -28,6 +27,6 @@
 +version 0.0.0
 
 [] > ensures-equality
-  assert-that > @
+  eq. > @
     equality
-    $.equal-to TRUE
+    TRUE

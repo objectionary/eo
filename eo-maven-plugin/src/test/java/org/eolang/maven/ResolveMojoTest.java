@@ -29,7 +29,6 @@ import java.util.Collections;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.cactoos.Func;
-import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -73,15 +72,13 @@ final class ResolveMojoTest {
             "    a",
             "    b"
         );
-        new ForeignTojos(() -> Catalogs.INSTANCE.make(maven.foreignPath(), "json"))
-            .add("sum")
-            .withDiscovered(0);
+        maven.foreignTojos().add("sum").withDiscovered(0);
         maven.execute(new FakeMaven.Resolve());
         final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -91,7 +88,7 @@ final class ResolveMojoTest {
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -103,7 +100,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
     }
 
@@ -115,7 +112,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-0.22.1.jar")
+            new ContainsFiles("**/eo-runtime-0.22.1.jar")
         );
     }
 
@@ -129,7 +126,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            Matchers.not(new ContainsFile("**/eo-runtime-*.jar"))
+            Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
     }
 
@@ -147,7 +144,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-0.7.0.jar")
+            new ContainsFiles("**/eo-runtime-0.7.0.jar")
         );
     }
 
@@ -163,7 +160,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 
@@ -246,7 +243,7 @@ final class ResolveMojoTest {
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
             maven.targetPath(),
-            new ContainsFile("**/eo-runtime-*.jar")
+            new ContainsFiles("**/eo-runtime-*.jar")
         );
     }
 }

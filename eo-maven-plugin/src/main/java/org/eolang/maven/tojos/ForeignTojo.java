@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.tojos.Tojo;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import org.eolang.maven.Coordinates;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.util.Rel;
@@ -113,7 +114,15 @@ public final class ForeignTojo {
     }
 
     /**
-     * Checks if tojo was already optimized.
+     * The tojo probed.
+     * @return The probed.
+     */
+    public String probed() {
+        return this.delegate.get(ForeignTojos.Attribute.PROBED.key());
+    }
+
+    /**
+     * Checks if tojo was not already optimized.
      *
      * @return True if optimization is required, false otherwise.
      */
@@ -298,5 +307,24 @@ public final class ForeignTojo {
      */
     public String ver() {
         return this.delegate.get(ForeignTojos.Attribute.VER.key());
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other == null || this.getClass() != other.getClass()) {
+            result = false;
+        } else {
+            final ForeignTojo tojo = (ForeignTojo) other;
+            result = Objects.equals(this.delegate, tojo.delegate);
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.delegate);
     }
 }

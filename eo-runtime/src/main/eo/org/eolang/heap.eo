@@ -35,7 +35,7 @@
     memory 0 > next
     plus. > new-next!
       s
-      ^.malloc.next
+      ^.malloc.next.as-int
     if. > @
       gt.
         new-next
@@ -47,7 +47,7 @@
           ^.malloc.next
           new-next
         0.plus
-          ^.malloc.next
+          ^.malloc.next.as-int
 
   # Freed a block in memory, which is referred by the
   # given pointer, which was earlier obtained with malloc().

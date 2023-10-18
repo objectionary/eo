@@ -9,9 +9,13 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: teatimeguest/setup-texlive-action@v2.6.3
+        with:
+          update-all-packages: true
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -23,7 +27,7 @@ jobs:
           restore-keys: |
             maven-
       - run: mvn install -Pjacoco
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true

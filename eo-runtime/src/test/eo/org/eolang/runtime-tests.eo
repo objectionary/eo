@@ -20,10 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.math.number
-+alias org.eolang.math.random
-+alias org.eolang.txt.sprintf
++alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -33,39 +30,37 @@
 [] > understands-this-correctly
   [x] > a
     $.x > @
-  assert-that > @
+  eq. > @
     a 42
-    $.equal-to 42
+    42
 
 [] > takes-parent-object
   [x] > a
     [] > take
       ^.x > @
     take > @
-  assert-that > @
+  eq. > @
     a 42
-    $.equal-to 42
+    42
 
 [] > makes-object-a-constant
   [] > foo
-    as-int. > @
-      number
-        times.
-          random.pseudo
-          100.0
+    times. > @
+      50
+      50
   foo.@ > f!
-  assert-that > @
+  eq. > @
     f
-    $.equal-to f
+    f
 
 [] > kids-are-accessible-in-const-object
   [] > a
     [] > hello
       42 > @
   a > b!
-  assert-that > @
+  eq. > @
     b.hello
-    $.equal-to 42
+    42
 
 [] > takes-parent-through-attribute
   42 > x
@@ -73,9 +68,9 @@
   [] > @
     [] > @
       [] > @
-        assert-that > @
+        eq. > @
           this.x
-          $.equal-to 42
+          42
 
 [] > throws-when-applies-to-closed-object
   [x] > a
@@ -84,9 +79,9 @@
   closed TRUE > @
 
 [] > makes-deep-object-recursively
-  assert-that > @
+  eq. > @
     x 5
-    $.equal-to 0
+    0
   [i] > x
     if. > @
       i.lt 0
@@ -96,111 +91,111 @@
 
 [] > iterates-over-sigma
   memory 0 > x
-  assert-that > @
+  eq. > @
     seq
       x.write TRUE
       eq.
         TRUE
-        x.while
+        x.as-bool.while
           [i]
             &.x.write FALSE > @
-    $.equal-to FALSE
+    FALSE
 
 [] > calculates-only-once-BROKEN
   memory 0 > x
   [] > a
     seq > @
-      x.write (x.plus 1)
+      x.write (x.as-int.plus 1)
       42
-  assert-that > @
+  eq. > @
     seq
       x.write 0
       a.neg.neg.neg.neg.eq 42
       x
-    $.equal-to 1
+    1
 
 [] > rho-of-add-should-not-change
   memory 0 > f1
   cage 0 > f2
   memory 0 > f0
-  assert-that > @
+  nop > @
     seq
       f0.write 0
       f1.write 1
       f2.write (f0.plus f1)
       f1.write f2
       TRUE
-    $.equal-to TRUE
 
 [] > positive-object-vertices
-  assert-that > @
+  eq. > @
     and.
       42.<.eq (42.<)
       "Hello".<.eq ("Hello".<)
       42.plus.<.gt 0
       45-1F-E7.<.eq (45-1F-E7.<)
-    $.equal-to TRUE
+    TRUE
 
 [] > take-vertex-as-vertical-attribute
-  assert-that > @
-    eq.
-      <.
-        42
-      42.<
-    $.equal-to TRUE
+  eq. > @
+    <.
+      42
+    42.<
 
 [] > negative-object-vertices
   [x] > a
-  assert-that > @
+  eq. > @
     or.
       (2.plus 3).<.eq (5.<)
       42.<.eq (42.0.<)
       45-1F-E8.<.eq (45-1F-E8-83.<)
       (a 5).<.eq ((a 5).<)
       (* 1 2 3).<.eq ((* 1 2 3).<)
-    $.is
-      $.not
-        $.equal-to TRUE
+    FALSE
 
 [] > recursion-without-arguments
   memory 0 > n
   [] > func
     if. > @
-      n.gt 0
+      n.as-int.gt 0
       seq
-        n.write (n.minus 1)
+        n.write (n.as-int.minus 1)
         ^.func
         TRUE
       TRUE
-  assert-that > @
+  eq. > @
     seq
       n.write 4
       func
-    $.equal-to TRUE
+    TRUE
 
 [] > creates-vararg-from-variable-array
-  * "Jeff" 42 > a
-  assert-that > @
-    sprintf
-      "Hello, %s, are you %d?"
+  * 2 7 > a
+  [args...] > sum
+    plus. > @
+      args.at 0
+      args.at 1
+  eq. > @
+    sum
       ...a
-    $.equal-to "Hello, Jeff, are you 42?"
+    9
 
 [] > creates-vararg-from-array
-  assert-that > @
-    sprintf
-      "Hello, %s, are you %d?"
-      ...* "Jeff" 42
-    $.equal-to "Hello, Jeff, are you 42?"
+  [args...] > sum
+    plus. > @
+      args.at 0
+      args.at 1
+  eq. > @
+    sum
+      ...* 2 7
+    9
 
 [] > returns-same-object
   [] > foo
     [] > @
       memory 0 > x
-  assert-that > @
+  eq. > @
     foo.x.<
-    $.equal-to
-      foo.x.<
+    foo.x.<
 
 [] > compiles-correctly-with-long-duplicate-names
   [] > long-object-name
@@ -208,17 +203,14 @@
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
-  assert-that > @
-    long-object-name
-    $.is
-      $.anything
+  TRUE > @
 
 [] > refers-to-inner-vars-correctly
   memory 0 > go
-  assert-that > @
+  eq. > @
     seq
       go.write TRUE
-      go.while
+      go.as-bool.while
         [i]
           memory 0 > m
           seq > @
@@ -226,7 +218,7 @@
             m.write x
             go.write FALSE
       TRUE
-    $.equal-to TRUE
+    TRUE
 
 [] > named-inner-abstract-object
   [] > @
@@ -237,12 +229,13 @@
 [] > calling-caged-function
   cage 0 > h
   [x] > func
-    sprintf "Hello, %s!" x > @
-  assert-that > @
-    seq
-      h.write func
-      h.@ "Jeff"
-    $.equal-to "Hello, Jeff!"
+    2.plus x > @
+  nop > @
+    eq.
+      seq
+        h.write func
+        h.@ 8
+      10
 
 [] > app-that-calls-varargs-func
   [] > app
@@ -251,42 +244,40 @@
       2 > @
     f 1 2 3 > @
   app > output
-  assert-that > @
+  eq. > @
     output
-    $.equal-to 2
+    2
 
 [] > directly-accesses-objects-from-root
   Q.org.eolang.memory 0 > m
-  assert-that > @
+  eq. > @
     seq
       m.write 42
       Q.org.eolang.io.stdout
         "Hello, world!"
-      m.write (m.minus 2)
-      m
-    $.equal-to 40
+      m.write
+        m.as-int.minus 2
+    40
 
 [] > directly-accesses-objects-from-standard-root
   QQ.memory 0 > m
-  assert-that > @
+  eq. > @
     seq
       m.write 42
       QQ.io.stdout
         "Works fine!"
-      m.write (m.minus 2)
-      m
-    $.equal-to 40
+      m.write
+        m.as-int.minus 2
+    40
 
 [] > standard-root-and-root
-  QQ.txt.sprintf > stand-root
-    "one %s"
-    "two"
-  Q.org.eolang.txt.sprintf > root
-    "%s two"
+  QQ.io.stdout > stand-root
     "one"
-  assert-that > @
+  Q.org.eolang.io.stdout > root
+    "one"
+  eq. > @
     root
-    $.equal-to stand-root
+    stand-root
 
 [] > extract-attribute-from-decoratee
   [foo] > return
@@ -295,49 +286,43 @@
       plus.
         42
         1
-  assert-that > @
+  eq. > @
     a.foo
-    $.equal-to 43
+    43
 
 [] > takes-object-id-from-abstract-empty
   [] > foo
     [] > y
-  assert-that > @
-    foo.y.<.eq
-      foo.y.<
-    $.equal-to TRUE
+  eq. > @
+    foo.y.<
+    foo.y.<
 
 [] > compares-two-foreign-objects
+  stdout.< > vtx
   nop > @
-    assert-that
-      sprintf.<
-      $.all-of
-        $.equal-to
-          QQ.txt.sprintf.<
-        $.equal-to
-          Q.org.eolang.txt.sprintf.<
+    and.
+      vtx.eq QQ.io.stdout.<
+      vtx.eq Q.org.eolang.io.stdout.<
 
 [] > compares-two-local-objects
-  assert-that > @
-    5.plus.<
-    $.is
-      $.not
-        $.equal-to
-          5.plus.<
+  not. > @
+    eq.
+      5.plus.<
+      5.plus.<
 
 [] > constant-defends-against-side-effects
   memory 7 > a
   [x] > inc
     seq > @
       x.write
-        x.plus 1
-      x
+        x.as-int.plus 1
+      x.as-int
   inc a > n!
-  assert-that > @
+  eq. > @
     times.
       n
       n
-    $.equal-to 64
+    64
 
 [] > makes-shallow-copy
   [] > a
@@ -349,9 +334,9 @@
   seq > @
     b1.v.write 0
     b2.v.write 1
-    assert-that
+    eq.
       b1.v
-      $.equal-to 1
+      1
 
 [] > copy-object-with-dot
   [] > book
@@ -399,22 +384,18 @@
     100
 
 [] > moves-copy-to-new-parent
-  assert-that > @
+  eq. > @
     [] > app
       [] > @
-        "Jeff" > x
-        QQ.txt.sprintf > @
-          "[%s]"
-          foo
-            $:^
-            "Hello":h
+        42 > x
+        foo > @
+          $:^
+          24:h
       [h] > foo
-        QQ.txt.sprintf > @
-          "%s, %s"
+        plus. > @
           h
           ^.x
-    $.equal-to
-      "[Hello, Jeff]"
+    66
 
 [] > right-way-to-use-hierarchy
   [value] > pybool
@@ -427,20 +408,20 @@
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
 [] > check-triple-quotes
-  assert-that > @
+  eq. > @
     """
     Hello
 
     Hello
     """
-    $.equal-to "Hello\n\nHello"
+    "Hello\n\nHello"
 
 [] > correctly-handles-same-name-attrs-simplified
   [first second] > calc
     plus. > @
       first
       second
-  assert-that > @
+  eq. > @
     calc
       []
         build 1 > @
@@ -450,32 +431,37 @@
         build 2 > @
         [y] > build
           y > @
-    $.equal-to 3
+    3
 
-# @todo #2120:30min Enable the 'correctly-handles-same-name-attrs' test.
-#  The correctly-handles-same-name-attrs test is disabled because it
-#  fails with StackOverflowError. We have to understand why it happens
-#  and fix it. The first problem is that the error message is not very
-#  informative. The second problem is that the test is too complex and it
-#  is hard to understand which 'build' object we are using in which case.
-#  So, I believe we have to create several small tests that will explain the
-#  behaviour better.
 [] > correctly-handles-same-name-attrs
   [f s] > calc
     plus. > @
       f.next
       s.next
-  nop > @
-    assert-that
-      calc
-        []
-          [x] > build
-            x.plus 1 > @
-            build (@.plus 1) > next
-          build 1 > @
-        []
-          [y] > build
-            y.plus 2 > @
-            build (@.plus 2) > next
-          build 2 > @
-      $.equal-to 12
+  eq. > @
+    calc
+      []
+        [x] > build
+          x.plus 1 > @
+          build > next
+            plus.
+              x
+              1
+        build 1 > @
+      []
+        [y] > build
+          y.plus 2 > @
+          build > next
+            plus.
+              y
+              2
+        build 2 > @
+    9
+
+[] > application-to-abstract-inside-tuple
+  [x] > add
+    x.plus 1 > @
+  * add > arr
+  eq. > @
+    (arr.at 0).@ 5
+    6

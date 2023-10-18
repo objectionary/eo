@@ -1,0 +1,11 @@
+xsls: []
+tests:
+  - //o[@base='foo' and count(o)=1]
+eo: |
+  [] > aliases
+    [x] > foo
+      [y] > @
+        42 > @
+    eq. > @
+      (foo 1).@ 2
+      42

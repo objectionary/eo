@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOerror;
  *
  * @since 0.26
  */
+@Versionized
 public final class PhSafe implements Phi {
 
     /**
@@ -97,6 +98,11 @@ public final class PhSafe implements Phi {
     @Override
     public String locator() {
         return this.origin.locator();
+    }
+
+    @Override
+    public String forma() {
+        return this.origin.forma();
     }
 
 }

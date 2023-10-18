@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-    paths-ignore: ['paper/**', 'sandbox/**']
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
-    paths-ignore: ['paper/**', 'sandbox/**']
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: mvn-${{ github.ref }}
   cancel-in-progress: true
@@ -17,13 +17,13 @@ jobs:
     name: mvn
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2022, macos-12]
-        java: [11, 20]
+        os: [ ubuntu-20.04, windows-2022, macos-12 ]
+        java: [ 11, 20 ]
     runs-on: ${{ matrix.os }}
     env:
-      CONVERT_PATH: /tmp/convert
+      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -32,11 +32,20 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
-      - run: |
-          mkdir $CONVERT_PATH
-          wget http://public.yegor256.com/convert.zip -O /tmp/convert.zip
-          unzip -o -d $CONVERT_PATH /tmp/convert.zip
-        if: matrix.os == 'ubuntu-20.04'
+          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      # The next step is required to avoid some exceptions that occur
+      # when running on Windows OS. For example like this one:
+      # - https://github.com/objectionary/eo/issues/2336
+      # The step disables http multiplexing in Cargo which cause some problems
+      # on Windows OS.
+      # You can read more about multiplexing right here
+      # - https://stackoverflow.com/questions/36517829/what-does-multiplexing-mean-in-http-2
+      # Multiplexing in Rust:
+      # - https://doc.rust-lang.org/cargo/reference/config.html#httpmultiplexing
+      - name: Set Cargo config (Windows)
+        if: matrix.os == 'windows-2022'
+        run: |
+          echo [http] >> %USERPROFILE%\.cargo\config.toml
+          echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
+        shell: cmd
       - run: mvn clean install -Pqulice --errors --batch-mode

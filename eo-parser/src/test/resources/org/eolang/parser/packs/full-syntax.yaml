@@ -38,9 +38,12 @@ eo: |
         $:^
         <.
           z
-        f 12 false
-          (((t' 22) r:t 8.54 "yes".< "\t").print 88 0x1f):hey TRUE.< FALSE > a!
-            # This object is also very good
+        f
+          12
+          false
+          ((t' r:t 8.54 "yes".< "\t").print 88 0x1f):hey
+          TRUE.<
+          false > a!
             []
               Q.x.f.d Q Q
               QQ.y QQ
@@ -53,31 +56,31 @@ eo: |
       f':u
         z'
           z 5
-            ...z
+          ...z
       a.
         b.
           c.
             42
-          d.
+          d
         e.
-          f.
+          f
       ^.
         ^.
           c
-      $.
-        a.
-          b
+      a.
+        b.
+          $
       @.
         b
     oops
-
+  
   [] > obj
     "some" > @
     [] > foo
       ^.@ > @
 
   # Comments are allowed only in front of top-level objects
-  []
+  [] > named
     one.two.three.four.five
       t.<
     .two "hello!"
@@ -87,7 +90,7 @@ eo: |
 
   test
     me
-      now:i (f (f (f (f 1)))).f
+      (now (f (f (f (f 1)))).f):i
 
   [] > ooo
     # This is one

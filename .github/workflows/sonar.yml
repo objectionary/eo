@@ -9,11 +9,15 @@ concurrency:
   cancel-in-progress: true
 jobs:
   sonar:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
         with:
           fetch-depth: 0
+      - uses: teatimeguest/setup-texlive-action@v2.6.3
+        with:
+          update-all-packages: true
+          packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v3
         with:
           java-version: 11

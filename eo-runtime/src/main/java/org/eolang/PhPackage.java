@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @since 0.22
  */
+@Versionized
 final class PhPackage implements Phi {
 
     /**
@@ -69,6 +70,13 @@ final class PhPackage implements Phi {
     @Override
     public String locator() {
         return "?:?";
+    }
+
+    @Override
+    public String forma() {
+        throw new ExFailure(
+            String.format("Can't #type() from package object '%s'", this.pkg)
+        );
     }
 
     @Override

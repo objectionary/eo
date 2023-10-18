@@ -31,6 +31,7 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  */
+@Versionized
 class PhOnce implements Phi {
 
     /**
@@ -94,5 +95,10 @@ class PhOnce implements Phi {
     @Override
     public String locator() {
         return this.object.take().locator();
+    }
+
+    @Override
+    public String forma() {
+        return this.object.take().forma();
     }
 }

@@ -25,6 +25,8 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
+import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.name.OnReplaced;
 
 /**
  * Make the place for the object.
@@ -42,6 +44,14 @@ public final class Place {
      * Ctor.
      * @param obj The name of the object
      */
+    public Place(final ObjectName obj) {
+        this(obj.toString());
+    }
+
+    /**
+     * Ctor.
+     * @param obj The name of the object
+     */
     public Place(final String obj) {
         this.name = obj;
     }
@@ -54,7 +64,14 @@ public final class Place {
      */
     public Path make(final Path dir, final String ext) {
         final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", File.separator));
+        final String[] versioned = this.name.split(String.format("\\%s", OnReplaced.DELIMITER));
+        if (versioned.length > 1) {
+            out.append(versioned[0].replace(".", File.separator));
+            out.append('_');
+            out.append(versioned[1]);
+        } else {
+            out.append(this.name.replace(".", File.separator));
+        }
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }

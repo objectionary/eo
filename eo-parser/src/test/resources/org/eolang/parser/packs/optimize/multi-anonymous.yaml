@@ -5,5 +5,5 @@ tests:
   - /program/errors[count(error)=0]
 eo: |
   *
-    [x] x.zz
-    [x] x.tt
+    [x] (x.zz > xzz)
+    [x] (x.tt > xtt)

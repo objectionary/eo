@@ -95,16 +95,10 @@ SOFTWARE.
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <antlr.version>4.13.0</antlr.version>
+    <antlr.version>4.13.1</antlr.version>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.28</version>
-        <scope>provided</scope>
-      </dependency>
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
@@ -126,7 +120,7 @@ SOFTWARE.
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.13.0</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
@@ -136,38 +130,38 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.0</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit-pioneer</groupId>
         <artifactId>junit-pioneer</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.0</version>
+        <version>2.2</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -188,17 +182,22 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.27.2</version>
+        <version>0.29.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-matchers</artifactId>
-        <version>1.6.0</version>
+        <version>1.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.yegor256</groupId>
+        <artifactId>jaxec</artifactId>
+        <version>0.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.7</version>
+        <version>2.0.9</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -252,7 +251,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.18</version>
+            <version>3.0.19</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -262,7 +261,7 @@ SOFTWARE.
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
           <executions>
             <execution>
               <id>enforce-java</id>
@@ -341,7 +340,22 @@ SOFTWARE.
           <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>0.1.14</version>
+            <version>1.1.1</version>
+            <configuration>
+              <ignoreGeneratedTests>true</ignoreGeneratedTests>
+              <exclusions>
+                <!--
+                  @todo #2171:30min Enable RuleAssertionMessage.
+                    This rule is disabled because lots of tests in the
+                    project are written without assertion messages. We have
+                    to add all messages for all assertions and then enable
+                    that rule and remove that puzzle.
+                -->
+                <exclusion>
+                  JTCOP.RuleAssertionMessage
+                </exclusion>
+              </exclusions>
+            </configuration>
             <executions>
               <execution>
                 <goals>

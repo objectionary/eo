@@ -1,8 +1,7 @@
 # Current test shows optimization and transpilation chain for simple program.
 # The aim of this test is to check that entire pipeline with
-# synthetic-referenses.xsl transformation works as expected without creating
-# any warnings or errors.
-# Pay attention to synthetic-references.xsl and to-java.xsl transformations.
+# scoped objects works as expected without creating any warnings or errors.
+# Pay attention and to-java.xsl transformations.
 xsls:
   - /org/eolang/parser/errors/not-empty-atoms.xsl
   - /org/eolang/parser/critical-errors/duplicate-names.xsl
@@ -25,7 +24,6 @@ xsls:
   - /org/eolang/parser/warnings/incorrect-version.xsl
   - /org/eolang/parser/expand-aliases.xsl
   - /org/eolang/parser/resolve-aliases.xsl
-  - /org/eolang/parser/synthetic-references.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/errors/broken-refs.xsl
   - /org/eolang/parser/errors/unknown-names.xsl

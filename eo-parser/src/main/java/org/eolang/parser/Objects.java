@@ -23,10 +23,7 @@
  */
 package org.eolang.parser;
 
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.UUID;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -40,42 +37,51 @@ interface Objects extends Iterable<Directive> {
      * Start new object.
      * @param line At line.
      * @param pos At position.
+     * @return Self.
      */
-    void start(int line, int pos);
+    Objects start(int line, int pos);
 
     /**
      * Add data.
      * @param data Data.
+     * @return Self.
      */
-    void data(String data);
+    Objects data(String data);
 
     /**
      * Property.
      * @param key Key.
      * @param value Value.
+     * @return Self.
      */
-    void prop(String key, Object value);
+    Objects prop(String key, Object value);
+
+    /**
+     * Empty propery.
+     * @param key Key.
+     * @return Self.
+     */
+    Objects prop(String key);
+
+    /**
+     * Change property by given xpath.
+     * @param key Key.
+     * @param xpath Xpath.
+     * @return Self.
+     */
+    Objects xprop(String key, Object xpath);
 
     /**
      * Enter last object.
+     * @return Self.
      */
-    void enter();
+    Objects enter();
 
     /**
      * Leave current object.
+     * @return Self.
      */
-    void leave();
-
-    /**
-     * Mark next object for aliasing.
-     */
-    void alias();
-
-    /**
-     * Mark current object as last inside the scope.
-     * Last object that relates to the alias.
-     */
-    void closeAlias();
+    Objects leave();
 
     /**
      * Xembly object tree.
@@ -88,55 +94,45 @@ interface Objects extends Iterable<Directive> {
          */
         private final Directives dirs = new Directives();
 
-        /**
-         * Generated aliases.
-         */
-        private final Deque<String> aliases = new LinkedList<>();
-
         @Override
-        public void start(final int line, final int pos) {
+        public Objects start(final int line, final int pos) {
             this.dirs.add("o");
-            this.prop("line", line);
-            this.prop("pos", pos);
-            if (!this.aliases.isEmpty()) {
-                final String alias = String.join("-", this.aliases);
-                this.prop("alias", alias);
-            }
+            return this.prop("line", line).prop("pos", pos);
         }
 
         @Override
-        public void data(final String data) {
+        public Objects data(final String data) {
             this.dirs.set(data);
+            return this;
         }
 
         @Override
-        public void prop(final String key, final Object type) {
+        public Objects prop(final String key, final Object type) {
             this.dirs.attr(key, type);
+            return this;
         }
 
         @Override
-        public void enter() {
+        public Objects prop(final String key) {
+            return this.prop(key, "");
+        }
+
+        @Override
+        public Objects xprop(final String key, final Object xpath) {
+            this.dirs.xattr(key, xpath);
+            return this;
+        }
+
+        @Override
+        public Objects enter() {
             this.dirs.xpath("o[last()]").strict(1);
+            return this;
         }
 
         @Override
-        public void leave() {
+        public Objects leave() {
             this.dirs.up();
-        }
-
-        @Override
-        public void alias() {
-            this.aliases.push(
-                String.format(
-                    "scope-%s",
-                    UUID.randomUUID()
-                )
-            );
-        }
-
-        @Override
-        public void closeAlias() {
-            this.aliases.remove();
+            return this;
         }
 
         @Override

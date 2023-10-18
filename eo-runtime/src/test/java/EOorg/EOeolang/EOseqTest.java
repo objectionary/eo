@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOtxt.EOsprintf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
@@ -68,11 +67,7 @@ public final class EOseqTest {
                         new EOseq(Phi.Φ),
                         0, new Data.ToPhi(0L)
                     ),
-                    0,
-                    new PhWith(
-                        new EOsprintf(Phi.Φ),
-                        0, new Data.ToPhi("Hello!")
-                    )
+                    1, new Data.ToPhi("Hello!")
                 )
             ).take(String.class),
             Matchers.startsWith("Hello")

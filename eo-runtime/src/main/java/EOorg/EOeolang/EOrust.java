@@ -32,26 +32,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.bytes.Base64Bytes;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
-import org.cactoos.scalar.IoChecked;
-import org.cactoos.text.Base64Decoded;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.ExNative;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Universe;
+import org.eolang.UniverseDefault;
+import org.eolang.UniverseSafe;
+import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
@@ -62,6 +69,7 @@ import org.eolang.XmirObject;
  * @checkstyle LineLengthCheck (100 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 @XmirObject(oname = "rust")
 public class EOrust extends PhDefault {
 
@@ -71,9 +79,19 @@ public class EOrust extends PhDefault {
      */
     private static final ConcurrentHashMap<String, String> NAMES;
 
+    /**
+     * All phis indexed while executing of native method.
+     */
+    private final Map<Integer, Phi> phis = new HashMap<>();
+
+    /**
+     * Error that possibly was thrown while the native function execution.
+     */
+    private final AtomicReference<Throwable> error = new AtomicReference<>();
+
     static {
         try {
-            NAMES = load("target/eo-test/names");
+            NAMES = load("target/names");
         } catch (final IOException exc) {
             throw new ExFailure(
                 "Cannot read the file target/eo-test/names",
@@ -133,9 +151,31 @@ public class EOrust extends PhDefault {
                             "EOrust.natives.%s",
                             name
                         )
-                    ).getDeclaredMethod(name, null);
-                    return new Data.ToPhi(
-                        Long.valueOf((int) method.invoke(null))
+                    ).getDeclaredMethod(name, Universe.class);
+                    if (method.getReturnType() != byte[].class) {
+                        throw new ExFailure(
+                            "Return type of %s is %s, required %s",
+                            method,
+                            method.getReturnType(),
+                            byte[].class
+                        );
+                    }
+                    final Phi portal = new Dataized(
+                        rho
+                        .attr("params").get()
+                        .attr("Δ").get()
+                    ).take(Phi[].class)[0];
+                    return this.translate(
+                        (byte[]) method.invoke(
+                            null,
+                            new UniverseSafe(
+                                new UniverseDefault(
+                                    portal, this.phis
+                                ),
+                                this.error
+                            )
+                        ),
+                        rho.attr("code").get().locator()
                     );
                 }
             )
@@ -180,5 +220,79 @@ public class EOrust extends PhDefault {
                 exc
             );
         }
+    }
+
+    /**
+     * Translates byte message from rust side to Phi object.
+     * @param message Message that native method returns.
+     * @param insert Location of the rust insert.
+     * @return Phi object.
+     */
+    private Phi translate(final byte[] message, final String insert) {
+        final byte determinant = message[0];
+        final byte[] content = Arrays.copyOfRange(message, 1, message.length);
+        final Phi ret;
+        switch (determinant) {
+            case 0:
+                ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                final int vertex = buffer.getInt();
+                ret = this.phis.get(vertex);
+                if (ret == null) {
+                    throw new ExFailure(
+                        String.format(
+                            "Returned phi with vertex %d (%s in bytes) was not indexed",
+                            vertex,
+                            Arrays.toString(content)
+                            )
+                    );
+                }
+                break;
+            case 1:
+                buffer = ByteBuffer.allocate(Double.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getDouble());
+                break;
+            case 2:
+                buffer = ByteBuffer.allocate(Long.BYTES);
+                buffer.put(content);
+                buffer.flip();
+                ret = new Data.ToPhi(buffer.getLong());
+                break;
+            case 4:
+                ret = new Data.ToPhi(content);
+                break;
+            case 3:
+                ret = new Data.ToPhi(
+                    new String(content, StandardCharsets.UTF_8)
+                );
+                break;
+            case 5:
+                final String cause = new String(content, StandardCharsets.UTF_8);
+                if (this.error.get() == null) {
+                    throw new ExNative(
+                        "Rust insert failed in %s with message '%s'",
+                        insert,
+                        cause
+                    );
+                } else {
+                    throw new ExNative(
+                        String.format(
+                            "Rust insert failed in %s with message '%s'",
+                            insert,
+                            cause
+                        ),
+                        this.error.get()
+                    );
+                }
+            default:
+                throw new ExNative(
+                    "Returning Strings and raw bytes is not implemented yet, insert %s",
+                    insert
+                );
+        }
+        return ret;
     }
 }

@@ -12,7 +12,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   xcop:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: g4s8/xcop-action@1.1
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: g4s8/xcop-action@v1.3
+        with:
+          files: |
+            **/*.xsl
+            **/*.xml

@@ -23,10 +23,12 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import org.eolang.maven.rust.Names;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -43,6 +45,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class BinarizeMojoTest {
 
     /**
+     * Sources for the tests.
+     */
+    public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
+
+    /**
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
@@ -54,8 +61,8 @@ final class BinarizeMojoTest {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"))
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/twice-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
@@ -64,7 +71,7 @@ final class BinarizeMojoTest {
 
     @Test
     void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
-        final Path src = Paths.get("src/test/resources/org/eolang/maven/wrong-rust.eo");
+        final Path src = BinarizeMojoTest.SRC.resolve("wrong-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
@@ -80,20 +87,82 @@ final class BinarizeMojoTest {
     @Tag("slow")
     void savesToCache(@TempDir final Path temp) throws IOException {
         final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
-                .with("cache", temp.resolve(".cache"))
-                .withProgram(Paths.get("src/test/resources/org/eolang/maven/simple-rust.eo"));
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
             .result();
         MatcherAssert.assertThat(
             res,
-            Matchers.hasValue(temp.resolve(".cache").resolve("Lib"))
+            Matchers.hasValue(
+                cache.resolve("Lib")
+            )
+        );
+        MatcherAssert.assertThat(
+            res,
+            Matchers.not(
+                Matchers.hasValue(
+                    cache.resolve(
+                        String.format("Lib/%s0/target/target", Names.PREFIX)
+                    )
+                )
+            )
         );
         Assertions.assertDoesNotThrow(
             () -> maven.execute(new FakeMaven.Binarize())
+        );
+    }
+
+    @Test
+    @Tag("slow")
+    void boostsSecondCompilation(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
+        }
+        long start = System.currentTimeMillis();
+        maven.execute(new FakeMaven.Binarize());
+        long finish = System.currentTimeMillis();
+        final long first = finish - start;
+        start = finish;
+        maven.execute(new FakeMaven.Binarize());
+        finish = System.currentTimeMillis();
+        final long second = finish - start;
+        MatcherAssert.assertThat(
+            second,
+            Matchers.lessThan(first)
+        );
+    }
+
+    @Test
+    @Tag("slow")
+    void doesNotRecompile(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven;
+        final Path cache = temp.resolve(".cache");
+        synchronized (BinarizeMojoTest.class) {
+            maven = new FakeMaven(temp)
+                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
+                .with("cache", cache);
+        }
+        maven.execute(new FakeMaven.Binarize());
+        final File executable = cache
+            .resolve("Lib/native0/target/debug/")
+            .resolve(BinarizeMojo.LIB)
+            .toFile();
+        final long first = executable.lastModified();
+        maven.execute(new FakeMaven.Binarize());
+        final long second = executable.lastModified();
+        MatcherAssert.assertThat(first, Matchers.not(0L));
+        MatcherAssert.assertThat(
+            second,
+            Matchers.equalTo(first)
         );
     }
 }

@@ -35,7 +35,7 @@ import java.util.UUID;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.tojos.PlacedTojos;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -209,7 +209,7 @@ final class UnplaceMojoTest {
             .resolve("EOeolang")
             .resolve("EOharmcrest")
             .resolve("EOassert.class");
-        final Home workspace = new Home(temp);
+        final HmBase workspace = new HmBase(temp);
         workspace.save(UUID.randomUUID().toString(), source);
         workspace.save(UUID.randomUUID().toString(), test);
         workspace.save(UUID.randomUUID().toString(), remaining);
@@ -281,7 +281,7 @@ final class UnplaceMojoTest {
     private static Path clazz(final Path temp) throws IOException {
         final Path path =
             Paths.get(String.format("a/b/c/%d_foo.class", new SecureRandom().nextInt()));
-        new Home(temp).save(
+        new HmBase(temp).save(
             () -> UUID.randomUUID().toString(),
             path
         );

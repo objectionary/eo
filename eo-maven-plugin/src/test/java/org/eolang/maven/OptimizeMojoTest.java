@@ -43,7 +43,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.util.Home;
+import org.eolang.maven.util.HmBase;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -103,13 +103,13 @@ final class OptimizeMojoTest {
             .get(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             );
-        final long start = System.currentTimeMillis();
-        final long old = start - TimeUnit.SECONDS.toMillis(10L);
+        final long old = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10L);
         if (!tgt.toFile().setLastModified(old)) {
             Assertions.fail(String.format("The last modified attribute can't be set for %s", tgt));
         }
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
+            "We expect that already optimized xmir will be replaced by a new optimized xmir, because the first xmir is outdated and should be updated",
             tgt.toFile().lastModified(),
             Matchers.greaterThan(old)
         );
@@ -128,7 +128,7 @@ final class OptimizeMojoTest {
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        new Home(cache).save(
+        new HmBase(cache).save(
             cached,
             Paths.get(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
@@ -141,7 +141,7 @@ final class OptimizeMojoTest {
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
             new XMLDocument(
-                new Home(temp).load(
+                new HmBase(temp).load(
                     Paths.get(
                         String.format(
                             "target/%s/foo/x/main.%s",
@@ -279,7 +279,7 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/28-duplicate-names.xml",
+                            "target/%s/foo/x/main/27-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )
@@ -367,6 +367,6 @@ final class OptimizeMojoTest {
                             new ResourceOf(xsl).stream()
                         )))
         ).pass(new XMLDocument(xml));
-        new Home(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
+        new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
     }
 }

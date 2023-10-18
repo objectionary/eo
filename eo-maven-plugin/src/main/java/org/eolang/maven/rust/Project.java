@@ -23,7 +23,6 @@
  */
 package org.eolang.maven.rust;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -55,7 +54,7 @@ public final class Project {
     /**
      * Collection of dependencies of the project.
      */
-    private final Set<String> modules;
+    private final Set<Module> modules;
 
     /**
      * Ctor.
@@ -71,22 +70,32 @@ public final class Project {
 
     /**
      * Adds the module to the project.
-     * @param name Name of function in project.
-     * @param raw Content of rust insert.
-     * @param crates Dependencies of the module.
+     * @param module New module to be added to the project.
+     * @param dependencies Dependencies of the module.
      * @return The project.
      * @throws IOException If any issues with I/O
      */
-    public Project with(final String name, final String raw, final List<String> crates)
+    public Project with(final Module module, final List<String> dependencies)
         throws IOException {
         this.modules.add(
-            String.format("pub mod %s;", name)
+            module
         );
-        new Module(raw, name).save(this.footprint);
-        for (final String crate: crates) {
+        for (final String crate: dependencies) {
             final String[] split = crate.split("[=:]");
             this.cargo.add(split[0], split[1].replace("\"", "").trim());
         }
+        return this;
+    }
+
+    /**
+     * Add dependency to project. Dependency can be `like jni = "0.21.1"`
+     *  or `eo_env = { path = "/rust/eo_env" }`.
+     * @param name Name of dependency.
+     * @param content Content of dependency.
+     * @return The project.
+     */
+    public Project dependency(final String name, final Object content) {
+        this.cargo.add(name, content);
         return this;
     }
 
@@ -96,15 +105,10 @@ public final class Project {
      * @throws IOException If any issues with I/O.
      */
     public Path save() throws IOException {
-        this.footprint.save(
-            String.format(
-                "src%clib",
-                File.separatorChar
-            ),
-            "rs",
-            () -> String.join(System.lineSeparator(), this.modules)
-        );
-        this.cargo.save(this.dest.resolve("Cargo.toml").toFile());
+        for (final Module module: this.modules) {
+            new Commented(module, "//").save(this.footprint);
+        }
+        new Commented(this.cargo, "#").save(this.footprint);
         return this.dest;
     }
 }

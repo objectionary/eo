@@ -39,6 +39,7 @@ import java.util.function.Supplier;
  * @param <T> Data type.
  * @since 0.1
  */
+@Versionized
 public interface Data<T> {
 
     /**
@@ -188,6 +189,11 @@ public interface Data<T> {
         @Override
         public String locator() {
             return this.object.locator();
+        }
+
+        @Override
+        public String forma() {
+            return this.object.forma();
         }
 
         @Override

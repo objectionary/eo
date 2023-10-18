@@ -23,9 +23,10 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOint;
+import EOorg.EOeolang.EOio.EOstdout;
 import EOorg.EOeolang.EOstring;
 import EOorg.EOeolang.EOstring$EOlength;
-import EOorg.EOeolang.EOtxt.EOsprintf;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -102,9 +103,8 @@ final class PhDefaultTest {
     @Test
     void makesCopy() {
         final Phi num = new Data.ToPhi(42L);
-        final Phi parent = new EOsprintf(Phi.Φ);
         final String data = "Hello, world!";
-        final Phi phi = new PhDefaultTest.Foo(parent, data);
+        final Phi phi = new PhDefaultTest.Foo(Phi.Φ, data);
         phi.attr(0).put(num);
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
@@ -228,6 +228,51 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void hasTheSameFormaWithBoundedData() {
+        final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
+        final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
+        MatcherAssert.assertThat(
+            five.forma(),
+            Matchers.equalTo(six.forma())
+        );
+    }
+
+    @Test
+    void hasDifferentFormaWithBoundedMethod() {
+        final Phi five = new Data.ToPhi(5L);
+        MatcherAssert.assertThat(
+            five.forma(),
+            Matchers.not(
+                Matchers.equalTo(
+                    new PhWith(
+                        five.attr("plus").get().copy(),
+                        "x",
+                        new Data.ToPhi(5L)
+                    ).forma()
+                )
+            )
+        );
+    }
+
+    @Test
+    void hasTheSameFormaWithDifferentInstances() {
+        MatcherAssert.assertThat(
+            new PhWith(
+                new Data.ToPhi(5L).attr("plus").get().copy(),
+                "x",
+                new Data.ToPhi(5L)
+            ).forma(),
+            Matchers.equalTo(
+                new PhWith(
+                    new Data.ToPhi(6L).attr("plus").get().copy(),
+                    "x",
+                    new Data.ToPhi(6L)
+                ).forma()
+            )
+        );
+    }
+
     /**
      * Foo.
      * @since 1.0
@@ -347,7 +392,7 @@ final class PhDefaultTest {
                 "φ",
                 new AtComposite(
                     this,
-                    self -> new EOsprintf(new Data.ToPhi(1L))
+                    self -> new EOstdout(new Data.ToPhi(1L))
                 )
             );
         }

@@ -28,8 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.Attr;
+import org.eolang.Data;
 import org.eolang.ExFailure;
+import org.eolang.Param;
 import org.eolang.Phi;
+import org.eolang.Versionized;
 
 /**
  * An attribute that knows how to memoize an object.
@@ -37,6 +40,7 @@ import org.eolang.Phi;
  * @since 0.24
  * @checkstyle TypeNameCheck (5 lines)
  */
+@Versionized
 public final class AtMemoized implements Attr {
 
     /**
@@ -50,23 +54,30 @@ public final class AtMemoized implements Attr {
     private Phi object;
 
     /**
+     * Allocated bytes length.
+     */
+    private Integer length;
+
+    /**
      * Ctor, needed for copying.
      */
     public AtMemoized() {
-        this(null);
+        this(null, null);
     }
 
     /**
      * Ctor, needed for copying.
      * @param obj New object
+     * @param size New size
      */
-    private AtMemoized(final Phi obj) {
+    private AtMemoized(final Phi obj, final Integer size) {
         this.object = obj;
+        this.length = size;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtMemoized(this.object);
+        return new AtMemoized(this.object, this.length);
     }
 
     @Override
@@ -81,7 +92,17 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.object = phi;
+        final byte[] bytes = new Param(phi, "Δ").asBytes().take();
+        if (this.length == null) {
+            this.length = bytes.length;
+        } else if (this.length < bytes.length) {
+            throw new ExFailure(
+                "Can't write to memory %d bytes because %d were already allocated",
+                bytes.length,
+                this.length
+            );
+        }
+        this.object = new Data.ToPhi(bytes);
     }
 
     @Override

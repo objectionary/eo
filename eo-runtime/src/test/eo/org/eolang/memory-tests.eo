@@ -20,9 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.hamcrest.assert-that
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -38,29 +35,29 @@
 #  Let's not forget to update the "Origins of Objects" paper.
 [] > writes-into-memory
   memory 0 > x
-  assert-that > @
+  eq. > @
     seq
       x.write 10
       x
-    $.equal-to 10
+    10
 
 [] > double-writes
-  memory 0 > m
-  assert-that > @
+  memory "1234567890123" > m
+  eq. > @
     seq
       m.write "Hello, world!"
       m.write 42
       m
-    $.equal-to 42
+    42
 
 [] > rewrites-and-increments-itself
   memory 0 > m
-  assert-that > @
+  eq. > @
     seq
       m.write 1
-      m.write (m.plus 5)
+      m.write (m.as-int.plus 5)
       m
-    $.equal-to 6
+    6
 
 [] > memory-in-outer-scope
   [] > outer
@@ -68,15 +65,14 @@
   outer > a
   seq > @
     a.x.write 1
-    stdout
-      sprintf
-        "%d"
-        a.x
+    eq.
+      a.x.as-int
+      1
 
 [] > writes-into-two-memory-objects
   memory 0 > a
   memory 0 > b
-  assert-that > @
+  eq. > @
     and.
       seq
         a.write 10
@@ -84,86 +80,86 @@
           b.write 20
           20
       a.eq 10
-    $.equal-to TRUE
+    TRUE
 
 [] > writes-into-two-memory-objects-and-check-first
   memory 0 > a
   memory 0 > b
-  assert-that > @
+  eq. > @
     seq
       a.write 10
       b.write 20
       a
-    $.equal-to 10
+    10
 
 [] > memory-is-strictly-typed-bool-error-overflow
   memory FALSE > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write 86124867.88 > @
         [e]
           e > @
         nop
-      $.equal-to "Not enough memory to write: expected <1> byte, got <2^61>"
+      "Not enough memory to write: expected <1> byte, got <2^61>"
 
 [] > memory-is-strictly-typed-string-error-overflow
   memory "Hello" > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write "Much longer string!" > @
         [e]
           e > @
         nop
-      $.equal-to "Not enough memory to write: expected <5>, got <20>"
+      "Not enough memory to write: expected <5>, got <20>"
 
 [] > memory-is-strictly-typed-int
   memory 12248 > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write 2556 > @
         [e]
           e > @
         nop
-      $.equal-to 2556
+      2556
 
 [] > memory-is-strictly-typed-float
   memory 245.88 > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write 82.22 > @
         [e]
           e > @
         nop
-      $.equal-to 82.22
+      82.22
 
 [] > memory-is-strictly-typed-string
   memory "Hello" > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write "Hell" > @
         [e]
           e > @
         nop
-      $.equal-to "Hell"
+      "Hell"
 
 [] > memory-is-strictly-typed-bool
   memory FALSE > m
   nop > @
-    assert-that
+    eq.
       try
         []
           m.write TRUE > @
         [e]
           e > @
         nop
-      $.equal-to TRUE
+      TRUE

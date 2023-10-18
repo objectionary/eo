@@ -50,8 +50,10 @@ final class NativeTest {
             ).asString(),
             Matchers.stringContainsInOrder(
                 "package mypackage;",
+                "import org.eolang.Universe;",
                 "public class name {",
-                "public static native int name ();",
+                "    public static native byte[] name",
+                "        (final Universe universe);",
                 "}"
                 )
         );
