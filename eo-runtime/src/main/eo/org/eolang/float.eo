@@ -28,22 +28,7 @@
 
 [] > float
   # Tests that $ = x
-  [x] > eq
-    x > value!
-    if. > @
-      and.
-        eq.
-          ^.as-bytes > self-as-bytes!
-          00-00-00-00-00-00-00-00 > zero-as-bytes!
-        eq.
-          value.as-bytes > x-as-bytes!
-          zero-as-bytes
-      eq.
-        ^.neg.as-bytes
-        value.neg.as-bytes
-      eq.
-        self-as-bytes
-        x-as-bytes
+  [x] > eq /bool
 
   # Tests that $ < x
   [x] > lt
