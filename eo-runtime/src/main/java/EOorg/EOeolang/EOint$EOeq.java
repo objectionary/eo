@@ -27,7 +27,14 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.*;
+import org.eolang.AtComposite;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
  * GT.
@@ -47,14 +54,15 @@ public class EOint$EOeq extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add(
-                "φ",
-                new AtComposite(
-                        this,
-                        rho -> new Data.ToPhi(
-                                (long)(new Param(rho).strong(Long.class))
-                                     == new Param(rho, "x").strong(Long.class)
-                        )
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    (long) (new Param(rho).strong(Long.class)) == new Param(
+                        rho, "x"
+                    ).strong(Long.class)
                 )
+            )
         );
     }
 }

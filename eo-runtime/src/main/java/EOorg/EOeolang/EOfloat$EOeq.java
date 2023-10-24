@@ -54,15 +54,15 @@ public class EOfloat$EOeq extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add(
-                "φ",
-                new AtComposite(
-                        this,
-                        rho -> new Data.ToPhi(
-                                (double)(new Param(rho).strong(Double.class))
-                                        == new Param(rho, "x").strong(Double.class)
-                        )
+            "φ",
+            new AtComposite(
+                this,
+                rho -> new Data.ToPhi(
+                    (double) (new Param(rho).strong(Double.class)) == new Param(
+                        rho, "x"
+                    ).strong(Double.class)
                 )
+            )
         );
     }
-
 }
