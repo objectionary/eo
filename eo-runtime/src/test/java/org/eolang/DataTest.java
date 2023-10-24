@@ -46,7 +46,7 @@ final class DataTest {
     @Test
     void printsByteArray() {
         MatcherAssert.assertThat(
-            new Data.ToPhi(new byte[] {(byte) 0x01, (byte) 0xf2}).toString(),
+            new Data.ToPhi(new byte[]{(byte) 0x01, (byte) 0xf2}).toString(),
             Matchers.containsString("01-F2")
         );
     }
@@ -76,11 +76,13 @@ final class DataTest {
     }
 
     @Test
-    void comparesVertex() {
+    void comparesVertexOfLiterals() {
         MatcherAssert.assertThat(
             new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class),
-            Matchers.equalTo(
-                new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class)
+            Matchers.not(
+                Matchers.equalTo(
+                    new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class)
+                )
             )
         );
     }
@@ -104,8 +106,8 @@ final class DataTest {
             Matchers.equalTo(new Data.ToPhi(2.18d))
         );
         MatcherAssert.assertThat(
-            new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.equalTo(new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}))
+            new Data.ToPhi(new byte[]{(byte) 0x00, (byte) 0x1f}),
+            Matchers.equalTo(new Data.ToPhi(new byte[]{(byte) 0x00, (byte) 0x1f}))
         );
     }
 
@@ -156,12 +158,12 @@ final class DataTest {
     @Test
     void comparesTwoByteArrays() {
         MatcherAssert.assertThat(
-            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}))
+            new Data.Value<>(new byte[]{(byte) 0x00, (byte) 0x1f}),
+            Matchers.equalTo(new Data.Value<>(new byte[]{(byte) 0x00, (byte) 0x1f}))
         );
         MatcherAssert.assertThat(
-            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.not(Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0xf0})))
+            new Data.Value<>(new byte[]{(byte) 0x00, (byte) 0x1f}),
+            Matchers.not(Matchers.equalTo(new Data.Value<>(new byte[]{(byte) 0xf0})))
         );
     }
 
@@ -169,7 +171,7 @@ final class DataTest {
     void comparesTwoPhiArrays() {
         MatcherAssert.assertThat(
             new Data.Value<>(
-                new Phi[] {
+                new Phi[]{
                     new Data.ToPhi("foo"),
                     new Data.ToPhi(1L),
                 }
@@ -177,7 +179,7 @@ final class DataTest {
             Matchers.not(
                 Matchers.equalTo(
                     new Data.Value<>(
-                        new Phi[] {
+                        new Phi[]{
                             new Data.ToPhi("foo"),
                             new Data.ToPhi(1L),
                         }
