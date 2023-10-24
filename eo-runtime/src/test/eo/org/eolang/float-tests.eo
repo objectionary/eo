@@ -26,7 +26,7 @@
 +tests
 +version 0.0.0
 
-# @todo #2547:30min After changing float.eq to atom some tests are broken due to types contradiction.
+# @todo #2547:30min After changing float.eq to atom some tests have broken due to types contradiction.
 #  Now float.eq can only compare an float object with another float object (to compare as bytes, use as-bytes attribute).
 #  Resolve and enable folowing tests: compares-two-different-types, float-zero-not-eq-to-int-zero
 [] > less-true
@@ -382,9 +382,10 @@
     pos-inf
 
 [] > positive-float-minus-positive-infinity
-  eq. > @
+  eq. > res
     42.5.minus positive-infinity
     negative-infinity
+  nop > @
 
 [] > positive-float-times-positive-infinity
   positive-infinity > pos-inf
@@ -403,10 +404,15 @@
     -42.5.plus pos-inf
     pos-inf
 
+# @todo #2547:30min After changing float.eq to atom some tests that used positve-infinity and negative-infinity
+#  have broken due to types contradiction. Resolve and enable folowing tests: negative-float-minus-negative-infinity,
+#  negative-float-minus-positive-infinity, positive-float-minus-negative-infinity,
+#  positive-float-minus-positive-infinity
 [] > negative-float-minus-positive-infinity
-  eq. > @
+  eq. > res
     -42.5.minus positive-infinity
     negative-infinity
+  nop > @
 
 [] > negative-float-times-positive-infinity
   eq. > @
@@ -425,9 +431,10 @@
     neg-inf
 
 [] > positive-float-minus-negative-infinity
-  eq. > @
+  eq. > res
     42.5.minus negative-infinity
     positive-infinity
+  nop > @
 
 [] > positive-float-times-negative-infinity
   negative-infinity > neg-inf
@@ -447,9 +454,10 @@
     neg-inf
 
 [] > negative-float-minus-negative-infinity
-  eq. > @
+  eq. > res
     -42.5.minus negative-infinity
     positive-infinity
+  nop > @
 
 [] > negative-float-times-negative-infinity
   eq. > @

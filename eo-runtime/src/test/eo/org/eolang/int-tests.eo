@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# @todo #2547:30min After changing int.eq to atom some tests are broken due to types contradiction.
+# @todo #2547:30min After changing int.eq to atom some tests have broken due to types contradiction.
 #  Now int.eq can only compare an int object with another int object (to compare as bytes, use as-bytes attribute).
 #  Resolve and enable folowing tests: as-bytes-equals-to-int, int-equal-to-nan-and-infinites-is-false,
 #  int-zero-not-eq-to-float-zero
