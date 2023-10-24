@@ -79,8 +79,10 @@ final class DataTest {
     void comparesVertex() {
         MatcherAssert.assertThat(
             new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class),
-            Matchers.equalTo(
-                new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class)
+            Matchers.not(
+                Matchers.equalTo(
+                    new Dataized(new Data.ToPhi(42L).attr("ν").get()).take(Long.class)
+                )
             )
         );
     }

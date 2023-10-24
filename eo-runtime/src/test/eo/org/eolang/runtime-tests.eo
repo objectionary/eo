@@ -128,18 +128,18 @@
 
 [] > positive-object-vertices
   eq. > @
-    and.
+    or.
       42.<.eq (42.<)
       "Hello".<.eq ("Hello".<)
-      42.plus.<.gt 0
       45-1F-E7.<.eq (45-1F-E7.<)
-    TRUE
+    FALSE
 
 [] > take-vertex-as-vertical-attribute
-  eq. > @
-    <.
-      42
-    42.<
+  not. > @
+    eq.
+      <.
+        42
+      42.<
 
 [] > negative-object-vertices
   [x] > a
