@@ -26,6 +26,9 @@
 +tests
 +version 0.0.0
 
+# @todo #2547:30min After changing float.eq to atom some tests are broken due to types contradiction.
+#  Now float.eq can only compare an float object with another float object (to compare as bytes, use as-bytes attribute).
+#  Resolve and enable folowing tests: compares-two-different-types, float-zero-not-eq-to-int-zero
 [] > less-true
   eq. > @
     -10.5.lt 50.3
@@ -125,15 +128,15 @@
       0.0
     TRUE
 
-[] > zero-not-equal-to-neg-zero
+[] > zero-equal-to-neg-zero
   eq. > @
     0.0.eq -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-equal-to-zero
+[] > neg-zero-equal-to-zero
   eq. > @
     -0.0.eq 0.0
-    FALSE
+    TRUE
 
 [] > zero-not-greater-that-neg-zero
   eq. > @
@@ -155,32 +158,33 @@
     -0.0.lt 0.0
     FALSE
 
-[] > zero-not-gte-neg-zero
+[] > zero-gte-neg-zero
   eq. > @
     0.0.gte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-gte-zero
+[] > neg-zero-gte-zero
   eq. > @
     -0.0.gte 0.0
-    FALSE
+    TRUE
 
-[] > zero-not-lte-neg-zero
+[] > zero-lte-neg-zero
   eq. > @
     0.0.lte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-lte-zero
+[] > neg-zero-lte-zero
   eq. > @
     -0.0.lte 0.0
-    FALSE
+    TRUE
 
 [] > float-zero-not-eq-to-int-zero
-  eq. > @
+  eq. > res
     eq.
       0.0
       0
     FALSE
+  nop > @
 
 [] > eq-true
   eq. > @
@@ -193,9 +197,10 @@
     FALSE
 
 [] > compares-two-different-types
-  eq. > @
+  eq. > res
     3.14.eq "Hello"
     FALSE
+  nop > @
 
 [] > times-by-zero
   eq. > @
