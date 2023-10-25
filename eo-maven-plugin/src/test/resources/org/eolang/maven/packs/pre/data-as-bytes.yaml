@@ -7,16 +7,16 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x01}));')]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x00}));')]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x2A}));')]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
-  - //java[contains(text(), 'ret = new PhWith(ret, 0, new Data.Value<>(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, "Δ", new Data.Value<>(new byte[] {(byte) 0x01}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, "Δ", new Data.Value<>(new byte[] {(byte) 0x00}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, "Δ", new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x2A}));')]
+  - //java[contains(text(), 'ret_1 = new PhWith(ret_1, "Δ", new Data.Value<>(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
+  - //java[contains(text(), 'ret = new PhWith(ret, "Δ", new Data.Value<>(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 eo: |
   [] > t
     TRUE > @
   [] > f
-    FALSE > @
+    bool FALSE > @
   [] > i
     42 > @
   [] > f

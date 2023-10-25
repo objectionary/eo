@@ -29,6 +29,5 @@ SOFTWARE.
     <a>org.eolang.int</a>
     <a>org.eolang.float</a>
     <a>org.eolang.bool</a>
-    <a>org.eolang.double</a>
   </xsl:variable>
 </xsl:stylesheet>

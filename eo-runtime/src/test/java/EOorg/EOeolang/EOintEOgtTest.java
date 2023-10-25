@@ -23,49 +23,44 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
-import org.eolang.AtVararg;
-import org.eolang.ExprReduce;
-import org.eolang.PhDefault;
+import org.eolang.BytesOf;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import org.junit.jupiter.api.Test;
 
 /**
- * Plus.
- *
- * @since 0.23
- * @checkstyle TypeNameCheck (5 lines)
+ * Test cases for {@link EOint$EOgt}.
+ * @since 0.33.0
  */
-@Versionized
-@XmirObject(oname = "float.plus")
-public class EOfloat$EOplus extends PhDefault {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOfloat$EOplus(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtVararg());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                new ExprReduce<>(
-                    "x",
-                    Double::sum,
-                    new ExprReduce.Args<>(
-                        Double.class,
-                        x -> "",
-                        "float.plus"
-                    )
+public class EOintEOgtTest {
+    @Test
+    void compares() {
+        System.out.println(
+            new Dataized(
+                new PhWith(
+                    new EOint(Phi.Φ),
+                    0,
+                    new Data.Value<>(new BytesOf(42L).take())
                 )
-            )
+            ).take()
+        );
+    }
+
+    @Test
+    void bytes() {
+        System.out.println(
+            new Dataized(
+                new PhWith(
+                    new EOint(Phi.Φ),
+                    0, new Data.Value<>(new BytesOf(true).take())
+                )
+            ).take()
         );
     }
 }

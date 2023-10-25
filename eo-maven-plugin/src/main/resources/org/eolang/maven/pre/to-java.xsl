@@ -573,7 +573,7 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, 0, new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
     <xsl:value-of select="text()"/>
     <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
