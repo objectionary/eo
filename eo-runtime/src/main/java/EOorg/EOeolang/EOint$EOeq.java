@@ -37,9 +37,9 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * GT.
+ * EQ.
  *
- * @since 1.0
+ * @since 0.33
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
