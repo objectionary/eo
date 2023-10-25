@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+
 /**
  * Param of an object (convenient retrieval mechanism).
  *
@@ -34,7 +36,6 @@ package org.eolang;
  * will throw a runtime exception if types don't match. If just a simple
  * retrieval without type checking is necessary, just use the method
  * {@link #weak()}.
- *
  * @since 0.20
  */
 @Versionized
@@ -60,7 +61,7 @@ public final class Param {
 
     /**
      * Ctor.
-     * @param obj The object to fetch the attribute from
+     * @param obj  The object to fetch the attribute from
      * @param name Name of the attr
      */
     public Param(final Phi obj, final String name) {
@@ -75,9 +76,9 @@ public final class Param {
      * @return The object
      */
     public <T> T strong(final Class<T> type) {
-        final Object ret = this.weak();
+        final Object ret = this.weak(); // byte[] or Phi[]
         final Object result;
-        if (!type.isInstance(ret)) {
+        if (ret instanceof Phi[] && !type.isInstance(ret)) {
             throw new ExFailure(
                 String.format(
                     "The argument '.%s' is of Java type '%s', not '%s' as expected",
@@ -86,8 +87,34 @@ public final class Param {
                     type.getCanonicalName()
                 )
             );
+        } else if (ret instanceof byte[]) {
+            final ByteBuffer buffer = ByteBuffer.wrap((byte[]) ret);
+            if (type == Double.class) {
+                result = buffer.getDouble();
+            } else if (type == Long.class) {
+                result = buffer.getLong();
+            } else if (type == String.class) {
+                result = String.valueOf(ret);
+            } else if (type == byte[].class) {
+                result = ret;
+            } else if (type == Boolean.class) {
+                result = ((byte[]) ret).length == 1 && ((byte[]) ret)[0] != 0;
+            } else {
+                throw new ExFailure(
+                    String.format(
+                        "Given type %s is not primitive one",
+                        type.getCanonicalName()
+                    )
+                );
+            }
         } else {
-            result = ret;
+            throw new ExFailure(
+                String.format(
+                    "Result of dataization of %s argument is of a wrong type %s",
+                    this.attr,
+                    ret.getClass().getCanonicalName()
+                )
+            );
         }
         return type.cast(result);
     }

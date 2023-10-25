@@ -157,8 +157,7 @@ public interface Data<T> {
          */
         public ToPhi(final Object obj) {
             this.value = new Data.Value<>(obj);
-            this.object = Data.ToPhi.toPhi(obj);
-            this.object.attr("Δ").put(this.value);
+            this.object = Data.ToPhi.toPhi(obj, this.value);
         }
 
         @Override
@@ -211,25 +210,51 @@ public interface Data<T> {
          * @param obj Object to convert
          * @return Constructed Phi
          */
-        private static Phi toPhi(final Object obj) {
+        private static Phi toPhi(final Object obj, final Phi value) {
             final Phi phi;
+            byte[] bytes = new byte[0];
+            final boolean delta;
             if (obj instanceof Boolean) {
                 phi = new EObool(Phi.Φ);
+                delta = false;
+                if (obj.equals(true)) {
+                    bytes = new byte[] {0x01};
+                } else {
+                    bytes = new byte[] {0x00};
+                }
             } else if (obj instanceof byte[]) {
                 phi = new EObytes(Phi.Φ);
+                delta = true;
             } else if (obj instanceof Long) {
                 phi = new EOint(Phi.Φ);
+                delta = false;
+                bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
                 phi = new EOstring(Phi.Φ);
+                delta = false;
+                bytes = new BytesOf((String) obj).take();
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
+                delta = false;
+                bytes = new BytesOf((Double) obj).take();
             } else if (obj instanceof Phi[]) {
                 phi = new EOtuple(Phi.Φ);
+                delta = true;
             } else {
                 throw new IllegalArgumentException(
                     String.format(
                         "Unknown type of data: %s",
                         obj.getClass().getCanonicalName()
+                    )
+                );
+            }
+            if (delta) {
+                phi.attr("Δ").put(value);
+            } else {
+                phi.attr(0).put(
+                    new PhWith(
+                        new EObytes(Phi.Φ),
+                        "Δ", new Data.Value<>(bytes)
                     )
                 );
             }
