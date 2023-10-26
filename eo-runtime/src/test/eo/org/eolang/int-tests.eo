@@ -220,7 +220,7 @@
       [e]
         e > @
       nop
-    "The 1th argument of 'int.div' is invalid: division by zero is infinity"
+    "Can't divide by "
 
 # Checks that division by one returns the dividend
 [] > division-by-one

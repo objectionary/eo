@@ -28,8 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtVararg;
-import org.eolang.ExprReduce;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -51,20 +52,15 @@ public class EOint$EOplus extends PhDefault {
      */
     public EOint$EOplus(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtVararg());
+        this.add("x", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                    new ExprReduce<Long>(
-                        "x",
-                        Long::sum,
-                        new ExprReduce.Args(
-                            Long.class,
-                            x -> "",
-                            "int.plus"
-                        )
-                    )
+                rho -> new Data.ToPhi(
+                    new Param(rho).strong(Long.class)
+                        + new Param(rho, "x").strong(Long.class)
+                )
             )
         );
     }

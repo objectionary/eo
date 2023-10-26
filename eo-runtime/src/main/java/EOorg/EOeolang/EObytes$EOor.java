@@ -28,8 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtVararg;
-import org.eolang.Bytes;
+import org.eolang.AtFree;
+import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -52,13 +53,15 @@ public class EObytes$EOor extends PhDefault {
      */
     public EObytes$EOor(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtVararg());
+        this.add("b", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                new ExReduceBytes(
-                    Bytes::or
+                rho -> new Data.ToPhi(
+                    new Param(rho).asBytes().or(
+                        new Param(rho, "b").asBytes()
+                    ).take()
                 )
             )
         );

@@ -60,210 +60,93 @@
         nan.as-bytes
 
   # Multiplication of $ and x
-  [x...] > times
+  [x] > times
+    x > value!
+
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
 
-    [term] > is-nan-or-zero
+    [num] > is-nan-or-zero
       or. > @
-        is-nan
-          term > t!
-        t.eq -0.0
-        t.eq 0.0
-        t.eq 0
+        is-nan num
+        num.eq -0.0
+        num.eq 0.0
+        num.eq 0
 
-    [term] > is-term-gt-zero
+    [num] > is-num-gt-zero
       try > @
         []
-          term.gt 0 > @
+          num.gt 0 > @
         [e]
-          term.gt 0.0 > @
+          num.gt 0.0 > @
         FALSE
-
-    [acc index terms] > times-rec
-      if. > @
-        index.eq terms.length
-        acc
-        if.
-          $.&.is-nan-or-zero
-            terms.at index > term!
-          nan
-          $.&.times-rec
-            if.
-              $.&.is-term-gt-zero term > term-gt-zero
-              acc
-              if.
-                acc.gt 0.0
-                negative-infinity
-                positive-infinity
-            index.plus 1
-            terms
     if. > @
-      eq.
-        x.length > terms-count!
-        0
-      positive-infinity
+      is-nan-or-zero value
+      nan
       if.
-        terms-count.eq 1
-        if.
-          is-nan-or-zero
-            x.at 0 > first!
-          nan
-          if.
-            is-term-gt-zero first
-            positive-infinity
-            negative-infinity
-        times-rec
-          positive-infinity
-          0
-          x
+        is-num-gt-zero value
+        positive-infinity
+        negative-infinity
 
   # Sum of $ and x
-  [x...] > plus
+  [x] > plus
+    x > value!
     negative-infinity.as-bytes > neg-inf-as-bytes!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
-
-    [term] > is-nan-or-neg-inf
-      or. > @
-        is-nan
-          term > t!
-        t.as-bytes.eq neg-inf-as-bytes
-
-    [acc index terms] > plus-rec
-      if. > @
-        index.eq terms.length
-        acc
-        if.
-          $.&.is-nan-or-neg-inf
-            terms.at index
-          nan
-          $.&.plus-rec
-            acc
-            index.plus 1
-            terms
     if. > @
-      eq.
-        x.length > terms-count!
-        0
+      or.
+        is-nan value
+        value.as-bytes.eq neg-inf-as-bytes
+      nan
       positive-infinity
-      if.
-        terms-count.eq 1
-        if.
-          is-nan-or-neg-inf
-            x.at 0
-          nan
-          positive-infinity
-        plus-rec
-          positive-infinity
-          0
-          x
 
   # Difference between $ and x
-  [x...] > minus
+  [x] > minus
+    x > value!
     positive-infinity.as-bytes > pos-inf-as-bytes!
 
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
     [num] > is-nan
       not. > @
         num.eq num
-
-    [term] > is-nan-or-pos-inf
-      or. > @
-        is-nan
-          term > t!
-        t.as-bytes.eq pos-inf-as-bytes
-
-    [acc index terms] > minus-rec
-      if. > @
-        index.eq terms.length
-        acc
-        if.
-          $.&.is-nan-or-pos-inf
-            terms.at index
-          nan
-          $.&.minus-rec
-            acc
-            index.plus 1
-            terms
     if. > @
-      eq.
-        x.length > terms-count!
-        0
+      or.
+        is-nan value
+        value.as-bytes.eq pos-inf-as-bytes
+      nan
       positive-infinity
-      if.
-        terms-count.eq 1
-        if.
-          is-nan-or-pos-inf
-            x.at 0
-          nan
-          positive-infinity
-        minus-rec
-          positive-infinity
-          0
-          x
 
   # Quotient of the division of $ by x
-  [x...] > div
+  [x] > div
+    x > value!
     # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
 
-    [term] > is-nan-or-infinite
+    [num] > is-nan-or-infinite
       or. > @
-        is-nan
-          term > t!
-        t.eq positive-infinity
-        t.eq negative-infinity
+        is-nan num
+        num.eq positive-infinity
+        num.eq negative-infinity
 
-    [term] > is-term-gte-zero
+    [num] > is-num-gte-zero
       try > @
         []
-          term.gte 0 > @
+          num.gte 0 > @
         [e]
-          term.gte 0.0 > @
+          num.gte 0.0 > @
         FALSE
-
-    [acc index terms] > div-rec
-      if. > @
-        index.eq terms.length
-        acc
-        if.
-          $.&.is-nan-or-infinite
-            terms.at index > term!
-          nan
-          $.&.div-rec
-            if.
-              $.&.is-term-gte-zero term
-              acc
-              if.
-                acc.gt 0.0
-                negative-infinity
-                positive-infinity
-            index.plus 1
-            terms
     if. > @
-      eq.
-        x.length > terms-count!
-        0
-      positive-infinity
+      is-nan-or-infinite value
+      nan
       if.
-        terms-count.eq 1
-        if.
-          is-nan-or-infinite
-            x.at 0 > first!
-          nan
-          if.
-            is-term-gte-zero first
-            positive-infinity
-            negative-infinity
-        div-rec
-          positive-infinity
-          0
-          x
+        is-num-gte-zero value
+        positive-infinity
+        negative-infinity
