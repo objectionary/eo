@@ -24,9 +24,7 @@
 
 package org.eolang;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import EOorg.EOeolang.EOtuple$EOempty;
 
 /**
  * Vararg attribute.
@@ -35,37 +33,26 @@ import java.util.List;
  */
 @Versionized
 public final class AtVararg implements Attr {
-
     /**
-     * Array of items provided.
+     * Result tuple.
      */
-    private final List<Phi> array;
+    private Phi tuple;
 
     /**
      * Ctor.
      */
     public AtVararg() {
-        this(new LinkedList<>());
-    }
-
-    /**
-     * Ctor.
-     * @param list List of them
-     */
-    private AtVararg(final List<Phi> list) {
-        this.array = list;
+        this.tuple = new EOtuple$EOempty(Phi.Φ);
     }
 
     @Override
     public String toString() {
-        return String.format("%sV", this.array.toString());
+        return String.format("%sV", this.tuple.toString());
     }
 
     @Override
     public String φTerm() {
-        return new Data.Value<>(
-            this.array.toArray(new Phi[this.array.size()])
-        ).φTerm();
+        return this.tuple.φTerm();
     }
 
     @Override
@@ -75,21 +62,17 @@ public final class AtVararg implements Attr {
 
     @Override
     public Phi get() {
-        return new Data.ToPhi(this.array.toArray(new Phi[this.array.size()]));
+        return this.tuple;
     }
 
     @Override
     public void put(final Phi phi) {
         if (phi instanceof PhUnvar) {
-            this.array.clear();
-            this.array.addAll(
-                Arrays.asList(
-                    new Dataized(phi).take(Phi[].class)
-                )
-            );
+            this.tuple = phi;
         } else {
-            this.array.add(phi);
+            final Phi with = this.tuple.attr("with").get().copy();
+            with.attr(0).put(phi);
+            this.tuple = with;
         }
     }
-
 }

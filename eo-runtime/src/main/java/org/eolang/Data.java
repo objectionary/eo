@@ -223,8 +223,6 @@ public interface Data<T> {
                 phi = new EOstring(Phi.Φ);
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
-            } else if (obj instanceof Phi[]) {
-                phi = new EOtuple(Phi.Φ);
             } else {
                 throw new IllegalArgumentException(
                     String.format(

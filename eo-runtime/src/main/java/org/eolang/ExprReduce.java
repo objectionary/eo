@@ -23,11 +23,11 @@
  */
 package org.eolang;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import org.cactoos.list.ListOf;
 
 /**
  * Builds a phi performing reduction operation on varargs parameter.
@@ -157,11 +157,16 @@ public final class ExprReduce<T> implements Expr {
          */
         public List<T> get(final Phi rho, final String param) {
             final T acc = new Param(rho).strong(this.type);
-            final Phi[] args = new Param(rho, param).strong(Phi[].class);
-            final List<T> list = new ArrayList<>(args.length + 1);
-            list.add(acc);
-            for (int idx = 0; idx < args.length; ++idx) {
-                final Object val = new Dataized(args[idx]).take();
+            final Phi args = rho.attr(param).get();
+            final List<T> list = new ListOf<>(acc);
+            final Long length = new Dataized(args.attr("length").get()).take(Long.class);
+            for (long idx = 0; idx < length; ++idx) {
+                final Object val = new Dataized(
+                    new PhWith(
+                        args.attr("at").get().copy(),
+                        0, new Data.ToPhi(idx)
+                    )
+                ).take();
                 if (!val.getClass().getCanonicalName().equals(this.type.getCanonicalName())) {
                     throw new ExFailure(
                         "The %dth argument of '%s' is not a(n) %s: %s",

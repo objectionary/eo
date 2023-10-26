@@ -183,7 +183,7 @@ final class OptimizeMojoTest {
         MatcherAssert.assertThat(
             res,
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main/00-not-empty-atoms.xml", OptimizeMojo.STEPS)
+                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
             )
         );
         MatcherAssert.assertThat(
@@ -279,7 +279,7 @@ final class OptimizeMojoTest {
                     .result()
                     .get(
                         String.format(
-                            "target/%s/foo/x/main/27-duplicate-names.xml",
+                            "target/%s/foo/x/main/28-duplicate-names.xml",
                             OptimizeMojo.STEPS
                         )
                     )

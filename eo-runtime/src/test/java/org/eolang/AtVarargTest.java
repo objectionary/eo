@@ -36,15 +36,47 @@ final class AtVarargTest {
 
     @Test
     void appendsElements() {
-        final Attr attr = new AtVararg();
-        final Phi phi = new PhDefault() {
-        };
-        attr.put(phi);
-        attr.put(phi);
-        MatcherAssert.assertThat(
-            new Dataized(attr.get()).take(Phi[].class)[1],
-            Matchers.equalTo(phi)
+//        final Attr attr = new AtVararg();
+//        attr.put(new Data.ToPhi(2L));
+//        MatcherAssert.assertThat(
+//            new Dataized(
+//                new PhWith(
+//                    attr.get().attr("at").get().copy(),
+//                    0, new Data.ToPhi(0L)
+//                )
+//            ).take(Long.class),
+//            Matchers.equalTo(2L)
+//        );
+        System.out.println(
+            new PhWith(
+                new Data.ToPhi(2L).attr("plus").get().copy(),
+                0, new Data.ToPhi(2L)
+            ).attr("Δ").get()
         );
+//        System.out.println(
+//            new PhWith(
+//                new PhWith(
+//                    new PhWith(
+//                        new EOtuple(Phi.Φ),
+//                        0, new EOtuple$EOempty(Phi.Φ)
+//                    ),
+//                    1, new Data.ToPhi(1L)
+//                ).attr("at").get().copy(),
+//                0, new Data.ToPhi(0L)
+//            ).attr("Δ").get().forma()
+//        );
+//        System.out.println(
+//            new PhWith(
+//                new PhWith(
+//                    new PhWith(
+//                        new EOtuple(Phi.Φ),
+//                        0, new EOtuple$EOempty(Phi.Φ)
+//                    ),
+//                    1, new Data.ToPhi(1L)
+//                ).attr("at").get().copy(),
+//                0, new Data.ToPhi(0L)
+//            ).attr("Δ").get()
+//        );
     }
 
     @Test

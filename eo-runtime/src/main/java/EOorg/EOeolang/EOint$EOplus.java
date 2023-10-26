@@ -56,15 +56,15 @@ public class EOint$EOplus extends PhDefault {
             "φ",
             new AtComposite(
                 this,
-                    new ExprReduce<Long>(
-                        "x",
-                        Long::sum,
-                        new ExprReduce.Args(
-                            Long.class,
-                            x -> "",
-                            "int.plus"
-                        )
+                new ExprReduce<>(
+                    "x",
+                    Long::sum,
+                    new ExprReduce.Args<>(
+                        Long.class,
+                        x -> "",
+                        "int.plus"
                     )
+                )
             )
         );
     }

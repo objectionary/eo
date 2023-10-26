@@ -1,0 +1,17 @@
+xsls:
+#  []
+  - /org/eolang/parser/stars-to-tuples.xsl
+tests:
+  - //objects[count(//objects/o[@base='tuple'])=4]
+  - //o[@base='tuple' and @line=1 and not(@name)]
+  - //o[@base='.empty' and @name='xs']
+  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='tuple']
+  - //o[@base='tuple' and @line=2 and @name='xl']/o[@base='.empty' and @method]
+  - //o[@base='tuple' and @line=3]/o[@base='tuple' and @star]/o[@base='int']
+  - //o[@base='tuple' and @line=3]/o[@base='int']
+  - //o[@base='tuple' and @line=4 and not(@star)]/following-sibling::o[@base='.empty' and @name='empty']
+eo: |
+  * > xs
+  * 1 > xl
+  * 1 2
+  *.empty > empty

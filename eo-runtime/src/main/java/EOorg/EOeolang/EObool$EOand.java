@@ -34,6 +34,7 @@ import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -61,12 +62,20 @@ public class EObool$EOand extends PhDefault {
                 this,
                 rho -> {
                     Boolean term = new Param(rho).strong(Boolean.class);
-                    final Phi[] args = new Param(rho, "x").strong(Phi[].class);
-                    for (int idx = 0; idx < args.length; ++idx) {
+                    final Phi args = rho.attr("x").get();
+                    final Long length = new Dataized(
+                        rho.attr("length").get()
+                    ).take(Long.class);
+                    for (long idx = 0L; idx < length; ++idx) {
                         if (!term) {
                             break;
                         }
-                        final Object val = new Dataized(args[idx]).take();
+                        final Object val = new Dataized(
+                            new PhWith(
+                                args.attr("at").get().copy(),
+                                0, new Data.ToPhi(idx)
+                            )
+                        ).take();
                         if (!(val instanceof Boolean)) {
                             throw new ExFailure(
                                 String.format(
@@ -75,7 +84,7 @@ public class EObool$EOand extends PhDefault {
                                 )
                             );
                         }
-                        term &= Boolean.class.cast(val);
+                        term &= (Boolean) val;
                     }
                     return new Data.ToPhi(term);
                 }

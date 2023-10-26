@@ -26,14 +26,33 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[] > tuple
-  # Obtain the length of the array.
-  [] > length /int
+# Tuple.
+[head tail] > tuple
+  # Empty tuple
+  [] > empty
+    [i] > at
+      error "Can't get an object from the empty tuple" > @
+    [x] > with
+      tuple > @
+        tuple.empty
+        x
+    0 > length
 
-  # Take one element from the tuple, at the
-  # given position.
-  [i] > at /?
+  # Obtain the length of the tuple.
+  [] > length
+    ^.head.length.plus 1 > @
 
-  # Create a new tuple with this element added to
-  # the end of it.
-  [x] > with /tuple
+  # Take one element from the tuple, at the given position.
+  [i] > at
+    if. > @
+      lt.
+        i
+        ^.length.plus -1
+      ^.head.at i
+      ^.tail
+
+  # Create a new tuple with this element added to the end of it.
+  [x] > with
+    tuple > @
+      ^
+      x

@@ -343,7 +343,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
             final String base;
             if (ctx.STAR() != null) {
                 base = "tuple";
-                this.objects.prop("data", "tuple");
+                this.objects.prop("star");
             } else if (ctx.NAME() != null) {
                 base = ctx.NAME().getText();
             } else if (ctx.AT() != null) {
@@ -765,7 +765,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                 base = "$";
             } else if (ctx.STAR() != null) {
                 base = "tuple";
-                this.objects.prop("data", "tuple");
+                this.objects.prop("star");
             } else if (ctx.ROOT() != null) {
                 base = "Q";
             } else if (ctx.HOME() != null) {
