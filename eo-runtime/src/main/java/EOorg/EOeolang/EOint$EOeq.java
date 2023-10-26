@@ -58,9 +58,8 @@ public class EOint$EOeq extends PhDefault {
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
-                    (long) (new Param(rho).strong(Long.class)) == new Param(
-                        rho, "x"
-                    ).strong(Long.class)
+                    new Param(rho).asBytesAppropriate(Long.BYTES).asNumber(Long.class) == (long)
+                        new Param(rho, "x").asBytesAppropriate(Long.BYTES).asNumber(Long.class)
                 )
             )
         );
