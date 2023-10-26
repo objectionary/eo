@@ -190,7 +190,7 @@
     123.5.eq 42.4
     FALSE
 
-[] > compares-two-different-types
+[] > compares-two-different-types-wrong-size-less
   eq. > @
     try
       []
@@ -199,6 +199,21 @@
         e > @
       nop
     "The size of argument '.x' is 5 bytes, not '8' as expected"
+
+[] > compares-two-different-types-wrong-bigger
+  eq. > @
+    try
+      []
+        2.71.eq "123456789" > @
+      [e]
+        e > @
+      nop
+    "The size of argument '.x' is 9 bytes, not '8' as expected"
+
+[] > compares-two-different-types-right-size
+  eq. > @
+    2.71.eq "12345678"
+    FALSE
 
 [] > times-by-zero
   eq. > @
