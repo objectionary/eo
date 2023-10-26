@@ -129,8 +129,9 @@
 [] > positive-object-vertices
   eq. > @
     or.
-      42.<.eq (42.<)
-      "Hello".<.eq ("Hello".<)
+      or.
+        42.<.eq (42.<)
+        "Hello".<.eq ("Hello".<)
       45-1F-E7.<.eq (45-1F-E7.<)
     FALSE
 
@@ -145,10 +146,13 @@
   [x] > a
   eq. > @
     or.
-      (2.plus 3).<.eq (5.<)
-      42.<.eq (42.0.<)
-      45-1F-E8.<.eq (45-1F-E8-83.<)
-      (a 5).<.eq ((a 5).<)
+      or.
+        or.
+          or.
+            (2.plus 3).<.eq (5.<)
+            42.<.eq (42.0.<)
+          45-1F-E8.<.eq (45-1F-E8-83.<)
+        (a 5).<.eq ((a 5).<)
       (* 1 2 3).<.eq ((* 1 2 3).<)
     FALSE
 

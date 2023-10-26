@@ -58,8 +58,10 @@ public class EOint$EOplus extends PhDefault {
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
-                    new Param(rho).strong(Long.class)
-                        + new Param(rho, "x").strong(Long.class)
+                    Long.sum(
+                        new Param(rho).strong(Long.class),
+                        new Param(rho, "x").strong(Long.class)
+                    )
                 )
             )
         );

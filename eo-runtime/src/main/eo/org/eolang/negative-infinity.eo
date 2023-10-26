@@ -78,17 +78,19 @@
 
     [num] > is-nan-or-zero
       or. > @
-        is-nan num
-        num.eq -0.0
-        num.eq 0.0
+        or.
+          or.
+            is-nan num
+            num.eq -0.0
+          num.eq 0.0
         num.eq 0
     if. > @
       is-nan-or-zero value
       nan
-        if.
-          is-num-gt-zero value
-          negative-infinity
-          positive-infinity
+      if.
+        is-num-gt-zero value
+        negative-infinity
+        positive-infinity
 
   # Sum of $ and x
   [x] > plus
@@ -116,12 +118,11 @@
       not. > @
         num.eq num
     if. > @
-      if.
-        or.
-          is-nan value
-          value.as-bytes.eq neg-inf-as-bytes
-        nan
-        negative-infinity
+      or.
+        is-nan value
+        value.as-bytes.eq neg-inf-as-bytes
+      nan
+      negative-infinity
 
   # Quotient of the division of $ by x
   [x] > div
@@ -133,8 +134,9 @@
 
     [num] > is-nan-or-infinite
       or. > @
-        is-nan num
-        num.eq positive-infinity
+        or.
+          is-nan num
+          num.eq positive-infinity
         num.eq negative-infinity
 
     [num] > is-num-gte-zero

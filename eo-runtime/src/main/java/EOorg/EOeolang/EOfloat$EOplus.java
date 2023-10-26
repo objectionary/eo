@@ -58,8 +58,10 @@ public class EOfloat$EOplus extends PhDefault {
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
-                    new Param(rho).strong(Double.class)
-                        + new Param(rho, "x").strong(Double.class)
+                    Double.sum(
+                        new Param(rho).strong(Double.class),
+                        new Param(rho, "x").strong(Double.class)
+                    )
                 )
             )
         );

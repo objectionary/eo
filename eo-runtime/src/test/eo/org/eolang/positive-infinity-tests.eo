@@ -177,17 +177,27 @@
   negative-infinity > neg-inf
   eq. > @
     and.
-      (0.0.eq nan).eq FALSE
-      (0.0.eq pos-inf).eq FALSE
-      (0.0.eq neg-inf).eq FALSE
-      (42.5.eq nan).eq FALSE
-      (42.5.eq pos-inf).eq FALSE
-      (42.5.eq neg-inf).eq FALSE
-      (0.0.eq nan).eq FALSE
-      (0.0.eq pos-inf).eq FALSE
-      (0.0.eq neg-inf).eq FALSE
-      (42.5.eq nan).eq FALSE
-      (42.5.eq pos-inf).eq FALSE
+      and.
+        and.
+          and.
+            and.
+              and.
+                and.
+                  and.
+                    and.
+                      and.
+                        and.
+                          (0.0.eq nan).eq FALSE
+                          (0.0.eq pos-inf).eq FALSE
+                        (0.0.eq neg-inf).eq FALSE
+                      (42.5.eq nan).eq FALSE
+                    (42.5.eq pos-inf).eq FALSE
+                  (42.5.eq neg-inf).eq FALSE
+                (0.0.eq nan).eq FALSE
+              (0.0.eq pos-inf).eq FALSE
+            (0.0.eq neg-inf).eq FALSE
+          (42.5.eq nan).eq FALSE
+        (42.5.eq pos-inf).eq FALSE
       (42.5.eq neg-inf).eq FALSE
     TRUE
 

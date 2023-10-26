@@ -162,15 +162,6 @@
       -7.as-bytes.and (7.as-bytes)
       -2.as-bytes
 
-[] > and-with-vararg
-  eq. > @
-    as-int.
-      and.
-        0.as-bytes
-        5.as-bytes
-        10.as-bytes
-    0
-
 [] > or-with-zero
   not. > @
     eq.
@@ -195,16 +186,6 @@
       -7.as-bytes.or (23.as-bytes)
       0.as-bytes
 
-[] > or-with-vararg
-  not. > @
-    eq.
-      as-int.
-        or.
-          256.as-bytes
-          5.as-bytes
-          10.as-bytes
-      -1
-
 [] > xor-with-zero
   not. > @
     eq.
@@ -228,16 +209,6 @@
     eq.
       -36.as-bytes.xor (43.as-bytes)
       8.as-bytes
-
-[] > xor-with-vararg
-  not. > @
-    eq.
-      as-int.
-        xor.
-          256.as-bytes
-          5.as-bytes
-          10.as-bytes
-      -1
 
 [] > not-with-zero
   not. > @

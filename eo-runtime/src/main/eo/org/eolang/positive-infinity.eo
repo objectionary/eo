@@ -70,9 +70,11 @@
 
     [num] > is-nan-or-zero
       or. > @
-        is-nan num
-        num.eq -0.0
-        num.eq 0.0
+        or.
+          or.
+            is-nan num
+            num.eq -0.0
+          num.eq 0.0
         num.eq 0
 
     [num] > is-num-gt-zero
@@ -132,8 +134,9 @@
 
     [num] > is-nan-or-infinite
       or. > @
-        is-nan num
-        num.eq positive-infinity
+        or.
+          is-nan num
+          num.eq positive-infinity
         num.eq negative-infinity
 
     [num] > is-num-gte-zero
