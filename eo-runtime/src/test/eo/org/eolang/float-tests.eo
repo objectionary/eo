@@ -26,9 +26,6 @@
 +tests
 +version 0.0.0
 
-# @todo #2547:30min After changing float.eq to atom some tests have broken due to types contradiction.
-#  Now float.eq can only compare an float object with another float object (to compare as bytes, use as-bytes attribute).
-#  Resolve and enable folowing tests: compares-two-different-types, float-zero-not-eq-to-int-zero
 [] > less-true
   eq. > @
     -10.5.lt 50.3
@@ -178,13 +175,10 @@
     -0.0.lte 0.0
     TRUE
 
-[] > float-zero-not-eq-to-int-zero
-  eq. > res
-    eq.
-      0.0
-      0
-    FALSE
-  nop > @
+[] > float-zero-eq-to-int-zero
+  eq. > @
+    0.0
+    0
 
 [] > eq-true
   eq. > @
@@ -197,10 +191,14 @@
     FALSE
 
 [] > compares-two-different-types
-  eq. > res
-    3.14.eq "Hello"
-    FALSE
-  nop > @
+  eq. > @
+    try
+      []
+        3.14.eq "Hello" > @
+      [e]
+        e > @
+      nop
+    "The size of argument '.x' is 5 bytes, not '8' as expected"
 
 [] > times-by-zero
   eq. > @
@@ -454,10 +452,9 @@
     neg-inf
 
 [] > negative-float-minus-negative-infinity
-  eq. > res
+  eq. > @
     -42.5.minus negative-infinity
     positive-infinity
-  nop > @
 
 [] > negative-float-times-negative-infinity
   eq. > @
