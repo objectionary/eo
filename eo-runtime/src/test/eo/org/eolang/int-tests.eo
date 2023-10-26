@@ -26,10 +26,6 @@
 +package org.eolang
 +version 0.0.0
 
-# @todo #2547:30min After changing int.eq to atom some tests have broken due to types contradiction.
-#  Now int.eq can only compare an int object with another int object (to compare as bytes, use as-bytes attribute).
-#  Resolve and enable folowing tests: as-bytes-equals-to-int, int-equal-to-nan-and-infinites-is-false,
-#  int-zero-not-eq-to-float-zero
 [] > less-true
   eq. > @
     lt.
@@ -133,7 +129,7 @@
     "check int.gte.not"
 
 [] > int-equal-to-nan-and-infinites-is-false
-  eq. > res
+  eq. > @
     and.
       (0.eq nan).eq FALSE
       (0.eq positive-infinity).eq FALSE
@@ -142,7 +138,6 @@
       (42.eq positive-infinity).eq FALSE
       (42.eq negative-infinity).eq FALSE
     TRUE
-  nop > @
 
 [] > zero-eq-to-zero
   eq. > @
@@ -151,13 +146,12 @@
       0
     TRUE
 
-[] > int-zero-not-eq-to-float-zero
-  eq. > res
+[] > int-zero-eq-to-float-zero
+  eq. > @
     eq.
       0
       0.0
-    FALSE
-  nop > @
+    TRUE
 
 [] > eq-true
   eq. > @
@@ -275,10 +269,9 @@
     42
 
 [] > as-bytes-equals-to-int
-  eq. > res
+  eq. > @
     42
     42.as-bytes
-  nop > @
 
 [] > as-bytes-equals-to-int-backwards
   eq. > @
