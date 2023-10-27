@@ -71,31 +71,17 @@
     ^.times -1 > @
 
   # Add to the current one
-  [x...] > plus /int
+  [x] > plus /int
 
   # Subtract from the current one
-  [x...] > minus
-    [acc index terms] > rec-terms
-      if. > @
-        index.eq terms.length
-        acc
-        rec-terms
-          acc.with
-            (terms.at index).neg
-          index.plus 1
-          terms
-    rec-terms > neg-terms
-      *
-      0
-      x
-    ^.plus > @
-      ...neg-terms
+  [x] > minus
+    ^.plus x.neg > @
 
   # Multiplication this one by another int
-  [x...] > times /int
+  [x] > times /int
 
   # Divide this one by another int
-  [x...] > div /int
+  [x] > div /int
 
   # Converts this to bytes
   [] > as-bytes /bytes

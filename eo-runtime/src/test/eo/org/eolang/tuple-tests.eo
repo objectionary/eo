@@ -90,15 +90,17 @@
     * 1 2 3
     "with"
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
-    eq.
-      arr.at 2
-      3
+    and.
+      and.
+        eq.
+          arr.at 0
+          1
+        eq.
+          arr.at 1
+          2
+      eq.
+        arr.at 2
+        3
     eq.
       arr.at 3
       "with"
@@ -118,12 +120,13 @@
 [] > tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
@@ -134,12 +137,13 @@
   .with 2
   .with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
@@ -167,12 +171,13 @@
   .with 2
   .with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
