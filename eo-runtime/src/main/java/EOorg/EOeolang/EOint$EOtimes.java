@@ -28,62 +28,40 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtVararg;
+import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhConst;
+import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * SEQ.
- * @checkstyle TypeNameCheck (5 lines)
+ * TIMES.
+ *
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "seq")
-public class EOseq extends PhDefault {
+@XmirObject(oname = "int.times")
+public class EOint$EOtimes extends PhDefault {
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOseq(final Phi sigma) {
+    public EOint$EOtimes(final Phi sigma) {
         super(sigma);
-        this.add("steps", new AtVararg());
+        this.add("x", new AtFree());
         this.add(
             "φ",
             new AtComposite(
                 this,
-                self -> {
-                    final Phi args = new PhConst(self.attr("steps").get());
-                    final Long length = new Dataized(
-                        args.attr("length").get()
-                    ).take(Long.class);
-                    for (long idx = 0; idx < length - 1; ++idx) {
-                        new Dataized(
-                            new PhWith(
-                                args.attr("at").get().copy(),
-                                0, new Data.ToPhi(idx)
-                            )
-                        ).take();
-                    }
-                    final Phi ret;
-                    if (length > 0) {
-                        ret = new PhWith(
-                            args.attr("at").get().copy(),
-                            0, new Data.ToPhi(length - 1)
-                        );
-                    } else {
-                        ret = new Data.ToPhi(false);
-                    }
-                    return ret;
-                }
+                rho -> new Data.ToPhi(
+                    new Param(rho).strong(Long.class)
+                        * new Param(rho, "x").strong(Long.class)
+                )
             )
         );
     }
-
 }

@@ -28,7 +28,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="count(o)=0">
         <xsl:choose>
-          <xsl:when test="following-sibling::o[@base!='.empty']">
+          <xsl:when test="following-sibling::o[position()=1 and @base!='.empty']">
             <o>
               <xsl:for-each select="@*[name()!='star' and name()!='name']">
                 <xsl:attribute name="{name()}">
@@ -61,7 +61,7 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:when test="count(o)=1">
+      <xsl:when test="count(o[not(@method)])=1">
         <o>
           <xsl:for-each select="@*[name()!='star']">
             <xsl:attribute name="{name()}">
@@ -70,10 +70,10 @@ SOFTWARE.
           </xsl:for-each>
           <o base="tuple"/>
           <o base=".empty" method=""/>
-          <xsl:copy-of select="o[last()]"/>
+          <xsl:copy-of select="o"/>
         </o>
       </xsl:when>
-      <xsl:when test="count(o)&gt;1">
+      <xsl:when test="count(o[not(@method)])&gt;1">
         <o>
           <xsl:for-each select="@*[name()!='star']">
             <xsl:attribute name="{name()}">
@@ -81,11 +81,11 @@ SOFTWARE.
             </xsl:attribute>
           </xsl:for-each>
           <o base="tuple" star="">
-            <xsl:for-each select="o[position()!=last()]">
+            <xsl:for-each select="o[not(@method)][last()]/preceding-sibling::o">
               <xsl:copy-of select="."/>
             </xsl:for-each>
           </o>
-          <xsl:copy-of select="o[last()]"/>
+          <xsl:copy-of select="o[not(@method)][last()] | o[not(@method)][last()]/following-sibling::o"/>
         </o>
       </xsl:when>
     </xsl:choose>

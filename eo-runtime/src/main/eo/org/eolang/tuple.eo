@@ -44,12 +44,22 @@
 
   # Take one element from the tuple, at the given position.
   [i] > at
+    ^.length > len!
+    if. > index!
+      i.lt 0
+      len.plus i
+      i
     if. > @
-      lt.
-        i
-        ^.length.plus -1
-      ^.head.at i
-      ^.tail
+      or.
+        index.lt 0
+        index.gte len
+      error "Given index is out of tuple bounds"
+      if.
+        lt.
+          index
+          len.plus -1
+        ^.head.at index
+        ^.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

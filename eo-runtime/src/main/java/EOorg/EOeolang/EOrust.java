@@ -50,10 +50,10 @@ import org.cactoos.text.TextOf;
 import org.eolang.AtComposite;
 import org.eolang.AtFree;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.ExNative;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Universe;
 import org.eolang.UniverseDefault;
@@ -117,7 +117,7 @@ public class EOrust extends PhDefault {
             .resolve("eo-test")
             .resolve("Lib").toFile();
         if (libs.isDirectory()) {
-            for (final File subdir: libs.listFiles()) {
+            for (final File subdir : libs.listFiles()) {
                 final Path path = subdir.toPath()
                     .resolve("target")
                     .resolve("debug")
@@ -160,11 +160,10 @@ public class EOrust extends PhDefault {
                             byte[].class
                         );
                     }
-                    final Phi portal = new Dataized(
-                        rho
-                        .attr("params").get()
-                        .attr("Δ").get()
-                    ).take(Phi[].class)[0];
+                    final Phi portal = new PhWith(
+                        rho.attr("params").get().attr("at").get().copy(),
+                        0, new Data.ToPhi(0L)
+                    );
                     return this.translate(
                         (byte[]) method.invoke(
                             null,
@@ -245,7 +244,7 @@ public class EOrust extends PhDefault {
                             "Returned phi with vertex %d (%s in bytes) was not indexed",
                             vertex,
                             Arrays.toString(content)
-                            )
+                        )
                     );
                 }
                 break;

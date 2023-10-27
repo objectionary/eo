@@ -54,6 +54,9 @@ public final class ParsingTrain extends TrEnvelope {
         "each.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
+    /**
+     * Transform stars to tuples.
+     */
     private static final XSL TUPLES = new XSLDocument(
         ParsingTrain.class.getResourceAsStream("stars-to-tuples.xsl"),
         "stars-to-tuples.xsl"
