@@ -137,19 +137,19 @@ public final class Param {
 
     /**
      * Extracts BYTES of any type and checks if they have the appropriate size.
-     * @param appropriate The appropriate size.
+     * @param size The appropriate size.
      * @return Bytes.
      */
-    public Bytes asBytesAppropriate(final int appropriate) {
+    public Bytes asStrictBytes(final int size) {
         final Bytes bytes = this.asBytes();
-        final int size = bytes.take().length;
-        if (size != appropriate) {
+        final int length = bytes.take().length;
+        if (length != size) {
             throw new ExFailure(
                 String.format(
                     "The size of argument '.%s' is %d bytes, not '%d' as expected",
                     this.attr,
-                    size,
-                    appropriate
+                    length,
+                    size
                 )
             );
         }

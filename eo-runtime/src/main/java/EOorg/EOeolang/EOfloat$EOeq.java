@@ -58,8 +58,8 @@ public class EOfloat$EOeq extends PhDefault {
             new AtComposite(
                 this,
                 rho -> new Data.ToPhi(
-                new Param(rho).asBytesAppropriate(Double.BYTES).asNumber(Double.class) == (double)
-                    new Param(rho, "x").asBytesAppropriate(Double.BYTES).asNumber(Double.class)
+                new Param(rho).asStrictBytes(Double.BYTES).asNumber(Double.class) == (double)
+                    new Param(rho, "x").asStrictBytes(Double.BYTES).asNumber(Double.class)
                 )
             )
         );
