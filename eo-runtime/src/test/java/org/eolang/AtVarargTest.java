@@ -80,6 +80,7 @@ final class AtVarargTest {
      *  [] > foo
      *    (bar 1 2 3).eq 2 > @
      * }
+     *
      * @since 0.22
      */
     private static class Foo extends PhDefault {
@@ -116,6 +117,7 @@ final class AtVarargTest {
      *    1 > a
      *    2 > @
      * }
+     *
      * @since 0.22
      */
     private static class Bar extends PhDefault {
