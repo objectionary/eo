@@ -55,9 +55,7 @@
         index.gte len
       error "Given index is out of tuple bounds"
       if.
-        lt.
-          index
-          len.plus -1
+        index.lt (len.plus -1)
         ^.head.at index
         ^.tail
 
