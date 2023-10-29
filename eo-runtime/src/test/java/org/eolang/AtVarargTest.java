@@ -77,8 +77,8 @@ final class AtVarargTest {
      * Main program sample.
      *
      * {@code
-     * [] > foo
-     * (bar 1 2 3).eq 2 > @
+     *  [] > foo
+     *    (bar 1 2 3).eq 2 > @
      * }
      * @since 0.22
      */
@@ -112,9 +112,9 @@ final class AtVarargTest {
      * Varargs function sample.
      *
      * {@code
-     * [args...] > bar
-     * 1 > a
-     * 2 > @
+     *  [args...] > bar
+     *    1 > a
+     *    2 > @
      * }
      * @since 0.22
      */
