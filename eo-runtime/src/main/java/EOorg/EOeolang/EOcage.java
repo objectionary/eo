@@ -27,11 +27,10 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtAtom;
 import org.eolang.AtCage;
-import org.eolang.AtLambda;
 import org.eolang.AtFree;
-import org.eolang.AtOnce;
-import org.eolang.AtSimple;
+import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
@@ -59,7 +58,27 @@ public class EOcage extends PhDefault {
         super(sigma);
         this.add("enclosure", new AtCage());
         this.add(Attr.LAMBDA, new AtLambda(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtOnce(new AtSimple(new EOcage.Write(this))));
+        this.add("write", new AtWrite(this));
+    }
+
+    /**
+     * Cage.write attribute.
+     * @since 0.33.0
+     */
+    private static final class AtWrite extends AtAtom {
+
+        /**
+         * Ctor.
+         * @param cage The {@link EOcage} object
+         */
+        AtWrite(final Phi cage) {
+            super(new EOcage.Write(cage));
+        }
+
+        @Override
+        public Attr copy(final Phi self) {
+            return new AtWrite(self);
+        }
     }
 
     /**

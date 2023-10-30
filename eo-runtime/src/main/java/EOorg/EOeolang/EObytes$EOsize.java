@@ -28,7 +28,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtLambda;
-import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;

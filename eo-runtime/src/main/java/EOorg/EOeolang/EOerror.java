@@ -27,8 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;

@@ -22,47 +22,57 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * TIMES.
- *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Attribute for inner atoms.
+ * @since 0.33.0
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
-@Versionized
-@XmirObject(oname = "int.times")
-public class EOint$EOtimes extends PhDefault {
+public abstract class AtAtom implements Attr {
+    /**
+     * Original attribute.
+     */
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param phi Phi to wrap.
      */
-    public EOint$EOtimes(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).strong(Long.class)
-                        * new Param(rho, "x").strong(Long.class)
-                )
-            )
-        );
+    public AtAtom(final Phi phi) {
+        this(new AtSimple(phi));
+    }
+
+    /**
+     * Ctor.
+     * @param attr Attribute to wrap.
+     */
+    AtAtom(final Attr attr) {
+        this.origin = new AtOnce(attr);
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return this.origin.copy(self);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 }

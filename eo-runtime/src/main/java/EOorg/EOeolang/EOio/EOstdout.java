@@ -28,8 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
-import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;

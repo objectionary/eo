@@ -249,14 +249,21 @@ public abstract class PhDefault implements Phi, Cloneable {
             attr = this.attrs.get(name);
         }
         if (null == attr) {
-            final Attr aphi = this.attrs.get("φ");
+            final String through;
+            if (this.attrs.containsKey(Attr.PHI)) {
+                through = Attr.PHI;
+            } else {
+                through = Attr.LAMBDA;
+            }
+            final Attr aphi = this.attrs.get(through);
             if (null == aphi) {
                 attr = new AtAbsent(
                     name,
                     String.format(
-                        " among other %d attrs (%s) and φ is absent",
+                        " among other %d attrs (%s) and %s is absent",
                         this.attrs.size(),
-                        String.join(", ", this.attrs.keySet())
+                        String.join(", ", this.attrs.keySet()),
+                        through
                     )
                 );
             } else {
@@ -267,7 +274,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
         }
         attr = this.named(attr, name);
-        if ("φ".equals(name)) {
+        if (Attr.PHI.equals(name)) {
             attr = new AtPhiSensitive(attr, this.cached);
         }
         if (this.getClass().isAnnotationPresent(Volatile.class)) {

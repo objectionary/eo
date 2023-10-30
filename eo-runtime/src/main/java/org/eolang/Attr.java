@@ -37,6 +37,11 @@ public interface Attr extends Term {
     String LAMBDA = "λ";
 
     /**
+     * Phi attribute.
+     */
+    String PHI = "φ";
+
+    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to

@@ -41,7 +41,6 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -135,7 +134,9 @@ final class EOboolEOwhileTest {
         final Phi toggle = new PhMethod(new Parent(Phi.Φ), "toggle");
         new Dataized(
             new PhWith(
-                new PhMethod(toggle, "write"),
+                new PhCopy(
+                    new PhMethod(toggle, "write")
+                ),
                 0, new Data.ToPhi(true)
             )
         ).take();
@@ -203,7 +204,9 @@ final class EOboolEOwhileTest {
                     rho -> {
                         new Dataized(
                             new PhWith(
-                                new PhMethod(this.toggle, "write"),
+                                new PhCopy(
+                                    new PhMethod(this.toggle, "write")
+                                ),
                                 0,
                                 new Data.ToPhi(false)
                             )

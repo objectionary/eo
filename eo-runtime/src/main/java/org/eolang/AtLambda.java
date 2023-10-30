@@ -92,7 +92,7 @@ public final class AtLambda implements Attr {
     @Override
     public void put(final Phi phi) {
         throw new ExReadOnly(
-            "You can't overwrite labmda expression"
+            "You can't overwrite lambda expression"
         );
     }
 }

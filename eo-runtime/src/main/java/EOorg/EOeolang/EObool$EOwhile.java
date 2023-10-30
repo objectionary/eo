@@ -62,7 +62,10 @@ public class EObool$EOwhile extends PhDefault {
                 rho -> {
                     Phi last = new Data.ToPhi(false);
                     long count = 0L;
-                    while (new Param(rho).strong(Boolean.class)) {
+                    while (true) {
+                        if (!new Param(rho).strong(Boolean.class)) {
+                            break;
+                        }
                         new Dataized(last).take();
                         last = rho.attr("f").get().copy();
                         last.attr("ρ").put(rho);

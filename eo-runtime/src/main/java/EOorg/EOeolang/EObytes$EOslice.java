@@ -28,8 +28,8 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
