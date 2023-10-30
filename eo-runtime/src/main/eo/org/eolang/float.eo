@@ -43,7 +43,7 @@
           self-as-bytes
           nan-as-bytes
       FALSE
-      if.
+      or.
         and.
           or.
             eq.
@@ -59,7 +59,6 @@
             eq.
               self-as-bytes
               neg-zero-as-bytes
-        TRUE
         eq.
           self-as-bytes
           x-as-bytes
