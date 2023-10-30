@@ -28,7 +28,41 @@
 
 [] > float
   # Tests that $ = x
-  [x] > eq /bool
+  [x] > eq
+    x.as-bytes > x-as-bytes!
+    ^.as-bytes > self-as-bytes!
+    nan.as-bytes > nan-as-bytes!
+    0.0.as-bytes > pos-zero-as-bytes!
+    -0.0.as-bytes > neg-zero-as-bytes!
+    if. > @
+      or.
+        eq.
+          x-as-bytes
+          nan-as-bytes
+        eq.
+          self-as-bytes
+          nan-as-bytes
+      FALSE
+      if.
+        or.
+          or.
+            eq.
+              x-as-bytes
+              pos-zero-as-bytes
+            eq.
+              self-as-bytes
+              neg-zero-as-bytes
+          or.
+            eq.
+              x-as-bytes
+              neg-zero-as-bytes
+            eq.
+              self-as-bytes
+              pos-zero-as-bytes
+        TRUE
+        eq.
+          self-as-bytes
+          x-as-bytes
 
   # Tests that $ < x
   [x] > lt
