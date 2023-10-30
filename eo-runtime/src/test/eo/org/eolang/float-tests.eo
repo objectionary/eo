@@ -180,6 +180,11 @@
     0.0
     0
 
+[] > float-neg-zero-eq-to-int-zero
+  eq. > @
+    -0.0
+    0
+
 [] > eq-true
   eq. > @
     123.5

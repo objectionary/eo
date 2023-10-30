@@ -44,21 +44,21 @@
           nan-as-bytes
       FALSE
       if.
-        or.
+        and.
           or.
             eq.
               x-as-bytes
               pos-zero-as-bytes
             eq.
-              self-as-bytes
+              x-as-bytes
               neg-zero-as-bytes
           or.
             eq.
-              x-as-bytes
-              neg-zero-as-bytes
-            eq.
               self-as-bytes
               pos-zero-as-bytes
+            eq.
+              self-as-bytes
+              neg-zero-as-bytes
         TRUE
         eq.
           self-as-bytes
