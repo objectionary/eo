@@ -27,9 +27,10 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
 import org.eolang.AtVararg;
+import org.eolang.Attr;
 import org.eolang.Bytes;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -56,8 +57,8 @@ public class EObytes$EOxor extends PhDefault {
         super(sigma);
         this.add("b", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho).asBytes().xor(

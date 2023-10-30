@@ -47,8 +47,9 @@ import org.cactoos.bytes.Base64Bytes;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.IoCheckedBytes;
 import org.cactoos.text.TextOf;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.ExNative;
@@ -139,8 +140,8 @@ public class EOrust extends PhDefault {
         this.add("code", new AtFree());
         this.add("params", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final String name = NAMES.get(

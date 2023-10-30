@@ -27,7 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -52,8 +54,8 @@ public class EObytes$EOsize extends PhDefault {
     public EObytes$EOsize(final Phi sigma) {
         super(sigma);
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final byte[] array = new Param(rho).strong(byte[].class);
@@ -62,5 +64,4 @@ public class EObytes$EOsize extends PhDefault {
             )
         );
     }
-
 }

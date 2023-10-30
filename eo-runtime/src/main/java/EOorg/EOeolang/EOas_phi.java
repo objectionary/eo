@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -53,8 +54,8 @@ public class EOas_phi extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi obj = rho.attr("x").get();
@@ -64,5 +65,4 @@ public class EOas_phi extends PhDefault {
             )
         );
     }
-
 }

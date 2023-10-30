@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -58,8 +58,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         this.add("inverse", new AtFree());
         this.add("write", new AtComposite(this, EOheap$EOpointer$EOblock.Write::new));
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi pointer = rho.attr("σ").get();

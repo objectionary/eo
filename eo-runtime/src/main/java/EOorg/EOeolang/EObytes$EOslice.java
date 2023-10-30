@@ -28,8 +28,9 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -56,8 +57,8 @@ public class EObytes$EOslice extends PhDefault {
         this.add("start", new AtFree());
         this.add("len", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final long start = new Param(rho, "start").strong(Long.class);

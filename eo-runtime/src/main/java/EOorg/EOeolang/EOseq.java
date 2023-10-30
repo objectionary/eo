@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtVararg;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhConst;
@@ -55,8 +56,8 @@ public class EOseq extends PhDefault {
         super(sigma);
         this.add("steps", new AtVararg());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 self -> {
                     final Phi args = new PhConst(self.attr("steps").get());
@@ -85,5 +86,4 @@ public class EOseq extends PhDefault {
             )
         );
     }
-
 }

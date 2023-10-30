@@ -28,7 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.NoSuchElementException;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
@@ -50,8 +51,8 @@ public class EOstdin$EOnext_line extends PhDefault {
     public EOstdin$EOnext_line(final Phi parent) {
         super(parent);
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     try {

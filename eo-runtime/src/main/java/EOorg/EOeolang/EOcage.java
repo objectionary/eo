@@ -28,8 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtCage;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.AtOnce;
+import org.eolang.AtSimple;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -55,8 +58,8 @@ public class EOcage extends PhDefault {
     public EOcage(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtCage());
-        this.add("φ", new AtComposite(this, rho -> rho.attr("enclosure").get()));
-        this.add("write", new AtComposite(this, EOcage.Write::new));
+        this.add(Attr.LAMBDA, new AtLambda(this, rho -> rho.attr("enclosure").get()));
+        this.add("write", new AtOnce(new AtSimple(new EOcage.Write(this))));
     }
 
     /**
@@ -73,8 +76,8 @@ public class EOcage extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> {
                         rho.attr("σ").get().attr("enclosure").put(
@@ -86,5 +89,4 @@ public class EOcage extends PhDefault {
             );
         }
     }
-
 }

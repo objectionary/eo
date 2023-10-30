@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -54,8 +54,8 @@ public class EOgoto extends PhDefault {
         super(sigma);
         this.add("f", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi body = rho.attr("f").get().copy();

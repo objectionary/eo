@@ -25,18 +25,12 @@
 package org.eolang;
 
 /**
- * Static attribute with an expression inside, which
- * constructs an object.
+ * Attribute with lambda expression inside.
  *
- * @since 0.1
- * @todo #2566:60min Remove AtComposite class. AtComposite duplicates the functionality of
- *  {@link AtLambda} and it's used only because the style of generated (from EO) java is
- *  imperative. We need to make transpilation declarative (for example
- *  new PhLocated(new PhWith(new PhMethod(...), ...), ...)) so we would not need AtComposite
- *  anymore. Don't forget to remove the puzzle.
+ * @since 0.33.0
  */
 @Versionized
-public final class AtComposite implements Attr {
+public final class AtLambda implements Attr {
 
     /**
      * The \rho to send to the expression.
@@ -53,24 +47,24 @@ public final class AtComposite implements Attr {
      * @param obj The \rho
      * @param exp The expression
      */
-    public AtComposite(final Phi obj, final Expr exp) {
+    public AtLambda(final Phi obj, final Expr exp) {
         this.rho = obj;
         this.expr = exp;
     }
 
     @Override
     public String toString() {
-        return "λ";
+        return this.φTerm();
     }
 
     @Override
     public String φTerm() {
-        return "λ";
+        return Attr.LAMBDA;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(self, this.expr);
+        return new AtLambda(self, this.expr);
     }
 
     @Override
@@ -98,7 +92,7 @@ public final class AtComposite implements Attr {
     @Override
     public void put(final Phi phi) {
         throw new ExReadOnly(
-            "You can't overwrite static expression"
+            "You can't overwrite labmda expression"
         );
     }
 }

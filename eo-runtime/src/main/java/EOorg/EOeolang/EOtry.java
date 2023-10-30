@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -55,8 +56,8 @@ public class EOtry extends PhDefault {
         this.add("catch", new AtFree());
         this.add("finally", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi body = rho.attr("main").get().copy();
@@ -80,5 +81,4 @@ public class EOtry extends PhDefault {
             )
         );
     }
-
 }

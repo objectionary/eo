@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
 import org.eolang.AtFree;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Param;
@@ -55,8 +56,8 @@ public class EOint$EOdiv extends PhDefault {
         super(sigma);
         this.add("x", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Long arg = new Param(rho, "x").strong(Long.class);
