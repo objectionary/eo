@@ -170,27 +170,7 @@
     TRUE
     "check int.eq.not"
 
-[] > compares-two-different-types-wrong-size-less
-  eq. > @
-    try
-      []
-        42.eq "Hello" > @
-      [e]
-        e > @
-      nop
-    "The size of argument '.x' is 5 bytes, not '8' as expected"
-
-[] > compares-two-different-types-wrong-size-bigger
-  eq. > @
-    try
-      []
-        414.eq "123456789" > @
-      [e]
-        e > @
-      nop
-    "The size of argument '.x' is 9 bytes, not '8' as expected"
-
-[] > compares-two-different-types-right-size
+[] > compares-two-different-types-size
   eq. > @
     68.eq "12345678"
     FALSE
