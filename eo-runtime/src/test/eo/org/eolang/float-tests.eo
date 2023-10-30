@@ -195,9 +195,9 @@
     123.5.eq 42.4
     FALSE
 
-[] > compares-two-different-types-right-size
+[] > compares-two-different-types
   eq. > @
-    2.71.eq "12345678"
+    3.14.eq "Hello"
     FALSE
 
 [] > times-by-zero
