@@ -150,12 +150,12 @@
       0
     TRUE
 
-[] > int-zero-not-eq-to-float-zero
+[] > int-zero-eq-to-float-zero
   eq. > @
     eq.
       0
       0.0
-    FALSE
+    TRUE
 
 [] > eq-true
   eq. > @
@@ -176,12 +176,8 @@
 
 [] > compares-two-different-types
   eq. > @
-    not.
-      eq.
-        42
-        "Hello!"
-    TRUE
-    "check int.eq.not string"
+    68.eq "12345678"
+    FALSE
 
 [] > calculates-fibonacci-number-with-recursion
   [n] > fibo

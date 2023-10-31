@@ -125,15 +125,15 @@
       0.0
     TRUE
 
-[] > zero-not-equal-to-neg-zero
+[] > zero-equal-to-neg-zero
   eq. > @
     0.0.eq -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-equal-to-zero
+[] > neg-zero-equal-to-zero
   eq. > @
     -0.0.eq 0.0
-    FALSE
+    TRUE
 
 [] > zero-not-greater-that-neg-zero
   eq. > @
@@ -155,32 +155,35 @@
     -0.0.lt 0.0
     FALSE
 
-[] > zero-not-gte-neg-zero
+[] > zero-gte-neg-zero
   eq. > @
     0.0.gte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-gte-zero
+[] > neg-zero-gte-zero
   eq. > @
     -0.0.gte 0.0
-    FALSE
+    TRUE
 
-[] > zero-not-lte-neg-zero
+[] > zero-lte-neg-zero
   eq. > @
     0.0.lte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-lte-zero
+[] > neg-zero-lte-zero
   eq. > @
     -0.0.lte 0.0
-    FALSE
+    TRUE
 
-[] > float-zero-not-eq-to-int-zero
+[] > float-zero-eq-to-int-zero
   eq. > @
-    eq.
-      0.0
-      0
-    FALSE
+    0.0
+    0
+
+[] > float-neg-zero-eq-to-int-zero
+  eq. > @
+    -0.0
+    0
 
 [] > eq-true
   eq. > @
