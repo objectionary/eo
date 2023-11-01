@@ -34,7 +34,8 @@ import org.junit.jupiter.api.io.TempDir;
  * Test case for {@link TranslateToPhiMojo}.
  *
  * @since 0.32
- * @todo #2535:30min Enable tests: {@link TranslateToPhiMojoTest#checksExistence(java.nio.file.Path)}
+ * @todo #2535:30min Enable tests:
+ *  {@link TranslateToPhiMojoTest#checksExistence(java.nio.file.Path)}
  *  and {@link TranslateToPhiMojoTest#checksPhiCalculusExpression(java.nio.file.Path)}.
  *  Also it's better to add more test cases in different EO programs with corresponding Phi-calculus
  *  expressions.
