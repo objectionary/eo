@@ -688,14 +688,14 @@ public final class FakeMaven {
      *
      * @since 0.32
      */
-    static final class PhiTranslator implements Iterable<Class<? extends AbstractMojo>> {
+    static final class TranslateToPhi implements Iterable<Class<? extends AbstractMojo>> {
 
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 OptimizeMojo.class,
-                PhiTranslatorMojo.class
+                TranslateToPhiMojo.class
             ).iterator();
         }
     }

@@ -40,7 +40,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class PhiTranslatorMojo extends SafeMojo {
+public final class TranslateToPhiMojo extends SafeMojo {
 
     /**
      * The directory where to generate to.

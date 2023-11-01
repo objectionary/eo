@@ -31,18 +31,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link PhiTranslatorMojo}.
+ * Test case for {@link TranslateToPhiMojo}.
  *
  * @since 0.32
- * @todo #2535:30min Enable tests: {@link PhiTranslatorMojoTest#checksExistence(java.nio.file.Path)}
- *  and {@link PhiTranslatorMojoTest#checksPhiCalculusExpression(java.nio.file.Path)}.
+ * @todo #2535:30min Enable tests: {@link TranslateToPhiMojoTest#checksExistence(java.nio.file.Path)}
+ *  and {@link TranslateToPhiMojoTest#checksPhiCalculusExpression(java.nio.file.Path)}.
  *  Also it's better to add more test cases in different EO programs with corresponding Phi-calculus
  *  expressions.
  */
-class PhiTranslatorMojoTest {
+class TranslateToPhiMojoTest {
 
     /**
-     * Generate phi-calculus expression by XMIR.
+     * Checks that file exist.
      *
      * @param temp Temporary directory.
      * @throws Exception
@@ -59,14 +59,20 @@ class PhiTranslatorMojoTest {
                     "    total.write > @",
                     "      total.plus i"
                 )
-                .execute(new FakeMaven.PhiTranslator())
+                .execute(new FakeMaven.TranslateToPhi())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/cart.%s", PhiTranslatorMojo.DIR, PhiTranslatorMojo.EXT)
+                String.format("target/%s/cart.%s", TranslateToPhiMojo.DIR, TranslateToPhiMojo.EXT)
             )
         );
     }
 
+    /**
+     * Generate phi-calculus expression by XMIR.
+     *
+     * @param temp Temporary directory.
+     * @throws Exception
+     */
     @Test
     @Disabled
     void checksPhiCalculusExpression(@TempDir final Path temp) throws Exception {
@@ -76,13 +82,13 @@ class PhiTranslatorMojoTest {
                     "[] > holder",
                     "  103 > storage"
                 )
-                .execute(new FakeMaven.PhiTranslator())
+                .execute(new FakeMaven.TranslateToPhi())
                 .result()
                 .get(
                     String.format(
                         "target/%s/holder.%s",
-                        PhiTranslatorMojo.DIR,
-                        PhiTranslatorMojo.EXT
+                        TranslateToPhiMojo.DIR,
+                        TranslateToPhiMojo.EXT
                     )
                 )
                 .toFile()
