@@ -131,10 +131,21 @@ mvn clean install -Pqulice -Dstack-size=1M
 ```
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
 
-## How to disable IT tests
+## How to run Integration Tests only
+
+If you want to run a specific integration test without waiting until other unit or integration tests are executed you need to go to `eo-maven-plugin` 
+directory and execute the next command:
+
+```shell
+mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
+```
+
+Here `fibonacci` is the name of the desired integration test, `-DskipTests` is used in order to skip `eo-maven-plugin` unit tests.
+
+## How to disable Integration Tests
 
 It is sometime necessary to temporary disable the integration tests (for example for introducing braking changes into plugin or EO runtime). 
-This can be achived by disabling `maven-invoker-plugin` execution within `eo-maven-plugin/pom.xml`:
+This can be achieved by disabling `maven-invoker-plugin` execution within `eo-maven-plugin/pom.xml`:
 ```xml
 <plugins>
   ...
