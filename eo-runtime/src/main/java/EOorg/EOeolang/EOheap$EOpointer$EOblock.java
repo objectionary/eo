@@ -28,8 +28,10 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtComposite;
+import org.eolang.AtAtom;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -56,10 +58,10 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         super(sigma);
         this.add("len", new AtFree());
         this.add("inverse", new AtFree());
-        this.add("write", new AtComposite(this, EOheap$EOpointer$EOblock.Write::new));
+        this.add("write", new AtWrite(this));
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi pointer = rho.attr("σ").get();
@@ -79,11 +81,30 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
     }
 
     /**
+     * Head.pointer.block.write attribute.
+     * @since 0.33.0
+     */
+    private static final class AtWrite extends AtAtom {
+        /**
+         * Ctor.
+         * @param block The {@link EOheap$EOpointer$EOblock} object
+         */
+        AtWrite(final Phi block) {
+            super(new EOheap$EOpointer$EOblock.Write(block));
+        }
+
+        @Override
+        public Attr copy(final Phi self) {
+            return new AtWrite(self);
+        }
+    }
+
+    /**
      * Write block.
      * @since 0.19
      */
     @XmirObject(oname = "heap.pointer.block.write")
-    private final class Write extends PhDefault {
+    private static final class Write extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -92,8 +113,8 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
             super(sigma);
             this.add("x", new AtFree());
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> {
                         final Phi block = rho.attr("σ").get();

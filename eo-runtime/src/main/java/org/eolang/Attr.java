@@ -31,6 +31,15 @@ package org.eolang;
  */
 @Versionized
 public interface Attr extends Term {
+    /**
+     * Lambda attribute.
+     */
+    String LAMBDA = "λ";
+
+    /**
+     * Phi attribute.
+     */
+    String PHI = "φ";
 
     /**
      * Make a copy of it.

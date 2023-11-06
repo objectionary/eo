@@ -30,17 +30,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtComposite}.
+ * Test case for {@link AtLambda}.
  *
  * @since 0.16
  */
-final class AtCompositeTest {
+final class AtLambdaTest {
 
     @Test
     void decoratesCheckedException() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new AtComposite(
+            () -> new AtLambda(
                 Phi.Φ,
                 self -> {
                     throw new InstantiationException("intended checked");
@@ -53,7 +53,7 @@ final class AtCompositeTest {
     void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new AtComposite(
+            () -> new AtLambda(
                 Phi.Φ,
                 self -> {
                     throw new IllegalStateException("intended unchecked");
@@ -66,7 +66,7 @@ final class AtCompositeTest {
     void passesSelfCorrectly() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
-        phi.attr("φ").get();
+        phi.attr(Attr.LAMBDA).get();
         MatcherAssert.assertThat(
             dummy.self,
             Matchers.equalTo(phi)
@@ -77,7 +77,7 @@ final class AtCompositeTest {
     void passesSelfCorrectlyThroughChild() {
         final Dummy dummy = new Dummy();
         final Phi phi = new PhConst(dummy);
-        phi.attr("φ").get();
+        phi.attr(Attr.LAMBDA).get();
         MatcherAssert.assertThat(
             dummy.self,
             Matchers.equalTo(phi)
@@ -87,7 +87,7 @@ final class AtCompositeTest {
     @Test
     void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
-        final Phi phi = new PhMethod(rnd, "φ");
+        final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
             new Dataized(phi).take(Double.class),
             Matchers.equalTo(
@@ -112,8 +112,8 @@ final class AtCompositeTest {
         Dummy() {
             super();
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> {
                         this.self = rho;
@@ -135,8 +135,8 @@ final class AtCompositeTest {
         Rnd() {
             super();
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )

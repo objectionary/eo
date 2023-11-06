@@ -29,20 +29,9 @@
 [] > int
   # Tests that $ = x
   [x] > eq
-    if. > @
-      and.
-        eq.
-          ^.as-bytes > self-as-bytes!
-          00-00-00-00-00-00-00-00 > zero-as-bytes!
-        eq.
-          x.as-bytes > x-as-bytes!
-          zero-as-bytes
-      eq.
-        ^.neg.as-bytes
-        x.neg.as-bytes
-      eq.
-        self-as-bytes
-        x-as-bytes
+    eq. > @
+      ^.as-bytes
+      x.as-bytes
 
   # Tests that $ < x
   [x] > lt
@@ -71,31 +60,17 @@
     ^.times -1 > @
 
   # Add to the current one
-  [x...] > plus /int
+  [x] > plus /int
 
   # Subtract from the current one
-  [x...] > minus
-    [acc index terms] > rec-terms
-      if. > @
-        index.eq terms.length
-        acc
-        rec-terms
-          acc.with
-            (terms.at index).neg
-          index.plus 1
-          terms
-    rec-terms > neg-terms
-      *
-      0
-      x
-    ^.plus > @
-      ...neg-terms
+  [x] > minus
+    ^.plus x.neg > @
 
   # Multiplication this one by another int
-  [x...] > times /int
+  [x] > times /int
 
   # Divide this one by another int
-  [x...] > div /int
+  [x] > div /int
 
   # Converts this to bytes
   [] > as-bytes /bytes

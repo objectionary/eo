@@ -158,9 +158,7 @@ SOFTWARE.
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text> extends PhDefault {</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="." mode="fields"/>
     <xsl:apply-templates select="." mode="ctors"/>
-    <xsl:apply-templates select="." mode="equals-and-hashCode"/>
     <xsl:if test="//meta[head='junit' or head='tests'] and not(@parent)">
       <xsl:apply-templates select="." mode="tests"/>
     </xsl:if>
@@ -174,14 +172,6 @@ SOFTWARE.
       <xsl:text>// </xsl:text>
       <xsl:value-of select="."/>
     </xsl:for-each>
-  </xsl:template>
-  <xsl:template match="class" mode="fields">
-    <xsl:value-of select="eo:tabs(1)"/>
-    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type]">
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>private final java.util.concurrent.atomic.AtomicBoolean initialized = new java.util.concurrent.atomic.AtomicBoolean(false);</xsl:text>
-    </xsl:if>
   </xsl:template>
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
@@ -210,11 +200,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$literal-objects[text()=$type]">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree(new AtSimple(), this.initialized));</xsl:text>
-    </xsl:if>
-    <xsl:if test="$type='org.eolang.tuple'">
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtSimple(new Data.Value&lt;&gt;(new Phi[0])));</xsl:text>
+      <xsl:text>this.add("Δ", new AtFree(new AtSimple()));</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
@@ -225,44 +211,6 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-  </xsl:template>
-  <xsl:template match="class" mode="equals-and-hashCode">
-    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type] or $type='org.eolang.tuple'">
-      <xsl:value-of select="eo:tabs(1)"/>
-      <xsl:text>@Override</xsl:text>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>public int hashCode() {</xsl:text>
-      <xsl:choose>
-        <xsl:when test="$type='org.eolang.tuple'">
-          <xsl:value-of select="eo:eol(1)"/>
-          <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="eo:eol(2)"/>
-          <xsl:text>if (this.initialized.get()) {</xsl:text>
-          <xsl:value-of select="eo:eol(3)"/>
-          <xsl:text>return this.attr("Δ").get().hashCode();</xsl:text>
-          <xsl:value-of select="eo:eol(2)"/>
-          <xsl:text>} else {</xsl:text>
-          <xsl:value-of select="eo:eol(3)"/>
-          <xsl:text>return this.vertex;</xsl:text>
-          <xsl:value-of select="eo:eol(2)"/>
-          <xsl:text>}</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>}</xsl:text>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>@Override</xsl:text>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>public boolean equals(final Object obj) {</xsl:text>
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>return this.attr("Δ").get().equals(obj);</xsl:text>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:text>}</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
   </xsl:template>
   <xsl:template match="attr">
     <xsl:value-of select="eo:eol(2)"/>
@@ -302,44 +250,6 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
-  </xsl:template>
-  <xsl:template match="tuple">
-    <xsl:param name="indent"/>
-    <xsl:param name="name" select="'a'"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:text>Phi[] </xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>_a = new Phi[</xsl:text>
-    <xsl:value-of select="count(*)"/>
-    <xsl:text>];</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:for-each select="*">
-      <xsl:variable name="n">
-        <xsl:value-of select="$name"/>
-        <xsl:text>_a</xsl:text>
-        <xsl:value-of select="position() - 1"/>
-      </xsl:variable>
-      <xsl:apply-templates select=".">
-        <xsl:with-param name="indent" select="$indent"/>
-        <xsl:with-param name="name" select="$n"/>
-      </xsl:apply-templates>
-      <xsl:value-of select="$indent"/>
-      <xsl:value-of select="$name"/>
-      <xsl:text>_a[</xsl:text>
-      <xsl:value-of select="position() - 1"/>
-      <xsl:text>] = </xsl:text>
-      <xsl:value-of select="$n"/>
-      <xsl:text>;</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:for-each>
-    <xsl:value-of select="$indent"/>
-    <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(new PhCopy(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>), "Δ", new Data.Value&lt;Phi[]&gt;(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>_a));</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="o[not(@base) and @name]">
     <xsl:text>/</xsl:text>

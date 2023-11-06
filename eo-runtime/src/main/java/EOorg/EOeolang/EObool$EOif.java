@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -54,8 +55,8 @@ public class EObool$EOif extends PhDefault {
         this.add("t", new AtFree());
         this.add("f", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final boolean term = new Param(rho).strong(Boolean.class);
@@ -70,5 +71,4 @@ public class EObool$EOif extends PhDefault {
             )
         );
     }
-
 }

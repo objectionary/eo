@@ -14,11 +14,11 @@ jobs:
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg
-      - uses: teatimeguest/setup-texlive-action@v2.6.3
+      - uses: teatimeguest/setup-texlive-action@v3.0.0
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox

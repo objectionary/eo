@@ -22,50 +22,57 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * WITH.
- *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Attribute for inner atoms.
+ * @since 0.33.0
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
-@Versionized
-@XmirObject(oname = "tuple.with")
-public class EOtuple$EOwith extends PhDefault {
+public abstract class AtAtom implements Attr {
+    /**
+     * Original attribute.
+     */
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param phi Phi to wrap.
      */
-    public EOtuple$EOwith(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final Phi[] tuple = new Param(rho).strong(Phi[].class);
-                    final Phi[] dest = new Phi[tuple.length + 1];
-                    System.arraycopy(tuple, 0, dest, 0, tuple.length);
-                    dest[tuple.length] = rho.attr("x").get();
-                    return new Data.ToPhi(dest);
-                }
-            )
-        );
+    public AtAtom(final Phi phi) {
+        this(new AtSimple(phi));
     }
 
+    /**
+     * Ctor.
+     * @param attr Attribute to wrap.
+     */
+    AtAtom(final Attr attr) {
+        this.origin = new AtOnce(attr);
+    }
+
+    @Override
+    public Attr copy(final Phi self) {
+        return this.origin.copy(self);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
+    }
 }

@@ -28,8 +28,9 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -68,8 +69,8 @@ public class EOstdout extends PhDefault {
         super(sigma);
         this.add("text", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     out.print(
@@ -80,5 +81,4 @@ public class EOstdout extends PhDefault {
             )
         );
     }
-
 }

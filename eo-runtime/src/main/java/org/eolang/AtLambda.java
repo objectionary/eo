@@ -24,55 +24,75 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOtuple$EOempty;
-
 /**
- * Vararg attribute.
+ * Attribute with lambda expression inside.
  *
- * @since 0.1
+ * @since 0.33.0
  */
 @Versionized
-public final class AtVararg implements Attr {
+public final class AtLambda implements Attr {
+
     /**
-     * Result tuple.
+     * The \rho to send to the expression.
      */
-    private Phi tuple;
+    private final Phi rho;
+
+    /**
+     * The expression itself.
+     */
+    private final Expr expr;
 
     /**
      * Ctor.
+     * @param obj The \rho
+     * @param exp The expression
      */
-    public AtVararg() {
-        this.tuple = new EOtuple$EOempty(Phi.Φ);
+    public AtLambda(final Phi obj, final Expr exp) {
+        this.rho = obj;
+        this.expr = exp;
     }
 
     @Override
     public String toString() {
-        return String.format("%sV", this.tuple.toString());
+        return this.φTerm();
     }
 
     @Override
     public String φTerm() {
-        return this.tuple.φTerm();
+        return Attr.LAMBDA;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtVararg();
+        return new AtLambda(self, this.expr);
     }
 
     @Override
     public Phi get() {
-        return this.tuple;
+        try {
+            return this.expr.get(this.rho);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted();
+        // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Throwable ex) {
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error '%s' of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
+        }
     }
 
     @Override
     public void put(final Phi phi) {
-        if (phi instanceof PhUnvar) {
-            this.tuple = phi;
-        } else {
-            final Phi with = this.tuple.attr("with").get().copy();
-            with.attr(0).put(phi);
-            this.tuple = with;
-        }
+        throw new ExReadOnly(
+            "You can't overwrite lambda expression"
+        );
     }
 }

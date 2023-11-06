@@ -27,7 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -48,8 +49,8 @@ public class EOram$EOram_slice$EOφ extends PhDefault {
     public EOram$EOram_slice$EOφ(final Phi sigma) {
         super(sigma);
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> new Data.ToPhi(
                     Ram.INSTANCE.read(

@@ -24,8 +24,8 @@
 package org.eolang.maven.name;
 
 import java.util.Map;
+import java.util.Optional;
 import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
@@ -41,29 +41,17 @@ import org.eolang.maven.hash.CommitHashesMap;
  * If a version is not provided - behaves like {@link OnUnversioned}.
  *
  * @since 0.30
- * @todo #2376:90min Frontend and backend delimiters differ.
- *  I was confused with the delimiter '#' that we use in {@link OnReplaced} and delimiter which
- *  we use in the frontend. For example:
- *  - "org.eolang.text|0.1.0" - frontend
- *  - "org.eolang.text#0.1.0" - backend
- *  The problem here is that we use  the '|' delimiter on the frontend and '#' in the backend, but
- *  both of them mean the same thing - object name + version.
- *  I believe that we need to use the same symbol in both places, because it will be easier to
- *  understand the code. So, my suggestion to use '|' in both places.
  */
 public final class OnReplaced implements ObjectName {
 
     /**
      * Delimiter between name and hash in EO object name.
-     * @todo #2394:30min Hide static constant DELIMITER.
-     *  We should hide static constant DELIMITER because it creates code duplication
-     *  in many places. For example in {@link OnReplaced#split()}, {@link OnVersioned#split()},
-     *  {@link OnDefault#split()} and
-     *  {@link org.eolang.maven.Place#make(java.nio.file.Path, String)}.
-     *  Apparently we have to create a class which will parse raw string into two parts value and
-     *  optional version. Maybe this new class won't implement ObjectName interface.
-     *  Why static fields are bad you can read here:
-     *  - https://www.yegor256.com/2015/07/06/public-static-literals.html
+     * @todo #2463:30min Remove static constant DELIMITER.
+     * The static constant DELIMITER was hidden in the {@link DelimitedName} class
+     * and {@link OnReplaced} was switched to the new delimiting approach.
+     * Switch from DELIMITER to {@link DelimitedName} all the other classes, such as
+     * {@link OnVersioned}, {@link OnDefault} and
+     * {@link org.eolang.maven.Place#make(java.nio.file.Path, String)}.
      */
     public static final String DELIMITER = "|";
 
@@ -73,13 +61,23 @@ public final class OnReplaced implements ObjectName {
     private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();
 
     /**
-     * Raw string.
-     * Examples:
-     * - "org.eolang.text|0.1.0"
-     * - "org.eolang.string|1.23.1"
-     * - "org.eolang.math|3.3.3"
+     * Hash if the {@link DelimitedName#label()} is empty.
      */
-    private final Unchecked<String> raw;
+    private static final CommitHash EMPTY_HASH = new CommitHash.ChConstant("");
+
+    /**
+     * Name that represents value as title and version as label.
+     * Examples:
+     * - "org.eolang.text", "0.1.0"
+     * - "org.eolang.string", "1.23.1"
+     * - "org.eolang.math", "3.3.3"
+     */
+    private final DelimitedName name;
+
+    /**
+     * Name for text representation with version hash as label.
+     */
+    private final Unchecked<DelimitedName> concat;
 
     /**
      * All hashes.
@@ -135,42 +133,33 @@ public final class OnReplaced implements ObjectName {
         final Scalar<String> origin,
         final Map<String, ? extends CommitHash> all
     ) {
-        this.raw = new Unchecked<>(new Sticky<>(origin));
+        this.name = new DelimitedName(origin);
+        this.concat = new Unchecked<>(
+            () -> new DelimitedName(
+                this.name.title(),
+                this.name.label()
+                    .map(
+                        label -> this.hash().value()
+                    )
+            )
+        );
         this.hashes = all;
     }
 
     @Override
     public String value() {
-        return this.split()[0];
+        return this.name.title();
     }
 
     @Override
     public CommitHash hash() {
-        return this.hashes.get(this.split()[1]);
+        final Optional<CommitHash> label = this.name.label().map(this.hashes::get);
+        return label.orElse(OnReplaced.EMPTY_HASH);
     }
 
     @Override
     public String toString() {
-        final String result;
-        if (this.raw.value().contains(OnReplaced.DELIMITER)) {
-            result = String.join(
-                "",
-                this.value(),
-                OnReplaced.DELIMITER,
-                this.hash().value()
-            );
-        } else {
-            result = this.value();
-        }
-        return result;
-    }
-
-    /**
-     * Split raw string into name and hash.
-     * @return Array of two elements: name and hash.
-     */
-    private String[] split() {
-        return this.raw.value().split(String.format("\\%s", OnReplaced.DELIMITER));
+        return String.valueOf(this.concat.value());
     }
 }
 

@@ -29,6 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,9 +48,12 @@ final class EOtupleEOatTest {
     void pushesAndGetsBack() {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
-        final Phi tuple = new Data.ToPhi(new Phi[] {str});
+        final Phi tuple = new PhWith(
+            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+            0, str
+        );
         final Phi idx = new Data.ToPhi(0L);
-        final Phi get = tuple.attr("at").get();
+        final Phi get = tuple.attr("at").get().copy();
         get.attr(0).put(idx);
         MatcherAssert.assertThat(
             new Dataized(get).take(String.class),
@@ -84,13 +88,15 @@ final class EOtupleEOatTest {
     private Phi get(final long index) {
         final String first = "first";
         final String second = "second";
-        final Phi array = new Data.ToPhi(
-            new Phi[] {
-                new Data.ToPhi(first),
-                new Data.ToPhi(second),
-            });
+        final Phi tuple = new PhWith(
+            new PhWith(
+                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                0, new Data.ToPhi(first)
+            ).attr("with").get().copy(),
+            0, new Data.ToPhi(second)
+        );
         final Phi idx = new Data.ToPhi(index);
-        final Phi get = array.attr("at").get();
+        final Phi get = tuple.attr("at").get().copy();
         get.attr(0).put(idx);
         return get;
     }

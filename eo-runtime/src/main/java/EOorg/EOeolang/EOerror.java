@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
@@ -59,8 +60,8 @@ public final class EOerror extends PhDefault {
         super(sigma);
         this.add("α", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi enclosure = rho.attr("α").get();
@@ -126,5 +127,4 @@ public final class EOerror extends PhDefault {
             return this.enc;
         }
     }
-
 }

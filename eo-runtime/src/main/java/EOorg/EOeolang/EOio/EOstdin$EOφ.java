@@ -27,7 +27,8 @@
  */
 package EOorg.EOeolang.EOio;
 
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -48,8 +49,8 @@ public class EOstdin$EOφ extends PhDefault {
     public EOstdin$EOφ(final Phi parent) {
         super(parent);
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Input input = Input.getInstance();

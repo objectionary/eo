@@ -37,14 +37,6 @@
       TRUE
       42
 
-[] > joins-many-ands
-  and. > @
-    TRUE
-    5.lt 10
-    4.gt -6
-    TRUE
-    0.eq 0
-
 [] > forks-on-condition
   eq. > @
     if.
@@ -66,45 +58,6 @@
           x.write > @
             x.as-int.plus 1
       11
-
-# tests that bool.and stops calculations if its i'th
-# object is false (including the base object)
-[] > and-short-circuiting
-  memory 0 > mFirst
-  memory 0 > mThird
-  and. > res
-    not.
-      and.
-        (mFirst.write 1).eq 100
-        (mFirst.write 2).eq 2
-        (mFirst.write 3).eq 3
-    not.
-      and.
-        (mThird.write 1).eq 1
-        (mThird.write 2).eq 2
-        (mThird.write 3).eq 300
-        (mThird.write 4).eq 4
-    mFirst.eq 1
-    mThird.eq 3
-  nop > @
-
-# tests that bool.or stops calculations if its i'th
-# object is true (including the base object)
-[] > or-short-circuiting
-  memory 0 > mFirst
-  memory 0 > mThird
-  and. > @
-    or.
-      (mFirst.write 1).eq 1
-      mFirst.write 2
-      mFirst.write 3
-    or.
-      (mThird.write 1).eq 100
-      (mThird.write 2).eq 200
-      (mThird.write 3).eq 3
-      mThird.write 4
-    mFirst.eq 1
-    mThird.eq 3
 
 [] > compares-bool-to-bytes
   and. > @

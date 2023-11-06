@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
@@ -55,8 +56,8 @@ public class EObool$EOwhile extends PhDefault {
         super(sigma);
         this.add("f", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     Phi last = new Data.ToPhi(false);
@@ -76,5 +77,4 @@ public class EObool$EOwhile extends PhDefault {
             )
         );
     }
-
 }
