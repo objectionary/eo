@@ -95,10 +95,6 @@
     r
     -1.23456789
 
-# @todo #2565:90min Refactor the test below. Now it is bad
-#  because it is unclear how 00-1A-EE was received. Instead,
-#  there should be some logical calculations that return an
-#  array of bytes.
 [] > rust-is-byte-array
   QQ.rust > my-bytes
     """
@@ -118,16 +114,10 @@
     """
     []
     *
-  nop > @
-    eq.
-      my-bytes
-      00-1A-EE
+  eq. > @
+    my-bytes
+    00-1A-EE
 
-# @todo #2555:30min Enable rust tests when it's possible to get an abstract object from tuple.
-#  Many rust tests were disabled because "portal" inside EOrust stopped working because of new
-#  implementation of "tuple". Now it's not possible to put an abstract object into tuple and take
-#  it back. Need to enable the next tests when it's possible: rust-find-returns-int,
-#  rust-returns-vertex, rust-copy-not-fails, rust-dataize-not-fails, rust-plus, rust-bind-to-copy
 [] > rust-find-returns-int
   123 > a
   QQ.rust > r
