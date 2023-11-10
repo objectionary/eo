@@ -56,7 +56,7 @@ final class ResolveMojoTest {
                     "[] > foo /int"
                 )
             ).execute(new FakeMaven.Resolve());
-        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/0.7.0");
+        final Path path = temp.resolve("target/5-resolve/org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path.resolve("eo-runtime-0.7.0.jar").toFile(),
@@ -74,7 +74,7 @@ final class ResolveMojoTest {
         );
         maven.foreignTojos().add("sum").withDiscovered(0);
         maven.execute(new FakeMaven.Resolve());
-        final Path path = temp.resolve("target/4-resolve/org.eolang/eo-runtime/-/");
+        final Path path = temp.resolve("target/5-resolve/org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(path.toFile(), FileMatchers.anExistingDirectory());
         MatcherAssert.assertThat(
             path,

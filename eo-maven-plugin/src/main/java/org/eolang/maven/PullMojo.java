@@ -58,7 +58,7 @@ public final class PullMojo extends SafeMojo {
     /**
      * The directory where to process to.
      */
-    public static final String DIR = "3-pull";
+    public static final String DIR = "4-pull";
 
     /**
      * The Git tag to pull objects from, in objectionary.

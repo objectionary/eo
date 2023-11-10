@@ -73,7 +73,7 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "6-transpile";
+    public static final String DIR = "7-transpile";
 
     /**
      * Extension for compiled sources in XMIR format (XML).
@@ -110,7 +110,7 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * The directory where to put pre-transpile files.
      */
-    private static final String PRE = "5-pre";
+    private static final String PRE = "6-pre";
 
     /**
      * Target directory.
