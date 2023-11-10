@@ -1,0 +1,9 @@
+xsls:
+  - /org/eolang/parser/errors/external-weak-typed-atoms.xsl
+tests:
+  - /program/errors[count(error[@severity='error'])=1]
+  - /program/errors/error[@line='3']
+eo: |
+  +package my.awesome.package
+
+  [] > my-awesome-object /?
