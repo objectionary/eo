@@ -37,8 +37,8 @@
       Some(EOInt(2))
     }
     """
+    []
     *
-      []
   eq. > @
     r
     2
@@ -55,8 +55,8 @@
       Some(EOInt(-10))
     }
     """
+    []
     *
-      []
   eq. > @
     r
     -10
@@ -72,8 +72,8 @@
       Some(EOFloat(1.23456789))
     }
     """
+    []
     *
-      []
   eq. > @
     r
     1.23456789
@@ -89,12 +89,16 @@
       Some(EOFloat(-1.23456789))
     }
     """
+    []
     *
-      []
   eq. > @
     r
     -1.23456789
 
+# @todo #2565:90min Refactor the test below. Now it is bad
+#  because it is unclear how 00-1A-EE was received. Instead,
+#  there should be some logical calculations that return an
+#  array of bytes.
 [] > rust-is-byte-array
   QQ.rust > my-bytes
     """
@@ -112,11 +116,12 @@
       )
     }
     """
+    []
     *
-      []
-  eq. > @
-    my-bytes
-    00-1A-EE
+  nop > @
+    eq.
+      my-bytes
+      00-1A-EE
 
 # @todo #2555:30min Enable rust tests when it's possible to get an abstract object from tuple.
 #  Many rust tests were disabled because "portal" inside EOrust stopped working because of new
@@ -137,13 +142,12 @@
       )
     }
     """
+    []
     *
-      []
-  not. > res
+  not. > @
     lt.
       r
       0
-  nop > @
 
 [] > rust-returns-vertex
   "content" > book
@@ -158,12 +162,11 @@
       Some(EOVertex(v))
     }
     """
+    []
     *
-      []
-  eq. > res
+  eq. > @
     read
     "content"
-  nop > @
 
 [] > rust-is-string
   QQ.rust > content
@@ -176,8 +179,8 @@
       Some(EOString("Привет world".to_string()))
     }
     """
+    []
     *
-      []
   eq. > @
     content
     "Привет world"
@@ -193,8 +196,8 @@
       Some(EOError("put failed".to_string()))
     }
     """
+    []
     *
-      []
   eq. > @
     slice.
       try
@@ -223,8 +226,8 @@
       Some(EOInt(0 as i64))
     }
     """
+    []
     *
-      []
   try > res!
     []
       insert > @
@@ -250,12 +253,11 @@
       Some(EOVertex(copy))
     }
     """
+    []
     *
-      []
-  eq. > res
+  eq. > @
     copy
     123
-  nop > @
 
 [] > rust-dataize-not-fails
   1 > a
@@ -270,14 +272,12 @@
       Some(EOInt(v as i64))
     }
     """
+    []
     *
-      []
-      3
-  not. > res
+  not. > @
     lt.
       dataized
       0
-  nop > @
 
 [] > rust-plus
   5 > a
@@ -302,15 +302,15 @@
       Some(EOInt(a + b))
     }
     """
+    []
     *
-      []
       "byteorder:1.4.3"
-  eq. > res
+  eq. > @
     plus
     15
-  nop > @
 
 [] > rust-error
+  "Rust insert failed " > message!
   QQ.rust > err!
     """
     use eo_env::EOEnv;
@@ -321,22 +321,21 @@
       Some(EOError("Custom error".to_string()))
     }
     """
+    []
     *
-      []
   try > res
     []
       err > @
     [e]
       e > @
     nop
-  nop > @
-    and.
-      eq.
-        res
-        "Rust insert failed "
-      eq.
-        res
-        "'Custom error'"
+  eq. > @
+    slice.
+      res
+      0
+      length.
+        message
+    message
 
 [] > rust-put-to-copy
   QQ.rust > data
@@ -352,8 +351,8 @@
       Some(EOVertex(copy))
     }
     """
+    []
     *
-      []
   eq. > @
     data
     00-1A-EE
@@ -375,9 +374,8 @@
       Some(EOVertex(copy))
     }
     """
+    []
     *
-      []
-  eq. > res
+  eq. > @
     applied.content
     "qwerty"
-  nop > @

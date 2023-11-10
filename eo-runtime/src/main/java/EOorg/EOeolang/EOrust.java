@@ -138,6 +138,7 @@ public class EOrust extends PhDefault {
     public EOrust(final Phi sigma) {
         super(sigma);
         this.add("code", new AtFree());
+        this.add("portal", new AtFree());
         this.add("params", new AtFree());
         this.add(
             Attr.LAMBDA,
@@ -161,10 +162,7 @@ public class EOrust extends PhDefault {
                             byte[].class
                         );
                     }
-                    final Phi portal = new PhWith(
-                        rho.attr("params").get().attr("at").get().copy(),
-                        0, new Data.ToPhi(0L)
-                    );
+                    final Phi portal = rho.attr("portal").get();
                     return this.translate(
                         (byte[]) method.invoke(
                             null,
