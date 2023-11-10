@@ -78,6 +78,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo shaken xmir.
+     * @return The shaken xmir.
+     */
+    public Path shaken() {
+        return Paths.get(this.delegate.get(ForeignTojos.Attribute.SHAKEN.key()));
+    }
+
+    /**
      * The tojo eo object.
      * @return The eo object.
      */
@@ -134,6 +142,26 @@ public final class ForeignTojo {
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already optimized %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Checks if tojo was not already shaken.
+     * @return True if shake is required, false otherwise.
+     */
+    public boolean notShaken() {
+        final Path src = this.optimized();
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.SHAKEN.key())) {
+            final Path tgt = this.shaken();
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already shaken %s to %s",
                     new Rel(src), new Rel(tgt)
                 );
                 res = false;
@@ -220,6 +248,16 @@ public final class ForeignTojo {
      */
     public ForeignTojo withOptimized(final Path xmir) {
         this.delegate.set(ForeignTojos.Attribute.OPTIMIZED.key(), xmir.toString());
+        return this;
+    }
+
+    /**
+     * Set the shaken xmir.
+     * @param xmir The shaken xmir.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withShaken(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.SHAKEN.key(), xmir.toString());
         return this;
     }
 

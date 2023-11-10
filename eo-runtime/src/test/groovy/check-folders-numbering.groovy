@@ -35,10 +35,11 @@ List<File> directories = target.toFile().listFiles(new FileFilter() {
 List<String> allowed = [
   '1-parse',
   '2-optimize',
-  '3-pull',
-  '4-resolve',
-  '5-pre',
-  '6-transpile',
+  '3-shake',
+  '4-pull',
+  '5-resolve',
+  '6-pre',
+  '7-transpile',
 ]
 List<File> allowedDirs = allowed.stream()
   .map { target.resolve(it).toFile() }

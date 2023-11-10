@@ -46,8 +46,8 @@ private static boolean online() {
   'target/eo/1-parse/org/eolang/examples/app.xmir',
   'target/eo/2-optimization-steps/org/eolang/examples/app/00-not-empty-atoms.xml',
   'target/eo/2-optimize/org/eolang/examples/app.xmir',
-  'target/eo/5-pre/org/eolang/examples/app/01-classes.xml',
-  'target/eo/6-transpile/org/eolang/examples/app.xmir',
+  'target/eo/6-pre/org/eolang/examples/app/01-classes.xml',
+  'target/eo/7-transpile/org/eolang/examples/app.xmir',
   'target/eo/sodg/org/eolang/error.sodg',
   'target/eo/sodg/org/eolang/error.sodg.xe',
   'target/eo/sodg/org/eolang/error.sodg.graph.xml',
@@ -57,7 +57,7 @@ private static boolean online() {
 [
   'target/classes/EOorg/EOeolang/EOexamples/EOapp.class',
   'target/eo/placed.json',
-  'target/eo/3-pull/org/eolang/tuple.eo',
+  'target/eo/4-pull/org/eolang/tuple.eo',
 ].each { assert new File(basedir, it).exists() || !online() }
 
 String log = new File(basedir, 'build.log').text
