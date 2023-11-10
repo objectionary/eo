@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Param;
@@ -56,8 +57,8 @@ public class EOstring$EOslice extends PhDefault {
         this.add("start", new AtFree());
         this.add("len", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final String str = new Param(rho).strong(String.class);
@@ -87,5 +88,4 @@ public class EOstring$EOslice extends PhDefault {
             )
         );
     }
-
 }

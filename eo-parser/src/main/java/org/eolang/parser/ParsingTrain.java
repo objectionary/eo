@@ -27,11 +27,14 @@ import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.StAfter;
+import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
 import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.TrLogged;
 import java.util.logging.Level;
@@ -49,6 +52,14 @@ public final class ParsingTrain extends TrEnvelope {
     private static final XSL EACH = new XSLDocument(
         ParsingTrain.class.getResourceAsStream("_each.xsl"),
         "each.xsl"
+    ).with(new ClasspathSources(ParsingTrain.class));
+
+    /**
+     * Transform stars to tuples.
+     */
+    private static final XSL TUPLES = new XSLDocument(
+        ParsingTrain.class.getResourceAsStream("stars-to-tuples.xsl"),
+        "stars-to-tuples.xsl"
     ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
@@ -89,6 +100,7 @@ public final class ParsingTrain extends TrEnvelope {
         "/org/eolang/parser/warnings/mandatory-version-meta.xsl",
         "/org/eolang/parser/warnings/correct-package-meta.xsl",
         "/org/eolang/parser/warnings/prohibited-package.xsl",
+        "/org/eolang/parser/errors/external-weak-typed-atoms.xsl",
         "/org/eolang/parser/errors/unused-aliases.xsl",
         "/org/eolang/parser/warnings/unit-test-without-phi.xsl",
         "/org/eolang/parser/set-locators.xsl",
@@ -109,29 +121,36 @@ public final class ParsingTrain extends TrEnvelope {
      */
     ParsingTrain(final String... sheets) {
         super(
-            new TrLambda(
-                new TrFast(
-                    new TrLambda(
-                        new TrLogged(
-                            new TrClasspath<>(sheets).back(),
-                            ParsingTrain.class,
-                            Level.FINEST
-                        ),
-                        StEoLogged::new
-                    ),
-                    TrFast.class,
-                    500L
+            new TrJoined<>(
+                new TrDefault<>(
+                    new StEndless(
+                        new StLambda(ParsingTrain.TUPLES::transform)
+                    )
                 ),
-                shift -> new StSequence(
-                    shift.uid(),
-                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                    new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
+                new TrLambda(
+                    new TrFast(
+                        new TrLambda(
+                            new TrLogged(
+                                new TrClasspath<>(sheets).back(),
+                                ParsingTrain.class,
+                                Level.FINEST
+                            ),
+                            StEoLogged::new
+                        ),
+                        TrFast.class,
+                        500L
+                    ),
+                    shift -> new StSequence(
+                        shift.uid(),
+                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                        new StAfter(
+                            shift,
+                            new StLambda(
+                                shift::uid,
+                                (pos, xml) -> ParsingTrain.EACH.with("step", pos)
+                                    .with("sheet", shift.uid())
+                                    .transform(xml)
+                            )
                         )
                     )
                 )

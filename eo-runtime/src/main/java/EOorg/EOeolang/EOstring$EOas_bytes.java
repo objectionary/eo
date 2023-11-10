@@ -28,7 +28,8 @@
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
-import org.eolang.AtComposite;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -53,8 +54,8 @@ public class EOstring$EOas_bytes extends PhDefault {
     public EOstring$EOas_bytes(final Phi sigma) {
         super(sigma);
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> new Data.ToPhi(
                     new Param(rho).strong(String.class).getBytes(StandardCharsets.UTF_8)
@@ -62,5 +63,4 @@ public class EOstring$EOas_bytes extends PhDefault {
             )
         );
     }
-
 }

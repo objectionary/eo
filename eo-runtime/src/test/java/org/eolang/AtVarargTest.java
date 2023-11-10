@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link AtVararg}.
- *
  * @since 0.1
  */
 final class AtVarargTest {
@@ -37,13 +36,17 @@ final class AtVarargTest {
     @Test
     void appendsElements() {
         final Attr attr = new AtVararg();
-        final Phi phi = new PhDefault() {
-        };
+        final Phi phi = new Data.ToPhi(10L);
         attr.put(phi);
         attr.put(phi);
         MatcherAssert.assertThat(
-            new Dataized(attr.get()).take(Phi[].class)[1],
-            Matchers.equalTo(phi)
+            new Dataized(
+                new PhWith(
+                    attr.get().attr("at").get().copy(),
+                    0, new Data.ToPhi(1L)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(10L)
         );
     }
 

@@ -21,46 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtComposite;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 /**
- * LENGTH.
+ * Read XMIR file and translate it to the phi-calculus expression.
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.32
+ * @todo #2536:30min We need to implement exec() method.
+ *  The main idea is to read program written in EO and translate it to Phi-calculus.
+ *  To store this result we suggest to create a new folder: xmir-to-phi.
+ *  Let's store it to this folder one file by one.
  */
-@Versionized
-@XmirObject(oname = "tuple.length")
-public class EOtuple$EOlength extends PhDefault {
+@Mojo(
+    name = "xmir-to-phi",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
+public final class TranslateToPhiMojo extends SafeMojo {
 
     /**
-     * Ctor.
-     * @param sigma Sigma
+     * The directory where to generate to.
      */
-    public EOtuple$EOlength(final Phi sigma) {
-        super(sigma);
-        this.add(
-            "φ",
-            new AtComposite(
-                this,
-                rho -> {
-                    final Phi[] array = new Param(rho).strong(Phi[].class);
-                    return new Data.ToPhi((long) array.length);
-                }
-            )
-        );
-    }
+    public static final String DIR = "xmir-to-phi";
 
+    /**
+     * Extension of the file where we put phi-calculus expression (.txt).
+     */
+    public static final String EXT = "txt";
+
+    @Override
+    public void exec() {
+        //tbd
+    }
 }

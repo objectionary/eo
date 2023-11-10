@@ -27,8 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -54,8 +55,8 @@ public class EObytes$EOconcat extends PhDefault {
         super(sigma);
         this.add("b", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final byte[] current = new Param(rho).strong(byte[].class);
@@ -68,5 +69,4 @@ public class EObytes$EOconcat extends PhDefault {
             )
         );
     }
-
 }

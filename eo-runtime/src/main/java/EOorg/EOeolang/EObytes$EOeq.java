@@ -28,8 +28,9 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtComposite;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
@@ -57,8 +58,8 @@ public class EObytes$EOeq extends PhDefault {
         super(sigma);
         this.add("b", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> new Data.ToPhi(
                     Arrays.equals(
@@ -74,5 +75,4 @@ public class EObytes$EOeq extends PhDefault {
             )
         );
     }
-
 }

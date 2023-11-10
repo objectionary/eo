@@ -27,8 +27,10 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
+import org.eolang.AtAtom;
 import org.eolang.AtFree;
+import org.eolang.AtLambda;
+import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
@@ -54,8 +56,8 @@ public class EOgoto extends PhDefault {
         super(sigma);
         this.add("f", new AtFree());
         this.add(
-            "φ",
-            new AtComposite(
+            Attr.LAMBDA,
+            new AtLambda(
                 this,
                 rho -> {
                     final Phi body = rho.attr("f").get().copy();
@@ -90,15 +92,54 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "goto.token")
-    private final class Token extends PhDefault {
+    private static final class Token extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
         Token(final Phi sigma) {
             super(sigma);
-            this.add("backward", new AtComposite(this, EOgoto.Backward::new));
-            this.add("forward", new AtComposite(this, EOgoto.Forward::new));
+            this.add("backward", new EOgoto.Token.AtBackward(this));
+            this.add("forward", new EOgoto.Token.AtForward(this));
+        }
+
+        /**
+         * Goto.token.forward attribute.
+         * @since 0.33.0
+         */
+        private static final class AtForward extends AtAtom {
+
+            /**
+             * Ctor.
+             * @param token The {@link EOgoto.Token} object
+             */
+            AtForward(final Phi token) {
+                super(new EOgoto.Forward(token));
+            }
+
+            @Override
+            public Attr copy(final Phi self) {
+                return new AtForward(self);
+            }
+        }
+
+        /**
+         * Goto.token.backward attribute.
+         * @since 0.33.0
+         */
+        private static final class AtBackward extends AtAtom {
+            /**
+             * Ctor.
+             * @param token The {@link EOgoto.Token} object
+             */
+            AtBackward(final Phi token) {
+                super(new EOgoto.Backward(token));
+            }
+
+            @Override
+            public Attr copy(final Phi self) {
+                return new AtBackward(self);
+            }
         }
     }
 
@@ -107,7 +148,7 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "goto.token.backward")
-    private final class Backward extends PhDefault {
+    private static final class Backward extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -115,8 +156,8 @@ public class EOgoto extends PhDefault {
         Backward(final Phi sigma) {
             super(sigma);
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> {
                         throw new EOgoto.BackwardException(
@@ -133,7 +174,7 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "goto.token.forward")
-    private final class Forward extends PhDefault {
+    private static final class Forward extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -142,8 +183,8 @@ public class EOgoto extends PhDefault {
             super(sigma);
             this.add("ret", new AtFree());
             this.add(
-                "φ",
-                new AtComposite(
+                Attr.LAMBDA,
+                new AtLambda(
                     this,
                     rho -> {
                         throw new EOgoto.ForwardException(

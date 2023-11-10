@@ -36,7 +36,7 @@
       x.as-bytes
 
   # If true, return "t", otherwise "f"
-  [t f] > if /t
+  [t f] > if /?
 
   # NOT
   [] > not
@@ -45,10 +45,24 @@
       FALSE
 
   # AND
-  [x...] > and /bool
+  [x] > and
+    if. > @
+      ^
+      if.
+        x
+        TRUE
+        FALSE
+      FALSE
 
   # OR
-  [x...] > or /bool
+  [x] > or
+    if. > @
+      ^
+      TRUE
+      if.
+        x
+        TRUE
+        FALSE
 
   # While this is true copies the object
   # with "i" as the position of the cycle. The result
