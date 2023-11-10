@@ -25,6 +25,8 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.Train;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
 import org.eolang.maven.SpyTrain;
@@ -35,6 +37,10 @@ import org.eolang.maven.util.Rel;
  * @since 0.28.12
  */
 public final class OptSpy implements Optimization {
+    /**
+     * Optimizations train.
+     */
+    private final Train<Shift> train;
 
     /**
      * Where to track optimization steps.
@@ -42,10 +48,19 @@ public final class OptSpy implements Optimization {
     private final Path target;
 
     /**
-     * The main constructor.
+     * Ctor.
      * @param target Where to track optimization steps.
      */
     public OptSpy(final Path target) {
+        this(OptTrain.DEFAULT_TRAIN, target);
+    }
+
+    /**
+     * The main constructor.
+     * @param target Where to track optimization steps.
+     */
+    public OptSpy(final Train<Shift> trn, final Path target) {
+        this.train = trn;
         this.target = target;
     }
 
@@ -57,6 +72,6 @@ public final class OptSpy implements Optimization {
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)
         );
-        return new OptTrain(new SpyTrain(OptTrain.DEFAULT_TRAIN, dir)).apply(xml);
+        return new OptTrain(new SpyTrain(this.train, dir)).apply(xml);
     }
 }

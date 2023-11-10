@@ -188,7 +188,7 @@ public final class TranspileMojo extends SafeMojo {
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
         final int saved;
-        final Path file = tojo.optimized();
+        final Path file = tojo.shaken();
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
