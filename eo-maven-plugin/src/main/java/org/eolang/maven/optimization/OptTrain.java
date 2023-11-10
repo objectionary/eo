@@ -31,7 +31,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimisation train of XLS`s.

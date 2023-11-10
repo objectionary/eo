@@ -572,7 +572,6 @@ public final class FakeMaven {
      * @since 0.28.12
      */
     static final class Optimize implements Iterable<Class<? extends AbstractMojo>> {
-
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
@@ -582,7 +581,7 @@ public final class FakeMaven {
         }
     }
 
-    /**1
+    /**
      * Check errors and warnings.
      *
      * @since 0.31.0

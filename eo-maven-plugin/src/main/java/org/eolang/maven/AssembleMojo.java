@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;

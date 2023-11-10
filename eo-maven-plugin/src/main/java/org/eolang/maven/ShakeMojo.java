@@ -45,6 +45,11 @@ import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
 
+/**
+ * Shake (prepare) XML files after optimizations for translation to java.
+ *
+ * @since 0.33.0
+ */
 @Mojo(
     name = "shake",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
