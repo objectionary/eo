@@ -70,7 +70,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo(_env: &Portal) -> Option<EO> {",
+                "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i64>();",
@@ -120,7 +120,7 @@ final class BinarizeParseMojoTest {
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
                 "use eo::eo_enum::EO::{EOInt};",
-                "pub fn foo(_env: &Portal) -> Option<EO> {",
+                "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "println!(\"{}\", x);"
             )
         );
@@ -129,7 +129,7 @@ final class BinarizeParseMojoTest {
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
                 "use eo::eo_enum::EO::{EOInt};",
-                "pub fn foo(_env: &Portal) -> Option<EO> {",
+                "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "print!(\"Hello 大 2\");"
             )
         );
