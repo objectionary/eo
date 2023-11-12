@@ -80,17 +80,17 @@ public final class BinarizeMojo extends SafeMojo {
     private File generatedDir;
 
     /**
-     * The directory with eo_env rust project. It is a necessary dependency
+     * The directory with portal project. It is a necessary dependency
      * that provides rust-eo interaction.
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
-        property = "eo.env",
+        property = "eo.portal",
         required = true,
         defaultValue = "${project.basedir}/src/main/rust/eo_env"
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
-    private File eoEnvDir;
+    private File eoPortalDir;
 
     @Override
     public void exec() throws IOException {

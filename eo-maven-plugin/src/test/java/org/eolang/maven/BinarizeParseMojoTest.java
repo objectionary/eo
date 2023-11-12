@@ -70,7 +70,7 @@ final class BinarizeParseMojoTest {
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
-                "pub fn foo(_env: &EOEnv) -> Option<EO> {",
+                "pub fn foo(_env: &Portal) -> Option<EO> {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
                 "  let i = rng.gen::<i64>();",
@@ -118,18 +118,18 @@ final class BinarizeParseMojoTest {
         MatcherAssert.assertThat(
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
-                "use eo_env::eo_enum::EO;",
-                "use eo_env::eo_enum::EO::{EOInt};",
-                "pub fn foo(_env: &EOEnv) -> Option<EO> {",
+                "use eo::eo_enum::EO;",
+                "use eo::eo_enum::EO::{EOInt};",
+                "pub fn foo(_env: &Portal) -> Option<EO> {",
                 "println!(\"{}\", x);"
             )
         );
         MatcherAssert.assertThat(
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
-                "use eo_env::eo_enum::EO;",
-                "use eo_env::eo_enum::EO::{EOInt};",
-                "pub fn foo(_env: &EOEnv) -> Option<EO> {",
+                "use eo::eo_enum::EO;",
+                "use eo::eo_enum::EO::{EOInt};",
+                "pub fn foo(_env: &Portal) -> Option<EO> {",
                 "print!(\"Hello 大 2\");"
             )
         );

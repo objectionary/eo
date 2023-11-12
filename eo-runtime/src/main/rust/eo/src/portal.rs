@@ -26,15 +26,15 @@ pub mod eo_enum;
 use jni::JNIEnv;
 use jni::objects::{JClass, JObject, JValue, JByteArray};
 
-pub struct EOEnv<'local> {
+pub struct Portal<'local> {
     pub java_env: JNIEnv<'local>,
     _java_class: JClass<'local>,
     java_obj: JObject<'local>
 }
 
-impl<'local> EOEnv<'_> {
-    pub fn new(java_env: JNIEnv<'local>, _java_class: JClass<'local>, java_obj: JObject<'local>) -> EOEnv<'local> {
-        EOEnv {
+impl<'local> Portal<'_> {
+    pub fn new(java_env: JNIEnv<'local>, _java_class: JClass<'local>, java_obj: JObject<'local>) -> Portal<'local> {
+        Portal {
             java_env,
             _java_class,
             java_obj

@@ -5,11 +5,11 @@
   QQ.rust > r
     """
     use rand::Rng;
-    use eo_env::EOEnv;
-    use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &EOEnv) -> Option<EO> {
+    pub fn foo(_portal: &Portal) -> Option<EO> {
       let mut rng = rand::thread_rng();
       print!("Hello world");
       let i = rng.gen::<i64>();

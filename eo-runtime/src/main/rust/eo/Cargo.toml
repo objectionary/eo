@@ -1,5 +1,5 @@
 [package]
-name = "eo_env"
+name = "eo"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,4 +9,4 @@ edition = "2021"
 jni = "0.21.1"
 
 [lib]
-path = "src/eo_env.rs"
+path = "src/portal.rs"

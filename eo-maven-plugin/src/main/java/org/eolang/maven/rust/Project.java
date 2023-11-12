@@ -89,7 +89,7 @@ public final class Project {
 
     /**
      * Add dependency to project. Dependency can be `like jni = "0.21.1"`
-     *  or `eo_env = { path = "/rust/eo_env" }`.
+     *  or `eo = { path = "/rust/eo" }`.
      * @param name Name of dependency.
      * @param content Content of dependency.
      * @return The project.

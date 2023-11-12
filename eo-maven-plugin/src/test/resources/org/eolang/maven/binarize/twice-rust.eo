@@ -4,11 +4,11 @@
 [] > hello-world-1
   QQ.rust > r
     """
-    use eo_env::EOEnv;
-    use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &EOEnv) -> Option<EO> {
+    pub fn foo(_env: &Portal) -> Option<EO> {
       let x = rand::random::<i32>();
       println!("{}", x);
       Some(EOInt(x as i64))
@@ -21,11 +21,11 @@
 [] > hello-world-2
   QQ.rust > r
     """
-    use eo_env::EOEnv;
-    use eo_env::eo_enum::EO;
-    use eo_env::eo_enum::EO::{EOInt};
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-    pub fn foo(_env: &EOEnv) -> Option<EO> {
+    pub fn foo(_env: &Portal) -> Option<EO> {
       print!("Hello 大 2");
       let x = rand::random::<i32>();
       Some(EOInt(x as i64))

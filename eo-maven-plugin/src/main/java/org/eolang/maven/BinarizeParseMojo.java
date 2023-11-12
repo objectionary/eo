@@ -112,16 +112,16 @@ public final class BinarizeParseMojo extends SafeMojo {
     private File generatedDir;
 
     /**
-     * The directory with eo_env rust project.
+     * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         property = "eo.env",
         required = true,
-        defaultValue = "${project.basedir}/src/main/rust/eo_env"
+        defaultValue = "${project.basedir}/src/main/rust/eo"
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
-    private File eoEnvDir;
+    private File eoPortalDir;
 
     @Override
     public void exec() throws IOException {
@@ -164,8 +164,8 @@ public final class BinarizeParseMojo extends SafeMojo {
                     .with(new Module(code, "src/foo"), dependencies)
                     .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
                     .dependency(
-                        "eo_env",
-                        new MapOf<>("path", this.eoEnvDir.getAbsolutePath())
+                        "eo",
+                        new MapOf<>("path", this.eoPortalDir.getAbsolutePath())
                     )
                     .save();
                 new Commented(new Native(function, "EOrust.natives"), "//")
