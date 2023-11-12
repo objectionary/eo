@@ -116,7 +116,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
-        property = "eo.env",
+        property = "eo.portal",
         required = true,
         defaultValue = "${project.basedir}/src/main/rust/eo"
     )

@@ -237,7 +237,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent(
                 "eoPortalDir",
-                new File("../eo-runtime/src/main/rust/eo_env")
+                new File("../eo-runtime/src/main/rust/eo")
             );
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
         }

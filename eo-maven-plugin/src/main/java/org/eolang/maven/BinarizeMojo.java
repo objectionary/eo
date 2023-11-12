@@ -87,7 +87,7 @@ public final class BinarizeMojo extends SafeMojo {
     @Parameter(
         property = "eo.portal",
         required = true,
-        defaultValue = "${project.basedir}/src/main/rust/eo_env"
+        defaultValue = "${project.basedir}/src/main/rust/eo"
     )
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File eoPortalDir;
