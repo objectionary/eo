@@ -13,6 +13,7 @@ can check in the [pom.xml](pom.xml) in `eo-maven-plugin` description:
   <goal>register</goal>
   <goal>parse</goal>
   <goal>optimize</goal>
+  <goal>shake</goal>
   <goal>discover-foreign</goal>
   <goal>probe</goal>
   <goal>pull</goal>

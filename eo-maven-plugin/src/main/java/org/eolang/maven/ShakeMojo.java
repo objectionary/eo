@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -45,34 +44,39 @@ import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.ParsingTrain;
 
 /**
- * Optimize XML files.
+ * Shake (prepare) XML files after optimizations for translation to java.
  *
- * @since 0.1
+ * @since 0.33.0
+ * @todo #2577:30min Resolve code duplication between {@link OptimizeMojo} and {@link ShakeMojo}.
+ *  ShakeMojo was created in order to split two optimization stages: optimizations themselves and
+ *  preparations for translation to java. Now these two mojo look almost the same and there's a lot
+ *  of code duplication. So it's needed to resolve that. Don't forget to remove the puzzle
+ * @todo #2577:30min Add tests for ShakeMojo. ShakeMojo was created in order to split two
+ *  optimization stages: optimizations themselves and preparations for translation to java
+ *  Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
  */
 @Mojo(
-    name = "optimize",
+    name = "shake",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class OptimizeMojo extends SafeMojo {
+public final class ShakeMojo extends SafeMojo {
+    /**
+     * The directory where to shake to.
+     */
+    public static final String DIR = "3-shake";
 
     /**
-     * The directory where to transpile to.
+     * Subdirectory for shaken cache.
      */
-    public static final String DIR = "2-optimize";
-
-    /**
-     * Subdirectory for optimized cache.
-     */
-    static final String OPTIMIZED = "optimized";
+    static final String SHAKEN = "shaken";
 
     /**
      * The directory where to place intermediary files.
      */
-    static final String STEPS = "2-optimization-steps";
+    static final String STEPS = "3-shake-steps";
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -84,43 +88,18 @@ public final class OptimizeMojo extends SafeMojo {
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
     private boolean trackOptimizationSteps;
 
-    /**
-     * Whether we should fail on error.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
-     * Whether we should fail on warn.
-     *
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "false"
-    )
-    private boolean failOnWarning;
-
     @Override
-    public void exec() throws IOException {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withXmir();
-        final Optimization common = this.optimization();
+    void exec() throws IOException {
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
+        final Optimization opt = this.optimization();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> this.task(tojo, common),
+                    tojo -> this.task(tojo, opt),
                     new Filtered<>(
-                        ForeignTojo::notOptimized,
-                        sources
+                        ForeignTojo::notShaken,
+                        tojos
                     )
                 )
             )
@@ -128,11 +107,11 @@ public final class OptimizeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Optimized %d out of %d XMIR program(s)", total,
-                sources.size()
+                "Shaken %d out of %d XMIR program(s)", total,
+                tojos.size()
             );
         } else {
-            Logger.debug(this, "No XMIR programs out of %d optimized", sources.size());
+            Logger.debug(this, "No XMIR programs out of %d shaken", tojos.size());
         }
     }
 
@@ -147,13 +126,13 @@ public final class OptimizeMojo extends SafeMojo {
         final ForeignTojo tojo,
         final Optimization common
     ) {
-        final Path src = tojo.xmir();
+        final Path src = tojo.optimized();
         Logger.debug(
             this, "Adding optimization task for %s",
             src
         );
         return () -> {
-            tojo.withOptimized(
+            tojo.withShaken(
                 this.make(
                     this.optimization(tojo, common).apply(new XMLDocument(src)),
                     src
@@ -164,30 +143,15 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
-     * Common optimization for all tojos.
-     *
-     * @return Optimization for all tojos.
+     * Shake optimizations for tojos.
+     * @return Shake optimizations
      */
     private Optimization optimization() {
-        Optimization opt;
+        final Optimization opt;
         if (this.trackOptimizationSteps) {
-            opt = new OptSpy(
-                new ParsingTrain(),
-                this.targetDir.toPath().resolve(OptimizeMojo.STEPS)
-            );
+            opt = new OptSpy(this.targetDir.toPath().resolve(ShakeMojo.STEPS));
         } else {
-            opt = new OptTrain(new ParsingTrain());
-        }
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-errors.xsl");
-        }
-        if (this.failOnWarning) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
-        }
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
-        } else {
-            opt = new OptTrain(opt, new TrDefault<>());
+            opt = new OptTrain();
         }
         return opt;
     }
@@ -204,7 +168,7 @@ public final class OptimizeMojo extends SafeMojo {
         if (tojo.hasHash()) {
             res = new OptCached(
                 common,
-                this.cache.resolve(OptimizeMojo.OPTIMIZED).resolve(tojo.hash())
+                this.cache.resolve(ShakeMojo.SHAKEN).resolve(tojo.hash())
             );
         } else {
             res = common;
@@ -225,7 +189,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Place place = new Place(name);
         final Path dir = this.targetDir.toPath();
         final Path target = place.make(
-            dir.resolve(OptimizeMojo.DIR), TranspileMojo.EXT
+            dir.resolve(ShakeMojo.DIR), TranspileMojo.EXT
         );
         new HmBase(dir).save(
             xml.toString(),

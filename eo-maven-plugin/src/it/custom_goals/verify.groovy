@@ -26,7 +26,8 @@
   'target/eo/foreign.csv',
   'target/eo/1-parse',
   'target/eo/2-optimize',
-  'target/eo/3-pull',
+  'target/eo/3-shake',
+  'target/eo/4-pull',
 ].each { assert new File(basedir, it).exists() }
 
 /**
@@ -35,9 +36,9 @@
  * and only on the next step it starts to resolve the dependencies.
  */
 [
-  'target/eo/4-resolve',
-  'target/eo/5-pre',
-  'target/eo/6-transpile',
+  'target/eo/5-resolve',
+  'target/eo/6-pre',
+  'target/eo/7-transpile',
 ].each { assert !new File(basedir, it).exists() }
 
 true

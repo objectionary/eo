@@ -71,7 +71,7 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "6-transpile";
+    public static final String DIR = "7-transpile";
 
     /**
      * Extension for compiled sources in XMIR format (XML).
@@ -107,7 +107,7 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * The directory where to put pre-transpile files.
      */
-    private static final String PRE = "5-pre";
+    private static final String PRE = "6-pre";
 
     /**
      * Target directory.
@@ -185,7 +185,7 @@ public final class TranspileMojo extends SafeMojo {
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
         final int saved;
-        final Path file = tojo.optimized();
+        final Path file = tojo.shaken();
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);

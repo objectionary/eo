@@ -314,6 +314,11 @@ public final class ForeignTojos implements Closeable {
         OPTIMIZED("optimized"),
 
         /**
+         * Path to the shaken xmir file.
+         */
+        SHAKEN("shaken"),
+
+        /**
          * Absolute location of SODG file.
          */
         SODG("sodg"),

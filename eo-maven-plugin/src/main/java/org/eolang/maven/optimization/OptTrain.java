@@ -31,7 +31,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import org.eolang.parser.ParsingTrain;
 
 /**
  * Optimisation train of XLS`s.
@@ -49,7 +48,7 @@ public final class OptTrain implements Optimization {
      */
     static final Train<Shift> DEFAULT_TRAIN = new TrFast(
         new TrClasspath<>(
-            new ParsingTrain(),
+            new TrDefault<>(),
             "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
             "/org/eolang/parser/optimize/remove-refs.xsl",
             "/org/eolang/parser/optimize/abstracts-float-up.xsl",
@@ -87,7 +86,7 @@ public final class OptTrain implements Optimization {
      *
      * @param shifts XLS shifts.
      */
-    OptTrain(final Train<Shift> shifts) {
+    public OptTrain(final Train<Shift> shifts) {
         this(xml -> xml, shifts);
     }
 

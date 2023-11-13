@@ -366,7 +366,7 @@ public final class SodgMojo extends SafeMojo {
                 continue;
             }
             final Path sodg = new Place(name).make(home, "sodg");
-            final Path xmir = tojo.optimized();
+            final Path xmir = tojo.shaken();
             if (sodg.toFile().lastModified() >= xmir.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already converted %s to %s (it's newer than the source)",
