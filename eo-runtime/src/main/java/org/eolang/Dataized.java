@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A dataized object.
@@ -150,9 +149,7 @@ public final class Dataized {
         } else if (type.equals(byte[].class)) {
             strong = weak;
         } else if (type.equals(String.class)) {
-            strong = StringEscapeUtils.unescapeJava(
-                new String(weak, StandardCharsets.UTF_8)
-            );
+            strong = new String(weak, StandardCharsets.UTF_8);
         } else if (weak.length == 1 && type.equals(Boolean.class)) {
             if (weak[0] == 1) {
                 strong = true;
