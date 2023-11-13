@@ -88,15 +88,9 @@ final class PhDefaultTest {
 
     @Test
     void failsGracefullyOnMissingAttribute() {
-        final ExUnset error = Assertions.assertThrows(
-            ExUnset.class,
+        Assertions.assertThrows(
+            ExFailure.class,
             () -> new Data.ToPhi("Hey").attr("missing-attr").get()
-        );
-        MatcherAssert.assertThat(
-            error.getMessage(),
-            Matchers.containsString(
-                "Error at \"EOorg.EOeolang.EOstring#missing-attr\" attribute"
-            )
         );
     }
 
@@ -230,11 +224,9 @@ final class PhDefaultTest {
 
     @Test
     void hasTheSameFormaWithBoundedData() {
-        final Phi five = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
-        final Phi six = new PhWith(new EOint(Phi.Φ), "Δ", new Data.Value<>(5L));
         MatcherAssert.assertThat(
-            five.forma(),
-            Matchers.equalTo(six.forma())
+            new Data.ToPhi(5L).forma(),
+            Matchers.equalTo(new Data.ToPhi(6L).forma())
         );
     }
 

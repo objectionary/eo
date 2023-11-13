@@ -57,7 +57,7 @@ public final class Param {
 
     /**
      * Ctor.
-     * @param obj  The object to fetch the attribute from
+     * @param obj The object to fetch the attribute from
      * @param name Name of the attr
      */
     public Param(final Phi obj, final String name) {
@@ -76,6 +76,14 @@ public final class Param {
     }
 
     /**
+     * Fetch BYTES of any type.
+     * @return Bytes.
+     */
+    public Bytes asBytes() {
+        return new BytesOf(this.dataized().take(byte[].class));
+    }
+
+    /**
      * Fetch and DON'T check type.
      * @return The object
      */
@@ -83,13 +91,5 @@ public final class Param {
         return new Dataized(
             this.rho.attr(this.attr).get()
         );
-    }
-
-    /**
-     * Fetch BYTES of any type.
-     * @return Bytes.
-     */
-    public Bytes asBytes() {
-        return new BytesOf(this.dataized().take(byte[].class));
     }
 }

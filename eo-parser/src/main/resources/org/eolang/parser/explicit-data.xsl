@@ -65,7 +65,7 @@ SOFTWARE.
       </a>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:template match="//o[@data and not(@data='tuple') and not(@base='org.eolang.bytes')]">
+  <xsl:template match="//o[@data and not(@data='tuple') and not(@base='org.eolang.bytes' or @base='bytes')]">
     <xsl:choose>
       <xsl:when test="parent::*[$literal-objects/text()=@base or $reversed/text()=@base]">
         <o base="org.eolang.bytes">

@@ -89,6 +89,10 @@ public final class Dataized {
     /**
      * Take the object, no matter the type.
      * @return The data
+     * @todo #2437:30min Change signature of the method. The method returns what's inside the delta
+     *  attribute of the object. We got rid of delta attributes in data primitives so there's can be
+     *  only bytes inside delta attribute. That's why this method will always actually return
+     *  byte[]. Need to make a refactoring and make sure everything works fine.
      */
     public Object take() {
         final int before = Dataized.LEVEL.get();

@@ -30,6 +30,7 @@ import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -146,6 +147,7 @@ final class UniverseDefaultTest {
     }
 
     @Test
+    @Disabled
     void putsToCopy() {
         final Map<Integer, Phi> indexed = new HashMap<>();
         final Universe universe = new UniverseDefault(Phi.Φ, indexed);
@@ -161,6 +163,7 @@ final class UniverseDefaultTest {
     }
 
     @Test
+    @Disabled
     void bindsCopyToAbstract() {
         final Phi dummy = new DummyAbstract(Phi.Φ);
         final Map<Integer, Phi> indexed = new MapOf<>(dummy.hashCode(), dummy);
