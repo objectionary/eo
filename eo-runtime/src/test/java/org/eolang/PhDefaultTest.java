@@ -23,9 +23,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOio.EOstdout;
-import EOorg.EOeolang.EOstring;
 import EOorg.EOeolang.EOstring$EOlength;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

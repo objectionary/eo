@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOstring;
 import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
