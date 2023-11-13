@@ -150,7 +150,7 @@ public final class Dataized {
         } else if (type.equals(byte[].class)) {
             strong = weak;
         } else if (type.equals(String.class)) {
-            strong = StringEscapeUtils.escapeJava(
+            strong = StringEscapeUtils.unescapeJava(
                 new String(weak, StandardCharsets.UTF_8)
             );
         } else if (weak.length == 1 && type.equals(Boolean.class)) {
