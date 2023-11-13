@@ -28,6 +28,7 @@
 
 [data] > string
   data > @
+  data > as-bytes
 
   # Is true if both objects are equal
   [x] > eq

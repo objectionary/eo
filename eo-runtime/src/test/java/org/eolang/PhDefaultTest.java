@@ -90,7 +90,7 @@ final class PhDefaultTest {
     void failsGracefullyOnMissingAttribute() {
         final ExUnset error = Assertions.assertThrows(
             ExUnset.class,
-            () -> new EOstring(Phi.Φ).attr("missing-attr").get()
+            () -> new Data.ToPhi("Hey").attr("missing-attr").get()
         );
         MatcherAssert.assertThat(
             error.getMessage(),

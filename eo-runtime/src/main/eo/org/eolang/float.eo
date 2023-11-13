@@ -28,6 +28,7 @@
 
 [data] > float
   data > @
+  data > as-bytes
 
   # Tests that $ = x
   [x] > eq

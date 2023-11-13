@@ -42,6 +42,11 @@ public interface Attr extends Term {
     String PHI = "φ";
 
     /**
+     * Delta attribute.
+     */
+    String DELTA = "Δ";
+
+    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to

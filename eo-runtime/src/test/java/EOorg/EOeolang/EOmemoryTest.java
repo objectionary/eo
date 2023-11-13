@@ -70,7 +70,7 @@ public final class EOmemoryTest {
                     mem.attr("as-int").get().attr("plus").get().copy(),
                     0, new Data.ToPhi(1L)
                 )
-            ).take(),
+            ).take(Long.class),
             Matchers.equalTo(2L)
         );
     }
@@ -84,7 +84,7 @@ public final class EOmemoryTest {
                     mem.attr(EOmemoryTest.WRITE).get().copy(),
                     0, new Data.ToPhi(10L)
                 ).attr("as-int").get()
-            ).take(),
+            ).take(Long.class),
             Matchers.equalTo(10L)
         );
     }
@@ -94,7 +94,7 @@ public final class EOmemoryTest {
         final Phi mem = new EOmemory(Phi.Φ).copy();
         mem.attr(0).put(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-int").get()).take(),
+            new Dataized(mem.attr("as-int").get()).take(Long.class),
             Matchers.equalTo(1L)
         );
     }

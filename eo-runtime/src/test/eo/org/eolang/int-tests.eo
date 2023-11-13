@@ -32,7 +32,6 @@
       10
       50
     TRUE
-    "check int.lt"
 
 [] > less-equal
   eq. > @
@@ -41,7 +40,6 @@
         10
         10
     TRUE
-    "check int.less.not equal"
 
 [] > less-false
   eq. > @
@@ -50,7 +48,6 @@
         10
         -5
     TRUE
-    "check int.lt.not lt"
 
 [] > greater-true
   eq. > @
@@ -58,7 +55,6 @@
       -200
       -1000
     TRUE
-    "check int.gt"
 
 [] > greater-false
   eq. > @
@@ -67,7 +63,6 @@
         0
         100
     TRUE
-    "check int.gt.not"
 
 [] > greater-equal
   eq. > @
@@ -76,7 +71,6 @@
         0
         0
     TRUE
-    "check int.gt.not zero"
 
 [] > leq-true
   eq. > @
@@ -84,7 +78,6 @@
       -200
       -100
     TRUE
-    "check int.lte"
 
 [] > leq-equal
   eq. > @
@@ -92,7 +85,6 @@
       50
       50
     TRUE
-    "check int.lte equal"
 
 [] > leq-false
   eq. > @
@@ -101,7 +93,6 @@
         0
         -10
     TRUE
-    "check int.lte.not"
 
 [] > gte-true
   eq. > @
@@ -109,7 +100,6 @@
       -1000
       -1100
     TRUE
-    "check int.gte negative int"
 
 [] > gte-equal
   eq. > @
@@ -117,7 +107,6 @@
       113
       113
     TRUE
-    "check int.gte positive int"
 
 [] > gte-false
   eq. > @
@@ -126,7 +115,6 @@
         0
         10
     TRUE
-    "check int.gte.not"
 
 [] > int-equal-to-nan-and-infinites-is-false
   eq. > @
@@ -163,7 +151,6 @@
       123
       123
     TRUE
-    "check int.eq"
 
 [] > eq-false
   eq. > @
@@ -172,7 +159,6 @@
         123
         42
     TRUE
-    "check int.eq.not"
 
 [] > compares-two-different-types
   eq. > @

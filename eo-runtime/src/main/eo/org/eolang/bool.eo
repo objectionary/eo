@@ -28,6 +28,7 @@
 
 [data] > bool
   data > @
+  data > as-bytes
 
   # Equal to another object?
   [x] > eq

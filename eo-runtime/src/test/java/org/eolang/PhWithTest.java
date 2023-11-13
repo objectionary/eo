@@ -54,10 +54,7 @@ final class PhWithTest {
     void takesMethod() {
         MatcherAssert.assertThat(
             new Dataized(
-                new PhWith(
-                    new EOstring(Phi.Φ),
-                    "Δ", new Data.Value<>("Hello, world!")
-                )
+                new Data.ToPhi("Hello, world!")
             ).take(String.class),
             Matchers.startsWith("Hello, ")
         );

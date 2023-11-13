@@ -29,6 +29,9 @@ package EOorg.EOeolang;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhCopy;
+import org.eolang.PhLocated;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -60,7 +63,7 @@ final class EOtupleEOatTest {
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
-            new Dataized(get).take(),
+            new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
     }

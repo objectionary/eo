@@ -237,9 +237,6 @@ public interface Data<T> {
                 phi = new EOfloat(Phi.Φ);
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
-            } else if (obj instanceof Phi[]) {
-                phi = new EOtuple(Phi.Φ);
-                delta = true;
             } else {
                 throw new IllegalArgumentException(
                     String.format(

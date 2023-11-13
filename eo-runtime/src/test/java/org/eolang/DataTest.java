@@ -38,7 +38,11 @@ final class DataTest {
     @Test
     void makesString() {
         MatcherAssert.assertThat(
-            Data.Value.class.cast(new Data.ToPhi("Hello,\nдруг!").attr("Δ").get()).take(),
+            new String(
+                (byte[]) ((Data.Value<?>) new Data.ToPhi("Hello,\nдруг!")
+                    .attr("Δ").get()
+                ).take()
+            ),
             Matchers.hasToString("Hello,\nдруг!")
         );
     }
