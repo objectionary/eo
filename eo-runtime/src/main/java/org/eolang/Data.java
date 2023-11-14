@@ -29,9 +29,10 @@ import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
-import EOorg.EOeolang.EOtuple;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A data container.
@@ -233,7 +234,9 @@ public interface Data<T> {
             } else if (obj instanceof String) {
                 phi = new EOstring(Phi.Φ);
                 delta = false;
-                bytes = new BytesOf((String) obj).take();
+                bytes = StringEscapeUtils.unescapeJava(
+                    (String) obj
+                ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
                 delta = false;

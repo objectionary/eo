@@ -160,7 +160,7 @@ public final class Dataized {
                 String.format("Unknown type: %s", type.getCanonicalName())
             );
         }
-        return (T) strong;
+        return type.cast(strong);
     }
 
     /**
