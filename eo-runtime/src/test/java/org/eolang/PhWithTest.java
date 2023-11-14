@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOstring;
 import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -54,10 +53,7 @@ final class PhWithTest {
     void takesMethod() {
         MatcherAssert.assertThat(
             new Dataized(
-                new PhWith(
-                    new EOstring(Phi.Φ),
-                    "Δ", new Data.Value<>("Hello, world!")
-                )
+                new Data.ToPhi("Hello, world!")
             ).take(String.class),
             Matchers.startsWith("Hello, ")
         );

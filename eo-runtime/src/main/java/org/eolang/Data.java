@@ -29,9 +29,10 @@ import EOorg.EOeolang.EObytes;
 import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
-import EOorg.EOeolang.EOtuple;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A data container.
@@ -157,8 +158,7 @@ public interface Data<T> {
          */
         public ToPhi(final Object obj) {
             this.value = new Data.Value<>(obj);
-            this.object = Data.ToPhi.toPhi(obj);
-            this.object.attr("Δ").put(this.value);
+            this.object = Data.ToPhi.toPhi(obj, this.value);
         }
 
         @Override
@@ -209,20 +209,38 @@ public interface Data<T> {
         /**
          * Convert to Phi object.
          * @param obj Object to convert
+         * @param value Data value
          * @return Constructed Phi
          */
-        private static Phi toPhi(final Object obj) {
+        private static Phi toPhi(final Object obj, final Phi value) {
             final Phi phi;
+            byte[] bytes = new byte[0];
+            final boolean delta;
             if (obj instanceof Boolean) {
                 phi = new EObool(Phi.Φ);
+                delta = false;
+                if (obj.equals(true)) {
+                    bytes = new byte[] {0x01};
+                } else {
+                    bytes = new byte[] {0x00};
+                }
             } else if (obj instanceof byte[]) {
                 phi = new EObytes(Phi.Φ);
+                delta = true;
             } else if (obj instanceof Long) {
                 phi = new EOint(Phi.Φ);
+                delta = false;
+                bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
                 phi = new EOstring(Phi.Φ);
+                delta = false;
+                bytes = StringEscapeUtils.unescapeJava(
+                    (String) obj
+                ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
                 phi = new EOfloat(Phi.Φ);
+                delta = false;
+                bytes = new BytesOf((Double) obj).take();
             } else {
                 throw new IllegalArgumentException(
                     String.format(
@@ -230,6 +248,13 @@ public interface Data<T> {
                         obj.getClass().getCanonicalName()
                     )
                 );
+            }
+            if (delta) {
+                phi.attr(Attr.DELTA).put(value);
+            } else {
+                final Phi bts = new EObytes(Phi.Φ);
+                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
+                phi.attr(0).put(bts);
             }
             return phi;
         }

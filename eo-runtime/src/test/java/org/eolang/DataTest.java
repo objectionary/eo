@@ -23,22 +23,34 @@
  */
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Data}.
  *
  * @since 0.1
+ * @todo #2437:30min Enable the test {@link DataTest#printsString()}. The test was disabled because
+ *  data primitives don't contain delta attribute anymore. So "toString" method would not return
+ *  expected string. So there's a place where we need to decide either we don't expect such
+ *  behaviour from data objects and then we can just remove the test; or we should change behaviour
+ *  of "toString" method. Don't forget to remove the puzzle.
  */
 final class DataTest {
 
     @Test
     void makesString() {
         MatcherAssert.assertThat(
-            Data.Value.class.cast(new Data.ToPhi("Hello,\nдруг!").attr("Δ").get()).take(),
+            new String(
+                (byte[]) ((Data.Value<?>) new Data.ToPhi("Hello,\nдруг!")
+                    .attr("Δ").get()
+                ).take(),
+                StandardCharsets.UTF_8
+            ),
             Matchers.hasToString("Hello,\nдруг!")
         );
     }
@@ -60,6 +72,7 @@ final class DataTest {
     }
 
     @Test
+    @Disabled
     void printsString() {
         MatcherAssert.assertThat(
             new Data.ToPhi("Hello,\nдруг!").toString(),

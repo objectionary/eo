@@ -13,7 +13,7 @@ tests:
   - //java[contains(text(), 'Phi ret_a0 = new EOorg.EOeolang.EOint(')]
   - //java[contains(text(), 'Phi ret_a1 = new EOorg.EOeolang.EOint(')]
   - //java[contains(text(), 'Phi[] ret_2_a = new Phi[0]')]
-  - //java[contains(text(), 'new String(new byte[]')]
+  - //java[contains(text(), 'ret = new PhWith(ret, "Δ", new Data.Value<>(new byte[] {(byte) 0xD0, (byte) 0xB0, (byte) 0xD0, (byte) 0xB1, (byte) 0xD0, (byte) 0xB2, (byte) 0xD0, (byte) 0xB3, (byte) 0xD0, (byte) 0xB4}));')]
 eo: |
   [] > foo
     * 1 2 (* 3 4) > @

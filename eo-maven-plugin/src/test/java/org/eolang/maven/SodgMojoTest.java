@@ -59,10 +59,12 @@ import org.yaml.snakeyaml.Yaml;
  * @todo #2555:30min Enable the test. The test {@link SodgMojoTest#generatesSodgForPacks(String)}
  *  was disabled because it does not pass after changing tuple implementation. Need to refactor it
  *  and enable. Don't forget to remove the puzzle.
+ * @todo #2437:30min Enable the tests: Some tests in the class were disabled after changing
+ *  "explicit-data.xsl". Need to fix them and enable. Don't forget to remove the puzzle.
+ *  Disabled tests: {@link SodgMojoTest#generatesSodgForPacks(String)}.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class SodgMojoTest {
-
     @Test
     @Disabled
     void convertsToGraph() throws Exception {

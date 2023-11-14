@@ -35,7 +35,7 @@ SOFTWARE.
           <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
             <rust>
               <xsl:attribute name="code">
-                <xsl:value-of select="text()"/>
+                <xsl:value-of select="./o/text()"/>
               </xsl:attribute>
               <xsl:attribute name="code_loc">
                 <xsl:value-of select="attribute(loc)"/>
@@ -45,7 +45,7 @@ SOFTWARE.
                   <xsl:if test="parent::o[@base = 'org.eolang.tuple'] and @base = 'org.eolang.string'">
                     <dependency>
                       <xsl:attribute name="name">
-                        <xsl:value-of select="text()"/>
+                        <xsl:value-of select="./o/text()"/>
                       </xsl:attribute>
                     </dependency>
                   </xsl:if>

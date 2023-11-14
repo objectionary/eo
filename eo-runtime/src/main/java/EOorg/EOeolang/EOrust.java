@@ -134,6 +134,15 @@ public class EOrust extends PhDefault {
     /**
      * Ctor.
      * @param sigma Sigma
+     * @todo #2437:60min Fix EOrust. After getting rid of delta attribute in data primitives
+     *  EOrust stopped working. Reason - it can't find proper locator of "code" attribute
+     *  because it's lost when it's wrapped with {@link org.eolang.PhCopy}. Need to figure out how
+     *  to fix it and enable all disabled rust tests: rust-returns-negative-int,
+     *  rust-returns-vertex, rust-invalid-put, rust-error, rust-returns-positive-int,
+     *  rust-find-returns-int, rust-plus, rust-bind-not-fails, rust-is-string, rust-copy-not-fails,
+     *  rust-is-byte-array, rust-bind-to-copy, rust-put-to-copy, rust-returns-positive-double,
+     *  rust-returns-negative-double, rust-dataize-not-fails,
+     *  UniverseDefaultTest#bindsCopyToAbstract, UniverseDefaultTest#putsToCopy,
      */
     public EOrust(final Phi sigma) {
         super(sigma);

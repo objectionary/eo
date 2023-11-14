@@ -26,7 +26,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[] > bool
+[as-bytes] > bool
+  as-bytes > @
+
   # Equal to another object?
   [x] > eq
     eq. > @
@@ -68,10 +70,3 @@
   # ^ condition was never TRUE. The \rho of the object
   # copied will be set to "while.\rho".
   [f] > while /int
-
-  # Converts this to bytes
-  [] > as-bytes
-    if. > @
-      ^
-      01-
-      00-

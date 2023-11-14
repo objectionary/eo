@@ -35,7 +35,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -64,10 +63,7 @@ public class EObytes$EOeq extends PhDefault {
                 rho -> new Data.ToPhi(
                     Arrays.equals(
                         new Dataized(
-                            new PhMethod(
-                                rho.attr("b").get(),
-                                "as-bytes"
-                            )
+                            rho.attr("b").get().attr("as-bytes").get()
                         ).take(byte[].class),
                         new Param(rho).strong(byte[].class)
                     )

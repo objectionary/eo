@@ -39,9 +39,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     r
     2
+  nop > @
 
 [] > rust-returns-negative-int
   QQ.rust > r
@@ -57,11 +58,12 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     r
     -10
+  nop > @
 
-[] > rust-returns-positive-doable
+[] > rust-returns-positive-double
   QQ.rust > r
     """
     use eo::Portal;
@@ -74,11 +76,12 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     r
     1.23456789
+  nop > @
 
-[] > rust-returns-negative-doable
+[] > rust-returns-negative-double
   QQ.rust > r
     """
     use eo::Portal;
@@ -91,9 +94,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     r
     -1.23456789
+  nop > @
 
 [] > rust-is-byte-array
   QQ.rust > my-bytes
@@ -114,9 +118,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     my-bytes
     00-1A-EE
+  nop > @
 
 [] > rust-find-returns-int
   123 > a
@@ -134,10 +139,11 @@
     """
     []
     *
-  not. > @
+  not. > res
     lt.
       r
       0
+  nop > @
 
 [] > rust-returns-vertex
   "content" > book
@@ -154,9 +160,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     read
     "content"
+  nop > @
 
 [] > rust-is-string
   QQ.rust > content
@@ -171,9 +178,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     content
     "Привет world"
+  nop > @
 
 [] > rust-invalid-put
   QQ.rust > put
@@ -188,7 +196,7 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     slice.
       try
         []
@@ -199,6 +207,7 @@
       0
       18
     "Rust insert failed"
+  nop > @
 
 [] > rust-bind-not-fails
   1 > a
@@ -224,11 +233,12 @@
     [e]
       e > @
     nop
-  eq. > @
+  eq. > result
     res.slice
       0
       to-check.length
     to-check
+  nop > @
 
 [] > rust-copy-not-fails
   123 > a
@@ -245,9 +255,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     copy
     123
+  nop > @
 
 [] > rust-dataize-not-fails
   1 > a
@@ -264,10 +275,11 @@
     """
     []
     *
-  not. > @
+  not. > res
     lt.
       dataized
       0
+  nop > @
 
 [] > rust-plus
   5 > a
@@ -295,9 +307,10 @@
     []
     *
       "byteorder:1.4.3"
-  eq. > @
+  eq. > res
     plus
     15
+  nop > @
 
 [] > rust-error
   "Rust insert failed " > message!
@@ -319,13 +332,14 @@
     [e]
       e > @
     nop
-  eq. > @
+  eq. > result
     slice.
       res
       0
       length.
         message
     message
+  nop > @
 
 [] > rust-put-to-copy
   QQ.rust > data
@@ -343,9 +357,10 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     data
     00-1A-EE
+  nop > @
 
 [] > rust-bind-to-copy
   [content] > book
@@ -366,6 +381,7 @@
     """
     []
     *
-  eq. > @
+  eq. > res
     applied.content
     "qwerty"
+  nop > @

@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOtuple;
 import EOorg.EOeolang.EOtuple$EOempty;
 
 /**
@@ -70,9 +71,10 @@ public final class AtVararg implements Attr {
         if (phi instanceof PhUnvar) {
             this.tuple = phi;
         } else {
-            final Phi with = this.tuple.attr("with").get().copy();
-            with.attr(0).put(phi);
-            this.tuple = with;
+            final Phi outer = new EOtuple(Phi.Φ);
+            outer.attr(0).put(this.tuple);
+            outer.attr(1).put(phi);
+            this.tuple = outer;
         }
     }
 }

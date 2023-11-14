@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +89,10 @@ public final class Dataized {
     /**
      * Take the object, no matter the type.
      * @return The data
+     * @todo #2437:30min Change signature of the method. The method returns what's inside the delta
+     *  attribute of the object. We got rid of delta attributes in data primitives so there's can be
+     *  only bytes inside delta attribute. That's why this method will always actually return
+     *  byte[]. Need to make a refactoring and make sure everything works fine.
      */
     public Object take() {
         final int before = Dataized.LEVEL.get();
@@ -135,7 +140,28 @@ public final class Dataized {
      * @return The data
      */
     public <T> T take(final Class<T> type) {
-        return type.cast(this.take());
+        final byte[] weak = (byte[]) this.take();
+        final Object strong;
+        if (type.equals(Long.class)) {
+            strong = new BytesOf(weak).asNumber(Long.class);
+        } else if (type.equals(Double.class)) {
+            strong = new BytesOf(weak).asNumber(Double.class);
+        } else if (type.equals(byte[].class)) {
+            strong = weak;
+        } else if (type.equals(String.class)) {
+            strong = new String(weak, StandardCharsets.UTF_8);
+        } else if (weak.length == 1 && type.equals(Boolean.class)) {
+            if (weak[0] == 1) {
+                strong = true;
+            } else {
+                strong = false;
+            }
+        } else {
+            throw new IllegalArgumentException(
+                String.format("Unknown type: %s", type.getCanonicalName())
+            );
+        }
+        return type.cast(strong);
     }
 
     /**

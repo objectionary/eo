@@ -89,7 +89,7 @@ public final class EOstdoutTest {
                     new Data.ToPhi(2L)
                 )
             )
-        ).take();
+        ).take(String.class);
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)

@@ -60,7 +60,7 @@ final class EOtupleEOatTest {
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
-            new Dataized(get).take(),
+            new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
     }

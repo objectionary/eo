@@ -198,7 +198,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$literal-objects[text()=$type]">
+    <xsl:if test="$type='org.eolang.bytes'">
       <xsl:value-of select="eo:eol(2)"/>
       <xsl:text>this.add("Δ", new AtFree(new AtSimple()));</xsl:text>
     </xsl:if>
@@ -567,7 +567,7 @@ SOFTWARE.
     <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Object obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()).take();</xsl:text>
+    <xsl:text>()).take(Boolean.class);</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
     <xsl:text>if (obj instanceof String) {</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>

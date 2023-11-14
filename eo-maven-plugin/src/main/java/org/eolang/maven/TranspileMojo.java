@@ -53,8 +53,6 @@ import org.cactoos.number.SumOf;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.ParsingTrain;
-import org.eolang.parser.StUnhex;
 
 /**
  * Compile.
@@ -85,7 +83,6 @@ public final class TranspileMojo extends SafeMojo {
      */
     static final Train<Shift> TRAIN = new TrJoined<>(
         new TrClasspath<>(
-            new ParsingTrain().empty().with(new StUnhex()),
             "/org/eolang/maven/pre/classes.xsl",
             "/org/eolang/maven/pre/package.xsl",
             "/org/eolang/maven/pre/tests.xsl",

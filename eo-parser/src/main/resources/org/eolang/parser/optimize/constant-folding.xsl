@@ -37,13 +37,15 @@ SOFTWARE.
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base='.as-bool' and child::o[@base='org.eolang.bytes' and not(*)]]">
-    <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:variable name="c" select="child::o"/>
       <xsl:attribute name="base">org.eolang.bool</xsl:attribute>
-      <xsl:attribute name="data">bytes</xsl:attribute>
-      <xsl:value-of select="$c[text()]"/>
+      <xsl:element name="o">
+        <xsl:attribute name="base">org.eolang.bytes</xsl:attribute>
+        <xsl:attribute name="data">bytes</xsl:attribute>
+        <xsl:value-of select="$c[text()]"/>
+      </xsl:element>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">
