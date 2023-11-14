@@ -250,10 +250,10 @@ public interface Data<T> {
                 );
             }
             if (delta) {
-                phi.attr(Attr.LAMBDA).put(value);
+                phi.attr(Attr.DELTA).put(value);
             } else {
                 final Phi bts = new EObytes(Phi.Φ);
-                bts.attr(Attr.LAMBDA).put(new Data.Value<>(bytes));
+                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
                 phi.attr(0).put(bts);
             }
             return phi;
