@@ -26,9 +26,8 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-[data] > bool
-  data > @
-  data > as-bytes
+[as-bytes] > bool
+  as-bytes > @
 
   # Equal to another object?
   [x] > eq
