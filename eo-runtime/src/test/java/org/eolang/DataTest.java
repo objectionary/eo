@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,7 +48,8 @@ final class DataTest {
             new String(
                 (byte[]) ((Data.Value<?>) new Data.ToPhi("Hello,\nдруг!")
                     .attr("Δ").get()
-                ).take()
+                ).take(),
+                StandardCharsets.UTF_8
             ),
             Matchers.hasToString("Hello,\nдруг!")
         );
