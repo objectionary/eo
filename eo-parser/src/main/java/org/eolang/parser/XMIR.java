@@ -30,7 +30,6 @@ import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
-import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
 
