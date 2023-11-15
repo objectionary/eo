@@ -34,6 +34,7 @@ import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -222,8 +223,8 @@ public final class BinarizeParseMojo extends SafeMojo {
         final String result;
         try {
             final byte[] bytes = Hex.decodeHex(String.valueOf(hex).toCharArray());
-            result = new String(bytes, "UTF-8");
-        } catch (final DecoderException | UnsupportedEncodingException exception) {
+            result = new String(bytes, StandardCharsets.UTF_8);
+        } catch (final DecoderException exception) {
             throw new IllegalArgumentException(
                 String.format("Invalid String %s, cannot unhex", txt),
                 exception
