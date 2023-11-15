@@ -30,6 +30,9 @@ import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
+import org.cactoos.Scalar;
+import org.cactoos.Text;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Prints XMIR to EO.
@@ -59,7 +62,7 @@ public final class XMIR {
     /**
      * The XML content.
      */
-    private final XML xml;
+    private final Unchecked<String> content;
 
     /**
      * Ctor.
@@ -73,8 +76,24 @@ public final class XMIR {
      * Ctor.
      * @param src The source
      */
+    public XMIR(final Text src) {
+        this(new Unchecked<>(src::asString));
+    }
+
+    /**
+     * Ctor.
+     * @param src The source
+     */
     public XMIR(final XML src) {
-        this.xml = src;
+        this(new Unchecked<>(src::toString));
+    }
+
+    /**
+     * Ctor.
+     * @param src The source
+     */
+    private XMIR(final Unchecked<String> src) {
+        this.content = src;
     }
 
     /**
@@ -84,7 +103,9 @@ public final class XMIR {
      */
     public String toEO() {
         return XMIR.SHEET.applyTo(
-            new Xsline(new TrDefault<>(new StUnhex())).pass(this.xml)
+            new Xsline(new TrDefault<>(new StUnhex())).pass(
+                new XMLDocument(this.content.value())
+            )
         );
     }
 

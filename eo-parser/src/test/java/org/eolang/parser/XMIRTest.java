@@ -61,11 +61,11 @@ final class XMIRTest {
     void printsToEO(final String src) throws Exception {
         Logger.debug(this, "Original EOLANG:%n%s", src);
         final XML first = XMIRTest.clean(XMIRTest.parse(src));
-        Logger.debug(this, "First:%n%s", first);
+        Logger.info(this, "First:%n%s", first);
         final String eolang = new XMIR(first).toEO();
-        Logger.debug(this, "EOLANG:%n%s", eolang);
+        Logger.info(this, "EOLANG:%n%s", eolang);
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
-        Logger.debug(this, "Second:%n%s", second);
+        Logger.info(this, "Second:%n%s", second);
         final String ignore = "data=\"\\S+\"";
         MatcherAssert.assertThat(
             first

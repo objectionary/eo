@@ -1,0 +1,29 @@
+<program ms="18" name="a" time="2023-10-19T09:27:28.852003Z">
+  <errors/>
+  <sheets/>
+  <license/>
+  <metas/>
+  <objects>
+    <o abstract="" line="13" name="b" pos="0">
+      <o line="13" name="a" pos="1"/>
+      <o line="13" name="z" pos="3"/>
+      <o base="cage" line="14" name="this-a" pos="2">
+        <o base="a" line="14" pos="7"/>
+      </o>
+      <o base="cage" line="15" name="this-z" pos="2">
+        <o base="z" line="15" pos="7"/>
+      </o>
+      <o abstract="" line="16" name="new" pos="2">
+        <o base="^" line="17" name="@" pos="4"/>
+      </o>
+      <o abstract="" line="18" name="bar" pos="2">
+        <o base=".plus" line="19" name="@" pos="14">
+          <o base=".foo" line="19" pos="10">
+            <o base="this-a" line="19" pos="4"/>
+          </o>
+          <o base="int" data="bytes" line="19" pos="20">00 00 00 00 00 00 00 02</o>
+        </o>
+      </o>
+    </o>
+  </objects>
+</program>

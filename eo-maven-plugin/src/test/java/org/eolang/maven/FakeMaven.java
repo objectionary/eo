@@ -62,6 +62,7 @@ import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.util.HmBase;
+import org.eolang.maven.util.Home;
 
 /**
  * Fake maven workspace that executes Mojos in order to test
@@ -81,7 +82,7 @@ public final class FakeMaven {
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
      */
-    private final HmBase workspace;
+    private final Home workspace;
 
     /**
      * Mojos params.
@@ -133,7 +134,7 @@ public final class FakeMaven {
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     private FakeMaven(
-        final HmBase workspace,
+        final Home workspace,
         final Map<String, Object> params,
         final AtomicInteger current,
         final boolean defaults
@@ -809,6 +810,20 @@ public final class FakeMaven {
                 OptimizeMojo.class,
                 ShakeMojo.class,
                 DiscoverMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
+     * Printing pipeline.
+     *
+     * @since 0.33.0
+     */
+    static final class Print implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                PrintMojo.class
             ).iterator();
         }
     }
