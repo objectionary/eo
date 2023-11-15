@@ -80,6 +80,17 @@ public final class BinarizeMojo extends SafeMojo {
     private File generatedDir;
 
     /**
+     * File where to save {@link org.eolang.maven.rust.Names} map.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/names"
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private File namesDir;
+
+    /**
      * The directory with portal project. It is a necessary dependency
      * that provides rust-eo interaction.
      * @checkstyle MemberNameCheck (8 lines)

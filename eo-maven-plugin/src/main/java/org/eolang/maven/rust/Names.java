@@ -70,7 +70,7 @@ public final class Names {
      * @param target Directory where to serialize names.
      */
     public Names(final Path target) {
-        this.dest = target.resolve("names");
+        this.dest = target;
         this.all = Names.checked(this.dest);
     }
 

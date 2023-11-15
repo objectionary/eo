@@ -42,7 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class NamesTest {
     @Test
     void solvesSameHashes(@TempDir final Path temp) throws IOException {
-        final Names dispatcher = new Names(temp);
+        final Names dispatcher = new Names(temp.resolve("names"));
         final String one = "AaAaAa";
         final String two = "AaAaBB";
         MatcherAssert.assertThat(
@@ -59,10 +59,11 @@ final class NamesTest {
 
     @Test
     void recoversNames(@TempDir final Path temp) throws IOException {
+        final String names = "names";
         final List<String> locations = IntStream.range(0, 1000)
             .mapToObj(String::valueOf)
             .collect(Collectors.toList());
-        final Names before = new Names(temp);
+        final Names before = new Names(temp.resolve(names));
         final Map<String, String> functions = locations.stream().collect(
             Collectors.toMap(loc -> loc, before::name)
         );
@@ -71,7 +72,7 @@ final class NamesTest {
             Matchers.equalTo(functions.size())
         );
         before.save();
-        final Names after = new Names(temp);
+        final Names after = new Names(temp.resolve(names));
         MatcherAssert.assertThat(
             before,
             Matchers.equalTo(after)

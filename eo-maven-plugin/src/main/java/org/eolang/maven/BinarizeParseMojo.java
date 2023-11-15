@@ -112,6 +112,16 @@ public final class BinarizeParseMojo extends SafeMojo {
     private File generatedDir;
 
     /**
+     * File where to save {@link org.eolang.maven.rust.Names} map.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/names"
+    )
+    private File namesDir;
+
+    /**
      * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -125,7 +135,7 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(targetDir.toPath().getParent());
+        final Names names = new Names(this.namesDir.toPath());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.shaken();
