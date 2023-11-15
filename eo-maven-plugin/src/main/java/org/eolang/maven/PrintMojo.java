@@ -40,6 +40,7 @@ import org.eolang.parser.XMIR;
 
 /**
  * Print XMIR to EO.
+ * @since 0.33.0
  */
 @Mojo(
     name = "print",
@@ -70,16 +71,16 @@ public final class PrintMojo extends SafeMojo {
     @Override
     void exec() throws IOException {
         final Collection<Path> sources = new Walk(this.printSourcesDir.toPath());
-        final Home home = new HmBase(printOutputDir);
+        final Home home = new HmBase(this.printOutputDir);
         for (final Path source : sources) {
             final Path relative = Paths.get(
-                printSourcesDir.toPath().relativize(source).toString()
+                this.printSourcesDir.toPath().relativize(source).toString()
                     .replace(".xmir", ".eo")
             );
             home.save(new XMIR(new TextOf(source)).toEO(), relative);
             Logger.info(
                 this,
-                "Printed: %s => %s", source, printOutputDir.toPath().resolve(relative)
+                "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)
             );
         }
         Logger.info(this, "Printed %d sources", sources.size());

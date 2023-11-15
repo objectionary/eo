@@ -38,7 +38,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test cases for {@link PrintMojo};
+ * Test cases for {@link PrintMojo}.
+ * @since 0.33.0
  */
 final class PrintMojoTest {
     @Test
