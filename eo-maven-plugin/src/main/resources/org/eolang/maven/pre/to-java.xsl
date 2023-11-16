@@ -355,15 +355,15 @@ SOFTWARE.
     </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="." mode="located">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
     <xsl:apply-templates select=".[@copy]" mode="copy">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>

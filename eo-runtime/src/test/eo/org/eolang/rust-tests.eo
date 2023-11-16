@@ -39,10 +39,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     r
     2
-  nop > @
 
 [] > rust-returns-negative-int
   QQ.rust > r
@@ -58,10 +57,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     r
     -10
-  nop > @
 
 [] > rust-returns-positive-double
   QQ.rust > r
@@ -76,10 +74,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     r
     1.23456789
-  nop > @
 
 [] > rust-returns-negative-double
   QQ.rust > r
@@ -94,10 +91,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     r
     -1.23456789
-  nop > @
 
 [] > rust-is-byte-array
   QQ.rust > my-bytes
@@ -118,10 +114,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     my-bytes
     00-1A-EE
-  nop > @
 
 [] > rust-find-returns-int
   123 > a
@@ -139,11 +134,10 @@
     """
     []
     *
-  not. > res
+  not. > @
     lt.
       r
       0
-  nop > @
 
 [] > rust-returns-vertex
   "content" > book
@@ -160,10 +154,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     read
     "content"
-  nop > @
 
 [] > rust-is-string
   QQ.rust > content
@@ -178,10 +171,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     content
     "Привет world"
-  nop > @
 
 [] > rust-invalid-put
   QQ.rust > put
@@ -196,7 +188,7 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     slice.
       try
         []
@@ -207,7 +199,6 @@
       0
       18
     "Rust insert failed"
-  nop > @
 
 [] > rust-bind-not-fails
   1 > a
@@ -233,12 +224,11 @@
     [e]
       e > @
     nop
-  eq. > result
+  eq. > @
     res.slice
       0
       to-check.length
     to-check
-  nop > @
 
 [] > rust-copy-not-fails
   123 > a
@@ -255,10 +245,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     copy
     123
-  nop > @
 
 [] > rust-dataize-not-fails
   1 > a
@@ -275,11 +264,10 @@
     """
     []
     *
-  not. > res
+  not. > @
     lt.
       dataized
       0
-  nop > @
 
 [] > rust-plus
   5 > a
@@ -307,10 +295,9 @@
     []
     *
       "byteorder:1.4.3"
-  eq. > res
+  eq. > @
     plus
     15
-  nop > @
 
 [] > rust-error
   "Rust insert failed " > message!
@@ -332,14 +319,13 @@
     [e]
       e > @
     nop
-  eq. > result
+  eq. > @
     slice.
       res
       0
       length.
         message
     message
-  nop > @
 
 [] > rust-put-to-copy
   QQ.rust > data
@@ -357,10 +343,9 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     data
     00-1A-EE
-  nop > @
 
 [] > rust-bind-to-copy
   [content] > book
@@ -381,7 +366,6 @@
     """
     []
     *
-  eq. > res
+  eq. > @
     applied.content
     "qwerty"
-  nop > @
