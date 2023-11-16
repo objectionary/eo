@@ -150,8 +150,8 @@ final class UniverseDefaultTest {
     void putsToCopy() {
         final Map<Integer, Phi> indexed = new HashMap<>();
         final Universe universe = new UniverseDefault(Phi.Φ, indexed);
-        final int eoint = universe.find("Q.org.eolang.bytes");
-        final int copy = universe.copy(eoint);
+        final int eobytes = universe.find("Q.org.eolang.bytes");
+        final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         MatcherAssert.assertThat(
             new Dataized(indexed.get(copy)).take(),
@@ -166,8 +166,8 @@ final class UniverseDefaultTest {
         final Phi dummy = new DummyAbstract(Phi.Φ);
         final Map<Integer, Phi> indexed = new MapOf<>(dummy.hashCode(), dummy);
         final Universe universe = new UniverseDefault(dummy, indexed);
-        final int eoint = universe.find("Q.org.eolang.bytes");
-        final int copy = universe.copy(eoint);
+        final int eobytes = universe.find("Q.org.eolang.bytes");
+        final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         universe.bind(
             dummy.hashCode(), copy, UniverseDefaultTest.ATT
