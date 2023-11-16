@@ -54,7 +54,8 @@ public final class PrintMojo extends SafeMojo {
      */
     @Parameter(
         property = "eo.printSourcesDir",
-        required = true
+        required = true,
+        defaultValue = "${project.basedir}/src/main/xmir"
     )
     private File printSourcesDir;
 
@@ -64,7 +65,8 @@ public final class PrintMojo extends SafeMojo {
      */
     @Parameter(
         property = "eo.printOutputDir",
-        required = true
+        required = true,
+        defaultValue = "${project.build.directory}/generated-sources/eo"
     )
     private File printOutputDir;
 
