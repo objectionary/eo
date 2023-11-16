@@ -33,7 +33,7 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -63,9 +63,6 @@ import org.eolang.parser.ParsingTrain;
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
- * @todo #2238:30min Specify directory for names via pom.xml.Now names map is
- *  serialized in targetDir.toPath().getParent() which is a bad decision since
- *  it must be created just as target/names.
  */
 @Mojo(
     name = "binarize_parse",
@@ -112,6 +109,16 @@ public final class BinarizeParseMojo extends SafeMojo {
     private File generatedDir;
 
     /**
+     * File where to save {@link org.eolang.maven.rust.Names} map.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(
+        required = true,
+        defaultValue = "${project.build.directory}/names"
+    )
+    private File namesDir;
+
+    /**
      * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -125,7 +132,7 @@ public final class BinarizeParseMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(targetDir.toPath().getParent());
+        final Names names = new Names(this.namesDir.toPath());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.shaken();
@@ -212,8 +219,8 @@ public final class BinarizeParseMojo extends SafeMojo {
         final String result;
         try {
             final byte[] bytes = Hex.decodeHex(String.valueOf(hex).toCharArray());
-            result = new String(bytes, "UTF-8");
-        } catch (final DecoderException | UnsupportedEncodingException exception) {
+            result = new String(bytes, StandardCharsets.UTF_8);
+        } catch (final DecoderException exception) {
             throw new IllegalArgumentException(
                 String.format("Invalid String %s, cannot unhex", txt),
                 exception

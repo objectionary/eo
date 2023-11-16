@@ -240,6 +240,7 @@ public final class FakeMaven {
                 "eoPortalDir",
                 new File("../eo-runtime/src/main/rust/eo")
             );
+            this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
         }
         final Moja<T> moja = new Moja<>(mojo);
