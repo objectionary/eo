@@ -23,27 +23,47 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.32.0
-+version 0.32.0
++rt jvm org.eolang:eo-runtime:0.33.0
++version 0.33.0
 
-[] > float
+[as-bytes] > float
+  as-bytes > @
+
   # Tests that $ = x
   [x] > eq
-    x > value!
+    x.as-bytes > x-as-bytes!
+    ^.as-bytes > self-as-bytes!
+    nan.as-bytes > nan-as-bytes!
+    0.0.as-bytes > pos-zero-as-bytes!
+    -0.0.as-bytes > neg-zero-as-bytes!
     if. > @
-      and.
+      or.
         eq.
-          ^.as-bytes > self-as-bytes!
-          00-00-00-00-00-00-00-00 > zero-as-bytes!
+          x-as-bytes
+          nan-as-bytes
         eq.
-          value.as-bytes > x-as-bytes!
-          zero-as-bytes
-      eq.
-        ^.neg.as-bytes
-        value.neg.as-bytes
-      eq.
-        self-as-bytes
-        x-as-bytes
+          self-as-bytes
+          nan-as-bytes
+      FALSE
+      or.
+        and.
+          or.
+            eq.
+              x-as-bytes
+              pos-zero-as-bytes
+            eq.
+              x-as-bytes
+              neg-zero-as-bytes
+          or.
+            eq.
+              self-as-bytes
+              pos-zero-as-bytes
+            eq.
+              self-as-bytes
+              neg-zero-as-bytes
+        eq.
+          self-as-bytes
+          x-as-bytes
 
   # Tests that $ < x
   [x] > lt
@@ -72,35 +92,18 @@
       ^.gt value
 
   # Multiplication of $ and x
-  [x...] > times /float
+  [x] > times /float
 
   # Sum of $ and x
-  [x...] > plus /float
+  [x] > plus /float
 
   # Negation of $
   [] > neg
     ^.times -1.0 > @
 
   # Difference between $ and x
-  [x...] > minus
-    [acc index terms] > rec-terms
-      if. > @
-        index.eq terms.length
-        acc
-        rec-terms
-          acc.with
-            (terms.at index).neg
-          index.plus 1
-          terms
-    rec-terms > neg-terms
-      *
-      0
-      x
-    ^.plus > @
-      ...neg-terms
+  [x] > minus
+    ^.plus x.neg > @
 
   # Quotient of the division of $ by x
-  [x...] > div /float
-
-  # Converts this to bytes
-  [] > as-bytes /bytes
+  [x] > div /float

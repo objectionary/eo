@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.32.0
++version 0.33.0
 
 [] > less-true
   eq. > @
@@ -125,15 +125,15 @@
       0.0
     TRUE
 
-[] > zero-not-equal-to-neg-zero
+[] > zero-equal-to-neg-zero
   eq. > @
     0.0.eq -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-equal-to-zero
+[] > neg-zero-equal-to-zero
   eq. > @
     -0.0.eq 0.0
-    FALSE
+    TRUE
 
 [] > zero-not-greater-that-neg-zero
   eq. > @
@@ -155,32 +155,35 @@
     -0.0.lt 0.0
     FALSE
 
-[] > zero-not-gte-neg-zero
+[] > zero-gte-neg-zero
   eq. > @
     0.0.gte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-gte-zero
+[] > neg-zero-gte-zero
   eq. > @
     -0.0.gte 0.0
-    FALSE
+    TRUE
 
-[] > zero-not-lte-neg-zero
+[] > zero-lte-neg-zero
   eq. > @
     0.0.lte -0.0
-    FALSE
+    TRUE
 
-[] > neg-zero-not-lte-zero
+[] > neg-zero-lte-zero
   eq. > @
     -0.0.lte 0.0
-    FALSE
+    TRUE
 
-[] > float-zero-not-eq-to-int-zero
+[] > float-zero-eq-to-int-zero
   eq. > @
-    eq.
-      0.0
-      0
-    FALSE
+    0.0
+    0
+
+[] > float-neg-zero-eq-to-int-zero
+  eq. > @
+    -0.0
+    0
 
 [] > eq-true
   eq. > @
@@ -232,15 +235,6 @@
       0.311985
     -0.1792353825
 
-[] > times-multiple
-  eq. > @
-    times.
-      -0.5745
-      0.311985
-      3.232
-      -2.532
-    1.4667591307996803
-
 [] > add-test
   eq. > @
     plus.
@@ -248,28 +242,18 @@
       311.985
     886.485
 
-[] > add-multiple-test
-  eq. > @
-    plus.
-      574.5
-      311.985
-      -101.1
-      1.001
-    786.386
-
 [] > add-wrong-args
-  eq. > @
-    try
-      []
-        plus. > @
-          574.5
-          311
-          -101.1
-          1.001
-      [e]
-        e > @
-      nop
-    "The 1th argument of 'float.plus' is not a(n) Double: 311"
+  not. > @
+    eq.
+      try
+        []
+          plus. > @
+            42.5
+            24
+        [e]
+          e > @
+        nop
+      66.5
 
 [] > neg-test
   eq. > @
@@ -283,29 +267,12 @@
       311.985
     262.515
 
-[] > sub-multiple-test
-  eq. > @
-    minus.
-      574.5
-      311.985
-      -24.347
-      3542.2238
-    -3255.3618
-
 [] > div-test
   eq. > @
     div.
       15.5
       0.5
     31.0
-
-[] > div-multiple
-  eq. > @
-    div.
-      15.5
-      0.5
-      0.2
-    155.0
 
 [] > zero-div-zero-as-bytes-is-equal-to-nan-as-bytes
   eq. > @

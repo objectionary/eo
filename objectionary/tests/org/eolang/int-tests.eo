@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.32.0
++version 0.33.0
 
 [] > less-true
   eq. > @
@@ -32,7 +32,6 @@
       10
       50
     TRUE
-    "check int.lt"
 
 [] > less-equal
   eq. > @
@@ -41,7 +40,6 @@
         10
         10
     TRUE
-    "check int.less.not equal"
 
 [] > less-false
   eq. > @
@@ -50,7 +48,6 @@
         10
         -5
     TRUE
-    "check int.lt.not lt"
 
 [] > greater-true
   eq. > @
@@ -58,7 +55,6 @@
       -200
       -1000
     TRUE
-    "check int.gt"
 
 [] > greater-false
   eq. > @
@@ -67,7 +63,6 @@
         0
         100
     TRUE
-    "check int.gt.not"
 
 [] > greater-equal
   eq. > @
@@ -76,7 +71,6 @@
         0
         0
     TRUE
-    "check int.gt.not zero"
 
 [] > leq-true
   eq. > @
@@ -84,7 +78,6 @@
       -200
       -100
     TRUE
-    "check int.lte"
 
 [] > leq-equal
   eq. > @
@@ -92,7 +85,6 @@
       50
       50
     TRUE
-    "check int.lte equal"
 
 [] > leq-false
   eq. > @
@@ -101,7 +93,6 @@
         0
         -10
     TRUE
-    "check int.lte.not"
 
 [] > gte-true
   eq. > @
@@ -109,7 +100,6 @@
       -1000
       -1100
     TRUE
-    "check int.gte negative int"
 
 [] > gte-equal
   eq. > @
@@ -117,7 +107,6 @@
       113
       113
     TRUE
-    "check int.gte positive int"
 
 [] > gte-false
   eq. > @
@@ -126,16 +115,19 @@
         0
         10
     TRUE
-    "check int.gte.not"
 
 [] > int-equal-to-nan-and-infinites-is-false
   eq. > @
     and.
-      (0.eq nan).eq FALSE
-      (0.eq positive-infinity).eq FALSE
-      (0.eq negative-infinity).eq FALSE
-      (42.eq nan).eq FALSE
-      (42.eq positive-infinity).eq FALSE
+      and.
+        and.
+          and.
+            and.
+              (0.eq nan).eq FALSE
+              (0.eq positive-infinity).eq FALSE
+            (0.eq negative-infinity).eq FALSE
+          (42.eq nan).eq FALSE
+        (42.eq positive-infinity).eq FALSE
       (42.eq negative-infinity).eq FALSE
     TRUE
 
@@ -146,12 +138,12 @@
       0
     TRUE
 
-[] > int-zero-not-eq-to-float-zero
+[] > int-zero-eq-to-float-zero
   eq. > @
     eq.
       0
       0.0
-    FALSE
+    TRUE
 
 [] > eq-true
   eq. > @
@@ -159,7 +151,6 @@
       123
       123
     TRUE
-    "check int.eq"
 
 [] > eq-false
   eq. > @
@@ -168,16 +159,11 @@
         123
         42
     TRUE
-    "check int.eq.not"
 
 [] > compares-two-different-types
   eq. > @
-    not.
-      eq.
-        42
-        "Hello!"
-    TRUE
-    "check int.eq.not string"
+    68.eq "12345678"
+    FALSE
 
 [] > calculates-fibonacci-number-with-recursion
   [n] > fibo
@@ -220,7 +206,7 @@
       [e]
         e > @
       nop
-    "The 1th argument of 'int.div' is invalid: division by zero is infinity"
+    "Can't divide by integer zero"
 
 # Checks that division by one returns the dividend
 [] > division-by-one
@@ -246,21 +232,6 @@
     1.div 5
     0
 
-[] > div-with-multiple
-  eq. > @
-    100.div 5 2 -5
-    -2
-
-[] > div-wrong-args
-  eq. > @
-    try
-      []
-        100.div 1 2 3.0 > @
-      [e]
-        e > @
-      nop
-    "The 3th argument of 'int.div' is not a(n) Long: 3.0"
-
 [] > to-bytes-and-backwards
   eq. > @
     as-int.
@@ -278,42 +249,7 @@
     42.as-bytes
     42
 
-[] > sum-up-several-arguments
-  eq. > @
-    1982
-    1000.plus 900 80 2
-
-[] > sum-up-wrong-args
-  eq. > @
-    try
-      []
-        100.plus 1 2 3.0 > @
-      [e]
-        e > @
-      nop
-    "The 3th argument of 'int.plus' is not a(n) Long: 3.0"
-
-[] > multiply-several-arguments
-  eq. > @
-    1000.times 2 5
-    10000
-
-[] > multiply-wrong-args
-  eq. > @
-    try
-      []
-        100.times 1 2 3.0 > @
-      [e]
-        e > @
-      nop
-    "The 3th argument of 'int.times' is not a(n) Long: 3.0"
-
 [] > multiply-by-zero
   eq. > @
     1000.times 0
     0
-
-[] > minus-multiple-args
-  eq. > @
-    123.minus -12 135 235 0
-    -235

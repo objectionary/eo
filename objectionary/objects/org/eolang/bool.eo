@@ -23,10 +23,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.32.0
-+version 0.32.0
++rt jvm org.eolang:eo-runtime:0.33.0
++version 0.33.0
 
-[] > bool
+[as-bytes] > bool
+  as-bytes > @
+
   # Equal to another object?
   [x] > eq
     eq. > @
@@ -34,7 +36,7 @@
       x.as-bytes
 
   # If true, return "t", otherwise "f"
-  [t f] > if /t
+  [t f] > if /?
 
   # NOT
   [] > not
@@ -43,10 +45,24 @@
       FALSE
 
   # AND
-  [x...] > and /bool
+  [x] > and
+    if. > @
+      ^
+      if.
+        x
+        TRUE
+        FALSE
+      FALSE
 
   # OR
-  [x...] > or /bool
+  [x] > or
+    if. > @
+      ^
+      TRUE
+      if.
+        x
+        TRUE
+        FALSE
 
   # While this is true copies the object
   # with "i" as the position of the cycle. The result
@@ -54,10 +70,3 @@
   # ^ condition was never TRUE. The \rho of the object
   # copied will be set to "while.\rho".
   [f] > while /int
-
-  # Converts this to bytes
-  [] > as-bytes
-    if. > @
-      ^
-      01-
-      00-

@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.32.0
++version 0.33.0
 
 [] > makes-tuple-through-special-syntax
   eq. > @
@@ -75,30 +75,22 @@
       arr.at 1
       2
 
-[] > tuple-with-in-seq
-  [a] > foo
-    seq > @
-      a.with "hi" > t
-      t
-  seq > @
-    foo
-      * 1 2 3
-    TRUE
-
 [] > tuple-with
   with. > arr!
     * 1 2 3
     "with"
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
-    eq.
-      arr.at 2
-      3
+    and.
+      and.
+        eq.
+          arr.at 0
+          1
+        eq.
+          arr.at 1
+          2
+      eq.
+        arr.at 2
+        3
     eq.
       arr.at 3
       "with"
@@ -113,17 +105,18 @@
       [e]
         e > @
       nop
-    "Can't #at(20) the 21th element of the tuple, there are just 4 of them"
+    "Given index is out of tuple bounds"
 
 [] > tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
@@ -134,45 +127,48 @@
   .with 2
   .with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
 
 [] > gets-lengths-of-empty-tuple
-  tuple > a
+  tuple.empty > a
   eq. > @
     a.length
     0
 
 [] > gets-lengths-of-empty-tuple-without-additional-obj
   eq. > @
-    tuple.length
+    tuple.empty.length
     0
 
 [] > creates-empty-tuple-with-number
-  tuple.with 3 > a
+  tuple.empty.with 3 > a
   eq. > @
     a.at 0
     3
 
 [] > tuple-empty-fluent-with-indented-keyword
   tuple
+  .empty
   .with 1
   .with 2
   .with 3 > arr
   and. > @
-    eq.
-      arr.at 0
-      1
-    eq.
-      arr.at 1
-      2
+    and.
+      eq.
+        arr.at 0
+        1
+      eq.
+        arr.at 1
+        2
     eq.
       arr.at 2
       3
@@ -198,4 +194,4 @@
       [e]
         e > @
       nop
-    "Can't #at(-6) the -1th element of the tuple"
+    "Given index is out of tuple bounds"

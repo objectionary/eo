@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.32.0
++version 0.33.0
 
 [] > allocates-and-uses
   "Hello, друг!" > txt
@@ -89,12 +89,13 @@
   p2.sub 1 > p3
   eq. > @
     and.
-      (p1.block 6).write ("HELLO!".as-bytes)
-      eq.
-        p2.block
-          2
-          [b] (b.as-string > @)
-        "O!"
+      and.
+        (p1.block 6).write ("HELLO!".as-bytes)
+        eq.
+          p2.block
+            2
+            [b] (b.as-string > @)
+          "O!"
       eq.
         p3.block
           2

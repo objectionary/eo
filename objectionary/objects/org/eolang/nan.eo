@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.32.0
-+version 0.32.0
++rt jvm org.eolang:eo-runtime:0.33.0
++version 0.33.0
 
 # Not a number
 [] > nan
@@ -51,11 +51,11 @@
     FALSE > @
 
   # Multiplication of $ and x
-  [x...] > times
+  [x] > times
     ^ > @
 
   # Sum of $ and x
-  [x...] > plus
+  [x] > plus
     ^ > @
 
   # Negation of $
@@ -63,9 +63,9 @@
     ^ > @
 
   # Difference between $ and x
-  [x...] > minus
+  [x] > minus
     ^ > @
 
   # Quotient of the division of $ by x
-  [x...] > div
+  [x] > div
     ^ > @

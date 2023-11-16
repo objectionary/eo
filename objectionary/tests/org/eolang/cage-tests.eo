@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.32.0
++version 0.33.0
 
 [] > writes-into-cage
   [z] > a
@@ -106,10 +106,9 @@
   eq. > @
     seq
       cage > c
-        [x]
+        []
           112 > @
       c.@
-        42
     112
 
 [] > multi-layer-volatility
