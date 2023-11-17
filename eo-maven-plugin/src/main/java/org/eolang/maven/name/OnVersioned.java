@@ -116,6 +116,6 @@ public final class OnVersioned implements ObjectName {
 
     @Override
     public String toString() {
-        return this.name.value().toString();
+        return String.valueOf(this.name.value());
     }
 }
