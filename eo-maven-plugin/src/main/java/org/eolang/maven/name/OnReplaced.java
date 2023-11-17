@@ -45,17 +45,6 @@ import org.eolang.maven.hash.CommitHashesMap;
 public final class OnReplaced implements ObjectName {
 
     /**
-     * Delimiter between name and hash in EO object name.
-     * @todo #2463:30min Remove static constant DELIMITER.
-     * The static constant DELIMITER was hidden in the {@link DelimitedName} class
-     * and {@link OnReplaced} was switched to the new delimiting approach.
-     * Switch from DELIMITER to {@link DelimitedName} all the other classes, such as
-     * {@link OnVersioned}, {@link OnDefault} and
-     * {@link org.eolang.maven.Place#make(java.nio.file.Path, String)}.
-     */
-    public static final String DELIMITER = "|";
-
-    /**
      * Default hashes.
      */
     private static final Map<String, CommitHash> DEFAULT = new CommitHashesMap();

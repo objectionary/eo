@@ -25,8 +25,8 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
+import org.eolang.maven.name.DelimitedName;
 import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.name.OnReplaced;
 
 /**
  * Make the place for the object.
@@ -38,7 +38,7 @@ public final class Place {
     /**
      * The name of the object, e.g. "org.eolang.io.stdout"
      */
-    private final String name;
+    private final DelimitedName name;
 
     /**
      * Ctor.
@@ -53,7 +53,7 @@ public final class Place {
      * @param obj The name of the object
      */
     public Place(final String obj) {
-        this.name = obj;
+        this.name = new DelimitedName(obj);
     }
 
     /**
@@ -64,18 +64,15 @@ public final class Place {
      */
     public Path make(final Path dir, final String ext) {
         final StringBuilder out = new StringBuilder();
-        final String[] versioned = this.name.split(String.format("\\%s", OnReplaced.DELIMITER));
-        if (versioned.length > 1) {
-            out.append(versioned[0].replace(".", File.separator));
-            out.append('_');
-            out.append(versioned[1]);
-        } else {
-            out.append(this.name.replace(".", File.separator));
-        }
+        out.append(this.name.title().replace(".", File.separator));
+        this.name.label().ifPresent(
+            version -> {
+                out.append('_');
+                out.append(version);
+            });
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }
         return dir.resolve(out.toString());
     }
-
 }

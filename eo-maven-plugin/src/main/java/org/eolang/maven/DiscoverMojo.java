@@ -35,6 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.name.DelimitedName;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.name.OnReplaced;
@@ -128,19 +129,20 @@ public final class DiscoverMojo extends SafeMojo {
                 new Filtered<>(
                     name -> !name.isEmpty(),
                     xml.xpath(
-                        String.join(
-                            "",
-                            "//o[",
-                            "not(starts-with(@base,'.'))",
-                            " and @base != 'Q'",
-                            " and @base != '^'",
-                            " and @base != '$'",
-                            " and @base != '&'",
-                            " and not(@ref)",
-                            "]/string-join((@base,@ver),'",
-                            OnReplaced.DELIMITER,
+                        new DelimitedName(
+                            String.join(
+                                "",
+                                "//o[",
+                                "not(starts-with(@base,'.'))",
+                                " and @base != 'Q'",
+                                " and @base != '^'",
+                                " and @base != '$'",
+                                " and @base != '&'",
+                                " and not(@ref)",
+                                "]/string-join((@base,@ver),'"
+                            ),
                             "')"
-                        )
+                        ).toString()
                     )
                 )
             )
@@ -159,13 +161,14 @@ public final class DiscoverMojo extends SafeMojo {
      */
     private ObjectName versioned(final String name, final String tojo) {
         final ObjectName replaced = new OnReplaced(name, this.hashes);
+        final DelimitedName delimited = new DelimitedName(tojo);
         return new OnSwap(
             this.withVersions,
             new OnSwap(
-                tojo.contains(OnReplaced.DELIMITER),
+                delimited.label().isPresent(),
                 new OnVersioned(
                     replaced,
-                    new OnDefault(tojo)::hash
+                    new OnDefault(delimited)::hash
                 ),
                 replaced
             )

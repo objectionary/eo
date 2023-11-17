@@ -102,14 +102,14 @@ final class OnReplacedTest {
     @Test
     void convertsToStringWithNonEmptyVersion() {
         final ObjectName name = new OnReplaced(
-            String.join(OnReplaced.DELIMITER, OnReplacedTest.STRING, "0.23.17"),
+            new DelimitedName(OnReplacedTest.STRING, "0.23.17").toString(),
             new CommitHashesMap.Fake()
         );
         MatcherAssert.assertThat(
             String.format("Can't convert versioned object %s to string", name),
             name.toString(),
             Matchers.equalTo(
-                String.join(OnReplaced.DELIMITER, OnReplacedTest.STRING, "15c85d7")
+                new DelimitedName(OnReplacedTest.STRING, "15c85d7").toString()
             )
         );
     }
@@ -136,7 +136,7 @@ final class OnReplacedTest {
             String.format("Couldn't convert versioned object %s to string", name),
             name.toString(),
             Matchers.equalTo(
-                String.join(OnReplaced.DELIMITER, OnReplacedTest.STRING, "9c93528")
+                new DelimitedName(OnReplacedTest.STRING, "9c93528").toString()
             )
         );
     }
