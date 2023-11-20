@@ -24,6 +24,7 @@
 package org.eolang;
 
 import com.yegor256.Jaxec;
+import com.yegor256.Jhome;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -179,7 +180,7 @@ final class MainTest {
 
     private static String exec(final String... cmds) {
         final String stdout = new Jaxec(
-            new Jhome().path("bin/java"),
+            new Jhome().path("bin/java").toString(),
             "-Dfile.encoding=UTF-8",
             "-Dsun.stdout.encoding=UTF-8",
             "-Dsun.stderr.encoding=UTF-8",

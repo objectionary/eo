@@ -24,6 +24,7 @@
 package org.eolang.maven.it;
 
 import com.yegor256.Jaxec;
+import com.yegor256.Jhome;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
