@@ -58,6 +58,7 @@ import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.rust.Names;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -241,6 +242,10 @@ public final class FakeMaven {
                 new File("../eo-runtime/src/main/rust/eo")
             );
             this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
+            this.params.putIfAbsent(
+                "names",
+                new Names(((File) this.params.get("namesDir")).toPath())
+            );
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
         }
         final Moja<T> moja = new Moja<>(mojo);

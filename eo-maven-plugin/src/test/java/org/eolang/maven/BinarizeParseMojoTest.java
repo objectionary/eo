@@ -64,7 +64,7 @@ final class BinarizeParseMojoTest {
             Names.PREFIX
         );
         final String rust = String.format(
-            "target/binarize/codes/%s.rs",
+            "target/Lib/%s/src/foo.rs",
             function
         );
         MatcherAssert.assertThat(
@@ -106,11 +106,11 @@ final class BinarizeParseMojoTest {
             .execute(new FakeMaven.BinarizeParse())
             .result();
         final String one = String.format(
-            "target/binarize/codes/%s0.rs",
+            "target/Lib/%s0/src/foo.rs",
             Names.PREFIX
         );
         final String two = String.format(
-            "target/binarize/codes/%s1.rs",
+            "target/Lib/%s1/src/foo.rs",
             Names.PREFIX
         );
         MatcherAssert.assertThat(
