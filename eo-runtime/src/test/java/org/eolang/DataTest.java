@@ -72,7 +72,6 @@ final class DataTest {
     }
 
     @Test
-    @Disabled
     void printsString() {
         MatcherAssert.assertThat(
             new Data.ToPhi("Hello,\nдруг!").toString(),
