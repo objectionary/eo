@@ -48,7 +48,7 @@ final class OnVersionedTest {
      * Test object.
      */
     private static final String OBJECT = String.join(
-        OnReplaced.DELIMITER,
+        "|",
         OnVersionedTest.STDOUT,
         OnVersionedTest.HASH
     );
@@ -104,11 +104,10 @@ final class OnVersionedTest {
 
     @Test
     void buildsFullNameWithGivenDefaultHash() {
-        final String built = String.join(
-            OnReplaced.DELIMITER,
+        final String built = new DelimitedName(
             OnVersionedTest.STDOUT,
             OnVersionedTest.FAKE.value()
-        );
+        ).toString();
         MatcherAssert.assertThat(
             String.format(
                 "Object %s as string with fake hash %s should have been equal to %s, but it didn't",

@@ -70,7 +70,7 @@ public final class DelimitedName {
      * Ctor.
      * @param concat Raw string.
      */
-    DelimitedName(final String concat) {
+    public DelimitedName(final String concat) {
         this(() -> concat);
     }
 
@@ -84,6 +84,15 @@ public final class DelimitedName {
                 () -> DELIMITER_REGEX.split(concat.value(), 2)
             )
         );
+    }
+
+    /**
+     * Ctor.
+     * @param title The title.
+     * @param label The optional label
+     */
+    public DelimitedName(final String title, final String label) {
+        this(title, Optional.of(label));
     }
 
     /**

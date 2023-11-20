@@ -37,12 +37,12 @@ class OnSwapTest {
     /**
      * First.
      */
-    private static final String FIRST = String.join(OnReplaced.DELIMITER, "stdout", "1234567");
+    private static final String FIRST = new DelimitedName("stdout", "1234567").toString();
 
     /**
      * Second.
      */
-    private static final String SECOND = String.join(OnReplaced.DELIMITER, "sprintf", "7654321");
+    private static final String SECOND = new DelimitedName("sprintf", "7654321").toString();
 
     /**
      * Fake hash.

@@ -33,38 +33,38 @@ import org.eolang.maven.hash.CommitHash;
 public final class OnDefault implements ObjectName {
 
     /**
-     * Raw string.
+     * Delimited name.
      */
-    private final String raw;
+    private DelimitedName name;
 
     /**
      * Ctor.
      * @param object Object name with hash.
      */
     public OnDefault(final String object) {
-        this.raw = object;
+        this(new DelimitedName(object));
+    }
+
+    /**
+     * Ctor.
+     * @param name Object name with hash.
+     */
+    public OnDefault(final DelimitedName name) {
+        this.name = name;
     }
 
     @Override
     public String value() {
-        return this.split()[0];
+        return this.name.title();
     }
 
     @Override
     public CommitHash hash() {
-        return new CommitHash.ChConstant(this.split()[1]);
+        return new CommitHash.ChConstant(this.name.label().get());
     }
 
     @Override
     public String toString() {
-        return this.raw;
-    }
-
-    /**
-     * Split raw to name and hash.
-     * @return Split raw
-     */
-    private String[] split() {
-        return this.raw.split(String.format("\\%s", OnReplaced.DELIMITER));
+        return this.name.toString();
     }
 }

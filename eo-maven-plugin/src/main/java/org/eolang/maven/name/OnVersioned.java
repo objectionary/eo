@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.name;
 
+import java.util.Optional;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.CommitHash;
@@ -36,14 +37,14 @@ import org.eolang.maven.hash.CommitHash;
 public final class OnVersioned implements ObjectName {
 
     /**
-     * Object with or without hash.
+     * Object name with or without hash.
      */
-    private final Unchecked<String> object;
+    private final Unchecked<DelimitedName> name;
 
     /**
-     * Default hash.
+     * Object parsed with or without hash.
      */
-    private final Unchecked<CommitHash> hsh;
+    private final DelimitedName parsed;
 
     /**
      * Ctor.
@@ -89,38 +90,32 @@ public final class OnVersioned implements ObjectName {
      * @param def Default hash if a version in full name is absent.
      */
     private OnVersioned(final Unchecked<String> object, final Unchecked<CommitHash> def) {
-        this.object = object;
-        this.hsh = def;
+        this.parsed = new DelimitedName(object.value());
+        this.name = new Unchecked<>(
+            () -> {
+                final DelimitedName res;
+                if (this.parsed.label().isPresent()) {
+                    res = this.parsed;
+                } else {
+                    res = new DelimitedName(object.value(), Optional.of(def.value().value()));
+                }
+                return res;
+            }
+        );
     }
 
     @Override
     public String value() {
-        return this.split()[0];
+        return this.name.value().title();
     }
 
     @Override
     public CommitHash hash() {
-        return new CommitHash.ChConstant(this.split()[1]);
+        return new CommitHash.ChConstant(this.name.value().label().orElse(""));
     }
 
     @Override
     public String toString() {
-        return String.join(
-            OnReplaced.DELIMITER,
-            this.split()[0],
-            this.split()[1]
-        );
-    }
-
-    /**
-     * Split a given object.
-     * @return Split object to name and hash.
-     */
-    private String[] split() {
-        String[] splt = this.object.value().split(String.format("\\%s", OnReplaced.DELIMITER));
-        if (splt.length == 1) {
-            splt = new String[]{splt[0], this.hsh.value().value()};
-        }
-        return splt;
+        return String.valueOf(this.name.value());
     }
 }
