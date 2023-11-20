@@ -461,16 +461,3 @@
               2
         build 2 > @
     9
-
-# @todo #2555:30min Enable the test when it's possible normalize object before application.
-#  Now this test does not work because we (arr.at 0).@ "returns" "if" from tuple.at which is
-#  wrong. Possibly we would need to extend EO syntax and phi calculus in order to be able to
-#  support such behavior.
-[] > application-to-abstract-inside-tuple
-  [x] > add
-    x.plus 1 > @
-  * add > arr
-  eq. > res
-    (arr.at 0).@ 5
-    6
-  nop > @
