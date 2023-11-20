@@ -179,7 +179,7 @@ final class SnippetTestCase {
      */
     private static void compileJava(final Path generated, final Path classes) {
         new Jaxec(
-            SnippetTestCase.jdkExecutable("javac"),
+            new Jhome().path("bin/javac").toString(),
             "-encoding", "utf-8",
             new Walk(generated).stream()
                 .map(Path::toAbsolutePath)
@@ -202,7 +202,7 @@ final class SnippetTestCase {
         final Path classes) {
         return new Jaxec()
             .with(
-                SnippetTestCase.jdkExecutable("java"),
+                new Jhome().path("bin/java").toString(),
                 "-Dfile.encoding=UTF-8",
                 "-Dsun.stdout.encoding=UTF-8",
                 "-Dsun.stderr.encoding=UTF-8",
@@ -214,28 +214,6 @@ final class SnippetTestCase {
             .withHome(classes)
             .withStdin(stdin)
             .exec();
-    }
-
-    /**
-     * Locate executable inside JAVA_HOME.
-     * @param name Name of executable.
-     * @return Path to java executable.
-     */
-    private static String jdkExecutable(final String name) {
-        final String result;
-        final String relative = "%s/bin/%s";
-        final String property = System.getProperty("java.home");
-        if (property == null) {
-            final String environ = System.getenv("JAVA_HOME");
-            if (environ == null) {
-                result = name;
-            } else {
-                result = String.format(relative, environ, name);
-            }
-        } else {
-            result = String.format(relative, property, name);
-        }
-        return result;
     }
 
     /**

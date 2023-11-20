@@ -179,7 +179,7 @@ final class MainTest {
 
     private static String exec(final String... cmds) {
         final String stdout = new Jaxec(
-            MainTest.jdkExecutable("java"),
+            new Jhome().path("bin/java"),
             "-Dfile.encoding=UTF-8",
             "-Dsun.stdout.encoding=UTF-8",
             "-Dsun.stderr.encoding=UTF-8",
@@ -194,28 +194,6 @@ final class MainTest {
             ),
             ""
         );
-    }
-
-    /**
-     * Locate executable inside JAVA_HOME.
-     * @param name Name of executable.
-     * @return Path to java executable.
-     */
-    private static String jdkExecutable(final String name) {
-        final String result;
-        final String relative = "%s/bin/%s";
-        final String property = System.getProperty("java.home");
-        if (property == null) {
-            final String environ = System.getenv("JAVA_HOME");
-            if (environ == null) {
-                result = name;
-            } else {
-                result = String.format(relative, environ, name);
-            }
-        } else {
-            result = String.format(relative, property, name);
-        }
-        return result;
     }
 
 }
