@@ -89,12 +89,8 @@ public final class Dataized {
     /**
      * Take the object, no matter the type.
      * @return The data
-     * @todo #2437:30min Change signature of the method. The method returns what's inside the delta
-     *  attribute of the object. We got rid of delta attributes in data primitives so there's can be
-     *  only bytes inside delta attribute. That's why this method will always actually return
-     *  byte[]. Need to make a refactoring and make sure everything works fine.
      */
-    public Object take() {
+    public byte[] take() {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
         try {
@@ -112,7 +108,15 @@ public final class Dataized {
                     );
                 }
             }
-            final Object data = Data.class.cast(src).take();
+            final Object data = ((Data<?>) src).take();
+            if (! (data instanceof byte[])) {
+                throw new ExFailure(
+                    "data of must be %s, but was %s",
+                    this.phi.toString(),
+                    byte[].class,
+                    data.getClass()
+                );
+            }
             if (this.logger.isLoggable(Level.FINE)
                 && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
             ) {
@@ -127,7 +131,7 @@ public final class Dataized {
                     )
                 );
             }
-            return data;
+            return (byte[]) data;
         } finally {
             Dataized.LEVEL.set(before);
         }
@@ -140,7 +144,7 @@ public final class Dataized {
      * @return The data
      */
     public <T> T take(final Class<T> type) {
-        final byte[] weak = (byte[]) this.take();
+        final byte[] weak = this.take();
         final Object strong;
         if (type.equals(Long.class)) {
             strong = new BytesOf(weak).asNumber(Long.class);
