@@ -111,7 +111,7 @@ public final class Dataized {
             final Object data = Data.class.cast(src).take();
             if (!(data instanceof byte[])) {
                 throw new ExFailure(
-                    "data of must be %s, but was %s",
+                    "data of %s must be %s, but was %s",
                     this.phi.toString(),
                     byte[].class,
                     data.getClass()
