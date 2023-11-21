@@ -68,7 +68,7 @@ final class DataTest {
 
     @Test
     void printsString() {
-        byte[] input = "Hello,\nдруг!".getBytes(StandardCharsets.UTF_8);
+        final byte[] input = "Hello,\nдруг!".getBytes(StandardCharsets.UTF_8);
         final StringBuilder output = new StringBuilder(0);
         for (final byte elem : input) {
             if (output.length() > 0) {
@@ -77,8 +77,8 @@ final class DataTest {
             output.append(String.format("%02X", elem));
         }
         MatcherAssert.assertThat(
-                new Data.ToPhi(input).toString(),
-                Matchers.containsString(output.toString())
+            new Data.ToPhi(input).toString(),
+            Matchers.containsString(output.toString())
         );
     }
 
