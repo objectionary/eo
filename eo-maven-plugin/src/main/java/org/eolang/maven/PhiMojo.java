@@ -69,16 +69,18 @@ public final class PhiMojo extends SafeMojo {
 
     /**
      * The directory where to take xmir files for translation from.
+     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         property = "phiInputDir",
         required = true,
-        defaultValue = "${project.build.directory}/eo/" + OptimizeMojo.DIR
+        defaultValue = "${project.build.directory}/eo/2-optimize"
     )
     private File phiInputDir;
 
     /**
      * The directory where to save phi files to.
+     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         property = "phiOutputDir",
@@ -101,7 +103,7 @@ public final class PhiMojo extends SafeMojo {
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
-                        home.save(this.translated(new TextOf(xmir)), relative);
+                        home.save(PhiMojo.translated(new TextOf(xmir)), relative);
                         Logger.info(
                             this,
                             "Translated to phi: %s -> %s",
@@ -117,10 +119,12 @@ public final class PhiMojo extends SafeMojo {
     }
 
     /**
-     * Translate given xmir to phi.
+     * Translate given xmir to phi calculus expression.
      * @param xmir Text of xmir
+     * @return Translated xmir
+     * @throws Exception If fail to translate
      */
-    private String translated(final Text xmir) throws Exception {
+    private static String translated(final Text xmir) throws Exception {
         return new XSLDocument(PhiMojo.TRANSLATION.asString()).applyTo(
             new XMLDocument(xmir.asString())
         );

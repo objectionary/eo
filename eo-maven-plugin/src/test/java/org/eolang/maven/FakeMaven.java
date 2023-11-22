@@ -193,6 +193,7 @@ public final class FakeMaven {
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
      * @throws java.io.IOException If some problem with filesystem has happened.
+     * @checkstyle ExecutableStatementCountCheck (100 lines)
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {

@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-java" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-phi" version="2.0">
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
   <xsl:variable name="delta">
@@ -103,9 +103,9 @@ SOFTWARE.
   <xsl:function name="eo:bytes">
     <xsl:param name="bts"/>
     <xsl:choose>
-      <xsl:when test="string-length($bts)>2">
+      <xsl:when test="string-length($bts)&gt;2">
         <xsl:for-each select="tokenize($bts, ' ')">
-          <xsl:if test="position()>1">
+          <xsl:if test="position()&gt;1">
             <xsl:text>-</xsl:text>
           </xsl:if>
           <xsl:value-of select="."/>
@@ -122,7 +122,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:comma">
     <xsl:param name="pos"/>
-    <xsl:if test="$pos>1">
+    <xsl:if test="$pos&gt;1">
       <xsl:text>, </xsl:text>
     </xsl:if>
   </xsl:function>
@@ -155,7 +155,7 @@ SOFTWARE.
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:value-of select="eo:specials(@base)"/>
-        <xsl:if test="count(o)>0">
+        <xsl:if test="count(o)&gt;0">
           <xsl:text>(</xsl:text>
           <xsl:for-each select="o">
             <xsl:apply-templates select="." mode="application">
@@ -169,7 +169,7 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:apply-templates select="o[position()=1]"/>
         <xsl:value-of select="eo:specials(@base)"/>
-        <xsl:if test="count(o)>1">
+        <xsl:if test="count(o)&gt;1">
           <xsl:text>(</xsl:text>
           <xsl:for-each select="o[position()!=1]">
             <xsl:apply-templates select="." mode="application">
@@ -200,7 +200,7 @@ SOFTWARE.
       <xsl:value-of select="$lambda"/>
       <xsl:value-of select="$arrow"/>
       <xsl:text>lambda</xsl:text>
-      <xsl:if test="count(o)>0">
+      <xsl:if test="count(o)&gt;0">
         <xsl:text>, </xsl:text>
       </xsl:if>
     </xsl:if>
