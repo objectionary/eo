@@ -372,11 +372,6 @@ finisher
     | VERTEX
     ;
 
-// Something that can be spread
-spreadable
-    : (NAME | AT | RHO | SIGMA) COPY?
-    ;
-
 // Finisher with optional COPY
 finisherCopied
     : finisher COPY?
