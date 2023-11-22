@@ -36,7 +36,7 @@ SOFTWARE.
     hello > @
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and not(@base = //meta[head='alias']/part[1]) and @base != '@' and @base != 'Q' and @base != '^' and @base != '&amp;' and @base != '$']">
+  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and not(@base = //meta[head='alias']/part[1]) and @base != '@' and @base != 'Q' and @base != '^' and @base != '&amp;' and @base != '$' and @base != '&lt;']">
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:text>org.eolang.</xsl:text>

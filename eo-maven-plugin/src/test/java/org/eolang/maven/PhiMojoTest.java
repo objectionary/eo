@@ -24,34 +24,29 @@
 package org.eolang.maven;
 
 import java.nio.file.Path;
+import java.util.Map;
+import org.cactoos.text.TextOf;
+import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for {@link TranslateToPhiMojo}.
+ * Test cases for {@link PhiMojo}.
  *
- * @since 0.32
- * @todo #2535:30min Enable tests:
- *  {@link TranslateToPhiMojoTest#checksExistence(java.nio.file.Path)}
- *  and {@link TranslateToPhiMojoTest#checksPhiCalculusExpression(java.nio.file.Path)}.
- *  Also it's better to add more test cases in different EO programs with corresponding Phi-calculus
- *  expressions.
+ * @since 0.33.0
  */
-class TranslateToPhiMojoTest {
-
-    /**
-     * Checks that file exist.
-     *
-     * @param temp Temporary directory.
-     * @throws Exception
-     */
+class PhiMojoTest {
     @Test
-    @Disabled
-    void checksExistence(@TempDir final Path temp) throws Exception {
+    void createsFiles(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
+            String.format(
+                "There' should be file with .%s extension after translation to phi, but there isn't",
+                PhiMojo.EXT
+            ),
             new FakeMaven(temp)
                 .withProgram(
                     "[] > cart",
@@ -60,43 +55,25 @@ class TranslateToPhiMojoTest {
                     "    total.write > @",
                     "      total.plus i"
                 )
-                .execute(new FakeMaven.TranslateToPhi())
+                .execute(new FakeMaven.Phi())
                 .result(),
-            Matchers.hasKey(
-                String.format("target/%s/cart.%s", TranslateToPhiMojo.DIR, TranslateToPhiMojo.EXT)
-            )
+            Matchers.hasKey(String.format("target/phi/foo/x/main.%s", PhiMojo.EXT))
         );
     }
 
-    /**
-     * Generate phi-calculus expression by XMIR.
-     *
-     * @param temp Temporary directory.
-     * @throws Exception
-     */
-    @Test
-    @Disabled
-    void checksPhiCalculusExpression(@TempDir final Path temp) throws Exception {
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
+    void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
+        final Map<String, Object> map = new Yaml().load(pack);
         MatcherAssert.assertThat(
-            new FakeMaven(temp)
-                .withProgram(
-                    "[] > holder",
-                    "  103 > storage"
-                )
-                .execute(new FakeMaven.TranslateToPhi())
-                .result()
-                .get(
-                    String.format(
-                        "target/%s/holder.%s",
-                        TranslateToPhiMojo.DIR,
-                        TranslateToPhiMojo.EXT
-                    )
-                )
-                .toFile()
-                .toString(),
-            Matchers.equalTo(
-                "holder ↦ ⟦ storage ↦ 103 ⟧"
-            )
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(map.get("eo").toString())
+                    .execute(new FakeMaven.Phi())
+                    .result()
+                    .get("target/phi/foo/x/main.phi")
+            ).asString(),
+            Matchers.equalTo(map.get("phi").toString())
         );
     }
 }

@@ -193,15 +193,17 @@ public final class FakeMaven {
      * @param <T> Template for descendants of Mojo.
      * @return Workspace after executing Mojo.
      * @throws java.io.IOException If some problem with filesystem has happened.
+     * @checkstyle ExecutableStatementCountCheck (100 lines)
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
+            final Path transpiled = Paths.get("transpiled");
+            final Path placed = Paths.get("placed.json");
+            this.workspace.save(new TextOf(""), transpiled);
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
-            final Path transpiled = Paths.get("transpiled");
-            this.workspace.save(new TextOf(""), transpiled);
             this.params.putIfAbsent("transpiled", this.workspace.absolute(transpiled).toFile());
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
@@ -210,7 +212,6 @@ public final class FakeMaven {
             this.params.putIfAbsent("ignoreVersionConflicts", false);
             this.params.putIfAbsent("ignoreTransitive", true);
             this.params.putIfAbsent("central", new DummyCentral());
-            final Path placed = Paths.get("placed.json");
             this.params.putIfAbsent("placed", this.workspace.absolute(placed).toFile());
             this.params.putIfAbsent("placedFormat", "json");
             this.params.putIfAbsent(
@@ -242,6 +243,16 @@ public final class FakeMaven {
             );
             this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
+            this.params.putIfAbsent(
+                "phiInputDir",
+                this.workspace.absolute(
+                    Paths.get(String.format("target/%s", OptimizeMojo.DIR))
+                ).toFile()
+            );
+            this.params.putIfAbsent(
+                "phiOutputDir",
+                this.workspace.absolute(Paths.get("target/phi")).toFile()
+            );
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -693,17 +704,15 @@ public final class FakeMaven {
     /**
      * Translates EO program to Phi-calculus expression.
      *
-     * @since 0.32
+     * @since 0.33.0
      */
-    static final class TranslateToPhi implements Iterable<Class<? extends AbstractMojo>> {
-
+    static final class Phi implements Iterable<Class<? extends AbstractMojo>> {
         @Override
         public Iterator<Class<? extends AbstractMojo>> iterator() {
             return Arrays.<Class<? extends AbstractMojo>>asList(
                 ParseMojo.class,
                 OptimizeMojo.class,
-                ShakeMojo.class,
-                TranslateToPhiMojo.class
+                PhiMojo.class
             ).iterator();
         }
     }

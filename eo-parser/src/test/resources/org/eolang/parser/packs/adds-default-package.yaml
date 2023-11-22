@@ -11,6 +11,7 @@ tests:
   - //o[@base='$']
   - //o[@base='^']
   - //o[@base='Q']
+  - //o[@base='<']
 eo: |
   +alias foo
   +alias scanner org.eolang.txt.scanner
@@ -26,3 +27,4 @@ eo: |
       ^.i
       foo
       Q.org.eolang.random
+      <
