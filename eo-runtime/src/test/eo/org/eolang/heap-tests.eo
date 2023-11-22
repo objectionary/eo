@@ -36,8 +36,9 @@
     [b] (b.as-string > @)
   eq. > @
     seq
-      data.write bytes
-      data
+      *
+        data.write bytes
+        data
     txt
 
 [] > malloc-returns-different-pointers

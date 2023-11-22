@@ -81,17 +81,19 @@
 [] > complex-bool-expression-in-while
   memory 0 > m
   seq > res
-    m.write 5
-    while.
-      eq.
-        m.as-int.gt 0
-        TRUE
-      [i]
-        seq > @
-          m.write
-            m.as-int.minus 1
+    *
+      m.write 5
+      while.
+        eq.
+          m.as-int.gt 0
           TRUE
-    TRUE
+        [i]
+          seq > @
+            *
+              m.write
+                m.as-int.minus 1
+              TRUE
+      TRUE
   nop > @
 
 [] > last-while-dataization-object
@@ -101,21 +103,23 @@
       x.as-int.lt 2
       [i]
         seq > @
-          x.write (x.as-int.plus 1)
-          x.as-int
+          *
+            x.write (x.as-int.plus 1)
+            x.as-int
     3
 
 [] > while-without-last-dataization
   memory 0 > x
   eq. > @
     seq
-      while.
-        x.as-int.lt 2
-        [i]
-          x.write (x.as-int.plus 1) > @
-      .@
-      .<
-      x.as-int
+      *
+        while.
+          x.as-int.lt 2
+          [i]
+            x.write (x.as-int.plus 1) > @
+        .@
+        .<
+        x.as-int
     2
 
 [] > last-while-dataization-object-with-false-condition
@@ -125,6 +129,7 @@
       x.as-int.lt 1
       [i]
         seq > @
-          x.write (x.as-int.plus 1)
-          x
+          *
+            x.write (x.as-int.plus 1)
+            x
     FALSE

@@ -30,9 +30,10 @@
   memory 0.0 > counter
   lt. > @
     seq
-      counter.write
-        counter.as-float.plus 1.0
-      counter.as-float
+      *
+        counter.write
+          counter.as-float.plus 1.0
+        counter.as-float
     2.0
 
 [] > seq-single-dataization-float-greater-than-test
@@ -40,25 +41,28 @@
   not. > @
     gt.
       seq
-        counter.write
-          counter.as-float.plus 1.0
-        counter.as-float
+        *
+          counter.write
+            counter.as-float.plus 1.0
+          counter.as-float
       1.1
 
 [] > seq-single-dataization-int-less-than-test
   memory 0 > counter
   lt. > @
     seq
-      counter.write
-        counter.as-int.plus 1
-      counter.as-int
+      *
+        counter.write
+          counter.as-int.plus 1
+        counter.as-int
     2
 
 [] > seq-single-dataization-int-greater-than-test
   memory 0 > counter
   lte. > @
     seq
-      counter.write
-        counter.as-int.plus 1
-      counter.as-int
+      *
+        counter.write
+          counter.as-int.plus 1
+        counter.as-int
     1

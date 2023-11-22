@@ -29,9 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
-import org.eolang.AtVararg;
 import org.eolang.Attr;
-import org.eolang.Bytes;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
