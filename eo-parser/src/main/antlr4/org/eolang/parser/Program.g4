@@ -65,7 +65,7 @@ inners
 // Attributes of an abstract object, atom or horizontal anonym object
 attributes
     : LSQ
-      attribute? (SPACE attribute)*
+      (attribute (SPACE attribute)*)?
       RSQ
     ;
 
