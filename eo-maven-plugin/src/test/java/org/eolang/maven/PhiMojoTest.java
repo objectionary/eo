@@ -65,13 +65,13 @@ class PhiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
     void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
-        final Map<String, Path> res = new FakeMaven(temp)
-            .withProgram(map.get("eo").toString())
-            .execute(new FakeMaven.Phi())
-            .result();
         MatcherAssert.assertThat(
             new TextOf(
-                res.get("target/phi/foo/x/main.phi")
+                new FakeMaven(temp)
+                    .withProgram(map.get("eo").toString())
+                    .execute(new FakeMaven.Phi())
+                    .result()
+                    .get("target/phi/foo/x/main.phi")
             ).asString(),
             Matchers.equalTo(map.get("phi").toString())
         );
