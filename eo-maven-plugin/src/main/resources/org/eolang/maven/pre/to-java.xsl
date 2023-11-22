@@ -225,11 +225,6 @@ SOFTWARE.
     <xsl:apply-templates select="*"/>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="vararg">
-    <xsl:text>new AtVararg(</xsl:text>
-    <xsl:apply-templates select="*"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
   <xsl:template match="bound">
     <xsl:text>new AtOnce(</xsl:text>
     <xsl:text>new AtComposite(this, rho -&gt; {</xsl:text>
@@ -367,14 +362,6 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
-    <xsl:if test="@unvar">
-      <xsl:value-of select="$indent"/>
-      <xsl:value-of select="$name"/>
-      <xsl:text> = new PhUnvar(</xsl:text>
-      <xsl:value-of select="$name"/>
-      <xsl:text>);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
   </xsl:template>
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>

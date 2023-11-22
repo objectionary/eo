@@ -27,8 +27,8 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtFree;
 import org.eolang.AtLambda;
-import org.eolang.AtVararg;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -54,7 +54,7 @@ public class EOseq extends PhDefault {
      */
     public EOseq(final Phi sigma) {
         super(sigma);
-        this.add("steps", new AtVararg());
+        this.add("steps", new AtFree());
         this.add(
             Attr.LAMBDA,
             new AtLambda(
@@ -74,10 +74,9 @@ public class EOseq extends PhDefault {
                     }
                     final Phi ret;
                     if (length > 0) {
-                        ret = new PhWith(
-                            args.attr("at").get().copy(),
-                            0, new Data.ToPhi(length - 1)
-                        );
+                        final Phi last = args.attr("at").get().copy();
+                        last.attr(0).put(new Data.ToPhi(length - 1));
+                        ret = last;
                     } else {
                         ret = new Data.ToPhi(false);
                     }

@@ -37,26 +37,29 @@
   memory 0 > x
   eq. > @
     seq
-      x.write 10
-      x
+      *
+        x.write 10
+        x
     10
 
 [] > double-writes
   memory "1234567890123" > m
   eq. > @
     seq
-      m.write "Hello, world!"
-      m.write 42
-      m
+      *
+        m.write "Hello, world!"
+        m.write 42
+        m
     42
 
 [] > rewrites-and-increments-itself
   memory 0 > m
   eq. > @
     seq
-      m.write 1
-      m.write (m.as-int.plus 5)
-      m
+      *
+        m.write 1
+        m.write (m.as-int.plus 5)
+        m
     6
 
 [] > memory-in-outer-scope
@@ -64,10 +67,11 @@
     memory 0 > x
   outer > a
   seq > @
-    a.x.write 1
-    eq.
-      a.x.as-int
-      1
+    *
+      a.x.write 1
+      eq.
+        a.x.as-int
+        1
 
 [] > writes-into-two-memory-objects
   memory 0 > a
@@ -75,10 +79,11 @@
   eq. > @
     and.
       seq
-        a.write 10
-        eq.
-          b.write 20
-          20
+        *
+          a.write 10
+          eq.
+            b.write 20
+            20
       a.eq 10
     TRUE
 
@@ -87,9 +92,10 @@
   memory 0 > b
   eq. > @
     seq
-      a.write 10
-      b.write 20
-      a
+      *
+        a.write 10
+        b.write 20
+        a
     10
 
 [] > memory-is-strictly-typed-bool-error-overflow
