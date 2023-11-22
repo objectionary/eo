@@ -68,17 +68,23 @@ final class DataTest {
 
     @Test
     void printsString() {
-        final byte[] input = "Hello,\nдруг!".getBytes(StandardCharsets.UTF_8);
-        final StringBuilder output = new StringBuilder(0);
-        for (final byte elem : input) {
-            if (output.length() > 0) {
-                output.append('-');
+        final String input = "Hello,\nдруг!";
+        final byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
+        final StringBuilder expected = new StringBuilder(0);
+        for (final byte elem : input.getBytes(StandardCharsets.UTF_8)) {
+            if (expected.length() > 0) {
+                expected.append('-');
             }
-            output.append(String.format("%02X", elem));
+            expected.append(String.format("%02X", elem));
         }
         MatcherAssert.assertThat(
-            new Data.ToPhi(input).toString(),
-            Matchers.containsString(output.toString())
+            String.format(
+                "Expected input string was \"%s\" with byte representation \"%s\".",
+                input,
+                expected
+            ),
+            new Data.ToPhi(bytes).toString(),
+            Matchers.containsString(expected.toString())
         );
     }
 
