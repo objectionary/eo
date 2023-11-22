@@ -767,35 +767,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterSpreadable(final ProgramParser.SpreadableContext ctx) {
-        this.startObject(ctx);
-        final String base;
-        if (ctx.NAME() != null) {
-            base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
-            base = "@";
-        } else if (ctx.RHO() != null) {
-            base = "^";
-        } else if (ctx.SIGMA() != null) {
-            base = "&";
-        } else {
-            base = "";
-        }
-        if (!base.isEmpty()) {
-            this.objects.prop("base", base);
-        }
-        if (ctx.COPY() != null) {
-            this.objects.prop("copy");
-        }
-    }
-
-    @Override
-    public void exitSpreadable(final ProgramParser.SpreadableContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
     public void enterFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
         // Nothing here
     }
