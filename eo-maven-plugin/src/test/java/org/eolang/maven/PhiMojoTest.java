@@ -36,8 +36,7 @@ import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link PhiMojo}.
- *
- * @since 0.33.0
+ * @since 0.34.0
  */
 class PhiMojoTest {
     @Test
@@ -66,6 +65,10 @@ class PhiMojoTest {
     void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         MatcherAssert.assertThat(
+            String.format(
+                "Result phi expression should be equal to %s, but it doesn't",
+                map.get("phi").toString()
+            ),
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(map.get("eo").toString())
