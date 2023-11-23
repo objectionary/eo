@@ -25,6 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="to-phi" version="2.0">
   <xsl:output encoding="UTF-8" method="text"/>
   <!-- Variables -->
+  <xsl:variable name="aliases" select="program/metas/meta/part[last()]"/>
   <xsl:variable name="xi">
     <select>ξ</select>
   </xsl:variable>
@@ -123,6 +124,11 @@ SOFTWARE.
         <xsl:value-of select="$program"/>
       </xsl:when>
       <xsl:when test="starts-with($n, 'org.eolang')">
+        <xsl:value-of select="$program"/>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$n"/>
+      </xsl:when>
+      <xsl:when test="$aliases[text()=$n]">
         <xsl:value-of select="$program"/>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$n"/>

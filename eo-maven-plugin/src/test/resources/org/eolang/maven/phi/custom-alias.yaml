@@ -1,0 +1,7 @@
+eo: |
+  +package foo.bar
+  +alias com.yegor256.x
+  
+  [y] > main
+    x y > z
+phi: ""{foo ↦ ⟦bar ↦ ⟦main ↦ ⟦y ↦ ∅, z ↦ Φ.com.yegor256.x(α0 ↦ ξ.y)⟧⟧⟧}""
