@@ -143,19 +143,22 @@ SOFTWARE.
     <xsl:text>{</xsl:text>
     <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
     <xsl:variable name="parts" select="tokenize(metas/meta[head[text()='package']]/tail[1], '\.')"/>
-    <xsl:if test="$has-package">
-      <xsl:for-each select="$parts">
-        <xsl:value-of select="."/>
-        <xsl:value-of select="$arrow"/>
-        <xsl:value-of select="$lb"/>
-      </xsl:for-each>
-    </xsl:if>
-    <xsl:apply-templates select="objects"/>
-    <xsl:if test="$has-package">
-      <xsl:for-each select="$parts">
-        <xsl:value-of select="$rb"/>
-      </xsl:for-each>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="$has-package">
+        <xsl:for-each select="$parts">
+          <xsl:value-of select="."/>
+          <xsl:value-of select="$arrow"/>
+          <xsl:value-of select="$lb"/>
+        </xsl:for-each>
+        <xsl:apply-templates select="objects"/>
+        <xsl:for-each select="$parts">
+          <xsl:value-of select="$rb"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="objects"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>}</xsl:text>
   </xsl:template>
   <!-- Objects  -->
