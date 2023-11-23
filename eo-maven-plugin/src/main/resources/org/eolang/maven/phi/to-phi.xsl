@@ -53,10 +53,14 @@ SOFTWARE.
     <select>ν</select>
   </xsl:variable>
   <xsl:variable name="arrow">
-    <select> ↦ </select>
+    <xsl:text> </xsl:text>
+    <select>↦</select>
+    <xsl:text> </xsl:text>
   </xsl:variable>
   <xsl:variable name="dashed-arrow">
-    <select> ⤍ </select>
+    <xsl:text> </xsl:text>
+    <select>⤍</select>
+    <xsl:text> </xsl:text>
   </xsl:variable>
   <xsl:variable name="lb">
     <select>⟦</select>
@@ -192,29 +196,26 @@ SOFTWARE.
     <xsl:value-of select="$empty"/>
   </xsl:template>
   <!-- Find path template -->
-  <xsl:template match="o" mode="path">
+  <xsl:template match="*" mode="path">
     <xsl:param name="find"/>
-    <xsl:variable name="parent" select="parent::o"/>
+    <xsl:variable name="parent" select="parent::*"/>
+    <xsl:variable name="rho-dot">
+      <xsl:value-of select="eo:specials('^', true())"/>
+      <xsl:text>.</xsl:text>
+    </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$parent[not(@abstract)]">
+      <xsl:when test="$parent[@abstract]">
+        <xsl:if test="not($parent/o[@name=$find])">
+          <xsl:value-of select="$rho-dot"/>
+          <xsl:apply-templates select="$parent" mode="path">
+            <xsl:with-param name="find" select="$find"/>
+          </xsl:apply-templates>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="not($parent[name()='objects'])">
         <xsl:apply-templates select="$parent" mode="path">
           <xsl:with-param name="find" select="$find"/>
         </xsl:apply-templates>
-      </xsl:when>
-      <xsl:when test="$parent[@abstract]">
-        <xsl:choose>
-          <xsl:when test="@base=$find">
-            <xsl:value-of select="eo:specials('^', true())"/>
-            <xsl:text>.</xsl:text>
-          </xsl:when>
-          <xsl:when test="not(o[@base=$find])">
-            <xsl:value-of select="eo:specials('^', true())"/>
-            <xsl:text>.</xsl:text>
-            <xsl:apply-templates select="$parent" mode="path">
-              <xsl:with-param name="find" select="$find"/>
-            </xsl:apply-templates>
-          </xsl:when>
-        </xsl:choose>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
