@@ -3,4 +3,4 @@ eo: |
   [] > outer
     [] > inner /bytes
 phi:
-  "[main ↦ [λ ↦ lambda], outer ↦ [inner ↦ [λ ↦ lambda]]]"
+  "{main ↦ ⟦λ ⤍ Lambda⟧, outer ↦ ⟦inner ↦ ⟦λ ⤍ Lambda⟧⟧}"

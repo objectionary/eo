@@ -52,6 +52,18 @@ SOFTWARE.
   <xsl:variable name="arrow">
     <select> ↦ </select>
   </xsl:variable>
+  <xsl:variable name="dashed-arrow">
+    <select> ⤍ </select>
+  </xsl:variable>
+  <xsl:variable name="lb">
+    <select>⟦</select>
+  </xsl:variable>
+  <xsl:variable name="rb">
+    <select>⟧</select>
+  </xsl:variable>
+  <xsl:variable name="empty">
+    <select>∅</select>
+  </xsl:variable>
   <!-- Functions -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
@@ -128,9 +140,23 @@ SOFTWARE.
   </xsl:function>
   <!-- Program -->
   <xsl:template match="program">
-    <xsl:text>[</xsl:text>
+    <xsl:text>{</xsl:text>
+    <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
+    <xsl:variable name="parts" select="tokenize(metas/meta[head[text()='package']]/tail[1], '\.')"/>
+    <xsl:if test="$has-package">
+      <xsl:for-each select="$parts">
+        <xsl:value-of select="."/>
+        <xsl:value-of select="$arrow"/>
+        <xsl:value-of select="$lb"/>
+      </xsl:for-each>
+    </xsl:if>
     <xsl:apply-templates select="objects"/>
-    <xsl:text>]</xsl:text>
+    <xsl:if test="$has-package">
+      <xsl:for-each select="$parts">
+        <xsl:value-of select="$rb"/>
+      </xsl:for-each>
+    </xsl:if>
+    <xsl:text>}</xsl:text>
   </xsl:template>
   <!-- Objects  -->
   <xsl:template match="objects">
@@ -143,7 +169,7 @@ SOFTWARE.
   <xsl:template match="o[parent::o[not(@base)] and not(@base) and not(@atom) and not(o)]">
     <xsl:value-of select="./@name"/>
     <xsl:value-of select="$arrow"/>
-    <xsl:text>?</xsl:text>
+    <xsl:value-of select="$empty"/>
   </xsl:template>
   <!-- Just object -->
   <xsl:template match="o[@base]">
@@ -184,7 +210,7 @@ SOFTWARE.
     <xsl:if test="@data">
       <xsl:text>(</xsl:text>
       <xsl:value-of select="$delta"/>
-      <xsl:value-of select="$arrow"/>
+      <xsl:value-of select="$dashed-arrow"/>
       <xsl:value-of select="eo:bytes(.)"/>
       <xsl:text>)</xsl:text>
     </xsl:if>
@@ -195,11 +221,11 @@ SOFTWARE.
       <xsl:value-of select="eo:specials(@name)"/>
       <xsl:value-of select="$arrow"/>
     </xsl:if>
-    <xsl:text>[</xsl:text>
+    <xsl:value-of select="$lb"/>
     <xsl:if test="@atom">
       <xsl:value-of select="$lambda"/>
-      <xsl:value-of select="$arrow"/>
-      <xsl:text>lambda</xsl:text>
+      <xsl:value-of select="$dashed-arrow"/>
+      <xsl:text>Lambda</xsl:text>
       <xsl:if test="count(o)&gt;0">
         <xsl:text>, </xsl:text>
       </xsl:if>
@@ -208,7 +234,7 @@ SOFTWARE.
       <xsl:value-of select="eo:comma(position())"/>
       <xsl:apply-templates select="."/>
     </xsl:for-each>
-    <xsl:text>]</xsl:text>
+    <xsl:value-of select="$rb"/>
   </xsl:template>
   <!-- Application -->
   <xsl:template match="o" mode="application">
