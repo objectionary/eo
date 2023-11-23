@@ -5,4 +5,5 @@ eo: |
     $.a > a
     < > vtx
     ^.< > self
-phi: "{main ↦ ⟦x ↦ ρ.x, h ↦ Φ.org.eolang.y.σ, a ↦ ρ.a, vtx ↦ ν, self ↦ ρ.ν⟧}"
+    @.@ > phi
+phi: "{main ↦ ⟦x ↦ ξ.ρ.x, h ↦ Φ.org.eolang.y.σ, a ↦ ξ.ρ.a, vtx ↦ ξ.ν, self ↦ ξ.ρ.ν, phi ↦ ξ.φ.φ⟧}"
