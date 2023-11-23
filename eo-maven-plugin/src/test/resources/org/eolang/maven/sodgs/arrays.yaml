@@ -2,10 +2,10 @@ locators:
   - .org .eolang .test
   - .org .eolang .int
   - .arrays .z .π >tuple
-  - .arrays .z .α0 .ε >test
+  - .arrays .z .α0 .α0 .ε >test
   - .arrays .z .α1 .π >tuple
-  - .arrays .z .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2A
-  - .arrays .z .α1 .α1 .Δ δ=00-00-00-00-00-00-00-2B
+  - .arrays .z .α1 .α0 .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2A
+  - .arrays .z .α1 .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2B
 eo: |
   [] > arrays
     * > z

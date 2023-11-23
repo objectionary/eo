@@ -2,10 +2,10 @@ locators:
   - .org .eolang .bool
   - .org .eolang .bool !.not
   - .org .eolang .int !.plus
-  - .dots .x .ε .β .not .Δ δ=01
+  - .dots .x .ε .β .not .α0 .Δ δ=01
   - .dots .x .ε .β .not .π >bool
   - .dots .y >b
-  - .dots .z .π .β .times .π .β .plus .Δ δ=00-00-00-00-00-00-00-2A
+  - .dots .z .π .β .times .π .β .plus .α0 .Δ δ=00-00-00-00-00-00-00-2A
   - .dots .z .π .β .times .π .β .plus .π >int
 eo: |
   [] > dots
