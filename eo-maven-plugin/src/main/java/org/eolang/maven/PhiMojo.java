@@ -45,7 +45,7 @@ import org.eolang.maven.util.Walk;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
- * @since 0.33.0
+ * @since 0.34.0
  */
 @Mojo(
     name = "xmir-to-phi",

@@ -36,7 +36,7 @@ import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link PhiMojo}.
- * @since 0.33.0
+ * @since 0.34.0
  */
 class PhiMojoTest {
     @Test
