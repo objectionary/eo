@@ -180,7 +180,7 @@ final class MainTest {
 
     private static String exec(final String... cmds) {
         final String stdout = new Jaxec(
-            new Jhome().path("bin/java").toString(),
+            new Jhome().java().toString(),
             "-Dfile.encoding=UTF-8",
             "-Dsun.stdout.encoding=UTF-8",
             "-Dsun.stderr.encoding=UTF-8",

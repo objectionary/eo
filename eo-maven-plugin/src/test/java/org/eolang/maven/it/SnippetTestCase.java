@@ -180,7 +180,7 @@ final class SnippetTestCase {
      */
     private static void compileJava(final Path generated, final Path classes) {
         new Jaxec(
-            new Jhome().path("bin/javac").toString(),
+            new Jhome().javac().toString(),
             "-encoding", "utf-8",
             new Walk(generated).stream()
                 .map(Path::toAbsolutePath)
@@ -203,7 +203,7 @@ final class SnippetTestCase {
         final Path classes) {
         return new Jaxec()
             .with(
-                new Jhome().path("bin/java").toString(),
+                new Jhome().java().toString(),
                 "-Dfile.encoding=UTF-8",
                 "-Dsun.stdout.encoding=UTF-8",
                 "-Dsun.stderr.encoding=UTF-8",
