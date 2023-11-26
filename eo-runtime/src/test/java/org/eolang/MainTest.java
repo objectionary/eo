@@ -31,9 +31,13 @@ import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test case for {@link Main}.
+ *
+ * @since 0.1
+ */
 final class MainTest {
 
     @Test
