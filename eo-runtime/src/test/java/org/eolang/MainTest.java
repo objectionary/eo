@@ -34,15 +34,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-/**
- * Test case for {@link Main}.
- *
- * @since 0.1
- * @todo #2437:30min Enable the tests: {@link MainTest#deliversCleanOutput()} and
- *  {@link MainTest#executesJvmFullRun()}. These tests were disabled because we got rid of delta
- *  attribute in data primitives so code in the tests became invalid. Need to fix it and enable the
- *  tests. Don't forget to remove the puzzle.
- */
 final class MainTest {
 
     @Test
