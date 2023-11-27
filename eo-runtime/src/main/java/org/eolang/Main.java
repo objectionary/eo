@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOio.EOstdout;
-import EOorg.EOeolang.EOstring;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
