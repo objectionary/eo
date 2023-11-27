@@ -155,14 +155,15 @@ This is how you iterate:
       x.lt 6
       [i]
         seq > @
-          QQ.io.stdout
-            QQ.txt.sprintf
-              "%d x %d = %d\n"
-              x
-              x
-              x.times x
-          x.write
-            x.plus 1
+          * 
+            QQ.io.stdout
+              QQ.txt.sprintf
+                "%d x %d = %d\n"
+                x
+                x
+                x.times x
+            x.write
+              x.plus 1
     TRUE
 ```
 
