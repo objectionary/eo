@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOio.EOstdout;
 import EOorg.EOeolang.EOstring;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -188,15 +189,12 @@ public final class Main {
             );
         }
         for (int idx = 1; idx < opts.size(); ++idx) {
-            final Phi phi = new EOstring(Phi.Φ);
-            final String arg = opts.get(idx);
-            phi.attr("Δ").put(new Data.Value<>(arg));
-            app.attr(0).put(phi);
+            app.attr(0).put(new Data.ToPhi(opts.get(idx)));
         }
         Main.LOGGER.info(
             String.format(
                 "%n---%n%s",
-                new Dataized(app).take().toString()
+                Arrays.toString((byte[]) new Dataized(app).take())
             )
         );
     }

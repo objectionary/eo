@@ -29,6 +29,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,7 @@ final class MainTest {
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             MainTest.exec("org.eolang.io.stdout", "Hello!"),
-            Matchers.containsString("Error at \"EOorg.EOeolang.EOstring#as-bytes\" attribute")
+            Matchers.equalTo(String.format("Hello!%n---%n%s%n", Arrays.toString(new byte[]{0x01})))
         );
     }
 
