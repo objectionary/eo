@@ -74,7 +74,12 @@ final class MainTest {
     void executesJvmFullRun() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
-            Matchers.containsString("Error at \"EOorg.EOeolang.EOstring#as-bytes\" attribute")
+            Matchers.allOf(
+                    Matchers.containsString("EOLANG"),
+                    Matchers.containsString("Hello, "),
+                    Matchers.containsString("\uD835\uDD3B( "),
+                    Matchers.containsString("string")
+            )
         );
     }
 

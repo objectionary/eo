@@ -194,7 +194,7 @@ public final class Main {
         Main.LOGGER.info(
             String.format(
                 "%n---%n%s",
-                Arrays.toString((byte[]) new Dataized(app).take())
+                Arrays.toString(new Dataized(app).take())
             )
         );
     }
