@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOseq;
+import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.eolang.Data;
@@ -44,7 +45,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link EOstdout}.
- *
  * @since 0.1
  */
 public final class EOstdoutTest {
@@ -76,17 +76,20 @@ public final class EOstdoutTest {
                 ),
                 0,
                 new PhWith(
-                    new PhWith(
-                        new EOseq(Phi.Φ),
-                        0,
-                        new PhWith(
-                            new EOstdout(Phi.Φ, new PrintStream(stream)),
-                            "text",
-                            new Data.ToPhi(str)
-                        )
-                    ),
+                    new EOseq(Phi.Φ),
                     0,
-                    new Data.ToPhi(2L)
+                    new PhWith(
+                        new PhWith(
+                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            0,
+                            new PhWith(
+                                new EOstdout(Phi.Φ, new PrintStream(stream)),
+                                "text",
+                                new Data.ToPhi(str)
+                            )
+                        ).attr("with").get().copy(),
+                        0, new Data.ToPhi(2L)
+                    )
                 )
             )
         ).take(String.class);
@@ -109,17 +112,20 @@ public final class EOstdoutTest {
                 ),
                 0,
                 new PhWith(
-                    new PhWith(
-                        new EOseq(Phi.Φ),
-                        0,
-                        new PhWith(
-                            new EOstdout(Phi.Φ, new PrintStream(stream)),
-                            "text",
-                            new Data.ToPhi(str)
-                        )
-                    ),
+                    new EOseq(Phi.Φ),
                     0,
-                    new Data.ToPhi(3.0)
+                    new PhWith(
+                        new PhWith(
+                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            0,
+                            new PhWith(
+                                new EOstdout(Phi.Φ, new PrintStream(stream)),
+                                "text",
+                                new Data.ToPhi(str)
+                            )
+                        ).attr("with").get().copy(),
+                        0, new Data.ToPhi(3.0)
+                    )
                 )
             )
         ).take();

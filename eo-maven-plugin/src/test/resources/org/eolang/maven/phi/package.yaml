@@ -1,0 +1,6 @@
+eo: |
+  +package foo.bar.baz
+  
+  [] > main
+    stdout > @
+phi: "{foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧⟧⟧⟧}"

@@ -198,13 +198,13 @@ SOFTWARE.
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>5.8</version>
+      <version>5.9</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.13.0</version>
+      <version>3.14.0</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -240,6 +240,11 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jhome</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>

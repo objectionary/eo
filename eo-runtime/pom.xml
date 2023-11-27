@@ -62,6 +62,11 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jhome</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-log</artifactId>
       <!-- version from parent POM -->
@@ -97,7 +102,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.13.0</version>
+      <version>3.14.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

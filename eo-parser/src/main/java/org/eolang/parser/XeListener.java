@@ -270,18 +270,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVararg(final ProgramParser.VarargContext ctx) {
-        this.startObject(ctx)
-            .prop("vararg")
-            .prop("name", ctx.NAME().getText());
-    }
-
-    @Override
-    public void exitVararg(final ProgramParser.VarargContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
     public void enterApplication(final ProgramParser.ApplicationContext ctx) {
         // Nothing here
     }
@@ -383,9 +371,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationArg(final ProgramParser.HapplicationArgContext ctx) {
-        if (ctx.DOTS() != null) {
-            this.objects.enter().prop("unvar").leave();
-        }
+        // Nothing here
     }
 
     @Override
@@ -413,9 +399,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitHapplicationArgExtended(
         final ProgramParser.HapplicationArgExtendedContext ctx
     ) {
-        if (ctx.DOTS() != null) {
-            this.objects.enter().prop("unvar").leave();
-        }
+        // Nothing here
     }
 
     @Override
@@ -459,22 +443,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgSpreadable(
-        final ProgramParser.VapplicationArgSpreadableContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgSpreadable(
-        final ProgramParser.VapplicationArgSpreadableContext ctx
-    ) {
-        if (ctx.DOTS() != null) {
-            this.objects.enter().prop("unvar").leave();
-        }
-    }
-
-    @Override
     public void enterVapplicationArgHapplication(
         final ProgramParser.VapplicationArgHapplicationContext ctx
     ) {
@@ -484,20 +452,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     @Override
     public void exitVapplicationArgHapplication(
         final ProgramParser.VapplicationArgHapplicationContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVapplicationArgVapplication(
-        final ProgramParser.VapplicationArgVapplicationContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgVapplication(
-        final ProgramParser.VapplicationArgVapplicationContext ctx
     ) {
         // Nothing here
     }
@@ -809,35 +763,6 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
 
     @Override
     public void exitFinisher(final ProgramParser.FinisherContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterSpreadable(final ProgramParser.SpreadableContext ctx) {
-        this.startObject(ctx);
-        final String base;
-        if (ctx.NAME() != null) {
-            base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
-            base = "@";
-        } else if (ctx.RHO() != null) {
-            base = "^";
-        } else if (ctx.SIGMA() != null) {
-            base = "&";
-        } else {
-            base = "";
-        }
-        if (!base.isEmpty()) {
-            this.objects.prop("base", base);
-        }
-        if (ctx.COPY() != null) {
-            this.objects.prop("copy");
-        }
-    }
-
-    @Override
-    public void exitSpreadable(final ProgramParser.SpreadableContext ctx) {
         this.objects.leave();
     }
 

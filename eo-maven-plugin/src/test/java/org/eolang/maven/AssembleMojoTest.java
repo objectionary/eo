@@ -38,6 +38,7 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -61,6 +62,11 @@ import org.junit.jupiter.api.io.TempDir;
  *  check here is related to particular mojos (and we should check their
  *  behaviour in appropriate tests). In other words there are integration tests
  *  here. And, probably, it is not the best place for them.
+ * @todo #2612:30min Enable the test {@link AssembleMojoTest#assemblesTogetherWithVersions(Path)}.
+ *  The test was disabled because varargs were removed in EO 0.34.0. So objects that are downloaded
+ *  from older repositories are not parsed successfully because of the presence of varargs there.
+ *  So we need to make 2-3 releases and then refactor the test with more fresh versions. Don't
+ *  forget to remove the puzzle.
  */
 @ExtendWith(OnlineCondition.class)
 final class AssembleMojoTest {
@@ -120,6 +126,7 @@ final class AssembleMojoTest {
     }
 
     @Test
+    @Disabled
     @ExtendWith(OnlineCondition.class)
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();

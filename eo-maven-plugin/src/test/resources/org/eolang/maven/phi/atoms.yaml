@@ -1,0 +1,6 @@
+eo: |
+  [] > main /int
+  [] > outer
+    [] > inner /bytes
+phi:
+  "{main ↦ ⟦λ ⤍ Lambda⟧, outer ↦ ⟦inner ↦ ⟦λ ⤍ Lambda⟧⟧}"

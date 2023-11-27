@@ -120,7 +120,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.13.0</version>
+        <version>3.14.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -203,6 +203,12 @@ SOFTWARE.
         <groupId>com.yegor256</groupId>
         <artifactId>jaxec</artifactId>
         <version>0.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.yegor256</groupId>
+        <artifactId>jhome</artifactId>
+        <version>0.0.4</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>

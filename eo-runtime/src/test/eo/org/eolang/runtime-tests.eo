@@ -93,25 +93,28 @@
   memory 0 > x
   eq. > @
     seq
-      x.write TRUE
-      eq.
-        TRUE
-        x.as-bool.while
-          [i]
-            &.x.write FALSE > @
+      *
+        x.write TRUE
+        eq.
+          TRUE
+          x.as-bool.while
+            [i]
+              &.x.write FALSE > @
     FALSE
 
 [] > calculates-only-once-BROKEN
   memory 0 > x
   [] > a
     seq > @
-      x.write (x.as-int.plus 1)
-      42
+      *
+        x.write (x.as-int.plus 1)
+        42
   eq. > @
     seq
-      x.write 0
-      a.neg.neg.neg.neg.eq 42
-      x
+      *
+        x.write 0
+        a.neg.neg.neg.neg.eq 42
+        x
     1
 
 [] > rho-of-add-should-not-change
@@ -120,11 +123,12 @@
   memory 0 > f0
   nop > @
     seq
-      f0.write 0
-      f1.write 1
-      f2.write (f0.plus f1)
-      f1.write f2
-      TRUE
+      *
+        f0.write 0
+        f1.write 1
+        f2.write (f0.plus f1)
+        f1.write f2
+        TRUE
 
 [] > positive-object-vertices
   eq. > @
@@ -162,36 +166,17 @@
     if. > @
       n.as-int.gt 0
       seq
-        n.write (n.as-int.minus 1)
-        ^.func
-        TRUE
+        *
+          n.write (n.as-int.minus 1)
+          ^.func
+          TRUE
       TRUE
   eq. > @
     seq
-      n.write 4
-      func
+      *
+        n.write 4
+        func
     TRUE
-
-[] > creates-vararg-from-variable-array
-  * 2 7 > a
-  [args...] > sum
-    plus. > @
-      args.at 0
-      args.at 1
-  eq. > @
-    sum
-      ...a
-    9
-
-[] > creates-vararg-from-array
-  [args...] > sum
-    plus. > @
-      args.at 0
-      args.at 1
-  eq. > @
-    sum
-      ...* 2 7
-    9
 
 [] > returns-same-object
   [] > foo
@@ -213,22 +198,25 @@
   memory 0 > go
   eq. > @
     seq
-      go.write TRUE
-      go.as-bool.while
-        [i]
-          memory 0 > m
-          seq > @
-            42 > x
-            m.write x
-            go.write FALSE
-      TRUE
+      *
+        go.write TRUE
+        go.as-bool.while
+          [i]
+            memory 0 > m
+            seq > @
+              *
+                42 > x
+                m.write x
+                go.write FALSE
+        TRUE
     TRUE
 
 [] > named-inner-abstract-object
   [] > @
     seq > @
-      [] > a
-        TRUE > @
+      *
+        [] > a
+          TRUE > @
 
 [] > calling-caged-function
   cage 0 > h
@@ -237,16 +225,18 @@
   nop > @
     eq.
       seq
-        h.write func
-        h.@ 8
+        *
+          h.write func
+          h.@ 8
       10
 
-[] > app-that-calls-varargs-func
+[] > app-that-calls-func
   [] > app
-    [args...] > f
+    [args] > f
       1 > a
       2 > @
-    f 1 2 3 > @
+    f > @
+      * 1 2 3
   app > output
   eq. > @
     output
@@ -256,22 +246,24 @@
   Q.org.eolang.memory 0 > m
   eq. > @
     seq
-      m.write 42
-      Q.org.eolang.io.stdout
-        "Hello, world!"
-      m.write
-        m.as-int.minus 2
+      *
+        m.write 42
+        Q.org.eolang.io.stdout
+          "Hello, world!"
+        m.write
+          m.as-int.minus 2
     40
 
 [] > directly-accesses-objects-from-standard-root
   QQ.memory 0 > m
   eq. > @
     seq
-      m.write 42
-      QQ.io.stdout
-        "Works fine!"
-      m.write
-        m.as-int.minus 2
+      *
+        m.write 42
+        QQ.io.stdout
+          "Works fine!"
+        m.write
+          m.as-int.minus 2
     40
 
 [] > standard-root-and-root
@@ -318,9 +310,10 @@
   memory 7 > a
   [x] > inc
     seq > @
-      x.write
-        x.as-int.plus 1
-      x.as-int
+      *
+        x.write
+          x.as-int.plus 1
+        x.as-int
   inc a > n!
   eq. > @
     times.
@@ -336,11 +329,12 @@
   b' > b1
   b' > b2
   seq > @
-    b1.v.write 0
-    b2.v.write 1
-    eq.
-      b1.v
-      1
+    *
+      b1.v.write 0
+      b2.v.write 1
+      eq.
+        b1.v
+        1
 
 [] > copy-object-with-dot
   [] > book
@@ -461,16 +455,3 @@
               2
         build 2 > @
     9
-
-# @todo #2555:30min Enable the test when it's possible normalize object before application.
-#  Now this test does not work because we (arr.at 0).@ "returns" "if" from tuple.at which is
-#  wrong. Possibly we would need to extend EO syntax and phi calculus in order to be able to
-#  support such behavior.
-[] > application-to-abstract-inside-tuple
-  [x] > add
-    x.plus 1 > @
-  * add > arr
-  eq. > res
-    (arr.at 0).@ 5
-    6
-  nop > @

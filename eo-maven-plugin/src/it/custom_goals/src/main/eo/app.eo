@@ -23,7 +23,7 @@
       ^.distance p
       ^.radius
 
-[args...] > app
+[args] > app
   stdout > @
     sprintf
       "%s\n"

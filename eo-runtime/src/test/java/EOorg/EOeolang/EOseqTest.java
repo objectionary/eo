@@ -47,11 +47,15 @@ public final class EOseqTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
+                    new EOseq(Phi.Φ),
+                    0,
                     new PhWith(
-                        new EOseq(Phi.Φ),
-                        0, new Data.ToPhi(0L)
-                    ),
-                    0, new Data.ToPhi(1L)
+                        new PhWith(
+                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            0, new Data.ToPhi(0L)
+                        ).attr("with").get().copy(),
+                        0, new Data.ToPhi(1L)
+                    )
                 )
             ).take(Long.class),
             Matchers.equalTo(1L)
@@ -63,31 +67,18 @@ public final class EOseqTest {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
+                    new EOseq(Phi.Φ),
+                    0,
                     new PhWith(
-                        new EOseq(Phi.Φ),
-                        0, new Data.ToPhi(0L)
-                    ),
-                    1, new Data.ToPhi("Hello!")
+                        new PhWith(
+                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            0, new Data.ToPhi(0L)
+                        ).attr("with").get().copy(),
+                        0, new Data.ToPhi("Hello!")
+                    )
                 )
             ).take(String.class),
             Matchers.startsWith("Hello")
         );
     }
-
-    @Test
-    public void makesTrueCopy() {
-        final Phi first = new EOseq(Phi.Φ);
-        first.attr(0).put(new Data.ToPhi(1L));
-        final Phi second = first.copy();
-        second.attr(0).put(new Data.ToPhi(2L));
-        MatcherAssert.assertThat(
-            new Dataized(first).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-        MatcherAssert.assertThat(
-            new Dataized(second).take(Long.class),
-            Matchers.equalTo(2L)
-        );
-    }
-
 }

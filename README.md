@@ -150,19 +150,21 @@ This is how you iterate:
 [args...] > app
   memory 0 > x
   seq > @
-    x.write 2
-    while.
-      x.lt 6
-      [i]
-        seq > @
-          QQ.io.stdout
-            QQ.txt.sprintf
-              "%d x %d = %d\n"
-              x
-              x
-              x.times x
-          x.write
-            x.plus 1
+    *
+      x.write 2
+      while.
+        x.lt 6
+        [i]
+          seq > @
+            * 
+              QQ.io.stdout
+                QQ.txt.sprintf
+                  "%d x %d = %d\n"
+                  x
+                  x
+                  x.times x
+              x.write
+                x.plus 1
     TRUE
 ```
 

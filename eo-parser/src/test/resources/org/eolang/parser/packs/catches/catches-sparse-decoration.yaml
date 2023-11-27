@@ -40,5 +40,5 @@ eo: |
         error "Error" > @
       nop
 
-  [args...] > nop
+  [args] > nop
     TRUE > @

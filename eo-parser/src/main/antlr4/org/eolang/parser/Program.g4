@@ -39,7 +39,6 @@ just: beginner
     ;
 
 // Just object reference with optional name
-// Can't be used with "spread" operator (DOTS)
 justNamed
     : just oname?
     ;
@@ -64,10 +63,9 @@ inners
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
-// If "vararg" object (obj...) is present - must be the last one in the list
 attributes
     : LSQ
-      ((attribute (SPACE attribute)* (SPACE vararg)?)? | vararg)
+      (attribute (SPACE attribute)*)?
       RSQ
     ;
 
@@ -78,11 +76,6 @@ attribute
 
 // Type of atom
 type: SPACE SLASH (NAME | QUESTION)
-    ;
-
-// Vararg attribute
-vararg
-    : NAME DOTS
     ;
 
 // Application
@@ -133,7 +126,7 @@ applicable
 
 // Horizontal application tail
 happlicationTail
-    : (SPACE (happlicationArg | happlicationArg as))+
+    : (SPACE happlicationArg as?)+
     ;
 
 // Argument of horizontal application
@@ -141,13 +134,14 @@ happlicationTail
 happlicationArg
     : beginner
     | finisherCopied
-    | DOTS? (spreadable | hmethod | scope)
+    | hmethod
+    | scope
     ;
 
 // Extended horizontal application tail
 // Can contain elements in vertical notation
 happlicationTailExtended
-    : (SPACE (happlicationArgExtended | happlicationArgExtended as))+
+    : (SPACE happlicationArgExtended as?)+
     ;
 
 // Extended argument of horizontal application
@@ -155,8 +149,8 @@ happlicationTailExtended
 happlicationArgExtended
     : beginner
     | finisherCopied
-    | DOTS? (spreadable | hmethodExtended | scopeExtended)
-    | LB DOTS spreadable RB
+    | hmethodExtended
+    | scopeExtended
     ;
 
 // Vertical application
@@ -192,34 +186,16 @@ vapplicationArgs
         | just as oname?                                                        // Just an object reference with binding
         | methodNamed                                                           // Method
         | methodAs oname?                                                       // Method with binding
-        | vapplicationArgSpreadable                                             // Spreadable
         )
         (EOL | EOP)
       )+
       UNTAB
     ;
 
-// Vertical application arguments that can be spread
-vapplicationArgSpreadable
-    : DOTS?
-      ( just
-      | just as
-      | method
-      | methodAs
-      | vapplicationArgHapplication
-      | vapplicationArgVapplication
-      )
-    ;
-
 // Horizontal application as argument of vertical application
 vapplicationArgHapplication
     : happlicationExtended
     | LB happlicationExtended RB as
-    ;
-
-// Vertical application as argument of vertical application
-vapplicationArgVapplication
-    : (vapplicationHead | vapplicationHeadAs) vapplicationArgs
     ;
 
 // Vertical application head with binding
@@ -396,11 +372,6 @@ finisher
     | VERTEX
     ;
 
-// Something that can be spread
-spreadable
-    : (NAME | AT | RHO | SIGMA) COPY?
-    ;
-
 // Finisher with optional COPY
 finisherCopied
     : finisher COPY?
@@ -469,8 +440,6 @@ ROOT: 'Q'
 HOME: 'QQ'
     ;
 STAR: '*'
-    ;
-DOTS: '...'
     ;
 CONST
     : '!'

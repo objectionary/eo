@@ -1,0 +1,27 @@
+---
+name: simian
+on:
+  push:
+    branches:
+      - master
+    paths-ignore: ['paper/**', 'sandbox/**']
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
+concurrency:
+  group: simian-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  simian:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - run: |
+          wget --quiet http://public.yegor256.com/simian.jar -O /tmp/simian.jar
+      - run: |
+          java -jar /tmp/simian.jar -threshold=35 -excludes=**/gen **/*.java

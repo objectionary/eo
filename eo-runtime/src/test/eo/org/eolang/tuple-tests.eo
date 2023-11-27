@@ -38,16 +38,19 @@
 
 # check that an empty tuples .length equals to zero
 [] > empty-tuple-length
-  [elements...] > arr
+  [elements] > arr
   eq. > @
-    arr.elements.length
+    (arr *).elements.length
     0
 
 # check that tuple.length works properly for non-empty tuples
 [] > non-empty-tuple-length-test
-  [elements...] > arr
+  [elements] > arr
   eq. > @
-    (arr "a" "b" "c" "d" "e").elements.length
+    arr
+      * "a" "b" "c" "d" "e"
+    .elements
+    .length
     5
 
 [] > tuple-as-a-bound-attribute-size-0

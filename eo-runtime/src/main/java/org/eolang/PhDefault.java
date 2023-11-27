@@ -230,11 +230,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                     )
                 );
             }
-            final String name = this.order.get(idx);
             attr = this.attr(this.order.get(idx));
-            if (this.attrs.get(name) instanceof AtVararg) {
-                break;
-            }
         }
         return attr;
     }

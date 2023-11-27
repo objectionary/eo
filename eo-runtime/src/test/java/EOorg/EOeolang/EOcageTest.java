@@ -42,7 +42,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOcage}.
- *
  * @since 0.19
  */
 final class EOcageTest {
@@ -90,9 +89,10 @@ final class EOcageTest {
     //   [x] > dummy
     //     x > @
     //   seq > @
-    //     c.write (dummy 1)
-    //     c.write (dummy c')
-    //     c.x.x.eq 1
+    //     *
+    //       c.write (dummy 1)
+    //       c.write (dummy c')
+    //       c.x.x.eq 1
     @Test
     void writesDummyToItself() {
         final Phi cage = new EOcage(Phi.Φ);
@@ -115,11 +115,18 @@ final class EOcageTest {
         );
         new Dataized(
             new PhWith(
+                new EOseq(Phi.Φ),
+                0,
                 new PhWith(
-                    new PhWith(new EOseq(Phi.Φ), 0, first),
-                    0, new PhMethod(copy, "ν")
-                ),
-                0, second
+                    new PhWith(
+                        new PhWith(
+                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            0, first
+                        ).attr("with").get().copy(),
+                        0, new PhMethod(copy, "ν")
+                    ).attr("with").get().copy(),
+                    0, second
+                )
             )
         ).take();
         MatcherAssert.assertThat(
