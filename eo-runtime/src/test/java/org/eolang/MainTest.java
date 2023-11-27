@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -75,10 +74,10 @@ final class MainTest {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
             Matchers.allOf(
-                    Matchers.containsString("EOLANG"),
-                    Matchers.containsString("Hello, "),
-                    Matchers.containsString("\uD835\uDD3B( "),
-                    Matchers.containsString("string")
+                Matchers.containsString("EOLANG"),
+                Matchers.containsString("Hello, "),
+                Matchers.containsString("\uD835\uDD3B( "),
+                Matchers.containsString("string")
             )
         );
     }
