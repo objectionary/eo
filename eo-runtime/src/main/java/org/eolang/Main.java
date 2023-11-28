@@ -172,8 +172,8 @@ public final class Main {
      * @param opts The opts left
      * @throws Exception If fails
      * @todo #2591:60min Make type casting when logging an app dataization result. The cast is
-     * necessary in this expression {@code new Data set(app).take()} in order to correctly convert
-     * it to a string. This conversion it necessary for proper logging.
+     *  necessary in this expression {@code new Data set(app).take()} in order to correctly
+     *  convert it to a string. This conversion it necessary for proper logging.
      */
     private static void run(final List<String> opts) throws Exception {
         final String path = new JavaPath(opts.get(0)).toString();
