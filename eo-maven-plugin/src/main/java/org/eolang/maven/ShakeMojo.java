@@ -24,38 +24,32 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.Mapped;
-import org.cactoos.number.SumOf;
-import org.eolang.maven.optimization.OptCached;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Rel;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
  *
- * @since 0.33.0
  * @todo #2577:30min Resolve code duplication between {@link OptimizeMojo} and {@link ShakeMojo}.
- *  ShakeMojo was created in order to split two optimization stages: optimizations themselves and
- *  preparations for translation to java. Now these two mojo look almost the same and there's a lot
- *  of code duplication. So it's needed to resolve that. Don't forget to remove the puzzle
+ * ShakeMojo was created in order to split two optimization stages: optimizations themselves and
+ * preparations for translation to java. Now these two mojo look almost the same and there's a lot
+ * of code duplication. So it's needed to resolve that. Don't forget to remove the puzzle
  * @todo #2577:30min Add tests for ShakeMojo. ShakeMojo was created in order to split two
- *  optimization stages: optimizations themselves and preparations for translation to java
- *  Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
+ * optimization stages: optimizations themselves and preparations for translation to java
+ * Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
+ * @since 0.33.0
  */
 @Mojo(
     name = "shake",
@@ -79,6 +73,15 @@ public final class ShakeMojo extends SafeMojo {
     static final String STEPS = "3-shake-steps";
 
     /**
+     * The map with directories of ShakeMojo.
+     * @checkstyle DiamondOperatorCheck (10 lines)
+     */
+    private static final Map<String, String> DIRECTORIES = new MapOf<String, String>(
+        new MapEntry<>(OptimizationFolder.TARGET.key(), ShakeMojo.DIR),
+        new MapEntry<>(OptimizationFolder.CACHE.key(), ShakeMojo.SHAKEN)
+    );
+
+    /**
      * Track optimization steps into intermediate XML files?
      *
      * @checkstyle MemberNameCheck (7 lines)
@@ -91,19 +94,22 @@ public final class ShakeMojo extends SafeMojo {
     @Override
     void exec() throws IOException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
-        final Optimization opt = this.optimization();
-        final int total = new SumOf(
-            new Threads<>(
-                Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(
-                    tojo -> this.task(tojo, opt),
-                    new Filtered<>(
-                        ForeignTojo::notShaken,
-                        tojos
-                    )
-                )
+        final int total = new OptimizedTojos(
+            new Filtered<>(
+                ForeignTojo::notShaken,
+                tojos
+            ),
+            this.optimization(),
+            new OptimizationTask(
+                new MapOf<String, Path>(
+                    new MapEntry<>(OptimizationFolder.TARGET.key(), this.targetDir.toPath()),
+                    new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
+                ),
+                ShakeMojo.DIRECTORIES,
+                ForeignTojo::withShaken,
+                ForeignTojo::optimized
             )
-        ).intValue();
+        ).count();
         if (total > 0) {
             Logger.info(
                 this,
@@ -116,34 +122,8 @@ public final class ShakeMojo extends SafeMojo {
     }
 
     /**
-     * Converts tojo to optimization task.
-     *
-     * @param tojo Tojo that should be optimized.
-     * @param common Optimization.
-     * @return Optimization task.
-     */
-    private Scalar<Integer> task(
-        final ForeignTojo tojo,
-        final Optimization common
-    ) {
-        final Path src = tojo.optimized();
-        Logger.debug(
-            this, "Adding optimization task for %s",
-            src
-        );
-        return () -> {
-            tojo.withShaken(
-                this.make(
-                    this.optimization(tojo, common).apply(new XMLDocument(src)),
-                    src
-                ).toAbsolutePath()
-            );
-            return 1;
-        };
-    }
-
-    /**
      * Shake optimizations for tojos.
+     *
      * @return Shake optimizations
      */
     private Optimization optimization() {
@@ -154,51 +134,5 @@ public final class ShakeMojo extends SafeMojo {
             opt = new OptTrain();
         }
         return opt;
-    }
-
-    /**
-     * Optimization for specific tojo.
-     *
-     * @param tojo Tojo
-     * @param common Optimization
-     * @return Optimization for specific Tojo
-     */
-    private Optimization optimization(final ForeignTojo tojo, final Optimization common) {
-        final Optimization res;
-        if (tojo.hasHash()) {
-            res = new OptCached(
-                common,
-                this.cache.resolve(ShakeMojo.SHAKEN).resolve(tojo.hash())
-            );
-        } else {
-            res = common;
-        }
-        return res;
-    }
-
-    /**
-     * Make a path with optimized XML file after parsing.
-     *
-     * @param xml Optimized xml
-     * @param file EO file
-     * @return The file with optimized XMIR
-     * @throws IOException If fails
-     */
-    private Path make(final XML xml, final Path file) throws IOException {
-        final String name = new XMLDocument(file).xpath("/program/@name").get(0);
-        final Place place = new Place(name);
-        final Path dir = this.targetDir.toPath();
-        final Path target = place.make(
-            dir.resolve(ShakeMojo.DIR), TranspileMojo.EXT
-        );
-        new HmBase(dir).save(
-            xml.toString(),
-            dir.relativize(target)
-        );
-        Logger.debug(
-            this, "Optimized %s (program:%s) to %s",
-            new Rel(file), name, new Rel(target)
-        );
-        return target;
     }
 }
