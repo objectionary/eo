@@ -42,10 +42,6 @@ import org.eolang.maven.tojos.ForeignTojo;
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
  *
- * @todo #2577:30min Resolve code duplication between {@link OptimizeMojo} and {@link ShakeMojo}.
- * ShakeMojo was created in order to split two optimization stages: optimizations themselves and
- * preparations for translation to java. Now these two mojo look almost the same and there's a lot
- * of code duplication. So it's needed to resolve that. Don't forget to remove the puzzle
  * @todo #2577:30min Add tests for ShakeMojo. ShakeMojo was created in order to split two
  * optimization stages: optimizations themselves and preparations for translation to java
  * Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
