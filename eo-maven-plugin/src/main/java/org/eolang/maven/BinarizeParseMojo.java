@@ -142,6 +142,10 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Add ffi node via xsl transformation and return list of them.
      * @param input Input xmir.
      * @return FFI nodes.
+     * @todo #2609:90min We can make the current class more generic
+     *  by transferring this.addRust(input) snippet to corresponding
+     *  FFINode- {@link RustNode}. We wanna make the class independent of
+     *  ffi-insert as a result.
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private Collection<FFINode> getFFIs(final XML input) {
