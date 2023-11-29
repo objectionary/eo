@@ -1,5 +1,5 @@
 xsls: []
 tests:
-  - /program/info[text()!='']
+  - /program/comment()[1]
 eo: |
   [] > main
