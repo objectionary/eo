@@ -1,6 +1,3 @@
-# @todo #2555:30min Enable the test. The test was disabled because it does not pass after changing
-#  tuple implementation. Need to refactor it and enable. Maybe it would be good to add several
-#  "stars-to-tuples.xsl" transformations to "xsls" section. Don't forget to remove the puzzle.
 xsls:
   - /org/eolang/parser/stars-to-tuples.xsl
   - /org/eolang/parser/stars-to-tuples.xsl
