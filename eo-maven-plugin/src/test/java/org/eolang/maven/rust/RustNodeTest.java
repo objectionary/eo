@@ -58,6 +58,7 @@ final class RustNodeTest {
         ).generate();
         final List<Path> out = Files.walk(temp).collect(Collectors.toList());
         MatcherAssert.assertThat(
+            "Check that necessary files are created",
             out,
             Matchers.hasItems(
                 lib.resolve("native0/src/foo.rs"),
