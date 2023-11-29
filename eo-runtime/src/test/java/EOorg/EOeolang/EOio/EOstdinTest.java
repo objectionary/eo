@@ -139,7 +139,7 @@ final class EOstdinTest {
     void dataizesEmptyStdin(final StdIn stdin) {
         MatcherAssert.assertThat(
             new Dataized(new EOstdin(Phi.Φ)).take(String.class),
-            Matchers.equalTo("")
+            Matchers.equalTo("\n")
         );
     }
 
