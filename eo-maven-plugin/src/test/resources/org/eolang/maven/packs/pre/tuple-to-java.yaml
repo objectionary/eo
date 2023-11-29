@@ -2,6 +2,10 @@
 #  tuple implementation. Need to refactor it and enable. Maybe it would be good to add several
 #  "stars-to-tuples.xsl" transformations to "xsls" section. Don't forget to remove the puzzle.
 xsls:
+  - /org/eolang/parser/stars-to-tuples.xsl
+  - /org/eolang/parser/stars-to-tuples.xsl
+  - /org/eolang/parser/stars-to-tuples.xsl
+  - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/attrs.xsl
@@ -9,10 +13,17 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'Phi ret_a0 = new EOorg.EOeolang.EOint(')]
-  - //java[contains(text(), 'Phi ret_a1 = new EOorg.EOeolang.EOint(')]
-  - //java[contains(text(), 'Phi[] ret_2_a = new Phi[0]')]
-  - //java[contains(text(), 'ret = new PhWith(ret, "Δ", new Data.Value<>(new byte[] {(byte) 0xD0, (byte) 0xB0, (byte) 0xD0, (byte) 0xB1, (byte) 0xD0, (byte) 0xB2, (byte) 0xD0, (byte) 0xB3, (byte) 0xD0, (byte) 0xB4}));')]
+  - //java[contains(text(), 'Phi ret = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '  Phi ret_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '      Phi ret_1_1_1_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '      Phi ret_1_1_1 = new PhMethod(ret_1_1_1_base, "empty");')]
+  - //java[contains(text(), '  Phi ret_2 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '      Phi ret_2_1_1 = new PhMethod(ret_2_1_1_base, "empty");')]
+  - //java[contains(text(), '  Phi ret_2_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '  Phi ret_2 = new PhMethod(ret_2_base, "empty");')]
 eo: |
   [] > foo
     * 1 2 (* 3 4) > @
