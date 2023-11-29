@@ -50,6 +50,7 @@ SOFTWARE.
   </xs:complexType>
   <xs:complexType name="program">
     <xs:sequence>
+      <xs:element name="info" type="xs:string"/>
       <xs:element name="listing" type="xs:string"/>
       <xs:element name="errors">
         <xs:complexType>

@@ -1,0 +1,5 @@
+xsls: []
+tests:
+  - /program/info[text()!='']
+eo: |
+  [] > main
