@@ -42,12 +42,16 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.maven.rust.BuildFailureException;
+import org.eolang.maven.rust.Names;
 
 /**
  * Compile binaries.
  *
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @todo #2118:90min Make it more generic. Perhaps by compilation of
+ *  RustNode instead of going and building throw directories. Maybe it
+ *  is better to get from BinarizeParseMojo.
  */
 @Mojo(
     name = "binarize",
@@ -105,7 +109,9 @@ public final class BinarizeMojo extends SafeMojo {
 
     @Override
     public void exec() throws IOException {
-        new Moja<>(BinarizeParseMojo.class).copy(this).execute();
+        new Moja<>(BinarizeParseMojo.class).with(
+            "names", new Names(this.namesDir.toPath())
+        ).copy(this).execute();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
