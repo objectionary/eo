@@ -54,37 +54,37 @@ import org.eolang.maven.util.Walk;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
-     * The directory where to take xmir files for translation from.
+     * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         property = "unphiInputDir",
         required = true,
-        defaultValue = "${project.build.directory}/eo/2-optimize"
+        defaultValue = "${project.build.directory}/eo/phi"
     )
-    private File phiInputDir;
+    private File unphiInputDir;
 
     /**
-     * The directory where to save phi files to.
+     * The directory where to save xmir files to.
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         property = "unphiOutputDir",
         required = true,
-        defaultValue = "${project.build.directory}/eo/phi"
+        defaultValue = "${project.build.directory}/eo/1-parse"
     )
-    private File phiOutputDir;
+    private File unphiOutputDir;
 
     @Override
     public void exec() {
-        final Home home = new HmBase(this.phiOutputDir);
+        final Home home = new HmBase(this.unphiOutputDir);
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     xmir -> () -> {
                         final Path relative = Paths.get(
-                            this.phiInputDir.toPath().relativize(xmir).toString().replace(
+                            this.unphiInputDir.toPath().relativize(xmir).toString().replace(
                                 String.format(".%s", TranspileMojo.EXT),
                                 String.format(".%s", UnphiMojo.EXT)
                             )
@@ -93,26 +93,14 @@ public final class UnphiMojo extends SafeMojo {
                         Logger.info(
                             this,
                             "Translated to phi: %s -> %s",
-                            xmir, this.phiOutputDir.toPath().resolve(relative)
+                            xmir, this.unphiOutputDir.toPath().resolve(relative)
                         );
                         return 1;
                     },
-                    new Walk(this.phiInputDir.toPath())
+                    new Walk(this.unphiInputDir.toPath())
                 )
             )
         ).intValue();
-        Logger.info(this, "Translated %d xmir files to phi", count);
-    }
-
-    /**
-     * Translate given xmir to phi calculus expression.
-     * @param xmir Text of xmir
-     * @return Translated xmir
-     * @throws Exception If fail to translate
-     */
-    private static String translated(final Text xmir) throws Exception {
-        return new XSLDocument(UnphiMojo.TRANSLATION.asString()).applyTo(
-            new XMLDocument(xmir.asString())
-        );
+        Logger.info(this, "Parsed %d phi files to xmir", count);
     }
 }
