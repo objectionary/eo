@@ -137,12 +137,9 @@ final class EOstdinTest {
     @StdIo("")
     @Test
     void dataizesEmptyStdin(final StdIn stdin) {
-        final String expected = "";
-        final Phi phi = new PhCopy(new EOstdin(Phi.Φ));
-        final String actual = new Dataized(phi).take(String.class);
         MatcherAssert.assertThat(
-            actual,
-            Matchers.equalTo(expected)
+            new Dataized(new EOstdin(Phi.Φ)).take(String.class),
+            Matchers.equalTo("\n")
         );
     }
 
