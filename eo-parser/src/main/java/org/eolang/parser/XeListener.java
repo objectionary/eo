@@ -110,7 +110,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .add("info").set(XeListener.INFO).up()
+            .comment(XeListener.INFO)
             .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up()
