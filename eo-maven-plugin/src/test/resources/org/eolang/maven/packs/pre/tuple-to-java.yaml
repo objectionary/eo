@@ -1,7 +1,6 @@
 # @todo #2555:30min Enable the test. The test was disabled because it does not pass after changing
 #  tuple implementation. Need to refactor it and enable. Maybe it would be good to add several
 #  "stars-to-tuples.xsl" transformations to "xsls" section. Don't forget to remove the puzzle.
-skip: true
 xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/maven/pre/classes.xsl
