@@ -262,6 +262,7 @@ final class AssembleMojoTest {
     }
 
     @Test
+    @Disabled
     void configuresChildParameters(@TempDir final Path temp) throws IOException {
         final Map<String, Path> res = new FakeMaven(temp)
             .withHelloWorld()

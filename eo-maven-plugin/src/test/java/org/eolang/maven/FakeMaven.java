@@ -77,6 +77,7 @@ import org.eolang.maven.util.Home;
  *  If executed Mojo doesn't have parameters that are inside other Mojos,
  *  other Mojos parameters will not be configured.
  *  We need to make sure that custom parameters can be configured too.
+ *  Test {@link AssembleMojoTest#configuresChildParameters(Path)} need enable.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
