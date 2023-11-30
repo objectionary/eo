@@ -3,4 +3,4 @@ eo: |
   
   [] > main
     stdout > @
-phi: "{foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧⟧⟧⟧}"
+phi: "{foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧}"
