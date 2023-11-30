@@ -523,7 +523,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     public void exitVapplicationArgVanonymUnbinded(
         final ProgramParser.VapplicationArgVanonymUnbindedContext ctx
     ) {
-        this.startObject(ctx).prop("abstract").leave();
+        // Nothing here
     }
 
     @Override
