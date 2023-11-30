@@ -52,11 +52,9 @@ public class EOstdin$EOφ extends PhDefault {
             Attr.LAMBDA,
             new AtLambda(
                 this,
-                rho -> {
-                    final Input input = Input.getInstance();
-                    final String line = input.getAllLines();
-                    return new Data.ToPhi(line);
-                }
+                rho -> new Data.ToPhi(
+                    Input.getInstance().getAllLines()
+                )
             )
         );
     }
