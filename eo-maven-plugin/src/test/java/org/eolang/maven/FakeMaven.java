@@ -71,8 +71,7 @@ import org.eolang.maven.util.Home;
  * NOT thread-safe.
  * @since 0.28.12
  * @todo #2406:30min Fix {@link FakeMaven#allowedParams(Class)}
- *  This function
- *  parameters of executed Mojo in {@link FakeMaven#execute(Class)}
+ *  This function parameters of executed Mojo in {@link FakeMaven#execute(Class)}
  *  and parameters those Mojos which are inside this executed Mojo.
  *  If executed Mojo doesn't have parameters that are inside other Mojos,
  *  other Mojos parameters will not be configured.
