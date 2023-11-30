@@ -82,18 +82,18 @@ public final class UnphiMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    xmir -> () -> {
+                    phi -> () -> {
                         final Path relative = Paths.get(
-                            this.unphiInputDir.toPath().relativize(xmir).toString().replace(
-                                String.format(".%s", TranspileMojo.EXT),
-                                String.format(".%s", UnphiMojo.EXT)
+                            this.unphiInputDir.toPath().relativize(phi).toString().replace(
+                                String.format(".%s", PhiMojo.EXT),
+                                String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        home.save(UnphiMojo.translated(new TextOf(xmir)), relative);
+                        home.save(UnphiMojo.parsed(new TextOf(phi)), relative);
                         Logger.info(
                             this,
-                            "Translated to phi: %s -> %s",
-                            xmir, this.unphiOutputDir.toPath().resolve(relative)
+                            "Parsed to xmir: %s -> %s",
+                            phi, this.unphiOutputDir.toPath().resolve(relative)
                         );
                         return 1;
                     },
@@ -102,5 +102,9 @@ public final class UnphiMojo extends SafeMojo {
             )
         ).intValue();
         Logger.info(this, "Parsed %d phi files to xmir", count);
+    }
+
+    public static String parsed(final Text phi) {
+        new
     }
 }
