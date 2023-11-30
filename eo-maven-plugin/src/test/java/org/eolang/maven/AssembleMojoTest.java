@@ -261,6 +261,27 @@ final class AssembleMojoTest {
         );
     }
 
+    @Test
+    void configuresChildParameters(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withHelloWorld()
+            .with("trackOptimizationSteps", true)
+            .execute(AssembleMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
+            )
+        );
+        MatcherAssert.assertThat(
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            )
+        );
+    }
+
     private static String joinedWithUnderscore(final String first, final String second) {
         return String.join("_", first, second);
     }
