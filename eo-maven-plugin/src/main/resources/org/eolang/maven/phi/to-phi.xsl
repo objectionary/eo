@@ -179,6 +179,10 @@ SOFTWARE.
         </xsl:for-each>
         <xsl:apply-templates select="objects"/>
         <xsl:for-each select="$parts">
+          <xsl:value-of select="eo:comma(2)"/>
+          <xsl:value-of select="$lambda"/>
+          <xsl:value-of select="$dashed-arrow"/>
+          <xsl:text>Package</xsl:text>
           <xsl:value-of select="$rb"/>
         </xsl:for-each>
       </xsl:when>
