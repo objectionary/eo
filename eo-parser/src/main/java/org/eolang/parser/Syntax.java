@@ -106,15 +106,15 @@ public final class Syntax {
     public void parse() throws IOException {
         final List<Text> lines = this.lines();
         final ParsingErrors spy = new ParsingErrors(lines);
-        final ProgramLexer lexer = new EoLexer(this.normalize());
+        final EoLexer lexer = new EoIndentLexer(this.normalize());
         lexer.removeErrorListeners();
         lexer.addErrorListener(spy);
-        final ProgramParser parser = new ProgramParser(
+        final EoParser parser = new EoParser(
             new CommonTokenStream(lexer)
         );
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
-        final XeListener xel = new XeListener(this.name);
+        final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(

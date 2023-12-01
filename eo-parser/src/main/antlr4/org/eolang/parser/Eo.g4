@@ -1,4 +1,4 @@
-grammar Program;
+grammar Eo;
 
 tokens { TAB, UNTAB }
 
