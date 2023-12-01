@@ -90,7 +90,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterProgram(final EoParser.ProgramContext ctx) {
+    public void enterProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs.add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
@@ -102,7 +102,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .add("listing").set(XeEoListener.sourceText(ctx)).up()
+            .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up()
             .add("license").up()
@@ -110,14 +110,14 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitProgram(final EoParser.ProgramContext ctx) {
+    public void exitProgram(final ProgramParser.ProgramContext ctx) {
         this.dirs
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
 
     @Override
-    public void enterLicense(final EoParser.LicenseContext ctx) {
+    public void enterLicense(final ProgramParser.LicenseContext ctx) {
         this.dirs.addIf("license").set(
             new Joined(
                 "\n",
@@ -130,12 +130,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitLicense(final EoParser.LicenseContext ctx) {
+    public void exitLicense(final ProgramParser.LicenseContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMetas(final EoParser.MetasContext ctx) {
+    public void enterMetas(final ProgramParser.MetasContext ctx) {
         this.dirs.addIf("metas");
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
@@ -157,54 +157,54 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitMetas(final EoParser.MetasContext ctx) {
+    public void exitMetas(final ProgramParser.MetasContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterObjects(final EoParser.ObjectsContext ctx) {
+    public void enterObjects(final ProgramParser.ObjectsContext ctx) {
         this.dirs.add("objects");
     }
 
     @Override
-    public void exitObjects(final EoParser.ObjectsContext ctx) {
+    public void exitObjects(final ProgramParser.ObjectsContext ctx) {
         this.dirs.append(this.objects);
         this.dirs.up();
     }
 
     @Override
-    public void enterObject(final EoParser.ObjectContext ctx) {
+    public void enterObject(final ProgramParser.ObjectContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitObject(final EoParser.ObjectContext ctx) {
+    public void exitObject(final ProgramParser.ObjectContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterJust(final EoParser.JustContext ctx) {
+    public void enterJust(final ProgramParser.JustContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitJust(final EoParser.JustContext ctx) {
+    public void exitJust(final ProgramParser.JustContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterJustNamed(final EoParser.JustNamedContext ctx) {
+    public void enterJustNamed(final ProgramParser.JustNamedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitJustNamed(final EoParser.JustNamedContext ctx) {
+    public void exitJustNamed(final ProgramParser.JustNamedContext ctx) {
         // Nothing here
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterAtom(final EoParser.AtomContext ctx) {
+    public void enterAtom(final ProgramParser.AtomContext ctx) {
         this.startObject(ctx);
         if (ctx.type().NAME() != null) {
             this.objects.prop("atom", ctx.type().NAME().getText());
@@ -215,117 +215,117 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitAtom(final EoParser.AtomContext ctx) {
+    public void exitAtom(final ProgramParser.AtomContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterAbstraction(final EoParser.AbstractionContext ctx) {
+    public void enterAbstraction(final ProgramParser.AbstractionContext ctx) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitAbstraction(final EoParser.AbstractionContext ctx) {
+    public void exitAbstraction(final ProgramParser.AbstractionContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterInners(final EoParser.InnersContext ctx) {
+    public void enterInners(final ProgramParser.InnersContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitInners(final EoParser.InnersContext ctx) {
+    public void exitInners(final ProgramParser.InnersContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterAttributes(final EoParser.AttributesContext ctx) {
+    public void enterAttributes(final ProgramParser.AttributesContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitAttributes(final EoParser.AttributesContext ctx) {
+    public void exitAttributes(final ProgramParser.AttributesContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterAttribute(final EoParser.AttributeContext ctx) {
+    public void enterAttribute(final ProgramParser.AttributeContext ctx) {
         this.startObject(ctx).prop("name", ctx.NAME().getText());
     }
 
     @Override
-    public void exitAttribute(final EoParser.AttributeContext ctx) {
+    public void exitAttribute(final ProgramParser.AttributeContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterType(final EoParser.TypeContext ctx) {
+    public void enterType(final ProgramParser.TypeContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitType(final EoParser.TypeContext ctx) {
+    public void exitType(final ProgramParser.TypeContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterApplication(final EoParser.ApplicationContext ctx) {
+    public void enterApplication(final ProgramParser.ApplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitApplication(final EoParser.ApplicationContext ctx) {
+    public void exitApplication(final ProgramParser.ApplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
+    public void enterHapplicationExtended(final ProgramParser.HapplicationExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplicationExtended(final EoParser.HapplicationExtendedContext ctx) {
+    public void exitHapplicationExtended(final ProgramParser.HapplicationExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHapplication(final EoParser.HapplicationContext ctx) {
+    public void enterHapplication(final ProgramParser.HapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplication(final EoParser.HapplicationContext ctx) {
+    public void exitHapplication(final ProgramParser.HapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHapplicationHead(final EoParser.HapplicationHeadContext ctx) {
+    public void enterHapplicationHead(final ProgramParser.HapplicationHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplicationHead(final EoParser.HapplicationHeadContext ctx) {
+    public void exitHapplicationHead(final ProgramParser.HapplicationHeadContext ctx) {
         // Nothing here
     }
 
     @Override
     public void enterHapplicationHeadExtended(
-        final EoParser.HapplicationHeadExtendedContext ctx
+        final ProgramParser.HapplicationHeadExtendedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void exitHapplicationHeadExtended(
-        final EoParser.HapplicationHeadExtendedContext ctx
+        final ProgramParser.HapplicationHeadExtendedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterApplicable(final EoParser.ApplicableContext ctx) {
+    public void enterApplicable(final ProgramParser.ApplicableContext ctx) {
         if (ctx.reversed() == null) {
             this.startObject(ctx);
             final String base;
@@ -350,345 +350,345 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitApplicable(final EoParser.ApplicableContext ctx) {
+    public void exitApplicable(final ProgramParser.ApplicableContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHapplicationTail(final EoParser.HapplicationTailContext ctx) {
+    public void enterHapplicationTail(final ProgramParser.HapplicationTailContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHapplicationTail(final EoParser.HapplicationTailContext ctx) {
+    public void exitHapplicationTail(final ProgramParser.HapplicationTailContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterHapplicationArg(final EoParser.HapplicationArgContext ctx) {
+    public void enterHapplicationArg(final ProgramParser.HapplicationArgContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHapplicationArg(final EoParser.HapplicationArgContext ctx) {
+    public void exitHapplicationArg(final ProgramParser.HapplicationArgContext ctx) {
         // Nothing here
     }
 
     @Override
     public void enterHapplicationTailExtended(
-        final EoParser.HapplicationTailExtendedContext ctx
+        final ProgramParser.HapplicationTailExtendedContext ctx
     ) {
         this.objects.enter();
     }
 
     @Override
     public void exitHapplicationTailExtended(
-        final EoParser.HapplicationTailExtendedContext ctx
+        final ProgramParser.HapplicationTailExtendedContext ctx
     ) {
         this.objects.leave();
     }
 
     @Override
     public void enterHapplicationArgExtended(
-        final EoParser.HapplicationArgExtendedContext ctx
+        final ProgramParser.HapplicationArgExtendedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void exitHapplicationArgExtended(
-        final EoParser.HapplicationArgExtendedContext ctx
+        final ProgramParser.HapplicationArgExtendedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplication(final EoParser.VapplicationContext ctx) {
+    public void enterVapplication(final ProgramParser.VapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplication(final EoParser.VapplicationContext ctx) {
+    public void exitVapplication(final ProgramParser.VapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationHead(final EoParser.VapplicationHeadContext ctx) {
+    public void enterVapplicationHead(final ProgramParser.VapplicationHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationHead(final EoParser.VapplicationHeadContext ctx) {
+    public void exitVapplicationHead(final ProgramParser.VapplicationHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
+    public void enterVapplicationHeadNamed(final ProgramParser.VapplicationHeadNamedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationHeadNamed(final EoParser.VapplicationHeadNamedContext ctx) {
+    public void exitVapplicationHeadNamed(final ProgramParser.VapplicationHeadNamedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgs(final EoParser.VapplicationArgsContext ctx) {
+    public void enterVapplicationArgs(final ProgramParser.VapplicationArgsContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitVapplicationArgs(final EoParser.VapplicationArgsContext ctx) {
+    public void exitVapplicationArgs(final ProgramParser.VapplicationArgsContext ctx) {
         this.objects.leave();
     }
 
     @Override
     public void enterVapplicationArgHapplication(
-        final EoParser.VapplicationArgHapplicationContext ctx
+        final ProgramParser.VapplicationArgHapplicationContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void exitVapplicationArgHapplication(
-        final EoParser.VapplicationArgHapplicationContext ctx
+        final ProgramParser.VapplicationArgHapplicationContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void enterVapplicationHeadAs(
-        final EoParser.VapplicationHeadAsContext ctx
+        final ProgramParser.VapplicationHeadAsContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationHeadAs(final EoParser.VapplicationHeadAsContext ctx) {
+    public void exitVapplicationHeadAs(final ProgramParser.VapplicationHeadAsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgVanonym(final EoParser.VapplicationArgVanonymContext ctx) {
+    public void enterVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitVapplicationArgVanonym(final EoParser.VapplicationArgVanonymContext ctx) {
+    public void exitVapplicationArgVanonym(final ProgramParser.VapplicationArgVanonymContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHanonym(final EoParser.VapplicationArgHanonymContext ctx) {
+    public void enterVapplicationArgHanonym(final ProgramParser.VapplicationArgHanonymContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonym(final EoParser.VapplicationArgHanonymContext ctx) {
+    public void exitVapplicationArgHanonym(final ProgramParser.VapplicationArgHanonymContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHanonym(final EoParser.HanonymContext ctx) {
+    public void enterHanonym(final ProgramParser.HanonymContext ctx) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitHanonym(final EoParser.HanonymContext ctx) {
+    public void exitHanonym(final ProgramParser.HanonymContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHanonymInner(final EoParser.HanonymInnerContext ctx) {
+    public void enterHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitHanonymInner(final EoParser.HanonymInnerContext ctx) {
+    public void exitHanonymInner(final ProgramParser.HanonymInnerContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterAbstractees(final EoParser.AbstracteesContext ctx) {
+    public void enterAbstractees(final ProgramParser.AbstracteesContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitAbstractees(final EoParser.AbstracteesContext ctx) {
+    public void exitAbstractees(final ProgramParser.AbstracteesContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterInnerabstract(final EoParser.InnerabstractContext ctx) {
+    public void enterInnerabstract(final ProgramParser.InnerabstractContext ctx) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitInnerabstract(final EoParser.InnerabstractContext ctx) {
+    public void exitInnerabstract(final ProgramParser.InnerabstractContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterAhead(final EoParser.AheadContext ctx) {
+    public void enterAhead(final ProgramParser.AheadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAhead(final EoParser.AheadContext ctx) {
+    public void exitAhead(final ProgramParser.AheadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMethod(final EoParser.MethodContext ctx) {
+    public void enterMethod(final ProgramParser.MethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMethod(final EoParser.MethodContext ctx) {
+    public void exitMethod(final ProgramParser.MethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMethodNamed(final EoParser.MethodNamedContext ctx) {
+    public void enterMethodNamed(final ProgramParser.MethodNamedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
+    public void exitMethodNamed(final ProgramParser.MethodNamedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMethodAs(final EoParser.MethodAsContext ctx) {
+    public void enterMethodAs(final ProgramParser.MethodAsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMethodAs(final EoParser.MethodAsContext ctx) {
+    public void exitMethodAs(final ProgramParser.MethodAsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHmethod(final EoParser.HmethodContext ctx) {
+    public void enterHmethod(final ProgramParser.HmethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethod(final EoParser.HmethodContext ctx) {
+    public void exitHmethod(final ProgramParser.HmethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHmethodExtended(final EoParser.HmethodExtendedContext ctx) {
+    public void enterHmethodExtended(final ProgramParser.HmethodExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethodExtended(final EoParser.HmethodExtendedContext ctx) {
+    public void exitHmethodExtended(final ProgramParser.HmethodExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHmethodVersioned(final EoParser.HmethodVersionedContext ctx) {
+    public void enterHmethodVersioned(final ProgramParser.HmethodVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethodVersioned(final EoParser.HmethodVersionedContext ctx) {
+    public void exitHmethodVersioned(final ProgramParser.HmethodVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
     public void enterHmethodExtendedVersioned(
-        final EoParser.HmethodExtendedVersionedContext ctx
+        final ProgramParser.HmethodExtendedVersionedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void exitHmethodExtendedVersioned(
-        final EoParser.HmethodExtendedVersionedContext ctx
+        final ProgramParser.HmethodExtendedVersionedContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterHmethodHead(final EoParser.HmethodHeadContext ctx) {
+    public void enterHmethodHead(final ProgramParser.HmethodHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethodHead(final EoParser.HmethodHeadContext ctx) {
+    public void exitHmethodHead(final ProgramParser.HmethodHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterHmethodHeadExtended(final EoParser.HmethodHeadExtendedContext ctx) {
+    public void enterHmethodHeadExtended(final ProgramParser.HmethodHeadExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitHmethodHeadExtended(final EoParser.HmethodHeadExtendedContext ctx) {
+    public void exitHmethodHeadExtended(final ProgramParser.HmethodHeadExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVmethod(final EoParser.VmethodContext ctx) {
+    public void enterVmethod(final ProgramParser.VmethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethod(final EoParser.VmethodContext ctx) {
+    public void exitVmethod(final ProgramParser.VmethodContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVmethodVersioned(final EoParser.VmethodVersionedContext ctx) {
+    public void enterVmethodVersioned(final ProgramParser.VmethodVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodVersioned(final EoParser.VmethodVersionedContext ctx) {
+    public void exitVmethodVersioned(final ProgramParser.VmethodVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVmethodHead(final EoParser.VmethodHeadContext ctx) {
+    public void enterVmethodHead(final ProgramParser.VmethodHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodHead(final EoParser.VmethodHeadContext ctx) {
+    public void exitVmethodHead(final ProgramParser.VmethodHeadContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVmethodTail(final EoParser.VmethodTailContext ctx) {
+    public void enterVmethodTail(final ProgramParser.VmethodTailContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodTail(final EoParser.VmethodTailContext ctx) {
+    public void exitVmethodTail(final ProgramParser.VmethodTailContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
+    public void enterVmethodTailVersioned(final ProgramParser.VmethodTailVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
+    public void exitVmethodTailVersioned(final ProgramParser.VmethodTailVersionedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterMethodTail(final EoParser.MethodTailContext ctx) {
+    public void enterMethodTail(final ProgramParser.MethodTailContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitMethodTail(final EoParser.MethodTailContext ctx) {
+    public void exitMethodTail(final ProgramParser.MethodTailContext ctx) {
         this.objects
             .enter()
             .prop("method")
@@ -698,20 +698,20 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterMethodTailVersioned(final EoParser.MethodTailVersionedContext ctx) {
+    public void enterMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
         this.startObject(ctx)
             .prop("base", String.format(".%s", ctx.NAME().getText()))
             .prop("method");
     }
 
     @Override
-    public void exitMethodTailVersioned(final EoParser.MethodTailVersionedContext ctx) {
+    public void exitMethodTailVersioned(final ProgramParser.MethodTailVersionedContext ctx) {
         this.objects.leave();
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterBeginner(final EoParser.BeginnerContext ctx) {
+    public void enterBeginner(final ProgramParser.BeginnerContext ctx) {
         this.startObject(ctx);
         if (ctx.data() == null) {
             final String base;
@@ -734,13 +734,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitBeginner(final EoParser.BeginnerContext ctx) {
+    public void exitBeginner(final ProgramParser.BeginnerContext ctx) {
         this.objects.leave();
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterFinisher(final EoParser.FinisherContext ctx) {
+    public void enterFinisher(final ProgramParser.FinisherContext ctx) {
         this.startObject(ctx);
         final String base;
         if (ctx.NAME() != null) {
@@ -762,49 +762,49 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitFinisher(final EoParser.FinisherContext ctx) {
+    public void exitFinisher(final ProgramParser.FinisherContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
+    public void enterFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
+    public void exitFinisherCopied(final ProgramParser.FinisherCopiedContext ctx) {
         if (ctx.COPY() != null) {
             this.objects.enter().prop("copy").leave();
         }
     }
 
     @Override
-    public void enterVersioned(final EoParser.VersionedContext ctx) {
+    public void enterVersioned(final ProgramParser.VersionedContext ctx) {
         this.startObject(ctx).prop("base", ctx.NAME().getText());
     }
 
     @Override
-    public void exitVersioned(final EoParser.VersionedContext ctx) {
+    public void exitVersioned(final ProgramParser.VersionedContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterReversed(final EoParser.ReversedContext ctx) {
+    public void enterReversed(final ProgramParser.ReversedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitReversed(final EoParser.ReversedContext ctx) {
+    public void exitReversed(final ProgramParser.ReversedContext ctx) {
         this.objects.enter().xprop("base", "concat('.',@base)").leave();
     }
 
     @Override
-    public void enterOname(final EoParser.OnameContext ctx) {
+    public void enterOname(final ProgramParser.OnameContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitOname(final EoParser.OnameContext ctx) {
+    public void exitOname(final ProgramParser.OnameContext ctx) {
         if (ctx.CONST() != null) {
             this.objects.enter().prop("const").leave();
         }
@@ -812,7 +812,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterSuffix(final EoParser.SuffixContext ctx) {
+    public void enterSuffix(final ProgramParser.SuffixContext ctx) {
         this.objects.enter();
         if (ctx.AT() != null) {
             this.objects.prop("name", ctx.AT().getText());
@@ -822,44 +822,44 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitSuffix(final EoParser.SuffixContext ctx) {
+    public void exitSuffix(final ProgramParser.SuffixContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterScope(final EoParser.ScopeContext ctx) {
+    public void enterScope(final ProgramParser.ScopeContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitScope(final EoParser.ScopeContext ctx) {
+    public void exitScope(final ProgramParser.ScopeContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterScopeExtended(final EoParser.ScopeExtendedContext ctx) {
+    public void enterScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitScopeExtended(final EoParser.ScopeExtendedContext ctx) {
+    public void exitScopeExtended(final ProgramParser.ScopeExtendedContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVersion(final EoParser.VersionContext ctx) {
+    public void enterVersion(final ProgramParser.VersionContext ctx) {
         if (ctx.VER() != null) {
             this.objects.prop("ver", ctx.VER().getText());
         }
     }
 
     @Override
-    public void exitVersion(final EoParser.VersionContext ctx) {
+    public void exitVersion(final ProgramParser.VersionContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterAs(final EoParser.AsContext ctx) {
+    public void enterAs(final ProgramParser.AsContext ctx) {
         this.objects.enter();
         final String has;
         if (ctx.RHO() == null) {
@@ -871,13 +871,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitAs(final EoParser.AsContext ctx) {
+    public void exitAs(final ProgramParser.AsContext ctx) {
         this.objects.leave();
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
-    public void enterData(final EoParser.DataContext ctx) {
+    public void enterData(final ProgramParser.DataContext ctx) {
         final String type;
         final String data;
         final String base;
@@ -890,14 +890,14 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             type = "bytes";
             base = "bool";
             if (Boolean.parseBoolean(text)) {
-                data = XeEoListener.bytesToHex((byte) 0x01);
+                data = XeListener.bytesToHex((byte) 0x01);
             } else {
-                data = XeEoListener.bytesToHex((byte) 0x00);
+                data = XeListener.bytesToHex((byte) 0x00);
             }
         } else if (ctx.FLOAT() != null) {
             type = "bytes";
             base = "float";
-            data = XeEoListener.bytesToHex(
+            data = XeListener.bytesToHex(
                 ByteBuffer
                     .allocate(Long.BYTES)
                     .putDouble(Double.parseDouble(text))
@@ -906,7 +906,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.INT() != null) {
             type = "bytes";
             base = "int";
-            data = XeEoListener.bytesToHex(
+            data = XeListener.bytesToHex(
                 ByteBuffer
                     .allocate(Long.BYTES)
                     .putLong(Long.parseLong(text))
@@ -915,7 +915,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.HEX() != null) {
             type = "bytes";
             base = "int";
-            data = XeEoListener.bytesToHex(
+            data = XeListener.bytesToHex(
                 ByteBuffer
                     .allocate(Long.BYTES)
                     .putLong(Long.parseLong(text.substring(2), 16))
@@ -924,7 +924,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         } else if (ctx.STRING() != null) {
             type = "bytes";
             base = "string";
-            data = XeEoListener.bytesToHex(
+            data = XeListener.bytesToHex(
                 StringEscapeUtils.unescapeJava(
                     text.substring(1, text.length() - 1)
                 ).getBytes(StandardCharsets.UTF_8)
@@ -933,9 +933,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             type = "bytes";
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
-            data = XeEoListener.bytesToHex(
+            data = XeListener.bytesToHex(
                 StringEscapeUtils.unescapeJava(
-                    XeEoListener.trimMargin(text, indent)
+                    XeListener.trimMargin(text, indent)
                 ).getBytes(StandardCharsets.UTF_8)
             );
         } else {
@@ -954,7 +954,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitData(final EoParser.DataContext ctx) {
+    public void exitData(final ProgramParser.DataContext ctx) {
         // Nothing here
     }
 
@@ -1007,7 +1007,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * @param ctx Program context.
      * @return Original code.
      */
-    private static String sourceText(final EoParser.ProgramContext ctx) {
+    private static String sourceText(final ProgramParser.ProgramContext ctx) {
         return ctx.getStart().getInputStream().getText(
             new Interval(
                 ctx.getStart().getStartIndex(),

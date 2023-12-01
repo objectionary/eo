@@ -34,16 +34,16 @@ eo: |
     x > @
     second > hello
       $.plus.@ 5.< > i
-      third:foo > x!
-        $:^
+      third > x!
+        $
         <.
           z
         f
-          12
-          false
-          ((t' r:t 8.54 "yes".< "\t").print 88 0x1f):hey
-          TRUE.<
-          false > a!
+          12:foo
+          false:^
+          ((t' r 8.54 "yes".< "\t").print 88 0x1f):hey
+          TRUE.<:vtx
+          false:fle > a!
             []
               Q.x.f.d Q Q
               QQ.y QQ
@@ -53,10 +53,10 @@ eo: |
               QQ
             kid.^.^
             "家"
-      f':u
+      f'
         z'
-          z 5
-          z
+          (z 5):hey
+          z:hoi
       a.
         b.
           c.
