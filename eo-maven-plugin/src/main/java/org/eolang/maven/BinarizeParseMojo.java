@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
@@ -33,29 +32,20 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.map.MapOf;
-import org.eolang.maven.footprint.FtDefault;
-import org.eolang.maven.rust.Commented;
-import org.eolang.maven.rust.Module;
+import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
-import org.eolang.maven.rust.Native;
-import org.eolang.maven.rust.PrimeModule;
-import org.eolang.maven.rust.Project;
+import org.eolang.maven.rust.RustNode;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.HmBase;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -78,11 +68,6 @@ public final class BinarizeParseMojo extends SafeMojo {
      * The directory where to binarize to.
      */
     public static final Path DIR = Paths.get("binarize");
-
-    /**
-     * The directory with generated .rs files.
-     */
-    public static final Path CODES = Paths.get("codes");
 
     /**
      * Parsing train with XSLs.
@@ -109,16 +94,6 @@ public final class BinarizeParseMojo extends SafeMojo {
     private File generatedDir;
 
     /**
-     * File where to save {@link org.eolang.maven.rust.Names} map.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/names"
-    )
-    private File namesDir;
-
-    /**
      * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -130,60 +105,20 @@ public final class BinarizeParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File eoPortalDir;
 
+    /**
+     * To uniquely name different ffi inerts.
+     */
+    private Names names;
+
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(this.namesDir.toPath());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
             final Path file = tojo.shaken();
-            final XML input = new XMLDocument(file);
-            final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
-            for (final XML node: nodes) {
-                final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
-                final List<String> dependencies =
-                    node.xpath("./dependencies/dependency/attribute(name)")
-                    .stream()
-                    .map(BinarizeParseMojo::unhex)
-                    .collect(Collectors.toList());
-                final String function = names.name(
-                    node.xpath("@code_loc").get(0)
-                );
-                final String filename = String.format(
-                    "%s%s",
-                    function,
-                    ".rs"
-                );
-                final Path target = BinarizeMojo.DIR
-                    .resolve(BinarizeParseMojo.CODES)
-                    .resolve(filename);
-                new HmBase(this.targetDir.toPath()).save(
-                    code,
-                    target
-                );
-                Logger.info(
-                    this,
-                    "Binarized %s from %s:%s",
-                    filename,
-                    input.xpath("/program/@name").get(0),
-                    node.xpath("@code_loc").get(0)
-                );
-                new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(new Module(code, "src/foo"), dependencies)
-                    .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
-                    .dependency(
-                        "eo",
-                        new MapOf<>("path", this.eoPortalDir.getAbsolutePath())
-                    )
-                    .save();
-                new Commented(new Native(function, "EOrust.natives"), "//")
-                    .save(
-                    new FtDefault(
-                        this.generatedDir.toPath().resolve("EOrust").resolve("natives")
-                    )
-                );
-            }
+            this.getFFIs(new XMLDocument(file))
+                .forEach(FFINode::generateUnchecked);
         }
-        names.save();
+        this.names.save();
     }
 
     /**
@@ -204,29 +139,30 @@ public final class BinarizeParseMojo extends SafeMojo {
     }
 
     /**
-     * Makes a text from Hexed text.
-     * @param txt Hexed chars separated by backspace.
-     * @return Normal text.
+     * Add ffi node via xsl transformation and return list of them.
+     * @param input Input xmir.
+     * @return FFI nodes.
+     * @todo #2609:90min We can make the current class more generic
+     *  by transferring this.addRust(input) snippet to corresponding
+     *  FFINode- {@link RustNode}. We wanna make the class independent of
+     *  ffi-insert as a result.
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private static String unhex(final String txt) {
-        final StringBuilder hex = new StringBuilder(txt.length());
-        for (final char chr : txt.toCharArray()) {
-            if (chr == ' ') {
-                continue;
-            }
-            hex.append(chr);
-        }
-        final String result;
-        try {
-            final byte[] bytes = Hex.decodeHex(String.valueOf(hex).toCharArray());
-            result = new String(bytes, StandardCharsets.UTF_8);
-        } catch (final DecoderException exception) {
-            throw new IllegalArgumentException(
-                String.format("Invalid String %s, cannot unhex", txt),
-                exception
+    private Collection<FFINode> getFFIs(final XML input) {
+        final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
+        final Collection<FFINode> ret = new ArrayList<>(nodes.size());
+        for (final XML node : nodes) {
+            ret.add(
+                new RustNode(
+                    node,
+                    this.names,
+                    this.targetDir.toPath().resolve("Lib"),
+                    this.eoPortalDir.toPath(),
+                    this.generatedDir.toPath().resolve("EOrust").resolve("natives")
+                )
             );
         }
-        return result;
+        return ret;
     }
 
 }
