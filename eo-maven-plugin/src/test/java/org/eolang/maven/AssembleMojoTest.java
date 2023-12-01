@@ -270,12 +270,14 @@ final class AssembleMojoTest {
             .execute(AssembleMojo.class)
             .result();
         MatcherAssert.assertThat(
+            "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
             )
         );
         MatcherAssert.assertThat(
+            "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
