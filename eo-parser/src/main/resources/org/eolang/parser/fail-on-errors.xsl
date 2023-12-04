@@ -29,9 +29,10 @@ Raise an error if errors are found within program
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/errors/error[@severity='error']">
     <xsl:message terminate="yes">
-      <xsl:text>Errors identified: &#xa;</xsl:text>
+      <xsl:text>Errors identified:
+</xsl:text>
       <xsl:for-each select="/program/errors/error[@severity='error']">
-        <xsl:value-of select="concat('  ', /program/@source, ', ', @line, ': ',  text() , ';&#xa;')"/>
+        <xsl:value-of select="concat('  ', /program/@source, ', ', @line, ': ',  text() , ';&#10;')"/>
       </xsl:for-each>
     </xsl:message>
     <xsl:copy>
