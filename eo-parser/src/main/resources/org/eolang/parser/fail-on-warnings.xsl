@@ -29,9 +29,9 @@ Raise an error if warnings are found within program
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/errors/error[@severity='warning']">
     <xsl:message terminate="yes">
-      <xsl:text>Warnings identified: </xsl:text>
+      <xsl:text>Warnings identified: &#xa;</xsl:text>
       <xsl:for-each select="/program/errors/error[@severity='warning']">
-        <xsl:value-of select="concat(text(), '; ')"/>
+        <xsl:value-of select="concat('  ', /program/@source, ', ', @line, ': ',  text() , ';&#xa;')"/>
       </xsl:for-each>
     </xsl:message>
     <xsl:copy>
