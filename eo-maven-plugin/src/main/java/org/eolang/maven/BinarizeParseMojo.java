@@ -127,6 +127,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Creates sections for each language for FFI insert in xmir and returns the resulting XML file.
      * @param input The .xmir file
      * @return The content of FFI inserts sections
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private XML addFFIs(
         final XML input
