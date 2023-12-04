@@ -204,6 +204,7 @@ public final class AssembleMojo extends SafeMojo {
             new Moja<>(ParseMojo.class),
             new Moja<>(OptimizeMojo.class),
             new Moja<>(ShakeMojo.class),
+            new Moja<>(VerifyMojo.class),
             new Moja<>(DiscoverMojo.class),
             new Moja<>(ProbeMojo.class),
             new Moja<>(PullMojo.class),

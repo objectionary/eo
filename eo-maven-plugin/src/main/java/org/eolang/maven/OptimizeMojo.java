@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -87,31 +86,6 @@ public final class OptimizeMojo extends SafeMojo {
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
     private boolean trackOptimizationSteps;
 
-    /**
-     * Whether we should fail on error.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
-     * Whether we should fail on warn.
-     *
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnWarning",
-        required = true,
-        defaultValue = "false"
-    )
-    private boolean failOnWarning;
-
     @Override
     public void exec() throws IOException {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
@@ -148,7 +122,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization for all tojos.
      */
     private Optimization optimization() {
-        Optimization opt;
+        final Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
                 new ParsingTrain(),
@@ -156,17 +130,6 @@ public final class OptimizeMojo extends SafeMojo {
             );
         } else {
             opt = new OptTrain(new ParsingTrain());
-        }
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-errors.xsl");
-        }
-        if (this.failOnWarning) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
-        }
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
-        } else {
-            opt = new OptTrain(opt, new TrDefault<>());
         }
         return opt;
     }

@@ -114,7 +114,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     public void exec() throws IOException {
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
-            final Path file = tojo.shaken();
+            final Path file = tojo.verified();
             this.getFFIs(new XMLDocument(file))
                 .forEach(FFINode::generateUnchecked);
         }

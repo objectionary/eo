@@ -23,9 +23,17 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StXSL;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
+import org.cactoos.io.ResourceOf;
+import org.eolang.maven.util.HmBase;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -34,10 +42,10 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.31.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class VerifyMojoTest {
 
     @Test
-    @Disabled
     void doesNotFailWithNoErrorsAndWarnings(@TempDir final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
@@ -48,7 +56,6 @@ class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     void detectsErrorsSuccessfully(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -65,7 +72,6 @@ class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     void detectsWarningWithCorrespondingFlag(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -83,7 +89,6 @@ class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     void doesNotDetectWarningWithoutCorrespondingFlag(@TempDir final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
@@ -100,7 +105,6 @@ class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     void detectsCriticalError(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -114,5 +118,78 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with duplicate names should have failed on critical error, but it didn't"
         );
+    }
+
+    @Test
+    void failsOptimization(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f",
+                    "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
+                    "[args] > main",
+                    "  (stdout \"Hello!\").print > @"
+                )
+                .execute(new FakeMaven.Verify())
+        );
+    }
+
+    @Test
+    void failsOnWarning(@TempDir final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+architect yegor256@gmail.com",
+                "+tests",
+                "+package org.eolang.examples\n",
+                "[] > main",
+                "  [] > @",
+                "    hello > test"
+            );
+        this.applyXsl(
+            "org/eolang/maven/set-warning-severity.xsl",
+            maven.execute(ParseMojo.class)
+                .result()
+                .get("target/1-parse/foo/x/main.xmir")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.with("failOnError", false)
+                .with("failOnWarning", true)
+                .execute(VerifyMojo.class)
+        );
+    }
+
+    @Test
+    void failsOnCritical(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f\n",
+                    "[args] > main",
+                    "  seq > @",
+                    "    TRUE > x",
+                    "    FALSE > x"
+                )
+                .execute(new FakeMaven.Verify())
+        );
+    }
+
+    /**
+     * Apply XSL transformation.
+     * @param xsl Path to XSL within classpath
+     * @param xml Path to XML to be tranformed
+     */
+    private void applyXsl(final String xsl, final Path xml) throws Exception {
+        final XML output = new Xsline(
+            new TrDefault<Shift>()
+                .with(
+                    new StXSL(
+                        new XSLDocument(
+                            new ResourceOf(xsl).stream()
+                        )))
+        ).pass(new XMLDocument(xml));
+        new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
     }
 }
