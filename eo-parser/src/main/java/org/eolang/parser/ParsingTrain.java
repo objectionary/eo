@@ -43,6 +43,9 @@ import java.util.logging.Level;
  * Train of XSL shifts.
  *
  * @since 0.1
+ * @todo #2665:30min Check negative int bindings via xsl. It's possible now to make application
+ *  with integer bindings like {@code x a:0 b:1}. Need to add xsl transformation that would check
+ *  if such binding is negative and would add an error to "errors" section.
  */
 public final class ParsingTrain extends TrEnvelope {
 
