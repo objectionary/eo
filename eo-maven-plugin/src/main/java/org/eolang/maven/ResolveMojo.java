@@ -65,7 +65,7 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * The directory where to resolve to.
      */
-    public static final String DIR = "6-resolve";
+    public static final String DIR = "5-resolve";
 
     /**
      * Skip artifact with the version 0.0.0.

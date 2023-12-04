@@ -156,6 +156,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>copy</goal>
               <goal>unplace</goal>
@@ -177,6 +178,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>binarize</goal>
             </goals>
