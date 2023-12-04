@@ -90,7 +90,7 @@ public final class VerifyMojo extends SafeMojo {
                     new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
                 ),
                 new MapOf<String, String>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), "3-verify"),
+                    new MapEntry<>(OptimizationFolder.TARGET.key(), "4-verify"),
                     new MapEntry<>(OptimizationFolder.CACHE.key(), "verified")
                 ),
                 ForeignTojo::withVerified,

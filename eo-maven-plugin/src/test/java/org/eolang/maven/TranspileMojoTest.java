@@ -106,7 +106,9 @@ final class TranspileMojoTest {
             .execute(new FakeMaven.Transpile())
             .result();
         final Path java = res.get(this.compiled);
-        final Path xmir = res.get("target/7-transpile/foo/x/main.xmir");
+        final Path xmir = res.get(
+            String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
+        );
         MatcherAssert.assertThat(java.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(xmir.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(java.toFile().setLastModified(0L), Matchers.is(true));

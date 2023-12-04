@@ -36,10 +36,11 @@ List<String> allowed = [
   '1-parse',
   '2-optimize',
   '3-shake',
-  '4-pull',
-  '5-resolve',
-  '6-pre',
-  '7-transpile',
+  '4-verify',
+  '5-pull',
+  '6-resolve',
+  '7-pre',
+  '8-transpile',
 ]
 List<File> allowedDirs = allowed.stream()
   .map { target.resolve(it).toFile() }
