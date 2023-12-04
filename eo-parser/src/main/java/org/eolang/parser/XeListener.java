@@ -948,11 +948,14 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAs(final ProgramParser.AsContext ctx) {
         this.objects.enter();
         final String has;
-        if (ctx.RHO() == null) {
+        if (ctx.NAME() != null) {
             has = ctx.NAME().getText();
+        } else if (ctx.INT() != null) {
+            has = ctx.INT().getText();
         } else {
             has = "^";
         }
