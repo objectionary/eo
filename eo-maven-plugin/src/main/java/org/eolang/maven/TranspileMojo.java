@@ -69,6 +69,11 @@ import org.eolang.maven.util.Rel;
 public final class TranspileMojo extends SafeMojo {
 
     /**
+     * The directory where to put pre-transpile files.
+     */
+    public static final String PRE = "7-pre";
+
+    /**
      * The directory where to transpile to.
      */
     public static final String DIR = "8-transpile";
@@ -103,11 +108,6 @@ public final class TranspileMojo extends SafeMojo {
      * Java extension.
      */
     private static final Pattern JAVA_EXT = Pattern.compile(".java", Pattern.LITERAL);
-
-    /**
-     * The directory where to put pre-transpile files.
-     */
-    public static final String PRE = "7-pre";
 
     /**
      * Target directory.
