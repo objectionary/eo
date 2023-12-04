@@ -485,9 +485,16 @@ SOFTWARE.
       <xsl:text>, </xsl:text>
       <xsl:choose>
         <xsl:when test="@as">
-          <xsl:text>"</xsl:text>
-          <xsl:value-of select="eo:attr-name(@as)"/>
-          <xsl:text>"</xsl:text>
+          <xsl:choose>
+            <xsl:when test="matches(@as,'^[0-9]+$')">
+              <xsl:value-of select="eo:attr-name(@as)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>"</xsl:text>
+              <xsl:value-of select="eo:attr-name(@as)"/>
+              <xsl:text>"</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
         <xsl:when test="../@base = 'org.eolang.error'">
           <xsl:text>"α"</xsl:text>
