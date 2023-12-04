@@ -148,7 +148,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * @todo #2649:90min This method may be more general. We need to get rid from rust dependencies
      *  in this method, because when adding another type of inserts it will be just copy-paste here.
      *  First of all, the for-loop must create all kinds of FFI nodes, not only {@link RustNode}. I
-     *  think we can implement it, using something like {@code FFINodeBuilder}, that will return
+     *  think we can implement it, using something like {@code FFINodeFactory}, that will return
      *  appropriate FFI node for every XML node from {@code nodes}. Also it will be great to move
      *  paths to XML FFI insert nodes (such as {@code "/program/rusts/rust"}) from this method to
      *  a class field.
