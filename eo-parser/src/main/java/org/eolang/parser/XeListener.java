@@ -56,6 +56,14 @@ import org.xembly.Directives;
     "PMD.ExcessiveClassLength"
 })
 public final class XeListener implements ProgramListener, Iterable<Directive> {
+    /**
+     * Info about xmir.
+     */
+    private static final String INFO = String.join(
+        "",
+        "This is XMIR - a dialect of XML, which is used to present a parsed EO program. ",
+        "For more information please visit https://news.eolang.org/2022-11-25-xmir-guide.html"
+    );
 
     /**
      * The name of it.
@@ -102,6 +110,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
+            .comment(XeListener.INFO)
             .add("listing").set(XeListener.sourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up()
