@@ -948,6 +948,7 @@ public final class XeListener implements ProgramListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAs(final ProgramParser.AsContext ctx) {
         this.objects.enter();
         final String has;
