@@ -151,7 +151,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      *  think we can implement it, using something like {@code FFINodeFactory}, that will return
      *  appropriate FFI node for every XML node from {@code nodes}. Also it will be great to move
      *  paths to XML FFI insert nodes (such as {@code "/program/rusts/rust"}) from this method to
-     *  a class field.
+     *  a static class field.
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private Collection<FFINode> getFFIs(final XML input) {
