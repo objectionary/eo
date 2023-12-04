@@ -54,7 +54,7 @@ public final class VerifyMojo extends SafeMojo {
      * Whether we should fail on error.
      *
      * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
+     * @since 0.34.0
      */
     @SuppressWarnings("PMD.ImmutableField")
     @Parameter(
