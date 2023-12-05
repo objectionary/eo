@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -220,54 +219,18 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorFlag(@TempDir final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            new FakeMaven(temp)
+    void failsOnCritical(@TempDir final Path temp) throws IOException {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
                     "[args] > main",
-                    "  (stdout \"Hello!\").print > @"
-                )
-                .with("failOnError", false)
+                    "  seq > @",
+                    "    TRUE > x",
+                    "    FALSE > x"
+                ).with("trackOptimizationSteps", true)
                 .execute(new FakeMaven.Optimize())
-                .result(),
-            Matchers.not(
-                Matchers.hasKey(
-                    String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-                )
-            )
-        );
-    }
-
-    @Test
-    void stopsOnCritical(@TempDir final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            new XMLDocument(
-                new FakeMaven(temp)
-                    .withProgram(
-                        "+package f\n",
-                        "[args] > main",
-                        "  seq > @",
-                        "    TRUE > x",
-                        "    FALSE > x"
-                    )
-                    .with("trackOptimizationSteps", true)
-                    .with("failOnError", false)
-                    .execute(new FakeMaven.Optimize())
-                    .result()
-                    .get(
-                        String.format(
-                            "target/%s/foo/x/main/28-duplicate-names.xml",
-                            OptimizeMojo.STEPS
-                        )
-                    )
-            ),
-            XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=2]",
-                "/program/errors[count(error)=1]",
-                "/program/errors/error[@severity='critical']"
-            )
         );
     }
 

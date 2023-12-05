@@ -122,7 +122,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization for all tojos.
      */
     private Optimization optimization() {
-        final Optimization opt;
+        Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
                 new ParsingTrain(),
@@ -131,6 +131,7 @@ public final class OptimizeMojo extends SafeMojo {
         } else {
             opt = new OptTrain(new ParsingTrain());
         }
+        opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
         return opt;
     }
 }

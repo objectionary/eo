@@ -51,18 +51,6 @@ import org.eolang.maven.tojos.ForeignTojo;
 public final class VerifyMojo extends SafeMojo {
 
     /**
-     * Whether we should fail on error.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.34.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
      * Whether we should fail on warning.
      *
      * @checkstyle MemberNameCheck (11 lines)
@@ -114,17 +102,12 @@ public final class VerifyMojo extends SafeMojo {
      * @return Verifying optimizations
      */
     private Optimization optimization() {
-        Optimization opt = new OptTrain(new TrDefault<>());
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-errors.xsl");
-        }
+        Optimization opt = new OptTrain(
+            new OptTrain(new TrDefault<>()),
+            "/org/eolang/parser/fail-on-errors.xsl"
+        );
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
-        }
-        if (this.failOnError) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
-        } else {
-            opt = new OptTrain(opt, new TrDefault<>());
         }
         return opt;
     }

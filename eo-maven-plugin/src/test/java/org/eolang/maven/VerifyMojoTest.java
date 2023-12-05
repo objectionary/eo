@@ -105,23 +105,7 @@ class VerifyMojoTest {
     }
 
     @Test
-    void detectsCriticalError(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "[] > main",
-                    "  [] > name",
-                    "  [] > name"
-                )
-                .execute(new FakeMaven.Verify()),
-            "Program with duplicate names should have failed on critical error, but it didn't"
-        );
-    }
-
-    @Test
-    void failsOptimization(@TempDir final Path temp) {
+    void failsOptimizationOnError(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -146,7 +130,7 @@ class VerifyMojoTest {
                 "  [] > @",
                 "    hello > test"
             );
-        this.applyXsl(
+        VerifyMojoTest.applyXsl(
             "org/eolang/maven/set-warning-severity.xsl",
             maven.execute(ParseMojo.class)
                 .result()
@@ -154,25 +138,8 @@ class VerifyMojoTest {
         );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.with("failOnError", false)
-                .with("failOnWarning", true)
+            () -> maven.with("failOnWarning", true)
                 .execute(VerifyMojo.class)
-        );
-    }
-
-    @Test
-    void failsOnCritical(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "[args] > main",
-                    "  seq > @",
-                    "    TRUE > x",
-                    "    FALSE > x"
-                )
-                .execute(new FakeMaven.Verify())
         );
     }
 
@@ -181,7 +148,7 @@ class VerifyMojoTest {
      * @param xsl Path to XSL within classpath
      * @param xml Path to XML to be tranformed
      */
-    private void applyXsl(final String xsl, final Path xml) throws Exception {
+    private static void applyXsl(final String xsl, final Path xml) throws Exception {
         final XML output = new Xsline(
             new TrDefault<Shift>()
                 .with(
