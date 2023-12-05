@@ -45,6 +45,9 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
+ * @todo #2642:30min Create test packs for {@link UnphiMojo}. UnphiMojo seems to work correctly.
+ *  We need to create yaml packs and enable {@link UnphiMojoTest#checksUnphiPacks(String, Path)}
+ *  and make sure all of them are passed. Don't forget to remove the puzzle.
  */
 class UnphiMojoTest {
     @Test
