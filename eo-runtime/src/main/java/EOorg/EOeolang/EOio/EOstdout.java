@@ -27,6 +27,8 @@
  */
 package EOorg.EOeolang.EOio;
 
+import EOorg.EOeolang.EObool;
+import EOorg.EOeolang.EObytes;
 import java.io.PrintStream;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
@@ -34,6 +36,7 @@ import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -73,9 +76,7 @@ public class EOstdout extends PhDefault {
             new AtLambda(
                 this,
                 rho -> {
-                    out.print(
-                        new Param(rho, "text").strong(String.class)
-                    );
+                    out.print(new Param(rho, "text").strong(String.class));
                     return new Data.ToPhi(true);
                 }
             )

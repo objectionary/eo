@@ -68,14 +68,23 @@ bnds: (LB bindings RB)+
     ;
 
 dispatch
-    : (formation | termination) bnds? attrs
-    | dispatch bnds attrs
-    | HOME attrs
-    | XI attrs
+    : (formation | termination) bnds? attr+ disp
+    | HOME attr+ disp
+    | XI attr+ disp
     ;
 
-attrs
-    : (DOT attribute)+
+disp:
+    | dispBnds attr+ disp
+    ;
+
+// The rule was separately because it's used as
+// marker where it's needed to enter the <o> object
+// in order to make application right
+dispBnds
+    : bnds
+    ;
+
+attr: DOT attribute
     ;
 
 termination
