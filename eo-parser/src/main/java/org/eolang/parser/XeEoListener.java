@@ -32,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
@@ -942,6 +941,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         // Nothing here
     }
 
+    @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAs(final EoParser.AsContext ctx) {
         this.objects.enter();

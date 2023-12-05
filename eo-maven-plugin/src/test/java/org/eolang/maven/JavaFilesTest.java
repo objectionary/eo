@@ -24,14 +24,11 @@
 package org.eolang.maven;
 
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Xsline;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;

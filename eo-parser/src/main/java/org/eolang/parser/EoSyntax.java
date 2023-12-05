@@ -84,6 +84,7 @@ public final class EoSyntax implements Syntax {
      * be generated and saved. Read it in order to find the errors,
      * at <tt>/program/errors</tt> XPath.</p>
      *
+     * @return Parsed XML
      * @throws IOException If fails
      */
     public XML parsed() throws IOException {

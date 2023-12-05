@@ -39,7 +39,7 @@ import org.xembly.Xembler;
  * Syntax parser, from Phi-calculus to XMIR, using ANTLR4.
  * @since 0.34.0
  */
-public class PhiSyntax implements Syntax {
+public final class PhiSyntax implements Syntax {
     /**
      * Name of the program.
      */
@@ -81,7 +81,7 @@ public class PhiSyntax implements Syntax {
             ).domQuietly()
         );
         new Schema(dom).check();
-        Logger.debug(this,"Input of PHI calculus compiled, no errors");
+        Logger.debug(this, "Input of PHI calculus compiled, no errors");
         return dom;
     }
 }

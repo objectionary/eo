@@ -57,7 +57,7 @@ final class EoIndentLexerTest {
         MatcherAssert.assertThat(
             lexer.getGrammarFileName(),
             Matchers.is(
-                "Program.g4"
+                "Eo.g4"
             )
         );
     }

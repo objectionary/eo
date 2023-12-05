@@ -25,18 +25,15 @@ package org.eolang.parser;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.yaml.snakeyaml.Yaml;
 
 /**

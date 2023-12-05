@@ -101,7 +101,8 @@ final class EoSyntaxTest {
                     "test-22",
                     new InputOf(src)
                 ).parsed().toString().getBytes(),
-                StandardCharsets.UTF_8)
+                StandardCharsets.UTF_8
+            )
         );
         MatcherAssert.assertThat(
             xml.xpath("/program/listing/text()"),

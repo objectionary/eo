@@ -30,7 +30,7 @@ import org.antlr.v4.runtime.misc.Interval;
  * Source text of parser context.
  * @since 0.34.0
  */
-public class SourceText {
+public final class SourceText {
     /**
      * Context.
      */

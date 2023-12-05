@@ -82,7 +82,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
      * Objects.
      */
-    private final Deque<Objects> objects;
+    private final Deque<Objects> objs;
 
     /**
      * Packages.
@@ -101,12 +101,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     /**
      * Ctor.
-     * @param name The name of it
+     * @param nme The name of it
      */
-    public XePhiListener(final String name) {
-        this.name = name;
+    public XePhiListener(final String nme) {
+        this.name = nme;
         this.dirs = new Directives();
-        this.objects = new ArrayDeque<>();
+        this.objs = new ArrayDeque<>();
         this.attributes = new Stack<>();
         this.properties = new Stack<>();
         this.packages = new ListOf<>();
@@ -115,7 +115,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterProgram(final PhiParser.ProgramContext ctx) {
-        this.objects.add(new Objects.ObjXembly());
+        this.objs.add(new Objects.ObjXembly());
         this.dirs.add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
@@ -147,7 +147,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 .up().up();
         }
         this.dirs.add("objects")
-            .append(this.objects.pollLast())
+            .append(this.objs.pollLast())
             .up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L));
     }
@@ -181,14 +181,14 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterBindings(final PhiParser.BindingsContext ctx) {
         if (XePhiListener.hasLambdaPackage(ctx)) {
             this.packages.add(this.attributes.peek());
-            this.objects.add(new Objects.ObjXembly());
+            this.objs.add(new Objects.ObjXembly());
         }
     }
 
     @Override
     public void exitBindings(final PhiParser.BindingsContext ctx) {
         if (XePhiListener.hasLambdaPackage(ctx)) {
-            this.objects.poll();
+            this.objs.poll();
         }
     }
 
@@ -201,10 +201,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
-            if (this.objects.size() > this.packages.size()) {
-                this.objects().leave();
-            }
+        if ((ctx.alphaBinding() != null || ctx.emptyBinding() != null)
+            && this.objs.size() > this.packages.size()) {
+            this.objects().leave();
         }
     }
 
@@ -219,6 +218,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterAttribute(final PhiParser.AttributeContext ctx) {
         final String attr;
         if (ctx.PHI() != null) {
@@ -313,6 +313,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterDispatch(final PhiParser.DispatchContext ctx) {
         if (ctx.HOME() != null) {
             this.objects().prop("base", "Q").leave();
@@ -331,22 +332,22 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterDisp(PhiParser.DispContext ctx) {
+    public void enterDisp(final PhiParser.DispContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitDisp(PhiParser.DispContext ctx) {
+    public void exitDisp(final PhiParser.DispContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterDispBnds(PhiParser.DispBndsContext ctx) {
+    public void enterDispBnds(final PhiParser.DispBndsContext ctx) {
         this.objects().enter();
     }
 
     @Override
-    public void exitDispBnds(PhiParser.DispBndsContext ctx) {
+    public void exitDispBnds(final PhiParser.DispBndsContext ctx) {
         this.objects().leave();
     }
 
@@ -374,22 +375,22 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void visitTerminal(TerminalNode terminalNode) {
+    public void visitTerminal(final TerminalNode node) {
         // Nothing here
     }
 
     @Override
-    public void visitErrorNode(ErrorNode errorNode) {
+    public void visitErrorNode(final ErrorNode node) {
         // Nothing here
     }
 
     @Override
-    public void enterEveryRule(ParserRuleContext parserRuleContext) {
+    public void enterEveryRule(final ParserRuleContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitEveryRule(ParserRuleContext parserRuleContext) {
+    public void exitEveryRule(final ParserRuleContext ctx) {
         // Nothing here
     }
 
@@ -403,7 +404,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
      * @return Objects
      */
     private Objects objects() {
-        return this.objects.getLast();
+        return this.objs.getLast();
     }
 
     /**
@@ -414,7 +415,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     private static boolean hasLambdaPackage(final PhiParser.BindingsContext ctx) {
         return ctx.binding()
             .stream()
-            .anyMatch(context -> context.lambdaBidning() != null
-                && context.lambdaBidning().FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE));
+            .anyMatch(
+                context -> context.lambdaBidning() != null
+                && context.lambdaBidning().FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE)
+            );
     }
 }
