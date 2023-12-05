@@ -26,14 +26,10 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.Xsline;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import org.cactoos.io.DeadOutput;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
@@ -47,24 +43,23 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * Test case for {@link Xsline}.
+ * Test case for {@link EoSyntax}.
  *
  * @since 0.1
  */
-final class SyntaxTest {
+final class EoSyntaxTest {
 
     @Test
     void parsesSimpleCode() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-1",
-            new ResourceOf("org/eolang/parser/fibonacci.eo"),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new String(baos.toByteArray(), StandardCharsets.UTF_8)
+                new String(
+                    new EoSyntax(
+                        "test-1",
+                        new ResourceOf("org/eolang/parser/fibonacci.eo")
+                    ).parsed().toString().getBytes(),
+                    StandardCharsets.UTF_8
+                )
             ),
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-1']",
@@ -78,17 +73,16 @@ final class SyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = "# hello, world!\n\n[] > x-н, 1\n";
-        final Syntax syntax = new Syntax(
-            "test-44",
-            new InputOf(src),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
-                new String(baos.toByteArray(), StandardCharsets.UTF_8)
+                new String(
+                    new EoSyntax(
+                        "test-44",
+                        new InputOf(src)
+                    ).parsed().toString().getBytes(),
+                    StandardCharsets.UTF_8
+                )
             ),
             XhtmlMatchers.hasXPaths(
                 "/program/errors[count(error)=2]",
@@ -99,18 +93,16 @@ final class SyntaxTest {
 
     @Test
     void copiesListingCorrectly() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = new TextOf(
             new ResourceOf("org/eolang/parser/factorial.eo")
         ).asString();
-        final Syntax syntax = new Syntax(
-            "test-22",
-            new InputOf(src),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         final XML xml = new XMLDocument(
-            new String(baos.toByteArray(), StandardCharsets.UTF_8)
+            new String(
+                new EoSyntax(
+                    "test-22",
+                    new InputOf(src)
+                ).parsed().toString().getBytes(),
+                StandardCharsets.UTF_8)
         );
         MatcherAssert.assertThat(
             xml.xpath("/program/listing/text()"),
@@ -131,27 +123,22 @@ final class SyntaxTest {
         "[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
-        final Syntax syntax = new Syntax(
+        final EoSyntax syntax = new EoSyntax(
             "test-2",
-            new InputOf(code),
-            new DeadOutput()
+            new InputOf(code)
         );
         Assertions.assertDoesNotThrow(
-            syntax::parse
+            syntax::parsed
         );
     }
 
     @Test
     void parsesArrow() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-it-3",
-            new InputOf("1 > x"),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
-            new XMLDocument(baos.toByteArray()),
+            new EoSyntax(
+                "test-it-3",
+                new InputOf("1 > x")
+            ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects/o[@base='int' and @name='x' and ends-with(text(), '1')]"
             )
@@ -160,17 +147,13 @@ final class SyntaxTest {
 
     @Test
     void prasesNested() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-it-4",
-            new InputOf(
-                "[] > base\n  memory 0 > x\n  [self] > f\n    v > @\n      v\n"
-            ),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
-            new XMLDocument(baos.toByteArray()),
+            new EoSyntax(
+                "test-it-4",
+                new InputOf(
+                    "[] > base\n  memory 0 > x\n  [self] > f\n    v > @\n      v\n"
+                )
+            ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
                 "/program/objects/o[count(o)=2]"
@@ -180,17 +163,11 @@ final class SyntaxTest {
 
     @Test
     void parsesDefinition() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-it-5",
-            new InputOf(
-                "[v] > p\n  f.write > @\n"
-            ),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
-            new XMLDocument(baos.toByteArray()),
+            new EoSyntax(
+                "test-it-5",
+                new InputOf("[v] > p\n  f.write > @\n")
+            ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
                 "/program/objects/o[count(o)=3]"
@@ -200,15 +177,11 @@ final class SyntaxTest {
 
     @Test
     void parsesMethodCalls() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-it-1",
-            new InputOf("add.\n  0\n  TRUE"),
-            new OutputTo(baos)
-        );
-        syntax.parse();
         MatcherAssert.assertThat(
-            new XMLDocument(baos.toByteArray()),
+            new EoSyntax(
+                "test-it-1",
+                new InputOf("add.\n  0\n  TRUE")
+            ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-it-1']",
                 "/program/objects/o[@base='.add']",
@@ -224,15 +197,14 @@ final class SyntaxTest {
         "TRUE > true"
     })
     void storesAsBytes(final String code) throws IOException {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test-3",
-            new InputOf(code),
-            new OutputTo(output)
-        );
-        syntax.parse();
         final XML xml = new XMLDocument(
-            new String(output.toByteArray(), StandardCharsets.UTF_8)
+            new String(
+                new EoSyntax(
+                    "test-3",
+                    new InputOf(code)
+                ).parsed().toString().getBytes(),
+                StandardCharsets.UTF_8
+            )
         );
         MatcherAssert.assertThat(
             xml,
@@ -249,13 +221,10 @@ final class SyntaxTest {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         Assumptions.assumeTrue(map.get("skip") == null);
-        final ByteArrayOutputStream xmir = new ByteArrayOutputStream();
-        new Syntax(
+        final XML xml = new EoSyntax(
             "typo",
-            new InputOf(String.format("%s\n", map.get("eo"))),
-            new OutputTo(xmir)
-        ).parse();
-        final XML xml = new XMLDocument(xmir.toByteArray());
+            new InputOf(String.format("%s\n", map.get("eo")))
+        ).parsed();
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(xml.toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")

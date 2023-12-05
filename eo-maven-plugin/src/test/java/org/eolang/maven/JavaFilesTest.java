@@ -23,9 +23,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Xsline;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.InputOf;
@@ -33,7 +35,7 @@ import org.cactoos.io.OutputTo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
-import org.eolang.parser.Syntax;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,17 +52,14 @@ class JavaFilesTest {
     /**
      * Parsed eo program from resources.
      */
-    private XMLDocument xmir;
+    private XML xmir;
 
     @BeforeEach
-    void setUp() throws Exception {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        new Syntax(
+    void setUp() throws IOException {
+        this.xmir = new EoSyntax(
             "sum.eo",
-            new ResourceOf("org/eolang/maven/sum.eo"),
-            new OutputTo(baos)
-        ).parse();
-        this.xmir = new XMLDocument(baos.toByteArray());
+            new ResourceOf("org/eolang/maven/sum.eo")
+        ).parsed();
     }
 
     @Test

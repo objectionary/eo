@@ -86,15 +86,13 @@ final class XMIRTest {
      * @throws IOException If fails
      */
     private static XML parse(final String source) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test", new InputOf(source), new OutputTo(baos)
-        );
-        syntax.parse();
-        final XSL wrap = new XSLDocument(
+        return new XSLDocument(
             XMIRTest.class.getResourceAsStream("wrap-method-calls.xsl")
-        ).with(new ClasspathSources());
-        return wrap.transform(new XMLDocument(baos.toByteArray()));
+        ).with(new ClasspathSources()).transform(
+            new EoSyntax(
+                "test", new InputOf(source)
+            ).parsed()
+        );
     }
 
     /**

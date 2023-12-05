@@ -70,15 +70,7 @@ public final class CheckPack {
     public Collection<String> failures() throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(this.script);
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String src = map.get("eo").toString();
-        new Syntax(
-            "scenario",
-            new InputOf(String.format("%s\n", src)),
-            new OutputTo(baos)
-        ).parse();
-        final XML xml = new XMLDocument(baos.toByteArray());
-        baos.reset();
         final Iterable<String> xsls = (Iterable<String>) map.get("xsls");
         Train<Shift> train = new ParsingTrain();
         if (xsls != null) {
@@ -89,7 +81,12 @@ public final class CheckPack {
                 train = train.with(new StClasspath(xsl));
             }
         }
-        final XML out = new Xsline(train).pass(xml);
+        final XML out = new Xsline(train).pass(
+            new EoSyntax(
+                "scenario",
+                new InputOf(String.format("%s\n", src))
+            ).parsed()
+        );
         Logger.debug(this, "Output XML:\n%s", out);
         final Collection<String> failures = new LinkedList<>();
         for (final String xpath : (Iterable<String>) map.get("tests")) {

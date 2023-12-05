@@ -24,24 +24,26 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.ResourceOf;
+import org.cactoos.io.InputStreamOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.cactoos.text.Sticky;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
+import org.eolang.parser.PhiLexer;
+import org.eolang.parser.PhiParser;
+import org.eolang.parser.XePhiListener;
 
 /**
  * Read PHI files and parse them to the XMIR.
@@ -89,7 +91,10 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        home.save(UnphiMojo.parsed(new TextOf(phi)), relative);
+                        home.save(
+                            UnphiMojo.parsed(new TextOf(phi), phi.getFileName().toString()),
+                            relative
+                        );
                         Logger.info(
                             this,
                             "Parsed to xmir: %s -> %s",
@@ -104,7 +109,22 @@ public final class UnphiMojo extends SafeMojo {
         Logger.info(this, "Parsed %d phi files to xmir", count);
     }
 
-    public static String parsed(final Text phi) {
-        new
+    public static String parsed(final Text phi, final String name) {
+        PhiLexer lexer = new PhiLexer(
+            CharStreams.fromStream(new InputStreamOf(new TextOf(
+                Objects.requireNonNull(
+                    Thread.currentThread()
+                        .getContextClassLoader()
+                        .getResourceAsStream("org/eolang/test.phi")
+                )
+            )))
+        );
+
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        final XePhiListener xel = new XePhiListener(name);
+        final PhiParser parser = new PhiParser(
+            new CommonTokenStream(lexer)
+        );
     }
 }

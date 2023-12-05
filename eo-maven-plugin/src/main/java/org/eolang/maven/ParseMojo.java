@@ -48,7 +48,7 @@ import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.Syntax;
+import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -154,19 +154,18 @@ public final class ParseMojo extends SafeMojo {
             name,
             "xmir",
             () -> {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                new Syntax(
-                    name,
-                    new InputOf(source),
-                    new OutputTo(baos)
-                ).parse();
                 final String parsed = new XMLDocument(
                     new Xembler(
                         new Directives().xpath("/program").attr(
                             "source",
                             source.toAbsolutePath()
                         )
-                    ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                    ).applyQuietly(
+                        new EoSyntax(
+                            name,
+                            new InputOf(source)
+                        ).parsed().node()
+                    )
                 ).toString();
                 Logger.debug(
                     this,
