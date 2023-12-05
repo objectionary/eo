@@ -23,6 +23,7 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.manifests.Manifests;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,19 +31,34 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
-import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cactoos.list.ListOf;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
+/**
+ * The PHI-CALCULUS grammar listener for ANTLR4 walker.
+ *
+ * @checkstyle CyclomaticComplexityCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle MethodCountCheck (1300 lines)
+ * @since 0.34.0
+ */
+@SuppressWarnings({
+    "PMD.TooManyMethods",
+    "PMD.AvoidDuplicateLiterals",
+    "PMD.ExcessivePublicCount",
+    "PMD.ExcessiveClassLength"
+})
 public final class XePhiListener implements PhiListener, Iterable<Directive> {
+    /**
+     * Info about xmir.
+     */
+    private static final XmirInfo INFO = new XmirInfo();
+
     /**
      * Package lambda.
      */
@@ -69,63 +85,81 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     private final Deque<Objects> objects;
 
     /**
-     * Package.
+     * Packages.
      */
-    private final Collection<String> pckg;
+    private final Collection<String> packages;
 
     /**
      * When we start.
      */
-    private long start;
+    private final long start;
+
+    /**
+     * The name of it.
+     */
+    private final String name;
 
     /**
      * Ctor.
+     * @param name The name of it
      */
-    public XePhiListener() {
+    public XePhiListener(final String name) {
+        this.name = name;
         this.dirs = new Directives();
         this.objects = new ArrayDeque<>();
         this.attributes = new Stack<>();
         this.properties = new Stack<>();
-        this.pckg = new ListOf<>();
+        this.packages = new ListOf<>();
+        this.start = System.nanoTime();
     }
 
     @Override
     public void enterProgram(final PhiParser.ProgramContext ctx) {
-        this.start = System.nanoTime();
         this.objects.add(new Objects.ObjXembly());
         this.dirs.add("program")
-//            .attr("version", Manifests.read("EO-Version"))
-//            .attr("revision", Manifests.read("EO-Revision"))
-//            .attr("dob", Manifests.read("EO-Dob"))
+            .attr("name", this.name)
+            .attr("version", Manifests.read("EO-Version"))
+            .attr("revision", Manifests.read("EO-Revision"))
+            .attr("dob", Manifests.read("EO-Dob"))
             .attr(
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
             )
-            .add("listing").set(XePhiListener.sourceText(ctx)).up();
+            .comment(XePhiListener.INFO)
+            .add("listing").set(new SourceText(ctx)).up()
+            .add("errors").up()
+            .add("sheets").up()
+            .add("license").up()
+            .add("metas").up();
         this.properties.push("name");
     }
 
     @Override
     public void exitProgram(final PhiParser.ProgramContext ctx) {
         this.properties.pop();
-        if (!this.pckg.isEmpty()) {
-            final String tail = String.join(".", this.pckg);
-            this.dirs.add("metas")
+        if (!this.packages.isEmpty()) {
+            final String pckg = String.join(".", this.packages);
+            this.dirs.xpath("metas[last()]").strict(1)
                 .add("meta")
                 .add("head").set("package").up()
-                .add("tail").set(tail).up()
-                .add("part").set(tail).up()
+                .add("tail").set(pckg).up()
+                .add("part").set(pckg).up()
                 .up().up();
         }
-        this.dirs.add("objects").append(this.objects.pollLast());
+        this.dirs.add("objects")
+            .append(this.objects.pollLast())
+            .up()
+            .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L));
     }
 
     @Override
     public void enterObject(final PhiParser.ObjectContext ctx) {
+        // Nothing here
     }
 
     @Override
     public void exitObject(final PhiParser.ObjectContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -137,18 +171,16 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitFormation(final PhiParser.FormationContext ctx) {
         this.properties.pop();
         if (!XePhiListener.hasLambdaPackage(ctx.bindings())) {
-            final String pop = this.attributes.pop();
-            System.out.printf("pop %s\n", pop);
             this.objects()
                 .prop("abstract")
-                .prop("name", pop);
+                .prop("name", this.attributes.pop());
         }
     }
 
     @Override
     public void enterBindings(final PhiParser.BindingsContext ctx) {
         if (XePhiListener.hasLambdaPackage(ctx)) {
-            this.pckg.add(this.attributes.peek());
+            this.packages.add(this.attributes.peek());
             this.objects.add(new Objects.ObjXembly());
         }
     }
@@ -170,7 +202,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
-            if (this.objects.size() > this.pckg.size()) {
+            if (this.objects.size() > this.packages.size()) {
                 this.objects().leave();
             }
         }
@@ -178,11 +210,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
+        // Nothing here
     }
 
     @Override
     public void exitAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
-
+        // Nothing here
     }
 
     @Override
@@ -204,33 +237,31 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "";
         }
         this.attributes.push(attr);
-        System.out.printf("push %s\n", attr);
     }
 
     @Override
     public void exitAttribute(final PhiParser.AttributeContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void enterAlpha(final PhiParser.AlphaContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void exitAlpha(final PhiParser.AlphaContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
+        // Nothing here
     }
 
     @Override
     public void exitEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
-        final String pop = this.attributes.pop();
-        System.out.printf("pop %s\n", pop);
-        this.objects().prop("name", pop);
+        this.objects().prop("name", this.attributes.pop());
     }
 
     @Override
@@ -246,7 +277,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
-
+        // Nothing here
     }
 
     @Override
@@ -258,17 +289,17 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void enterApplication(final PhiParser.ApplicationContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void exitApplication(final PhiParser.ApplicationContext ctx) {
-
+        // Nothing here
     }
 
     @Override
@@ -293,19 +324,20 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitDispatch(final PhiParser.DispatchContext ctx) {
         this.objects().enter();
-        final String pop = this.attributes.pop();
-        System.out.printf("poped %s\n", pop);
-        if (!pop.isEmpty()) {
-            this.objects().prop(this.properties.peek(), pop);
+        final String attribute = this.attributes.pop();
+        if (!attribute.isEmpty()) {
+            this.objects().prop(this.properties.peek(), attribute);
         }
     }
 
     @Override
     public void enterDisp(PhiParser.DispContext ctx) {
+        // Nothing here
     }
 
     @Override
     public void exitDisp(PhiParser.DispContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -325,42 +357,40 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void exitAttr(final PhiParser.AttrContext ctx) {
-        final String pop = this.attributes.pop();
-        System.out.printf("poped %s\n", pop);
         this.objects()
             .prop("method")
-            .prop("base", String.format(".%s", pop))
+            .prop("base", String.format(".%s", this.attributes.pop()))
             .leave();
     }
 
     @Override
     public void enterTermination(final PhiParser.TerminationContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void exitTermination(final PhiParser.TerminationContext ctx) {
-
+        // Nothing here
     }
 
     @Override
     public void visitTerminal(TerminalNode terminalNode) {
-
+        // Nothing here
     }
 
     @Override
     public void visitErrorNode(ErrorNode errorNode) {
-
+        // Nothing here
     }
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-
+        // Nothing here
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
-
+        // Nothing here
     }
 
     @Override
@@ -368,40 +398,23 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         return this.dirs.iterator();
     }
 
+    /**
+     * Objects at the last level of stack.
+     * @return Objects
+     */
     private Objects objects() {
         return this.objects.getLast();
     }
 
+    /**
+     * Check if bindings on the given context have lambda package.
+     * @param ctx Context
+     * @return If bindings have lambda package
+     */
     private static boolean hasLambdaPackage(final PhiParser.BindingsContext ctx) {
         return ctx.binding()
             .stream()
             .anyMatch(context -> context.lambdaBidning() != null
                 && context.lambdaBidning().FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE));
-    }
-
-//    /**
-//     * Start object.
-//     * @param ctx Context.
-//     * @return Started object.
-//     */
-//    private Objects startObject(final ParserRuleContext ctx) {
-//        return this.objects.start(
-//            ctx.getStart().getLine(),
-//            ctx.getStart().getCharPositionInLine()
-//        );
-//    }
-
-    /**
-     * Text source code.
-     * @param ctx Program context.
-     * @return Original code.
-     */
-    private static String sourceText(final PhiParser.ProgramContext ctx) {
-        return ctx.getStart().getInputStream().getText(
-            new Interval(
-                ctx.getStart().getStartIndex(),
-                ctx.getStop().getStopIndex()
-            )
-        );
     }
 }

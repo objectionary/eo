@@ -442,7 +442,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO)
+as  : COLON (NAME | RHO | INT)
     ;
 
 // Data
