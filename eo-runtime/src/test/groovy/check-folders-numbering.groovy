@@ -38,8 +38,8 @@ List<String> allowed = [
   '3-shake',
   '4-pull',
   '5-resolve',
-  '6-pre',
-  '7-verify',
+  '6-verify',
+  '7-pre',
   '8-transpile',
 ]
 List<File> allowedDirs = allowed.stream()
