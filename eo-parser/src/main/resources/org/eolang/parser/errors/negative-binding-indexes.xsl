@@ -38,7 +38,7 @@ SOFTWARE.
           <xsl:attribute name="severity">
             <xsl:text>error</xsl:text>
           </xsl:attribute>
-          <xsl:text>Binding index of application must not be a negative number "</xsl:text>
+          <xsl:text>Binding index of application must not be a signed number "</xsl:text>
           <xsl:value-of select="tail/text()"/>
           <xsl:text>"</xsl:text>
         </xsl:element>
