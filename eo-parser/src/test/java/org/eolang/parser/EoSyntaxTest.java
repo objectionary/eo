@@ -79,7 +79,7 @@ final class EoSyntaxTest {
                     new EoSyntax(
                         "test-44",
                         new InputOf(src)
-                    ).parsed().toString().getBytes(),
+                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
                     StandardCharsets.UTF_8
                 )
             ),
