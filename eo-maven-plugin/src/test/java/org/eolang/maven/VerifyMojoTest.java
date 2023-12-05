@@ -33,6 +33,10 @@ import org.junit.jupiter.api.io.TempDir;
  * Test cases for {@link VerifyMojo}.
  *
  * @since 0.31.0
+ * @todo #2546:90min Add test that checks the message of exception in case of
+ *  warning, error and critical in xmir. According to
+ *  eo-parser/src/main/resources/org/eolang/parser/fail-on-critical.xsl it includes
+ *  filename and line inside.
  */
 class VerifyMojoTest {
 
