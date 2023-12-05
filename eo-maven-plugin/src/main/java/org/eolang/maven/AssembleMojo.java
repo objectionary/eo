@@ -116,7 +116,7 @@ public final class AssembleMojo extends SafeMojo {
 
     /**
      * Whether we should fail on error.
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (11 lines)
      * @since 0.23.0
      * @todo #2443:90min Remove the following failOnError flag. Now we
      *  have already got rid from it in {@link OptimizeMojo} and {@link VerifyMojo}.
