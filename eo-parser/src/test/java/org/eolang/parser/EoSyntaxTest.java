@@ -48,7 +48,6 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  */
 final class EoSyntaxTest {
-
     @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
