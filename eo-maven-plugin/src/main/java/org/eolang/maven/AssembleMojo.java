@@ -27,12 +27,14 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.set.SetOf;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 
@@ -40,6 +42,17 @@ import org.eolang.maven.objectionary.ObjsDefault;
  * Pull all necessary EO XML files from Objectionary and parse them all.
  *
  * @since 0.1
+ * @todo #2406:90min Make up with idea how to get rid of duplicate parameters between mojos.
+ *  There's a situation where AssembleMojo owns, creates and executes other mojos,
+ *  like {@link ParseMojo} or {@link OptimizeMojo}. When we configure our compiler via pom.xml maven
+ *  tries to set parameters directly to the calling mojo. That's why we must to have all parameters
+ *  from child mojos in AssembleMojo or {@link SafeMojo} (in order they won't be skipped and lost).
+ *  That causes duplication of parameters between "parent" mojo and "child" mojos.
+ *  Also it obliges the developer to remember that if he adds new parameter to some child mojo,
+ *  this parameter must be present in parent mojo as well.
+ *  We didn't find a way how we can resolve such duplication at the moment.
+ *  So we need to either accept this as impossible to solve or resolve somehow.
+ *  Anyway don't forget to remove the puzzle when the decision about the puzzle is made.
  */
 @Mojo(
     name = "assemble",
@@ -66,6 +79,24 @@ public final class AssembleMojo extends SafeMojo {
     private File outputDir;
 
     /**
+     * List of inclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle ConstantUsageCheck (5 lines)
+     */
+    @Parameter
+    private final Set<String> includeBinaries = new SetOf<>("**");
+
+    /**
+     * List of exclusion GLOB filters for finding class files.
+     * @since 0.15
+     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle ConstantUsageCheck (5 lines)
+     */
+    @Parameter
+    private final Set<String> excludeBinaries = new SetOf<>();
+
+    /**
      * Objectionaries.
      * @checkstyle MemberNameCheck (6 lines)
      * @checkstyle ConstantUsageCheck (5 lines)
@@ -90,6 +121,24 @@ public final class AssembleMojo extends SafeMojo {
     private boolean overWrite;
 
     /**
+     * Track optimization steps into intermediate XML files?
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 0.24.0
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
+    private boolean trackOptimizationSteps;
+
+    /**
+     * The Git tag to pull objects from, in objectionary.
+     * @since 0.21.0
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.tag", required = true, defaultValue = "master")
+    private String tag = "master";
+
+    /**
      * Skip artifact with the version 0.0.0.
      * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
@@ -104,6 +153,16 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
+
+    /**
+     * Fail resolution process on conflicting dependencies.
+     *
+     * @checkstyle MemberNameCheck (7 lines)
+     * @since 1.0
+     */
+    @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
+    @SuppressWarnings("PMD.LongVariable")
+    private boolean ignoreVersionConflicts;
 
     /**
      * Whether we should fail on error.
