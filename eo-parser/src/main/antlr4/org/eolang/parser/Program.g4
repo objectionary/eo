@@ -25,7 +25,7 @@ objects
 // Object
 object
     : atom          // Atom
-    | abstraction   // Abstraction
+    | formation     // Formation
     | hanonym oname // Horizontal anonym with name
     | application   // Application
     | methodNamed   // Method
@@ -49,10 +49,10 @@ justNamed
 atom: ahead suffix type
     ;
 
-// Abstraction - abstract object with mandatory name
+// Formation - abstract object with mandatory name
 // Comment can be placed before atom
 // Can contain inner objects
-abstraction
+formation
     : ahead oname inners?
     ;
 
@@ -126,7 +126,8 @@ applicable
 
 // Horizontal application tail
 happlicationTail
-    : (SPACE happlicationArg as?)+
+    : (SPACE happlicationArg as)+
+    | (SPACE happlicationArg)+
     ;
 
 // Argument of horizontal application
@@ -141,7 +142,8 @@ happlicationArg
 // Extended horizontal application tail
 // Can contain elements in vertical notation
 happlicationTailExtended
-    : (SPACE happlicationArgExtended as?)+
+    : (SPACE happlicationArgExtended as)+
+    | (SPACE happlicationArgExtended)+
     ;
 
 // Extended argument of horizontal application
@@ -177,25 +179,42 @@ vapplicationHeadNamed
 vapplicationArgs
     : EOL
       TAB
-      (
-        ( vapplicationArgVanonym                                                // Vertical anonym object
-        | vapplicationArgHanonym                                                // Horizontal anonym object
-        | vapplicationArgHapplication oname?                                    // Horizontal application
-        | (vapplicationHeadNamed | vapplicationHeadAs oname?) vapplicationArgs  // Vertical application
-        | justNamed                                                             // Just an object reference
-        | just as oname?                                                        // Just an object reference with binding
-        | methodNamed                                                           // Method
-        | methodAs oname?                                                       // Method with binding
-        )
-        (EOL | EOP)
-      )+
+      vapplicationArg
       UNTAB
     ;
 
+vapplicationArg
+    : (vapplicationArgBinded (EOL | EOP))+
+    | (vapplicationArgUnbinded (EOL | EOP))+
+    ;
+
+// Vertical application arguments with bindings
+vapplicationArgBinded
+    : vapplicationArgVanonymBinded // vertical anonym object
+    | vapplicationArgHanonymBinded // horizontal anonym object
+    | vapplicationArgHapplicationBinded // horizontal application
+    | vapplicationHeadAs oname? vapplicationArgs // vertical application
+    | just as oname? // Just an object reference with binding
+    | methodAs oname? // Method with binding
+    ;
+
+// Vertical application arguments without bindings
+vapplicationArgUnbinded
+    : vapplicationArgVanonymUnbinded // vertical anonym object
+    | vapplicationArgHanonymUnbinded // horizontal anonym object
+    | vapplicationArgHapplicationUnbinded // horizontal application
+    | vapplicationHeadNamed vapplicationArgs // vertical application
+    | justNamed // Just an object reference
+    | methodNamed // Method
+    ;
+
 // Horizontal application as argument of vertical application
-vapplicationArgHapplication
-    : happlicationExtended
-    | LB happlicationExtended RB as
+vapplicationArgHapplicationBinded
+    : LB happlicationExtended RB as oname?
+    ;
+
+vapplicationArgHapplicationUnbinded
+    : happlicationExtended oname?
     ;
 
 // Vertical application head with binding
@@ -204,13 +223,21 @@ vapplicationHeadAs
     ;
 
 // Vertical anonym object as argument of vertical application
-vapplicationArgVanonym
-    : attributes as? oname? abstractees?
+vapplicationArgVanonymUnbinded
+    : attributes oname? formatees?
+    ;
+
+vapplicationArgVanonymBinded
+    : attributes as oname? formatees?
     ;
 
 // Horizontal anonym object as argument of vertical application
-vapplicationArgHanonym
-    : (hanonym | LB hanonym RB as) oname?
+vapplicationArgHanonymBinded
+    : LB hanonym RB as oname?
+    ;
+
+vapplicationArgHanonymUnbinded
+    : hanonym oname?
     ;
 
 // Horizontal anonym object
@@ -225,16 +252,16 @@ hanonymInner
     ;
 
 // Abstract objects <- arguments of vertical anonym object <- argument of vertical application
-abstractees
+formatees
     : EOL
       TAB
-      ((innerabstract | application | justNamed | methodNamed) (EOL | EOP))+
+      ((innerformatee | application | justNamed | methodNamed) (EOL | EOP))+
       UNTAB
     ;
 
-// Inner abstract object of abstractees
-innerabstract
-    : ahead oname? abstractees?
+// Inner abstract object of formatees
+innerformatee
+    : ahead oname? formatees?
     ;
 
 // Optional comment + attributes
@@ -415,7 +442,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO)
+as  : COLON (NAME | RHO | INT)
     ;
 
 // Data

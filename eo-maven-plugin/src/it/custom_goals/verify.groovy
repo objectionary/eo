@@ -37,8 +37,8 @@
  */
 [
   'target/eo/5-resolve',
-  'target/eo/6-pre',
-  'target/eo/7-transpile',
+  'target/eo/7-pre',
+  'target/eo/8-transpile',
 ].each { assert !new File(basedir, it).exists() }
 
 true

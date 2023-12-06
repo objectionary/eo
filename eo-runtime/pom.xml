@@ -53,7 +53,7 @@ SOFTWARE.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.13</version>
+      <version>1.4.14</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -156,6 +156,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>copy</goal>
               <goal>unplace</goal>
@@ -177,6 +178,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>binarize</goal>
             </goals>
