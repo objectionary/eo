@@ -69,9 +69,14 @@ import org.eolang.maven.util.Rel;
 public final class TranspileMojo extends SafeMojo {
 
     /**
+     * The directory where to put pre-transpile files.
+     */
+    public static final String PRE = "7-pre";
+
+    /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "7-transpile";
+    public static final String DIR = "8-transpile";
 
     /**
      * Extension for compiled sources in XMIR format (XML).
@@ -103,11 +108,6 @@ public final class TranspileMojo extends SafeMojo {
      * Java extension.
      */
     private static final Pattern JAVA_EXT = Pattern.compile(".java", Pattern.LITERAL);
-
-    /**
-     * The directory where to put pre-transpile files.
-     */
-    private static final String PRE = "6-pre";
 
     /**
      * Target directory.
@@ -185,7 +185,7 @@ public final class TranspileMojo extends SafeMojo {
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
         final int saved;
-        final Path file = tojo.shaken();
+        final Path file = tojo.verified();
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);

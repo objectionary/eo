@@ -654,6 +654,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 TranspileMojo.class
             ).iterator();
         }
@@ -672,6 +673,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeMojo.class
             ).iterator();
         }
@@ -690,6 +692,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeParseMojo.class
             ).iterator();
         }

@@ -23,14 +23,7 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StXSL;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -226,74 +219,7 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnErrorFlag(@TempDir final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout",
-                    "[args] > main",
-                    "  (stdout \"Hello!\").print > @"
-                )
-                .with("failOnError", false)
-                .execute(new FakeMaven.Optimize())
-                .result(),
-            Matchers.not(
-                Matchers.hasKey(
-                    String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
-                )
-            )
-        );
-    }
-
-    @Test
-    void failsOptimization(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f",
-                    "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
-                    "[args] > main",
-                    "  (stdout \"Hello!\").print > @"
-                )
-                .execute(new FakeMaven.Optimize())
-        );
-    }
-
-    @Test
-    void stopsOnCritical(@TempDir final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            new XMLDocument(
-                new FakeMaven(temp)
-                    .withProgram(
-                        "+package f\n",
-                        "[args] > main",
-                        "  seq > @",
-                        "    TRUE > x",
-                        "    FALSE > x"
-                    )
-                    .with("trackOptimizationSteps", true)
-                    .with("failOnError", false)
-                    .execute(new FakeMaven.Optimize())
-                    .result()
-                    .get(
-                        String.format(
-                            "target/%s/foo/x/main/28-duplicate-names.xml",
-                            OptimizeMojo.STEPS
-                        )
-                    )
-            ),
-            XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=2]",
-                "/program/errors[count(error)=1]",
-                "/program/errors/error[@severity='critical']"
-            )
-        );
-    }
-
-    @Test
-    void failsOnCritical(@TempDir final Path temp) {
+    void failsOnCritical(@TempDir final Path temp) throws IOException {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -303,33 +229,8 @@ final class OptimizeMojoTest {
                     "  seq > @",
                     "    TRUE > x",
                     "    FALSE > x"
-                )
+                ).with("trackOptimizationSteps", true)
                 .execute(new FakeMaven.Optimize())
-        );
-    }
-
-    @Test
-    void failsOnWarning(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+architect yegor256@gmail.com",
-                "+tests",
-                "+package org.eolang.examples\n",
-                "[] > main",
-                "  [] > @",
-                "    hello > test"
-            );
-        this.applyXsl(
-            "org/eolang/maven/set-warning-severity.xsl",
-            maven.execute(ParseMojo.class)
-                .result()
-                .get("target/1-parse/foo/x/main.xmir")
-        );
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> maven.with("failOnError", false)
-                .with("failOnWarning", true)
-                .execute(OptimizeMojo.class)
         );
     }
 
@@ -351,22 +252,5 @@ final class OptimizeMojoTest {
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
         }
-    }
-
-    /**
-     * Apply XSL transformation.
-     * @param xsl Path to XSL within classpath
-     * @param xml Path to XML to be tranformed
-     */
-    private void applyXsl(final String xsl, final Path xml) throws Exception {
-        final XML output = new Xsline(
-            new TrDefault<Shift>()
-                .with(
-                    new StXSL(
-                        new XSLDocument(
-                            new ResourceOf(xsl).stream()
-                        )))
-        ).pass(new XMLDocument(xml));
-        new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
     }
 }
