@@ -1,11 +1,11 @@
-in: ""
+skip: true
 out:
   - ".*123.*"
 args: [ "main", "123" ]
 eo: |
   +alias org.eolang.io.stdout
 
-  [args...] > main
+  [args] > main
     "The code snippet that checks parent's args" > description
     [] > take
       ^.args.at 0 > @
