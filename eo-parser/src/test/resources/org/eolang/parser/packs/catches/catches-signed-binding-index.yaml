@@ -1,5 +1,5 @@
 xsls:
-  - /org/eolang/parser/errors/negative-binding-indexes.xsl
+  - /org/eolang/parser/errors/signed-binding-indexes.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=3]
 eo: |
