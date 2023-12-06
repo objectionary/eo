@@ -115,7 +115,8 @@ class VerifyMojoTest {
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
-                .execute(new FakeMaven.Verify())
+                .execute(new FakeMaven.Verify()),
+            "Error in the eo code because of invalid alias"
         );
     }
 
@@ -139,7 +140,8 @@ class VerifyMojoTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.with("failOnWarning", true)
-                .execute(VerifyMojo.class)
+                .execute(VerifyMojo.class),
+            "Program with warning should be failed"
         );
     }
 
