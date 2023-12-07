@@ -1,0 +1,8 @@
+tests:
+  - /program/metas/meta[head[text()='package'] and tail[text()='foo.bar.baz'] and part[text()='foo.bar.baz']]
+  - /program/objects/o[@abstract and @name='main']
+  - /program/objects/o[@abstract and @name='main']/o[@base='Q']
+  - /program/objects/o[@abstract and @name='main']/o[@base='.org' and @method]
+  - /program/objects/o[@abstract and @name='main']/o[@base='.eolang' and @method]
+  - /program/objects/o[@abstract and @name='main']/o[@base='.stdout' and @method and @name='@']
+phi: "{foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧}"

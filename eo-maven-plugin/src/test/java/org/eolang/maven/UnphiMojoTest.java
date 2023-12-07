@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -69,7 +70,6 @@ class UnphiMojoTest {
     }
 
     @ParameterizedTest
-    @Disabled
     @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
     void checksUnphiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
@@ -80,7 +80,9 @@ class UnphiMojoTest {
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             final List<XML> nodes = new XMLDocument(
                 new TextOf(
-                    Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
+                    temp.resolve(
+                        Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
+                    )
                 ).asString()
             ).nodes(xpath);
             if (nodes.isEmpty()) {
@@ -94,6 +96,45 @@ class UnphiMojoTest {
             ),
             failures,
             Matchers.empty()
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
+    void convertsToXmirAndBack(final String pack, @TempDir final Path temp) throws Exception {
+        final Map<String, Object> map = new Yaml().load(pack);
+        final String phi = map.get("phi").toString();
+        final String main = "target/phi/main.phi";
+        final Path path = Paths.get(main);
+        new HmBase(temp).save(phi, path);
+        final long saved = temp.resolve(path).toFile().lastModified();
+        final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
+        maven.foreignTojos().add("name")
+            .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
+        System.out.println(
+            new TextOf(
+                temp.resolve("target/1-parse/main.xmir")
+            ).asString()
+        );
+        final Path result = maven
+            .execute(OptimizeMojo.class)
+            .execute(PhiMojo.class)
+            .result()
+            .get(main);
+        System.out.println(
+            new TextOf(
+                temp.resolve("target/2-optimize/main.xmir")
+            ).asString()
+        );
+        MatcherAssert.assertThat(
+            result.toFile().lastModified(),
+            Matchers.greaterThan(saved)
+        );
+        MatcherAssert.assertThat(
+            phi,
+            Matchers.equalTo(
+                new TextOf(result).asString()
+            )
         );
     }
 }

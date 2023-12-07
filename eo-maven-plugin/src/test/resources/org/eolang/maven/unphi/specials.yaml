@@ -1,0 +1,26 @@
+tests:
+  - /program/objects/o[@name='main']
+  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.^' and @method]/following-sibling::o[@base='.x' and @method and @name='x']
+
+  - /program/objects/o[@name='main']/o[@base='Q']
+  - /program/objects/o[@name='main']/o[@base='.org' and @method]
+  - /program/objects/o[@name='main']/o[@base='.eolang' and @method]
+  - /program/objects/o[@name='main']/o[@base='.y' and @method]
+  - /program/objects/o[@name='main']/o[@base='.&' and @method and @name='h']
+
+  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.a' and @method and @name='a']
+
+  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.<' and @method and @name='vtx']
+
+  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.^' and @method]/following-sibling::o[@base='.<' and @method and @name='self']
+
+  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.@' and @method]/following-sibling::o[@base='.@' and @method and @name='phi']
+eo: |
+  [] > main
+    ^.x > x
+    y.& > h
+    $.a > a
+    < > vtx
+    ^.< > self
+    @.@ > phi
+phi: "{main ↦ ⟦x ↦ ξ.ρ.x, h ↦ Φ.org.eolang.y.σ, a ↦ ξ.ρ.a, vtx ↦ ξ.ν, self ↦ ξ.ρ.ν, phi ↦ ξ.φ.φ⟧}"

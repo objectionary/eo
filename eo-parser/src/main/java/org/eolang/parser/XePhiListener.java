@@ -173,7 +173,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (!XePhiListener.hasLambdaPackage(ctx.bindings())) {
             this.objects()
                 .prop("abstract")
-                .prop("name", this.attributes.pop());
+                .prop(this.properties.peek(), this.attributes.pop());
         }
     }
 
@@ -266,13 +266,14 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
+        this.objects()
+            .start()
+            .prop("data", "bytes")
+            .prop("base", "org.eolang.bytes");
         if (!ctx.BYTES().getText().equals("--")) {
-            this.objects().data(
-                ctx.BYTES().getText()
-                    .replaceAll("-", " ")
-                    .trim()
-            );
+            this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
         }
+        this.objects().leave();
     }
 
     @Override
