@@ -82,7 +82,7 @@ binary code consists of a few high-level steps, which must be done
 one after another:
 
   * **Parsing**.
-    It's done by the `org.eolang.parser.Syntax` class in the `eo-parser` module. It takes
+    It's done by the `org.eolang.parser.EoSyntax` class in the `eo-parser` module. It takes
     the source code in a plain text format and parses into XML document,
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
     The output of the parser you can find in the `target/eo/parse` directory.

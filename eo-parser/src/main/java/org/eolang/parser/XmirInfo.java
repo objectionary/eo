@@ -23,18 +23,22 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.XML;
-import java.io.IOException;
-
 /**
- * Syntax parser, to XMIR, using ANTLR4.
+ * Info about XMIR.
  * @since 0.34.0
  */
-public interface Syntax {
+public final class XmirInfo {
     /**
-     * Parse it to XML.
-     * @return Parsed XML
-     * @throws IOException If fails
+     * Info about xmir.
      */
-    XML parsed() throws IOException;
+    private static final String INFO = String.join(
+        "",
+        "This is XMIR - a dialect of XML, which is used to present a parsed EO program. ",
+        "For more information please visit https://news.eolang.org/2022-11-25-xmir-guide.html"
+    );
+
+    @Override
+    public String toString() {
+        return XmirInfo.INFO;
+    }
 }
