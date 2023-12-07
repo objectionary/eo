@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,9 +44,6 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
- * @todo #2642:30min Create test packs for {@link UnphiMojo}. UnphiMojo seems to work correctly.
- *  We need to create yaml packs and enable {@link UnphiMojoTest#checksUnphiPacks(String, Path)}
- *  and make sure all of them are passed. Don't forget to remove the puzzle.
  */
 class UnphiMojoTest {
     @Test
@@ -111,21 +106,11 @@ class UnphiMojoTest {
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         maven.foreignTojos().add("name")
             .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
-        System.out.println(
-            new TextOf(
-                temp.resolve("target/1-parse/main.xmir")
-            ).asString()
-        );
         final Path result = maven
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
             .result()
             .get(main);
-        System.out.println(
-            new TextOf(
-                temp.resolve("target/2-optimize/main.xmir")
-            ).asString()
-        );
         MatcherAssert.assertThat(
             result.toFile().lastModified(),
             Matchers.greaterThan(saved)
