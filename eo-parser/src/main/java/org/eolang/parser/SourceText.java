@@ -23,18 +23,34 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.XML;
-import java.io.IOException;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 
 /**
- * Syntax parser, to XMIR, using ANTLR4.
+ * Source text of parser context.
  * @since 0.34.0
  */
-public interface Syntax {
+public final class SourceText {
     /**
-     * Parse it to XML.
-     * @return Parsed XML
-     * @throws IOException If fails
+     * Context.
      */
-    XML parsed() throws IOException;
+    private final ParserRuleContext context;
+
+    /**
+     * Ctor.
+     * @param ctx Context
+     */
+    public SourceText(final ParserRuleContext ctx) {
+        this.context = ctx;
+    }
+
+    @Override
+    public String toString() {
+        return this.context.getStart().getInputStream().getText(
+            new Interval(
+                this.context.getStart().getStartIndex(),
+                this.context.getStop().getStopIndex()
+            )
+        );
+    }
 }
