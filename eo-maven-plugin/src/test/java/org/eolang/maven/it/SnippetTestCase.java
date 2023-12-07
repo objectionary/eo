@@ -99,7 +99,8 @@ final class SnippetTestCase {
                     .set("project.reporting.outputEncoding", "UTF-8");
                 f.files()
                     .file("src/main/eo/main.eo")
-                    .write(String.format("%s\n", map.get("eo")));
+                    .write(String.format("%s\n", map.get("eo")))
+                    .show();
                 f.build()
                     .plugins()
                     .appendItself()
