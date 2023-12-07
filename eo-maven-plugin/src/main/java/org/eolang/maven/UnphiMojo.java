@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
