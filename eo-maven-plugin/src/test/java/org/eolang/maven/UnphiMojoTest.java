@@ -112,10 +112,12 @@ class UnphiMojoTest {
             .result()
             .get(main);
         MatcherAssert.assertThat(
+            String.format("%s should have been rewritten after optimization, but it wasn't", main),
             result.toFile().lastModified(),
             Matchers.greaterThan(saved)
         );
         MatcherAssert.assertThat(
+            "Origin phi should equal to phi got from \"unphied\" xmir, but it isn't",
             phi,
             Matchers.equalTo(
                 new TextOf(result).asString()
