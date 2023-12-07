@@ -70,7 +70,9 @@ public final class BinarizeParseMojo extends SafeMojo {
     public static final Path DIR = Paths.get("binarize");
 
     /**
-     * Parsing train with XSLs.
+     * Parsing train with XSLs. The task of XSLs is to find all the FFI inserts and put them at
+     * the end of the xmir file. When adding a new language for FFI inserts, you need to add the
+     * appropriate XSL transformation.
      */
     static final Train<Shift> TRAIN = new TrBulk<>(
         new TrClasspath<>(
@@ -122,11 +124,12 @@ public final class BinarizeParseMojo extends SafeMojo {
     }
 
     /**
-     * Creates a "rust" section in xml file and returns the resulting XML.
+     * Creates sections for each language for FFI insert in xmir and returns the resulting XML file.
      * @param input The .xmir file
-     * @return The content of rust section
+     * @return The content of FFI inserts sections
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private XML addRust(
+    private XML addFFIs(
         final XML input
     ) {
         final String name = input.xpath("/program/@name").get(0);
@@ -142,14 +145,17 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Add ffi node via xsl transformation and return list of them.
      * @param input Input xmir.
      * @return FFI nodes.
-     * @todo #2609:90min We can make the current class more generic
-     *  by transferring this.addRust(input) snippet to corresponding
-     *  FFINode- {@link RustNode}. We wanna make the class independent of
-     *  ffi-insert as a result.
+     * @todo #2649:90min This method may be more general. We need to get rid from rust dependencies
+     *  in this method, because when adding another type of inserts it will be just copy-paste here.
+     *  First of all, the for-loop must create all kinds of FFI nodes, not only {@link RustNode}. I
+     *  think we can implement it, using something like {@code FFINodeFactory}, that will return
+     *  appropriate FFI node for every XML node from {@code nodes}. Also it will be great to move
+     *  paths to XML FFI insert nodes (such as {@code "/program/rusts/rust"}) from this method to
+     *  a static class field.
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private Collection<FFINode> getFFIs(final XML input) {
-        final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
+        final List<XML> nodes = this.addFFIs(input).nodes("/program/rusts/rust");
         final Collection<FFINode> ret = new ArrayList<>(nodes.size());
         for (final XML node : nodes) {
             ret.add(
