@@ -4,7 +4,6 @@ args: ["simple.main"]
 eo: |
   +package simple
   +alias org.eolang.io.stdout
-  +alias org.eolang.txt.sprintf
 
   [args] > main
     seq > @
