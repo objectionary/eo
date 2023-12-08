@@ -58,7 +58,7 @@ public final class ForeignTojo {
      * @return The id of the tojo.
      */
     public String identifier() {
-        return this.attributeTojo(ForeignTojos.Attribute.ID);
+        return this.attribute(ForeignTojos.Attribute.ID);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class ForeignTojo {
      * @return The xmir.
      */
     public Path xmir() {
-        return Paths.get(this.attributeTojo(ForeignTojos.Attribute.XMIR));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.XMIR));
     }
 
     /**
@@ -74,7 +74,7 @@ public final class ForeignTojo {
      * @return The optimized xmir.
      */
     public Path optimized() {
-        return Paths.get(this.attributeTojo(ForeignTojos.Attribute.OPTIMIZED));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.OPTIMIZED));
     }
 
     /**
@@ -82,7 +82,7 @@ public final class ForeignTojo {
      * @return The verified xmir.
      */
     public Path verified() {
-        return Paths.get(this.attributeTojo(ForeignTojos.Attribute.VERIFIED));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.VERIFIED));
     }
 
     /**
@@ -90,7 +90,7 @@ public final class ForeignTojo {
      * @return The shaken xmir.
      */
     public Path shaken() {
-        return Paths.get(this.attributeTojo(ForeignTojos.Attribute.SHAKEN));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.SHAKEN));
     }
 
     /**
@@ -98,7 +98,7 @@ public final class ForeignTojo {
      * @return The eo object.
      */
     public Path source() {
-        return Paths.get(this.attributeTojo(ForeignTojos.Attribute.EO));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.EO));
     }
 
     /**
@@ -106,7 +106,7 @@ public final class ForeignTojo {
      * @return The version.
      */
     public String version() {
-        return this.attributeTojo(ForeignTojos.Attribute.VERSION);
+        return this.attribute(ForeignTojos.Attribute.VERSION);
     }
 
     /**
@@ -116,7 +116,7 @@ public final class ForeignTojo {
     public String description() {
         return String.format(
             "%s:%s",
-            this.attributeTojo(ForeignTojos.Attribute.ID),
+            this.attribute(ForeignTojos.Attribute.ID),
             this.version()
         );
     }
@@ -126,7 +126,7 @@ public final class ForeignTojo {
      * @return The hash.
      */
     public String hash() {
-        return this.attributeTojo(ForeignTojos.Attribute.HASH);
+        return this.attribute(ForeignTojos.Attribute.HASH);
     }
 
     /**
@@ -134,7 +134,7 @@ public final class ForeignTojo {
      * @return The probed.
      */
     public String probed() {
-        return this.attributeTojo(ForeignTojos.Attribute.PROBED);
+        return this.attribute(ForeignTojos.Attribute.PROBED);
     }
 
     /**
@@ -365,7 +365,7 @@ public final class ForeignTojo {
      * @return The scope.
      */
     public String scope() {
-        return this.attributeTojo(ForeignTojos.Attribute.SCOPE);
+        return this.attribute(ForeignTojos.Attribute.SCOPE);
     }
 
     /**
@@ -383,7 +383,7 @@ public final class ForeignTojo {
      * @return The version.
      */
     public String ver() {
-        return this.attributeTojo(ForeignTojos.Attribute.VER);
+        return this.attribute(ForeignTojos.Attribute.VER);
     }
 
     @Override
@@ -410,7 +410,7 @@ public final class ForeignTojo {
      * @param attribute The attribute from ForeignTojos.Attribute.
      * @return The attribute.
      */
-    private String attributeTojo(final ForeignTojos.Attribute attribute) {
+    private String attribute(final ForeignTojos.Attribute attribute) {
         final String path = this.delegate.get(attribute.key());
         if (path == null) {
             throw new IllegalStateException(

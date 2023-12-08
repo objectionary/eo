@@ -131,6 +131,19 @@ final class ForeignTojosTest {
             () -> method.apply(tojo),
             String.format("Should throw an exception if key='%s' was not found in Tojo", key)
         );
+        final IllegalStateException thrown = Assertions.assertThrows(
+            IllegalStateException.class,
+            tojo::verified
+        );
+        Assertions.assertEquals(
+            "There is no 'VERIFIED' attribute in the tojo",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
+    void findsKeyInTojo() {
+        final ForeignTojo tojo = this.tojos.add("string");
         Assertions.assertEquals(tojo.identifier(), "string");
         Assertions.assertEquals(tojo.scope(), "compile");
         tojo.withVer("version");
