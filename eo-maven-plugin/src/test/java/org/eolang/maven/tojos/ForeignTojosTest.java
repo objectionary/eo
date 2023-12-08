@@ -26,6 +26,8 @@ package org.eolang.maven.tojos;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+import org.cactoos.Func;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +35,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests from {@link ForeignTojos}.
@@ -116,8 +120,41 @@ final class ForeignTojosTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("tojoFunctions")
+    void throwsExceptionIfKeyWasNotFoundInTojo(
+        final String key,
+        final Func<ForeignTojo, Object> method) {
+        final ForeignTojo tojo = this.tojos.add("string");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> method.apply(tojo),
+            String.format("Should throw an exception if key='%s' was not found in Tojo", key)
+        );
+        Assertions.assertEquals(tojo.identifier(), "string");
+        Assertions.assertEquals(tojo.scope(), "compile");
+        tojo.withVer("version");
+        Assertions.assertEquals(tojo.ver(), "version");
+    }
+
     @AfterEach
     void tearDown() throws IOException {
         this.tojos.close();
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Stream<Arguments> tojoFunctions() {
+        return Stream.of(
+            Arguments.of("XMIR", (Func<ForeignTojo, Object>) ForeignTojo::xmir),
+            Arguments.of("OPTIMIZED", (Func<ForeignTojo, Object>) ForeignTojo::optimized),
+            Arguments.of("VERIFIED", (Func<ForeignTojo, Object>) ForeignTojo::verified),
+            Arguments.of("SHAKEN", (Func<ForeignTojo, Object>) ForeignTojo::shaken),
+            Arguments.of("EO", (Func<ForeignTojo, Object>) ForeignTojo::source),
+            Arguments.of("VERSION", (Func<ForeignTojo, Object>) ForeignTojo::version),
+            Arguments.of("ID", (Func<ForeignTojo, Object>) ForeignTojo::description),
+            Arguments.of("HASH", (Func<ForeignTojo, Object>) ForeignTojo::hash),
+            Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed),
+            Arguments.of("VER", (Func<ForeignTojo, Object>) ForeignTojo::ver)
+        );
     }
 }
