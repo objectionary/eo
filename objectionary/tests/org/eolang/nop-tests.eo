@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.33.0
++version 0.34.0
 
 [] > nop-is-true
   eq. > @
@@ -34,7 +34,8 @@
 [] > nop-is-true-despite-arguments
   eq. > @
     nop
-      "abc"
-      1
-      1.0
+      *
+        "abc"
+        1
+        1.0
     TRUE

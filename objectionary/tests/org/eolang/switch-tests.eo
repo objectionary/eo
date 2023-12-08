@@ -24,17 +24,18 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.33.0
++version 0.34.0
 
 [] > switch-simple-case
   eq. > @
     switch
       *
-        FALSE
-        "1"
-      *
-        TRUE
-        "2"
+        *
+          FALSE
+          "1"
+        *
+          TRUE
+          "2"
     "2"
 
 [] > switch-strings-case
@@ -42,44 +43,47 @@
   eq. > @
     switch
       *
-        password.eq "swordfish"
-        "password is correct!"
-      *
-        password.eq ""
-        "empty password is not allowed"
-      *
-        FALSE
-        "password is wrong"
+        *
+          password.eq "swordfish"
+          "password is correct!"
+        *
+          password.eq ""
+          "empty password is not allowed"
+        *
+          FALSE
+          "password is wrong"
     "password is correct!"
 
 [] > switch-with-several-true-cases
   eq. > @
     switch
       *
-        TRUE
-        "TRUE1"
-      *
-        FALSE
-        "FALSE"
-      *
-        TRUE
-        "TRUE2"
+        *
+          TRUE
+          "TRUE1"
+        *
+          FALSE
+          "FALSE"
+        *
+          TRUE
+          "TRUE2"
     "TRUE1"
 
 [] > switch-with-all-false-cases
   eq. > @
     switch
       *
-        FALSE
-        "FALSE1"
-      *
-        FALSE
-        "FALSE2"
+        *
+          FALSE
+          "FALSE1"
+        *
+          FALSE
+          "FALSE2"
     TRUE
 
 [] > switch-case-with-error
   try > @
-    switch
+    switch *
     [ex]
       eq. > @
         ex
@@ -96,16 +100,17 @@
   eq. > @
     switch
       *
-        []
-          c1 > @
-        22.0
-      *
-        []
-          c2 > @
-        0.0
-      *
-        []
-          c3 > @
-        []
-          "true case" > @
+        *
+          []
+            c1 > @
+          22.0
+        *
+          []
+            c2 > @
+          0.0
+        *
+          []
+            c3 > @
+          []
+            "true case" > @
     "true case"

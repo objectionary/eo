@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.33.0
++version 0.34.0
 
 [] > allocates-and-uses
   "Hello, друг!" > txt
@@ -36,8 +36,9 @@
     [b] (b.as-string > @)
   eq. > @
     seq
-      data.write bytes
-      data
+      *
+        data.write bytes
+        data
     txt
 
 [] > malloc-returns-different-pointers

@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.33.0
-+version 0.33.0
++rt jvm org.eolang:eo-runtime:0.34.0
++version 0.34.0
 
 # Emulation of random-access memory (RAM).
 [size] > heap
@@ -43,11 +43,12 @@
       error
         "Allocation failed: bad alloc (not enough memory in the heap)"
       seq
-        write.
-          ^.malloc.next
-          new-next
-        0.plus
-          ^.malloc.next.as-int
+        *
+          write.
+            ^.malloc.next
+            new-next
+          0.plus
+            ^.malloc.next.as-int
 
   # Freed a block in memory, which is referred by the
   # given pointer, which was earlier obtained with malloc().
@@ -55,8 +56,9 @@
   # previously allocated, the result will be [].
   [p] > free
     seq > @
-      p
-      TRUE
+      *
+        p
+        TRUE
 
   # Pointer inside the heap
   [address length] > pointer

@@ -24,16 +24,17 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.33.0
++version 0.34.0
 
 [] > writes-into-cage
   [z] > a
   cage a > x
   eq. > @
     seq
-      x.write
-        a 7
-      x.z
+      *
+        x.write
+          a 7
+        x.z
     7
 
 [] > avoid-infinite-loop
@@ -42,12 +43,13 @@
   x' > copy
   eq. > @
     seq
-      x.write
-        TRUE.if 1 0
-      copy.<
-      x.write
-        TRUE.if copy 0
-      x
+      *
+        x.write
+          TRUE.if 1 0
+        copy.<
+        x.write
+          TRUE.if copy 0
+        x
     1
 
 [] > cage-nested-objects
@@ -57,10 +59,11 @@
   c' > copy
   eq. > @
     seq
-      c.write (dummy 42)
-      copy.<
-      c.write (dummy copy)
-      c.x.x
+      *
+        c.write (dummy 42)
+        copy.<
+        c.write (dummy copy)
+        c.x.x
     42
 
 [] > dataizes-encaged-object-lazily-first
@@ -68,11 +71,12 @@
   cage 0.plus > sum
   eq. > @
     seq
-      x.write 42
-      sum.write
-        x.plus 1
-      x.write 7
-      sum
+      *
+        x.write 42
+        sum.write
+          x.plus 1
+        x.write 7
+        sum
     8
 
 [] > dataizes-encaged-object-lazily-second
@@ -80,11 +84,12 @@
   cage 0.plus > sum
   eq. > @
     seq
-      x.write 42
-      sum.write
-        1.plus x
-      x.write 7
-      sum
+      *
+        x.write 42
+        sum.write
+          1.plus x
+        x.write 7
+        sum
     8
 
 [] > dataizes-encaged-object-lazily-third
@@ -93,22 +98,24 @@
   cage 0.plus > sum
   eq. > @
     seq
-      x.write 42
-      y.write 7
-      sum.write
-        x.plus y
-      y.write 13
-      x.write 4
-      sum
+      *
+        x.write 42
+        y.write 7
+        sum.write
+          x.plus y
+        y.write 13
+        x.write 4
+        sum
     17
 
 [] > stores-abstract-object-into-cage
   eq. > @
     seq
-      cage > c
-        []
-          112 > @
-      c.@
+      *
+        cage > c
+          []
+            112 > @
+        c.@
     112
 
 [] > multi-layer-volatility
@@ -119,8 +126,9 @@
       [] > @
         [] > @
           seq > @
-            ma.write (ma.as-int.plus 1)
-            ma.as-int
+            *
+              ma.write (ma.as-int.plus 1)
+              ma.as-int
   memory 0 > mb
   cage b > cb
   [] > b
@@ -128,15 +136,18 @@
       [] > @
         [] > @
           seq > z
-            mb.write (mb.as-int.plus 1)
-            mb.as-int
+            *
+              mb.write (mb.as-int.plus 1)
+              mb.as-int
   eq. > @
     seq
-      ca
-      ca.plus 40
+      *
+        ca
+        ca.plus 40
     seq
-      cb.z
-      cb.z.plus 40
+      *
+        cb.z
+        cb.z.plus 40
 
 [] > infinite-loop-check
   [value] > pyint
@@ -147,21 +158,23 @@
     x.add
   eq. > @
     seq
-      x.write
-        pyint 0
-      tmp.write
-        x.add (pyint 1)
-      tmp.value
+      *
+        x.write
+          pyint 0
+        tmp.write
+          x.add (pyint 1)
+        tmp.value
     1
 
 [] > catches-writing-objects-of-different-types
   cage 5 > cge
   eq. > @
     seq
-      try
-        cge.write "Hello world"
-        [e]
-          cge.write 10 > @
-        nop
-      cge.eq 10
+      *
+        try
+          cge.write "Hello world"
+          [e]
+            cge.write 10 > @
+          nop
+        cge.eq 10
     TRUE

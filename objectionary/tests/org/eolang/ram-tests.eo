@@ -24,17 +24,18 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.33.0
++version 0.34.0
 
 [] > writes-and-slice-ram
   ram 1024 > r
   eq. > @
     seq
-      write.
-        r.slice 200 13 > s
-        "Hello, world!".as-bytes
-      as-string.
-        s.slice 0 5
+      *
+        write.
+          r.slice 200 13 > s
+          "Hello, world!".as-bytes
+        as-string.
+          s.slice 0 5
     "Hello"
 
 [] > writes-integer-to-ram
@@ -51,40 +52,43 @@
   ram 1024 > r
   eq. > @
     seq
-      write.
-        r.slice 10 3
-        "abc".as-bytes
-      write.
-        r.slice 13 3
-        "def".as-bytes
-      as-string.
-        (r.slice 10 6).slice 0 6
+      *
+        write.
+          r.slice 10 3
+          "abc".as-bytes
+        write.
+          r.slice 13 3
+          "def".as-bytes
+        as-string.
+          (r.slice 10 6).slice 0 6
     "abcdef"
 
 [] > intersection-writes-in-ram
   ram 64 > r
   eq. > @
     seq
-      write.
-        r.slice 0 10
-        "1234567890".as-bytes
-      write.
-        r.slice 5 10
-        "-----".as-bytes
-      as-string.
-        (r.slice 0 10).slice 0 10
+      *
+        write.
+          r.slice 0 10
+          "1234567890".as-bytes
+        write.
+          r.slice 5 10
+          "-----".as-bytes
+        as-string.
+          (r.slice 0 10).slice 0 10
     "12345-----"
 
 [] > slice-chain
   ram 1024 > r
   [] > cut-hello
     seq > @
-      write.
-        r.slice 200 13 > s
-        "Hello, world!".as-bytes
-      s.slice 0 5
-      .slice 0 4
-      .slice 0 1
+      *
+        write.
+          r.slice 200 13 > s
+          "Hello, world!".as-bytes
+        s.slice 0 5
+        .slice 0 4
+        .slice 0 1
   eq. > @
     cut-hello
     "H"
