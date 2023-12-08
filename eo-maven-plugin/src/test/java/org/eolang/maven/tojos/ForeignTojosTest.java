@@ -137,17 +137,30 @@ final class ForeignTojosTest {
         );
         Assertions.assertEquals(
             "There is no 'VERIFIED' attribute in the tojo",
-            thrown.getMessage()
+            thrown.getMessage(),
+            "Should throw an exception if key 'VERIFIED' was not found in Tojo"
         );
     }
 
     @Test
     void findsKeyInTojo() {
         final ForeignTojo tojo = this.tojos.add("string");
-        Assertions.assertEquals(tojo.identifier(), "string");
-        Assertions.assertEquals(tojo.scope(), "compile");
+        Assertions.assertEquals(
+            tojo.identifier(),
+            "string",
+            "Shouldn't throw an exception if key 'ID' was found in Tojo"
+        );
+        Assertions.assertEquals(
+            tojo.scope(),
+            "compile",
+            "Shouldn't throw an exception if key 'ID' was found in Tojo"
+        );
         tojo.withVer("version");
-        Assertions.assertEquals(tojo.ver(), "version");
+        Assertions.assertEquals(
+            tojo.ver(),
+            "version",
+            "Shouldn't throw an exception if key 'VER' was found in Tojo"
+        );
     }
 
     @AfterEach
