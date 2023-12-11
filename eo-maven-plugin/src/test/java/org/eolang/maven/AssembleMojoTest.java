@@ -220,7 +220,8 @@ final class AssembleMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(new FakeMaven.Verify())
+                .execute(new FakeMaven.Verify()),
+                "Invalid program with wrong syntax should have failed, but it didn't"
         );
     }
 
