@@ -92,7 +92,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     private static final
         Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> FACTORY = new MapOf<>(
         "/program/rusts/rust",
-        (node, mojo) -> new RustNode(
+            (node, mojo) -> new RustNode(
             node,
             mojo.names,
             mojo.targetDir.toPath().resolve("Lib"),
