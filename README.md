@@ -180,7 +180,7 @@ Got the idea?
 
 ## Backus-Naur Form
 
-This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form):
+This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form), of EO language:
 
 <img alt="ENBF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
 
