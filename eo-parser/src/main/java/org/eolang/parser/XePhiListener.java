@@ -231,8 +231,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
-        } else if (ctx.alpha() != null) {
-            attr = ctx.alpha().INDEX().getText();
+        } else if (ctx.alphaAttr() != null) {
+            attr = ctx.alphaAttr().INDEX().getText();
         } else {
             attr = "";
         }
@@ -245,12 +245,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAlpha(final PhiParser.AlphaContext ctx) {
+    public void enterAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAlpha(final PhiParser.AlphaContext ctx) {
+    public void exitAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
         // Nothing here
     }
 
