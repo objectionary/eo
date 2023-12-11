@@ -39,7 +39,7 @@ import org.cactoos.io.InputStreamOf;
  *
  * @since 1.0
  */
-public final class EoLexer extends ProgramLexer {
+public final class EoIndentLexer extends EoLexer {
     /**
      * Generated tokes.
      */
@@ -55,7 +55,7 @@ public final class EoLexer extends ProgramLexer {
      * @param txt Source code.
      * @throws IOException If fails.
      */
-    public EoLexer(final Text txt) throws IOException {
+    public EoIndentLexer(final Text txt) throws IOException {
         this(CharStreams.fromStream(new InputStreamOf(txt)));
     }
 
@@ -63,7 +63,7 @@ public final class EoLexer extends ProgramLexer {
      * Ctor.
      * @param stream Char stream.
      */
-    private EoLexer(final CharStream stream) {
+    private EoIndentLexer(final CharStream stream) {
         super(stream);
         this.indent = new LinkedList<>(
             Collections.singletonList(0)
@@ -84,8 +84,8 @@ public final class EoLexer extends ProgramLexer {
      */
     private void lookAhead() {
         final Token token = super.nextToken();
-        if (token.getType() == ProgramParser.EOL
-            || token.getType() == ProgramParser.EOP) {
+        if (token.getType() == EoParser.EOL
+            || token.getType() == EoParser.EOP) {
             final int tabs = this.getText().replaceAll("[\r\n]", "").length() / 2;
             final int last = this.indent.peekLast();
             final int shift = tabs - last;
@@ -105,7 +105,7 @@ public final class EoLexer extends ProgramLexer {
      */
     private void emitIndent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
-            this.emitToken(ProgramParser.TAB);
+            this.emitToken(EoParser.TAB);
         }
     }
 
@@ -115,8 +115,8 @@ public final class EoLexer extends ProgramLexer {
      */
     private void emitDedent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
-            this.emitToken(ProgramParser.UNTAB);
-            this.emitToken(ProgramParser.EOL);
+            this.emitToken(EoParser.UNTAB);
+            this.emitToken(EoParser.EOL);
         }
     }
 

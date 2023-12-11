@@ -65,9 +65,9 @@ SOFTWARE.
       </a>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:template match="//o[@data and not(@data='tuple') and not(@base='org.eolang.bytes' or @base='bytes')]">
+  <xsl:template match="//o[@data and not(@base='org.eolang.bytes' or @base='bytes')]">
     <xsl:choose>
-      <xsl:when test="parent::*[$literal-objects/text()=@base or $reversed/text()=@base]">
+      <xsl:when test="parent::*[$literal-objects/text()=@base or ($reversed/text()=@base and o[@base='.eolang' and o[@base='.org' and o[@base='Q']]])]">
         <o base="org.eolang.bytes">
           <xsl:attribute name="data">
             <xsl:value-of select="./@data"/>
@@ -94,6 +94,19 @@ SOFTWARE.
         <xsl:copy-of select="."/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <xsl:template match="//o[((@base='.bytes' and o[@base='.eolang' and o[@base='.org' and o[@base='Q']]]) or @base='org.eolang.bytes') and o[last() and @data]]">
+    <o base="org.eolang.bytes">
+      <xsl:for-each select="@*[name()!='data' and name()!='base']">
+        <xsl:attribute name="{name()}">
+          <xsl:value-of select="."/>
+        </xsl:attribute>
+      </xsl:for-each>
+      <xsl:attribute name="data">
+        <xsl:text>bytes</xsl:text>
+      </xsl:attribute>
+      <xsl:value-of select="o[@data]/text()"/>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

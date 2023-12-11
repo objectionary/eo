@@ -1,4 +1,4 @@
-grammar Program;
+grammar Eo;
 
 tokens { TAB, UNTAB }
 
@@ -442,7 +442,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO)
+as  : COLON (NAME | RHO | INT)
     ;
 
 // Data

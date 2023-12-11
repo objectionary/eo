@@ -72,7 +72,9 @@ public final class BinarizeParseMojo extends SafeMojo {
     public static final Path DIR = Paths.get("binarize");
 
     /**
-     * Parsing train with XSLs.
+     * Parsing train with XSLs. The task of XSLs is to find all the FFI inserts and put them at
+     * the end of the xmir file. When adding a new language for FFI inserts, you need to add the
+     * appropriate XSL transformation.
      */
     static final Train<Shift> TRAIN = new TrBulk<>(
         new TrClasspath<>(
@@ -130,7 +132,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     public void exec() throws IOException {
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
-            final Path file = tojo.shaken();
+            final Path file = tojo.verified();
             this.getFFIs(new XMLDocument(file))
                 .forEach(FFINode::generateUnchecked);
         }
@@ -138,13 +140,12 @@ public final class BinarizeParseMojo extends SafeMojo {
     }
 
     /**
-     * Creates a ffi's sections in xml file and returns the resulting XML.
-     *  For example, creates "/program/rusts" section with "rust" node inside.
+     * Creates sections for each language for FFI insert in xmir and returns the resulting XML file.
      * @param input The .xmir file
-     * @return The content of rust section
+     * @return The content of FFI inserts sections
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private XML injectFFIs(
+    private XML addFFIs(
         final XML input
     ) {
         final String name = input.xpath("/program/@name").get(0);

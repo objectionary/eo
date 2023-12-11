@@ -1,0 +1,10 @@
+tests:
+  - /program/objects/o[@base='Q']
+  - /program/objects/o[@base='.org' and @method]
+  - /program/objects/o[@base='.eolang' and @method]
+  - /program/objects/o[@base='.int' and @method and @name='five']
+  - /program/objects/o[@base='.int' and @method and @name='five']/o[@base='Q']
+  - /program/objects/o[@base='.int' and @method and @name='five']/o[@base='.org' and @method]
+  - /program/objects/o[@base='.int' and @method and @name='five']/o[@base='.eolang' and @method]
+  - /program/objects/o[@base='.int' and @method and @name='five']/o[@base='.bytes' and @method and @as='0' and o[@base='org.eolang.bytes' and text()='00 00 00 00 00 00 00 05']]
+phi: "{five ↦ Φ.org.eolang.int(α0 ↦ Φ.org.eolang.bytes(Δ ⤍ 00-00-00-00-00-00-00-05))}"

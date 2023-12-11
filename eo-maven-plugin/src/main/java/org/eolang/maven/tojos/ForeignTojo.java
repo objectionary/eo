@@ -78,6 +78,14 @@ public final class ForeignTojo {
     }
 
     /**
+     * The tojo verified xmir.
+     * @return The verified xmir.
+     */
+    public Path verified() {
+        return Paths.get(this.delegate.get(ForeignTojos.Attribute.VERIFIED.key()));
+    }
+
+    /**
      * The tojo shaken xmir.
      * @return The shaken xmir.
      */
@@ -162,6 +170,27 @@ public final class ForeignTojo {
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already shaken %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Checks if tojo was not already verified.
+     *
+     * @return True if optimization is required, false otherwise.
+     */
+    public boolean notVerified() {
+        final Path src = this.xmir();
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.VERIFIED.key())) {
+            final Path tgt = this.verified();
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already verified %s to %s",
                     new Rel(src), new Rel(tgt)
                 );
                 res = false;
@@ -258,6 +287,16 @@ public final class ForeignTojo {
      */
     public ForeignTojo withShaken(final Path xmir) {
         this.delegate.set(ForeignTojos.Attribute.SHAKEN.key(), xmir.toString());
+        return this;
+    }
+
+    /**
+     * Set the verified xmir.
+     * @param xmir The verified xmir.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withVerified(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.VERIFIED.key(), xmir.toString());
         return this;
     }
 

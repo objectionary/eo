@@ -9,8 +9,9 @@ tests:
   - //o[@base='org.eolang.float' and @name='bts' and o[@base='org.eolang.bytes' and @data]]
   - //o[@base='org.eolang.float' and @name='second' and o[@base='org.eolang.bytes' and @data]]
   - //o[@base='.bool' and @name='third' and count(o)=2 and o[last() and @base='org.eolang.bytes' and @data]]
-  - //o[@base='.bytes' and @name='fourth' and count(o)=2 and o[last() and @base='org.eolang.bytes' and @data]]
+  - //o[@base='org.eolang.bytes' and @name='fourth' and count(o)=0 and @data]
   - //o[@base='.string' and @name='str' and count(o)=2 and o[last() and @base='org.eolang.bytes' and @data]]
+  - //o[@base='org.eolang.bytes' and @name='bt' and count(o)=0 and @data]
   - //o[@base='org.eolang.tuple' and o[@base='org.eolang.tuple' and o[@base='org.eolang.int' and o[@base='org.eolang.bytes' and @data]]]]
 eo: |
   42 > first
@@ -20,6 +21,7 @@ eo: |
   QQ.bytes > fourth
     11-21
   Q.org.eolang.string "Hey" > str
+  Q.org.eolang.bytes A2- > bt
   tuple
     * 1
     2

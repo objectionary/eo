@@ -1,13 +1,10 @@
-import java.util.stream.Collectors
-import java.util.stream.Stream
-
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation directories (the "Software"), to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,30 +21,24 @@ import java.util.stream.Stream
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.parser;
 
-target = basedir.toPath().resolve("target").resolve("eo")
-List<File> directories = target.toFile().listFiles(new FileFilter() {
-  @Override
-  boolean accept(final File pathname) {
-    return pathname.isDirectory()
-  }
-})
-List<String> allowed = [
-  '1-parse',
-  '2-optimize',
-  '3-shake',
-  '4-pull',
-  '5-resolve',
-  '6-verify',
-  '7-pre',
-  '8-transpile',
-]
-List<File> allowedDirs = allowed.stream()
-  .map { target.resolve(it).toFile() }
-  .collect(Collectors.toList())
-for (dir in directories) {
-  if (!allowedDirs.contains(dir)) {
-    fail(String.format("The directory '%s' is not expected to be here. Allowed directories %s", dir.name, allowed));
-  }
+/**
+ * Info about XMIR.
+ * @since 0.34.0
+ */
+public final class XmirInfo {
+    /**
+     * Info about xmir.
+     */
+    private static final String INFO = String.join(
+        "",
+        "This is XMIR - a dialect of XML, which is used to present a parsed EO program. ",
+        "For more information please visit https://news.eolang.org/2022-11-25-xmir-guide.html"
+    );
+
+    @Override
+    public String toString() {
+        return XmirInfo.INFO;
+    }
 }
-true

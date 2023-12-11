@@ -258,6 +258,16 @@ public final class FakeMaven {
                 "phiOutputDir",
                 this.workspace.absolute(Paths.get("target/phi")).toFile()
             );
+            this.params.putIfAbsent(
+                "unphiInputDir",
+                this.workspace.absolute(Paths.get("target/phi")).toFile()
+            );
+            this.params.putIfAbsent(
+                "unphiOutputDir",
+                this.workspace.absolute(
+                    Paths.get(String.format("target/%s", ParseMojo.DIR))
+                ).toFile()
+            );
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -647,6 +657,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 TranspileMojo.class
             ).iterator();
         }
@@ -665,6 +676,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeMojo.class
             ).iterator();
         }
@@ -683,6 +695,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeParseMojo.class
             ).iterator();
         }

@@ -1,13 +1,10 @@
-import java.util.stream.Collectors
-import java.util.stream.Stream
-
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation directories (the "Software"), to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,30 +21,36 @@ import java.util.stream.Stream
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.parser;
 
-target = basedir.toPath().resolve("target").resolve("eo")
-List<File> directories = target.toFile().listFiles(new FileFilter() {
-  @Override
-  boolean accept(final File pathname) {
-    return pathname.isDirectory()
-  }
-})
-List<String> allowed = [
-  '1-parse',
-  '2-optimize',
-  '3-shake',
-  '4-pull',
-  '5-resolve',
-  '6-verify',
-  '7-pre',
-  '8-transpile',
-]
-List<File> allowedDirs = allowed.stream()
-  .map { target.resolve(it).toFile() }
-  .collect(Collectors.toList())
-for (dir in directories) {
-  if (!allowedDirs.contains(dir)) {
-    fail(String.format("The directory '%s' is not expected to be here. Allowed directories %s", dir.name, allowed));
-  }
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
+
+/**
+ * Source text of parser context.
+ * @since 0.34.0
+ */
+public final class SourceText {
+    /**
+     * Context.
+     */
+    private final ParserRuleContext context;
+
+    /**
+     * Ctor.
+     * @param ctx Context
+     */
+    public SourceText(final ParserRuleContext ctx) {
+        this.context = ctx;
+    }
+
+    @Override
+    public String toString() {
+        return this.context.getStart().getInputStream().getText(
+            new Interval(
+                this.context.getStart().getStartIndex(),
+                this.context.getStop().getStopIndex()
+            )
+        );
+    }
 }
-true

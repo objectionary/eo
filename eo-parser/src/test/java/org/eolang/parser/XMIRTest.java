@@ -26,13 +26,9 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -86,15 +82,13 @@ final class XMIRTest {
      * @throws IOException If fails
      */
     private static XML parse(final String source) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Syntax syntax = new Syntax(
-            "test", new InputOf(source), new OutputTo(baos)
-        );
-        syntax.parse();
-        final XSL wrap = new XSLDocument(
+        return new XSLDocument(
             XMIRTest.class.getResourceAsStream("wrap-method-calls.xsl")
-        ).with(new ClasspathSources());
-        return wrap.transform(new XMLDocument(baos.toByteArray()));
+        ).with(new ClasspathSources()).transform(
+            new EoSyntax(
+                "test", new InputOf(source)
+            ).parsed()
+        );
     }
 
     /**

@@ -30,55 +30,55 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link EoLexer}.
+ * Test for {@link EoIndentLexer}.
  *
  * @since 1.0
  */
-final class EoLexerTest {
+final class EoIndentLexerTest {
     @Test
     void emitsTab() throws IOException {
-        final EoLexer lexer = new EoLexer(
+        final EoIndentLexer lexer = new EoIndentLexer(
             new TextOf("\n  ")
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
             lexer.nextToken().getType(),
             Matchers.is(
-                ProgramParser.TAB
+                EoParser.TAB
             )
         );
     }
 
     @Test
     void ensuresGrammarFile() throws IOException {
-        final EoLexer lexer = new EoLexer(
+        final EoIndentLexer lexer = new EoIndentLexer(
             new TextOf("")
         );
         MatcherAssert.assertThat(
             lexer.getGrammarFileName(),
             Matchers.is(
-                "Program.g4"
+                "Eo.g4"
             )
         );
     }
 
     @Test
     void emitsTabWhenEmptyLine() throws IOException {
-        final EoLexer lexer = new EoLexer(
+        final EoIndentLexer lexer = new EoIndentLexer(
             new TextOf("\n\n  ")
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
             lexer.nextToken().getType(),
             Matchers.is(
-                ProgramParser.TAB
+                EoParser.TAB
             )
         );
     }
 
     @Test
     void emitsUntab() throws IOException {
-        final EoLexer lexer = new EoLexer(
+        final EoIndentLexer lexer = new EoIndentLexer(
             new TextOf("\n  \n")
         );
         lexer.nextToken();
@@ -87,20 +87,20 @@ final class EoLexerTest {
         MatcherAssert.assertThat(
             lexer.nextToken().getType(),
             Matchers.is(
-                ProgramParser.UNTAB
+                EoParser.UNTAB
             )
         );
     }
 
     @Test
     void readsEmptyString() throws IOException {
-        final EoLexer lexer = new EoLexer(
+        final EoIndentLexer lexer = new EoIndentLexer(
             new TextOf("")
         );
         MatcherAssert.assertThat(
             lexer.nextToken().getType(),
             Matchers.is(
-                ProgramParser.EOF
+                EoParser.EOF
             )
         );
     }

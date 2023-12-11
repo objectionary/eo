@@ -42,6 +42,12 @@ interface Objects extends Iterable<Directive> {
     Objects start(int line, int pos);
 
     /**
+     * Start new object without position.
+     * @return Self.
+     */
+    Objects start();
+
+    /**
      * Add data.
      * @param data Data.
      * @return Self.
@@ -98,6 +104,12 @@ interface Objects extends Iterable<Directive> {
         public Objects start(final int line, final int pos) {
             this.dirs.add("o");
             return this.prop("line", line).prop("pos", pos);
+        }
+
+        @Override
+        public Objects start() {
+            this.dirs.add("o");
+            return this;
         }
 
         @Override

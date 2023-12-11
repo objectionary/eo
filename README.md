@@ -10,7 +10,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parent.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parent)
 [![codecov](https://codecov.io/gh/objectionary/eo/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eo)](https://hitsofcode.com/view/github/objectionary/eo)
-![Lines of code](https://img.shields.io/tokei/lines/github/objectionary/eo)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eo/blob/master/LICENSE.txt)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/22dac7549c384692b79e02107de1d3c3)](https://www.codacy.com/gh/objectionary/eo/dashboard)
@@ -181,12 +180,17 @@ Got the idea?
 
 ## Backus-Naur Form
 
-This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form):
+This is our [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form), of EO language:
 
-<img alt="ENBF of EO" src="https://www.eolang.org/ebnf.png" width="100%" />
+<img alt="ENBF of EO" src="https://www.eolang.org/ebnf/Eo.png" width="100%" />
 
-The image was [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml). 
-It's better to use [ebnf.svg](https://www.eolang.org/ebnf.svg).
+This is the [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form) of 𝜑-calculus:
+
+<img alt="ENBF of 𝜑-calculus" src="https://www.eolang.org/ebnf/Phi.png" width="100%" />
+
+The images were [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml). 
+It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg) 
+and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
 
 ## What's Next?
 
