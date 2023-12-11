@@ -165,7 +165,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      */
     private Collection<FFINode> getFFIs(final XML input) {
         final Collection<FFINode> ret = new ArrayList<>(0);
-        final XML injected = this.injectFFIs(input);
+        final XML injected = this.addFFIs(input);
         this.factory.forEach(
             (xpath, ctor) -> {
                 for (final XML node : injected.nodes(xpath)) {
