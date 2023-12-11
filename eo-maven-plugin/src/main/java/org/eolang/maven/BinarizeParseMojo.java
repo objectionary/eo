@@ -89,8 +89,8 @@ public final class BinarizeParseMojo extends SafeMojo {
     /**
      * Map that matches ffi insert xpath to building of FFINode.
      */
-    private static final Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> factory
-        = new MapOf<>(
+    private static final
+        Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> FACTORY = new MapOf<>(
         "/program/rusts/rust",
         (node, mojo) -> new RustNode(
             node,
@@ -167,8 +167,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     private Collection<FFINode> getFFIs(final XML input) {
         final Collection<FFINode> ret = new ArrayList<>(0);
         final XML injected = this.addFFIs(input);
-
-        BinarizeParseMojo.factory.forEach(
+        BinarizeParseMojo.FACTORY.forEach(
             (xpath, ctor) -> injected
                 .nodes(xpath)
                 .forEach(node -> ret.add(ctor.apply(node, this)))
