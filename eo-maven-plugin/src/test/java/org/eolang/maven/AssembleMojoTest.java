@@ -215,20 +215,12 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
-        final Map<String, Path> result = new FakeMaven(temp)
-            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .with("failOnError", false)
-            .execute(AssembleMojo.class).result();
-        MatcherAssert.assertThat(
-            "Even if the eo program invalid we still have to parse it, but we didn't",
-            result.get(String.format("target/%s", ParseMojo.DIR)),
-            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
-        );
-        MatcherAssert.assertThat(
-            "Since the eo program invalid we shouldn't have optimized it, but we did",
-            result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            Matchers.not(new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT)))
+    void assembleFailsOnError(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .execute(new FakeMaven.Verify())
         );
     }
 
