@@ -37,11 +37,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.map.MapOf;
 import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.RustNode;
@@ -110,6 +112,20 @@ public final class BinarizeParseMojo extends SafeMojo {
      */
     private Names names;
 
+    /**
+     * Map that matches ffi insert xpath to building of FFINode.
+     */
+    private final Map<String, Function<XML, FFINode>> factory = new MapOf<>(
+        "/program/rusts/rust",
+        (final XML node) -> new RustNode(
+            node,
+            this.names,
+            this.targetDir.toPath().resolve("Lib"),
+            this.eoPortalDir.toPath(),
+            this.generatedDir.toPath().resolve("EOrust").resolve("natives")
+        )
+    );
+
     @Override
     public void exec() throws IOException {
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
@@ -122,11 +138,13 @@ public final class BinarizeParseMojo extends SafeMojo {
     }
 
     /**
-     * Creates a "rust" section in xml file and returns the resulting XML.
+     * Creates a ffi's sections in xml file and returns the resulting XML.
+     *  For example, creates "/program/rusts" section with "rust" node inside.
      * @param input The .xmir file
      * @return The content of rust section
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private XML addRust(
+    private XML injectFFIs(
         final XML input
     ) {
         final String name = input.xpath("/program/@name").get(0);
@@ -142,26 +160,18 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Add ffi node via xsl transformation and return list of them.
      * @param input Input xmir.
      * @return FFI nodes.
-     * @todo #2609:90min We can make the current class more generic
-     *  by transferring this.addRust(input) snippet to corresponding
-     *  FFINode- {@link RustNode}. We wanna make the class independent of
-     *  ffi-insert as a result.
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private Collection<FFINode> getFFIs(final XML input) {
-        final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
-        final Collection<FFINode> ret = new ArrayList<>(nodes.size());
-        for (final XML node : nodes) {
-            ret.add(
-                new RustNode(
-                    node,
-                    this.names,
-                    this.targetDir.toPath().resolve("Lib"),
-                    this.eoPortalDir.toPath(),
-                    this.generatedDir.toPath().resolve("EOrust").resolve("natives")
-                )
-            );
-        }
+        final Collection<FFINode> ret = new ArrayList<>(0);
+        final XML injected = this.injectFFIs(input);
+        this.factory.forEach(
+            (xpath, ctor) -> {
+                for (final XML node : injected.nodes(xpath)) {
+                    ret.add(ctor.apply(node));
+                }
+            }
+        );
         return ret;
     }
 
