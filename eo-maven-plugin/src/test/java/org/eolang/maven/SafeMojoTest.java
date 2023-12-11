@@ -46,7 +46,6 @@ final class SafeMojoTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")
-                .with("failOnError", true)
                 .execute(ParseMojo.class)
         );
         MatcherAssert.assertThat(

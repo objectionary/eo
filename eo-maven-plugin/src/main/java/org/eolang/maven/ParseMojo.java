@@ -80,17 +80,6 @@ public final class ParseMojo extends SafeMojo {
     public static final String PARSED = "parsed";
 
     /**
-     * Whether we should fail on parsing error.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.
      * You can read more about that property
@@ -190,18 +179,16 @@ public final class ParseMojo extends SafeMojo {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "Failed to parse '%s:%s': %s (just logging, because of failOnError=false)",
+                    "Failed to parse '%s:%s': %s",
                     source, error.xpath("@line").get(0), error.xpath("text()").get(0)
                 );
             }
-            if (this.failOnError) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Failed to parse %s (%d parsing errors)",
-                        source, errors.size()
-                    )
-                );
-            }
+            throw new IllegalArgumentException(
+                String.format(
+                    "Failed to parse %s (%d parsing errors)",
+                    source, errors.size()
+                )
+            );
         }
     }
 }

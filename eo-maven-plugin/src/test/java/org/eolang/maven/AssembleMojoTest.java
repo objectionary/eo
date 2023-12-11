@@ -215,7 +215,7 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void failsOnError(@TempDir final Path temp) {
+    void failsOnInvalidProgram(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
