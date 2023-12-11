@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,11 +36,14 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -50,7 +54,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class TranspileMojoTest {
 
     /**
@@ -215,6 +219,28 @@ final class TranspileMojoTest {
         MatcherAssert.assertThat(
             maven.targetPath().resolve(binary).toFile(),
             Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @CaptureLogs
+    void transpilesThrowExceptionIfWasNotVerified(
+        @TempDir final Path temp, final Logs out) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.withHelloWorld();
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
+                .execute(ShakeMojo.class)
+                .execute(TranspileMojo.class)
+        );
+        final Collection<String> logs = out.captured();
+        final String message = "You should check that verify goal of the plugin was run first";
+        Assertions.assertTrue(
+            logs.stream().anyMatch(log -> log.contains(message)),
+            "Should throw an exception if VerifyMojo wasn't run before TranspileMojo"
         );
     }
 

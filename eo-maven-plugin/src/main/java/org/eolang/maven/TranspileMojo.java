@@ -184,8 +184,15 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
-        final int saved;
-        final Path file = tojo.verified();
+        final Path file;
+        try {
+            file = tojo.verified();
+        }  catch (final IllegalStateException exception) {
+            throw new IllegalStateException(
+                "You should check that verify goal of the plugin was run first",
+                exception
+            );
+        }
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
@@ -193,6 +200,7 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             TranspileMojo.EXT
         );
+        final int saved;
         if (
             target.toFile().exists()
                 && target.toFile().lastModified() >= file.toFile().lastModified()
