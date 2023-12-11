@@ -2,8 +2,6 @@
 name: ebnf
 on:
   push:
-    branches:
-      - master
     paths-ignore: ['paper/**', 'sandbox/**']
 concurrency:
   group: ebnf-${{ github.ref }}
