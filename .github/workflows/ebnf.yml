@@ -2,8 +2,6 @@
 name: ebnf
 on:
   push:
-    branches:
-      - master
     paths-ignore: ['paper/**', 'sandbox/**']
 concurrency:
   group: ebnf-${{ github.ref }}
@@ -38,13 +36,13 @@ jobs:
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
           mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.7:generate \
-            -pl :eo-parser --debug --errors --batch-mode --quiet \
+            -pl :eo-parser --errors --batch-mode --quiet \
             "-Dantlr2ebnf.convertDir=$CONVERT_PATH" \
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
           set -x
-          for p in Program Phi; do
+          for p in Eo Phi; do
             cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
             pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
             pdf2svg "${p}-cropped.pdf" "${p}.svg"

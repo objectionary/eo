@@ -37,10 +37,10 @@ attribute
     | SIGMA
     | VTX
     | LABEL
-    | alpha
+    | alphaAttr
     ;
 
-alpha
+alphaAttr
     : ALPHA INDEX
     ;
 
