@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -76,7 +77,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * the end of the xmir file. When adding a new language for FFI inserts, you need to add the
      * appropriate XSL transformation.
      */
-    static final Train<Shift> TRAIN = new TrBulk<>(
+    private static final Train<Shift> TRAIN = new TrBulk<>(
         new TrClasspath<>(
             new ParsingTrain()
                 .empty()
@@ -85,6 +86,21 @@ public final class BinarizeParseMojo extends SafeMojo {
             "/org/eolang/maven/add_rust/add_rust.xsl"
         )
     ).back().back();
+
+    /**
+     * Map that matches ffi insert xpath to building of FFINode.
+     */
+    private static final Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> factory
+        = new MapOf<>(
+        "/program/rusts/rust",
+        (node, mojo) -> new RustNode(
+            node,
+            mojo.names,
+            mojo.targetDir.toPath().resolve("Lib"),
+            mojo.eoPortalDir.toPath(),
+            mojo.generatedDir.toPath().resolve("EOrust").resolve("natives")
+        )
+    );
 
     /**
      * Target directory.
@@ -113,20 +129,6 @@ public final class BinarizeParseMojo extends SafeMojo {
      * To uniquely name different ffi inerts.
      */
     private Names names;
-
-    /**
-     * Map that matches ffi insert xpath to building of FFINode.
-     */
-    private final Map<String, Function<XML, FFINode>> factory = new MapOf<>(
-        "/program/rusts/rust",
-        (final XML node) -> new RustNode(
-            node,
-            this.names,
-            this.targetDir.toPath().resolve("Lib"),
-            this.eoPortalDir.toPath(),
-            this.generatedDir.toPath().resolve("EOrust").resolve("natives")
-        )
-    );
 
     @Override
     public void exec() throws IOException {
@@ -166,12 +168,11 @@ public final class BinarizeParseMojo extends SafeMojo {
     private Collection<FFINode> getFFIs(final XML input) {
         final Collection<FFINode> ret = new ArrayList<>(0);
         final XML injected = this.addFFIs(input);
-        this.factory.forEach(
-            (xpath, ctor) -> {
-                for (final XML node : injected.nodes(xpath)) {
-                    ret.add(ctor.apply(node));
-                }
-            }
+
+        BinarizeParseMojo.factory.forEach(
+            (xpath, ctor) -> injected
+                .nodes(xpath)
+                .forEach(node -> ret.add(ctor.apply(node, this)))
         );
         return ret;
     }
