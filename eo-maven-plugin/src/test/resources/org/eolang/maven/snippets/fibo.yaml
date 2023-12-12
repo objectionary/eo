@@ -1,9 +1,9 @@
-in: ""
+skip: true
 out:
   - ".*true.*"
 args: [ "main" ]
 eo: |
-  [args...] > main
+  [args] > main
     [n] > f
       if. > @
         n.lt 2

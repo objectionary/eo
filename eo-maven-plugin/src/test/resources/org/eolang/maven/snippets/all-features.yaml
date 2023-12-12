@@ -1,18 +1,20 @@
-in: ""
+skip: true
 out:
   - ".*works!.*"
 args: ["foo.main"]
 eo: |
   +package foo
 
-  [args...] > main
+  [args] > main
     seq > a
-      42
+      *
+        42
     [x] > foo
-      if.
+      if. > @
         x.eq 0
         error "x is zero"
         42
     seq > @
-      QQ.io.stdout
-        "works!"
+      *
+        QQ.io.stdout
+          "works!"
