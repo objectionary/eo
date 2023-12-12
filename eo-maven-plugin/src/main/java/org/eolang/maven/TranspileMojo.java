@@ -189,7 +189,7 @@ public final class TranspileMojo extends SafeMojo {
             file = tojo.verified();
         }  catch (final IllegalStateException exception) {
             throw new IllegalStateException(
-                "You should check that verify goal of the plugin was run first",
+                "You should check that 'Verify' goal of the plugin was run first",
                 exception
             );
         }

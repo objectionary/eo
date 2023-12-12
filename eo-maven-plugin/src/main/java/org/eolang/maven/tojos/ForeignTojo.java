@@ -411,15 +411,15 @@ public final class ForeignTojo {
      * @return The attribute.
      */
     private String attribute(final ForeignTojos.Attribute attribute) {
-        final String path = this.delegate.get(attribute.key());
-        if (path == null) {
+        final String attr = this.delegate.get(attribute.key());
+        if (attr == null) {
             throw new IllegalStateException(
                 String.format(
                     "There is no '%s' attribute in the tojo", attribute
                 )
             );
         }
-        return path;
+        return attr;
     }
 }
 

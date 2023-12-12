@@ -121,7 +121,7 @@ final class ForeignTojosTest {
     }
 
     @ParameterizedTest
-    @MethodSource("tojoFunctions")
+    @MethodSource("tojoFunctionsWithoutDefaultValues")
     void throwsExceptionIfKeyWasNotFoundInTojo(
         final String key,
         final Func<ForeignTojo, Object> method) {
@@ -131,6 +131,11 @@ final class ForeignTojosTest {
             () -> method.apply(tojo),
             String.format("Should throw an exception if key='%s' was not found in Tojo", key)
         );
+    }
+
+    @Test
+    void getsExceptionMessageIfKeyWasNotFoundInTojo() {
+        final ForeignTojo tojo = this.tojos.add("string");
         final IllegalStateException thrown = Assertions.assertThrows(
             IllegalStateException.class,
             tojo::verified
@@ -142,24 +147,17 @@ final class ForeignTojosTest {
         );
     }
 
-    @Test
-    void findsKeyInTojo() {
+    @ParameterizedTest
+    @MethodSource("tojoFunctionsWithDefaultValues")
+    void doesNotThrowsAnException(
+        final String key,
+        final Func<ForeignTojo, ?> method
+    ) throws Exception {
         final ForeignTojo tojo = this.tojos.add("string");
         Assertions.assertEquals(
-            tojo.identifier(),
-            "string",
-            "Shouldn't throw an exception if key 'ID' was found in Tojo"
-        );
-        Assertions.assertEquals(
-            tojo.scope(),
-            "compile",
-            "Shouldn't throw an exception if key 'ID' was found in Tojo"
-        );
-        tojo.withVer("version");
-        Assertions.assertEquals(
-            tojo.ver(),
-            "version",
-            "Shouldn't throw an exception if key 'VER' was found in Tojo"
+            method.apply(tojo),
+            key,
+            String.format("Shouldn't throw an exception if key='%s' was found in Tojo", key)
         );
     }
 
@@ -169,7 +167,7 @@ final class ForeignTojosTest {
     }
 
     @SuppressWarnings("PMD.UnusedPrivateMethod")
-    private static Stream<Arguments> tojoFunctions() {
+    private static Stream<Arguments> tojoFunctionsWithoutDefaultValues() {
         return Stream.of(
             Arguments.of("XMIR", (Func<ForeignTojo, Object>) ForeignTojo::xmir),
             Arguments.of("OPTIMIZED", (Func<ForeignTojo, Object>) ForeignTojo::optimized),
@@ -181,6 +179,14 @@ final class ForeignTojosTest {
             Arguments.of("HASH", (Func<ForeignTojo, Object>) ForeignTojo::hash),
             Arguments.of("PROBED", (Func<ForeignTojo, Object>) ForeignTojo::probed),
             Arguments.of("VER", (Func<ForeignTojo, Object>) ForeignTojo::ver)
+        );
+    }
+
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Stream<Arguments> tojoFunctionsWithDefaultValues() {
+        return Stream.of(
+            Arguments.of("string", (Func<ForeignTojo, Object>) ForeignTojo::identifier),
+            Arguments.of("compile", (Func<ForeignTojo, Object>) ForeignTojo::scope)
         );
     }
 }

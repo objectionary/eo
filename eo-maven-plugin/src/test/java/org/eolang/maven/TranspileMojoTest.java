@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -224,22 +223,23 @@ final class TranspileMojoTest {
 
     @Test
     @CaptureLogs
-    void transpilesThrowExceptionIfWasNotVerified(
+    void throwsExpectionIfWasNotVerified(
         @TempDir final Path temp, final Logs out) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
-        maven.withHelloWorld();
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven
+            () -> new FakeMaven(temp)
+                .withHelloWorld()
                 .execute(ParseMojo.class)
                 .execute(OptimizeMojo.class)
                 .execute(ShakeMojo.class)
                 .execute(TranspileMojo.class)
         );
-        final Collection<String> logs = out.captured();
-        final String message = "You should check that verify goal of the plugin was run first";
         Assertions.assertTrue(
-            logs.stream().anyMatch(log -> log.contains(message)),
+            out.captured().stream().anyMatch(
+                log -> log.contains(
+                    "You should check that 'Verify' goal of the plugin was run first"
+                )
+            ),
             "Should throw an exception if VerifyMojo wasn't run before TranspileMojo"
         );
     }
