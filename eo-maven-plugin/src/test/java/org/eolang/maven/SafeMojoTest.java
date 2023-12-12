@@ -42,11 +42,10 @@ final class SafeMojoTest {
     @Test
     @CaptureLogs
     void logsStackTrace(final Logs out, @TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
+        Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")
-                .execute(new FakeMaven.Verify())
+                .execute(new FakeMaven.Parse())
         );
         MatcherAssert.assertThat(
             String.join("\n", out.captured()),
