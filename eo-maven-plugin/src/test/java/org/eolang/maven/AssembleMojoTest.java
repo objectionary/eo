@@ -74,7 +74,7 @@ final class AssembleMojoTest {
     /**
      * Invalid eo program for testing.
      */
-    private static final String[] INVALID_PROGRAM = {
+    static final String[] INVALID_PROGRAM = {
         "+alias stdout org.eolang.io.stdout",
         "+home https://github.com/objectionary/eo",
         "+package test",
@@ -215,13 +215,20 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void failsOnInvalidProgram(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(new FakeMaven.Verify()),
-                "Invalid program with wrong syntax should have failed, but it didn't"
+    void assemblesNotFailWithFailOnError(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> result = new FakeMaven(temp)
+            .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+            .execute(new FakeMaven.Optimize())
+            .result();
+        MatcherAssert.assertThat(
+            "Even if the eo program invalid we still have to parse it, but we didn't",
+            result.get(String.format("target/%s", ParseMojo.DIR)),
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
+        );
+        MatcherAssert.assertThat(
+            "Even if the eo program invalid we still have to optimize it, but we didn't",
+            result.get(String.format("target/%s", OptimizeMojo.DIR)),
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
     }
 

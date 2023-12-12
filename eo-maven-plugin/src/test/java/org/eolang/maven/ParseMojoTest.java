@@ -116,13 +116,15 @@ final class ParseMojoTest {
     }
 
     @Test
-    void crashesOnInvalidSyntax(@TempDir final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("something > is wrong here")
-                .execute(new FakeMaven.Verify()),
-                "Program with invalid syntax should have failed, but it didn't"
+    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
+                .withProgram("something < is wrong here")
+                .execute(new FakeMaven.Parse())
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            )
         );
     }
 
