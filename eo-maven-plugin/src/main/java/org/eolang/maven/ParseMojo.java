@@ -165,12 +165,12 @@ public final class ParseMojo extends SafeMojo {
         );
         final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
         final List<XML> errors = xmir.nodes("/program/errors/error");
+        final Path target = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
+            TranspileMojo.EXT
+        );
+        tojo.withXmir(target.toAbsolutePath());
         if (errors.isEmpty()) {
-            final Path target = new Place(name).make(
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                TranspileMojo.EXT
-            );
-            tojo.withXmir(target.toAbsolutePath());
             Logger.debug(
                 this, "Parsed %s to %s",
                 new Rel(source), new Rel(target)
@@ -183,12 +183,6 @@ public final class ParseMojo extends SafeMojo {
                     source, error.xpath("@line").get(0), error.xpath("text()").get(0)
                 );
             }
-            throw new IllegalArgumentException(
-                String.format(
-                    "Failed to parse %s (%d parsing errors)",
-                    source, errors.size()
-                )
-            );
         }
     }
 }

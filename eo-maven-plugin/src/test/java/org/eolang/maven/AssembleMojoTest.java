@@ -225,18 +225,6 @@ final class AssembleMojoTest {
         );
     }
 
-    @Test
-    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
-        final Class<IllegalStateException> expected = IllegalStateException.class;
-        Assertions.assertThrows(
-            expected,
-            () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(AssembleMojo.class),
-            String.format("AssembleMojo should have failed with %s, but didn't", expected)
-        );
-    }
-
     @CaptureLogs
     @Test
     void assemblesSuccessfullyInOfflineMode(final Logs out, @TempDir final Path temp) {

@@ -230,7 +230,7 @@ final class OptimizeMojoTest {
                     "    TRUE > x",
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
-                .execute(new FakeMaven.Optimize())
+                .execute(new FakeMaven.Verify())
         );
     }
 
