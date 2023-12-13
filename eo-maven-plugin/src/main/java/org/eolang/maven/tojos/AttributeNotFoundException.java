@@ -25,15 +25,19 @@ package org.eolang.maven.tojos;
 
 /**
  * If the attributes were not found in the Tojo.
- * @since 1.0
+ * @since 0.35.0
  */
 public class AttributeNotFoundException extends RuntimeException {
 
     /**
      * Ctor.
-     * @param message The detail message.
+     * @param attribute The attribute of Tojo.
      */
-    AttributeNotFoundException(final String message) {
-        super(message);
+    AttributeNotFoundException(final ForeignTojos.Attribute attribute) {
+        super(
+            String.format(
+            "There is no '%s' attribute in the tojo", attribute
+            )
+        );
     }
 }

@@ -413,11 +413,7 @@ public final class ForeignTojo {
     private String attribute(final ForeignTojos.Attribute attribute) {
         final String attr = this.delegate.get(attribute.key());
         if (attr == null) {
-            throw new AttributeNotFoundException(
-                String.format(
-                    "There is no '%s' attribute in the tojo", attribute
-                )
-            );
+            throw new AttributeNotFoundException(attribute);
         }
         return attr;
     }
