@@ -224,7 +224,7 @@ final class TranspileMojoTest {
     @Test
     @CaptureLogs
     void throwsExpectionIfWasNotVerified(
-        @TempDir final Path temp, final Logs out) throws IOException {
+        @TempDir final Path temp, final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)

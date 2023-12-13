@@ -127,7 +127,7 @@ final class ForeignTojosTest {
         final Func<ForeignTojo, Object> method) {
         final ForeignTojo tojo = this.tojos.add("string");
         Assertions.assertThrows(
-            IllegalStateException.class,
+            AttributeNotFoundException.class,
             () -> method.apply(tojo),
             String.format("Should throw an exception if key='%s' was not found in Tojo", key)
         );
@@ -136,8 +136,8 @@ final class ForeignTojosTest {
     @Test
     void getsExceptionMessageIfKeyWasNotFoundInTojo() {
         final ForeignTojo tojo = this.tojos.add("string");
-        final IllegalStateException thrown = Assertions.assertThrows(
-            IllegalStateException.class,
+        final AttributeNotFoundException thrown = Assertions.assertThrows(
+            AttributeNotFoundException.class,
             tojo::verified
         );
         Assertions.assertEquals(

@@ -50,6 +50,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
@@ -187,7 +188,7 @@ public final class TranspileMojo extends SafeMojo {
         final Path file;
         try {
             file = tojo.verified();
-        }  catch (final IllegalStateException exception) {
+        }  catch (final AttributeNotFoundException exception) {
             throw new IllegalStateException(
                 "You should check that 'Verify' goal of the plugin was run first",
                 exception
