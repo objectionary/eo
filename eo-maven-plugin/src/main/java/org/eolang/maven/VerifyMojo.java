@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -103,8 +104,10 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
-            new OptTrain(new TrDefault<>()),
-            "/org/eolang/parser/fail-on-errors.xsl"
+            new TrClasspath<>(new TrDefault<>())
+                .with("/org/eolang/parser/fail-on-errors.xsl")
+                .with("/org/eolang/parser/fail-on-critical.xsl")
+                .back()
         );
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");

@@ -116,25 +116,10 @@ final class ParseMojoTest {
     }
 
     @Test
-    void crashesOnInvalidSyntax(@TempDir final Path temp) {
-        MatcherAssert.assertThat(
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new FakeMaven(temp)
-                    .withProgram("something > is wrong here")
-                    .with("failOnError", true)
-                    .execute(ParseMojo.class)
-            ).getCause().getCause().getMessage(),
-            Matchers.containsString("Failed to parse")
-        );
-    }
-
-    @Test
-    void doesNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
-                .with("failOnError", false)
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(

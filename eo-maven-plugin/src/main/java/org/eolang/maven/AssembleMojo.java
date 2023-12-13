@@ -165,20 +165,6 @@ public final class AssembleMojo extends SafeMojo {
     private boolean ignoreVersionConflicts;
 
     /**
-     * Whether we should fail on error.
-     * @checkstyle MemberNameCheck (11 lines)
-     * @since 0.23.0
-     * @todo #2443:90min Remove the following failOnError flag. Now we
-     *  have already got rid from it in {@link OptimizeMojo} and {@link VerifyMojo}.
-     *  We need to make failOnError the behaviour default.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
      * Whether we should fail on warn.
      * @checkstyle MemberNameCheck (10 lines)
      */

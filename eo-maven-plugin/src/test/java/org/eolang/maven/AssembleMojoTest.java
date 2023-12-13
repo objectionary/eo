@@ -74,7 +74,7 @@ final class AssembleMojoTest {
     /**
      * Invalid eo program for testing.
      */
-    private static final String[] INVALID_PROGRAM = {
+    static final String[] INVALID_PROGRAM = {
         "+alias stdout org.eolang.io.stdout",
         "+home https://github.com/objectionary/eo",
         "+package test",
@@ -215,32 +215,20 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
+    void assemblesNotFailWithFailOnError(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .with("failOnError", false)
-            .execute(AssembleMojo.class).result();
+            .execute(new FakeMaven.Optimize())
+            .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
         MatcherAssert.assertThat(
-            "Since the eo program invalid we shouldn't have optimized it, but we did",
+            "Even if the eo program invalid we still have to optimize it, but we didn't",
             result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            Matchers.not(new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT)))
-        );
-    }
-
-    @Test
-    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
-        final Class<IllegalStateException> expected = IllegalStateException.class;
-        Assertions.assertThrows(
-            expected,
-            () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(AssembleMojo.class),
-            String.format("AssembleMojo should have failed with %s, but didn't", expected)
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
     }
 
