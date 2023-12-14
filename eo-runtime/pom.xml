@@ -60,11 +60,13 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jhome</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -88,16 +90,19 @@ SOFTWARE.
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -201,6 +206,7 @@ SOFTWARE.
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
           <execution>
             <id>project-validate</id>
@@ -213,6 +219,13 @@ SOFTWARE.
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>3.0.19</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

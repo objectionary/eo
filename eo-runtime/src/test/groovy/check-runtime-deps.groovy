@@ -1,12 +1,10 @@
-import java.nio.file.Path
-
 /**
  * The MIT License (MIT)
  *
  * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation directories (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,23 +22,17 @@ import java.nio.file.Path
  * SOFTWARE.
  */
 
-/**
- * Entry point for running validation scripts.
- * To add new validation create new script in this folder and add it
- * to the list below.
- * @todo #2684:30min Remove dependencies from eo-runtime. eo-runtime must stay clear out of any
- *  dependencies except those that are used in tests. It's needed to remove all such dependencies
- *  and include 'check-runtime-deps.groovy' test (which is failing for now) into 'tests' list. We
- *  also need to add "test" scope for all dependencies in pom.xml.
- */
-Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
-tests = [
-  'check-folders-numbering.groovy',
-  'check-all-java-classes-compiled.groovy',
-//  'check-runtime-deps.groovy'
-]
-for (it in tests) {
-  def res = evaluate folder.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
+
+import groovy.xml.XmlSlurper
+
+def pom = new File("pom.xml").text
+def project = new XmlSlurper().parseText(pom)
+
+println 'Verify that there aren no any dependencies in eo-runtime except those that are needed for tests'
+
+project.dependencies.dependency.each {
+  if (it.scope.text() != 'test')
+    fail(String.format('Dependency %s.%s must be in "test" scope', it.groupId.text(), it.artifactId.text()))
 }
+
 true
