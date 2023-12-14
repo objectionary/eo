@@ -41,12 +41,14 @@ jobs:
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          convert --version
+          pdfcrop --version
           set -x
           for p in Eo Phi; do
             cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
             pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
             pdf2svg "${p}-cropped.pdf" "${p}.svg"
-            convert -density 300 -quality 100 -transparent white -colorspace RGB "${p}-cropped.pdf" "${p}.png"
+            convert -density 300 -quality 100 -transparent-color white -colorspace RGB "${p}.svg" "${p}.png"
             mkdir -p gh-pages/ebnf
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf

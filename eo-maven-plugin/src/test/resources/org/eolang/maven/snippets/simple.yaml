@@ -1,4 +1,3 @@
-in: ""
 out:
   - ".*Hello, дорогой!.*"
 args: ["simple.main"]
@@ -6,6 +5,12 @@ eo: |
   +package simple
   +alias org.eolang.io.stdout
 
-  [args...] > main
-    stdout > @
-      "Hello, дорогой!"
+  [args] > main
+    seq > @
+      *
+        stdout
+          "Hello, "
+        stdout
+          "дорогой"
+        stdout
+          "!"

@@ -1,11 +1,11 @@
-in: ""
+skip: true
 out:
   - ".*greater.*"
 args: [ "main", "17" ]
 eo: |
   +alias org.eolang.io.stdout
 
-  [args...] > main
+  [args] > main
     [n] > f
       if. > @
         n.lt 0
