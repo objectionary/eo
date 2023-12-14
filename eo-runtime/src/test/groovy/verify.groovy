@@ -33,7 +33,7 @@ import java.nio.file.Path
  *  and include 'check-runtime-deps.groovy' test (which is failing for now) into 'tests' list. We
  *  also need to add "test" scope for all dependencies in pom.xml.
  */
-Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy");
+Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy")
 tests = [
   'check-folders-numbering.groovy',
   'check-all-java-classes-compiled.groovy',
