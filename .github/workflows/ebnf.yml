@@ -41,6 +41,8 @@ jobs:
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          convert --version
+          pdfcrop --version
           set -x
           for p in Eo Phi; do
             cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
