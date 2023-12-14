@@ -219,10 +219,9 @@ final class OptimizeMojoTest {
     }
 
     @Test
-    void failsOnCritical(@TempDir final Path temp) throws IOException {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
+    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
                     "[args] > main",
@@ -231,6 +230,10 @@ final class OptimizeMojoTest {
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
                 .execute(new FakeMaven.Optimize())
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            )
         );
     }
 

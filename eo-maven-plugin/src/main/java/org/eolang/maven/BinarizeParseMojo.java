@@ -37,11 +37,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.map.MapOf;
 import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.RustNode;
@@ -74,7 +76,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * the end of the xmir file. When adding a new language for FFI inserts, you need to add the
      * appropriate XSL transformation.
      */
-    static final Train<Shift> TRAIN = new TrBulk<>(
+    private static final Train<Shift> TRAIN = new TrBulk<>(
         new TrClasspath<>(
             new ParsingTrain()
                 .empty()
@@ -83,6 +85,21 @@ public final class BinarizeParseMojo extends SafeMojo {
             "/org/eolang/maven/add_rust/add_rust.xsl"
         )
     ).back().back();
+
+    /**
+     * Map that matches ffi insert xpath to building of FFINode.
+     */
+    private static final
+        Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> FACTORY = new MapOf<>(
+        "/program/rusts/rust",
+            (node, mojo) -> new RustNode(
+            node,
+            mojo.names,
+            mojo.targetDir.toPath().resolve("Lib"),
+            mojo.eoPortalDir.toPath(),
+            mojo.generatedDir.toPath().resolve("EOrust").resolve("natives")
+        )
+    );
 
     /**
      * Target directory.
@@ -145,29 +162,16 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Add ffi node via xsl transformation and return list of them.
      * @param input Input xmir.
      * @return FFI nodes.
-     * @todo #2649:90min This method may be more general. We need to get rid from rust dependencies
-     *  in this method, because when adding another type of inserts it will be just copy-paste here.
-     *  First of all, the for-loop must create all kinds of FFI nodes, not only {@link RustNode}. I
-     *  think we can implement it, using something like {@code FFINodeFactory}, that will return
-     *  appropriate FFI node for every XML node from {@code nodes}. Also it will be great to move
-     *  paths to XML FFI insert nodes (such as {@code "/program/rusts/rust"}) from this method to
-     *  a static class field.
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
     private Collection<FFINode> getFFIs(final XML input) {
-        final List<XML> nodes = this.addFFIs(input).nodes("/program/rusts/rust");
-        final Collection<FFINode> ret = new ArrayList<>(nodes.size());
-        for (final XML node : nodes) {
-            ret.add(
-                new RustNode(
-                    node,
-                    this.names,
-                    this.targetDir.toPath().resolve("Lib"),
-                    this.eoPortalDir.toPath(),
-                    this.generatedDir.toPath().resolve("EOrust").resolve("natives")
-                )
-            );
-        }
+        final Collection<FFINode> ret = new ArrayList<>(0);
+        final XML injected = this.addFFIs(input);
+        BinarizeParseMojo.FACTORY.forEach(
+            (xpath, ctor) -> injected
+                .nodes(xpath)
+                .forEach(node -> ret.add(ctor.apply(node, this)))
+        );
         return ret;
     }
 

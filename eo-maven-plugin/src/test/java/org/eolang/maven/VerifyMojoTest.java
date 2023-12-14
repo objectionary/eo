@@ -125,6 +125,44 @@ class VerifyMojoTest {
     }
 
     @Test
+    void failsOptimizationOnCritical(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f\n",
+                    "[args] > main",
+                    "  seq > @",
+                    "    TRUE > x",
+                    "    FALSE > x"
+                ).with("trackOptimizationSteps", true)
+                .execute(new FakeMaven.Verify())
+        );
+    }
+
+    @Test
+    void failsParsingOnError(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram("something > is wrong here")
+                .execute(new FakeMaven.Verify()),
+            "Program with invalid syntax should have failed, but it didn't"
+        );
+    }
+
+    @Test
+    void failsOnInvalidProgram(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
+                .execute(new FakeMaven.Verify()),
+                "Invalid program with wrong syntax should have failed to assemble, but it didn't"
+        );
+    }
+
+    @Test
     void failsOnWarning(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
