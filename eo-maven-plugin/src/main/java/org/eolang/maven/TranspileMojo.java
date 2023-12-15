@@ -50,6 +50,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
@@ -184,8 +185,15 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
-        final int saved;
-        final Path file = tojo.verified();
+        final Path file;
+        try {
+            file = tojo.verified();
+        }  catch (final AttributeNotFoundException exception) {
+            throw new IllegalStateException(
+                "You should check that 'Verify' goal of the plugin was run first",
+                exception
+            );
+        }
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
@@ -193,6 +201,7 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             TranspileMojo.EXT
         );
+        final int saved;
         if (
             target.toFile().exists()
                 && target.toFile().lastModified() >= file.toFile().lastModified()
