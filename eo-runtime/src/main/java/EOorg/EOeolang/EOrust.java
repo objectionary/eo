@@ -95,12 +95,12 @@ public class EOrust extends PhDefault {
             );
         }
         final String lib;
-        final String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.contains("win")) {
+        final String system = System.getProperty("os.name").toLowerCase();
+        if (system.contains("win")) {
             lib = "common.dll";
-        } else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
+        } else if (system.contains("nix") || system.contains("nux") || system.contains("aix")) {
             lib = "libcommon.so";
-        } else if (OS.contains("mac")) {
+        } else if (system.contains("mac")) {
             lib = "libcommon.dylib";
         } else {
             throw new UnsupportedOperationException(

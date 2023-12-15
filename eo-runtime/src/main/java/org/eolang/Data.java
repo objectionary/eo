@@ -258,30 +258,50 @@ public interface Data<T> {
             return phi;
         }
 
+        /**
+         * Unescapes a string that contains standard Java escape sequences.
+         * <ul>
+         * <li><strong>&#92;b &#92;f &#92;n &#92;r &#92;t &#92;" &#92;'</strong> :
+         * BS, FF, NL, CR, TAB, double and single quote.</li>
+         * <li><strong>&#92;X &#92;XX &#92;XXX</strong> : Octal character
+         * specification (0 - 377, 0x00 - 0xFF).</li>
+         * <li><strong>&#92;uXXXX</strong> : Hexadecimal based Unicode character.</li>
+         * </ul>
+         * @param str A string optionally containing standard java escape sequences.
+         * @return The translated string
+         * @checkstyle CyclomaticComplexityCheck (100 lines)
+         * @checkstyle JavaNCSSCheck (100 lines)
+         * @checkstyle NestedIfDepthCheck (100 lines)
+         * @checkstyle ModifiedControlVariableCheck (100 lines)
+         */
         private static String unescapeJavaString(final String str) {
-            final StringBuilder sb = new StringBuilder(str.length());
-            for (int i = 0; i < str.length(); i++) {
-                char chr = str.charAt(i);
+            final StringBuilder unescaped = new StringBuilder(str.length());
+            for (int idx = 0; idx < str.length(); ++idx) {
+                char chr = str.charAt(idx);
                 if (chr == '\\') {
-                    final char nextChar = (i == str.length() - 1) ? '\\' : str.charAt(i + 1);
-                    // Octal escape?
-                    if (nextChar >= '0' && nextChar <= '7') {
-                        String code = String.valueOf(nextChar);
-                        i++;
-                        if ((i < str.length() - 1) && str.charAt(i + 1) >= '0'
-                            && str.charAt(i + 1) <= '7') {
-                            code += str.charAt(i + 1);
-                            i++;
-                            if ((i < str.length() - 1) && str.charAt(i + 1) >= '0'
-                                && str.charAt(i + 1) <= '7') {
-                                code += str.charAt(i + 1);
-                                i++;
+                    final char next;
+                    if (idx == str.length() - 1) {
+                        next = '\\';
+                    } else {
+                        next = str.charAt(idx + 1);
+                    }
+                    if (next >= '0' && next <= '7') {
+                        String code = String.valueOf(next);
+                        ++idx;
+                        if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                            && str.charAt(idx + 1) <= '7') {
+                            code += str.charAt(idx + 1);
+                            ++idx;
+                            if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                                && str.charAt(idx + 1) <= '7') {
+                                code += str.charAt(idx + 1);
+                                ++idx;
                             }
                         }
-                        sb.append((char) Integer.parseInt(code, 8));
+                        unescaped.append((char) Integer.parseInt(code, 8));
                         continue;
                     }
-                    switch (nextChar) {
+                    switch (next) {
                         case '\\':
                             break;
                         case 'b':
@@ -305,34 +325,35 @@ public interface Data<T> {
                         case '\'':
                             chr = '\'';
                             break;
-                        // Hex Unicode: u????
                         case 'u':
-                            if (i >= str.length() - 5) {
+                            if (idx >= str.length() - 5) {
                                 chr = 'u';
                                 break;
                             }
-                            sb.append(
+                            unescaped.append(
                                 Character.toChars(
                                     Integer.parseInt(
                                         String.join(
                                             "",
-                                            String.valueOf(str.charAt(i + 2)),
-                                            String.valueOf(str.charAt(i + 3)),
-                                            String.valueOf(str.charAt(i + 4)),
-                                            String.valueOf(str.charAt(i + 5))
+                                            String.valueOf(str.charAt(idx + 2)),
+                                            String.valueOf(str.charAt(idx + 3)),
+                                            String.valueOf(str.charAt(idx + 4)),
+                                            String.valueOf(str.charAt(idx + 5))
                                         ),
                                         16
                                     )
                                 )
                             );
-                            i += 5;
+                            idx += 5;
                             continue;
+                        default:
+                            break;
                     }
-                    i++;
+                    ++idx;
                 }
-                sb.append(chr);
+                unescaped.append(chr);
             }
-            return sb.toString();
+            return unescaped.toString();
         }
     }
 
