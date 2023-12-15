@@ -28,16 +28,12 @@ import java.nio.file.Path
  * Entry point for running validation scripts.
  * To add new validation create new script in this folder and add it
  * to the list below.
- * @todo #2684:30min Remove dependencies from eo-runtime. eo-runtime must stay clear out of any
- *  dependencies except those that are used in tests. It's needed to remove all such dependencies
- *  and include 'check-runtime-deps.groovy' test (which is failing for now) into 'tests' list. We
- *  also need to add "test" scope for all dependencies in pom.xml.
  */
 Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy")
 tests = [
   'check-folders-numbering.groovy',
   'check-all-java-classes-compiled.groovy',
-//   'check-runtime-deps.groovy'
+  'check-runtime-deps.groovy'
 ]
 for (it in tests) {
   def res = evaluate folder.resolve(it).toFile()
