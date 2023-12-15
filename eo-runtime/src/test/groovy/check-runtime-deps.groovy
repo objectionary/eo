@@ -22,13 +22,17 @@
  * SOFTWARE.
  */
 
-
+/**
+ * The goal of the test is to check that eo-runtime does not contain any dependencies except those
+ * that are needed for tests. We need such behaviour because "eo-runtime" is download as separated
+ * jar (not fat-jar) and we expect that it won't require any outer dependencies
+ */
 import groovy.xml.XmlSlurper
 
 def pom = new File("pom.xml").text
 def project = new XmlSlurper().parseText(pom)
 
-println 'Verify that there aren no any dependencies in eo-runtime except those that are needed for tests'
+println 'Verify that there are no any dependencies in eo-runtime except those that are needed for tests'
 
 project.dependencies.dependency.each {
   if (it.scope.text() != 'test')
