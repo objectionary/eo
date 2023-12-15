@@ -32,7 +32,6 @@ import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * A data container.
@@ -234,7 +233,7 @@ public interface Data<T> {
             } else if (obj instanceof String) {
                 phi = new EOstring(Phi.Φ);
                 delta = false;
-                bytes = StringEscapeUtils.unescapeJava(
+                bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
@@ -257,6 +256,83 @@ public interface Data<T> {
                 phi.attr(0).put(bts);
             }
             return phi;
+        }
+
+        private static String unescapeJavaString(final String str) {
+            final StringBuilder sb = new StringBuilder(str.length());
+            for (int i = 0; i < str.length(); i++) {
+                char chr = str.charAt(i);
+                if (chr == '\\') {
+                    final char nextChar = (i == str.length() - 1) ? '\\' : str.charAt(i + 1);
+                    // Octal escape?
+                    if (nextChar >= '0' && nextChar <= '7') {
+                        String code = String.valueOf(nextChar);
+                        i++;
+                        if ((i < str.length() - 1) && str.charAt(i + 1) >= '0'
+                            && str.charAt(i + 1) <= '7') {
+                            code += str.charAt(i + 1);
+                            i++;
+                            if ((i < str.length() - 1) && str.charAt(i + 1) >= '0'
+                                && str.charAt(i + 1) <= '7') {
+                                code += str.charAt(i + 1);
+                                i++;
+                            }
+                        }
+                        sb.append((char) Integer.parseInt(code, 8));
+                        continue;
+                    }
+                    switch (nextChar) {
+                        case '\\':
+                            break;
+                        case 'b':
+                            chr = '\b';
+                            break;
+                        case 'f':
+                            chr = '\f';
+                            break;
+                        case 'n':
+                            chr = '\n';
+                            break;
+                        case 'r':
+                            chr = '\r';
+                            break;
+                        case 't':
+                            chr = '\t';
+                            break;
+                        case '\"':
+                            chr = '\"';
+                            break;
+                        case '\'':
+                            chr = '\'';
+                            break;
+                        // Hex Unicode: u????
+                        case 'u':
+                            if (i >= str.length() - 5) {
+                                chr = 'u';
+                                break;
+                            }
+                            sb.append(
+                                Character.toChars(
+                                    Integer.parseInt(
+                                        String.join(
+                                            "",
+                                            String.valueOf(str.charAt(i + 2)),
+                                            String.valueOf(str.charAt(i + 3)),
+                                            String.valueOf(str.charAt(i + 4)),
+                                            String.valueOf(str.charAt(i + 5))
+                                        ),
+                                        16
+                                    )
+                                )
+                            );
+                            i += 5;
+                            continue;
+                    }
+                    i++;
+                }
+                sb.append(chr);
+            }
+            return sb.toString();
         }
     }
 

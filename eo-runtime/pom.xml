@@ -78,7 +78,7 @@ SOFTWARE.
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.llorllale</groupId>
@@ -103,17 +103,6 @@ SOFTWARE.
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.14.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
-      <!-- version from parent POM -->
     </dependency>
   </dependencies>
   <build>
