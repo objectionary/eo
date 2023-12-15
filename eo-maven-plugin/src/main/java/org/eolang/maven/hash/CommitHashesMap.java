@@ -77,7 +77,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * @return Map of commit hashes.
      */
     private static Map<String, CommitHash> fromTable(final Scalar<String> table) {
-        return new MapOf<String, CommitHash>(
+        return new MapOf<>(
             new Mapped<>(
                 rows -> {
                     final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
