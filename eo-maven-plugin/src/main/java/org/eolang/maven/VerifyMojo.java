@@ -104,10 +104,11 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
-            new TrClasspath<>(new TrDefault<>())
-                .with("/org/eolang/parser/fail-on-errors.xsl")
-                .with("/org/eolang/parser/fail-on-critical.xsl")
-                .back()
+            new TrClasspath<>(
+                new TrDefault<>(),
+                "/org/eolang/parser/fail-on-errors.xsl",
+                "/org/eolang/parser/fail-on-critical.xsl"
+            ).back()
         );
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");

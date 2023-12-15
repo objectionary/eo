@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.hash;
 
+import com.jcabi.log.Logger;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.cactoos.Scalar;
@@ -30,6 +31,7 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapEnvelope;
 import org.cactoos.map.MapOf;
+import org.cactoos.scalar.Checked;
 import org.cactoos.text.Split;
 
 /**
@@ -77,7 +79,7 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
      * @return Map of commit hashes.
      */
     private static Map<String, CommitHash> fromTable(final Scalar<String> table) {
-        return new MapOf<>(
+        return new MapOf<String, CommitHash>(
             new Mapped<>(
                 rows -> {
                     final String[] row = CommitHashesMap.WHITESPACE.split(rows.asString());
@@ -90,7 +92,26 @@ public final class CommitHashesMap extends MapEnvelope<String, CommitHash> {
                         )
                     );
                 },
-                new Split(table::value, "\n")
+                new Split(
+                    new Checked<>(
+                        table,
+                        exception -> {
+                            for (final StackTraceElement element : exception.getStackTrace()) {
+                                Logger.info(
+                                    exception,
+                                    String.format(
+                                        "%s:%s:%s",
+                                        element.getClassName(),
+                                        element.getMethodName(),
+                                        element.getLineNumber()
+                                    )
+                                );
+                            }
+                            return exception;
+                        }
+                    )::value,
+                    "\n"
+                )
             )
         );
     }
