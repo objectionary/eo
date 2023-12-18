@@ -149,7 +149,7 @@ final class HmOptionalTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"file.txt", "a/b/file.txt"})
+    @CsvSource({"file.txt", "a/file.txt", "a/b/file.txt"})
     void checksOnlyRelative(final Path file, @TempDir final Path dir) throws IOException {
         final HmBase base = new HmBase(dir);
         base.save("", file);
