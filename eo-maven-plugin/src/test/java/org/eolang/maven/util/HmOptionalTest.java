@@ -66,19 +66,22 @@ final class HmOptionalTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void savesIfFileNotExist(final boolean rewrite, @TempDir final Path dir) throws IOException {
+    void savesIfFileDoesNotExist(
+        final boolean rewrite,
+        @TempDir final Path dir) throws IOException {
         final HmOptional optional = new HmOptional(new HmBase(dir), rewrite);
         final Path file = Paths.get(this.sample);
         final String content = new UncheckedText(new Randomized(this.size)).asString();
         optional.save(content, file);
         MatcherAssert.assertThat(
+            "The file must be saved if it did not exist.",
             new UncheckedText(new TextOf(dir.resolve(file))).asString(),
             Matchers.is(content)
         );
     }
 
     @Test
-    void savesIfFileExistAndRewriteTrue(@TempDir final Path dir) throws IOException {
+    void savesIfFileExistsAndRewriteTrue(@TempDir final Path dir) throws IOException {
         final String first = new UncheckedText(new Randomized(this.size)).asString();
         final Path file = Paths.get(this.sample);
         final HmBase base = new HmBase(dir);
@@ -87,10 +90,7 @@ final class HmOptionalTest {
         final String second = new UncheckedText(new Randomized(this.size)).asString();
         optional.save(second, file);
         MatcherAssert.assertThat(
-            new UncheckedText(new TextOf(dir.resolve(file))).asString(),
-            Matchers.not(first)
-        );
-        MatcherAssert.assertThat(
+            "The second file must be saved.",
             new UncheckedText(new TextOf(dir.resolve(file))).asString(),
             Matchers.is(second)
         );
@@ -98,7 +98,7 @@ final class HmOptionalTest {
 
     @Test
     @CaptureLogs
-    void savesIfFileExistAndRewriteFalse(
+    void savesIfFileExistsAndRewriteFalse(
         @TempDir final Path dir,
         final Logs out) throws IOException {
         final String first = new UncheckedText(new Randomized(this.size)).asString();
@@ -110,19 +110,17 @@ final class HmOptionalTest {
         optional.save(second, file);
         final Path absolute = dir.resolve(file);
         MatcherAssert.assertThat(
+            "The first file shouldn't be rewritten.",
             new UncheckedText(new TextOf(absolute)).asString(),
             Matchers.is(first)
-        );
-        MatcherAssert.assertThat(
-            new UncheckedText(new TextOf(absolute)).asString(),
-            Matchers.not(second)
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(
                 log -> log.contains(
                     String.format("Rewriting of the %s file was skipped", absolute)
                 )
-            )
+            ),
+            "When user tries to rewrite a file, a log should be shown."
         );
     }
 
@@ -131,6 +129,7 @@ final class HmOptionalTest {
         final Path file = Paths.get(this.sample);
         Files.write(dir.resolve(file), "any content".getBytes());
         MatcherAssert.assertThat(
+            "Checking that the saved file exists.",
             new HmOptional(new HmBase(dir), true).exists(file),
             Matchers.is(true)
         );
@@ -144,7 +143,8 @@ final class HmOptionalTest {
         final Path absolute = dir.resolve(file);
         Assertions.assertEquals(
             absolute,
-            new HmOptional(base, true).absolute(file)
+            new HmOptional(base, true).absolute(file),
+            "Checking that an absolute path for a file was obtained."
         );
     }
 
@@ -155,7 +155,8 @@ final class HmOptionalTest {
         base.save("", file);
         Assertions.assertEquals(
             file,
-            new HmOptional(base, true).onlyRelative(file)
+            new HmOptional(base, true).onlyRelative(file),
+            "Checking that a relative path for a file was obtained."
         );
     }
 
@@ -167,7 +168,8 @@ final class HmOptionalTest {
         base.save(text, file);
         Assertions.assertEquals(
             text,
-            new TextOf(new HmOptional(base, true).load(file)).toString()
+            new TextOf(new HmOptional(base, true).load(file)).toString(),
+            "Checking that the saved file can be downloaded."
         );
     }
 }
