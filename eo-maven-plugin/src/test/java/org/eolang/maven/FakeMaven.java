@@ -627,6 +627,22 @@ public final class FakeMaven {
     }
 
     /**
+     * Shake full pipeline.
+     *
+     * @since 0.35.0
+     */
+    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                ShakeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
      * Latex full pipeline.
      *
      * @since 0.29.2

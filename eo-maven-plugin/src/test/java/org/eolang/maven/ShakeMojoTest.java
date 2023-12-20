@@ -63,17 +63,17 @@ final class ShakeMojoTest {
         final Map<String, Path> res = maven
             .withHelloWorld()
             .with("trackOptimizationSteps", true)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class)
+            .execute(new FakeMaven.Shake())
             .result();
         MatcherAssert.assertThat(
+            "After successful operation of the ShakeMojo, a xml should appear.",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main/01-remove-refs.xml", ShakeMojo.STEPS)
             )
         );
         MatcherAssert.assertThat(
+            "After successful operation of the ShakeMojo, a xmir should appear.",
             res,
             Matchers.hasKey(
                 String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
@@ -98,10 +98,9 @@ final class ShakeMojoTest {
             .withHelloWorld()
             .with("cache", cache)
             .allTojosWithHash(() -> hash)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class);
+            .execute(new FakeMaven.Shake());
         MatcherAssert.assertThat(
+            "Ready shaken results should be loaded from cache.",
             new XMLDocument(
                 new HmBase(temp).load(
                     Paths.get(
@@ -121,15 +120,14 @@ final class ShakeMojoTest {
     void skipsAlreadyShaken(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class);
+            .execute(new FakeMaven.Shake());
         final Path path = maven.result().get(
             String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(ShakeMojo.class);
         MatcherAssert.assertThat(
+            "Re-shaken of the program should be skipped.",
             path.toFile().lastModified(),
             Matchers.is(mtime)
         );
@@ -140,9 +138,7 @@ final class ShakeMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
             .withHelloWorld()
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class)
+            .execute(new FakeMaven.Shake())
             .result()
             .get(
                 String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
@@ -167,10 +163,9 @@ final class ShakeMojoTest {
             .withHelloWorld()
             .with("cache", cache)
             .allTojosWithHash(() -> hash)
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class);
+            .execute(new FakeMaven.Shake());
         MatcherAssert.assertThat(
+            "Shaken results should be saved.",
             cache.resolve(ShakeMojo.SHAKEN)
                 .resolve(hash)
                 .resolve("foo/x/main.xmir").toFile(),
@@ -178,12 +173,6 @@ final class ShakeMojoTest {
         );
     }
 
-    /**
-     * The test with high number of eo programs reveals concurrency problems of the OptimizeMojo.
-     * Since other tests works only with single program - it's hard to find concurrency mistakes.
-     * @param temp Test directory.
-     * @throws java.io.IOException If problem with filesystem happened.
-     */
     @Test
     void shakesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -192,12 +181,11 @@ final class ShakeMojoTest {
             maven.withHelloWorld();
         }
         final Map<String, Path> res = maven
-            .execute(ParseMojo.class)
-            .execute(OptimizeMojo.class)
-            .execute(ShakeMojo.class)
+            .execute(new FakeMaven.Shake())
             .result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
+                "Shaken results of all executed programs must be found.",
                 res,
                 Matchers.hasKey(
                     String.format(
@@ -214,6 +202,7 @@ final class ShakeMojoTest {
     @Test
     void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
+            "The program should run without errors.",
             new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
@@ -222,9 +211,7 @@ final class ShakeMojoTest {
                     "    TRUE > x",
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
-                .execute(ParseMojo.class)
-                .execute(OptimizeMojo.class)
-                .execute(ShakeMojo.class)
+                .execute(new FakeMaven.Shake())
                 .result(),
             Matchers.hasKey(
                 String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
