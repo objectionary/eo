@@ -41,10 +41,6 @@ import org.eolang.maven.tojos.ForeignTojo;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
- *
- * @todo #2577:30min Add tests for ShakeMojo. ShakeMojo was created in order to split two
- * optimization stages: optimizations themselves and preparations for translation to java
- * Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
  * @since 0.33.0
  */
 @Mojo(

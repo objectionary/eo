@@ -49,7 +49,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link OptimizeMojo}.
- *
+ * @todo #2638:15min This test has the error:
+ *  Here "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
+ *  ParseMojo.DIR, TranspileMojo.EXT)".
+ *  But it should be "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
+ *  OptimizeMojo.DIR, TranspileMojo.EXT)".
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
@@ -187,12 +191,6 @@ final class OptimizeMojoTest {
         );
     }
 
-    /**
-     * The test with high number of eo programs reveals concurrency problems of the OptimizeMojo.
-     * Since other tests works only with single program - it's hard to find concurrency mistakes.
-     * @param temp Test directory.
-     * @throws java.io.IOException If problem with filesystem happened.
-     */
     @Test
     void optimizesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
