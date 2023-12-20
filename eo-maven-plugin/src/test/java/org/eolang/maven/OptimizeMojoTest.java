@@ -191,6 +191,12 @@ final class OptimizeMojoTest {
         );
     }
 
+    /**
+     * The test with high number of eo programs reveals concurrency problems of the OptimizeMojo.
+     * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     * @param temp Test directory.
+     * @throws java.io.IOException If problem with filesystem happened.
+     */
     @Test
     void optimizesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
