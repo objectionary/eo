@@ -53,7 +53,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  *  Here "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
  *  ParseMojo.DIR, TranspileMojo.EXT)".
  *  But it should be "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
- *  OptimizeMojo.DIR, TranspileMojo.EXT)".
+ *  OptimizeMojo.DIR, TranspileMojo.EXT)". Or is this not a mistake?
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
