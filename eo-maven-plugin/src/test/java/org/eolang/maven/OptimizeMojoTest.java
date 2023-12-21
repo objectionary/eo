@@ -49,11 +49,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link OptimizeMojo}.
- * @todo #2638:15min The test {@link #doesNotCrashesOnError(Path path)} has the mistake:
- *  Here "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
- *  ParseMojo.DIR, TranspileMojo.EXT)".
- *  But it should be "Matchers.hasKey(String.format("target/%s/foo/x/main.%s",
- *  OptimizeMojo.DIR, TranspileMojo.EXT)". Or is this not a mistake?
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
@@ -236,7 +231,7 @@ final class OptimizeMojoTest {
                 .execute(new FakeMaven.Optimize())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             )
         );
     }
