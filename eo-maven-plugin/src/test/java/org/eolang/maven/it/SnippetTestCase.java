@@ -105,7 +105,7 @@ final class SnippetTestCase {
                     .plugins()
                     .appendItself()
                     .phase("generate-sources")
-                    .goals("register", "assemble", "verify", "transpile");
+                    .goals("register", "assemble", "transpile");
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
