@@ -1,8 +1,10 @@
 skip: true
 out:
-  - ".*true.*"
+  - ".*8 is the 6th number.*"
 args: [ "main" ]
 eo: |
+  +alias org.eolang.io.stdout
+  
   [args] > main
     [n] > f
       if. > @
@@ -11,7 +13,9 @@ eo: |
         plus.
           f (n.minus 1)
           f (n.minus 2)
-    eq. > @
-      8
-      f 6
+    stdout > @
+      QQ.txt.sprintf
+        "%d is the %dth number\n"
+        8
+        f 6
 
