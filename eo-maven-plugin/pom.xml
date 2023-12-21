@@ -271,17 +271,22 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
-      <!--
-      @todo #2555:30min Enable integration tests. Integration tests were disabled because of
-       new recursive implementation of tuple. Need to upload new version of eo-runtime to
-       Objectionary and enable integration tests by just removing "maven-invoker-plugin" from
-       this pom.xml. Don't forget to remove the puzzle.
-      -->
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
-          <skipInstallation>true</skipInstallation>
-          <skipInvocation>true</skipInvocation>
+          <pomExcludes>
+            <!--
+            @todo #2660 Enable the following integration tests when it's possible.
+             Now they don't work because many .eo files are absent in the
+             objectionary/home repository. Once they are released, the tests
+             should work as is, without any modifications.
+            -->
+            <exclude>custom_goals/pom.xml</exclude>
+            <exclude>duplicate_classes/pom.xml</exclude>
+            <exclude>fibonacci/pom.xml</exclude>
+            <exclude>hash_package_layer/pom.xml</exclude>
+            <exclude>rewritten_sources/pom.xml</exclude>
+          </pomExcludes>
         </configuration>
       </plugin>
       <plugin>
