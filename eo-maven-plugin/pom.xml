@@ -276,7 +276,7 @@ SOFTWARE.
         <configuration>
           <pomExcludes>
             <!--
-            @todo #2660 Enable the following integration tests when it's possible.
+            @todo #2660:30min Enable the following integration tests when it's possible.
              Now they don't work because many .eo files are absent in the
              objectionary/home repository. Once they are released, the tests
              should work as is, without any modifications.
