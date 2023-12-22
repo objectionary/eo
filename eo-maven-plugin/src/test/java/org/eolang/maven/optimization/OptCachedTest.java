@@ -45,10 +45,11 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class OptCachedTest {
     @Test
-    void optimizesIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
+    void returnsFromCacheIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
         final XML program = OptCachedTest.program();
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
+            "We expected that the program will be returned from the cache",
             new OptCached(path -> program, tmp).apply(program),
             Matchers.equalTo(program)
         );
@@ -58,18 +59,15 @@ class OptCachedTest {
     void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) {
         final XML program = OptCachedTest.program();
         final Path cache = tmp.resolve("cache");
-        final XML res = new OptCached(path -> program, cache)
-            .apply(program);
         MatcherAssert.assertThat(
-            res,
-            Matchers.equalTo(program)
+            "We expect that the program will be created and returned as is (same instance)",
+            new OptCached(path -> program, cache).apply(program),
+            Matchers.sameInstance(program)
         );
         MatcherAssert.assertThat(
+            "We expect that the cache saved the program after the first run",
             cache.resolve("main.xmir").toFile(),
             FileMatchers.anExistingFile()
-        );
-        MatcherAssert.assertThat(
-            res, Matchers.equalTo(program)
         );
     }
 
