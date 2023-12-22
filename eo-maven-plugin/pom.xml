@@ -36,13 +36,6 @@ SOFTWARE.
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.34.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
