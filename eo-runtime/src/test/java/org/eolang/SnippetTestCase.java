@@ -95,7 +95,11 @@ final class SnippetTestCase {
                     .appendItself();
                 f.build()
                     .plugins()
-                    .append("org.eolang", "eo-maven-plugin", "1.0-SNAPSHOT")
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
