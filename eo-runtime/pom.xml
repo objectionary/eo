@@ -114,6 +114,7 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>jping</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
