@@ -117,7 +117,7 @@ final class SnippetTestCase {
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
-                f.exec("test");
+                f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     f.log(),
