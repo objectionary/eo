@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOseq;
+import EOorg.EOeolang.EOtuple;
 import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -48,6 +49,32 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @since 0.1
  */
 public final class EOstdoutTest {
+    @Test
+    public void printsFromTuple() {
+        final Phi tuple = new EOtuple(Phi.Φ);
+        tuple.attr(0).put(
+            Phi.Φ.attr("org").get()
+                .attr("eolang").get()
+                .attr("tuple").get()
+                .attr("empty").get()
+        );
+        tuple.attr(1).put(new Data.ToPhi("Hello"));
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        new Dataized(
+            new PhWith(
+                new EOstdout(Phi.Φ, new PrintStream(stream)),
+                0,
+                new PhWith(
+                    tuple.attr("at").get().copy(),
+                    0, new Data.ToPhi(0L)
+                )
+            )
+        ).take(Boolean.class);
+        MatcherAssert.assertThat(
+            stream.toString(),
+            Matchers.equalTo("Hello")
+        );
+    }
 
     @Test
     public void printsString() {
