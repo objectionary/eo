@@ -56,10 +56,11 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  *
- * @todo #2660:30min Most of the snippets are disabled now, in
- *  the "src/test/resources/snippets/*.yaml" because they don't work.
- *  Hopefully, they will work once a new eo-runtime.jar is released.
- *  Just wait until it's released and try to enable the tests.
+ * @todo #2660:30min One snippet is disabled now, in
+ *  the "src/test/resources/snippets/*.yaml" because it doesn't work.
+ *  I don't understand what's wrong with it (parenting.yaml). Let's
+ *  try to find out and enable it (by removing the "skip" attribute from
+ *  the YAML file).
  */
 @ExtendWith(OnlineCondition.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
