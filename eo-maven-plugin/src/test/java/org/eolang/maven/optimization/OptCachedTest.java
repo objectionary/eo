@@ -31,17 +31,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.ResourceOf;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -56,9 +51,12 @@ class OptCachedTest {
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache",
-            new OptCached(path -> {
-                throw new IllegalStateException("This code shouldn't be executed");
-            }, tmp).apply(program),
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
             Matchers.equalTo(program)
         );
     }
