@@ -32,6 +32,8 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,12 +43,8 @@ import org.junit.jupiter.api.io.TempDir;
  * Test cases for {@link VerifyMojo}.
  *
  * @since 0.31.0
- * @todo #2546:90min Add test that checks the message of exception in case of
- *  warning, error and critical in xmir. According to
- *  eo-parser/src/main/resources/org/eolang/parser/fail-on-critical.xsl it includes
- *  filename and line inside.
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 class VerifyMojoTest {
 
     @Test
@@ -60,7 +58,10 @@ class VerifyMojoTest {
     }
 
     @Test
-    void detectsErrorsSuccessfully(@TempDir final Path temp) {
+    @CaptureLogs
+    void detectsErrorsSuccessfully(
+        @TempDir final Path temp,
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -73,10 +74,47 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
+        Assertions.assertTrue(
+            out.captured().stream().anyMatch(
+                log -> log.contains(
+                    "Errors identified"
+                )
+            ),
+            "The program should exit with an error from 'fail-on-errors.xsl'."
+        );
     }
 
     @Test
-    void detectsWarningWithCorrespondingFlag(@TempDir final Path temp) {
+    @CaptureLogs
+    void detectsCriticalErrorsSuccessfully(
+        @TempDir final Path temp,
+        final Logs out) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f\n",
+                    "[] > main",
+                    "    \"Hello world\""
+                )
+                .execute(new FakeMaven.Verify()),
+            "Wrong program should have failed or error, but it didn't"
+        );
+        Assertions.assertTrue(
+            out.captured().stream().anyMatch(
+                log -> log.contains(
+                    "Critical error identified"
+                )
+            ),
+            "The program should exit with an error from 'fail-on-critical.xsl'."
+        );
+    }
+
+    @Test
+    @CaptureLogs
+    void detectsWarningWithCorrespondingFlag(
+        @TempDir final Path temp,
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -89,6 +127,14 @@ class VerifyMojoTest {
                 .with("failOnWarning", true)
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
+        );
+        Assertions.assertTrue(
+            out.captured().stream().anyMatch(
+                log -> log.contains(
+                    "Warnings identified"
+                )
+            ),
+            "The program should exit with an error from 'fail-on-warnings.xsl'."
         );
     }
 
