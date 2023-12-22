@@ -52,7 +52,7 @@ import org.xembly.Xembler;
 class OptCachedTest {
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
-        final XML program = OptCachedTest.program();
+        final XML program = OptCachedTest.program(ZonedDateTime.now());
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache",
@@ -91,6 +91,18 @@ class OptCachedTest {
         );
     }
 
+    @Test
+    void optimizesIfTimeIsNotSet(@TempDir final Path tmp) throws IOException {
+        final XML without = OptCachedTest.program();
+        final XML with = OptCachedTest.program(ZonedDateTime.now());
+        OptCachedTest.save(tmp, without);
+        MatcherAssert.assertThat(
+            "We expected that the program will be optimized because the cache doesn't have time",
+            new OptCached(path -> with, tmp).apply(without),
+            Matchers.equalTo(with)
+        );
+    }
+
     /**
      * Save XML program with hardcoded name to a temp directory.
      * @param tmp Temporary test directory.
@@ -109,7 +121,14 @@ class OptCachedTest {
      * @return XML representation of program.
      */
     private static XML program() {
-        return OptCachedTest.program(ZonedDateTime.now());
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .add("program")
+                    .attr("name", "main")
+                    .up()
+            ).xmlQuietly()
+        );
     }
 
     /**
