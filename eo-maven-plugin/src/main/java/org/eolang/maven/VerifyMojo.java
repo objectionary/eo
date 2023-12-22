@@ -92,8 +92,10 @@ public final class VerifyMojo extends SafeMojo {
                 "Verified %d out of %d XMIR program(s)", total,
                 tojos.size()
             );
+        } else if (tojos.isEmpty()) {
+            Logger.info(this, "There are no XMIR programs, nothing to verify");
         } else {
-            Logger.debug(this, "No XMIR programs out of %d verify", tojos.size());
+            Logger.info(this, "No XMIR programs out of %d verified", tojos.size());
         }
     }
 
