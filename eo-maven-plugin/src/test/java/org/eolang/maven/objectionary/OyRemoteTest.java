@@ -23,10 +23,10 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.eolang.maven.OnlineCondition;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
@@ -68,7 +68,7 @@ final class OyRemoteTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void checksPresenceOfObject() throws IOException {
         final CommitHash hash = new ChRemote("master");
         final Objectionary objectionary = new OyRemote(hash);
@@ -79,7 +79,7 @@ final class OyRemoteTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void checksPresenceOfObjectWithNarrowHash() throws IOException {
         final String stdout = "org.eolang.io.stdout";
         MatcherAssert.assertThat(

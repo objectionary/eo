@@ -212,12 +212,6 @@ SOFTWARE.
       <version>2.15.1</version>
     </dependency>
     <dependency>
-      <groupId>com.yegor256</groupId>
-      <artifactId>farea</artifactId>
-      <version>0.0.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
       <version>2.0.9</version>
@@ -261,6 +255,11 @@ SOFTWARE.
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>xax</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>

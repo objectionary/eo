@@ -104,6 +104,28 @@ SOFTWARE.
       <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
   </dependencies>
   <build>
     <plugins>

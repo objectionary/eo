@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -42,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
 

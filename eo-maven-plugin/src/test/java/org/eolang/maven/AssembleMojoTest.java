@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -68,7 +69,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  So we need to make 2-3 releases and then refactor the test with more fresh versions. Don't
  *  forget to remove the puzzle.
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 final class AssembleMojoTest {
 
     /**
@@ -127,7 +128,7 @@ final class AssembleMojoTest {
 
     @Test
     @Disabled
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash master = new ChCached(new ChRemote("master"));
