@@ -85,7 +85,7 @@ public final class CopySourcesMojo extends SafeMojo {
     private String deployHash;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final BiConsumer<Path, Path> copied = new CopiedResources(
             this.project,
             this.session,

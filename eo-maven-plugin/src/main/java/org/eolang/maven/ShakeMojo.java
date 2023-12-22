@@ -84,7 +84,7 @@ public final class ShakeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final int total = new OptimizedTojos(
             new Filtered<>(

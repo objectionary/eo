@@ -108,7 +108,7 @@ public final class BinarizeMojo extends SafeMojo {
     private File eoPortalDir;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         new Moja<>(BinarizeParseMojo.class).with(
             "names", new Names(this.namesDir.toPath())
         ).copy(this).execute();

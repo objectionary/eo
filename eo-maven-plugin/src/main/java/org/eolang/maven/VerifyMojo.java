@@ -65,7 +65,7 @@ public final class VerifyMojo extends SafeMojo {
     private boolean failOnWarning;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(

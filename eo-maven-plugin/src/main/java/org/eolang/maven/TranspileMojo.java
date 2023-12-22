@@ -150,7 +150,7 @@ public final class TranspileMojo extends SafeMojo {
     private boolean addTestSourcesRoot;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
         final long saved = new SumOf(
             new Threads<>(

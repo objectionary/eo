@@ -233,7 +233,7 @@ public final class AssembleMojo extends SafeMojo {
     private boolean offline;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }

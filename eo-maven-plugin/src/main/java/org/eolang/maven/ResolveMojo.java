@@ -145,7 +145,7 @@ public final class ResolveMojo extends SafeMojo {
         );
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }

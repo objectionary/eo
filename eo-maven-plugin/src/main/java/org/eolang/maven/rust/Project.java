@@ -73,10 +73,8 @@ public final class Project {
      * @param module New module to be added to the project.
      * @param dependencies Dependencies of the module.
      * @return The project.
-     * @throws IOException If any issues with I/O
      */
-    public Project with(final Module module, final List<String> dependencies)
-        throws IOException {
+    public Project with(final Module module, final List<String> dependencies) {
         this.modules.add(
             module
         );

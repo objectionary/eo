@@ -44,7 +44,7 @@ import org.eolang.maven.util.Rel;
 public class CleanMojo extends SafeMojo {
 
     @Override
-    final void exec() throws IOException {
+    final void exec() {
         if (!this.targetDir.exists()) {
             Logger.debug(
                 this,

@@ -57,7 +57,7 @@ import org.eolang.maven.util.Rel;
 )
 public final class DiscoverMojo extends SafeMojo {
     @Override
-    public void exec() throws FileNotFoundException {
+    public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {

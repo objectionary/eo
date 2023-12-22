@@ -87,7 +87,7 @@ public final class OptimizeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(

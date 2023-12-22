@@ -59,7 +59,7 @@ final class HmOptionalTest {
     private String sample;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         this.size = 100;
         this.sample = "file.txt";
     }

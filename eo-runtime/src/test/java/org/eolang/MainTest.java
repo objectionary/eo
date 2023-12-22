@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 final class MainTest {
 
     @Test
-    void printsVersion() throws Exception {
+    void printsVersion() {
         MatcherAssert.assertThat(
             MainTest.exec("--version"),
             Matchers.allOf(
@@ -54,7 +54,7 @@ final class MainTest {
     }
 
     @Test
-    void printsHelp() throws Exception {
+    void printsHelp() {
         MatcherAssert.assertThat(
             MainTest.exec("--help"),
             Matchers.containsString("Usage: ")
@@ -70,7 +70,7 @@ final class MainTest {
     }
 
     @Test
-    void executesJvmFullRun() throws Exception {
+    void executesJvmFullRun() {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
             Matchers.allOf(
@@ -83,7 +83,7 @@ final class MainTest {
     }
 
     @Test
-    void executesJvmFullRunWithDashedObject() throws Exception {
+    void executesJvmFullRunWithDashedObject() {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "as-bytes"),
             Matchers.allOf(
@@ -94,7 +94,7 @@ final class MainTest {
     }
 
     @Test
-    void executesJvmFullRinWithAttributeCall() throws Exception {
+    void executesJvmFullRinWithAttributeCall() {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "string$as-bytes"),
             Matchers.allOf(
@@ -105,7 +105,7 @@ final class MainTest {
     }
 
     @Test
-    void executesJvmFullRunWithError() throws Exception {
+    void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
@@ -113,7 +113,7 @@ final class MainTest {
     }
 
     @Test
-    void executesWithObjectNotFoundException() throws Exception {
+    void executesWithObjectNotFoundException() {
         MatcherAssert.assertThat(
             MainTest.exec("unavailable-name"),
             Matchers.containsString("Can not find 'unavailable-name' object")
