@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.SaxonDocument;
 import com.jcabi.xml.XML;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;

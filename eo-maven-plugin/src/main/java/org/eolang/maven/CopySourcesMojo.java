@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

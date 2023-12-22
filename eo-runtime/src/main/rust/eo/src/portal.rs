@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-pub mod eo_enum;
 use jni::JNIEnv;
-use jni::objects::{JClass, JObject, JValue, JByteArray};
+use jni::objects::{JByteArray, JClass, JObject, JValue};
+
+pub mod eo_enum;
 
 pub struct Portal<'local> {
     pub java_env: JNIEnv<'local>,
