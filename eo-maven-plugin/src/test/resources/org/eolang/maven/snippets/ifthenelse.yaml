@@ -1,7 +1,7 @@
 skip: true
 out:
   - ".*greater.*"
-args: [ "main", "17" ]
+args: [ "main" ]
 eo: |
   +alias org.eolang.io.stdout
 
