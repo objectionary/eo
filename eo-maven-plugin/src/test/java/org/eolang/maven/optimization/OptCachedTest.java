@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.io.ResourceOf;
@@ -38,6 +41,9 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.xembly.Directive;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link org.eolang.maven.optimization.OptCached}.
@@ -45,18 +51,20 @@ import org.junit.jupiter.api.io.TempDir;
  */
 class OptCachedTest {
     @Test
-    void returnsFromCacheIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
+    void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
         final XML program = OptCachedTest.program();
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache",
-            new OptCached(path -> program, tmp).apply(program),
+            new OptCached(path -> {
+                throw new IllegalStateException("This code shouldn't be executed");
+            }, tmp).apply(program),
             Matchers.equalTo(program)
         );
     }
 
     @Test
-    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) {
+    void optimizesIfXmlIsAbsentInCache(@TempDir final Path tmp) {
         final XML program = OptCachedTest.program();
         final Path cache = tmp.resolve("cache");
         MatcherAssert.assertThat(
@@ -68,6 +76,18 @@ class OptCachedTest {
             "We expect that the cache saved the program after the first run",
             cache.resolve("main.xmir").toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void optimizesBecauseChacheIsExpired(@TempDir final Path tmp) throws IOException {
+        final XML outdated = OptCachedTest.program(ZonedDateTime.now().minusMinutes(1));
+        final XML updated = OptCachedTest.program(ZonedDateTime.now());
+        OptCachedTest.save(tmp, outdated);
+        MatcherAssert.assertThat(
+            "We expected that the program will be optimized because the cache is expired",
+            new OptCached(path -> updated, tmp).apply(outdated),
+            Matchers.equalTo(updated)
         );
     }
 
@@ -85,16 +105,27 @@ class OptCachedTest {
     }
 
     /**
-     * Get parsed program from resources.
+     * Generates EO program for tests.
      * @return XML representation of program.
      */
     private static XML program() {
+        return OptCachedTest.program(ZonedDateTime.now());
+    }
+
+    /**
+     * Generates EO program for tests with specified time.
+     * @param time Time.
+     * @return XML representation of program.
+     */
+    private static XML program(final ZonedDateTime time) {
         return new XMLDocument(
-            new UncheckedBytes(
-                new BytesOf(
-                    new ResourceOf("org/eolang/maven/optimize/main.xml")
-                )
-            ).asBytes()
+            new Xembler(
+                new Directives()
+                    .add("program")
+                    .attr("name", "main")
+                    .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .up()
+            ).xmlQuietly()
         );
     }
 }
