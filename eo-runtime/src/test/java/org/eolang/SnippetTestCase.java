@@ -76,7 +76,7 @@ final class SnippetTestCase {
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @SuppressWarnings("unchecked")
-    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);

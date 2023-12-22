@@ -131,7 +131,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8
+                StandardCharsets.UTF_8.name()
             )
         );
         MatcherAssert.assertThat(
@@ -151,7 +151,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8
+                StandardCharsets.UTF_8.name()
             )
         );
         MatcherAssert.assertThat(
