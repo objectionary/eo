@@ -1,11 +1,13 @@
 skip: true
+file: org/eolang/snippets/fibo.eo
 out:
   - ".*8 is the 6th number.*"
-args: [ "main" ]
+args: [ "org.eolang.snippets.fibo" ]
 eo: |
+  +package org.eolang.snippets
   +alias org.eolang.io.stdout
   
-  [args] > main
+  [args] > fibo
     [n] > f
       if. > @
         n.lt 2

@@ -1,11 +1,13 @@
+file: org/eolang/snippets/parenting.eo
 skip: true
 out:
   - ".*123.*"
-args: [ "main", "123" ]
+args: [ "org.eolang.snippets.parenting", "123" ]
 eo: |
+  +package org.eolang.snippets
   +alias org.eolang.io.stdout
 
-  [args] > main
+  [args] > parenting
     "The code snippet that checks parent's args" > description
     [] > take
       ^.args.at 0 > @

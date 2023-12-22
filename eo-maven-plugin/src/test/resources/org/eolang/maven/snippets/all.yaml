@@ -1,10 +1,11 @@
 out:
   - ".*works!.*"
-args: ["foo.main"]
+file: org/eolang/snippets/all.eo
+args: ["org.eolang.snippets.all"]
 eo: |
-  +package foo
+  +package org.eolang.snippets
 
-  [args] > main
+  [args] > all
     seq > a
       *
         42

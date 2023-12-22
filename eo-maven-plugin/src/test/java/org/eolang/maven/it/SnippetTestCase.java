@@ -84,6 +84,7 @@ final class SnippetTestCase {
     void runsAllSnippets(final String yml) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
+        final String file = map.get("file").toString();
         Assumptions.assumeFalse(map.containsKey("skip"));
         new Farea(this.temp).together(
             f -> {
@@ -98,14 +99,16 @@ final class SnippetTestCase {
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
                 f.files()
-                    .file("src/main/eo/main.eo")
+                    .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
                 f.build()
                     .plugins()
                     .appendItself()
                     .phase("generate-sources")
-                    .goals("register", "assemble", "verify", "transpile");
+                    .goals("register", "assemble", "verify", "transpile")
+                    .configuration()
+                    .set("failOnWarnings", "true");
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
@@ -114,6 +117,7 @@ final class SnippetTestCase {
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
+                f.exec("clean");
                 f.exec("test");
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
