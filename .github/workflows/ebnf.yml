@@ -48,7 +48,7 @@ jobs:
             cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
             pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
             pdf2svg "${p}-cropped.pdf" "${p}.svg"
-            convert -density 300 -quality 100 -background white -transparent-color white -colorspace RGB "${p}.svg" "${p}.png"
+            convert -density 300 -quality 100 -background white -colorspace RGB "${p}.svg" "${p}.png"
             mkdir -p gh-pages/ebnf
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf
