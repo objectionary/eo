@@ -109,8 +109,7 @@ SOFTWARE.
         <xsl:value-of select="$home"/>
       </xsl:when>
       <xsl:when test="$n='$'">
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
-        <xsl:value-of select="$rho"/>
+        <xsl:value-of select="$xi"/>
       </xsl:when>
       <xsl:when test="$n='&lt;'">
         <xsl:value-of select="eo:add-xi(not($is-name))"/>
@@ -179,6 +178,10 @@ SOFTWARE.
         </xsl:for-each>
         <xsl:apply-templates select="objects"/>
         <xsl:for-each select="$parts">
+          <xsl:value-of select="eo:comma(2)"/>
+          <xsl:value-of select="$lambda"/>
+          <xsl:value-of select="$dashed-arrow"/>
+          <xsl:text>Package</xsl:text>
           <xsl:value-of select="$rb"/>
         </xsl:for-each>
       </xsl:when>
@@ -307,6 +310,9 @@ SOFTWARE.
     <xsl:value-of select="eo:comma($position)"/>
     <xsl:choose>
       <xsl:when test="@as">
+        <xsl:if test="matches(@as,'^[0-9][1-9]*$')">
+          <xsl:value-of select="$alpha"/>
+        </xsl:if>
         <xsl:value-of select="eo:specials(@as, true())"/>
       </xsl:when>
       <xsl:otherwise>

@@ -16,7 +16,7 @@ jobs:
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 11
@@ -27,7 +27,8 @@ jobs:
           restore-keys: |
             maven-
       - run: mvn install -Pjacoco
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v4.0.0-beta.3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true

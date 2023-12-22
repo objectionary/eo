@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -38,7 +37,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.OutputTo;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
@@ -48,7 +46,7 @@ import org.eolang.maven.footprint.FtCached;
 import org.eolang.maven.footprint.FtDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.Rel;
-import org.eolang.parser.Syntax;
+import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -80,17 +78,6 @@ public final class ParseMojo extends SafeMojo {
      * Subdirectory for parsed cache.
      */
     public static final String PARSED = "parsed";
-
-    /**
-     * Whether we should fail on parsing error.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
 
     /**
      * The current version of eo-maven-plugin.
@@ -154,19 +141,18 @@ public final class ParseMojo extends SafeMojo {
             name,
             "xmir",
             () -> {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                new Syntax(
-                    name,
-                    new InputOf(source),
-                    new OutputTo(baos)
-                ).parse();
                 final String parsed = new XMLDocument(
                     new Xembler(
                         new Directives().xpath("/program").attr(
                             "source",
                             source.toAbsolutePath()
                         )
-                    ).applyQuietly(new XMLDocument(baos.toByteArray()).node())
+                    ).applyQuietly(
+                        new EoSyntax(
+                            name,
+                            new InputOf(source)
+                        ).parsed().node()
+                    )
                 ).toString();
                 Logger.debug(
                     this,
@@ -179,12 +165,12 @@ public final class ParseMojo extends SafeMojo {
         );
         final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
         final List<XML> errors = xmir.nodes("/program/errors/error");
+        final Path target = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
+            TranspileMojo.EXT
+        );
+        tojo.withXmir(target.toAbsolutePath());
         if (errors.isEmpty()) {
-            final Path target = new Place(name).make(
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                TranspileMojo.EXT
-            );
-            tojo.withXmir(target.toAbsolutePath());
             Logger.debug(
                 this, "Parsed %s to %s",
                 new Rel(source), new Rel(target)
@@ -193,16 +179,8 @@ public final class ParseMojo extends SafeMojo {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "Failed to parse '%s:%s': %s (just logging, because of failOnError=false)",
+                    "Failed to parse '%s:%s': %s",
                     source, error.xpath("@line").get(0), error.xpath("text()").get(0)
-                );
-            }
-            if (this.failOnError) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Failed to parse %s (%d parsing errors)",
-                        source, errors.size()
-                    )
                 );
             }
         }

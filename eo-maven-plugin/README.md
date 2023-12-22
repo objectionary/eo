@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.33.0</version>
+        <version>0.34.1</version>
         <executions>
           <execution>
             <goals>
@@ -82,7 +82,7 @@ binary code consists of a few high-level steps, which must be done
 one after another:
 
   * **Parsing**.
-    It's done by the `org.eolang.parser.Syntax` class in the `eo-parser` module. It takes
+    It's done by the `org.eolang.parser.EoSyntax` class in the `eo-parser` module. It takes
     the source code in a plain text format and parses into XML document,
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
     The output of the parser you can find in the `target/eo/parse` directory.
@@ -151,7 +151,7 @@ This can be achieved by disabling `maven-invoker-plugin` execution within `eo-ma
   ...
   <plugin>
     <artifactId>maven-invoker-plugin</artifactId>
-    <version>0.33.0</version>
+    <version>0.34.1</version>
     <configuration>
         <skipInstallation>true</skipInstallation>
         <skipInvocation>true</skipInvocation>

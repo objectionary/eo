@@ -58,7 +58,7 @@ public final class ForeignTojo {
      * @return The id of the tojo.
      */
     public String identifier() {
-        return this.delegate.get(ForeignTojos.Attribute.ID.key());
+        return this.attribute(ForeignTojos.Attribute.ID);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class ForeignTojo {
      * @return The xmir.
      */
     public Path xmir() {
-        return Paths.get(this.delegate.get(ForeignTojos.Attribute.XMIR.key()));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.XMIR));
     }
 
     /**
@@ -74,7 +74,15 @@ public final class ForeignTojo {
      * @return The optimized xmir.
      */
     public Path optimized() {
-        return Paths.get(this.delegate.get(ForeignTojos.Attribute.OPTIMIZED.key()));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.OPTIMIZED));
+    }
+
+    /**
+     * The tojo verified xmir.
+     * @return The verified xmir.
+     */
+    public Path verified() {
+        return Paths.get(this.attribute(ForeignTojos.Attribute.VERIFIED));
     }
 
     /**
@@ -82,7 +90,7 @@ public final class ForeignTojo {
      * @return The shaken xmir.
      */
     public Path shaken() {
-        return Paths.get(this.delegate.get(ForeignTojos.Attribute.SHAKEN.key()));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.SHAKEN));
     }
 
     /**
@@ -90,7 +98,7 @@ public final class ForeignTojo {
      * @return The eo object.
      */
     public Path source() {
-        return Paths.get(this.delegate.get(ForeignTojos.Attribute.EO.key()));
+        return Paths.get(this.attribute(ForeignTojos.Attribute.EO));
     }
 
     /**
@@ -98,7 +106,7 @@ public final class ForeignTojo {
      * @return The version.
      */
     public String version() {
-        return this.delegate.get(ForeignTojos.Attribute.VERSION.key());
+        return this.attribute(ForeignTojos.Attribute.VERSION);
     }
 
     /**
@@ -108,7 +116,7 @@ public final class ForeignTojo {
     public String description() {
         return String.format(
             "%s:%s",
-            this.delegate.get(ForeignTojos.Attribute.ID.key()),
+            this.attribute(ForeignTojos.Attribute.ID),
             this.version()
         );
     }
@@ -118,7 +126,7 @@ public final class ForeignTojo {
      * @return The hash.
      */
     public String hash() {
-        return this.delegate.get(ForeignTojos.Attribute.HASH.key());
+        return this.attribute(ForeignTojos.Attribute.HASH);
     }
 
     /**
@@ -126,7 +134,7 @@ public final class ForeignTojo {
      * @return The probed.
      */
     public String probed() {
-        return this.delegate.get(ForeignTojos.Attribute.PROBED.key());
+        return this.attribute(ForeignTojos.Attribute.PROBED);
     }
 
     /**
@@ -162,6 +170,27 @@ public final class ForeignTojo {
             if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
                 Logger.debug(
                     this, "Already shaken %s to %s",
+                    new Rel(src), new Rel(tgt)
+                );
+                res = false;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Checks if tojo was not already verified.
+     *
+     * @return True if optimization is required, false otherwise.
+     */
+    public boolean notVerified() {
+        final Path src = this.xmir();
+        boolean res = true;
+        if (this.delegate.exists(ForeignTojos.Attribute.VERIFIED.key())) {
+            final Path tgt = this.verified();
+            if (tgt.toFile().lastModified() >= src.toFile().lastModified()) {
+                Logger.debug(
+                    this, "Already verified %s to %s",
                     new Rel(src), new Rel(tgt)
                 );
                 res = false;
@@ -262,6 +291,16 @@ public final class ForeignTojo {
     }
 
     /**
+     * Set the verified xmir.
+     * @param xmir The verified xmir.
+     * @return The tojo itself.
+     */
+    public ForeignTojo withVerified(final Path xmir) {
+        this.delegate.set(ForeignTojos.Attribute.VERIFIED.key(), xmir.toString());
+        return this;
+    }
+
+    /**
      * Set the eo path.
      * @param source The eo path.
      * @return The tojo itself.
@@ -326,7 +365,7 @@ public final class ForeignTojo {
      * @return The scope.
      */
     public String scope() {
-        return this.delegate.get(ForeignTojos.Attribute.SCOPE.key());
+        return this.attribute(ForeignTojos.Attribute.SCOPE);
     }
 
     /**
@@ -344,7 +383,7 @@ public final class ForeignTojo {
      * @return The version.
      */
     public String ver() {
-        return this.delegate.get(ForeignTojos.Attribute.VER.key());
+        return this.attribute(ForeignTojos.Attribute.VER);
     }
 
     @Override
@@ -364,5 +403,18 @@ public final class ForeignTojo {
     @Override
     public int hashCode() {
         return Objects.hash(this.delegate);
+    }
+
+    /**
+     * Return the attribute from the tojo.
+     * @param attribute The attribute from ForeignTojos.Attribute.
+     * @return The attribute.
+     */
+    private String attribute(final ForeignTojos.Attribute attribute) {
+        final String attr = this.delegate.get(attribute.key());
+        if (attr == null) {
+            throw new AttributeNotFoundException(attribute);
+        }
+        return attr;
     }
 }

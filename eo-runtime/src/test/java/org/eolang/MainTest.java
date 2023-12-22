@@ -30,19 +30,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Main}.
  *
  * @since 0.1
- * @todo #2437:30min Enable the tests: {@link MainTest#deliversCleanOutput()} and
- *  {@link MainTest#executesJvmFullRun()}. These tests were disabled because we got rid of delta
- *  attribute in data primitives so code in the tests became invalid. Need to fix it and enable the
- *  tests. Don't forget to remove the puzzle.
  */
 final class MainTest {
 
@@ -66,16 +62,14 @@ final class MainTest {
     }
 
     @Test
-    @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             MainTest.exec("org.eolang.io.stdout", "Hello!"),
-            Matchers.equalTo(String.format("Hello!%n---%ntrue%n"))
+            Matchers.equalTo(String.format("Hello!%n---%n%s%n", Arrays.toString(new byte[]{0x01})))
         );
     }
 
     @Test
-    @Disabled
     void executesJvmFullRun() throws Exception {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),

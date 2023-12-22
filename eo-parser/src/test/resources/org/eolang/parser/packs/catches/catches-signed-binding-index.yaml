@@ -1,0 +1,6 @@
+xsls:
+  - /org/eolang/parser/errors/signed-binding-indexes.xsl
+tests:
+  - /program/errors[count(error[@severity='error'])=3]
+eo: |
+  object c:-1 d:-2 a:0 b:1 e:+12

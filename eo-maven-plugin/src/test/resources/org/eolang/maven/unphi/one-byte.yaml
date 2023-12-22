@@ -1,0 +1,6 @@
+tests:
+  - /program/objects/o[@base='Q']
+  - /program/objects/o[@base='.org' and @method]
+  - /program/objects/o[@base='.eolang' and @method]
+  - /program/objects/o[@base='.bytes' and @method and @name='bts' and o[@base='org.eolang.bytes' and text()='A2']]
+phi: "{bts ↦ Φ.org.eolang.bytes(Δ ⤍ A2-)}"

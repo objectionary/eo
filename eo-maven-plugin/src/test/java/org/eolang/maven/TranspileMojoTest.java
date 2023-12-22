@@ -35,11 +35,14 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -50,7 +53,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class TranspileMojoTest {
 
     /**
@@ -106,7 +109,9 @@ final class TranspileMojoTest {
             .execute(new FakeMaven.Transpile())
             .result();
         final Path java = res.get(this.compiled);
-        final Path xmir = res.get("target/7-transpile/foo/x/main.xmir");
+        final Path xmir = res.get(
+            String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
+        );
         MatcherAssert.assertThat(java.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(xmir.toFile(), FileMatchers.anExistingFile());
         MatcherAssert.assertThat(java.toFile().setLastModified(0L), Matchers.is(true));
@@ -213,6 +218,29 @@ final class TranspileMojoTest {
         MatcherAssert.assertThat(
             maven.targetPath().resolve(binary).toFile(),
             Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @CaptureLogs
+    void throwsExpectionIfWasNotVerified(
+        @TempDir final Path temp, final Logs out) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withHelloWorld()
+                .execute(ParseMojo.class)
+                .execute(OptimizeMojo.class)
+                .execute(ShakeMojo.class)
+                .execute(TranspileMojo.class)
+        );
+        Assertions.assertTrue(
+            out.captured().stream().anyMatch(
+                log -> log.contains(
+                    "You should check that 'Verify' goal of the plugin was run first"
+                )
+            ),
+            "Should throw an exception if VerifyMojo wasn't run before TranspileMojo"
         );
     }
 

@@ -1,11 +1,12 @@
-in: ""
 out:
   - ".*greater.*"
-args: [ "main", "17" ]
+file: org/eolang/snippets/ifthenelse.eo
+args: [ "org.eolang.snippets.ifthenelse" ]
 eo: |
+  +package org.eolang.snippets
   +alias org.eolang.io.stdout
 
-  [args...] > main
+  [args] > ifthenelse
     [n] > f
       if. > @
         n.lt 0

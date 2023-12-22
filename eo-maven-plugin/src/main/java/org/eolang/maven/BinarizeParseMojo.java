@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
@@ -33,29 +32,22 @@ import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiFunction;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.map.MapOf;
-import org.eolang.maven.footprint.FtDefault;
-import org.eolang.maven.rust.Commented;
-import org.eolang.maven.rust.Module;
+import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
-import org.eolang.maven.rust.Native;
-import org.eolang.maven.rust.PrimeModule;
-import org.eolang.maven.rust.Project;
+import org.eolang.maven.rust.RustNode;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.HmBase;
 import org.eolang.parser.ParsingTrain;
 
 /**
@@ -80,14 +72,11 @@ public final class BinarizeParseMojo extends SafeMojo {
     public static final Path DIR = Paths.get("binarize");
 
     /**
-     * The directory with generated .rs files.
+     * Parsing train with XSLs. The task of XSLs is to find all the FFI inserts and put them at
+     * the end of the xmir file. When adding a new language for FFI inserts, you need to add the
+     * appropriate XSL transformation.
      */
-    public static final Path CODES = Paths.get("codes");
-
-    /**
-     * Parsing train with XSLs.
-     */
-    static final Train<Shift> TRAIN = new TrBulk<>(
+    private static final Train<Shift> TRAIN = new TrBulk<>(
         new TrClasspath<>(
             new ParsingTrain()
                 .empty()
@@ -96,6 +85,21 @@ public final class BinarizeParseMojo extends SafeMojo {
             "/org/eolang/maven/add_rust/add_rust.xsl"
         )
     ).back().back();
+
+    /**
+     * Map that matches ffi insert xpath to building of FFINode.
+     */
+    private static final
+        Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> FACTORY = new MapOf<>(
+        "/program/rusts/rust",
+            (node, mojo) -> new RustNode(
+            node,
+            mojo.names,
+            mojo.targetDir.toPath().resolve("Lib"),
+            mojo.eoPortalDir.toPath(),
+            mojo.generatedDir.toPath().resolve("EOrust").resolve("natives")
+        )
+    );
 
     /**
      * Target directory.
@@ -109,16 +113,6 @@ public final class BinarizeParseMojo extends SafeMojo {
     private File generatedDir;
 
     /**
-     * File where to save {@link org.eolang.maven.rust.Names} map.
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/names"
-    )
-    private File namesDir;
-
-    /**
      * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
@@ -130,68 +124,29 @@ public final class BinarizeParseMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File eoPortalDir;
 
+    /**
+     * To uniquely name different ffi inerts.
+     */
+    private Names names;
+
     @Override
     public void exec() throws IOException {
-        final Names names = new Names(this.namesDir.toPath());
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
-            final Path file = tojo.shaken();
-            final XML input = new XMLDocument(file);
-            final List<XML> nodes = this.addRust(input).nodes("/program/rusts/rust");
-            for (final XML node: nodes) {
-                final String code = BinarizeParseMojo.unhex(node.xpath("@code").get(0));
-                final List<String> dependencies =
-                    node.xpath("./dependencies/dependency/attribute(name)")
-                    .stream()
-                    .map(BinarizeParseMojo::unhex)
-                    .collect(Collectors.toList());
-                final String function = names.name(
-                    node.xpath("@code_loc").get(0)
-                );
-                final String filename = String.format(
-                    "%s%s",
-                    function,
-                    ".rs"
-                );
-                final Path target = BinarizeMojo.DIR
-                    .resolve(BinarizeParseMojo.CODES)
-                    .resolve(filename);
-                new HmBase(this.targetDir.toPath()).save(
-                    code,
-                    target
-                );
-                Logger.info(
-                    this,
-                    "Binarized %s from %s:%s",
-                    filename,
-                    input.xpath("/program/@name").get(0),
-                    node.xpath("@code_loc").get(0)
-                );
-                new Project(this.targetDir.toPath().resolve("Lib/".concat(function)))
-                    .with(new Module(code, "src/foo"), dependencies)
-                    .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
-                    .dependency(
-                        "eo",
-                        new MapOf<>("path", this.eoPortalDir.getAbsolutePath())
-                    )
-                    .save();
-                new Commented(new Native(function, "EOrust.natives"), "//")
-                    .save(
-                    new FtDefault(
-                        this.generatedDir.toPath().resolve("EOrust").resolve("natives")
-                    )
-                );
-            }
+            final Path file = tojo.verified();
+            this.getFFIs(new XMLDocument(file))
+                .forEach(FFINode::generateUnchecked);
         }
-        names.save();
+        this.names.save();
     }
 
     /**
-     * Creates a "rust" section in xml file and returns the resulting XML.
+     * Creates sections for each language for FFI insert in xmir and returns the resulting XML file.
      * @param input The .xmir file
-     * @return The content of rust section
+     * @return The content of FFI inserts sections
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private XML addRust(
+    private XML addFFIs(
         final XML input
     ) {
         final String name = input.xpath("/program/@name").get(0);
@@ -204,29 +159,20 @@ public final class BinarizeParseMojo extends SafeMojo {
     }
 
     /**
-     * Makes a text from Hexed text.
-     * @param txt Hexed chars separated by backspace.
-     * @return Normal text.
+     * Add ffi node via xsl transformation and return list of them.
+     * @param input Input xmir.
+     * @return FFI nodes.
+     * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private static String unhex(final String txt) {
-        final StringBuilder hex = new StringBuilder(txt.length());
-        for (final char chr : txt.toCharArray()) {
-            if (chr == ' ') {
-                continue;
-            }
-            hex.append(chr);
-        }
-        final String result;
-        try {
-            final byte[] bytes = Hex.decodeHex(String.valueOf(hex).toCharArray());
-            result = new String(bytes, StandardCharsets.UTF_8);
-        } catch (final DecoderException exception) {
-            throw new IllegalArgumentException(
-                String.format("Invalid String %s, cannot unhex", txt),
-                exception
-            );
-        }
-        return result;
+    private Collection<FFINode> getFFIs(final XML input) {
+        final Collection<FFINode> ret = new ArrayList<>(0);
+        final XML injected = this.addFFIs(input);
+        BinarizeParseMojo.FACTORY.forEach(
+            (xpath, ctor) -> injected
+                .nodes(xpath)
+                .forEach(node -> ret.add(ctor.apply(node, this)))
+        );
+        return ret;
     }
 
 }

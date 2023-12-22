@@ -38,7 +38,7 @@ SOFTWARE.
       <groupId>org.eolang</groupId>
       <artifactId>eo-runtime</artifactId>
       <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.33.0</version>
+      <version>0.34.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -93,19 +93,19 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.9.5</version>
+      <version>3.9.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.9.5</version>
+      <version>3.9.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.9.5</version>
+      <version>3.9.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -123,7 +123,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.9.5</version>
+      <version>3.9.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -209,7 +209,13 @@ SOFTWARE.
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.15.0</version>
+      <version>2.15.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>0.0.12</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -265,17 +271,20 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
-      <!--
-      @todo #2555:30min Enable integration tests. Integration tests were disabled because of
-       new recursive implementation of tuple. Need to upload new version of eo-runtime to
-       Objectionary and enable integration tests by just removing "maven-invoker-plugin" from
-       this pom.xml. Don't forget to remove the puzzle.
-      -->
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
-          <skipInstallation>true</skipInstallation>
-          <skipInvocation>true</skipInvocation>
+          <pomExcludes>
+            <!--
+            @todo #2660:30min Enable the following integration tests when it's possible.
+             Now they don't work because many .eo files are absent in the
+             objectionary/home repository. Once they are released, the tests
+             should work as is, without any modifications.
+            -->
+            <exclude>custom_goals/pom.xml</exclude>
+            <exclude>fibonacci/pom.xml</exclude>
+            <exclude>rewritten_sources/pom.xml</exclude>
+          </pomExcludes>
         </configuration>
       </plugin>
       <plugin>

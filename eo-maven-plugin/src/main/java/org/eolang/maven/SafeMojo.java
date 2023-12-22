@@ -237,15 +237,6 @@ abstract class SafeMojo extends AbstractMojo {
     );
 
     /**
-     * The Git hash to pull objects from, in objectionary.
-     * If not set, will be computed from {@code tag} field.
-     *
-     * @since 0.29.6
-     */
-    @SuppressWarnings({"PMD.ImmutableField", "PMD.UnusedPrivateField"})
-    private CommitHash hash;
-
-    /**
      * Cached tojos.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */

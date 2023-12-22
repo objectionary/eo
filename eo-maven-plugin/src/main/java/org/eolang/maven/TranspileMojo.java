@@ -50,6 +50,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Rel;
@@ -69,9 +70,14 @@ import org.eolang.maven.util.Rel;
 public final class TranspileMojo extends SafeMojo {
 
     /**
+     * The directory where to put pre-transpile files.
+     */
+    public static final String PRE = "7-pre";
+
+    /**
      * The directory where to transpile to.
      */
-    public static final String DIR = "7-transpile";
+    public static final String DIR = "8-transpile";
 
     /**
      * Extension for compiled sources in XMIR format (XML).
@@ -103,11 +109,6 @@ public final class TranspileMojo extends SafeMojo {
      * Java extension.
      */
     private static final Pattern JAVA_EXT = Pattern.compile(".java", Pattern.LITERAL);
-
-    /**
-     * The directory where to put pre-transpile files.
-     */
-    private static final String PRE = "6-pre";
 
     /**
      * Target directory.
@@ -184,8 +185,15 @@ public final class TranspileMojo extends SafeMojo {
      * @throws java.io.IOException If any issues with I/O
      */
     private int transpile(final ForeignTojo tojo) throws IOException {
-        final int saved;
-        final Path file = tojo.shaken();
+        final Path file;
+        try {
+            file = tojo.verified();
+        }  catch (final AttributeNotFoundException exception) {
+            throw new IllegalStateException(
+                "You should check that 'Verify' goal of the plugin was run first",
+                exception
+            );
+        }
         final XML input = new XMLDocument(file);
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
@@ -193,6 +201,7 @@ public final class TranspileMojo extends SafeMojo {
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
             TranspileMojo.EXT
         );
+        final int saved;
         if (
             target.toFile().exists()
                 && target.toFile().lastModified() >= file.toFile().lastModified()

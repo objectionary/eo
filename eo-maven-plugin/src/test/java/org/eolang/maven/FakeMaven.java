@@ -58,6 +58,7 @@ import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnDefault;
 import org.eolang.maven.objectionary.Objectionaries;
+import org.eolang.maven.rust.Names;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -242,6 +243,10 @@ public final class FakeMaven {
                 new File("../eo-runtime/src/main/rust/eo")
             );
             this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
+            this.params.putIfAbsent(
+                "names",
+                new Names(((File) this.params.get("namesDir")).toPath())
+            );
             this.params.putIfAbsent("hashes", new CommitHashesMap.Fake());
             this.params.putIfAbsent(
                 "phiInputDir",
@@ -252,6 +257,16 @@ public final class FakeMaven {
             this.params.putIfAbsent(
                 "phiOutputDir",
                 this.workspace.absolute(Paths.get("target/phi")).toFile()
+            );
+            this.params.putIfAbsent(
+                "unphiInputDir",
+                this.workspace.absolute(Paths.get("target/phi")).toFile()
+            );
+            this.params.putIfAbsent(
+                "unphiOutputDir",
+                this.workspace.absolute(
+                    Paths.get(String.format("target/%s", ParseMojo.DIR))
+                ).toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);
@@ -612,6 +627,22 @@ public final class FakeMaven {
     }
 
     /**
+     * Shake full pipeline.
+     *
+     * @since 0.35.0
+     */
+    static final class Shake implements Iterable<Class<? extends AbstractMojo>> {
+        @Override
+        public Iterator<Class<? extends AbstractMojo>> iterator() {
+            return Arrays.<Class<? extends AbstractMojo>>asList(
+                ParseMojo.class,
+                OptimizeMojo.class,
+                ShakeMojo.class
+            ).iterator();
+        }
+    }
+
+    /**
      * Latex full pipeline.
      *
      * @since 0.29.2
@@ -642,6 +673,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 TranspileMojo.class
             ).iterator();
         }
@@ -660,6 +692,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeMojo.class
             ).iterator();
         }
@@ -678,6 +711,7 @@ public final class FakeMaven {
                 ParseMojo.class,
                 OptimizeMojo.class,
                 ShakeMojo.class,
+                VerifyMojo.class,
                 BinarizeParseMojo.class
             ).iterator();
         }

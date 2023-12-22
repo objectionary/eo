@@ -34,19 +34,15 @@ import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.SystemUtils;
-import org.cactoos.bytes.Base64Bytes;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.IoCheckedBytes;
-import org.cactoos.text.TextOf;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
@@ -54,7 +50,6 @@ import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.ExNative;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Universe;
 import org.eolang.UniverseDefault;
@@ -100,14 +95,15 @@ public class EOrust extends PhDefault {
             );
         }
         final String lib;
-        if (SystemUtils.IS_OS_WINDOWS) {
+        final String system = System.getProperty("os.name").toLowerCase();
+        if (system.contains("win")) {
             lib = "common.dll";
-        } else if (SystemUtils.IS_OS_LINUX) {
+        } else if (system.contains("nix") || system.contains("nux") || system.contains("aix")) {
             lib = "libcommon.so";
-        } else if (SystemUtils.IS_OS_MAC) {
+        } else if (system.contains("mac")) {
             lib = "libcommon.dylib";
         } else {
-            throw new NotImplementedException(
+            throw new UnsupportedOperationException(
                 String.format(
                     "Rust inserts are not supported by %s os. Only windows, linux and macos are allowed.",
                     System.getProperty("os.name")
@@ -189,13 +185,9 @@ public class EOrust extends PhDefault {
     private static ConcurrentHashMap<String, String> load(final String src) throws IOException {
         try (ObjectInputStream map = new ObjectInputStream(
             new ByteArrayInputStream(
-                new IoCheckedBytes(
-                    new Base64Bytes(
-                        new BytesOf(
-                            new TextOf(Paths.get(src))
-                        )
-                    )
-                ).asBytes()
+                Base64.getDecoder().decode(
+                    Files.readAllBytes(Paths.get(src))
+                )
             )
         )) {
             final Object result = map.readObject();
@@ -230,9 +222,10 @@ public class EOrust extends PhDefault {
         final byte determinant = message[0];
         final byte[] content = Arrays.copyOfRange(message, 1, message.length);
         final Phi ret;
+        final ByteBuffer buffer;
         switch (determinant) {
             case 0:
-                ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+                buffer = ByteBuffer.allocate(Integer.BYTES);
                 buffer.put(content);
                 buffer.flip();
                 final int vertex = buffer.getInt();

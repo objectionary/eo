@@ -74,7 +74,7 @@ final class AssembleMojoTest {
     /**
      * Invalid eo program for testing.
      */
-    private static final String[] INVALID_PROGRAM = {
+    static final String[] INVALID_PROGRAM = {
         "+alias stdout org.eolang.io.stdout",
         "+home https://github.com/objectionary/eo",
         "+package test",
@@ -215,32 +215,20 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
+    void assemblesNotFailWithFailOnError(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .with("failOnError", false)
-            .execute(AssembleMojo.class).result();
+            .execute(new FakeMaven.Optimize())
+            .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
         MatcherAssert.assertThat(
-            "Since the eo program invalid we shouldn't have optimized it, but we did",
+            "Even if the eo program invalid we still have to optimize it, but we didn't",
             result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            Matchers.not(new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT)))
-        );
-    }
-
-    @Test
-    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
-        final Class<IllegalStateException> expected = IllegalStateException.class;
-        Assertions.assertThrows(
-            expected,
-            () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(AssembleMojo.class),
-            String.format("AssembleMojo should have failed with %s, but didn't", expected)
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
     }
 
@@ -258,6 +246,29 @@ final class AssembleMojoTest {
             "While execution AssembleMojo log should have contained message about offline mode, but it didn't",
             String.join("\n", out.captured()),
             Matchers.containsString("No programs were pulled because eo.offline flag is TRUE")
+        );
+    }
+
+    @Test
+    void configuresChildParameters(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> res = new FakeMaven(temp)
+            .withHelloWorld()
+            .with("trackOptimizationSteps", true)
+            .execute(AssembleMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
+            )
+        );
+        MatcherAssert.assertThat(
+            "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
+            res,
+            Matchers.hasKey(
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            )
         );
     }
 

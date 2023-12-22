@@ -2,8 +2,6 @@
 name: ebnf
 on:
   push:
-    branches:
-      - master
     paths-ignore: ['paper/**', 'sandbox/**']
 concurrency:
   group: ebnf-${{ github.ref }}
@@ -22,7 +20,7 @@ jobs:
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 11
@@ -38,20 +36,23 @@ jobs:
       - run: sudo sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
       - run: |
           mvn com.yegor256:antlr2ebnf-maven-plugin:0.0.7:generate \
-            -pl :eo-parser --debug --errors --batch-mode --quiet \
+            -pl :eo-parser --errors --batch-mode --quiet \
             "-Dantlr2ebnf.convertDir=$CONVERT_PATH" \
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          convert --version
+          pdfcrop --version
           set -x
-          cp eo-parser/target/ebnf/org/eolang/parser/Program.pdf .
-          pdfcrop --margins '10 10 10 10' Program.pdf crop.pdf
-          pdf2svg crop.pdf ebnf.svg
-          convert -density 300 -quality 100 -transparent white -colorspace RGB crop.pdf ebnf.png
-          ls -al
-          mkdir gh-pages
-          cp ebnf.png gh-pages
-          cp ebnf.svg gh-pages
+          for p in Eo Phi; do
+            cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
+            pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
+            pdf2svg "${p}-cropped.pdf" "${p}.svg"
+            convert -density 300 -quality 100 -background white -colorspace RGB "${p}.svg" "${p}.png"
+            mkdir -p gh-pages/ebnf
+            cp "${p}.png" gh-pages/ebnf
+            cp "${p}.svg" gh-pages/ebnf
+          done
       - uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           branch: gh-pages

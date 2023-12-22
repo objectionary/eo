@@ -1,11 +1,17 @@
-in: ""
 out:
-  - ".*Hello, дорогой!.*"
-args: ["simple.main"]
+  - ".*Hello, Jeff!.*"
+file: org/eolang/snippets/simple.eo
+args: ["org.eolang.snippets.simple"]
 eo: |
-  +package simple
+  +package org.eolang.snippets
   +alias org.eolang.io.stdout
 
-  [args...] > main
-    stdout > @
-      "Hello, дорогой!"
+  [args] > simple
+    seq > @
+      *
+        stdout
+          "Hello, "
+        stdout
+          "Jeff"
+        stdout
+          "!"

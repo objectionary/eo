@@ -22,10 +22,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<plugin>
-  <name>eo-maven-plugin</name>
-  <description>EO-to-Java Maven Plugin</description>
-  <groupId>org.eolang</groupId>
-  <artifactId>eo-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
-</plugin>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="signed-binding-indexes" version="2.0">
+  <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:template match="/program/errors">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+      <xsl:for-each select="//o[@as and matches(@as, '^(-|\+)\d+$')]">
+        <xsl:element name="error">
+          <xsl:attribute name="check">
+            <xsl:text>zero-version</xsl:text>
+          </xsl:attribute>
+          <xsl:attribute name="line">
+            <xsl:value-of select="@line"/>
+          </xsl:attribute>
+          <xsl:attribute name="severity">
+            <xsl:text>error</xsl:text>
+          </xsl:attribute>
+          <xsl:text>Binding index of application must not be a signed number "</xsl:text>
+          <xsl:value-of select="tail/text()"/>
+          <xsl:text>"</xsl:text>
+        </xsl:element>
+      </xsl:for-each>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>
