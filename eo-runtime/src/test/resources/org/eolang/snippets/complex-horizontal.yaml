@@ -1,0 +1,9 @@
+out:
+  - ".*Hello, Jeff.*"
+file: org/eolang/snippets/complex-horizontal.eo
+args: ["org.eolang.snippets.complex-horizontal"]
+eo: |
+  +package org.eolang.snippets
+  +alias org.eolang.io.stdout
+
+  [args] (seq (* (stdout hello) (stdout name)) > @) ("Hello, " > hello) ("Jeff" > name) > complex-horizontal

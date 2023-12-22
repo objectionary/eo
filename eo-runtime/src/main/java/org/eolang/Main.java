@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOtuple;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -189,8 +190,18 @@ public final class Main {
                 String.format("Can not find '%s' object", opts.get(0))
             );
         }
-        for (int idx = 1; idx < opts.size(); ++idx) {
-            app.attr(0).put(new Data.ToPhi(opts.get(idx)));
+        if (opts.size() > 1) {
+            Phi args = Phi.Φ.attr("org").get()
+                .attr("eolang").get()
+                .attr("tuple").get()
+                .attr("empty").get();
+            for (int idx = 1; idx < opts.size(); ++idx) {
+                final Phi tuple = new EOtuple(Phi.Φ);
+                tuple.attr(0).put(args);
+                tuple.attr(1).put(new Data.ToPhi(opts.get(idx)));
+                args = tuple;
+            }
+            app.attr(0).put(args);
         }
         Main.LOGGER.info(
             String.format(
