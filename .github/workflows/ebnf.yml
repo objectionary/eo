@@ -42,6 +42,7 @@ jobs:
             "-Dantlr2ebnf.margin=40"
       - run: |
           convert --version
+          convert --help | grep Delegates
           pdfcrop --version
           set -x
           for p in Eo Phi; do
