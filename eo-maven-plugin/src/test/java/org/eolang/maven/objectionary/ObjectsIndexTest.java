@@ -23,10 +23,10 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
-import org.eolang.maven.OnlineCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -70,7 +70,7 @@ class ObjectsIndexTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
             new ObjectsIndex().contains("org.eolang.io.stdout"),

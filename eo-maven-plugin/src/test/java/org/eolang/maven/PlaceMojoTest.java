@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -228,7 +229,7 @@ final class PlaceMojoTest {
      * @throws IOException If fails
      */
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(

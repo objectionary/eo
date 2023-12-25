@@ -90,7 +90,7 @@ public final class ParseMojo extends SafeMojo {
     private PluginDescriptor plugin;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),

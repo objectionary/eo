@@ -24,7 +24,7 @@
 
 package org.eolang.maven.hash;
 
-import org.eolang.maven.OnlineCondition;
+import com.yegor256.WeAreOnline;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link ChRemote}.
  * @since 0.26
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 final class ChRemoteTest {
 
     @Test

@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -233,7 +232,7 @@ public final class AssembleMojo extends SafeMojo {
     private boolean offline;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }

@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -145,7 +144,7 @@ public final class ResolveMojo extends SafeMojo {
         );
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }

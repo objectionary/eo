@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,7 +60,7 @@ class CleanMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void makesFullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()

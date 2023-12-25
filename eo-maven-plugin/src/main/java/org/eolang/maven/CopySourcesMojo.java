@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -85,7 +84,7 @@ public final class CopySourcesMojo extends SafeMojo {
     private String deployHash;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final BiConsumer<Path, Path> copied = new CopiedResources(
             this.project,
             this.session,

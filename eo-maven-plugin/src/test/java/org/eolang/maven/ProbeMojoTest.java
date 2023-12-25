@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,7 +54,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.28.11
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 final class ProbeMojoTest {
     /**
      * Stdout.
@@ -61,7 +62,7 @@ final class ProbeMojoTest {
     private static final ObjectName STDOUT = new OnVersioned("org.eolang.io.stdout", "9c93528");
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
         final String expected = "5";
         MatcherAssert.assertThat(
@@ -123,7 +124,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
         MatcherAssert.assertThat(
@@ -146,7 +147,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
@@ -176,7 +177,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();

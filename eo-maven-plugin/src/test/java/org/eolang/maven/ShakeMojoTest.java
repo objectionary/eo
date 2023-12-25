@@ -53,7 +53,7 @@ final class ShakeMojoTest {
     private String key;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         this.key = "target/%s/foo/x/main.%s";
     }
 

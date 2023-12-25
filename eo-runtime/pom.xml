@@ -75,6 +75,12 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->
@@ -104,6 +110,36 @@ SOFTWARE.
       <!-- version from parent POM -->
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>0.0.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -115,6 +151,7 @@ SOFTWARE.
             @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemPropertyVariables>
+            <eo.version>${project.version}</eo.version>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>

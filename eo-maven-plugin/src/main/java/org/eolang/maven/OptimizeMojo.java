@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -87,7 +86,7 @@ public final class OptimizeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(

@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -55,7 +56,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 final class PullMojoTest {
     /**
      * Stdout.

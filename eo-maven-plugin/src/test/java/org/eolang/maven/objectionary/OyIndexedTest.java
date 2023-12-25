@@ -23,10 +23,10 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.OnlineCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class OyIndexedTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
             new OyIndexed(new Objectionary.Fake()).contains(OyIndexedTest.STDOUT_OBJECT),

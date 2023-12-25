@@ -85,6 +85,10 @@ public final class PrintMojo extends SafeMojo {
                 "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)
             );
         }
-        Logger.info(this, "Printed %d sources", sources.size());
+        if (sources.isEmpty()) {
+            Logger.info(this, "No XMIR sources found");
+        } else {
+            Logger.info(this, "Printed %d XMIR sources into EO", sources.size());
+        }
     }
 }

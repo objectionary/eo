@@ -21,20 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.it;
+package org.eolang;
 
+import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.OnlineCondition;
-import org.eolang.maven.util.Walk;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
@@ -61,7 +57,7 @@ import org.yaml.snakeyaml.Yaml;
  *  try to find out and enable it (by removing the "skip" attribute from
  *  the YAML file).
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class SnippetTestCase {
 
@@ -78,9 +74,9 @@ final class SnippetTestCase {
      * @throws IOException If fails
      */
     @ParameterizedTest
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     @SuppressWarnings("unchecked")
-    @ClasspathSource(value = "org/eolang/maven/snippets/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
@@ -88,13 +84,6 @@ final class SnippetTestCase {
         Assumptions.assumeFalse(map.containsKey("skip"));
         new Farea(this.temp).together(
             f -> {
-                final Path sources = Paths.get("../eo-runtime/src/main/eo");
-                for (final Path src : new Walk(sources).includes(Arrays.asList("**/*.eo"))) {
-                    final Path target = this.temp.resolve("src/main/eo")
-                        .resolve(sources.relativize(src));
-                    target.toFile().getParentFile().mkdirs();
-                    Files.copy(src, target);
-                }
                 f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
@@ -102,9 +91,15 @@ final class SnippetTestCase {
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
+                f.dependencies()
+                    .appendItself();
                 f.build()
                     .plugins()
-                    .appendItself()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()

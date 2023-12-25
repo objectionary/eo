@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -84,7 +83,7 @@ public final class ShakeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final int total = new OptimizedTojos(
             new Filtered<>(

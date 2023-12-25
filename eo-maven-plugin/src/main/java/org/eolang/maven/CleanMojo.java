@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.eolang.maven.util.Rel;
@@ -44,7 +43,7 @@ import org.eolang.maven.util.Rel;
 public class CleanMojo extends SafeMojo {
 
     @Override
-    final void exec() throws IOException {
+    final void exec() {
         if (!this.targetDir.exists()) {
             Logger.debug(
                 this,

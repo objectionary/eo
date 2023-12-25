@@ -41,7 +41,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 final class NamesTest {
     @Test
-    void solvesSameHashes(@TempDir final Path temp) throws IOException {
+    void solvesSameHashes(@TempDir final Path temp) {
         final Names dispatcher = new Names(temp.resolve("names"));
         final String one = "AaAaAa";
         final String two = "AaAaBB";

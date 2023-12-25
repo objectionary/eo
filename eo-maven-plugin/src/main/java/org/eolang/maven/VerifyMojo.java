@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -65,7 +64,7 @@ public final class VerifyMojo extends SafeMojo {
     private boolean failOnWarning;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(

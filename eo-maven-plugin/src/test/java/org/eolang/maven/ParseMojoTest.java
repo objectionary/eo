@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -83,7 +84,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void parsesWithCache(@TempDir final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
