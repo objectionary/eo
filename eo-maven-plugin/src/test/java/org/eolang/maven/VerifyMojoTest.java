@@ -74,13 +74,10 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
+        String parse = parserMessage(out, "Errors identified:");
         Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                log -> log.contains(
-                    "Errors identified"
-                )
-            ),
-            "The program should exit with an error from 'fail-on-errors.xsl'."
+            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            "Errors message should have program name and error line number"
         );
     }
 
@@ -88,7 +85,7 @@ class VerifyMojoTest {
     @CaptureLogs
     void detectsCriticalErrorsSuccessfully(
         @TempDir final Path temp,
-        final Logs out) {
+        final Logs out) throws Exception {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -100,13 +97,10 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Wrong program should have failed or error, but it didn't"
         );
+        String parse = parserMessage(out, "Critical error identified:");
         Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                log -> log.contains(
-                    "Critical error identified"
-                )
-            ),
-            "The program should exit with an error from 'fail-on-critical.xsl'."
+            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            "Critical error message should have program name and error line number"
         );
     }
 
@@ -128,13 +122,10 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
+        String parse = parserMessage(out, "Warnings identified:");
         Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                log -> log.contains(
-                    "Warnings identified"
-                )
-            ),
-            "The program should exit with an error from 'fail-on-warnings.xsl'."
+            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            "Warnings message should have program name and error line number"
         );
     }
 
@@ -248,5 +239,18 @@ class VerifyMojoTest {
                         )))
         ).pass(new XMLDocument(xml));
         new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
+    }
+
+    /**
+     * Parse the error message to program name and error line number for checking.
+     * @param logs Logs logs
+     * @param error String needed error message
+     */
+    private String parserMessage(final Logs logs, final String error){
+        final String message = String.valueOf(logs.captured().stream().filter
+            (log -> log.contains(error)).findFirst());
+        final String str = error + "\n  ";
+        final String result =  message.substring(message.indexOf(str) + str.length());
+        return result.substring(0, result.indexOf(": "));
     }
 }
