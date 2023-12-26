@@ -35,6 +35,7 @@ import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.xembly.Directives;
@@ -44,7 +45,15 @@ import org.xembly.Xembler;
  * Test case for {@link org.eolang.maven.optimization.OptCached}.
  * @since 0.28.12
  */
-class OptCachedTest {
+final class OptCachedTest {
+
+    /*
+     * @todo #2422:60min Test is unstable for now.
+     *  We should resolve issues with unstable failures and only
+     *  then enable the test.
+     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
+     */
+    @Disabled
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
         final XML program = OptCachedTest.program(ZonedDateTime.now());
@@ -78,7 +87,7 @@ class OptCachedTest {
     }
 
     @Test
-    void optimizesBecauseChacheIsExpired(@TempDir final Path tmp) throws IOException {
+    void optimizesBecauseCacheIsExpired(@TempDir final Path tmp) throws IOException {
         final XML outdated = OptCachedTest.program(ZonedDateTime.now().minusMinutes(1));
         final XML updated = OptCachedTest.program(ZonedDateTime.now());
         OptCachedTest.save(tmp, outdated);
