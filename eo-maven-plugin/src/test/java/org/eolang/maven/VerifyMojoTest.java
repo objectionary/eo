@@ -76,7 +76,7 @@ class VerifyMojoTest {
         );
         final String parse = this.parserMessage(out, "Errors identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
+            parse.matches(this.createRegEx(temp)),
             "Errors message should have program name and error line number"
         );
     }
@@ -99,7 +99,7 @@ class VerifyMojoTest {
         );
         final String parse = this.parserMessage(out, "Critical error identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
+            parse.matches(this.createRegEx(temp)),
             "Critical error message should have program name and error line number"
         );
     }
@@ -124,7 +124,7 @@ class VerifyMojoTest {
         );
         final String parse = this.parserMessage(out, "Warnings identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
+            parse.matches(this.createRegEx(temp)),
             "Warnings message should have program name and error line number"
         );
     }
@@ -255,5 +255,15 @@ class VerifyMojoTest {
         final String str = error.concat("\n  ");
         final String result = message.substring(message.indexOf(str) + str.length());
         return result.substring(0, result.indexOf(": "));
+    }
+
+    /**
+     * Create regular expression for testing.
+     * @param path Path program
+     */
+    private String createRegEx(final Path path) {
+        return path.resolve("foo/x/main.eo")
+            .toString().replace("\\", "\\\\")
+            .concat(", \\d+");
     }
 }
