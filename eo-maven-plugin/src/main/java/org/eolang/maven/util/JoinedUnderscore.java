@@ -23,10 +23,9 @@
  */
 package org.eolang.maven.util;
 
+import java.util.List;
 import org.cactoos.Text;
 import org.cactoos.list.ListOf;
-
-import java.util.List;
 
 /**
  * Text joined with underscore.

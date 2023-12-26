@@ -61,6 +61,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  from older repositories are not parsed successfully because of the presence of varargs there.
  *  So we need to make 2-3 releases and then refactor the test with more fresh versions. Don't
  *  forget to remove the puzzle.
+ * @since 0.1
  */
 @ExtendWith(WeAreOnline.class)
 final class AssembleMojoTest {
