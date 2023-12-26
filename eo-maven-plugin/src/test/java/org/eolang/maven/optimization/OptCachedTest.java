@@ -47,8 +47,12 @@ import org.xembly.Xembler;
  */
 final class OptCachedTest {
 
-    /*
-     * @todo #2422:60min Test is unstable for now.
+    /**
+     * Test case for XML program in cache.
+     *
+     * @param tmp Temp dir
+     * @throws IOException if I/O fails
+     * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
      *  We should resolve issues with unstable failures and only
      *  then enable the test.
      *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
