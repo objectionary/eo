@@ -74,9 +74,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        String parse = parserMessage(out, "Errors identified:");
+        final String parse = this.parserMessage(out, "Errors identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
             "Errors message should have program name and error line number"
         );
     }
@@ -97,9 +97,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Wrong program should have failed or error, but it didn't"
         );
-        String parse = parserMessage(out, "Critical error identified:");
+        final String parse = this.parserMessage(out, "Critical error identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
             "Critical error message should have program name and error line number"
         );
     }
@@ -122,9 +122,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
-        String parse = parserMessage(out, "Warnings identified:");
+        final String parse = this.parserMessage(out, "Warnings identified:");
         Assertions.assertTrue(
-            parse.matches(temp.resolve("foo/x/main.eo") + ", \\d+"),
+            parse.matches(temp.resolve("foo/x/main.eo").toString().concat(", \\d+")),
             "Warnings message should have program name and error line number"
         );
     }
@@ -246,11 +246,14 @@ class VerifyMojoTest {
      * @param logs Logs logs
      * @param error String needed error message
      */
-    private String parserMessage(final Logs logs, final String error){
-        final String message = String.valueOf(logs.captured().stream().filter
-            (log -> log.contains(error)).findFirst());
-        final String str = error + "\n  ";
-        final String result =  message.substring(message.indexOf(str) + str.length());
+    private String parserMessage(final Logs logs, final String error) {
+        final String message = String.valueOf(logs.captured().stream()
+            .filter(
+                log -> log.contains(error)
+            ).findFirst()
+        );
+        final String str = error.concat("\n  ");
+        final String result = message.substring(message.indexOf(str) + str.length());
         return result.substring(0, result.indexOf(": "));
     }
 }
