@@ -76,4 +76,3 @@ public final class Place {
         return dir.resolve(out.toString());
     }
 }
-
