@@ -60,11 +60,11 @@ public final class Native extends Savable {
             "import org.eolang.Universe;",
             String.format(
                 "public class %s {",
-                name
+                this.name
             ),
             String.format(
                 "    public static native byte[] %s",
-                name
+                this.name
             ),
             "        (final Universe universe);",
             "}"
