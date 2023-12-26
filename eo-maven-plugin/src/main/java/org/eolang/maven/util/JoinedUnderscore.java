@@ -21,60 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven;
+package org.eolang.maven.util;
 
-import java.io.File;
-import java.nio.file.Path;
-import org.eolang.maven.name.DelimitedName;
-import org.eolang.maven.name.ObjectName;
-import org.eolang.maven.util.JoinedUnderscore;
+import org.cactoos.Text;
+import org.cactoos.list.ListOf;
+
+import java.util.List;
 
 /**
- * Make the place for the object.
+ * Text joined with underscore.
  *
- * @since 0.1
+ * @since 0.34.1
  */
-public final class Place {
+public final class JoinedUnderscore implements Text {
 
     /**
-     * The name of the object, e.g. "org.eolang.io.stdout"
+     * Strings to join.
      */
-    private final DelimitedName name;
+    private final List<String> strings;
 
     /**
      * Ctor.
-     * @param obj The name of the object
+     * @param strngs Strings to join
      */
-    public Place(final ObjectName obj) {
-        this(obj.toString());
+    public JoinedUnderscore(final String... strngs) {
+        this(new ListOf<>(strngs));
     }
 
     /**
      * Ctor.
-     * @param obj The name of the object
+     * @param strngs Strings to join
      */
-    public Place(final String obj) {
-        this.name = new DelimitedName(obj);
+    public JoinedUnderscore(final List<String> strngs) {
+        this.strings = strngs;
     }
 
-    /**
-     * Make a full path.
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.title().replace(".", File.separator));
-        this.name.label().ifPresent(
-            version -> new JoinedUnderscore(
-                out.append('_').toString(),
-                out.append(version).toString()
-            ).asString()
-        );
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
+    @Override
+    public String asString() {
+        return String.join("_", this.strings);
     }
 }
