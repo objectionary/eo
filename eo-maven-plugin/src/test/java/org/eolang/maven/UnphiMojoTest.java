@@ -40,6 +40,7 @@ import org.eolang.maven.util.HmBase;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -66,6 +67,20 @@ class UnphiMojoTest {
                 .execute(UnphiMojo.class)
                 .result(),
             Matchers.hasKey(String.format("target/%s/std.xmir", ParseMojo.DIR))
+        );
+    }
+
+    @Test
+    void failsIfParsedWithErrors(@TempDir final Path temp) throws IOException {
+        new HmBase(temp).save(
+            "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
+            Paths.get("target/phi/std.phi")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .execute(UnphiMojo.class),
+            "UnphiMojo execution should fail because of parsing errors"
         );
     }
 
