@@ -94,12 +94,14 @@ application
 // must be horizontal only
 happlication
     : happlicationHead happlicationTail
+    | reversed happlicationTailReversed
     ;
 
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
     : happlicationHeadExtended happlicationTailExtended
+    | reversed happlicationTailReversedExtended
     ;
 
 // Head of horizontal application
@@ -121,13 +123,20 @@ happlicationHeadExtended
 applicable
     : STAR
     | (NAME | AT) COPY?
-    | reversed
     ;
 
 // Horizontal application tail
 happlicationTail
     : (SPACE happlicationArg as)+
     | (SPACE happlicationArg)+
+    ;
+
+happlicationTailReversed
+    : SPACE happlicationTailReversedFirst happlicationTail?
+    ;
+
+happlicationTailReversedFirst
+    : happlicationArg
     ;
 
 // Argument of horizontal application
@@ -146,6 +155,14 @@ happlicationTailExtended
     | (SPACE happlicationArgExtended)+
     ;
 
+happlicationTailReversedExtended
+    : SPACE happlicationTailReversedExtendedFirst happlicationTailExtended?
+    ;
+
+happlicationTailReversedExtendedFirst
+    : happlicationArgExtended
+    ;
+
 // Extended argument of horizontal application
 // Can contain elements in vertical notation
 happlicationArgExtended
@@ -158,6 +175,7 @@ happlicationArgExtended
 // Vertical application
 vapplication
     : vapplicationHeadNamed vapplicationArgs
+    | reversed oname? vapplicationArgsReversed
     ;
 
 // Vertical application head
@@ -183,6 +201,14 @@ vapplicationArgs
       UNTAB
     ;
 
+vapplicationArgsReversed
+    : EOL
+      TAB
+      vapplicationArgUnbinded
+      ((EOL vapplicationArg?) | EOP)
+      UNTAB
+    ;
+
 vapplicationArg
     : (vapplicationArgBinded (EOL | EOP))+
     | (vapplicationArgUnbinded (EOL | EOP))+
@@ -194,6 +220,7 @@ vapplicationArgBinded
     | vapplicationArgHanonymBinded // horizontal anonym object
     | vapplicationArgHapplicationBinded // horizontal application
     | vapplicationHeadAs oname? vapplicationArgs // vertical application
+    | reversed as oname? vapplicationArgsReversed // reversed vertical application
     | just as oname? // Just an object reference with binding
     | methodAs oname? // Method with binding
     ;
@@ -204,6 +231,7 @@ vapplicationArgUnbinded
     | vapplicationArgHanonymUnbinded // horizontal anonym object
     | vapplicationArgHapplicationUnbinded // horizontal application
     | vapplicationHeadNamed vapplicationArgs // vertical application
+    | reversed oname? vapplicationArgsReversed // reversed verical application
     | justNamed // Just an object reference
     | methodNamed // Method
     ;
@@ -219,7 +247,7 @@ vapplicationArgHapplicationUnbinded
 
 // Vertical application head with binding
 vapplicationHeadAs
-    : (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) as
+    : (applicable | hmethodOptional | versioned) as
     ;
 
 // Vertical anonym object as argument of vertical application
@@ -284,7 +312,7 @@ methodNamed
 
 // Method with bindning
 methodAs
-    : (hmethodExtended | hmethodExtendedVersioned) as
+    : hmethodOptional as
     ;
 
 // Horizontal method
@@ -292,6 +320,11 @@ methodAs
 // The head does not contain elements in vertical notation
 hmethod
     : hmethodHead methodTail+
+    ;
+
+hmethodOptional
+    : hmethodExtended
+    | hmethodExtendedVersioned
     ;
 
 // Extended horizontal method
@@ -346,18 +379,39 @@ vmethodVersioned
 // Head of vertical method can be:
 // 1. vertical method
 // 2. horizontal method
-// 3. vertical application. Here, vertical application is split into 2 parts because
-//    vapplicationHead contains vmethod which leads to left recursion error.
+// 3. vertical application
 // 4. horizontal application. The same logic as with a vertical application
 // 5. just an object reference
 vmethodHead
-    : vmethodHead (vmethodTail | vmethodTailVersioned) oname?                                               // vmethod
-    | (hmethodExtended | hmethodExtendedVersioned) oname?                                                   // hmethod extended
-    | vmethodHead (vmethodTail | vmethodTailVersioned) oname? vapplicationArgs oname?                       // vmethod + vapplication
-    | (applicable | hmethodExtended | hmethodExtendedVersioned | versioned) oname? vapplicationArgs oname?  // vapplication without vmethod in head
-    | vmethodHead (vmethodTail | vmethodTailVersioned) happlicationTailExtended oname?                      // vmethod + haplication
-    | (applicable | hmethodExtended) happlicationTailExtended oname?                                        // happlication without vmethod in head
-    | justNamed                                                                                             // just
+    : vmethodHead vmethodTailOptional vmethodHeadApplicationTail
+    | vmethodHeadHmethodExtended
+    | vmethodHeadVapplication
+    | vmethodHeadHapplication
+    | justNamed
+    ;
+
+vmethodTailOptional
+    : vmethodTail
+    | vmethodTailVersioned
+    ;
+
+vmethodHeadApplicationTail
+    : oname? vapplicationArgs?
+    | happlicationTailExtended oname?
+    ;
+
+vmethodHeadHmethodExtended
+    : hmethodOptional oname?
+    ;
+
+vmethodHeadVapplication
+    : (applicable | hmethodOptional | versioned) oname? vapplicationArgs
+    | reversed oname? vapplicationArgsReversed
+    ;
+
+vmethodHeadHapplication
+    : (applicable | hmethodExtended) happlicationTailExtended oname?
+    | reversed happlicationTailReversedExtended oname?
     ;
 
 // Tail of vertical method
