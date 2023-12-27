@@ -74,9 +74,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final String parse = this.parserMessage(out, "Errors identified:");
+        final String message = this.getMessage(out, "Errors identified");
         Assertions.assertTrue(
-            parse.matches(this.createRegEx(temp)),
+            message.matches(this.createRegEx(temp, "Errors identified")),
             "Errors message should have program name and error line number"
         );
     }
@@ -97,9 +97,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Wrong program should have failed or error, but it didn't"
         );
-        final String parse = this.parserMessage(out, "Critical error identified:");
+        final String message = this.getMessage(out, "Critical error identified");
         Assertions.assertTrue(
-            parse.matches(this.createRegEx(temp)),
+            message.matches(this.createRegEx(temp, "Critical error identified")),
             "Critical error message should have program name and error line number"
         );
     }
@@ -122,9 +122,9 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
-        final String parse = this.parserMessage(out, "Warnings identified:");
+        final String message = this.getMessage(out, "Warnings identified");
         Assertions.assertTrue(
-            parse.matches(this.createRegEx(temp)),
+            message.matches(this.createRegEx(temp, "Warnings identified")),
             "Warnings message should have program name and error line number"
         );
     }
@@ -246,24 +246,32 @@ class VerifyMojoTest {
      * @param logs Logs logs
      * @param error String needed error message
      */
-    private String parserMessage(final Logs logs, final String error) {
-        final String message = String.valueOf(logs.captured().stream()
+    private String getMessage(final Logs logs, final String error) {
+        return String.valueOf(logs.captured().stream()
             .filter(
                 log -> log.contains(error)
             ).findFirst()
         );
-        final String str = error.concat("\n  ");
-        final String result = message.substring(message.indexOf(str) + str.length());
-        return result.substring(0, result.indexOf(": "));
     }
 
     /**
      * Create regular expression for testing.
      * @param path Path program
+     * @param error String needed error message
      */
-    private String createRegEx(final Path path) {
-        return path.resolve("foo/x/main.eo")
-            .toString().replace("\\", "\\\\")
-            .concat(", \\d+");
+    private String createRegEx(final Path path, final String error) {
+        final String str = ".*".concat(error)
+            .concat(":\\s{3}(")
+            .concat(
+                path.resolve("foo/x/main.eo").toString()
+                .replace("\\", "\\\\")
+            );
+        final String res;
+        if (error.equals("Warnings identified")) {
+            res = str.concat(", \\d*: .*[\\s]*)+\\]");
+        } else {
+            res = str.concat(", \\d+: .*[\\s]*)+\\]");
+        }
+        return res;
     }
 }
