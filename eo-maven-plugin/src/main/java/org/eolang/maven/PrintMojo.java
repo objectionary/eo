@@ -28,10 +28,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
@@ -72,23 +74,31 @@ public final class PrintMojo extends SafeMojo {
 
     @Override
     void exec() throws IOException {
-        final Collection<Path> sources = new Walk(this.printSourcesDir.toPath());
         final Home home = new HmBase(this.printOutputDir);
-        for (final Path source : sources) {
-            final Path relative = Paths.get(
-                this.printSourcesDir.toPath().relativize(source).toString()
-                    .replace(".xmir", ".eo")
-            );
-            home.save(new XMIR(new TextOf(source)).toEO(), relative);
-            Logger.info(
-                this,
-                "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)
-            );
-        }
-        if (sources.isEmpty()) {
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    source -> () -> {
+                        final Path relative = Paths.get(
+                            this.printSourcesDir.toPath().relativize(source).toString()
+                                .replace(".xmir", ".eo")
+                        );
+                        home.save(new XMIR(new TextOf(source)).toEO(), relative);
+                        Logger.info(
+                            this,
+                            "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)
+                        );
+                        return 1;
+                    },
+                    new Walk(this.printSourcesDir.toPath())
+                )
+            )
+        ).intValue();
+        if (total == 0) {
             Logger.info(this, "No XMIR sources found");
         } else {
-            Logger.info(this, "Printed %d XMIR sources into EO", sources.size());
+            Logger.info(this, "Printed %d XMIR sources into EO", total);
         }
     }
 }
