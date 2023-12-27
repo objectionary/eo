@@ -1,15 +1,13 @@
-# @todo #2729:60min Enable the test when it's possible. Current syntax is not supported now. In our
-#  EBNF such is understood as vertical application with 3 arguments. But all arguments in
-#  application must be either all bound or not. But it should not be like that with reversed
-#  application. Need to extend the grammar and make sure the test works.
-#  Test UnphiMojoTest#convertsValidXmirAndParsableEO also does not work because of this.
-#  Don't forget to remove the puzzle.
-skip: true
 xsls: []
 tests:
   - /program/errors[count(*)=0]
+  - //o[@base='.if' and o[@base='string' and @as='0']]
+  - //o[@base='.if' and o[@base='string' and @as='1']]
+  - //o[@base='.if' and o[@base='int' and @as='a']]
+  - //o[@base='.if' and o[@base='int' and @as='b']]
 eo: |
-  if. > condition
+  if. > first
     TRUE
     "TRUE":0
     "FALSE":1
+  if. FALSE 1:a 2:b > second
