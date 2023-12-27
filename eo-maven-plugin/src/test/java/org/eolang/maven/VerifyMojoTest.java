@@ -43,6 +43,12 @@ import org.junit.jupiter.api.io.TempDir;
  * Test cases for {@link VerifyMojo}.
  *
  * @since 0.31.0
+ * @todo #2674:30min The messages "Warnings identified" from
+ *  {@link /eo/eo-parser/src/main/resources/org/eolang/parser/fail-on-warnings.xsl}
+ *  can have nullable line number. Need fix it, that it works as in
+ *  {@link /org/eolang/parser/warnings/mandatory-version-meta.xsl} and
+ *  {@link /org/eolang/parser/warnings/mandatory-home-meta.xsl }.
+ *  After you need fix {@code createRegEx()}.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 class VerifyMojoTest {
