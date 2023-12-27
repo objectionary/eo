@@ -1,0 +1,10 @@
+# @todo #2526:30min Enable the test when it's possible. Such syntax is invalid - scope braces should
+#  not be placed on different lines. It happens because of the next sequence of rules:
+#  scopeExtended -> happlicationExtended -> happlicationHeadExtended -> vmethod. The sequence
+#  allows using of vertical method in the head of scoped horizontal application. It should not be
+#  legal. Don't forget to remove the puzzle.
+skip: true
+line: 1
+eo: |
+  x (a
+  .b e).c > d
