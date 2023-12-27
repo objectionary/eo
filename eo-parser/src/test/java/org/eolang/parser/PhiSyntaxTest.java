@@ -26,7 +26,6 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,6 +37,7 @@ class PhiSyntaxTest {
     @Test
     void addsError() throws IOException {
         MatcherAssert.assertThat(
+            "Result XML must contain errors",
             new PhiSyntax(
                 "empty ↦ Φ.org.eolang.bytes"
             ).parsed(),

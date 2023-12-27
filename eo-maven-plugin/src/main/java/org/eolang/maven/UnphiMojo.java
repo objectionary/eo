@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import javax.naming.CannotProceedException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -42,7 +41,6 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.ParsingException;
 import org.eolang.parser.PhiSyntax;
 
 /**
