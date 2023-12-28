@@ -48,7 +48,7 @@ import org.yaml.snakeyaml.Yaml;
 
 /**
  * Test cases for {@link UnphiMojo}.
- * @since 0.34.0.
+ * @since 0.34.0
  */
 class UnphiMojoTest {
     @Test
