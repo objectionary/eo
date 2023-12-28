@@ -50,9 +50,9 @@ class CleanMojoTest {
         if (!small.toFile().exists() || !file.toFile().exists()) {
             throw new IllegalStateException("Files not created.");
         }
-        new Moja<>(CleanMojo.class)
+        new FakeMaven(temp)
             .with("targetDir", dir.toFile())
-            .execute();
+            .execute(CleanMojo.class);
         MatcherAssert.assertThat(
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)

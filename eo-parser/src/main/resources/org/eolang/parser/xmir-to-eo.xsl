@@ -30,11 +30,15 @@ SOFTWARE.
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:output method="text" encoding="UTF-8"/>
+  <!-- PROGRAM -->
   <xsl:template match="program">
-    <xsl:apply-templates select="license"/>
-    <xsl:apply-templates select="metas[meta]"/>
-    <xsl:apply-templates select="objects"/>
+    <eo>
+      <xsl:apply-templates select="license"/>
+      <xsl:apply-templates select="metas[meta]"/>
+      <xsl:apply-templates select="objects"/>
+    </eo>
   </xsl:template>
+  <!-- LICENCE -->
   <xsl:template match="license">
     <xsl:for-each select="tokenize(., $eol)">
       <xsl:text># </xsl:text>
@@ -45,10 +49,12 @@ SOFTWARE.
       <xsl:value-of select="$eol"/>
     </xsl:if>
   </xsl:template>
+  <!-- METAS -->
   <xsl:template match="metas">
     <xsl:apply-templates select="meta"/>
     <xsl:value-of select="$eol"/>
   </xsl:template>
+  <!-- META -->
   <xsl:template match="meta">
     <xsl:text>+</xsl:text>
     <xsl:value-of select="head"/>
@@ -58,39 +64,57 @@ SOFTWARE.
     </xsl:if>
     <xsl:value-of select="$eol"/>
   </xsl:template>
+  <!-- OBJECTS -->
   <xsl:template match="objects">
     <xsl:apply-templates select="o"/>
   </xsl:template>
-  <xsl:template match="o[eo:attr(.)]">
-    <!-- nothing, it's a free attribute -->
-  </xsl:template>
-  <xsl:template match="o[not(eo:attr(.)) and starts-with(@base, '.')]">
+  <!--  -->
+  <!--  <xsl:template match="o[eo:attr(.)]">-->
+  <!--     nothing, it's a free attribute -->
+  <!--  </xsl:template>-->
+  <!-- OBJECT, NOT FREE ATTRIBUTE -->
+  <xsl:template match="o[not(eo:attr(.))]">
     <xsl:param name="indent" select="''"/>
-    <xsl:apply-templates select="o[position() = 1]">
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
-    <xsl:value-of select="$indent"/>
-    <xsl:apply-templates select="." mode="head"/>
-    <xsl:apply-templates select="." mode="tail"/>
-    <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o[position() &gt; 1]">
-      <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-    </xsl:apply-templates>
-  </xsl:template>
-  <xsl:template match="o[not(eo:attr(.)) and not(starts-with(@base, '.'))]">
-    <xsl:param name="indent" select="''"/>
-    <xsl:if test="position() &gt; 1 and parent::objects">
+    <!--IF NOT THE FIRST TOP OBJECT -->
+    <xsl:if test="position()&gt;1 and parent::objects">
       <xsl:value-of select="$eol"/>
     </xsl:if>
     <xsl:value-of select="$indent"/>
     <xsl:apply-templates select="." mode="head"/>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
-    <xsl:apply-templates select="o">
+    <xsl:apply-templates select="o[not(eo:attr(.))]">
       <xsl:with-param name="indent" select="concat('  ', $indent)"/>
     </xsl:apply-templates>
   </xsl:template>
+  <!-- BASED -->
+  <xsl:template match="o[not(@data) and @base]" mode="head">
+    <xsl:choose>
+      <xsl:when test="starts-with(@base,'.')">
+        <xsl:value-of select="substring(@base,2)"/>
+        <xsl:text>.</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="@base"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- ABSTRACT OR ATOM -->
+  <xsl:template match="o[not(@data) and not(@base)]" mode="head">
+    <xsl:text>[</xsl:text>
+    <xsl:for-each select="o[eo:attr(.)]">
+      <xsl:if test="position()&gt;1">
+        <xsl:text> </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="@name"/>
+    </xsl:for-each>
+    <xsl:text>]</xsl:text>
+  </xsl:template>
+  <!-- TAIL: SUFFIX, NAME, CONST, COPY, ATOM -->
   <xsl:template match="o" mode="tail">
+    <xsl:if test="@copy">
+      <xsl:text>'</xsl:text>
+    </xsl:if>
     <xsl:if test="@as">
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@as"/>
@@ -98,9 +122,6 @@ SOFTWARE.
     <xsl:if test="@name">
       <xsl:text> &gt; </xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:if test="@vararg">
-        <xsl:text>...</xsl:text>
-      </xsl:if>
       <xsl:if test="@const">
         <xsl:text>!</xsl:text>
       </xsl:if>
@@ -110,36 +131,7 @@ SOFTWARE.
       </xsl:if>
     </xsl:if>
   </xsl:template>
-  <xsl:template match="o[not(@data) and @base]" mode="head">
-    <xsl:value-of select="@base"/>
-  </xsl:template>
-  <xsl:template match="o[not(@data) and not(@base)]" mode="head">
-    <xsl:text>[</xsl:text>
-    <xsl:for-each select="o[eo:attr(.)]">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text> </xsl:text>
-      </xsl:if>
-      <xsl:value-of select="@name"/>
-      <xsl:if test="@vararg">
-        <xsl:text>...</xsl:text>
-      </xsl:if>
-    </xsl:for-each>
-    <xsl:text>]</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='tuple']" mode="head">
-    <xsl:text>*</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='string']" mode="head">
-    <xsl:text>"</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>"</xsl:text>
-  </xsl:template>
-  <xsl:template match="o[@data='bool']" mode="head">
-    <xsl:value-of select="upper-case(text())"/>
-  </xsl:template>
-  <xsl:template match="o[@data and @data!='string' and @data!='tuple' and @data!='bool' and @data!='bytes']" mode="head">
-    <xsl:value-of select="text()"/>
-  </xsl:template>
+  <!-- DATA BYTES -->
   <xsl:template match="o[@data='bytes']" mode="head">
     <xsl:choose>
       <xsl:when test="@base='string'">

@@ -41,7 +41,6 @@ import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -145,7 +144,6 @@ class UnphiMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void convertsValidXmirAndParsableEO(@TempDir final Path temp) throws IOException {
         final Map<String, Path> map = new FakeMaven(temp)
