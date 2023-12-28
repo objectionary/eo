@@ -46,7 +46,7 @@ import org.eolang.maven.footprint.FtDefault;
  *  and
  *  {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheCorrectProgram(Path path)}
  *  show that getting from cache don't work correctly.
- *  Need to fix file validation from cache: using checksum, but not time.
+ *  Need to fix the file validation from cache: using checksum, but not time.
  */
 public final class OptCached implements Optimization {
 
