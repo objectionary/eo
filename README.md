@@ -201,6 +201,8 @@ Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) about EOLANG basics.
 Read [our blog](https://news.eolang.org), especially the section with
 [recently published papers](https://news.eolang.org/papers.html).
 
+Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html), a dialect of XML, which we use to represent EO program.
+
 See the full collection of canonical objects: [objectionary](https://github.com/objectionary/home).
 
 Take a look how we use EO as an Intermediary Representation (IR) in
