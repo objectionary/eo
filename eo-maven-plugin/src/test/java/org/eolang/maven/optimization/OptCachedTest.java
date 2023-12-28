@@ -60,7 +60,7 @@ final class OptCachedTest {
     @Disabled
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
-        final XML program = OptCachedTest.program(ZonedDateTime.now());
+        final XML program = OptCachedTest.program(ZonedDateTime.now(), "same");
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache",
@@ -77,12 +77,12 @@ final class OptCachedTest {
     @Disabled
     @Test
     void returnsFromCacheButTimesSaveAndExecuteDifferent(@TempDir final Path tmp)
-        throws IOException, InterruptedException {
-        final XML program = OptCachedTest.program(ZonedDateTime.now());
-        Thread.sleep(70_000);
+        throws IOException {
+        final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            "We expected that the program will be returned from the cache",
+            String.format("We expected that the program will be returned from the cache, " +
+                "even if compilation and saving times are different"),
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
@@ -96,12 +96,12 @@ final class OptCachedTest {
     @Disabled
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
-        throws IOException, InterruptedException {
-        XML program = OptCachedTest.programWithSomethings(ZonedDateTime.now(), "first program");
+        throws IOException {
+        XML program = OptCachedTest.program(ZonedDateTime.now(), "first program");
         OptCachedTest.save(tmp, program);
-        program = OptCachedTest.programWithSomethings(ZonedDateTime.now(), "second program");
+        program = OptCachedTest.program(ZonedDateTime.now(), "second program");
         MatcherAssert.assertThat(
-            "We expected that the correct program will be returned from the cache",
+            String.format("We expected the program corresponding to the code will be returned from the cache"),
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
@@ -186,24 +186,16 @@ final class OptCachedTest {
      * @return XML representation of program.
      */
     private static XML program(final ZonedDateTime time) {
-        return new XMLDocument(
-            new Xembler(
-                new Directives()
-                    .add("program")
-                    .attr("name", "main")
-                    .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
-                    .up()
-            ).xmlQuietly()
-        );
+        return OptCachedTest.program(time, "same");
     }
 
     /**
-     * Generates EO program for tests with specified time and content.
+     * Generates EO program for tests with specified time and context.
      * @param time Time.
      * @param something String.
      * @return XML representation of program.
      */
-    private static XML programWithSomethings(final ZonedDateTime time, final String something) {
+    private static XML program(final ZonedDateTime time, final String something) {
         return new XMLDocument(
             new Xembler(
                 new Directives()
