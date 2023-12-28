@@ -40,9 +40,9 @@ import org.cactoos.scalar.Unchecked;
  *
  * Here, the {@code xml} is a {@code String} or an instance
  * of {@code XML} from the jcabi-xml package.
- * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.5
+ * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 public final class XMIR {
     /**
