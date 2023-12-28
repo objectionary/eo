@@ -81,8 +81,9 @@ final class OptCachedTest {
         final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            String.format("We expected that the program will be returned from the cache, " +
-                "even if compilation and saving times are different"),
+            String.format(
+                "We expected that the not immediately saved program will be returned from the cache"
+            ),
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
@@ -101,7 +102,9 @@ final class OptCachedTest {
         OptCachedTest.save(tmp, program);
         program = OptCachedTest.program(ZonedDateTime.now(), "second program");
         MatcherAssert.assertThat(
-            String.format("We expected the program corresponding to the code will be returned from the cache"),
+            String.format(
+                "We expected the program corresponding to the code will be returned from the cache"
+            ),
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
