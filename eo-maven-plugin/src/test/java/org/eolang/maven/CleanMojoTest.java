@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.set.SetOf;
+import org.eolang.maven.hash.CommitHashesMap;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -50,9 +51,9 @@ class CleanMojoTest {
         if (!small.toFile().exists() || !file.toFile().exists()) {
             throw new IllegalStateException("Files not created.");
         }
-        new Moja<>(CleanMojo.class)
+        new FakeMaven(temp)
             .with("targetDir", dir.toFile())
-            .execute();
+            .execute(CleanMojo.class);
         MatcherAssert.assertThat(
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
