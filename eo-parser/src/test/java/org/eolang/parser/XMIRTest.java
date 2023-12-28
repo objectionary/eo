@@ -50,7 +50,8 @@ final class XMIRTest {
      *  bytes and after changing 'xmir-to-eo.xsl' many test are not passed anymore. The reason is
      *  next: if we have an integer in EO, it's converted to bytes in xmir, then it's converted to
      *  bytes in EO. Here we loose information about an integer while program still works the same.
-     *  Need to either resolve such loosing or just rewrite the test
+     *  Need to either resolve such loosing or just rewrite the test. Previous samples were moved
+     *  from "org/eolang/parser/xmir-samples" directory to "org/eolang/parser/xmir-samples-wrong"
      */
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")

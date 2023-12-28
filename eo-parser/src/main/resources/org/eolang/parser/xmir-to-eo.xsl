@@ -69,9 +69,9 @@ SOFTWARE.
     <xsl:apply-templates select="o"/>
   </xsl:template>
   <!--  -->
-<!--  <xsl:template match="o[eo:attr(.)]">-->
-<!--     nothing, it's a free attribute -->
-<!--  </xsl:template>-->
+  <!--  <xsl:template match="o[eo:attr(.)]">-->
+  <!--     nothing, it's a free attribute -->
+  <!--  </xsl:template>-->
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:attr(.))]">
     <xsl:param name="indent" select="''"/>
