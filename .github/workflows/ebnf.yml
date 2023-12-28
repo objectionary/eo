@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - run: |
           sudo apt-get update
-          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg
+          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
       - uses: teatimeguest/setup-texlive-action@v3.0.1
         with:
           update-all-packages: true
