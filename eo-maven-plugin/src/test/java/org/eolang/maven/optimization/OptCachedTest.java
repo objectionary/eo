@@ -81,9 +81,7 @@ final class OptCachedTest {
         final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            String.format(
-                "We expected that the not immediately saved program will be returned from the cache"
-            ),
+            "We expected that the not immediately saved program will be returned from the cache",
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
@@ -98,20 +96,16 @@ final class OptCachedTest {
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
         throws IOException {
-        XML program = OptCachedTest.program(ZonedDateTime.now(), "first program");
-        OptCachedTest.save(tmp, program);
-        program = OptCachedTest.program(ZonedDateTime.now(), "second program");
+        final XML prev = OptCachedTest.program(ZonedDateTime.now(), "first program");
+        OptCachedTest.save(tmp, prev);
+        final XML current = OptCachedTest.program(ZonedDateTime.now(), "second program");
         MatcherAssert.assertThat(
-            String.format(
-                "We expected the program corresponding to the code will be returned from the cache"
-            ),
+            "Expecting current program to be compiled, but prev program was returned from cache",
             new OptCached(
-                path -> {
-                    throw new IllegalStateException("This code shouldn't be executed");
-                },
+                path -> current,
                 tmp
-            ).apply(program),
-            Matchers.equalTo(program)
+            ).apply(current),
+            Matchers.equalTo(current)
         );
     }
 
