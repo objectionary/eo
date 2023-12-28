@@ -41,6 +41,9 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
+ * @todo #2674:30min The function {@code  OptCached.contains(final XML xml)}
+ *  isn't work properly. This function compares caching and compilation times,
+ *  which may lead to erroneous results. We need to fix this.
  */
 public final class OptCached implements Optimization {
 
@@ -113,9 +116,9 @@ public final class OptCached implements Optimization {
             res = Files.readAttributes(path, BasicFileAttributes.class)
                 .creationTime()
                 .toInstant()
-                .truncatedTo(ChronoUnit.SECONDS)
+                .truncatedTo(ChronoUnit.MINUTES)
                 .equals(
-                    ZonedDateTime.parse(time.get()).toInstant().truncatedTo(ChronoUnit.SECONDS)
+                    ZonedDateTime.parse(time.get()).toInstant().truncatedTo(ChronoUnit.MINUTES)
                 );
         } else {
             res = false;

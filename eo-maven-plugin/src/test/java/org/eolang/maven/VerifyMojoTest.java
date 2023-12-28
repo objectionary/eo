@@ -32,6 +32,8 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,12 +43,14 @@ import org.junit.jupiter.api.io.TempDir;
  * Test cases for {@link VerifyMojo}.
  *
  * @since 0.31.0
- * @todo #2546:90min Add test that checks the message of exception in case of
- *  warning, error and critical in xmir. According to
- *  eo-parser/src/main/resources/org/eolang/parser/fail-on-critical.xsl it includes
- *  filename and line inside.
+ * @todo #2674:30min The messages "Warnings identified" from
+ *  /org/eolang/parser/fail-on-warnings.xsl
+ *  can have nullable line number. Need fix it, that it works as in
+ *  /org/eolang/parser/warnings/mandatory-version-meta.xsl and
+ *  /org/eolang/parser/warnings/mandatory-home-meta.xsl.
+ *  After you need fix {@code createRegEx()}.
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 class VerifyMojoTest {
 
     @Test
@@ -60,7 +64,10 @@ class VerifyMojoTest {
     }
 
     @Test
-    void detectsErrorsSuccessfully(@TempDir final Path temp) {
+    @CaptureLogs
+    void detectsErrorsSuccessfully(
+        @TempDir final Path temp,
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -73,10 +80,41 @@ class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
+        final String message = this.getMessage(out, "Errors identified");
+        Assertions.assertTrue(
+            message.matches(this.createRegEx(temp, "Errors identified")),
+            "Errors message should have program name and error line number"
+        );
     }
 
     @Test
-    void detectsWarningWithCorrespondingFlag(@TempDir final Path temp) {
+    @CaptureLogs
+    void detectsCriticalErrorsSuccessfully(
+        @TempDir final Path temp,
+        final Logs out) throws Exception {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+package f\n",
+                    "[] > main",
+                    "    \"Hello world\""
+                )
+                .execute(new FakeMaven.Verify()),
+            "Wrong program should have failed or error, but it didn't"
+        );
+        final String message = this.getMessage(out, "Critical error identified");
+        Assertions.assertTrue(
+            message.matches(this.createRegEx(temp, "Critical error identified")),
+            "Critical error message should have program name and error line number"
+        );
+    }
+
+    @Test
+    @CaptureLogs
+    void detectsWarningWithCorrespondingFlag(
+        @TempDir final Path temp,
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -89,6 +127,11 @@ class VerifyMojoTest {
                 .with("failOnWarning", true)
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
+        );
+        final String message = this.getMessage(out, "Warnings identified");
+        Assertions.assertTrue(
+            message.matches(this.createRegEx(temp, "Warnings identified")),
+            "Warnings message should have program name and error line number"
         );
     }
 
@@ -202,5 +245,39 @@ class VerifyMojoTest {
                         )))
         ).pass(new XMLDocument(xml));
         new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
+    }
+
+    /**
+     * Parse the error message to program name and error line number for checking.
+     * @param logs Logs logs
+     * @param error String needed error message
+     */
+    private String getMessage(final Logs logs, final String error) {
+        return String.valueOf(logs.captured().stream()
+            .filter(
+                log -> log.contains(error)
+            ).findFirst()
+        );
+    }
+
+    /**
+     * Create regular expression for testing.
+     * @param path Path program
+     * @param error String needed error message
+     */
+    private String createRegEx(final Path path, final String error) {
+        final String str = ".*".concat(error)
+            .concat(":\\s{3}(")
+            .concat(
+                path.resolve("foo/x/main.eo").toString()
+                .replace("\\", "\\\\")
+            );
+        final String res;
+        if (error.equals("Warnings identified")) {
+            res = str.concat(", \\d*: .*[\\s]*)+\\]");
+        } else {
+            res = str.concat(", \\d+: .*[\\s]*)+\\]");
+        }
+        return res;
     }
 }

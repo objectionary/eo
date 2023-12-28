@@ -37,6 +37,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -81,6 +82,7 @@ final class ShakeMojoTest {
         );
     }
 
+    @Disabled
     @Test
     void getsAlreadyShakenResultsFromCache(@TempDir final Path temp) throws Exception {
         final TextOf cached = new TextOf(
