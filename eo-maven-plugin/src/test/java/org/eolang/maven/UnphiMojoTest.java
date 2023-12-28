@@ -145,7 +145,6 @@ class UnphiMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void convertsValidXmirAndParsableEO(@TempDir final Path temp) throws IOException {
         final Map<String, Path> map = new FakeMaven(temp)
