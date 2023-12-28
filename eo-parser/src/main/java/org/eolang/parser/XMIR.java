@@ -23,12 +23,9 @@
  */
 package org.eolang.parser;
 
-import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
-import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
 import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
@@ -49,14 +46,13 @@ import org.cactoos.scalar.Unchecked;
  * @link <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  */
 public final class XMIR {
-
     /**
-     * The sheet for transformations.
+     * Sheets.
      */
-    private static final XSL SHEET = new XSLDocument(
-        XMIR.class.getResourceAsStream("xmir-to-eo.xsl"),
-        "xmir-to-eo"
-    ).with(new ClasspathSources());
+    private static final String[] SHEETS = {
+        "/org/eolang/parser/wrap-method-calls.xsl",
+        "/org/eolang/parser/xmir-to-eo.xsl",
+    };
 
     /**
      * The XML content.
@@ -101,11 +97,10 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        return XMIR.SHEET.applyTo(
-            new Xsline(new TrDefault<>(new StUnhex())).pass(
-                new XMLDocument(this.content.value())
-            )
-        );
+        return new Xsline(new TrClasspath<>(XMIR.SHEETS).back())
+            .pass(new XMLDocument(this.content.value()))
+            .xpath("eo/text()")
+            .get(0);
     }
 
 }
