@@ -60,7 +60,7 @@ final class OptCachedTest {
     @Disabled
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
-        final XML program = OptCachedTest.program(ZonedDateTime.now(), "same");
+        final XML program = OptCachedTest.program(ZonedDateTime.now());
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache",
