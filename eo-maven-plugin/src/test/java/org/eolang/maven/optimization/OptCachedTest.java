@@ -74,6 +74,44 @@ final class OptCachedTest {
         );
     }
 
+    @Disabled
+    @Test
+    void returnsFromCacheButTimesSaveAndExecuteDifferent(@TempDir final Path tmp)
+        throws IOException, InterruptedException {
+        final XML program = OptCachedTest.program(ZonedDateTime.now());
+        Thread.sleep(70_000);
+        OptCachedTest.save(tmp, program);
+        MatcherAssert.assertThat(
+            "We expected that the program will be returned from the cache",
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
+            Matchers.equalTo(program)
+        );
+    }
+
+    @Disabled
+    @Test
+    void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
+        throws IOException, InterruptedException {
+        XML program = OptCachedTest.programWithSomethings(ZonedDateTime.now(), "first program");
+        OptCachedTest.save(tmp, program);
+        program = OptCachedTest.programWithSomethings(ZonedDateTime.now(), "second program");
+        MatcherAssert.assertThat(
+            "We expected that the correct program will be returned from the cache",
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
+            Matchers.equalTo(program)
+        );
+    }
+
     @Test
     void optimizesIfXmlIsAbsentInCache(@TempDir final Path tmp) {
         final XML program = OptCachedTest.program();
@@ -154,6 +192,25 @@ final class OptCachedTest {
                     .add("program")
                     .attr("name", "main")
                     .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .up()
+            ).xmlQuietly()
+        );
+    }
+
+    /**
+     * Generates EO program for tests with specified time and content.
+     * @param time Time.
+     * @param something String.
+     * @return XML representation of program.
+     */
+    private static XML programWithSomethings(final ZonedDateTime time, final String something) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .add("program")
+                    .attr("name", "main")
+                    .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .attr("something", something)
                     .up()
             ).xmlQuietly()
         );
