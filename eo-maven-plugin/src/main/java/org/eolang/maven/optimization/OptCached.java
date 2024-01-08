@@ -43,8 +43,8 @@ import org.eolang.maven.footprint.FtDefault;
  * @since 0.28.11
  * @todo #2746:30min Use checksum, not time.
  *  The following tests show that fetching from the cache doesn't work correctly:
- *  - {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
- *  - {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
+ *  - {@link OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
+ *  - {@link OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
  *  Need to fix the file validation from cache: using checksum, but not time.
  *  Don't forget to enable the tests.
  */
