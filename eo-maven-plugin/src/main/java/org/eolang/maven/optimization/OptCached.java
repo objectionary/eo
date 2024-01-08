@@ -41,10 +41,10 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
- * @todo #2746:30min 30min Use checksum, not time.
+ * @todo #2746:30min Use checksum, not time.
  *  The following tests show that fetching from the cache doesn't work correctly:
  *  - {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
- *  - {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheCorrectProgram(Path path)}.
+ *  - {@link org.eolang.maven.optimization.OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
  *  Need to fix the file validation from cache: using checksum, but not time.
  *  Don't forget to enable the tests.
  */
