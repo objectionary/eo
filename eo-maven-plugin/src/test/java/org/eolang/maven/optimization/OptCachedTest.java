@@ -63,7 +63,7 @@ final class OptCachedTest {
         final XML program = OptCachedTest.program(ZonedDateTime.now());
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            "We expected that the program will be returned from the cache",
+            "We expected that the program will be returned from the cache.",
             new OptCached(
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
@@ -71,6 +71,41 @@ final class OptCachedTest {
                 tmp
             ).apply(program),
             Matchers.equalTo(program)
+        );
+    }
+
+    @Disabled
+    @Test
+    void returnsFromCacheButTimesSaveAndExecuteDifferent(@TempDir final Path tmp)
+        throws IOException {
+        final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
+        OptCachedTest.save(tmp, program);
+        MatcherAssert.assertThat(
+            "We expected that the not immediately saved program will be returned from the cache.",
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
+            Matchers.equalTo(program)
+        );
+    }
+
+    @Disabled
+    @Test
+    void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
+        throws IOException {
+        final XML prev = OptCachedTest.program(ZonedDateTime.now(), "first program");
+        OptCachedTest.save(tmp, prev);
+        final XML current = OptCachedTest.program(ZonedDateTime.now(), "second program");
+        MatcherAssert.assertThat(
+            "Expecting current program to be compiled, but prev program was returned from cache.",
+            new OptCached(
+                path -> current,
+                tmp
+            ).apply(current),
+            Matchers.equalTo(current)
         );
     }
 
@@ -148,12 +183,23 @@ final class OptCachedTest {
      * @return XML representation of program.
      */
     private static XML program(final ZonedDateTime time) {
+        return OptCachedTest.program(time, "same");
+    }
+
+    /**
+     * Generates EO program for tests with specified time and context.
+     * @param time Time.
+     * @param something String.
+     * @return XML representation of program.
+     */
+    private static XML program(final ZonedDateTime time, final String something) {
         return new XMLDocument(
             new Xembler(
                 new Directives()
                     .add("program")
                     .attr("name", "main")
                     .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .attr("something", something)
                     .up()
             ).xmlQuietly()
         );
