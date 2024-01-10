@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import org.eolang.maven.rust.Names;
+import org.eolang.maven.rust.RustNode;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -154,7 +155,7 @@ final class BinarizeMojoTest {
         maven.execute(new FakeMaven.Binarize());
         final File executable = cache
             .resolve("Lib/native0/target/debug/")
-            .resolve(BinarizeMojo.LIB)
+            .resolve(RustNode.LIB)
             .toFile();
         final long first = executable.lastModified();
         maven.execute(new FakeMaven.Binarize());
