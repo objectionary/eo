@@ -92,7 +92,7 @@ public final class BinarizeMojo extends SafeMojo {
     private File eoPortalDir;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final Collection<Buildable> ffis = new BinarizeParse(
             this.generatedDir,
             this.eoPortalDir,
