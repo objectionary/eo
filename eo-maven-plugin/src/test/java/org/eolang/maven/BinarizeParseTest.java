@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import org.cactoos.text.TextOf;
@@ -38,23 +40,19 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Test case for {@link BinarizeParseMojo}.
+ * Test case for {@link BinarizeParse}.
  *
  * @since 0.1
  */
 @Execution(ExecutionMode.CONCURRENT)
-final class BinarizeParseMojoTest {
+final class BinarizeParseTest {
 
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
-        final Path src = BinarizeMojoTest.SRC.resolve("simple-rust.eo");
-        final FakeMaven maven;
-        synchronized (BinarizeParseMojoTest.class) {
-            maven = new FakeMaven(temp).withProgram(src);
-        }
-        final Map<String, Path> res = maven
-            .execute(new FakeMaven.BinarizeParse())
-            .result();
+        final Map<String, Path> res = execParse(
+            temp,
+            BinarizeMojoTest.SRC.resolve("simple-rust.eo")
+        );
         final String function = String.format(
             "%s0",
             Names.PREFIX
@@ -93,14 +91,10 @@ final class BinarizeParseMojoTest {
 
     @Test
     void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
-        final Path src = BinarizeMojoTest.SRC.resolve("twice-rust.eo");
-        final FakeMaven maven;
-        synchronized (BinarizeParseMojoTest.class) {
-            maven = new FakeMaven(temp).withProgram(src);
-        }
-        final Map<String, Path> res = maven
-            .execute(new FakeMaven.BinarizeParse())
-            .result();
+        final Map<String, Path> res = execParse(
+            temp,
+            BinarizeMojoTest.SRC.resolve("twice-rust.eo")
+        );
         final String one = String.format(
             "target/Lib/%s0/src/foo.rs",
             Names.PREFIX
@@ -146,15 +140,11 @@ final class BinarizeParseMojoTest {
 
     @Test
     void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven;
-        synchronized (BinarizeParseMojoTest.class) {
-            maven = new FakeMaven(temp)
-                .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
-                .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
-        }
-        final Map<String, Path> res = maven
-            .execute(new FakeMaven.BinarizeParse())
-            .result();
+        final Map<String, Path> res = execParse(
+            temp,
+            BinarizeMojoTest.SRC.resolve("simple-rust.eo"),
+            BinarizeMojoTest.SRC.resolve("twice-rust.eo")
+        );
         final String dir = String.format(
             "target/Lib/%s1/",
             Names.PREFIX
@@ -192,4 +182,35 @@ final class BinarizeParseMojoTest {
         );
     }
 
+    /**
+     * Executes all mojos before {@link BinarizeMojo} and {@link BinarizeParse}.
+     * @param temp Temp dir.
+     * @param programs Paths of eo sources.
+     * @return The resulting map with relatives paths as keys and absolute paths as values.
+     * @throws IOException
+     */
+    private static
+        Map<String, Path> execParse(final Path temp, final Path... programs) throws IOException {
+        final FakeMaven maven;
+        final File generated = temp.resolve("target/generated").toFile();
+        final File portal = new File("../eo-runtime/src/main/rust/eo");
+        final File target = temp.resolve("target").toFile();
+        synchronized (BinarizeParseTest.class) {
+            maven = new FakeMaven(temp)
+                .with("generatedDir", generated)
+                .with("eoPortalDir", portal)
+                .with("targetDir", target);
+            for (final Path program : programs) {
+                maven.withProgram(program);
+            }
+            maven.execute(new FakeMaven.Verify());
+        }
+        new BinarizeParse(
+            generated,
+            portal,
+            new Names(generated.toPath().resolve("names")),
+            target
+        ).exec(maven.foreignTojos().withOptimized());
+        return maven.result();
+    }
 }

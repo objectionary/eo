@@ -696,7 +696,7 @@ public final class FakeMaven {
                 OptimizeMojo.class,
                 ShakeMojo.class,
                 VerifyMojo.class,
-                BinarizeParseMojo.class
+                BinarizeMojo.class
             ).iterator();
         }
     }
