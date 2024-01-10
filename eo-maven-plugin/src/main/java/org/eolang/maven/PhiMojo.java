@@ -41,6 +41,7 @@ import org.cactoos.text.Sticky;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
+import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -115,7 +116,17 @@ public final class PhiMojo extends SafeMojo {
                 )
             )
         ).intValue();
-        Logger.info(this, "Translated %d xmir files to phi", count);
+        if (count > 0) {
+            Logger.info(
+                this, "Translated %d XMIR file(s) from %s to %s",
+                count, new Rel(this.phiInputDir), new Rel(this.phiOutputDir)
+            );
+        } else {
+            Logger.info(
+                this, "No XMIR files translated from %s",
+                new Rel(this.phiInputDir)
+            );
+        }
     }
 
     /**

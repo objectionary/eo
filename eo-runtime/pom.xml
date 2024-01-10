@@ -41,13 +41,13 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.9</version>
+      <version>2.0.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.9</version>
+      <version>2.0.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -60,11 +60,13 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>jaxec</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>jhome</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -73,10 +75,16 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.llorllale</groupId>
@@ -88,27 +96,49 @@ SOFTWARE.
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.14.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-text</artifactId>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>farea</artifactId>
+      <version>0.0.13</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
@@ -121,6 +151,7 @@ SOFTWARE.
             @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemPropertyVariables>
+            <eo.version>${project.version}</eo.version>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -201,6 +232,7 @@ SOFTWARE.
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
           <execution>
             <id>project-validate</id>
@@ -213,6 +245,13 @@ SOFTWARE.
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>3.0.20</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -165,20 +164,6 @@ public final class AssembleMojo extends SafeMojo {
     private boolean ignoreVersionConflicts;
 
     /**
-     * Whether we should fail on error.
-     * @checkstyle MemberNameCheck (11 lines)
-     * @since 0.23.0
-     * @todo #2443:90min Remove the following failOnError flag. Now we
-     *  have already got rid from it in {@link OptimizeMojo} and {@link VerifyMojo}.
-     *  We need to make failOnError the behaviour default.
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
      * Whether we should fail on warn.
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -247,7 +232,7 @@ public final class AssembleMojo extends SafeMojo {
     private boolean offline;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }

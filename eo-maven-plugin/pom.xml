@@ -36,13 +36,6 @@ SOFTWARE.
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
-      <artifactId>eo-runtime</artifactId>
-      <!-- This version is intentionally lower than the current version of the project -->
-      <version>0.34.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -214,7 +207,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
-      <version>2.0.9</version>
+      <version>2.0.11</version>
       <scope>provided</scope>
       <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
@@ -258,6 +251,11 @@ SOFTWARE.
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jping</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.moandjiezana.toml</groupId>
       <artifactId>toml4j</artifactId>
       <version>0.7.2</version>
@@ -265,17 +263,20 @@ SOFTWARE.
   </dependencies>
   <build>
     <plugins>
-      <!--
-      @todo #2555:30min Enable integration tests. Integration tests were disabled because of
-       new recursive implementation of tuple. Need to upload new version of eo-runtime to
-       Objectionary and enable integration tests by just removing "maven-invoker-plugin" from
-       this pom.xml. Don't forget to remove the puzzle.
-      -->
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
-          <skipInstallation>true</skipInstallation>
-          <skipInvocation>true</skipInvocation>
+          <pomExcludes>
+            <!--
+            @todo #2660:30min Enable the following integration tests when it's possible.
+             Now they don't work because many .eo files are absent in the
+             objectionary/home repository. Once they are released, the tests
+             should work as is, without any modifications.
+            -->
+            <exclude>custom_goals/pom.xml</exclude>
+            <exclude>fibonacci/pom.xml</exclude>
+            <exclude>rewritten_sources/pom.xml</exclude>
+          </pomExcludes>
         </configuration>
       </plugin>
       <plugin>

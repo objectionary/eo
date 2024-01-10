@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -41,10 +40,6 @@ import org.eolang.maven.tojos.ForeignTojo;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
- *
- * @todo #2577:30min Add tests for ShakeMojo. ShakeMojo was created in order to split two
- * optimization stages: optimizations themselves and preparations for translation to java
- * Need to create tests for {@link ShakeMojo} in order to be sure that it does only it's job.
  * @since 0.33.0
  */
 @Mojo(
@@ -88,7 +83,7 @@ public final class ShakeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final int total = new OptimizedTojos(
             new Filtered<>(

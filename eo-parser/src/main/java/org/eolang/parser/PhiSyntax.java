@@ -51,6 +51,14 @@ public final class PhiSyntax implements Syntax {
     private final Text input;
 
     /**
+     * Ctor for the tests.
+     * @param input Input
+     */
+    PhiSyntax(final String input) {
+        this("test", () -> input);
+    }
+
+    /**
      * Ctor.
      * @param nme Name of the program
      * @param inpt Input
@@ -63,25 +71,33 @@ public final class PhiSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final XePhiListener xel = new XePhiListener(this.name);
-        new ParseTreeWalker().walk(
-            xel,
-            new PhiParser(
-                new CommonTokenStream(
-                    new PhiLexer(
-                        CharStreams.fromStream(
-                            new InputStreamOf(this.input)
-                        )
-                    )
-                )
-            ).program()
+        final ParsingErrors spy = new ParsingErrors(this.input);
+        final PhiLexer lexer = new PhiLexer(
+            CharStreams.fromStream(
+                new InputStreamOf(this.input)
+            )
         );
+        lexer.addErrorListener(spy);
+        final PhiParser parser = new PhiParser(
+            new CommonTokenStream(lexer)
+        );
+        parser.removeErrorListeners();
+        parser.addErrorListener(spy);
+        new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(
-                new Directives(xel)
+                new Directives(xel).append(spy)
             ).domQuietly()
         );
         new Schema(dom).check();
-        Logger.debug(this, "Input of PHI calculus compiled, no errors");
+        if (spy.size() == 0) {
+            Logger.debug(this, "Input of PHI calculus compiled, no errors");
+        } else {
+            Logger.debug(
+                this, "Input of PHI calculus failed to compile (%d errors)",
+                spy.size()
+            );
+        }
         return dom;
     }
 }

@@ -49,12 +49,12 @@ final class CopyMojoTest {
             Paths.get("foo/main.eo")
         );
         final String ver = "1.1.1";
-        new Moja<>(CopyMojo.class)
+        new FakeMaven(temp)
             .with("sourcesDir", src.toFile())
             .with("outputDir", classes.toFile())
             .with("skip", false)
             .with("version", ver)
-            .execute();
+            .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
             new HmBase(classes).exists(classes.relativize(out)),

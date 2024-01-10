@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -83,7 +84,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void parsesWithCache(@TempDir final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
@@ -116,25 +117,10 @@ final class ParseMojoTest {
     }
 
     @Test
-    void crashesOnInvalidSyntax(@TempDir final Path temp) {
-        MatcherAssert.assertThat(
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new FakeMaven(temp)
-                    .withProgram("something > is wrong here")
-                    .with("failOnError", true)
-                    .execute(ParseMojo.class)
-            ).getCause().getCause().getMessage(),
-            Matchers.containsString("Failed to parse")
-        );
-    }
-
-    @Test
-    void doesNotCrashesWithFailOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
-                .with("failOnError", false)
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(

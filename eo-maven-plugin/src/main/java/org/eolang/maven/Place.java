@@ -27,6 +27,7 @@ import java.io.File;
 import java.nio.file.Path;
 import org.eolang.maven.name.DelimitedName;
 import org.eolang.maven.name.ObjectName;
+import org.eolang.maven.util.JoinedUnderscore;
 
 /**
  * Make the place for the object.
@@ -67,8 +68,7 @@ public final class Place {
         out.append(this.name.title().replace(".", File.separator));
         this.name.label().ifPresent(
             version -> {
-                out.append('_');
-                out.append(version);
+                out.append(new JoinedUnderscore("", version).asString());
             });
         if (!ext.isEmpty()) {
             out.append('.').append(ext);

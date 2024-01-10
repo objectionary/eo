@@ -28,6 +28,10 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Place;
 import org.eolang.maven.footprint.FtDefault;
@@ -37,6 +41,12 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
+ * @todo #2746:30min Use checksum, not time.
+ *  The following tests show that fetching from the cache doesn't work correctly:
+ *  - {@link OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
+ *  - {@link OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
+ *  Need to fix the file validation from cache: using checksum, but not time.
+ *  Don't forget to enable the tests.
  */
 public final class OptCached implements Optimization {
 
@@ -67,11 +77,9 @@ public final class OptCached implements Optimization {
     @Override
     public XML apply(final XML xml) {
         try {
-            final Path path = new Place(xml.xpath("/program/@name").get(0))
-                .make(this.folder, AssembleMojo.IR_EXTENSION);
             final XML optimized;
-            if (Files.exists(path)) {
-                optimized = new XMLDocument(path);
+            if (this.contains(xml)) {
+                optimized = new XMLDocument(this.cached(xml));
             } else {
                 optimized = this.delegate.apply(xml);
                 new FtDefault(this.folder).save(
@@ -84,5 +92,40 @@ public final class OptCached implements Optimization {
         } catch (final IOException ex) {
             throw new IllegalStateException(String.format("Can't optimize '%s'", xml), ex);
         }
+    }
+
+    /**
+     * Returns the path to the cached program.
+     * Pay attention that the path is not checked for existence.
+     * @param xml Eo program.
+     * @return Path to the cached program.
+     */
+    private Path cached(final XML xml) {
+        return new Place(xml.xpath("/program/@name").get(0))
+            .make(this.folder, AssembleMojo.IR_EXTENSION);
+    }
+
+    /**
+     * Checks if the cache contains the program.
+     * @param xml Eo program.
+     * @return True if the cache contains the program.
+     * @throws IOException If fails.
+     */
+    private boolean contains(final XML xml) throws IOException {
+        final Path path = this.cached(xml);
+        final Optional<String> time = xml.xpath("/program/@time").stream().findFirst();
+        final boolean res;
+        if (Files.exists(path) && time.isPresent()) {
+            res = Files.readAttributes(path, BasicFileAttributes.class)
+                .creationTime()
+                .toInstant()
+                .truncatedTo(ChronoUnit.MINUTES)
+                .equals(
+                    ZonedDateTime.parse(time.get()).toInstant().truncatedTo(ChronoUnit.MINUTES)
+                );
+        } else {
+            res = false;
+        }
+        return res;
     }
 }

@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -87,7 +86,7 @@ public final class OptimizeMojo extends SafeMojo {
     private boolean trackOptimizationSteps;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(
@@ -122,7 +121,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @return Optimization for all tojos.
      */
     private Optimization optimization() {
-        Optimization opt;
+        final Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
                 new ParsingTrain(),
@@ -131,7 +130,6 @@ public final class OptimizeMojo extends SafeMojo {
         } else {
             opt = new OptTrain(new ParsingTrain());
         }
-        opt = new OptTrain(opt, "/org/eolang/parser/fail-on-critical.xsl");
         return opt;
     }
 }

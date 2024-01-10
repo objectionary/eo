@@ -24,8 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -64,7 +64,7 @@ public final class VerifyMojo extends SafeMojo {
     private boolean failOnWarning;
 
     @Override
-    void exec() throws IOException {
+    void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final int total = new OptimizedTojos(
             new Filtered<>(
@@ -91,8 +91,10 @@ public final class VerifyMojo extends SafeMojo {
                 "Verified %d out of %d XMIR program(s)", total,
                 tojos.size()
             );
+        } else if (tojos.isEmpty()) {
+            Logger.info(this, "There are no XMIR programs, nothing to verify");
         } else {
-            Logger.debug(this, "No XMIR programs out of %d verify", tojos.size());
+            Logger.info(this, "No XMIR programs out of %d verified", tojos.size());
         }
     }
 
@@ -103,8 +105,11 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
-            new OptTrain(new TrDefault<>()),
-            "/org/eolang/parser/fail-on-errors.xsl"
+            new TrClasspath<>(
+                new TrDefault<>(),
+                "/org/eolang/parser/fail-on-errors.xsl",
+                "/org/eolang/parser/fail-on-critical.xsl"
+            ).back()
         );
         if (this.failOnWarning) {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");

@@ -23,19 +23,24 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -61,6 +66,20 @@ class UnphiMojoTest {
                 .execute(UnphiMojo.class)
                 .result(),
             Matchers.hasKey(String.format("target/%s/std.xmir", ParseMojo.DIR))
+        );
+    }
+
+    @Test
+    void failsIfParsedWithErrors(@TempDir final Path temp) throws IOException {
+        new HmBase(temp).save(
+            "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
+            Paths.get("target/phi/std.phi")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .execute(UnphiMojo.class),
+            "UnphiMojo execution should fail because of parsing errors"
         );
     }
 
@@ -122,6 +141,38 @@ class UnphiMojoTest {
             Matchers.equalTo(
                 new TextOf(result).asString()
             )
+        );
+    }
+
+    @Test
+    void convertsValidXmirAndParsableEO(@TempDir final Path temp) throws IOException {
+        final Map<String, Path> map = new FakeMaven(temp)
+            .withProgram(
+                "[args] > app",
+                "  QQ.io.stdout > @",
+                "    \"Hello, world!\""
+            )
+            .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
+            .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .execute(PhiMojo.class)
+            .execute(UnphiMojo.class)
+            .execute(PrintMojo.class)
+            .result();
+        MatcherAssert.assertThat(
+            "Result EO code should be parsable",
+            new EoSyntax(
+                "test",
+                new InputOf(
+                    new TextOf(
+                        temp.resolve(
+                            map.get("target/generated-sources/foo/x/main.eo")
+                        )
+                    )
+                )
+            ).parsed(),
+            XhtmlMatchers.hasXPath("//errors[count(error)=0]")
         );
     }
 }

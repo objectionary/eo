@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - run: |
           sudo apt-get update
-          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg
-      - uses: teatimeguest/setup-texlive-action@v3.0.0
+          sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
+      - uses: teatimeguest/setup-texlive-action@v3.0.1
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
@@ -41,12 +41,15 @@ jobs:
             "-Dantlr2ebnf.specials=eof,eol,eop,tab,untab" \
             "-Dantlr2ebnf.margin=40"
       - run: |
+          convert --version
+          convert --help | grep Delegates
+          pdfcrop --version
           set -x
           for p in Eo Phi; do
             cp "eo-parser/target/ebnf/org/eolang/parser/${p}.pdf" .
             pdfcrop --margins '10 10 10 10' "${p}.pdf" "${p}-cropped.pdf"
             pdf2svg "${p}-cropped.pdf" "${p}.svg"
-            convert -density 300 -quality 100 -transparent white -colorspace RGB "${p}-cropped.pdf" "${p}.png"
+            convert -verbose -density 300 -quality 100 -colorspace RGB "${p}.svg" "${p}.png"
             mkdir -p gh-pages/ebnf
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf

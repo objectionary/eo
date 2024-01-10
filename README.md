@@ -35,7 +35,7 @@ All of them have something **we don't tolerate**:
   * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
   * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
   * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
-  * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html))
+  * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html) and [why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
   * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
   * global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
   * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
@@ -200,6 +200,8 @@ Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) about EOLANG basics.
 
 Read [our blog](https://news.eolang.org), especially the section with
 [recently published papers](https://news.eolang.org/papers.html).
+
+Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html), a dialect of XML, which we use to represent EO program.
 
 See the full collection of canonical objects: [objectionary](https://github.com/objectionary/home).
 

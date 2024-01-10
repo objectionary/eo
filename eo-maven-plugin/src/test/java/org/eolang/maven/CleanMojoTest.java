@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,9 +50,9 @@ class CleanMojoTest {
         if (!small.toFile().exists() || !file.toFile().exists()) {
             throw new IllegalStateException("Files not created.");
         }
-        new Moja<>(CleanMojo.class)
+        new FakeMaven(temp)
             .with("targetDir", dir.toFile())
-            .execute();
+            .execute(CleanMojo.class);
         MatcherAssert.assertThat(
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
@@ -59,7 +60,7 @@ class CleanMojoTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void makesFullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()

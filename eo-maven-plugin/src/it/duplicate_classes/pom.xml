@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.66.0</version>
+    <version>0.67.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>not.all.goals</artifactId>
@@ -66,6 +66,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>copy</goal>
               <goal>unplace</goal>
@@ -86,6 +87,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>verify</goal>
               <goal>transpile</goal>
               <goal>binarize</goal>
             </goals>

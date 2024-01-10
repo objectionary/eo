@@ -23,7 +23,7 @@
  */
 package org.eolang.maven.dependencies;
 
-import org.eolang.maven.OnlineCondition;
+import com.yegor256.WeAreOnline;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class DcsWithRuntimeTest {
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void addsHardcodedVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
             new DcsWithRuntime(
@@ -49,7 +49,7 @@ final class DcsWithRuntimeTest {
     }
 
     @Test
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void addsRemoteVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
             new DcsWithRuntime(

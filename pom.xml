@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.66.0</version>
+    <version>0.67.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -176,7 +176,7 @@ SOFTWARE.
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-log</artifactId>
-        <version>0.23.0</version>
+        <version>0.24.1</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -211,9 +211,15 @@ SOFTWARE.
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>com.yegor256</groupId>
+        <artifactId>jping</artifactId>
+        <version>0.0.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.9</version>
+        <version>2.0.11</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -267,7 +273,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.19</version>
+            <version>3.0.20</version>
           </dependency>
         </dependencies>
       </plugin>

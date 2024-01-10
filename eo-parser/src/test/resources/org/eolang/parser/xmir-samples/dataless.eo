@@ -1,0 +1,10 @@
++package sandbox
+
+[args] > main
+  QQ.io.stdout > @
+    args.at
+      args.length.neg
+  nan.plus negative-infinity > not-a-number
+  text-of
+    input-of
+      args.at not-a-number

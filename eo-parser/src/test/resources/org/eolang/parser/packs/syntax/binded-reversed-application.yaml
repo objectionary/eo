@@ -1,0 +1,13 @@
+xsls: []
+tests:
+  - /program/errors[count(*)=0]
+  - //o[@base='.if' and o[@base='string' and @as='0']]
+  - //o[@base='.if' and o[@base='string' and @as='1']]
+  - //o[@base='.if' and o[@base='int' and @as='a']]
+  - //o[@base='.if' and o[@base='int' and @as='b']]
+eo: |
+  if. > first
+    TRUE
+    "TRUE":0
+    "FALSE":1
+  if. FALSE 1:a 2:b > second

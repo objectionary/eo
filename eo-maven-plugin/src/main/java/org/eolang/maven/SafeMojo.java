@@ -40,7 +40,6 @@ import java.util.concurrent.TimeoutException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -255,12 +254,11 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * Execute it.
      * @throws MojoFailureException If fails during build
-     * @throws MojoExecutionException If fails during execution
      * @checkstyle NoJavadocForOverriddenMethodsCheck (10 lines)
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
-    public final void execute() throws MojoFailureException, MojoExecutionException {
+    public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
             if (Logger.isInfoEnabled(this)) {
@@ -280,14 +278,6 @@ abstract class SafeMojo extends AbstractMojo {
                         System.nanoTime() - start
                     );
                 }
-            } catch (final IOException ex) {
-                this.exitError(
-                    String.format(
-                        "Failed to execute %s",
-                        this.getClass().getCanonicalName()
-                    ),
-                    ex
-                );
             } catch (final TimeoutException ex) {
                 this.exitError(
                     Logger.format(
@@ -335,9 +325,8 @@ abstract class SafeMojo extends AbstractMojo {
      *
      * @throws ExecutionException If unexpected exception happened during execution
      * @throws TimeoutException If timeout limit reached
-     * @throws IOException If fails
      */
-    private void execWithTimeout() throws ExecutionException, TimeoutException, IOException {
+    private void execWithTimeout() throws ExecutionException, TimeoutException {
         try {
             Executors.newSingleThreadExecutor().submit(
                 () -> {

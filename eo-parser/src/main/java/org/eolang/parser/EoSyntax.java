@@ -27,24 +27,16 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Input;
 import org.cactoos.Text;
-import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
-import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -137,78 +129,4 @@ public final class EoSyntax implements Syntax {
     private List<Text> lines() {
         return new ListOf<>(new Split(new TextOf(this.input), "\r?\n"));
     }
-
-    /**
-     * Accumulates all parsing errors.
-     *
-     * @since 0.30.0
-     */
-    private static final class ParsingErrors extends BaseErrorListener
-        implements ANTLRErrorListener, Iterable<Directive> {
-        /**
-         * Errors accumulated.
-         */
-        private final List<ParsingException> errors;
-
-        /**
-         * The source.
-         */
-        private final List<Text> lines;
-
-        /**
-         * Ctor.
-         * @param src The source in lines
-         */
-        private ParsingErrors(final List<Text> src) {
-            this.errors = new LinkedList<>();
-            this.lines = src;
-        }
-
-        // @checkstyle ParameterNumberCheck (10 lines)
-        @Override
-        public void syntaxError(final Recognizer<?, ?> recognizer,
-            final Object symbol, final int line,
-            final int position, final String msg,
-            final RecognitionException error
-        ) {
-            this.errors.add(
-                new ParsingException(
-                    String.format(
-                        "[%d:%d] %s: \"%s\"",
-                        line, position, msg,
-                        // @checkstyle AvoidInlineConditionalsCheck (1 line)
-                        this.lines.size() < line ? "EOF" : this.lines.get(line - 1)
-                    ),
-                    error,
-                    line
-                )
-            );
-        }
-
-        @Override
-        public Iterator<Directive> iterator() {
-            return new org.cactoos.iterable.Joined<>(
-                new Mapped<Iterable<Directive>>(
-                    error -> new Directives()
-                        .xpath("/program/errors")
-                        .add("error")
-                        .attr("line", error.line())
-                        .attr("severity", "critical")
-                        .set(error.getMessage())
-                        .up(),
-                    this.errors
-                )
-            ).iterator();
-        }
-
-        /**
-         * How many errors?
-         * @return Count of errors accumulated
-         */
-        public int size() {
-            return this.errors.size();
-        }
-
-    }
-
 }

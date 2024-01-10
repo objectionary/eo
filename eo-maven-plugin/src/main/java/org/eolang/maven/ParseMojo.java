@@ -80,17 +80,6 @@ public final class ParseMojo extends SafeMojo {
     public static final String PARSED = "parsed";
 
     /**
-     * Whether we should fail on parsing error.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @since 0.23.0
-     */
-    @SuppressWarnings("PMD.ImmutableField")
-    @Parameter(
-        property = "eo.failOnError",
-        defaultValue = "true")
-    private boolean failOnError = true;
-
-    /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.
      * You can read more about that property
@@ -101,7 +90,7 @@ public final class ParseMojo extends SafeMojo {
     private PluginDescriptor plugin;
 
     @Override
-    public void exec() throws IOException {
+    public void exec() {
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -176,12 +165,12 @@ public final class ParseMojo extends SafeMojo {
         );
         final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
         final List<XML> errors = xmir.nodes("/program/errors/error");
+        final Path target = new Place(name).make(
+            this.targetDir.toPath().resolve(ParseMojo.DIR),
+            TranspileMojo.EXT
+        );
+        tojo.withXmir(target.toAbsolutePath());
         if (errors.isEmpty()) {
-            final Path target = new Place(name).make(
-                this.targetDir.toPath().resolve(ParseMojo.DIR),
-                TranspileMojo.EXT
-            );
-            tojo.withXmir(target.toAbsolutePath());
             Logger.debug(
                 this, "Parsed %s to %s",
                 new Rel(source), new Rel(target)
@@ -190,16 +179,8 @@ public final class ParseMojo extends SafeMojo {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "Failed to parse '%s:%s': %s (just logging, because of failOnError=false)",
+                    "Failed to parse '%s:%s': %s",
                     source, error.xpath("@line").get(0), error.xpath("text()").get(0)
-                );
-            }
-            if (this.failOnError) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Failed to parse %s (%d parsing errors)",
-                        source, errors.size()
-                    )
                 );
             }
         }

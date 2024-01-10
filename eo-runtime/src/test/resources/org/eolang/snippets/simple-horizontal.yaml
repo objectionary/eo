@@ -1,0 +1,9 @@
+out:
+  - ".*Hello, Jeff!.*"
+file: org/eolang/snippets/simple-horizontal.eo
+args: ["org.eolang.snippets.simple-horizontal"]
+eo: |
+  +package org.eolang.snippets
+  +alias org.eolang.io.stdout
+
+  [args] (stdout "Hello, Jeff!" > @) > simple-horizontal

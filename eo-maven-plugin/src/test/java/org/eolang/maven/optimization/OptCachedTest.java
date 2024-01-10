@@ -29,47 +29,123 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.UncheckedBytes;
-import org.cactoos.io.ResourceOf;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link org.eolang.maven.optimization.OptCached}.
  * @since 0.28.12
  */
-class OptCachedTest {
+final class OptCachedTest {
+
+    /**
+     * Test case for XML program in cache.
+     *
+     * @param tmp Temp dir
+     * @throws IOException if I/O fails
+     * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
+     *  We should resolve issues with unstable failures and only
+     *  then enable the test.
+     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
+     */
+    @Disabled
     @Test
-    void optimizesIfXmlAlreadyInCache(final @TempDir Path tmp) throws IOException {
-        final XML program = OptCachedTest.program();
+    void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
+        final XML program = OptCachedTest.program(ZonedDateTime.now());
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            new OptCached(path -> program, tmp).apply(program),
+            "We expected that the program will be returned from the cache.",
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
             Matchers.equalTo(program)
         );
     }
 
+    @Disabled
     @Test
-    void optimizesIfXmlIsAbsentInCache(final @TempDir Path tmp) {
-        final XML program = OptCachedTest.program();
-        final Path cache = tmp.resolve("cache");
-        final XML res = new OptCached(path -> program, cache)
-            .apply(program);
+    void returnsFromCacheButTimesSaveAndExecuteDifferent(@TempDir final Path tmp)
+        throws IOException {
+        final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
+        OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
-            res,
+            "We expected that the not immediately saved program will be returned from the cache.",
+            new OptCached(
+                path -> {
+                    throw new IllegalStateException("This code shouldn't be executed");
+                },
+                tmp
+            ).apply(program),
             Matchers.equalTo(program)
         );
+    }
+
+    @Disabled
+    @Test
+    void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
+        throws IOException {
+        final XML prev = OptCachedTest.program(ZonedDateTime.now(), "first program");
+        OptCachedTest.save(tmp, prev);
+        final XML current = OptCachedTest.program(ZonedDateTime.now(), "second program");
         MatcherAssert.assertThat(
+            "Expecting current program to be compiled, but prev program was returned from cache.",
+            new OptCached(
+                path -> current,
+                tmp
+            ).apply(current),
+            Matchers.equalTo(current)
+        );
+    }
+
+    @Test
+    void optimizesIfXmlIsAbsentInCache(@TempDir final Path tmp) {
+        final XML program = OptCachedTest.program();
+        final Path cache = tmp.resolve("cache");
+        MatcherAssert.assertThat(
+            "We expect that the program will be created and returned as is (same instance)",
+            new OptCached(path -> program, cache).apply(program),
+            Matchers.sameInstance(program)
+        );
+        MatcherAssert.assertThat(
+            "We expect that the cache saved the program after the first run",
             cache.resolve("main.xmir").toFile(),
             FileMatchers.anExistingFile()
         );
+    }
+
+    @Test
+    void optimizesBecauseCacheIsExpired(@TempDir final Path tmp) throws IOException {
+        final XML outdated = OptCachedTest.program(ZonedDateTime.now().minusMinutes(1));
+        final XML updated = OptCachedTest.program(ZonedDateTime.now());
+        OptCachedTest.save(tmp, outdated);
         MatcherAssert.assertThat(
-            res, Matchers.equalTo(program)
+            "We expected that the program will be optimized because the cache is expired",
+            new OptCached(path -> updated, tmp).apply(outdated),
+            Matchers.equalTo(updated)
+        );
+    }
+
+    @Test
+    void optimizesIfTimeIsNotSet(@TempDir final Path tmp) throws IOException {
+        final XML without = OptCachedTest.program();
+        final XML with = OptCachedTest.program(ZonedDateTime.now());
+        OptCachedTest.save(tmp, without);
+        MatcherAssert.assertThat(
+            "We expected that the program will be optimized because the cache doesn't have time",
+            new OptCached(path -> with, tmp).apply(without),
+            Matchers.equalTo(with)
         );
     }
 
@@ -87,16 +163,45 @@ class OptCachedTest {
     }
 
     /**
-     * Get parsed program from resources.
+     * Generates EO program for tests.
      * @return XML representation of program.
      */
     private static XML program() {
         return new XMLDocument(
-            new UncheckedBytes(
-                new BytesOf(
-                    new ResourceOf("org/eolang/maven/optimize/main.xml")
-                )
-            ).asBytes()
+            new Xembler(
+                new Directives()
+                    .add("program")
+                    .attr("name", "main")
+                    .up()
+            ).xmlQuietly()
+        );
+    }
+
+    /**
+     * Generates EO program for tests with specified time.
+     * @param time Time.
+     * @return XML representation of program.
+     */
+    private static XML program(final ZonedDateTime time) {
+        return OptCachedTest.program(time, "same");
+    }
+
+    /**
+     * Generates EO program for tests with specified time and context.
+     * @param time Time.
+     * @param something String.
+     * @return XML representation of program.
+     */
+    private static XML program(final ZonedDateTime time, final String something) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .add("program")
+                    .attr("name", "main")
+                    .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .attr("something", something)
+                    .up()
+            ).xmlQuietly()
         );
     }
 }

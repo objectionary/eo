@@ -26,7 +26,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.SaxonDocument;
 import com.jcabi.xml.XML;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
@@ -57,7 +56,7 @@ import org.eolang.maven.util.Rel;
 )
 public final class DiscoverMojo extends SafeMojo {
     @Override
-    public void exec() throws FileNotFoundException {
+    public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().notDiscovered();
         final Collection<String> discovered = new HashSet<>();
         for (final ForeignTojo tojo : tojos) {

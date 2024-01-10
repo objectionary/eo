@@ -329,27 +329,25 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterApplicable(final EoParser.ApplicableContext ctx) {
-        if (ctx.reversed() == null) {
-            this.startObject(ctx);
-            final String base;
-            if (ctx.STAR() != null) {
-                base = "tuple";
-                this.objects.prop("star");
-            } else if (ctx.NAME() != null) {
-                base = ctx.NAME().getText();
-            } else if (ctx.AT() != null) {
-                base = "@";
-            } else {
-                base = "";
-            }
-            if (!base.isEmpty()) {
-                this.objects.prop("base", base);
-            }
-            if (ctx.COPY() != null) {
-                this.objects.prop("copy");
-            }
-            this.objects.leave();
+        this.startObject(ctx);
+        final String base;
+        if (ctx.STAR() != null) {
+            base = "tuple";
+            this.objects.prop("star");
+        } else if (ctx.NAME() != null) {
+            base = ctx.NAME().getText();
+        } else if (ctx.AT() != null) {
+            base = "@";
+        } else {
+            base = "";
         }
+        if (!base.isEmpty()) {
+            this.objects.prop("base", base);
+        }
+        if (ctx.COPY() != null) {
+            this.objects.prop("copy");
+        }
+        this.objects.leave();
     }
 
     @Override
@@ -364,6 +362,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationTail(final EoParser.HapplicationTailContext ctx) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationTailReversed(final EoParser.HapplicationTailReversedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHapplicationTailReversedFirst(final EoParser.HapplicationTailReversedFirstContext ctx) {
         this.objects.leave();
     }
 
@@ -388,6 +406,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public void exitHapplicationTailExtended(
         final EoParser.HapplicationTailExtendedContext ctx
     ) {
+        this.objects.leave();
+    }
+
+    @Override
+    public void enterHapplicationTailReversedExtended(final EoParser.HapplicationTailReversedExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationTailReversedExtended(final EoParser.HapplicationTailReversedExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHapplicationTailReversedExtendedFirst(final EoParser.HapplicationTailReversedExtendedFirstContext ctx) {
+        this.objects.enter();
+    }
+
+    @Override
+    public void exitHapplicationTailReversedExtendedFirst(final EoParser.HapplicationTailReversedExtendedFirstContext ctx) {
         this.objects.leave();
     }
 
@@ -437,12 +475,22 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgs(final EoParser.VapplicationArgsContext ctx) {
-        this.objects.enter();
+        // Nothing here
     }
 
     @Override
     public void exitVapplicationArgs(final EoParser.VapplicationArgsContext ctx) {
-        this.objects.leave();
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgsReversed(final EoParser.VapplicationArgsReversedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgsReversed(final EoParser.VapplicationArgsReversedContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -457,22 +505,22 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
-        // Nothing here
+        this.objects.enter();
     }
 
     @Override
     public void exitVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
-        // Nothing here
+        this.objects.leave();
     }
 
     @Override
     public void enterVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
-        // Nothing here
+        this.objects.enter();
     }
 
     @Override
     public void exitVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
-        // Nothing here
+        this.objects.leave();
     }
 
     @Override
@@ -662,6 +710,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHmethodOptional(final EoParser.HmethodOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHmethodOptional(final EoParser.HmethodOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHmethodExtended(final EoParser.HmethodExtendedContext ctx) {
         // Nothing here
     }
@@ -742,6 +800,56 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVmethodHead(final EoParser.VmethodHeadContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVmethodHeadApplicationTail(final EoParser.VmethodHeadApplicationTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVmethodHeadHmethodExtended(final EoParser.VmethodHeadHmethodExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVmethodHeadHmethodExtended(final EoParser.VmethodHeadHmethodExtendedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVmethodHeadVapplication(final EoParser.VmethodHeadVapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVmethodHeadVapplication(final EoParser.VmethodHeadVapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
         // Nothing here
     }
 

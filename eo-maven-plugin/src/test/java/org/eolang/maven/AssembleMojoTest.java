@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.objectionary.OyRemote;
+import org.eolang.maven.util.JoinedUnderscore;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -46,14 +48,6 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test case for {@link AssembleMojo}.
  *
- * @since 0.1
- * @todo #1602:30min Create new object that will join two strings with "_".
- *  {@link Place} object makes a path for versioned objects using "_" as
- *  delimiter between name and hash. Here to test stored files after
- *  {@link AssembleMojo} execution "joinedWithUnderscore" function was
- *  introduced. So there's a code duplication and an ugly design. Need to
- *  create a new object that will join two strings with underscore and use it
- *  here and in {@link Place}.
  * @todo #1602:30min Make up how to get rid of excessive usage of
  *  {@code ParseMojo.DIR}, {@code ResolveMojo.DIR} and so on. It would be nice
  *  to replace them with corresponding classes, or something similar
@@ -67,14 +61,15 @@ import org.junit.jupiter.api.io.TempDir;
  *  from older repositories are not parsed successfully because of the presence of varargs there.
  *  So we need to make 2-3 releases and then refactor the test with more fresh versions. Don't
  *  forget to remove the puzzle.
+ * @since 0.1
  */
-@ExtendWith(OnlineCondition.class)
+@ExtendWith(WeAreOnline.class)
 final class AssembleMojoTest {
 
     /**
      * Invalid eo program for testing.
      */
-    private static final String[] INVALID_PROGRAM = {
+    static final String[] INVALID_PROGRAM = {
         "+alias stdout org.eolang.io.stdout",
         "+home https://github.com/objectionary/eo",
         "+package test",
@@ -127,7 +122,7 @@ final class AssembleMojoTest {
 
     @Test
     @Disabled
-    @ExtendWith(OnlineCondition.class)
+    @ExtendWith(WeAreOnline.class)
     void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash master = new ChCached(new ChRemote("master"));
@@ -156,8 +151,8 @@ final class AssembleMojoTest {
             .execute(AssembleMojo.class)
             .result();
         final String stdout = "**/io/stdout";
-        final String fifth = AssembleMojoTest.joinedWithUnderscore(stdout, "17f8929.xmir");
-        final String sixth = AssembleMojoTest.joinedWithUnderscore(stdout, "9c93528.xmir");
+        final String fifth = new JoinedUnderscore(stdout, "17f8929.xmir").asString();
+        final String sixth = new JoinedUnderscore(stdout, "9c93528.xmir").asString();
         final String path = "target/%s/org/eolang";
         final String parse = String.format(path, ParseMojo.DIR);
         final String optimize = String.format(path, OptimizeMojo.DIR);
@@ -166,7 +161,7 @@ final class AssembleMojoTest {
         final String seq = "**/seq.xmir";
         final String string = "**/string.xmir";
         final String hash = String.join(".", master.value(), "eo");
-        final String[] jars = new String[] {
+        final String[] jars = {
             "**/eo-runtime-0.28.5.jar",
             "**/eo-runtime-0.28.6.jar",
         };
@@ -193,10 +188,10 @@ final class AssembleMojoTest {
             ),
             result.get(pull).toAbsolutePath(),
             new ContainsFiles(
-                AssembleMojoTest.joinedWithUnderscore(stdout, "17f8929.eo"),
-                AssembleMojoTest.joinedWithUnderscore(stdout, "9c93528.eo"),
-                AssembleMojoTest.joinedWithUnderscore("**/seq", hash),
-                AssembleMojoTest.joinedWithUnderscore("**/string", hash)
+                new JoinedUnderscore(stdout, "17f8929.eo").asString(),
+                new JoinedUnderscore(stdout, "9c93528.eo").asString(),
+                new JoinedUnderscore("**/seq", hash).asString(),
+                new JoinedUnderscore("**/string", hash).asString()
             )
         );
         MatcherAssert.assertThat(
@@ -215,32 +210,20 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnErrorFlag(@TempDir final Path temp) throws IOException {
+    void assemblesNotFailWithFailOnError(@TempDir final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-            .with("failOnError", false)
-            .execute(AssembleMojo.class).result();
+            .execute(new FakeMaven.Optimize())
+            .result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
             new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
         MatcherAssert.assertThat(
-            "Since the eo program invalid we shouldn't have optimized it, but we did",
+            "Even if the eo program invalid we still have to optimize it, but we didn't",
             result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            Matchers.not(new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT)))
-        );
-    }
-
-    @Test
-    void doesNotAssembleIfFailOnErrorFlagIsTrue(@TempDir final Path temp) {
-        final Class<IllegalStateException> expected = IllegalStateException.class;
-        Assertions.assertThrows(
-            expected,
-            () -> new FakeMaven(temp)
-                .withProgram(AssembleMojoTest.INVALID_PROGRAM)
-                .execute(AssembleMojo.class),
-            String.format("AssembleMojo should have failed with %s, but didn't", expected)
+            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
         );
     }
 
@@ -282,9 +265,5 @@ final class AssembleMojoTest {
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
             )
         );
-    }
-
-    private static String joinedWithUnderscore(final String first, final String second) {
-        return String.join("_", first, second);
     }
 }
