@@ -141,7 +141,7 @@ public final class BinarizeParse {
      * @throws IOException if any issue with IO.
      */
     public Collection<Buildable> exec(final Collection<ForeignTojo> tojos) throws IOException {
-        final ArrayList<Buildable> res = new ArrayList<>(0);
+        final Collection<Buildable> res = new ArrayList<>(0);
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
         for (final ForeignTojo tojo : tojos) {
             final Path file = tojo.verified();
