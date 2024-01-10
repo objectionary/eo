@@ -37,11 +37,12 @@ jobs:
           ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin
           # Test eo-runtime
           ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime --compilation true
-      # @todo #2085:90min Add GitHub action step to create an issue.
-      #  It would be convenient to add github action step that will create an
-      #  issue in case of any of the tests is failed. We can do it through
-      #  <a href="https://github.com/JasonEtco/create-an-issue">create-an-issue</a>
-      #  action. Also, you can read about that problem in that discussion:
-      #  <a href="https://github.com/orgs/community/discussions/25111">
-      #  Create an issue case the workflow fails</a>
-
+  report-fail:
+    name: Create issue on failure
+    needs: build
+    if: failure() && github.even.pull_request == null
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: jayqi/failed-build-issue-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
