@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -83,12 +85,11 @@ final class XMIRTest {
      * @throws IOException If fails
      */
     private static XML parse(final String source) throws IOException {
-        return new XSLDocument(
-            XMIRTest.class.getResourceAsStream("wrap-method-calls.xsl")
-        ).with(new ClasspathSources()).transform(
-            new EoSyntax(
-                "test", new InputOf(source)
-            ).parsed()
+        return new Xsline(new TrClasspath<>(
+            "/org/eolang/parser/wrap-method-calls.xsl"
+            ).back()
+        ).pass(
+            new EoSyntax("test", new InputOf(source)).parsed()
         );
     }
 

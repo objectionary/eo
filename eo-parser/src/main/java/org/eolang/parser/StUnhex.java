@@ -87,12 +87,15 @@ public final class StUnhex extends StEnvelope {
                         StUnhex.xpath("string"),
                         xml -> StUnhex.append(
                             "string",
-                            StringEscapeUtils.escapeJava(
-                                new String(
-                                    StUnhex.buffer(
-                                        StUnhex.unspace(xml.xpath("text()").get(0))
-                                    ).array(),
-                                    StandardCharsets.UTF_8
+                            String.format(
+                                "\"%s\"",
+                                StringEscapeUtils.escapeJava(
+                                    new String(
+                                        StUnhex.buffer(
+                                            StUnhex.unspace(xml.xpath("text()").get(0))
+                                        ).array(),
+                                        StandardCharsets.UTF_8
+                                    )
                                 )
                             )
                         )

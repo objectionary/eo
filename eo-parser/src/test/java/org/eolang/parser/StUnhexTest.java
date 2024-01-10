@@ -73,8 +73,8 @@ final class StUnhexTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[text()='AB\\n\\t' and @data='string']",
-                "//o[text()='AB' and @data='string']"
+                "//o[text()='\"AB\\n\\t\"' and @data='string']",
+                "//o[text()='\"AB\"' and @data='string']"
             )
         );
     }

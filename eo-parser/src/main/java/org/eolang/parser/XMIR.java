@@ -26,6 +26,8 @@ package org.eolang.parser;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Xsline;
 import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
@@ -95,7 +97,12 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
-        return new Xsline(new TrClasspath<>(XMIR.SHEETS).back())
+        return new Xsline(
+            new TrJoined<>(
+                new TrDefault<>(new StUnhex()),
+                new TrClasspath<>(XMIR.SHEETS).back()
+            )
+        )
             .pass(new XMLDocument(this.content.value()))
             .xpath("eo/text()")
             .get(0);
