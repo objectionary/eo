@@ -699,25 +699,6 @@ public final class FakeMaven {
     }
 
     /**
-     * Parse rust insert pipeline.
-     *
-     * @since 0.29.0
-     */
-    static final class BinarizeParse implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                ParseMojo.class,
-                OptimizeMojo.class,
-                ShakeMojo.class,
-                VerifyMojo.class,
-                BinarizeParseMojo.class
-            ).iterator();
-        }
-    }
-
-    /**
      * Resolve all eo dependencies.
      *
      * @since 0.29.0

@@ -39,11 +39,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.map.MapOf;
+import org.eolang.maven.rust.Buildable;
 import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.RustNode;
@@ -56,15 +53,8 @@ import org.eolang.parser.ParsingTrain;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
  */
-@Mojo(
-    name = "binarize_parse",
-    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
-)
-
 @SuppressWarnings("PMD.LongVariable")
-public final class BinarizeParseMojo extends SafeMojo {
+public final class BinarizeParse {
 
     /**
      * The directory where to binarize to.
@@ -90,7 +80,7 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Map that matches ffi insert xpath to building of FFINode.
      */
     private static final
-        Map<String, BiFunction<XML, BinarizeParseMojo, FFINode>> FACTORY = new MapOf<>(
+        Map<String, BiFunction<XML, BinarizeParse, FFINode>> FACTORY = new MapOf<>(
         "/program/rusts/rust",
             (node, mojo) -> new RustNode(
             node,
@@ -105,39 +95,65 @@ public final class BinarizeParseMojo extends SafeMojo {
      * Target directory.
      * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(
-        required = true,
-        defaultValue = "${project.build.directory}/eo-binaries"
-    )
-    @SuppressWarnings("PMD.UnusedPrivateField")
-    private File generatedDir;
+    private final File generatedDir;
 
     /**
      * The directory with portal project.
      * @checkstyle MemberNameCheck (8 lines)
      */
-    @Parameter(
-        property = "eo.portal",
-        required = true,
-        defaultValue = "${project.basedir}/src/main/rust/eo"
-    )
-    @SuppressWarnings("PMD.UnusedPrivateField")
-    private File eoPortalDir;
+    private final File eoPortalDir;
 
     /**
      * To uniquely name different ffi inerts.
      */
-    private Names names;
+    private final Names names;
 
-    @Override
-    public void exec() throws IOException {
+    /**
+     * To uniquely name different ffi inerts.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    private final File targetDir;
+
+    /**
+     * Ctor.
+     * @param generated Generated directory.
+     * @param portal Directory to portal dependency.
+     * @param names Names.
+     * @param target Target directory.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public BinarizeParse(
+        final File generated,
+        final File portal,
+        final Names names,
+        final File target
+    ) {
+        this.generatedDir = generated;
+        this.eoPortalDir = portal;
+        this.names = names;
+        this.targetDir = target;
+    }
+
+    /**
+     * Parse ffi nodes in tojos.
+     * @param tojos Tojos where to parse ffi node,
+     * @return Collection of {@link FFINode}s that will be then also compiled.
+     * @throws IOException if any issue with IO.
+     */
+    public Collection<Buildable> exec(final Collection<ForeignTojo> tojos) throws IOException {
+        final Collection<Buildable> res = new ArrayList<>(0);
         new File(this.targetDir.toPath().resolve("Lib/").toString()).mkdirs();
-        for (final ForeignTojo tojo : this.scopedTojos().withOptimized()) {
+        for (final ForeignTojo tojo : tojos) {
             final Path file = tojo.verified();
-            this.getFFIs(new XMLDocument(file))
-                .forEach(FFINode::generateUnchecked);
+            for (final FFINode ffi: this.getFFIs(new XMLDocument(file))) {
+                ffi.generateUnchecked();
+                if (ffi instanceof Buildable) {
+                    res.add((Buildable) ffi);
+                }
+            }
         }
         this.names.save();
+        return res;
     }
 
     /**
@@ -152,7 +168,7 @@ public final class BinarizeParseMojo extends SafeMojo {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
-            BinarizeParseMojo.TRAIN,
+            BinarizeParse.TRAIN,
             place.make(this.targetDir.toPath().resolve(BinarizeMojo.DIR), "")
         );
         return new Xsline(trn).pass(input);
@@ -167,7 +183,7 @@ public final class BinarizeParseMojo extends SafeMojo {
     private Collection<FFINode> getFFIs(final XML input) {
         final Collection<FFINode> ret = new ArrayList<>(0);
         final XML injected = this.addFFIs(input);
-        BinarizeParseMojo.FACTORY.forEach(
+        BinarizeParse.FACTORY.forEach(
             (xpath, ctor) -> injected
                 .nodes(xpath)
                 .forEach(node -> ret.add(ctor.apply(node, this)))

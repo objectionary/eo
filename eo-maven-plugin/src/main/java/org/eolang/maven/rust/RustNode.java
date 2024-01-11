@@ -25,7 +25,10 @@ package org.eolang.maven.rust;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.yegor256.Jaxec;
+import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,14 +36,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.map.MapOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.maven.footprint.FtDefault;
 
 /**
  * {@link FFINode} for Rust inserts.
  * @since 0.34
  */
-public final class RustNode implements FFINode {
+public final class RustNode implements Buildable {
+
+    /**
+     * Name of executable file which is result of cargo building.
+     */
+    public static final String LIB = RustNode.common();
 
     /**
      * Corresponding node from xmir.
@@ -50,7 +62,7 @@ public final class RustNode implements FFINode {
     /**
      * To name the insert according to its location.
      */
-    private final Names names;
+    private final String name;
 
     /**
      * Where is Lib directory- the directory with cargo projects.
@@ -80,8 +92,29 @@ public final class RustNode implements FFINode {
     public RustNode(
         final XML node, final Names names, final Path lib, final Path portal, final Path generated
     ) {
+        this(
+            node,
+            names.name(node.xpath("@code_loc").get(0)),
+            lib,
+            portal,
+            generated
+        );
+    }
+
+    /**
+     * Main constructor.
+     * @param node Node.
+     * @param name Name.
+     * @param lib Lib directory.
+     * @param portal Portal directory.
+     * @param generated Generated directory.
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public RustNode(
+        final XML node, final String name, final Path lib, final Path portal, final Path generated
+    ) {
         this.node = node;
-        this.names = names;
+        this.name = name;
         this.lib = lib;
         this.portal = portal;
         this.generated = generated;
@@ -95,17 +128,14 @@ public final class RustNode implements FFINode {
                 .stream()
                 .map(RustNode::unhex)
                 .collect(Collectors.toList());
-        final String function = this.names.name(
-            this.node.xpath("@code_loc").get(0)
-        );
         final String filename = String.format(
             "%s%s",
-            function,
+            this.name,
             ".rs"
         );
-        new Project(this.lib.resolve(function))
+        new Project(this.lib.resolve(this.name))
             .with(new Module(code, "src/foo"), dependencies)
-            .with(new PrimeModule(function, "src/lib"), new ArrayList<>(1))
+            .with(new PrimeModule(this.name, "src/lib"), new ArrayList<>(1))
             .dependency(
                 "eo",
                 new MapOf<>("path", this.portal.toAbsolutePath().toString())
@@ -118,7 +148,7 @@ public final class RustNode implements FFINode {
             this.node.xpath("@code_loc").get(0)
         );
         new Commented(
-            new Native(function, "EOrust.natives"),
+            new Native(this.name, "EOrust.natives"),
             "//"
         ).save(new FtDefault(this.generated));
         Logger.info(
@@ -127,6 +157,79 @@ public final class RustNode implements FFINode {
             filename,
             this.node.xpath("@code_loc").get(0)
         );
+    }
+
+    @Override
+    public void build(final Path cache)  {
+        try {
+            this.buildChecked(cache);
+        } catch (final IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+    }
+
+    /**
+     * Build the project.
+     * @param cache Cache directory.
+     * @throws IOException If any issues with IO.
+     */
+    private void buildChecked(final Path cache) throws IOException {
+        final File project = this.lib.resolve(this.name).toFile();
+        final File cached = cache
+            .resolve("Lib")
+            .resolve(this.name)
+            .resolve("target").toFile();
+        if (RustNode.sameProject(
+            project.toPath(),
+            cache
+                .resolve("Lib")
+                .resolve(this.name)
+        )) {
+            Logger.info(
+                this,
+                "content of %s was not changed since the last launch",
+                this.name
+            );
+            final File executable = cached.toPath()
+                .resolve("debug")
+                .resolve(RustNode.LIB)
+                .toFile();
+            if (executable.exists()) {
+                FileUtils.copyFile(
+                    executable,
+                    project.toPath()
+                        .resolve("target")
+                        .resolve("debug")
+                        .resolve(RustNode.LIB)
+                        .toFile()
+                );
+            }
+        } else {
+            final File target = project.toPath().resolve("target").toFile();
+            if (cached.exists()) {
+                Logger.info(this, "Copying %s to %s", cached, target);
+                FileUtils.copyDirectory(cached, target);
+            }
+            Logger.info(this, "Building %s rust project..", project.getName());
+            try {
+                new Jaxec("cargo", "build").withHome(project).execUnsafe();
+            } catch (final IOException | IllegalArgumentException ex) {
+                throw new BuildFailureException(
+                    String.format(
+                        "Failed to build cargo project with dest = %s",
+                        project
+                    ),
+                    ex
+                );
+            }
+            Logger.info(
+                this,
+                "Cargo building succeeded, update cached %s with %s",
+                cached,
+                target
+            );
+            FileUtils.copyDirectory(target.getParentFile(), cached.getParentFile());
+        }
     }
 
     /**
@@ -150,6 +253,78 @@ public final class RustNode implements FFINode {
             throw new IllegalArgumentException(
                 String.format("Invalid String %s, cannot unhex", txt),
                 exception
+            );
+        }
+        return result;
+    }
+
+    /**
+     * Check if the project was not changed.
+     * @param src Directory in current target.
+     * @param cached Directory in cache.
+     * @return True if the project is the same.
+     */
+    private static boolean sameProject(final Path src, final Path cached) {
+        return RustNode.sameFile(
+            src.resolve("src/foo.rs"), cached.resolve("src/foo.rs")
+        ) && RustNode.sameFile(
+            src.resolve("src/lib.rs"), cached.resolve("src/lib.rs")
+        ) && RustNode.sameFile(
+            src.resolve("Cargo.toml"), cached.resolve("Cargo.toml")
+        );
+    }
+
+    /**
+     * Check if the source file is the same as in cache.
+     * @param src Source file.
+     * @param cached Cache file.
+     * @return True if the same.
+     */
+    private static boolean sameFile(final Path src, final Path cached) {
+        return cached.toFile().exists() && RustNode.uncomment(
+            new UncheckedText(
+                new TextOf(src)
+            ).asString()
+        ).equals(
+            RustNode.uncomment(
+                new UncheckedText(
+                    new TextOf(cached)
+                ).asString()
+            )
+        );
+    }
+
+    /**
+     * Removed the first line from the string.
+     * We need it because generated files are disclaimed.
+     * @param content Content.
+     * @return String without the first line.
+     * @checkstyle StringLiteralsConcatenationCheck (8 lines)
+     */
+    private static String uncomment(final String content) {
+        return content.substring(
+            1 + content.indexOf(System.getProperty("line.separator"))
+        );
+    }
+
+    /**
+     * Calculates name for Rust shared library depending on OS.
+     * @return Name.
+     */
+    private static String common() {
+        final String result;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            result = "common.dll";
+        } else if (SystemUtils.IS_OS_LINUX) {
+            result = "libcommon.so";
+        } else if (SystemUtils.IS_OS_MAC) {
+            result = "libcommon.dylib";
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Rust inserts are not supported in %s os. Only windows, linux and macos are allowed.",
+                    System.getProperty("os.name")
+                )
             );
         }
         return result;
