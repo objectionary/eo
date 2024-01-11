@@ -41,7 +41,7 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='int' data='bytes'>01 02 E4 F3 04 67 32 E1</o></p>"
+                    "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>01 02 E4 F3 04 67 32 E1</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='72872276393407201' and @data='int']")
@@ -53,7 +53,7 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='org.eolang.int' data='bytes'>FF FF FF FF FF FF FF FF</o></p>"
+                    "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>FF FF FF FF FF FF FF FF</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='-1' and @data='int']")
@@ -67,8 +67,8 @@ final class StUnhexTest {
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='string' data='bytes'>41 42 0A 09</o>",
-                        "<o base='string' data='bytes'>41 42</o></p>"
+                        "<p><o base='string'><o base='bytes' data='bytes'>41 42 0A 09</o></o>",
+                        "<o base='string'><o base='bytes' data='bytes'>41 42</o></o></p>"
                     )
                 )
             ),
@@ -84,11 +84,11 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='string' data='bytes'/></p>"
+                    "<p><o base='string'><o base='bytes' data='bytes'/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[empty(text()) and @data='string']"
+                "//o[text()='\"\"' and @data='string']"
             )
         );
     }
@@ -98,7 +98,7 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='org.eolang.float' data='bytes'>41 42 43 67 AE CD 3E FD</o></p>"
+                    "<p><o base='float'><o base='org.eolang.bytes' data='bytes'>41 42 43 67 AE CD 3E FD</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
@@ -114,8 +114,8 @@ final class StUnhexTest {
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='bool' data='bytes' name='a'>01</o>",
-                        "<o><o base='bool' data='bytes' name='b'>00</o></o></p>"
+                        "<p><o base='bool' name='a'><o base='bytes' data='bytes'>01</o></o>",
+                        "<o base='bool' name='b'><o base='bytes' data='bytes'>00</o></o></p>"
                     )
                 )
             ),
@@ -131,7 +131,7 @@ final class StUnhexTest {
         MatcherAssert.assertThat(
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='org.eolang.bool' data='bytes'>00</o></p>"
+                    "<p><o base='bool'><o base='org.eolang.bytes' data='bytes'>00</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths("//o[text()='FALSE' and @data='bool']")
