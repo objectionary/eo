@@ -48,6 +48,11 @@ final class XMIRTest {
      * Convert EO to xmir and back and compare.
      * @param src EO source.
      * @throws Exception If fails.
+     * @todo #2750:30min Empty bytes in EO ("--") are not converted successfully. The test
+     *  `org/eolang/parser/xmir-samples-wrong/empty-bytes.eo` fails. Transformation `xmir-to-eo.xsl`
+     *  need to be fixed. Don't forget to move `empty-bytes.eo` test from
+     *  `org/eolang/parser/xmir-samples-wrong` to `org/eolang/parser/xmir-samples` after fixing
+     *  `xmir-to-eo.xsl`.
      */
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")
