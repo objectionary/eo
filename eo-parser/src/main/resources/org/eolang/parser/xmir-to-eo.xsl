@@ -142,24 +142,21 @@ SOFTWARE.
         <xsl:text>"""</xsl:text>
       </xsl:when>
       <xsl:when test="@base='bool'">
-        <xsl:choose>
-          <xsl:when test="text() = '01'">
-            <xsl:text>TRUE</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>FALSE</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:when test="@base='int'">
-        <xsl:value-of select="eo:bytes-to-int(replace(text(), ' ', ''))"/>
+        <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:when test="@base='float'">
         <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:otherwise>
+        <!-- @todo #2750:30min Empty bytes in EO are not converted successfully. The test
+          `org/eolang/parser/xmir-samples-wrong/empty-bytes.eo` fails and need to be fixed. Don't
+          forget to move `empty-bytes.eo` from `org/eolang/parser/xmir-samples-wrong` to
+          `org/eolang/parser/xmir-samples`.
+         -->
         <xsl:value-of select="replace(text(), ' ', '-')"/>
-<!--       todo 2 тире -->
         <xsl:if test="not(contains(text(), ' '))">
           <xsl:text>-</xsl:text>
         </xsl:if>
