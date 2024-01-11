@@ -152,9 +152,8 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <!-- @todo #2750:30min Empty bytes in EO are not converted successfully. The test
-              `org/eolang/parser/xmir-samples-wrong/empty-bytes.eo` fails and need to be fixed.
-              Don't forget to move `empty-bytes.eo` from `org/eolang/parser/xmir-samples-wrong` to
-              `org/eolang/parser/xmir-samples`.
+                `org/eolang/parser/xmir-samples-wrong/empty-bytes.eo` fails and need to be fixed.
+                Don't forget to move `empty-bytes.eo` from `org/eolang/parser/xmir-samples-wrong` to `org/eolang/parser/xmir-samples`.
          -->
         <xsl:value-of select="replace(text(), ' ', '-')"/>
         <xsl:if test="not(contains(text(), ' '))">
