@@ -57,13 +57,13 @@ final class XMIRTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")
     void printsToEO(final String src) throws Exception {
-        Logger.debug(this, "Original EOLANG:%n%s", src);
+        Logger.warnForced(this, "Original EOLANG:%n%s", src);
         final XML first = XMIRTest.clean(XMIRTest.parse(src));
-        Logger.debug(this, "First:%n%s", first);
+        Logger.warnForced(this, "First:%n%s", first);
         final String eolang = new XMIR(first).toEO();
-        Logger.debug(this, "EOLANG:%n%s", eolang);
+        Logger.warnForced(this, "EOLANG:%n%s", eolang);
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
-        Logger.debug(this, "Second:%n%s", second);
+        Logger.warnForced(this, "Second:%n%s", second);
         final String ignore = "data=\"\\S+\"";
         MatcherAssert.assertThat(
             first

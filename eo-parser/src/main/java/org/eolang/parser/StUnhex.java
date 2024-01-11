@@ -87,22 +87,19 @@ public final class StUnhex extends StEnvelope {
                         StUnhex.xpath("string"),
                         xml -> StUnhex.append(
                             "string",
-                            String.format(
-                                "\"%s\"",
-                                StringEscapeUtils.escapeJava(
-                                    new String(
-                                        StUnhex.buffer(
-                                            StUnhex.unspace(xml.xpath("./o/text()").get(0))
-                                        ).array(),
-                                        StandardCharsets.UTF_8
-                                    )
+                            StringEscapeUtils.escapeJava(
+                                new String(
+                                    StUnhex.buffer(
+                                        StUnhex.unspace(xml.xpath("./o/text()").get(0))
+                                    ).array(),
+                                    StandardCharsets.UTF_8
                                 )
                             )
                         )
                     ),
                     new StXPath(
                         "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and empty(text())]/parent::o[(@base='string' or @base='org.eolang.string')])[1]",
-                        xml -> new Directives().set("\"\"").attr("data", "string")
+                        xml -> new Directives().set("").attr("data", "string")
                     )
                 )
             )

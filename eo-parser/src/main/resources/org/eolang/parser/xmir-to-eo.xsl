@@ -132,7 +132,7 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <!-- DATA BYTES -->
-  <xsl:template match="o[@data='bytes']" mode="head">
+  <xsl:template match="o[@data]" mode="head">
     <xsl:choose>
       <xsl:when test="@base='string'">
         <xsl:text>"""</xsl:text>
