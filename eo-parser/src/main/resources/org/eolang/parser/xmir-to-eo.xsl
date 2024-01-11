@@ -159,6 +159,7 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="replace(text(), ' ', '-')"/>
+<!--       todo 2 тире -->
         <xsl:if test="not(contains(text(), ' '))">
           <xsl:text>-</xsl:text>
         </xsl:if>

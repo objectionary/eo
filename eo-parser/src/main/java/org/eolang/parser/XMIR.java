@@ -97,6 +97,12 @@ public final class XMIR {
      * @return The program in EO
      */
     public String toEO() {
+//        Logger.warnForced(this, "StUnhex:%n%s", new Xsline(
+//            new TrJoined<>(
+//                new TrDefault<>(new StUnhex())
+//            )
+//        )
+//            .pass(new XMLDocument(this.content.value())));
         return new Xsline(
             new TrJoined<>(
                 new TrDefault<>(new StUnhex()),

@@ -86,7 +86,8 @@ final class XMIRTest {
      */
     private static XML parse(final String source) throws IOException {
         return new Xsline(new TrClasspath<>(
-            "/org/eolang/parser/wrap-method-calls.xsl"
+            "/org/eolang/parser/wrap-method-calls.xsl",
+            "/org/eolang/parser/explicit-data.xsl"
             ).back()
         ).pass(
             new EoSyntax("test", new InputOf(source)).parsed()
