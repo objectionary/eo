@@ -26,25 +26,29 @@ package org.eolang.maven.optimization;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
 /**
  * Test case for {@link org.eolang.maven.optimization.OptCached}.
  * @since 0.28.12
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class OptCachedTest {
 
     /**
@@ -52,15 +56,14 @@ final class OptCachedTest {
      *
      * @param tmp Temp dir
      * @throws IOException if I/O fails
-     * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
-     *  We should resolve issues with unstable failures and only
-     *  then enable the test.
      *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
-    @Disabled
     @Test
-    void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp) throws IOException {
-        final XML program = OptCachedTest.program(ZonedDateTime.now());
+    void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path tmp)
+        throws IOException, ImpossibleModificationException, NoSuchAlgorithmException {
+        final XML program = OptCachedTest.updatedProgram(
+            OptCachedTest.program(ZonedDateTime.now())
+        );
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
@@ -74,11 +77,12 @@ final class OptCachedTest {
         );
     }
 
-    @Disabled
     @Test
     void returnsFromCacheButTimesSaveAndExecuteDifferent(@TempDir final Path tmp)
-        throws IOException {
-        final XML program = OptCachedTest.program(ZonedDateTime.now().minusMinutes(2));
+        throws IOException, ImpossibleModificationException, NoSuchAlgorithmException {
+        final XML program = OptCachedTest.updatedProgram(
+            OptCachedTest.program(ZonedDateTime.now())
+        );
         OptCachedTest.save(tmp, program);
         MatcherAssert.assertThat(
             "We expected that the not immediately saved program will be returned from the cache.",
@@ -92,13 +96,16 @@ final class OptCachedTest {
         );
     }
 
-    @Disabled
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path tmp)
-        throws IOException {
-        final XML prev = OptCachedTest.program(ZonedDateTime.now(), "first program");
+        throws IOException, ImpossibleModificationException, NoSuchAlgorithmException {
+        final XML prev = OptCachedTest.updatedProgram(
+            OptCachedTest.program(ZonedDateTime.now(), "first program")
+        );
         OptCachedTest.save(tmp, prev);
-        final XML current = OptCachedTest.program(ZonedDateTime.now(), "second program");
+        final XML current = OptCachedTest.updatedProgram(
+            OptCachedTest.program(ZonedDateTime.now(), "second program")
+        );
         MatcherAssert.assertThat(
             "Expecting current program to be compiled, but prev program was returned from cache.",
             new OptCached(
@@ -199,9 +206,43 @@ final class OptCachedTest {
                     .add("program")
                     .attr("name", "main")
                     .attr("time", time.format(DateTimeFormatter.ISO_INSTANT))
+                    .add("objects")
                     .attr("something", something)
                     .up()
             ).xmlQuietly()
         );
+    }
+
+    /**
+     * Adds attribute "hash" in EO program for tests.
+     * @param xml XML.
+     * @return XML representation of program.
+     */
+    private static XML updatedProgram(final XML xml)
+        throws NoSuchAlgorithmException, ImpossibleModificationException {
+        final String hash = OptCachedTest.getHash(xml);
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .xpath("//program").attr("hash", hash)
+            ).apply(xml.node())
+        );
+    }
+
+    /**
+     * Return hash code in EO program for tests.
+     * @param xml XML.
+     * @return String hash code representation of program.
+     */
+    private static String getHash(final XML xml) throws NoSuchAlgorithmException {
+        final MessageDigest algorithm = MessageDigest.getInstance("MD5");
+        final String program = xml.nodes("/program/objects").toString();
+        final byte[] code = algorithm.digest(program.getBytes());
+        final BigInteger number = new BigInteger(1, code);
+        final StringBuilder hash = new StringBuilder(number.toString(16));
+        while (hash.length() < 32) {
+            hash.insert(0, "0");
+        }
+        return hash.toString();
     }
 }

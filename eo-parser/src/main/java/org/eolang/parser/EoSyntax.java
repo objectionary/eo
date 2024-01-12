@@ -26,6 +26,7 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.util.List;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -70,7 +71,7 @@ public final class EoSyntax implements Syntax {
     }
 
     /**
-     * Compile it to XML and save.
+     * Compile it to XML.
      *
      * <p>No exception will be thrown if the syntax is invalid. In any case, XMIR will
      * be generated and saved. Read it in order to find the errors,
@@ -92,10 +93,12 @@ public final class EoSyntax implements Syntax {
         parser.addErrorListener(spy);
         final XeEoListener xel = new XeEoListener(this.name);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = new XMLDocument(
-            new Xembler(
-                new Directives(xel).append(spy)
-            ).domQuietly()
+        final XML dom = new Xsline(new StHash()).pass(
+            new XMLDocument(
+                new Xembler(
+                    new Directives(xel).append(spy)
+                ).domQuietly()
+            )
         );
         new Schema(dom).check();
         if (spy.size() == 0) {

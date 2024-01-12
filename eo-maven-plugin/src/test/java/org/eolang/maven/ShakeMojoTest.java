@@ -29,15 +29,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.io.ResourceOf;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -82,11 +83,21 @@ final class ShakeMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void getsAlreadyShakenResultsFromCache(@TempDir final Path temp) throws Exception {
-        final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/optimize/main.xml")
+        final Text cached = new TextOf(
+            new EoSyntax(
+                "test-it-4",
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "+alias stdout org.eolang.io.stdout",
+                        "+package f\n",
+                        "[x] > main",
+                        "  (stdout \"Hello!\" x).print > @"
+                    )
+                )
+            ).parsed().toString()
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";

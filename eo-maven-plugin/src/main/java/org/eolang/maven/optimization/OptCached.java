@@ -28,9 +28,6 @@ import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Place;
@@ -41,12 +38,6 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
- * @todo #2746:30min Use checksum, not time.
- *  The following tests show that fetching from the cache doesn't work correctly:
- *  - {@link OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
- *  - {@link OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
- *  Need to fix the file validation from cache: using checksum, but not time.
- *  Don't forget to enable the tests.
  */
 public final class OptCached implements Optimization {
 
@@ -113,16 +104,11 @@ public final class OptCached implements Optimization {
      */
     private boolean contains(final XML xml) throws IOException {
         final Path path = this.cached(xml);
-        final Optional<String> time = xml.xpath("/program/@time").stream().findFirst();
+        final Optional<String> hash = xml.xpath("/program/@hash").stream().findFirst();
         final boolean res;
-        if (Files.exists(path) && time.isPresent()) {
-            res = Files.readAttributes(path, BasicFileAttributes.class)
-                .creationTime()
-                .toInstant()
-                .truncatedTo(ChronoUnit.MINUTES)
-                .equals(
-                    ZonedDateTime.parse(time.get()).toInstant().truncatedTo(ChronoUnit.MINUTES)
-                );
+        if (Files.exists(path) && hash.isPresent()) {
+            res = new XMLDocument(path).xpath("/program/@hash").stream().findFirst()
+                .equals(hash);
         } else {
             res = false;
         }

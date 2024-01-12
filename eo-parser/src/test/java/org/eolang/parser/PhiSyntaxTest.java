@@ -46,4 +46,15 @@ class PhiSyntaxTest {
             )
         );
     }
+
+    @Test
+    void containsHash() throws IOException {
+        MatcherAssert.assertThat(
+            "Result XML must contain hash",
+            new PhiSyntax(
+                "empty ↦ Φ.org.eolang.bytes"
+            ).parsed(),
+            XhtmlMatchers.hasXPath("/program/@hash")
+        );
+    }
 }

@@ -47,6 +47,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
     @Test
     void parsesSimpleCode() throws Exception {
@@ -172,6 +173,17 @@ final class EoSyntaxTest {
                 "/program/objects[count(o)=1]",
                 "/program/objects/o[count(o)=3]"
             )
+        );
+    }
+
+    @Test
+    void containsHash() throws IOException {
+        MatcherAssert.assertThat(
+            new EoSyntax(
+                "test-it-5",
+                new InputOf("[v] > p\n  f.write > @\n")
+            ).parsed(),
+            XhtmlMatchers.hasXPath("/program/@hash")
         );
     }
 

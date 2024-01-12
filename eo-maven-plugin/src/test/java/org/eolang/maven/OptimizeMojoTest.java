@@ -33,17 +33,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.xml.transform.TransformerFactory;
 import net.sf.saxon.TransformerFactoryImpl;
-import org.cactoos.io.ResourceOf;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.CheckPack;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -113,16 +114,22 @@ final class OptimizeMojoTest {
      *
      * @param temp Temporary test directory.
      * @throws Exception if unexpected error happened.
-     * @todo #2422:60min This test is unstable for now.
-     *  We should resolve issues with unstable failures and only
-     *  then enable the test.
-     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
-    @Disabled
     @Test
     void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
-        final TextOf cached = new TextOf(
-            new ResourceOf("org/eolang/maven/optimize/main.xml")
+        final Text cached = new TextOf(
+            new EoSyntax(
+                "test-it-4",
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "+alias stdout org.eolang.io.stdout",
+                        "+package f\n",
+                        "[x] > main",
+                        "  (stdout \"Hello!\" x).print > @"
+                    )
+                )
+            ).parsed().toString()
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
