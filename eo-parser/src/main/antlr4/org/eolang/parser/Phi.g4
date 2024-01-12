@@ -1,5 +1,9 @@
 grammar Phi;
 
+// Skip spaces, tabs, newLines
+WS  : [ \t\r\n]+ -> skip
+    ;
+
 program
     : LCB bindings RCB
     ;
@@ -17,7 +21,7 @@ formation
 
 bindings
     : binding?
-    | binding (COMMA SPACE binding)*
+    | binding (COMMA binding)*
     ;
 
 binding
@@ -28,7 +32,7 @@ binding
     ;
 
 alphaBinding
-    : attribute SPACE ARROW SPACE object
+    : attribute ARROW object
     ;
 
 attribute
@@ -45,15 +49,15 @@ alphaAttr
     ;
 
 emptyBinding
-    : attribute SPACE ARROW SPACE EMPTY
+    : attribute ARROW EMPTY
     ;
 
 deltaBidning
-    : DELTA SPACE DASHED_ARROW SPACE BYTES
+    : DELTA DASHED_ARROW BYTES
     ;
 
 lambdaBidning
-    : LAMBDA SPACE DASHED_ARROW SPACE FUNCTION
+    : LAMBDA DASHED_ARROW FUNCTION
     ;
 
 FUNCTION
@@ -107,9 +111,6 @@ DOT : '.'
     ;
 COMMA
     : ','
-    ;
-SPACE
-    : ' '
     ;
 ARROW
     : '↦'
