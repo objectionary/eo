@@ -26,15 +26,14 @@ package org.eolang.maven.optimization;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.eolang.maven.util.HmBase;
+import org.eolang.parser.StHash;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -220,29 +219,12 @@ final class OptCachedTest {
      */
     private static XML updatedProgram(final XML xml)
         throws NoSuchAlgorithmException, ImpossibleModificationException {
-        final String hash = OptCachedTest.getHash(xml);
+        final String hash = new StHash.Hash(xml).getHash();
         return new XMLDocument(
             new Xembler(
                 new Directives()
                     .xpath("//program").attr("hash", hash)
             ).apply(xml.node())
         );
-    }
-
-    /**
-     * Return hash code in EO program for tests.
-     * @param xml XML.
-     * @return String hash code representation of program.
-     */
-    private static String getHash(final XML xml) throws NoSuchAlgorithmException {
-        final MessageDigest algorithm = MessageDigest.getInstance("MD5");
-        final String program = xml.nodes("/program/objects").toString();
-        final byte[] code = algorithm.digest(program.getBytes());
-        final BigInteger number = new BigInteger(1, code);
-        final StringBuilder hash = new StringBuilder(number.toString(16));
-        while (hash.length() < 32) {
-            hash.insert(0, "0");
-        }
-        return hash.toString();
     }
 }

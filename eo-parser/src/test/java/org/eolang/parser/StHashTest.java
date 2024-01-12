@@ -27,8 +27,7 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Xsline;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
@@ -51,12 +50,11 @@ final class StHashTest {
     }
 
     @Test
-    void checksHash()
-        throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    void checksHash() throws NoSuchAlgorithmException {
         MatcherAssert.assertThat(
             "We should get the same hash code, but didn't",
             new Xsline(new StHash()).pass(program()),
-            XhtmlMatchers.hasXPath("/program/@hash", hash(program()))
+            XhtmlMatchers.hasXPath("/program/@hash", new StHash.Hash(program()).getHash())
         );
     }
 
@@ -75,19 +73,5 @@ final class StHashTest {
                     .up()
             ).xmlQuietly()
         );
-    }
-
-    /**
-     * Returns hash code of EO program for tests.
-     * @param xml XML.
-     * @return String hash code of program.
-     */
-    private static String hash(final XML xml)
-        throws NoSuchMethodException, InvocationTargetException,
-        IllegalAccessException {
-        final Class<StHash> clazz = StHash.class;
-        final Method method = clazz.getDeclaredMethod("getHash", XML.class);
-        method.setAccessible(true);
-        return method.invoke(null, xml).toString();
     }
 }
