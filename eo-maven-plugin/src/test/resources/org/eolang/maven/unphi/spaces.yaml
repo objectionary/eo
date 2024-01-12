@@ -1,0 +1,3 @@
+tests:
+  - /program/objects/o[@name='main' and @abstract and o[@name='x']]
+phi: "{main   ↦ ⟦ x ↦ ξ.y  ⟧   } "

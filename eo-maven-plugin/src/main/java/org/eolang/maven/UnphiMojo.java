@@ -95,6 +95,7 @@ public final class UnphiMojo extends SafeMojo {
                             phi.getFileName().toString().replace(".phi", ""),
                             new TextOf(phi)
                         ).parsed();
+                        System.out.println(parsed);
                         home.save(parsed.toString(), xmir);
                         Logger.info(
                             this,
