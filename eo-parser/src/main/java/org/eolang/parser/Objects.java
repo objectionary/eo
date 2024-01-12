@@ -90,6 +90,12 @@ interface Objects extends Iterable<Directive> {
     Objects leave();
 
     /**
+     * Remove current object.
+     * @return Self.
+     */
+    Objects remove();
+
+    /**
      * Xembly object tree.
      * @since 0.1
      */
@@ -144,6 +150,12 @@ interface Objects extends Iterable<Directive> {
         @Override
         public Objects leave() {
             this.dirs.up();
+            return this;
+        }
+
+        @Override
+        public Objects remove() {
+            this.dirs.remove();
             return this;
         }
 
