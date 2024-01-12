@@ -45,6 +45,7 @@ import org.xembly.Directives;
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
+ * @checkstyle NestedIfDepthCheck (1300 lines)
  * @since 0.34.0
  */
 @SuppressWarnings({
@@ -200,6 +201,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
             if (ctx.alphaBinding() != null) {
