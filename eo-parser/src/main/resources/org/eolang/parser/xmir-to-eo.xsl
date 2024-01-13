@@ -141,13 +141,7 @@ SOFTWARE.
         <xsl:value-of select="$eol"/>
         <xsl:text>"""</xsl:text>
       </xsl:when>
-      <xsl:when test="@base='bool'">
-        <xsl:value-of select="text()"/>
-      </xsl:when>
-      <xsl:when test="@base='int'">
-        <xsl:value-of select="text()"/>
-      </xsl:when>
-      <xsl:when test="@base='float'">
+      <xsl:when test="@base='bool' and @base='int' and @base='float'">
         <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:otherwise>
