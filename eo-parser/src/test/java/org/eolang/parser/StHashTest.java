@@ -43,7 +43,7 @@ final class StHashTest {
     @Test
     void isHashInXml() {
         MatcherAssert.assertThat(
-            "We should get XML, which has new attribute 'hash', but didn't",
+            "We should get XML, which has new attribute 'hash', but didn't.",
             new Xsline(new StHash()).pass(program()),
             XhtmlMatchers.hasXPath("/program/@hash")
         );
@@ -52,7 +52,7 @@ final class StHashTest {
     @Test
     void checksHash() throws NoSuchAlgorithmException {
         MatcherAssert.assertThat(
-            "We should get the same hash code, but didn't",
+            "We should get the same hash code, but didn't.",
             new Xsline(new StHash()).pass(program()),
             XhtmlMatchers.hasXPath("/program/@hash", new StHash.Hash(program()).compute())
         );
