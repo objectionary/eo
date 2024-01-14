@@ -27,10 +27,18 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
+import org.eolang.AtOnce;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
+import org.eolang.PhCopy;
+import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +61,66 @@ final class EOerrorTest {
                 )
             ).take()
         );
+    }
+
+    @Test
+    void getsReadableError() {
+        ExAbstract error = null;
+        try {
+            new Dataized(new MyError()).take();
+        } catch (final ExAbstract exc) {
+            error = exc;
+        }
+        assert error != null;
+        MatcherAssert.assertThat(
+            error.toString(),
+            Matchers.containsString("qwerty")
+        );
+    }
+
+    /**
+     * The object below.
+     * [] > my-error
+     *   error > @
+     *     "qwerty"
+     * @since 0.35
+     * @checkstyle JavadocStyleCheck
+     */
+    private static final class MyError extends PhDefault {
+
+        /**
+         * Ctor.
+         */
+        MyError() {
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> new PhWith(
+                            new PhCopy(
+                                Phi.Φ.attr("org").get().attr("eolang").get().attr("error").get()
+                            ),
+                            "α",
+                            new PhWith(
+                                new PhCopy(
+                                    Phi.Φ
+                                        .attr("org").get()
+                                        .attr("eolang").get()
+                                        .attr("string").get()
+                                ),
+                                0,
+                                new PhWith(
+                                    new EObytes(Phi.Φ),
+                                    "Δ",
+                                    new Data.Value<>(new BytesOf("qwerty").take())
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
     }
 
 }

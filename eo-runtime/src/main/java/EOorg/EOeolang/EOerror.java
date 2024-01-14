@@ -32,6 +32,7 @@ import org.eolang.AtLambda;
 import org.eolang.Attr;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
+import org.eolang.PhContainingUTF8;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -115,7 +116,7 @@ public final class EOerror extends PhDefault {
          * @param enclosure Enclosure inside the error
          */
         public ExError(final Phi enclosure) {
-            super(enclosure.toString());
+            super(new PhContainingUTF8(enclosure).toString());
             this.enc = enclosure;
         }
 
