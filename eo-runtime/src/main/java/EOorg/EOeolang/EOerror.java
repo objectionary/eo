@@ -116,7 +116,7 @@ public final class EOerror extends PhDefault {
          * @param enclosure Enclosure inside the error
          */
         public ExError(final Phi enclosure) {
-            super(new PhContainingUTF8(enclosure).toString());
+            super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
         }
 
@@ -126,6 +126,30 @@ public final class EOerror extends PhDefault {
          */
         public Phi enclosure() {
             return this.enc;
+        }
+
+        /**
+         * Retrieve message from enclosure safely.
+         * @param enclosure Enclosure.
+         * @return String message.
+         * @checkstyle IllegalCatchCheck (20 lines)
+         */
+        private static String safeMessage(final Phi enclosure) {
+            String result;
+            if (enclosure == null) {
+                result = "null Phi";
+            } else {
+                try {
+                    result = new PhContainingUTF8(enclosure).toString();
+                } catch (final Throwable first) {
+                    try {
+                        result = enclosure.toString();
+                    } catch (final Throwable second) {
+                        result = enclosure.getClass().toString();
+                    }
+                }
+            }
+            return result;
         }
     }
 }
