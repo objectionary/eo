@@ -32,12 +32,13 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.xmir.Xmir;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Test case for {@link XMIR}.
+ * Test case for {@link Xmir}.
  *
  * @since 0.5
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
@@ -60,7 +61,7 @@ final class XMIRTest {
         Logger.debug(this, "Original EOLANG:%n%s", src);
         final XML first = XMIRTest.clean(XMIRTest.parse(src));
         Logger.debug(this, "First:%n%s", first);
-        final String eolang = new XMIR(first).toEO();
+        final String eolang = new Xmir(first).toEO();
         Logger.debug(this, "EOLANG:%n%s", eolang);
         final XML second = XMIRTest.clean(XMIRTest.parse(eolang));
         Logger.debug(this, "Second:%n%s", second);

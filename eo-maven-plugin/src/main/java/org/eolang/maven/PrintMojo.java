@@ -39,6 +39,7 @@ import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.XMIR;
+import org.eolang.parser.xmir.Xmir;
 
 /**
  * Print XMIR to EO.
@@ -84,7 +85,7 @@ public final class PrintMojo extends SafeMojo {
                             this.printSourcesDir.toPath().relativize(source).toString()
                                 .replace(".xmir", ".eo")
                         );
-                        home.save(new XMIR(new TextOf(source)).toEO(), relative);
+                        home.save(new Xmir(new TextOf(source)).toEO(), relative);
                         Logger.info(
                             this,
                             "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)

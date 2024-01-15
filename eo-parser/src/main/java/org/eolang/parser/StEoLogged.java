@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.xsline.Shift;
 import java.util.function.Consumer;
+import org.eolang.parser.xmir.Xmir;
 
 /**
  * Shift that logs the EO representation of the XML before throwing an exception.
@@ -78,7 +79,7 @@ final class StEoLogged implements Shift {
             this.logger.accept(
                 String.format(
                     "Eo representation of the parsed xml: %n%s",
-                    new XMIR(xml).toEO()
+                    new Xmir.Default(xml).toEO()
                 )
             );
             throw new IllegalStateException(

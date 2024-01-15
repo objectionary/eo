@@ -36,6 +36,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cactoos.list.ListOf;
+import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
 

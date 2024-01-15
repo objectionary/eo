@@ -37,6 +37,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.Joined;
+import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
