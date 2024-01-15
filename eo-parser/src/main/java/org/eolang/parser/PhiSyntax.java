@@ -26,6 +26,7 @@ package org.eolang.parser;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -84,10 +85,12 @@ public final class PhiSyntax implements Syntax {
         parser.removeErrorListeners();
         parser.addErrorListener(spy);
         new ParseTreeWalker().walk(xel, parser.program());
-        final XML dom = new XMLDocument(
-            new Xembler(
-                new Directives(xel).append(spy)
-            ).domQuietly()
+        final XML dom = new Xsline(new StHash()).pass(
+            new XMLDocument(
+                new Xembler(
+                    new Directives(xel).append(spy)
+                ).domQuietly()
+            )
         );
         new Schema(dom).check();
         if (spy.size() == 0) {
