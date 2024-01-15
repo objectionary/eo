@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtOnce;
-import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
