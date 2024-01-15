@@ -56,7 +56,7 @@ public final class StUnhex extends StEnvelope {
                             "float",
                             Double.toString(
                                 StUnhex.buffer(
-                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                 ).getDouble()
                             )
                         )
@@ -67,7 +67,7 @@ public final class StUnhex extends StEnvelope {
                             "int",
                             Long.toString(
                                 StUnhex.buffer(
-                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                 ).getLong()
                             )
                         )
@@ -78,7 +78,7 @@ public final class StUnhex extends StEnvelope {
                             "bool",
                             Boolean.toString(
                                 !"00".equals(
-                                    StUnhex.unspace(xml.xpath("text()").get(0))
+                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                 )
                             ).toUpperCase(Locale.ENGLISH)
                         )
@@ -90,7 +90,7 @@ public final class StUnhex extends StEnvelope {
                             StringEscapeUtils.escapeJava(
                                 new String(
                                     StUnhex.buffer(
-                                        StUnhex.unspace(xml.xpath("text()").get(0))
+                                        StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                     ).array(),
                                     StandardCharsets.UTF_8
                                 )
@@ -98,8 +98,8 @@ public final class StUnhex extends StEnvelope {
                         )
                     ),
                     new StXPath(
-                        "(//o[@data='bytes' and (@base='string' or @base='org.eolang.string') and empty(text())])[1]",
-                        xml -> new Directives().attr("data", "string")
+                        "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and empty(text())]/parent::o[(@base='string' or @base='org.eolang.string')])[1]",
+                        xml -> new Directives().set("").attr("data", "string")
                     )
                 )
             )
@@ -144,7 +144,7 @@ public final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[@data='bytes' and (@base='%s' or @base='org.eolang.%1$s') and not(empty(text()))])[1]",
+            "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
             type
         );
     }

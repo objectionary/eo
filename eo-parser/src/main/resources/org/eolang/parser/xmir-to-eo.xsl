@@ -132,7 +132,7 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <!-- DATA BYTES -->
-  <xsl:template match="o[@data='bytes']" mode="head">
+  <xsl:template match="o[@data]" mode="head">
     <xsl:choose>
       <xsl:when test="@base='string'">
         <xsl:text>"""</xsl:text>
@@ -141,20 +141,7 @@ SOFTWARE.
         <xsl:value-of select="$eol"/>
         <xsl:text>"""</xsl:text>
       </xsl:when>
-      <xsl:when test="@base='bool'">
-        <xsl:choose>
-          <xsl:when test="text() = '01'">
-            <xsl:text>TRUE</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>FALSE</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="@base='int'">
-        <xsl:value-of select="eo:bytes-to-int(replace(text(), ' ', ''))"/>
-      </xsl:when>
-      <xsl:when test="@base='float'">
+      <xsl:when test="@base='bool' or @base='int' or @base='float'">
         <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:otherwise>

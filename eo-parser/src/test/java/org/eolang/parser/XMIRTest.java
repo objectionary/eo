@@ -27,6 +27,8 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import org.cactoos.io.InputOf;
 import org.eolang.jucs.ClasspathSource;
@@ -46,12 +48,11 @@ final class XMIRTest {
      * Convert EO to xmir and back and compare.
      * @param src EO source.
      * @throws Exception If fails.
-     * @todo #2729:30min Xmir samples are not converted successfully. Since we have data only in
-     *  bytes and after changing 'xmir-to-eo.xsl' many test are not passed anymore. The reason is
-     *  next: if we have an integer in EO, it's converted to bytes in xmir, then it's converted to
-     *  bytes in EO. Here we loose information about an integer while program still works the same.
-     *  Need to either resolve such loosing or just rewrite the test. Previous samples were moved
-     *  from "org/eolang/parser/xmir-samples" directory to "org/eolang/parser/xmir-samples-wrong"
+     * @todo #2750:30min Empty bytes in EO ("--") are not converted successfully. The test
+     *  `org/eolang/parser/xmir-samples-wrong/empty-bytes.eo` fails. Transformation `xmir-to-eo.xsl`
+     *  need to be fixed. Don't forget to move `empty-bytes.eo` test from
+     *  `org/eolang/parser/xmir-samples-wrong` to `org/eolang/parser/xmir-samples` after fixing
+     *  `xmir-to-eo.xsl`.
      */
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/xmir-samples/", glob = "**.eo")
@@ -83,12 +84,13 @@ final class XMIRTest {
      * @throws IOException If fails
      */
     private static XML parse(final String source) throws IOException {
-        return new XSLDocument(
-            XMIRTest.class.getResourceAsStream("wrap-method-calls.xsl")
-        ).with(new ClasspathSources()).transform(
-            new EoSyntax(
-                "test", new InputOf(source)
-            ).parsed()
+        return new Xsline(
+            new TrClasspath<>(
+                "/org/eolang/parser/wrap-method-calls.xsl",
+                "/org/eolang/parser/explicit-data.xsl"
+            ).back()
+        ).pass(
+            new EoSyntax("test", new InputOf(source)).parsed()
         );
     }
 
