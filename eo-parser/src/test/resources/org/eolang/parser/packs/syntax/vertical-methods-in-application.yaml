@@ -1,0 +1,13 @@
+xsls: []
+tests:
+  - /program/errors[count(*)=0]
+eo: |
+  x > first
+    a
+    .b
+  y > second
+    a
+    .b:0
+    c
+    .d
+    .e:1
