@@ -102,20 +102,7 @@ final class EOerrorTest {
                                 Phi.Φ.attr("org").get().attr("eolang").get().attr("error").get()
                             ),
                             "α",
-                            new PhWith(
-                                new PhCopy(
-                                    Phi.Φ
-                                        .attr("org").get()
-                                        .attr("eolang").get()
-                                        .attr("string").get()
-                                ),
-                                0,
-                                new PhWith(
-                                    new EObytes(Phi.Φ),
-                                    "Δ",
-                                    new Data.Value<>(new BytesOf("qwerty").take())
-                                )
-                            )
+                            new Data.ToPhi("qwerty")
                         )
                     )
                 )
