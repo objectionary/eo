@@ -38,6 +38,16 @@ import org.xembly.Xembler;
  * Returns already XML with hash.
  *
  * @since 0.35.0
+ *
+ * @todo #2764:30min Replace the hash code entry
+ *  from the XML file node attribute to the file attribute.
+ *  This is necessary to increase the speed of searching for a cached file.
+ *  The hash code entry should be deleted from EoSyntax.java and PhiSyntax.java.
+ *  Hash code should save to the file attribute in ParseMojo.java and UnphiMojo.
+ *  Delete tests containsHash() from EoSyntaxTest.java and PhiSyntaxTest.java.
+ * @todo #2764:30min Is it possible set the hash function directly
+ *  in XeEoListener during the parsing? Now hash code is generated in class StHash.java.
+ *  Maybe it will be better generating hash code in class XeEoListener.
  */
 public final class StHash extends StEnvelope {
 
@@ -87,10 +97,17 @@ public final class StHash extends StEnvelope {
          * @throws NoSuchAlgorithmException If fails.
          */
         public String compute() throws NoSuchAlgorithmException {
-            final MessageDigest algorithm = MessageDigest.getInstance("MD5");
-            final String program = this.xml.nodes("/program/objects").toString();
-            final byte[] code = algorithm.digest(program.getBytes());
-            final BigInteger number = new BigInteger(1, code);
+            final BigInteger number = new BigInteger(
+                1,
+                MessageDigest
+                    .getInstance("MD5")
+                    .digest(
+                        this.xml.nodes(
+                            "/program/objects"
+                        )
+                            .toString().getBytes()
+                    )
+            );
             final StringBuilder hash = new StringBuilder(number.toString(16));
             while (hash.length() < 32) {
                 hash.insert(0, "0");
