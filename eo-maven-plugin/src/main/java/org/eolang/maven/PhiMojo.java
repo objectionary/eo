@@ -28,6 +28,8 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.StSequence;
+import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
@@ -60,7 +62,16 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Transformations train.
      */
-    private static final Train<Shift> TRAIN = new ParsingTrain();
+    private static final Train<Shift> TRAIN = new TrLambda(
+        new ParsingTrain(),
+        shift -> new StSequence(
+            shift.uid(),
+            xml -> xml.nodes(
+                String.format("/program/sheets/sheet[text()='%s']", shift.uid())
+            ).isEmpty(),
+            shift
+        )
+    );
 
     /**
      * Extension of the file where we put phi-calculus expression (.phi).
@@ -137,11 +148,14 @@ public final class PhiMojo extends SafeMojo {
      * @param xmir Text of xmir
      * @return Translated xmir
      */
-    private static String translated(final XML xmir) {
+    private static String translated(final XML xmir) throws Exception {
         return new Xsline(
             PhiMojo.TRAIN.with(
                 new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
             )
-        ).pass(xmir).toString();
+        )
+            .pass(xmir)
+            .xpath("phi/text()")
+            .get(0);
     }
 }
