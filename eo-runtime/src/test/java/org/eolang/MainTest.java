@@ -69,19 +69,17 @@ final class MainTest {
     }
 
     @Test
-    @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
-            MainTest.exec("org.eolang.io.stdout", "Hello!"),
+            MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
             Matchers.equalTo(String.format("Hello!%n---%n%s%n", Arrays.toString(new byte[]{0x01})))
         );
     }
 
     @Test
-    @Disabled
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
-            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
+            MainTest.exec("--verbose", "org.eolang.io.tupled-stdout", "Hello, dude!"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("Hello, "),
