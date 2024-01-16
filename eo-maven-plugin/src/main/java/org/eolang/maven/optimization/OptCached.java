@@ -41,12 +41,19 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
- * @todo #2746:30min Use checksum, not time.
+ * @todo #2746:30min Fix caching mechanism in {@link OptCached}. Current
+ *  The last modified time of the files between stages may be different,
+ *  so it is not correct to do an equality comparison ({@code .equals(...)}).
+ *  The last modification time of the file at the current stage
+ *  must be less than or equal to the last modification time of file in cache at the next stage.
  *  The following tests show that fetching from the cache doesn't work correctly:
  *  - {@link OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
  *  - {@link OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
- *  Need to fix the file validation from cache: using checksum, but not time.
  *  Don't forget to enable the tests.
+ * @todo #2746:30min Unify caching mechanism on stages: parse, optimize, pull and so on.
+ *  Current implementations of caching on parsing stage and optimize stages work differently.
+ *  In ParseMojo we have condition {@code if (tojo.hasHash()) }, in OptimizeMojo or ShakeMojo we
+ *  compare creation time of files.
  */
 public final class OptCached implements Optimization {
 
