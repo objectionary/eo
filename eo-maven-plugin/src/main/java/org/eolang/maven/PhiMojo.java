@@ -24,25 +24,28 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Train;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.Text;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.cactoos.text.Sticky;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
+import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.Schema;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
@@ -55,18 +58,14 @@ import org.eolang.maven.util.Walk;
 )
 public final class PhiMojo extends SafeMojo {
     /**
+     * Transformations train.
+     */
+    private static final Train<Shift> TRAIN = new ParsingTrain();
+
+    /**
      * Extension of the file where we put phi-calculus expression (.phi).
      */
     public static final String EXT = "phi";
-
-    /**
-     * Translation to phi.
-     */
-    private static final Text TRANSLATION = new Sticky(
-        new TextOf(
-            new ResourceOf("org/eolang/maven/phi/to-phi.xsl")
-        )
-    );
 
     /**
      * The directory where to take xmir files for translation from.
@@ -98,13 +97,17 @@ public final class PhiMojo extends SafeMojo {
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     xmir -> () -> {
+                        final XML xml = new XMLDocument(
+                            new TextOf(xmir).asString()
+                        );
+                        new Schema(xml).check();
                         final Path relative = Paths.get(
                             this.phiInputDir.toPath().relativize(xmir).toString().replace(
                                 String.format(".%s", TranspileMojo.EXT),
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
-                        home.save(PhiMojo.translated(new TextOf(xmir)), relative);
+                        home.save(PhiMojo.translated(xml), relative);
                         Logger.info(
                             this,
                             "Translated to phi: %s -> %s",
@@ -133,11 +136,12 @@ public final class PhiMojo extends SafeMojo {
      * Translate given xmir to phi calculus expression.
      * @param xmir Text of xmir
      * @return Translated xmir
-     * @throws Exception If fail to translate
      */
-    private static String translated(final Text xmir) throws Exception {
-        return new XSLDocument(PhiMojo.TRANSLATION.asString()).applyTo(
-            new XMLDocument(xmir.asString())
-        );
+    private static String translated(final XML xmir) {
+        return new Xsline(
+            PhiMojo.TRAIN.with(
+                new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
+            )
+        ).pass(xmir).toString();
     }
 }
