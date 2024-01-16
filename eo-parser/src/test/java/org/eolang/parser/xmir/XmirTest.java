@@ -49,7 +49,7 @@ final class XmirTest {
      * Convert EO to xmir and back and compare.
      * @param pack EO pack.
      * @throws Exception If fails.
-     * c Implement printing from XMIR to EO in strait notation
+     * @todo #2758:30min Implement printing from XMIR to EO in strait notation
      *  (where method starts on the next line). It should be done via XSL which
      *  should be used in {@link Xmir.Default} object. The next disabled test
      *  shows that such implementation does not work now:

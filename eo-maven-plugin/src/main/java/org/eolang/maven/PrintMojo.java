@@ -77,12 +77,16 @@ public final class PrintMojo extends SafeMojo {
     )
     private File printOutputDir;
 
+    /**
+     * Print EO in reversed notation.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
     @Parameter(
         property = "eo.printReversed",
         required = true,
         defaultValue = "false"
     )
-    private boolean printReversed = false;
+    private boolean printReversed;
 
     @Override
     void exec() throws IOException {
