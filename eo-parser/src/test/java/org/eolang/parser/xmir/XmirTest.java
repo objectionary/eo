@@ -78,7 +78,7 @@ final class XmirTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/xmir/samples/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsReversed(final String pack) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);
         final String key = "reversed";
