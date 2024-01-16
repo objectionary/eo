@@ -64,18 +64,27 @@ class PhiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
     void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
+        String phi = new TextOf(
+            new FakeMaven(temp)
+                .withProgram(map.get("eo").toString())
+                .execute(new FakeMaven.Phi())
+                .result()
+                .get("target/phi/foo/x/main.phi")
+        ).asString();
+        System.out.println(phi);
         MatcherAssert.assertThat(
             String.format(
                 "Result phi expression should be equal to %s, but it doesn't",
                 map.get("phi").toString()
             ),
-            new TextOf(
-                new FakeMaven(temp)
-                    .withProgram(map.get("eo").toString())
-                    .execute(new FakeMaven.Phi())
-                    .result()
-                    .get("target/phi/foo/x/main.phi")
-            ).asString(),
+            phi,
+//            new TextOf(
+//                new FakeMaven(temp)
+//                    .withProgram(map.get("eo").toString())
+//                    .execute(new FakeMaven.Phi())
+//                    .result()
+//                    .get("target/phi/foo/x/main.phi")
+//            ).asString(),
             Matchers.equalTo(map.get("phi").toString())
         );
     }
