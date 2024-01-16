@@ -24,18 +24,15 @@
 package org.eolang.parser.xmir;
 
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import org.cactoos.Text;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.parser.StUnhex;
 
 /**
  * Prints XMIR to EO.
- *
  * @since 0.35.0
  */
 public interface Xmir {
@@ -60,9 +57,13 @@ public interface Xmir {
      */
     final class Default implements Xmir {
         /**
-         * Wrap method calls XSL.
+         * Train of transformations.
          */
-        private static final String WRAP = "/org/eolang/parser/wrap-method-calls.xsl";
+        private static final Train<Shift> TRAIN = new TrDefault<>(
+            new StClasspath("/org/eolang/parser/explicit-data.xsl"),
+            new StUnhex(),
+            new StClasspath("/org/eolang/parser/wrap-method-calls.xsl")
+        );
 
         /**
          * Default xmir-to-eo XSL transformation.
@@ -70,83 +71,41 @@ public interface Xmir {
         private static final String TO_EO = "/org/eolang/parser/xmir-to-eo.xsl";
 
         /**
-         * The XML content.
+         * The XML.
          */
-        private final Unchecked<String> content;
+        private final XML xml;
 
         /**
-         * XSL transformation sheets.
+         * Result to-EO transformation.
          */
-        private final String[] sheets;
-
-        /**
-         * Ctor.
-         * @param src The source
-         */
-        public Default(final String src) {
-            this(new XMLDocument(src));
-        }
-
-        /**
-         * Ctor.
-         * @param src The source
-         */
-        public Default(final Text src) {
-            this(new Unchecked<>(src::asString), Xmir.Default.TO_EO);
-        }
-
-        /**
-         * Ctor.
-         * @param src The source
-         * @param xsl To-EO transformation
-         */
-        public Default(final Text src, final String xsl) {
-            this(new Unchecked<>(src::asString), xsl);
-        }
-
-        /**
-         * Ctor.
-         * @param src The source
-         */
-        public Default(final XML src, final String xsl) {
-            this(new Unchecked<>(src::toString), xsl);
-        }
+        private final String xsl;
 
         /**
          * Ctor.
          * @param src The source
          */
         public Default(final XML src) {
-            this(new Unchecked<>(src::toString), Xmir.Default.TO_EO);
+            this(src, Xmir.Default.TO_EO);
         }
 
         /**
          * Ctor.
          * @param src The source
-         * @param xsl To-EO transformation
+         * @param classpath To-EO transformation classpath
          */
-        Default(final Unchecked<String> src, final String xsl) {
-            this(src, new String[] { Xmir.Default.WRAP, xsl });
-        }
-
-        /**
-         * Ctor.
-         * @param src The source
-         */
-        private Default(final Unchecked<String> src, final String[] sheets) {
-            this.content = src;
-            this.sheets = sheets;
+        public Default(final XML src, final String classpath) {
+            this.xml = src;
+            this.xsl = classpath;
         }
 
         @Override
         public String toEO() {
             return new Xsline(
-                new TrJoined<>(
-                    new TrDefault<>(new StUnhex()),
-                    new TrClasspath<>(this.sheets).back()
+                Xmir.Default.TRAIN.with(
+                    new StClasspath(this.xsl)
                 )
             )
-                .pass(new XMLDocument(this.content.value()))
+                .pass(this.xml)
                 .xpath("eo/text()")
                 .get(0);
         }

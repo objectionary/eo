@@ -40,6 +40,11 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test cases for {@link PrintMojo}.
  * @since 0.33.0
+ * @todo #2758:30min To test that PrintMojo prints EO in different notations depends
+ *  on given flag. When {@link org.eolang.parser.xmir.XmirReversed} and
+ *  {@link org.eolang.parser.xmir.Xmir.Default} work correctly and prints xmirs in
+ *  corresponding notations we need to check that PrintMojo uses them correctly
+ *  depends on given flag {@link PrintMojo#printReversed}.
  */
 final class PrintMojoTest {
     @Test

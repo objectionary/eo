@@ -24,6 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -38,8 +40,10 @@ import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.XMIR;
+import org.eolang.parser.Schema;
 import org.eolang.parser.xmir.Xmir;
+import org.eolang.parser.xmir.XmirReversed;
+import org.eolang.parser.xmir.XmirSwap;
 
 /**
  * Print XMIR to EO.
@@ -73,6 +77,13 @@ public final class PrintMojo extends SafeMojo {
     )
     private File printOutputDir;
 
+    @Parameter(
+        property = "eo.printReversed",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean printReversed = false;
+
     @Override
     void exec() throws IOException {
         final Home home = new HmBase(this.printOutputDir);
@@ -85,7 +96,16 @@ public final class PrintMojo extends SafeMojo {
                             this.printSourcesDir.toPath().relativize(source).toString()
                                 .replace(".xmir", ".eo")
                         );
-                        home.save(new Xmir(new TextOf(source)).toEO(), relative);
+                        final XML xml = new XMLDocument(new TextOf(source).asString());
+                        new Schema(xml).check();
+                        home.save(
+                            new XmirSwap(
+                                this.printReversed,
+                                new XmirReversed(xml),
+                                new Xmir.Default(xml)
+                            ).toEO(),
+                            relative
+                        );
                         Logger.info(
                             this,
                             "Printed: %s => %s", source, this.printOutputDir.toPath().resolve(relative)

@@ -1,0 +1,53 @@
+origin: |
+  +package sandbox
+  
+  [args] > main
+    QQ.io.stdout > @
+      args.at
+        args.length.neg
+    nan.plus negative-infinity > not-a-number
+    text-of
+      input-of
+        args.at not-a-number
+
+strait: |
+  +package sandbox
+  
+  [args] > main
+    QQ
+    .io
+    stdout > @
+      args
+      .at
+        args
+        .length
+        .neg
+    nan
+    .plus > not-a-number
+      negative-infinity
+    text-of
+      input-of
+        args
+        .at
+          not-a-number
+
+reversed: |
+  +package sandbox
+
+  [args] > main
+    stdout. > @
+      io.
+        QQ
+      at.
+        args
+        neg.
+          length.
+            args
+    plus. > not-a-number
+      nan
+      negative-infinity
+    text-of
+      input-of
+        at.
+          args
+          not-a-number

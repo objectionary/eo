@@ -21,25 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser.xmir;
-
-import com.jcabi.xml.XML;
 
 /**
- * Converts to EO with reversed methods.
- * @since 0.35.0
+ * EO parser.
+ *
+ * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @version $Id$
+ * @since 0.1
+ * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>
+ * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
-public final class XmirReversed extends XmirEnvelope {
-    /**
-     * XSL transformation that converts XMIR to EO with reversed methods.
-     */
-    private static final String REVERSED = "/org/eolang/parser/xmir-to-eo.xsl";
-
-    /**
-     * Ctor.
-     * @param xml The source xml
-     */
-    public XmirReversed(final XML xml) {
-        super(new Xmir.Default(xml, XmirReversed.REVERSED));
-    }
-}
+package org.eolang.parser.xmir;
