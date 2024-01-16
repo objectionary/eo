@@ -59,38 +59,9 @@ final class XmirTest {
     @Disabled
     @ClasspathSource(value = "org/eolang/parser/xmir/samples/", glob = "**.yaml")
     void printsStrait(final String pack) throws IOException {
-        this.parseAndCompare(pack, "strait", Xmir.Default::new);
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/parser/xmir/samples/", glob = "**.yaml")
-    void printsReversed(final String pack) throws IOException {
-        this.parseAndCompare(pack, "reversed", XmirReversed::new);
-    }
-
-    /**
-     * Parse EO from given pack, converts XMIR to EO and compare with result EO.
-     * @param pack Yaml pack
-     * @param key Key to get result EO from pack
-     * @param xmir Xmir constructor
-     */
-    private void parseAndCompare(
-        final String pack,
-        final String key,
-        final Function<XML, Xmir> xmir
-    ) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);
-        final String original = (String) map.get("origin");
-        Logger.debug(this, "Original EOLANG:%n%s", original);
-        final XML first = new EoSyntax("test", new InputOf(original)).parsed();
-        MatcherAssert.assertThat(
-            "Original EO should be parsed without errors",
-            first,
-            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
-        );
-        Logger.debug(this, "First:%n%s", first);
-        final String eolang = xmir.apply(first).toEO();
-        Logger.debug(this, "EOLANG:%n%s", eolang);
+        final String key = "strait";
+        final String eolang = this.eolang((String) map.get("origin"), Xmir.Default::new);
         MatcherAssert.assertThat(
             "Result EO should be parsed without errors",
             new EoSyntax("test", new InputOf(eolang)).parsed(),
@@ -104,5 +75,49 @@ final class XmirTest {
             map.get(key),
             Matchers.equalTo(eolang)
         );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/parser/xmir/samples/", glob = "**.yaml")
+    void printsReversed(final String pack) throws IOException {
+        final Map<String, Object> map = new Yaml().load(pack);
+        final String key = "reversed";
+        final String eolang = this.eolang((String) map.get("origin"), XmirReversed::new);
+        MatcherAssert.assertThat(
+            "Result EO should be parsed without errors",
+            new EoSyntax("test", new InputOf(eolang)).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+        MatcherAssert.assertThat(
+            String.format(
+                "Result EO should be equal to original EO in %s notation",
+                key
+            ),
+            map.get(key),
+            Matchers.equalTo(eolang)
+        );
+    }
+
+    /**
+     * Parse EO from given pack, converts XMIR to EO.
+     * @param original Original EOLANG
+     * @param xmir Xmir constructor
+     * @return Eolang from XMIR
+     */
+    private String eolang(
+        final String original,
+        final Function<XML, Xmir> xmir
+    ) throws IOException {
+        Logger.debug(this, "Original EOLANG:%n%s", original);
+        final XML first = new EoSyntax("test", new InputOf(original)).parsed();
+        MatcherAssert.assertThat(
+            "Original EO should be parsed without errors",
+            first,
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+        Logger.debug(this, "First:%n%s", first);
+        final String eolang = xmir.apply(first).toEO();
+        Logger.debug(this, "EOLANG:%n%s", eolang);
+        return eolang;
     }
 }
