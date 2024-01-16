@@ -52,7 +52,7 @@ import org.eolang.maven.footprint.FtDefault;
  * @todo #2746:30min Unify caching mechanism on stages: parse, optimize, pull and so on.
  *  Current implementations of caching on parsing stage and optimize stages work differently.
  *  In ParseMojo we have condition {@code if (tojo.hasHash()) }, in OptimizeMojo or ShakeMojo we
- *  ompare creation time of files.
+ *  compare creation time of files.
  *  Don't forget to enable the tests.
  */
 public final class OptCached implements Optimization {
