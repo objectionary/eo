@@ -91,7 +91,7 @@ public final class PhiMojo extends SafeMojo {
      * This flag is used for test in order not to optimize XMIR twice:
      * in {@link OptimizeMojo} and here.
      */
-    private boolean phiOptimize;
+    private boolean phiOptimize = true;
 
     @Override
     public void exec() {
