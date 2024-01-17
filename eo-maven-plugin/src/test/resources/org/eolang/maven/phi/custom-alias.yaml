@@ -4,4 +4,18 @@ eo: |
   
   [y] > main
     x y > z
-phi: "{foo ↦ ⟦bar ↦ ⟦main ↦ ⟦y ↦ ∅, z ↦ Φ.com.yegor256.x(α0 ↦ ξ.y)⟧, λ ⤍ Package⟧, λ ⤍ Package⟧}"
+phi: |
+  {
+    foo ↦ ⟦
+      bar ↦ ⟦
+        main ↦ ⟦
+          y ↦ ∅,
+          z ↦ Φ.com.yegor256.x(
+            α0 ↦ ξ.y
+          )
+        ⟧,
+        λ ⤍ Package
+      ⟧,
+      λ ⤍ Package
+    ⟧
+  }

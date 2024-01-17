@@ -7,11 +7,11 @@ eo: |
     * > interfaces
       "org/eolang/benchmark/F"
 phi: |
-  { 
-    org ↦ ⟦ 
-      eolang ↦ ⟦ 
-        benchmark ↦ ⟦ 
-          j$A ↦ ⟦ 
+  {
+    org ↦ ⟦
+      eolang ↦ ⟦
+        benchmark ↦ ⟦
+          j$A ↦ ⟦
             access ↦ Φ.org.eolang.int(
               α0 ↦ Φ.org.eolang.bytes(
                 Δ ⤍ 00-00-00-00-00-00-00-20
@@ -23,18 +23,18 @@ phi: |
               )
             ),
             interfaces ↦ Φ.org.eolang.tuple(
-              α0 ↦ Φ.org.eolang.tuple.emtpy,
+              α0 ↦ Φ.org.eolang.tuple.empty,
               α1 ↦ Φ.org.eolang.string(
                 α0 ↦ Φ.org.eolang.bytes(
                   Δ ⤍ 6F-72-67-2F-65-6F-6C-61-6E-67-2F-62-65-6E-63-68-6D-61-72-6B-2F-46
                 )
               )
             )
-          ⟧
-        ⟧, 
+          ⟧,
+          λ ⤍ Package
+        ⟧,
         λ ⤍ Package
-      ⟧, 
+      ⟧,
       λ ⤍ Package
-    ⟧, 
-    λ ⤍ Package
+    ⟧
   }

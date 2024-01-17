@@ -28,8 +28,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.StSequence;
-import com.yegor256.xsline.TrLambda;
+import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
@@ -60,20 +59,6 @@ import org.eolang.parser.Schema;
 )
 public final class PhiMojo extends SafeMojo {
     /**
-     * Transformations train.
-     */
-    private static final Train<Shift> TRAIN = new TrLambda(
-        new ParsingTrain(),
-        shift -> new StSequence(
-            shift.uid(),
-            xml -> xml.nodes(
-                String.format("/program/sheets/sheet[text()='%s']", shift.uid())
-            ).isEmpty(),
-            shift
-        )
-    );
-
-    /**
      * Extension of the file where we put phi-calculus expression (.phi).
      */
     public static final String EXT = "phi";
@@ -100,9 +85,23 @@ public final class PhiMojo extends SafeMojo {
     )
     private File phiOutputDir;
 
+
+    /**
+     * Pass XMIR to Optimizations train.
+     * This flag is used for test in order not to optimize XMIR twice:
+     * in {@link OptimizeMojo} and here.
+     */
+    private boolean phiOptimize;
+
     @Override
     public void exec() {
         final Home home = new HmBase(this.phiOutputDir);
+        final Train<Shift> train;
+        if (this.phiOptimize) {
+            train = new ParsingTrain();
+        } else {
+            train = new TrDefault<>();
+        }
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -118,7 +117,7 @@ public final class PhiMojo extends SafeMojo {
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
-                        home.save(PhiMojo.translated(xml), relative);
+                        home.save(this.translated(train, xml), relative);
                         Logger.info(
                             this,
                             "Translated to phi: %s -> %s",
@@ -145,14 +144,13 @@ public final class PhiMojo extends SafeMojo {
 
     /**
      * Translate given xmir to phi calculus expression.
+     * @param train Train that optimize and traslates given xmir
      * @param xmir Text of xmir
      * @return Translated xmir
      */
-    private static String translated(final XML xmir) throws Exception {
+    private String translated(final Train<Shift> train, final XML xmir) {
         return new Xsline(
-            PhiMojo.TRAIN.with(
-                new StClasspath("/org/eolang/maven/phi/to-phi.xsl")
-            )
+            train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
         )
             .pass(xmir)
             .xpath("phi/text()")
