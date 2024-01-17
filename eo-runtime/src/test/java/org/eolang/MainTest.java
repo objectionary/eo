@@ -40,12 +40,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Main}.
  *
  * @since 0.1
- * @todo #2718:30min Enable the tests. Tests {@link MainTest#deliversCleanOutput()} and
- *  {@link MainTest#executesJvmFullRun()} were disabled because they execute "org.eolang.io.stdout"
- *  object that accepts "string". But arguments after "org.eolang.io.stdout" are stored into "tuple"
- *  and are being passed as "tuple" object. And here we get the situation where
- *  "stdout" accepts "tuple" and fails. We need to enable the test by finding object that accepts
- *  "tuple" as the first argument, or make a custom one.
  */
 final class MainTest {
 
@@ -69,19 +63,17 @@ final class MainTest {
     }
 
     @Test
-    @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
-            MainTest.exec("org.eolang.io.stdout", "Hello!"),
+            MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
             Matchers.equalTo(String.format("Hello!%n---%n%s%n", Arrays.toString(new byte[]{0x01})))
         );
     }
 
     @Test
-    @Disabled
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
-            MainTest.exec("--verbose", "org.eolang.io.stdout", "Hello, dude!"),
+            MainTest.exec("--verbose", "org.eolang.io.tupled-stdout", "Hello, dude!"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
                 Matchers.containsString("Hello, "),
