@@ -36,6 +36,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cactoos.list.ListOf;
+import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -45,6 +46,7 @@ import org.xembly.Directives;
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
+ * @checkstyle NestedIfDepthCheck (1300 lines)
  * @since 0.34.0
  */
 @SuppressWarnings({
@@ -200,10 +202,22 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
-        if ((ctx.alphaBinding() != null || ctx.emptyBinding() != null)
-            && this.objs.size() > this.packages.size()) {
-            this.objects().leave();
+        if (this.objs.size() > this.packages.size()) {
+            if (ctx.alphaBinding() != null) {
+                if (ctx.alphaBinding().attribute().VTX() != null) {
+                    this.objects().remove();
+                } else {
+                    this.objects().leave();
+                }
+            } else if (ctx.emptyBinding() != null) {
+                if (ctx.emptyBinding().attribute().VTX() != null) {
+                    this.objects().remove();
+                } else {
+                    this.objects().leave();
+                }
+            }
         }
     }
 
@@ -284,7 +298,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
         if (!ctx.FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE)) {
-            this.objects().prop("atom");
+            this.objects().prop("atom", "?");
         }
     }
 

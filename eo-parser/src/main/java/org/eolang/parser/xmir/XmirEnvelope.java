@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.parser;
+package org.eolang.parser.xmir;
 
 /**
- * Info about XMIR.
- * @since 0.34.0
+ * Envelope for {@link Xmir}.
+ * @since 0.35.0
  */
-public final class XmirInfo {
+class XmirEnvelope implements Xmir {
     /**
-     * Info about xmir.
+     * Original XMIR.
      */
-    private static final String INFO = String.join(
-        "",
-        "This is XMIR - a dialect of XML, which is used to present a parsed EO program. ",
-        "For more information please visit https://news.eolang.org/2022-11-25-xmir-guide.html"
-    );
+    private final Xmir origin;
+
+    /**
+     * Ctor.
+     * @param xmir Original XMIR
+     */
+    XmirEnvelope(final Xmir xmir) {
+        this.origin = xmir;
+    }
 
     @Override
-    public String toString() {
-        return XmirInfo.INFO;
+    public String toEO() {
+        return this.origin.toEO();
     }
 }

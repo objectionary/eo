@@ -1,0 +1,96 @@
+origin: |
+  # This is the license part
+  # of the program
+
+  +meta1
+  +meta2 short
+  +meta2 long tail
+
+  3.1415 > pi
+
+  [x x2 x3] > idiomatic
+    5 > iTest_me
+    [] > rr /int
+    if. > @
+      plus.
+        this
+          minus.
+            n
+            "家"
+            4.55 > x!
+            *
+              "Hello, друг"
+              2.18
+              TRUE
+        bar
+          plus.
+            n
+            "hello, 大家!"
+
+strait: |
+  # This is the license part
+  # of the program
+
+  +meta1
+  +meta2 short
+  +meta2 long tail
+
+  3.1415 > pi
+
+  [x x2 x3] > idiomatic
+    5 > iTest_me
+    [] > rr /int
+    this
+      n
+      .minus
+        """
+        \u5BB6
+        """
+        4.55 > x!
+        *
+          "Hello, \u0434\u0440\u0443\u0433"
+          2.18
+          TRUE
+    .plus
+      bar
+        n
+        .plus
+          """
+          hello, \u5927\u5BB6!
+          """"
+    .if > @
+
+reversed: |
+  # This is the license part
+  # of the program
+
+  +meta1
+  +meta2 short
+  +meta2 long tail
+
+  3.1415 > pi
+
+  [x x2 x3] > idiomatic
+    5 > iTest_me
+    [] > rr /int
+    if. > @
+      plus.
+        this
+          minus.
+            n
+            """
+            \u5BB6
+            """
+            4.55 > x!
+            *
+              """
+              Hello, \u0434\u0440\u0443\u0433
+              """
+              2.18
+              TRUE
+        bar
+          plus.
+            n
+            """
+            hello, \u5927\u5BB6!
+            """

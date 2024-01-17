@@ -1,0 +1,16 @@
+out:
+  - ".*first.*"
+file: org/eolang/snippets/vmb.eo
+args: ["org.eolang.snippets.vbm"]
+eo: |
+  +package org.eolang.snippets
+  +alias org.eolang.io.stdout
+
+  [args] > vbm
+    stdout > @
+      if.
+        TRUE
+        "second":1
+        "first"
+        .as-bytes
+        .as-string:0

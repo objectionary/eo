@@ -299,10 +299,8 @@ ahead
 
 // Method
 method
-    : hmethodExtended
-    | hmethodExtendedVersioned
-    | vmethod
-    | vmethodVersioned
+    : hmethodOptional
+    | vmethodOptional
     ;
 
 // Method with optional name
@@ -312,7 +310,7 @@ methodNamed
 
 // Method with bindning
 methodAs
-    : hmethodOptional as
+    : method as
     ;
 
 // Horizontal method
@@ -322,6 +320,7 @@ hmethod
     : hmethodHead methodTail+
     ;
 
+// Optional horizontal method
 hmethodOptional
     : hmethodExtended
     | hmethodExtendedVersioned
@@ -371,6 +370,12 @@ vmethod
 // Vertical method with version
 vmethodVersioned
     : vmethodHead vmethodTailVersioned
+    ;
+
+// Optional vertical method
+vmethodOptional
+    : vmethod
+    | vmethodVersioned
     ;
 
 // Head of vertical method

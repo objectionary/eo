@@ -24,8 +24,8 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xmir-to-eo" version="2.0">
   <!--
-  This one maps XMIR to EO original syntax. It's used
-  in XMIR.java class.
+  This one maps XMIR to EO original syntax in reversed notation.
+  It's used in XmirReversed.java class.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
@@ -68,10 +68,6 @@ SOFTWARE.
   <xsl:template match="objects">
     <xsl:apply-templates select="o"/>
   </xsl:template>
-  <!--  -->
-  <!--  <xsl:template match="o[eo:attr(.)]">-->
-  <!--     nothing, it's a free attribute -->
-  <!--  </xsl:template>-->
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:attr(.))]">
     <xsl:param name="indent" select="''"/>
@@ -80,7 +76,9 @@ SOFTWARE.
       <xsl:value-of select="$eol"/>
     </xsl:if>
     <xsl:value-of select="$indent"/>
-    <xsl:apply-templates select="." mode="head"/>
+    <xsl:apply-templates select="." mode="head">
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="tail"/>
     <xsl:value-of select="$eol"/>
     <xsl:apply-templates select="o[not(eo:attr(.))]">
@@ -93,6 +91,10 @@ SOFTWARE.
       <xsl:when test="starts-with(@base,'.')">
         <xsl:value-of select="substring(@base,2)"/>
         <xsl:text>.</xsl:text>
+      </xsl:when>
+      <!-- NOT OPTIMIZED TUPLE -->
+      <xsl:when test="@star">
+        <xsl:text>*</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@base"/>
@@ -131,37 +133,39 @@ SOFTWARE.
       </xsl:if>
     </xsl:if>
   </xsl:template>
-  <!-- DATA BYTES -->
-  <xsl:template match="o[@data='bytes']" mode="head">
+  <!-- DATA -->
+  <xsl:template match="o[@data]" mode="head">
+    <xsl:param name="indent"/>
     <xsl:choose>
-      <xsl:when test="@base='string'">
+      <xsl:when test="@data='string'">
         <xsl:text>"""</xsl:text>
         <xsl:value-of select="$eol"/>
-        <xsl:value-of select="text()"/>
-        <xsl:value-of select="$eol"/>
+        <xsl:if test="not(empty(text()))">
+          <xsl:value-of select="$indent"/>
+          <xsl:value-of select="text()"/>
+          <xsl:value-of select="$eol"/>
+        </xsl:if>
+        <xsl:value-of select="$indent"/>
         <xsl:text>"""</xsl:text>
       </xsl:when>
-      <xsl:when test="@base='bool'">
+      <xsl:when test="@data='bool' or @data='int' or @data='float'">
+        <xsl:value-of select="text()"/>
+      </xsl:when>
+      <xsl:when test="@data='bytes'">
         <xsl:choose>
-          <xsl:when test="text() = '01'">
-            <xsl:text>TRUE</xsl:text>
+          <xsl:when test="empty(text())">
+            <xsl:text>--</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text>FALSE</xsl:text>
+            <xsl:value-of select="replace(text(), ' ', '-')"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
-      <xsl:when test="@base='int'">
-        <xsl:value-of select="eo:bytes-to-int(replace(text(), ' ', ''))"/>
-      </xsl:when>
-      <xsl:when test="@base='float'">
-        <xsl:value-of select="text()"/>
-      </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="replace(text(), ' ', '-')"/>
-        <xsl:if test="not(contains(text(), ' '))">
-          <xsl:text>-</xsl:text>
-        </xsl:if>
+        <xsl:message terminate="yes">
+          <xsl:text>Invalid data attribute: </xsl:text>
+          <xsl:value-of select="@data"/>
+        </xsl:message>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
