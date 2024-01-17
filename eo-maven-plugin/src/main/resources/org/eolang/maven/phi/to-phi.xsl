@@ -316,9 +316,9 @@ SOFTWARE.
     </xsl:choose>
     <!-- Data -->
     <xsl:if test="@data">
-      <xsl:if test="not(concat('org.eolang.',@data)=$literal-objects/text())">
+      <xsl:if test="not(@data='bytes')">
         <xsl:message terminate="yes">
-          <xsl:text>Invalid value in data attribute: </xsl:text>
+          <xsl:text>Only 'bytes' is allowed as 'data' attribute to convert to phi-calculus expression. Given: </xsl:text>
           <xsl:value-of select="@data"/>
         </xsl:message>
       </xsl:if>
