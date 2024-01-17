@@ -40,6 +40,11 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 /**
  * Test case for {@link EOerror}.
@@ -62,18 +67,33 @@ final class EOerrorTest {
         );
     }
 
-    @Test
-    void getsReadableError() {
+    @ParameterizedTest
+    @MethodSource("ExternalMethodSource")
+    void getsReadableError(final Object cnst) {
         ExAbstract error = null;
         try {
-            new Dataized(new MyError()).take();
+            new Dataized(new MyError(cnst)).take();
         } catch (final ExAbstract exc) {
             error = exc;
         }
         assert error != null;
         MatcherAssert.assertThat(
             error.toString(),
-            Matchers.containsString("qwerty")
+            Matchers.containsString(cnst.toString())
+        );
+    }
+
+    /**
+     * Input arguments for getsReadableError unit test.
+     * @return Stream of arguments.
+     */
+    private static Stream<Object> ExternalMethodSource() {
+        return Stream.of(
+            12345L,
+            "qwerty",
+            12.34567D,
+            true,
+            false
         );
     }
 
@@ -90,7 +110,7 @@ final class EOerrorTest {
         /**
          * Ctor.
          */
-        MyError() {
+        MyError(final Object data) {
             this.add(
                 "φ",
                 new AtOnce(
@@ -101,7 +121,7 @@ final class EOerrorTest {
                                 Phi.Φ.attr("org").get().attr("eolang").get().attr("error").get()
                             ),
                             "α",
-                            new Data.ToPhi("qwerty")
+                            new Data.ToPhi(data)
                         )
                     )
                 )
