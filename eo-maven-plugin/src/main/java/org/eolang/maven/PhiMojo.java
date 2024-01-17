@@ -86,7 +86,7 @@ public final class PhiMojo extends SafeMojo {
     private File phiOutputDir;
 
     /**
-     * Pass XMIR to Optimizations train.
+     * Pass XMIR to Optimizations train or not.
      * This flag is used for test in order not to optimize XMIR twice:
      * in {@link OptimizeMojo} and here.
      * @checkstyle MemberNameCheck (5 lines)
