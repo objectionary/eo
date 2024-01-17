@@ -16,7 +16,7 @@ strait: |
   [args] > main
     QQ
     .io
-    stdout > @
+    .stdout > @
       args
       .at
         args

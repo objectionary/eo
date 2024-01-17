@@ -34,7 +34,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -45,18 +44,7 @@ import org.yaml.snakeyaml.Yaml;
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
 final class XmirTest {
-    /**
-     * Convert EO to xmir and back and compare.
-     * @param pack EO pack.
-     * @throws Exception If fails.
-     * @todo #2758:30min Implement printing from XMIR to EO in strait notation
-     *  (where method starts on the next line). It should be done via XSL which
-     *  should be used in {@link Xmir.Default} object. The next disabled test
-     *  shows that such implementation does not work now:
-     *  {@link XmirTest#printsStrait(String)}
-     */
     @ParameterizedTest
-    @Disabled
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
     void printsStrait(final String pack) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);

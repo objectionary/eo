@@ -13,6 +13,7 @@ origin: |
       self.f > @
         self
         v
+
   [] > derived
     base > @
     [self v] > f
@@ -27,7 +28,8 @@ strait: |
   +architect yegor256@gmail.com
   
   [] > base
-    memory 0 > x
+    memory > x
+      0
     [self v] > f
       x
       .write > @
@@ -37,13 +39,14 @@ strait: |
       .f > @
         self
         v
+
   [] > derived
     base > @
     [self v] > f
       self
       .g > @
         self
-        v 
+        v
 
 reversed: |
   +package sandbox
