@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import java.nio.charset.StandardCharsets;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
@@ -39,8 +40,6 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * ERROR.
@@ -136,7 +135,7 @@ public final class EOerror extends PhDefault {
          * Retrieve message from enclosure safely.
          * @param enclosure Enclosure.
          * @return String message.
-         * @checkstyle IllegalCatchCheck (20 lines)
+         * @checkstyle IllegalCatchCheck (45 lines)
          */
         private static String safeMessage(final Phi enclosure) {
             String result;

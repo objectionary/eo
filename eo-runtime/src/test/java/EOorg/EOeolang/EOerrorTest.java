@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import java.util.stream.Stream;
 import org.eolang.AtComposite;
 import org.eolang.AtOnce;
 import org.eolang.Data;
@@ -42,9 +43,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.stream.Stream;
 
 /**
  * Test case for {@link EOerror}.
@@ -68,7 +66,7 @@ final class EOerrorTest {
     }
 
     @ParameterizedTest
-    @MethodSource("ExternalMethodSource")
+    @MethodSource("getTestSources")
     void getsReadableError(final Object cnst) {
         ExAbstract error = null;
         try {
@@ -87,7 +85,7 @@ final class EOerrorTest {
      * Input arguments for getsReadableError unit test.
      * @return Stream of arguments.
      */
-    private static Stream<Object> ExternalMethodSource() {
+    private static Stream<Object> getTestSources() {
         return Stream.of(
             12345L,
             "qwerty",
@@ -109,6 +107,7 @@ final class EOerrorTest {
 
         /**
          * Ctor.
+         * @param data Data inside error.
          */
         MyError(final Object data) {
             this.add(
