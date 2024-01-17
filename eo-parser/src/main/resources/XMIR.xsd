@@ -68,6 +68,7 @@ SOFTWARE.
               <xs:complexType>
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
+                    <xs:attribute name="check"/>
                     <xs:attribute name="line" use="required"/>
                     <xs:attribute name="severity" use="required">
                       <xs:simpleType>
@@ -78,6 +79,8 @@ SOFTWARE.
                         </xs:restriction>
                       </xs:simpleType>
                     </xs:attribute>
+                    <xs:attribute name="sheet"/>
+                    <xs:attribute name="step"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -103,7 +106,8 @@ SOFTWARE.
                   <xs:element name="tail" type="xs:string"/>
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="line" type="xs:decimal"/>
+                <xs:attribute name="line"/>
+                <xs:attribute name="expanded"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>

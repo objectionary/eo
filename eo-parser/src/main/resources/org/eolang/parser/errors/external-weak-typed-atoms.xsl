@@ -40,9 +40,6 @@ SOFTWARE.
             <xsl:attribute name="severity">
               <xsl:text>error</xsl:text>
             </xsl:attribute>
-            <xsl:attribute name="msg">
-              <xsl:value-of select="$package"/>
-            </xsl:attribute>
             <xsl:text>Weak typing /? is allowed only inside org.eolang package</xsl:text>
           </xsl:element>
         </xsl:for-each>

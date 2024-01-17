@@ -121,36 +121,39 @@ public final class ParsingTrain extends TrEnvelope {
      */
     ParsingTrain(final String... sheets) {
         super(
-            new TrJoined<>(
-                new TrDefault<>(
-                    new StEndless(
-                        new StLambda(ParsingTrain.TUPLES::transform)
-                    )
-                ),
-                new TrLambda(
-                    new TrFast(
-                        new TrLambda(
-                            new TrLogged(
-                                new TrClasspath<>(sheets).back(),
-                                ParsingTrain.class,
-                                Level.FINEST
+            new TrLambda(
+                new TrFast(
+                    new TrLambda(
+                        new TrLogged(
+                            new TrJoined<>(
+                                new TrDefault<>(
+                                    new StEndless(
+                                        new StLambda(
+                                            "stars-to-tuples",
+                                            ParsingTrain.TUPLES::transform
+                                        )
+                                    )
+                                ),
+                                new TrClasspath<>(sheets).back()
                             ),
-                            StEoLogged::new
+                            ParsingTrain.class,
+                            Level.FINEST
                         ),
-                        TrFast.class,
-                        500L
+                        StEoLogged::new
                     ),
-                    shift -> new StSequence(
-                        shift.uid(),
-                        xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                        new StAfter(
-                            shift,
-                            new StLambda(
-                                shift::uid,
-                                (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                    .with("sheet", shift.uid())
-                                    .transform(xml)
-                            )
+                    TrFast.class,
+                    500L
+                ),
+                shift -> new StSequence(
+                    shift.uid(),
+                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
+                    new StAfter(
+                        shift,
+                        new StLambda(
+                            shift::uid,
+                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
+                                .with("sheet", shift.uid())
+                                .transform(xml)
                         )
                     )
                 )
