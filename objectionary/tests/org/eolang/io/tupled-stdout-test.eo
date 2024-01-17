@@ -20,11 +20,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.tupled-stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
++tests
++package org.eolang.io
 +version 0.35.0
 
-# Turns an object into a φ-term
-[x] > as-phi /string
+[] > tupled-stdout-single
+  tupled-stdout > @
+    *
+      "Hello, world! Single tupled.\n"
+
+[] > tupled-stdout-several
+  tupled-stdout > @
+    *
+      "Hello"
+      ", "
+      "world"
+      "! "
+      "Several "
+      "tupled.\n"
+
+[] > tupled-stdout-empty
+  eq. > @
+    try
+      []
+        tupled-stdout > @
+          *
+      [e]
+        e > @
+      nop
+    "tuple of arguments must contain at least one element"

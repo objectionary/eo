@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+#  2016-2022 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
++package org.eolang.io
 +version 0.35.0
 
-# Turns an object into a φ-term
-[x] > as-phi /string
+# An object for testing entire applications that accepts arguments in the form of a tuple.
+[args] > tupled-stdout
+  memory 0 > iter
+  args.length.minus 1 > max
+  if. > @
+    max.lt 0
+    error "tuple of arguments must contain at least one element"
+    if.
+      max.eq 0
+      stdout
+        args.at
+          0
+      while.
+        iter.as-int.lt max
+        [i]
+          seq > @
+            *
+              stdout
+                args.at
+                  i
+              iter.write
+                iter.as-int.plus 1
+              TRUE
