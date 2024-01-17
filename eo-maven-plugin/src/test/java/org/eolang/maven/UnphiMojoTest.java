@@ -44,6 +44,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -144,8 +145,9 @@ class UnphiMojoTest {
         );
     }
 
-    @Test
-    void convertsValidXmirAndParsableEO(@TempDir final Path temp) throws IOException {
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void convertsValidXmirAndParsableEO(final boolean reversed, @TempDir final Path temp) throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
                 "[args] > app",
@@ -154,6 +156,7 @@ class UnphiMojoTest {
             )
             .with("printSourcesDir", temp.resolve("target/1-parse").toFile())
             .with("printOutputDir", temp.resolve("target/generated-sources").toFile())
+            .with("printReversed", reversed)
             .execute(ParseMojo.class)
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)

@@ -181,16 +181,19 @@ vapplication
 // Vertical application head
 vapplicationHead
     : applicable
-    | hmethodExtended
-    | hmethodExtendedVersioned
-    | vmethod
-    | vmethodVersioned
+    | hmethodOptional
+    | vmethodOptional
     | versioned
     ;
 
 // Vertical application head with optional name
 vapplicationHeadNamed
     : vapplicationHead oname?
+    ;
+
+// Vertical application head with binding
+vapplicationHeadAs
+    : vapplicationHead as
     ;
 
 // Vertical application arguments
@@ -243,11 +246,6 @@ vapplicationArgHapplicationBinded
 
 vapplicationArgHapplicationUnbinded
     : happlicationExtended oname?
-    ;
-
-// Vertical application head with binding
-vapplicationHeadAs
-    : (applicable | hmethodOptional | versioned) as
     ;
 
 // Vertical anonym object as argument of vertical application

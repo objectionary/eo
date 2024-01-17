@@ -11,3 +11,17 @@ eo: |
     c
     .d
     .e:1
+  Q
+  .org
+  .eolang
+  .io
+  .stdout > third
+    Q
+    .org
+    .eolang
+    .string:0
+      Q.
+      .org
+      .eolang
+      .bytes
+        00-AX-23
