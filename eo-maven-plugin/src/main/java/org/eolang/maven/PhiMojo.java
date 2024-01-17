@@ -85,12 +85,13 @@ public final class PhiMojo extends SafeMojo {
     )
     private File phiOutputDir;
 
-
     /**
      * Pass XMIR to Optimizations train.
      * This flag is used for test in order not to optimize XMIR twice:
      * in {@link OptimizeMojo} and here.
+     * @checkstyle MemberNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.ImmutableField")
     private boolean phiOptimize = true;
 
     @Override
@@ -117,7 +118,7 @@ public final class PhiMojo extends SafeMojo {
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
-                        home.save(this.translated(train, xml), relative);
+                        home.save(PhiMojo.translated(train, xml), relative);
                         Logger.info(
                             this,
                             "Translated to phi: %s -> %s",
@@ -148,7 +149,7 @@ public final class PhiMojo extends SafeMojo {
      * @param xmir Text of xmir
      * @return Translated xmir
      */
-    private String translated(final Train<Shift> train, final XML xmir) {
+    private static String translated(final Train<Shift> train, final XML xmir) {
         return new Xsline(
             train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
         )

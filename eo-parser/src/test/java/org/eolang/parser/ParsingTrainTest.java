@@ -74,7 +74,7 @@ final class ParsingTrainTest {
             ).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)=3]",
-                "/pro gram/errors/error[@severity='critical']"
+                "/program/errors/error[@severity='critical']"
             )
         );
     }
