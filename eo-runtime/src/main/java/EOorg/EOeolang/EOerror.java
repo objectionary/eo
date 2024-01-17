@@ -28,8 +28,6 @@
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
@@ -137,7 +135,7 @@ public final class EOerror extends PhDefault {
          * Retrieve message from enclosure safely.
          * @param enclosure Enclosure.
          * @return String message.
-         * @checkstyle IllegalCatchCheck (45 lines)
+         * @checkstyle IllegalCatchCheck (55 lines)
          */
         private static String safeMessage(final Phi enclosure) {
             String result;
