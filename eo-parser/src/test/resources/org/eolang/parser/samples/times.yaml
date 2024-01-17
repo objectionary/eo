@@ -12,13 +12,13 @@ strait: |
     .stdout > @
       QQ
       .txt
-      .sprintf 
+      .sprintf
         """
         result is %d\n
         """
-          -1
-          .times
-            228
+        -1
+        .times
+          228
 
 reversed: |
   [] > app

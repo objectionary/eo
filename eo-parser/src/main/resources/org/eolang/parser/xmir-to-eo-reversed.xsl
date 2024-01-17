@@ -22,10 +22,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xmir-to-eo" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xmir-to-eo-reversed" version="2.0">
   <!--
-  This one maps XMIR to EO original syntax in strait notation.
-  It's used in Xmir.java class.
+  This one maps XMIR to EO original syntax in reversed notation.
+  It's used in XmirReversed.java class.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
@@ -71,43 +71,27 @@ SOFTWARE.
   <!-- OBJECT, NOT FREE ATTRIBUTE -->
   <xsl:template match="o[not(eo:attr(.))]">
     <xsl:param name="indent" select="''"/>
-    <xsl:choose>
-      <!-- METHOD -->
-      <xsl:when test="starts-with(@base,'.')">
-        <xsl:apply-templates select="o[position()=1]">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:value-of select="$indent"/>
-        <xsl:apply-templates select="." mode="head">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:apply-templates select="." mode="tail"/>
-        <xsl:value-of select="$eol"/>
-        <xsl:apply-templates select="o[position()&gt;1 and not(eo:attr(.))]">
-          <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-        </xsl:apply-templates>
-      </xsl:when>
-      <!-- NOT METHOD -->
-      <xsl:otherwise>
-        <!--IF NOT THE FIRST TOP OBJECT -->
-        <xsl:if test="position()&gt;1 and parent::objects">
-          <xsl:value-of select="$eol"/>
-        </xsl:if>
-        <xsl:value-of select="$indent"/>
-        <xsl:apply-templates select="." mode="head">
-          <xsl:with-param name="indent" select="$indent"/>
-        </xsl:apply-templates>
-        <xsl:apply-templates select="." mode="tail"/>
-        <xsl:value-of select="$eol"/>
-        <xsl:apply-templates select="o[not(eo:attr(.))]">
-          <xsl:with-param name="indent" select="concat('  ', $indent)"/>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
+    <!--IF NOT THE FIRST TOP OBJECT -->
+    <xsl:if test="position()&gt;1 and parent::objects">
+      <xsl:value-of select="$eol"/>
+    </xsl:if>
+    <xsl:value-of select="$indent"/>
+    <xsl:apply-templates select="." mode="head">
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="tail"/>
+    <xsl:value-of select="$eol"/>
+    <xsl:apply-templates select="o[not(eo:attr(.))]">
+      <xsl:with-param name="indent" select="concat('  ', $indent)"/>
+    </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[not(@data) and @base]" mode="head">
     <xsl:choose>
+      <xsl:when test="starts-with(@base,'.')">
+        <xsl:value-of select="substring(@base,2)"/>
+        <xsl:text>.</xsl:text>
+      </xsl:when>
       <!-- NOT OPTIMIZED TUPLE -->
       <xsl:when test="@star">
         <xsl:text>*</xsl:text>

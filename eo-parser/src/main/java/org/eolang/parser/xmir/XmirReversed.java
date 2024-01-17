@@ -33,7 +33,7 @@ public final class XmirReversed extends XmirEnvelope {
     /**
      * XSL transformation that converts XMIR to EO with reversed methods.
      */
-    private static final String REVERSED = "/org/eolang/parser/xmir-to-eo.xsl";
+    private static final String REVERSED = "/org/eolang/parser/xmir-to-eo-reversed.xsl";
 
     /**
      * Ctor.
