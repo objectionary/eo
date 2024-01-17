@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.34.3" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.34.4" elementFormDefault="qualified">
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
@@ -37,7 +37,17 @@ SOFTWARE.
     <xs:attribute name="scope" type="xs:string"/>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
-    <xs:attribute name="data"/>
+    <xs:attribute name="data">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="bytes"/>
+          <xs:enumeration value="string"/>
+          <xs:enumeration value="int"/>
+          <xs:enumeration value="float"/>
+          <xs:enumeration value="bool"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
     <xs:attribute name="star"/>
     <xs:attribute name="as"/>
     <xs:attribute name="atom"/>
@@ -58,6 +68,7 @@ SOFTWARE.
               <xs:complexType>
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
+                    <xs:attribute name="check"/>
                     <xs:attribute name="line" use="required"/>
                     <xs:attribute name="severity" use="required">
                       <xs:simpleType>
@@ -68,6 +79,8 @@ SOFTWARE.
                         </xs:restriction>
                       </xs:simpleType>
                     </xs:attribute>
+                    <xs:attribute name="sheet"/>
+                    <xs:attribute name="step"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -93,7 +106,8 @@ SOFTWARE.
                   <xs:element name="tail" type="xs:string"/>
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="line" type="xs:decimal"/>
+                <xs:attribute name="line"/>
+                <xs:attribute name="expanded"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
