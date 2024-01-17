@@ -28,6 +28,8 @@
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
@@ -143,38 +145,40 @@ public final class EOerror extends PhDefault {
                 result = "null Phi";
             } else {
                 try {
-                    final byte[] data = new Dataized(enclosure).take();
-                    switch (data.length) {
+                    final byte[] raw = new Dataized(enclosure).take();
+                    final Bytes bytes = new BytesOf(raw);
+                    switch (raw.length) {
                         case 0:
                             result = String.format(
-                                "%s(Δ = --)",
-                                enclosure
+                                "%s(Δ = %s",
+                                enclosure,
+                                bytes
                             );
                             break;
                         case 1:
                             result = String.format(
-                                "%s(Δ = %s)",
+                                "%s(Δ = %s or %s)",
                                 enclosure,
-                                data[0] != 0
+                                bytes,
+                                raw[0] != 0
                             );
                             break;
                         case 8:
-                            final Bytes bytes = new BytesOf(data);
                             result = String.format(
                                 "%s(Δ = %s = %s, or %s, or %s)",
                                 enclosure,
                                 bytes,
                                 bytes.asNumber(Long.class),
                                 bytes.asNumber(Double.class),
-                                new String(data, StandardCharsets.UTF_8)
+                                new String(raw, StandardCharsets.UTF_8)
                             );
                             break;
                         default:
                             result = String.format(
                                 "%s(Δ = %s or %s)",
                                 enclosure,
-                                new BytesOf(data),
-                                new String(data, StandardCharsets.UTF_8)
+                                bytes,
+                                new String(raw, StandardCharsets.UTF_8)
                             );
                     }
                 } catch (final Throwable first) {

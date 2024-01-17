@@ -27,9 +27,11 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
 import org.eolang.AtOnce;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -81,8 +83,24 @@ final class EOerrorTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("getTestByteArraySources")
+    void getsReadableByteArrayError(final byte[] cnst) {
+        ExAbstract error = null;
+        try {
+            new Dataized(new MyError(cnst)).take();
+        } catch (final ExAbstract exc) {
+            error = exc;
+        }
+        assert error != null;
+        MatcherAssert.assertThat(
+            error.toString(),
+            Matchers.containsString(Arrays.toString(cnst))
+        );
+    }
+
     /**
-     * Input arguments for getsReadableError unit test.
+     * Input arguments for getsReadableError unit tests.
      * @return Stream of arguments.
      */
     private static Stream<Object> getTestSources() {
@@ -92,6 +110,19 @@ final class EOerrorTest {
             12.34567D,
             true,
             false
+        );
+    }
+
+    /**
+     * Input arguments for getsReadableByteArrayError unit tests.
+     * @return Stream of arguments.
+     */
+    private static Stream<byte[]> getTestByteArraySources() {
+        return Stream.of(
+            new byte[]{},
+            new byte[]{12},
+            new byte[]{10, 11, 12, 13, 14, 15, 16, 17},
+            new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22}
         );
     }
 
