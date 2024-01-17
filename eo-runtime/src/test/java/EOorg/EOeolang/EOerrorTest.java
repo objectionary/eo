@@ -107,7 +107,7 @@ final class EOerrorTest {
 
         /**
          * Ctor.
-         * @param data Data inside error.
+         * @param data The data inside error.
          */
         MyError(final Object data) {
             this.add(
