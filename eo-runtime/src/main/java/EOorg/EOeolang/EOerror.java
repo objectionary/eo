@@ -30,13 +30,17 @@ package EOorg.EOeolang;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
+import org.eolang.Bytes;
+import org.eolang.BytesOf;
+import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
-import org.eolang.PhContainingUTF8;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * ERROR.
@@ -140,7 +144,40 @@ public final class EOerror extends PhDefault {
                 result = "null Phi";
             } else {
                 try {
-                    result = new PhContainingUTF8(enclosure).toString();
+                    final byte[] data = new Dataized(enclosure).take();
+                    switch (data.length) {
+                        case 0:
+                            result = String.format(
+                                "%s(Δ = --)",
+                                enclosure
+                            );
+                            break;
+                        case 1:
+                            result = String.format(
+                                "%s(Δ = %s)",
+                                enclosure,
+                                data[0] > 0
+                            );
+                            break;
+                        case 8:
+                            final Bytes bytes = new BytesOf(data);
+                            result = String.format(
+                                "%s(Δ = %s = %s, or %s, or %s)",
+                                enclosure,
+                                bytes,
+                                bytes.asNumber(Long.class),
+                                bytes.asNumber(Double.class),
+                                new String(data, StandardCharsets.UTF_8)
+                            );
+                            break;
+                        default:
+                            result = String.format(
+                                "%s(Δ = %s or %s)",
+                                enclosure,
+                                new BytesOf(data),
+                                new String(data, StandardCharsets.UTF_8)
+                            );
+                    }
                 } catch (final Throwable first) {
                     try {
                         result = enclosure.toString();
