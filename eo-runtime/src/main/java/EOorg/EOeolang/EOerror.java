@@ -155,7 +155,7 @@ public final class EOerror extends PhDefault {
                             result = String.format(
                                 "%s(Δ = %s)",
                                 enclosure,
-                                data[0] > 0
+                                data[0] != 0
                             );
                             break;
                         case 8:
