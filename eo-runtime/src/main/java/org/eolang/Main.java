@@ -203,7 +203,7 @@ public final class Main {
         Main.LOGGER.info(
             String.format(
                 "%n---%n%s",
-                new ToStringVerbose().apply(new Dataized(app).take())
+                new VerboseBytesAsString(new Dataized(app).take()).get()
             )
         );
     }

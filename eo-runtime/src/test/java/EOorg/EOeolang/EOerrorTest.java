@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
 import org.eolang.AtOnce;
@@ -38,7 +37,7 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.ToStringVerboseTest;
+import org.eolang.VerboseBytesAsStringTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -80,7 +79,7 @@ final class EOerrorTest {
         MatcherAssert.assertThat(
             error.toString(),
             Matchers.containsString(
-                new ToStringVerboseTest.ArgumentsUtils().toString(cnst)
+                new VerboseBytesAsStringTest.ArgumentsUtils().toString(cnst)
             )
         );
     }
@@ -90,7 +89,7 @@ final class EOerrorTest {
      * @return Stream of arguments.
      */
     private static Stream<Object> getTestSources() {
-        return new ToStringVerboseTest.ArgumentsUtils().getTestSources();
+        return new VerboseBytesAsStringTest.ArgumentsUtils().getTestSources();
     }
 
     /**

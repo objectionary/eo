@@ -25,7 +25,7 @@ package org.eolang;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Makes a String from byte array that can represent bool,
@@ -33,42 +33,49 @@ import java.util.function.Function;
  *
  * @since 0.36
  */
-public final class ToStringVerbose implements Function<byte[], String> {
+public final class VerboseBytesAsString implements Supplier<String> {
+
+    private final byte[] data;
+
+    public VerboseBytesAsString(byte[] data) {
+        this.data = data;
+    }
 
     @Override
-    public String apply(final byte[] raw) {
-        final Bytes bytes = new BytesOf(raw);
+    public String get() {
+        final Bytes bytes = new BytesOf(data);
         final String result;
-        switch (raw.length) {
+        switch (data.length) {
             case 0:
                 result = String.format(
                     "%s",
-                    Arrays.toString(raw)
+                    Arrays.toString(data)
                 );
                 break;
             case 1:
                 result = String.format(
                     "%s = %s",
-                    Arrays.toString(raw),
-                    raw[0] != 0
+                    Arrays.toString(data),
+                    data[0] != 0
                 );
                 break;
             case 8:
                 result = String.format(
                     "%s = %s, or %s, or \"%s\")",
-                    Arrays.toString(raw),
+                    Arrays.toString(data),
                     bytes.asNumber(Long.class),
                     bytes.asNumber(Double.class),
-                    new String(raw, StandardCharsets.UTF_8)
+                    new String(data, StandardCharsets.UTF_8)
                 );
                 break;
             default:
                 result = String.format(
                     "%s = \"%s\"",
-                    Arrays.toString(raw),
-                    new String(raw, StandardCharsets.UTF_8)
+                    Arrays.toString(data),
+                    new String(data, StandardCharsets.UTF_8)
                 );
         }
         return result;
     }
+
 }

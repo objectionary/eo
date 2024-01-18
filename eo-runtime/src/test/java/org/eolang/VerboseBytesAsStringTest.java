@@ -31,19 +31,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test case for {@link ToStringVerbose}.
+ * Test case for {@link VerboseBytesAsString}.
  *
  * @since 0.1
  */
-public final class ToStringVerboseTest {
+public final class VerboseBytesAsStringTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
     void representsString(final Object object) {
         MatcherAssert.assertThat(
-            new ToStringVerbose().apply(ToStringVerboseTest.toBytes(object)),
+            new VerboseBytesAsString(VerboseBytesAsStringTest.toBytes(object)).get(),
             Matchers.containsString(
-                new ToStringVerboseTest.ArgumentsUtils().toString(object)
+                new VerboseBytesAsStringTest.ArgumentsUtils().toString(object)
             )
         );
     }
@@ -85,7 +85,7 @@ public final class ToStringVerboseTest {
      * @return Stream of sources.
      */
     private static Stream<Object> getTestSources() {
-        return new ToStringVerboseTest.ArgumentsUtils().getTestSources();
+        return new VerboseBytesAsStringTest.ArgumentsUtils().getTestSources();
     }
 
     /**

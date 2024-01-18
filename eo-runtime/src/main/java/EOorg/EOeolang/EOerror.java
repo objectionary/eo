@@ -27,18 +27,15 @@
  */
 package EOorg.EOeolang;
 
-import java.nio.charset.StandardCharsets;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
 import org.eolang.Attr;
-import org.eolang.Bytes;
-import org.eolang.BytesOf;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.ToStringVerbose;
+import org.eolang.VerboseBytesAsString;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
@@ -148,7 +145,7 @@ public final class EOerror extends PhDefault {
                     result = String.format(
                         "%s(Δ = %s)",
                         enclosure,
-                        new ToStringVerbose().apply(raw)
+                        new VerboseBytesAsString(raw).get()
                     );
                 } catch (final Throwable first) {
                     try {
