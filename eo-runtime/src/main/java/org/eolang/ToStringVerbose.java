@@ -24,6 +24,7 @@
 package org.eolang;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -42,20 +43,20 @@ public final class ToStringVerbose implements Function<byte[], String> {
             case 0:
                 result = String.format(
                     "%s",
-                    bytes
+                    Arrays.toString(raw)
                 );
                 break;
             case 1:
                 result = String.format(
                     "%s = %s",
-                    bytes,
+                    Arrays.toString(raw),
                     raw[0] != 0
                 );
                 break;
             case 8:
                 result = String.format(
-                    "%s = %s, or %s, or %s)",
-                    bytes,
+                    "%s = %s, or %s, or \"%s\")",
+                    Arrays.toString(raw),
                     bytes.asNumber(Long.class),
                     bytes.asNumber(Double.class),
                     new String(raw, StandardCharsets.UTF_8)
@@ -63,8 +64,8 @@ public final class ToStringVerbose implements Function<byte[], String> {
                 break;
             default:
                 result = String.format(
-                    "%s = %s",
-                    bytes,
+                    "%s = \"%s\"",
+                    Arrays.toString(raw),
                     new String(raw, StandardCharsets.UTF_8)
                 );
         }

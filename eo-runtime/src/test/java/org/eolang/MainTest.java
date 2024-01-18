@@ -66,7 +66,11 @@ final class MainTest {
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
-            Matchers.equalTo(String.format("Hello!%n---%n%s%n", Arrays.toString(new byte[]{0x01})))
+            Matchers.stringContainsInOrder(
+                String.format("Hello!%n---%n"),
+                "true",
+                String.format("%n")
+            )
         );
     }
 

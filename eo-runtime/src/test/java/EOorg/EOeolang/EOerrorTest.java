@@ -79,7 +79,9 @@ final class EOerrorTest {
         assert error != null;
         MatcherAssert.assertThat(
             error.toString(),
-            Matchers.containsString(cnst.toString())
+            Matchers.containsString(
+                new ToStringVerboseTest.ArgumentsUtils().toString(cnst)
+            )
         );
     }
 
