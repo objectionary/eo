@@ -38,6 +38,7 @@ import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.ToStringVerbose;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
@@ -144,41 +145,11 @@ public final class EOerror extends PhDefault {
             } else {
                 try {
                     final byte[] raw = new Dataized(enclosure).take();
-                    final Bytes bytes = new BytesOf(raw);
-                    switch (raw.length) {
-                        case 0:
-                            result = String.format(
-                                "%s(Δ = %s",
-                                enclosure,
-                                bytes
-                            );
-                            break;
-                        case 1:
-                            result = String.format(
-                                "%s(Δ = %s or %s)",
-                                enclosure,
-                                bytes,
-                                raw[0] != 0
-                            );
-                            break;
-                        case 8:
-                            result = String.format(
-                                "%s(Δ = %s = %s, or %s, or %s)",
-                                enclosure,
-                                bytes,
-                                bytes.asNumber(Long.class),
-                                bytes.asNumber(Double.class),
-                                new String(raw, StandardCharsets.UTF_8)
-                            );
-                            break;
-                        default:
-                            result = String.format(
-                                "%s(Δ = %s or %s)",
-                                enclosure,
-                                bytes,
-                                new String(raw, StandardCharsets.UTF_8)
-                            );
-                    }
+                    result = String.format(
+                        "%s(Δ = %s)",
+                        enclosure,
+                        new ToStringVerbose().apply(raw)
+                    );
                 } catch (final Throwable first) {
                     try {
                         result = enclosure.toString();
