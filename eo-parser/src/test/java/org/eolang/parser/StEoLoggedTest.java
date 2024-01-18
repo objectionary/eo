@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2023 Objectionary.com
+ * Copyright (c) 2016-2024 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,6 @@ import java.util.function.Consumer;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -77,12 +76,8 @@ class StEoLoggedTest {
 
     /**
      * Check EO log message on exception thrown.
-     * @todo #2750:30min After removing conversion from bytes to value from 'xmir-to-eo.xsl' this
-     *  test fails. All logic related to bytes conversion was moved to {@link StUnhex} class. Need
-     *  to fix or remove this test.
      */
     @Test
-    @Disabled
     void printsMessageWithEoIfExceptionIsThrown() {
         final FakeLog log = new FakeLog();
         Assertions.assertThrows(

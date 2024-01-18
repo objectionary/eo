@@ -24,7 +24,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 11
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
