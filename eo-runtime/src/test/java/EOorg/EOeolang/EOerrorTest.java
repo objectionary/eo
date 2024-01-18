@@ -38,6 +38,7 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.ToStringVerboseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -82,47 +83,12 @@ final class EOerrorTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("getTestByteArraySources")
-    void getsReadableByteArrayError(final byte[] cnst) {
-        ExAbstract error = null;
-        try {
-            new Dataized(new MyError(cnst)).take();
-        } catch (final ExAbstract exc) {
-            error = exc;
-        }
-        assert error != null;
-        MatcherAssert.assertThat(
-            error.toString(),
-            Matchers.containsString(Arrays.toString(cnst))
-        );
-    }
-
     /**
      * Input arguments for getsReadableError unit tests.
      * @return Stream of arguments.
      */
     private static Stream<Object> getTestSources() {
-        return Stream.of(
-            12345L,
-            "qwerty",
-            12.34567D,
-            true,
-            false
-        );
-    }
-
-    /**
-     * Input arguments for getsReadableByteArrayError unit tests.
-     * @return Stream of arguments.
-     */
-    private static Stream<byte[]> getTestByteArraySources() {
-        return Stream.of(
-            new byte[]{},
-            new byte[]{12},
-            new byte[]{10, 11, 12, 13, 14, 15, 16, 17},
-            new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22}
-        );
+        return new ToStringVerboseTest.ArgumentsUtils().getTestSources();
     }
 
     /**
