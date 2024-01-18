@@ -37,42 +37,42 @@ public final class VerboseBytesAsString implements Supplier<String> {
 
     private final byte[] data;
 
-    public VerboseBytesAsString(byte[] data) {
+    public VerboseBytesAsString(final byte[] data) {
         this.data = data;
     }
 
     @Override
     public String get() {
-        final Bytes bytes = new BytesOf(data);
+        final Bytes bytes = new BytesOf(this.data);
         final String result;
-        switch (data.length) {
+        switch (this.data.length) {
             case 0:
                 result = String.format(
                     "%s",
-                    Arrays.toString(data)
+                    Arrays.toString(this.data)
                 );
                 break;
             case 1:
                 result = String.format(
                     "%s = %s",
-                    Arrays.toString(data),
-                    data[0] != 0
+                    Arrays.toString(this.data),
+                    this.data[0] != 0
                 );
                 break;
             case 8:
                 result = String.format(
                     "%s = %s, or %s, or \"%s\")",
-                    Arrays.toString(data),
+                    Arrays.toString(this.data),
                     bytes.asNumber(Long.class),
                     bytes.asNumber(Double.class),
-                    new String(data, StandardCharsets.UTF_8)
+                    new String(this.data, StandardCharsets.UTF_8)
                 );
                 break;
             default:
                 result = String.format(
                     "%s = \"%s\"",
-                    Arrays.toString(data),
-                    new String(data, StandardCharsets.UTF_8)
+                    Arrays.toString(this.data),
+                    new String(this.data, StandardCharsets.UTF_8)
                 );
         }
         return result;
