@@ -35,8 +35,15 @@ import java.util.function.Supplier;
  */
 public final class VerboseBytesAsString implements Supplier<String> {
 
+    /**
+     * Data.
+     */
     private final byte[] data;
 
+    /**
+     * Ctor.
+     * @param data Data.
+     */
     public VerboseBytesAsString(final byte[] data) {
         this.data = data;
     }
