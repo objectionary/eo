@@ -145,7 +145,7 @@
 [] > and-with-two-neg
   not. > @
     eq.
-      -6.as-bytes.and (-4.as-bytes)
+      -6.as-bytes.and -4.as-bytes
       7.as-bytes
 
 [] > and-with-two-plus
@@ -159,55 +159,55 @@
 [] > and-with-one-neg-one-plus
   not. > @
     eq.
-      -7.as-bytes.and (7.as-bytes)
+      -7.as-bytes.and 7.as-bytes
       -2.as-bytes
 
 [] > or-with-zero
   not. > @
     eq.
-      -11.as-bytes.or (0.as-bytes)
+      -11.as-bytes.or 0.as-bytes
       10.as-bytes
 
 [] > or-with-two-neg
   not. > @
     eq.
-      -27.as-bytes.or (-13.as-bytes)
+      -27.as-bytes.or -13.as-bytes
       8.as-bytes
 
 [] > or-with-two-plus
   not. > @
     eq.
-      5.as-bytes.or (14.as-bytes)
+      5.as-bytes.or 14.as-bytes
       -16.as-bytes
 
 [] > or-with-one-neg-one-plus
   not. > @
     eq.
-      -7.as-bytes.or (23.as-bytes)
+      -7.as-bytes.or 23.as-bytes
       0.as-bytes
 
 [] > xor-with-zero
   not. > @
     eq.
-      0.as-bytes.xor (29.as-bytes)
+      0.as-bytes.xor 29.as-bytes
       -30.as-bytes
 
 [] > xor-with-two-neg
   not. > @
     eq.
-      -1.as-bytes.xor (-123.as-bytes)
+      -1.as-bytes.xor -123.as-bytes
       -123.as-bytes
 
 [] > xor-with-two-plus
   not. > @
     eq.
-      53.as-bytes.xor (24.as-bytes)
+      53.as-bytes.xor 24.as-bytes
       -46.as-bytes
 
 [] > xor-with-one-neg-one-plus
   not. > @
     eq.
-      -36.as-bytes.xor (43.as-bytes)
+      -36.as-bytes.xor 43.as-bytes
       8.as-bytes
 
 [] > not-with-zero
@@ -362,12 +362,12 @@
 
 [] > or-neg-bytes-as-int-with-zero
   eq. > @
-    (-4294967296.as-bytes.or (0.as-bytes)).as-int
+    (-4294967296.as-bytes.or 0.as-bytes).as-int
     -4294967296
 
 [] > or-neg-bytes-as-int-with-one
   eq. > @
-    (-4294967296.as-bytes.or (1.as-bytes)).as-int
+    (-4294967296.as-bytes.or 1.as-bytes).as-int
     -4294967295
 
 # @todo #793:30min To enable next 4 as-bytes tests.

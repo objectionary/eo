@@ -63,7 +63,7 @@
 
   # Calculate bitwise left shift
   [x] > left
-    ^.right (x.neg) > @
+    ^.right x.neg > @
 
   # Calculate bitwise right shift
   [x] > right /bytes

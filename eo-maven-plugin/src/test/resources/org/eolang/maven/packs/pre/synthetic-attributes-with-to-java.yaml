@@ -63,5 +63,5 @@ eo: |
   [] > method
     * 1 (* "one" "two") 3 > res
     eq > @
-      * (res.length) ((res.at 1).at 1)
+      * res.length ((res.at 1).at 1)
       * 3 "two"

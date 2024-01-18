@@ -41,7 +41,7 @@
     x > value!
     not. > @
       or.
-        value.as-bytes.eq (nan.as-bytes)
+        value.as-bytes.eq nan.as-bytes
         ^.eq value
 
   # Tests that $ ≤ x

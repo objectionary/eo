@@ -134,9 +134,9 @@
   eq. > @
     or.
       or.
-        42.<.eq (42.<)
-        "Hello".<.eq ("Hello".<)
-      45-1F-E7.<.eq (45-1F-E7.<)
+        42.<.eq 42.<
+        "Hello".<.eq "Hello".<
+      45-1F-E7.<.eq 45-1F-E7.<
     FALSE
 
 [] > take-vertex-as-vertical-attribute
@@ -153,11 +153,11 @@
       or.
         or.
           or.
-            (2.plus 3).<.eq (5.<)
-            42.<.eq (42.0.<)
-          45-1F-E8.<.eq (45-1F-E8-83.<)
-        (a 5).<.eq ((a 5).<)
-      (* 1 2 3).<.eq ((* 1 2 3).<)
+            (2.plus 3).<.eq 5.<
+            42.<.eq 42.0.<
+          45-1F-E8.<.eq 45-1F-E8-83.<
+        (a 5).<.eq (a 5).<
+      (* 1 2 3).<.eq (* 1 2 3).<
     FALSE
 
 [] > recursion-without-arguments
@@ -400,9 +400,9 @@
     value > @
   [value] > pyint
     [x] > eq
-      pybool (value.eq (x.value)) > @
+      pybool (value.eq x.value) > @
     [x] > add
-      ^.^.pyint (value.plus (x.value)) > @
+      ^.^.pyint (value.plus x.value) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
 [] > check-triple-quotes

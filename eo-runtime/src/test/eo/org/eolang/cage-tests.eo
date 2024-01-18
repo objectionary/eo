@@ -152,7 +152,7 @@
 [] > infinite-loop-check
   [value] > pyint
     [y] > add
-      pyint (value.plus (y.value)) > @
+      pyint (value.plus y.value) > @
   cage pyint > x
   cage > tmp
     x.add

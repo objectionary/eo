@@ -94,14 +94,19 @@ application
 // must be horizontal only
 happlication
     : happlicationHead happlicationTail
-    | reversed happlicationTailReversed
+    | happlicationReversed
     ;
 
 // Extended horizontal application
 // The head can contain elements in horizontal or vertical notations
 happlicationExtended
-    : happlicationHeadExtended happlicationTailExtended
-    | reversed happlicationTailReversedExtended
+    : happlicationHeadExtended happlicationTail
+    | happlicationReversed
+    ;
+
+// Reversed horizontal application
+happlicationReversed
+    : reversed happlicationTailReversed
     ;
 
 // Head of horizontal application
@@ -135,6 +140,8 @@ happlicationTailReversed
     : SPACE happlicationTailReversedFirst happlicationTail?
     ;
 
+// The rule is separated because we should enter to the last object
+// here, but don't do it on happlicationTail rule
 happlicationTailReversedFirst
     : happlicationArg
     ;
@@ -146,30 +153,6 @@ happlicationArg
     | finisherCopied
     | hmethod
     | scope
-    ;
-
-// Extended horizontal application tail
-// Can contain elements in vertical notation
-happlicationTailExtended
-    : (SPACE happlicationArgExtended as)+
-    | (SPACE happlicationArgExtended)+
-    ;
-
-happlicationTailReversedExtended
-    : SPACE happlicationTailReversedExtendedFirst happlicationTailExtended?
-    ;
-
-happlicationTailReversedExtendedFirst
-    : happlicationArgExtended
-    ;
-
-// Extended argument of horizontal application
-// Can contain elements in vertical notation
-happlicationArgExtended
-    : beginner
-    | finisherCopied
-    | hmethodExtended
-    | scopeExtended
     ;
 
 // Vertical application
@@ -357,7 +340,7 @@ hmethodHead
 hmethodHeadExtended
     : beginner
     | finisherCopied
-    | scopeExtended
+    | scope
     ;
 
 // Vertical method
@@ -400,7 +383,7 @@ vmethodTailOptional
 
 vmethodHeadApplicationTail
     : oname? vapplicationArgs?
-    | happlicationTailExtended oname?
+    | happlicationTail oname?
     ;
 
 vmethodHeadHmethodExtended
@@ -413,8 +396,8 @@ vmethodHeadVapplication
     ;
 
 vmethodHeadHapplication
-    : (applicable | hmethodExtended) happlicationTailExtended oname?
-    | reversed happlicationTailReversedExtended oname?
+    : (applicable | hmethodExtended) happlicationTail oname?
+    | happlicationReversed oname?
     ;
 
 // Tail of vertical method
@@ -484,13 +467,9 @@ suffix
 
 // Simple scope
 // Does not contain elements in vertical notation
+// Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hmethod | hanonym) RB
-    ;
-
-// Extended scope
-scopeExtended
-    : LB (happlicationExtended | hmethodExtended | hanonym) RB
+    : LB (happlication | hanonym) RB
     ;
 
 // Version

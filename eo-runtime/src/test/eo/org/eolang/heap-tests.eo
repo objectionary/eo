@@ -91,7 +91,7 @@
   eq. > @
     and.
       and.
-        (p1.block 6).write ("HELLO!".as-bytes)
+        (p1.block 6).write "HELLO!".as-bytes
         eq.
           p2.block
             2

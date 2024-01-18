@@ -26,10 +26,16 @@ package org.eolang;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -91,6 +97,17 @@ final class SnippetTestCase {
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
+                final Path runtime = Paths.get(System.getProperty("user.dir"))
+                    .resolve("src/main/eo");
+                final Collection<Path> sources = Files.walk(runtime)
+                    .filter(src -> !src.toFile().isDirectory())
+                    .collect(Collectors.toList());
+                for (final Path src : sources) {
+                    f.files()
+                        .file(String.format("src/main/eo/%s", runtime.relativize(src)))
+                        .write(new UncheckedText(new TextOf(src)).asString())
+                        .show();
+                }
                 f.dependencies()
                     .appendItself();
                 f.build()
