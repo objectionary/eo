@@ -1,6 +1,6 @@
 # @todo #2736:30min Enable the test when it's possible. Such syntax is invalid - we can't use
 #  horizontal method after vertical method. If we decide that we allow such syntax we should add
-#  "vmethod" rule to "hmethodHeadExtended" rule and resolve left recursion violation. Don't forget
+#  "vmethod" to "hmethodHeadExtended" rule and resolve left recursion violation. Don't forget
 #  to remove the puzzle
 xsls: []
 skip: true
