@@ -151,18 +151,11 @@ SOFTWARE.
   </xsl:template>
   <!-- DATA -->
   <xsl:template match="o[@data]" mode="head">
-    <xsl:param name="indent"/>
     <xsl:choose>
       <xsl:when test="@data='string'">
-        <xsl:text>"""</xsl:text>
-        <xsl:value-of select="$eol"/>
-        <xsl:if test="not(empty(text()))">
-          <xsl:value-of select="$indent"/>
-          <xsl:value-of select="text()"/>
-          <xsl:value-of select="$eol"/>
-        </xsl:if>
-        <xsl:value-of select="$indent"/>
-        <xsl:text>"""</xsl:text>
+        <xsl:text>"</xsl:text>
+        <xsl:value-of select="text()"/>
+        <xsl:text>"</xsl:text>
       </xsl:when>
       <xsl:when test="@data='bool' or @data='int' or @data='float'">
         <xsl:value-of select="text()"/>
