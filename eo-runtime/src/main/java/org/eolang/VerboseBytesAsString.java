@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
- * Makes a String from byte array that can represent bool,
- *  double, int or {@link String}.
+ * Makes a {@link String} byte array that can represent bool,
+ * double, int or {@link String}.
  *
  * @since 0.36
  */
@@ -50,7 +50,6 @@ public final class VerboseBytesAsString implements Supplier<String> {
 
     @Override
     public String get() {
-        final Bytes bytes = new BytesOf(this.data);
         final String result;
         switch (this.data.length) {
             case 0:
@@ -67,6 +66,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
                 );
                 break;
             case 8:
+                final Bytes bytes = new BytesOf(this.data);
                 result = String.format(
                     "%s = %s, or %s, or \"%s\")",
                     Arrays.toString(this.data),
