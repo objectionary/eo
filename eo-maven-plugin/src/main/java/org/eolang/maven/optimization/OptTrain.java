@@ -24,6 +24,7 @@
 package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
@@ -31,6 +32,8 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
 /**
  * Optimisation train of XLS`s.
@@ -87,7 +90,7 @@ public final class OptTrain implements Optimization {
      * @param shifts XLS shifts.
      */
     public OptTrain(final Train<Shift> shifts) {
-        this(xml -> xml, shifts);
+        this(path -> new XMLDocument(path), shifts);
     }
 
     /**
@@ -117,7 +120,7 @@ public final class OptTrain implements Optimization {
     }
 
     @Override
-    public XML apply(final XML xml) {
-        return new Xsline(this.shifts).pass(this.delegate.apply(xml));
+    public XML apply(final Path path) throws FileNotFoundException {
+        return new Xsline(this.shifts).pass(this.delegate.apply(path));
     }
 }

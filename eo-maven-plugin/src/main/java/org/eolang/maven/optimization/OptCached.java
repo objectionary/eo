@@ -25,13 +25,10 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import org.eolang.maven.AssembleMojo;
 import org.eolang.maven.Place;
 import org.eolang.maven.footprint.FtDefault;
@@ -41,19 +38,14 @@ import org.eolang.maven.footprint.FtDefault;
  * Returns already optimized XML if it's found in the cache.
  *
  * @since 0.28.11
- * @todo #2746:30min Fix caching mechanism in {@link OptCached}. Current
- *  The last modified time of the files between stages may be different,
- *  so it is not correct to do an equality comparison ({@code .equals(...)}).
- *  The last modification time of the file at the current stage
- *  must be less than or equal to the last modification time of file in cache at the next stage.
- *  The following tests show that fetching from the cache doesn't work correctly:
- *  - {@link OptCachedTest#returnsFromCacheCorrectProgram(Path path)},
- *  - {@link OptCachedTest#returnsFromCacheButTimesSaveAndExecuteDifferent(Path path)}.
  * @todo #2746:30min Unify caching mechanism on stages: parse, optimize, pull and so on.
  *  Current implementations of caching on parsing stage and optimize stages work differently.
  *  In ParseMojo we have condition {@code if (tojo.hasHash()) }, in OptimizeMojo or ShakeMojo we
  *  compare creation time of files.
  *  Don't forget to enable the tests.
+ * @todo #2791:30min Get the XML name from its path,
+ * but doesn't use {@code xml.xpath("/program/@name").get(0)},
+ * in classes {@link OptCached}, {@link OptTrain}, {@link OptSpy}.
  */
 public final class OptCached implements Optimization {
 
@@ -82,54 +74,60 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML apply(final XML xml) {
+    public XML apply(final Path path) throws FileNotFoundException {
         try {
             final XML optimized;
-            if (this.contains(xml)) {
-                optimized = new XMLDocument(this.cached(xml));
+            if (this.contains(path)) {
+                optimized = new XMLDocument(this.cached(path));
             } else {
-                optimized = this.delegate.apply(xml);
+                optimized = this.delegate.apply(path);
                 new FtDefault(this.folder).save(
-                    xml.xpath("/program/@name").get(0),
+                    new XMLDocument(path).xpath("/program/@name").get(0),
                     AssembleMojo.IR_EXTENSION,
                     optimized::toString
                 );
             }
             return optimized;
         } catch (final IOException ex) {
-            throw new IllegalStateException(String.format("Can't optimize '%s'", xml), ex);
+            throw new IllegalStateException(
+                String.format("Can't optimize '%s'", new XMLDocument(path)),
+                ex
+            );
         }
     }
 
     /**
      * Returns the path to the cached program.
      * Pay attention that the path is not checked for existence.
-     * @param xml Eo program.
+     * @param path Path eo program.
      * @return Path to the cached program.
+     * @throws IOException If fails.
      */
-    private Path cached(final XML xml) {
-        return new Place(xml.xpath("/program/@name").get(0))
+    private Path cached(final Path path) throws IOException {
+        return new Place(
+            new XMLDocument(path)
+                .xpath("/program/@name").get(0)
+        )
             .make(this.folder, AssembleMojo.IR_EXTENSION);
     }
 
     /**
      * Checks if the cache contains the program.
-     * @param xml Eo program.
+     * @param path Path eo program.
      * @return True if the cache contains the program.
      * @throws IOException If fails.
      */
-    private boolean contains(final XML xml) throws IOException {
-        final Path path = this.cached(xml);
-        final Optional<String> time = xml.xpath("/program/@time").stream().findFirst();
+    private boolean contains(final Path path) throws IOException {
+        final Path cache = this.cached(path);
         final boolean res;
-        if (Files.exists(path) && time.isPresent()) {
-            res = Files.readAttributes(path, BasicFileAttributes.class)
-                .creationTime()
+        if (Files.exists(cache)) {
+            res = !Files
+                .getLastModifiedTime(cache)
                 .toInstant()
-                .truncatedTo(ChronoUnit.MINUTES)
-                .equals(
-                    ZonedDateTime.parse(time.get()).toInstant().truncatedTo(ChronoUnit.MINUTES)
-                );
+                .isBefore(
+                    Files.getLastModifiedTime(path)
+                        .toInstant()
+                    );
         } else {
             res = false;
         }
