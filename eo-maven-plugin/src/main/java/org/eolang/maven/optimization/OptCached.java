@@ -43,7 +43,7 @@ import org.eolang.maven.footprint.FtDefault;
  *  In ParseMojo we have condition {@code if (tojo.hasHash()) }, in OptimizeMojo or ShakeMojo we
  *  compare creation time of files.
  *  Don't forget to enable the tests.
- * @todo #2791:30min Get the XML name from its path,
+ * @todo #2790:30min Get the XML name from its path,
  * but doesn't use {@code xml.xpath("/program/@name").get(0)},
  * in classes {@link OptCached}, {@link OptTrain}, {@link OptSpy}.
  */
