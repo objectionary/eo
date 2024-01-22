@@ -35,7 +35,7 @@ public interface ThrowingFunction<I, R, E extends Exception> {
     /**
      * Applies this function to the given argument.
      *
-     * @param input The function argument
+     * @param input The function argument.
      * @return The function result
      * @throws E If fails
      */
