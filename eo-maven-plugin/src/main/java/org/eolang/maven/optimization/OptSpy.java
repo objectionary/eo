@@ -72,7 +72,8 @@ public final class OptSpy implements Optimization {
         final Path dir = new Place(
             new XMLDocument(path)
                 .xpath("/program/@name")
-                .get(0))
+                .get(0)
+        )
             .make(this.target, "");
         Logger.debug(
             this, "Optimization steps will be tracked to %s",
