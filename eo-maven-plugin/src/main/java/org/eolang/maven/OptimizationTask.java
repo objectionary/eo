@@ -105,7 +105,7 @@ final class OptimizationTask {
             this.update.apply(
                 tojo,
                 this.make(
-                    this.optimization(tojo, common).apply(new XMLDocument(src)), src
+                    this.optimization(tojo, common).apply(src), src
                 ).toAbsolutePath()
             );
             return 1;
