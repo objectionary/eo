@@ -114,7 +114,8 @@ final class OptCachedTest {
             cache,
             OptCachedTest.program("first program")
         );
-        Files.setLastModifiedTime(cached,
+        Files.setLastModifiedTime(
+            cached,
             FileTime.fromMillis(System.currentTimeMillis() - 2000)
         );
         final Path current = OptCachedTest.save(
