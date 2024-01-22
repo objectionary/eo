@@ -43,23 +43,17 @@ strait: |
     this
       n
       .minus
-        """
-        \u5BB6
-        """
+        "\u5BB6"
         4.55 > x!
         *
-          """
-          Hello, \u0434\u0440\u0443\u0433
-          """
+          "Hello, \u0434\u0440\u0443\u0433"
           2.18
           TRUE
     .plus
       bar
         n
         .plus
-          """
-          hello, \u5927\u5BB6!
-          """
+          "hello, \u5927\u5BB6!"
     .if > @
 
 reversed: |
@@ -80,19 +74,13 @@ reversed: |
         this
           minus.
             n
-            """
-            \u5BB6
-            """
+            "\u5BB6"
             4.55 > x!
             *
-              """
-              Hello, \u0434\u0440\u0443\u0433
-              """
+              "Hello, \u0434\u0440\u0443\u0433"
               2.18
               TRUE
         bar
           plus.
             n
-            """
-            hello, \u5927\u5BB6!
-            """
+            "hello, \u5927\u5BB6!"

@@ -1,24 +1,21 @@
 origin: |
   [] > app
     QQ.io.stdout > @
-      QQ.txt.sprintf ""
+      """
+      Hello
+      it's me
+      """
 
 strait: |
   [] > app
     QQ
     .io
     .stdout > @
-      QQ
-      .txt
-      .sprintf
-        ""
+      "Hello\nit's me"
 
 reversed: |
   [] > app
     stdout. > @
       io.
         QQ
-      sprintf.
-        txt.
-          QQ
-        ""
+      "Hello\nit's me"
