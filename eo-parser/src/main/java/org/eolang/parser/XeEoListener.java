@@ -294,6 +294,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterHapplicationReversed(final EoParser.HapplicationReversedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitHapplicationReversed(final EoParser.HapplicationReversedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHapplication(final EoParser.HapplicationContext ctx) {
         // Nothing here
     }
@@ -393,54 +403,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitHapplicationArg(final EoParser.HapplicationArgContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationTailExtended(
-        final EoParser.HapplicationTailExtendedContext ctx
-    ) {
-        this.objects.enter();
-    }
-
-    @Override
-    public void exitHapplicationTailExtended(
-        final EoParser.HapplicationTailExtendedContext ctx
-    ) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterHapplicationTailReversedExtended(final EoParser.HapplicationTailReversedExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationTailReversedExtended(final EoParser.HapplicationTailReversedExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterHapplicationTailReversedExtendedFirst(final EoParser.HapplicationTailReversedExtendedFirstContext ctx) {
-        this.objects.enter();
-    }
-
-    @Override
-    public void exitHapplicationTailReversedExtendedFirst(final EoParser.HapplicationTailReversedExtendedFirstContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterHapplicationArgExtended(
-        final EoParser.HapplicationArgExtendedContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitHapplicationArgExtended(
-        final EoParser.HapplicationArgExtendedContext ctx
-    ) {
         // Nothing here
     }
 
@@ -1035,16 +997,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitScope(final EoParser.ScopeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterScopeExtended(final EoParser.ScopeExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitScopeExtended(final EoParser.ScopeExtendedContext ctx) {
         // Nothing here
     }
 
