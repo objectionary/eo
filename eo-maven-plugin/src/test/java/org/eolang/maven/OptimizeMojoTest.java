@@ -25,8 +25,10 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,7 +45,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -118,7 +119,6 @@ final class OptimizeMojoTest {
      *  then enable the test.
      *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
-    @Disabled
     @Test
     void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {
         final TextOf cached = new TextOf(
@@ -131,6 +131,15 @@ final class OptimizeMojoTest {
             Paths.get(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
                 .resolve("foo/x/main.xmir")
+        );
+        Files.setLastModifiedTime(
+            cache.resolve(
+                Paths
+                    .get(OptimizeMojo.OPTIMIZED)
+                    .resolve(hash)
+                    .resolve("foo/x/main.xmir")
+            ),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
         new FakeMaven(temp)
             .withHelloWorld()

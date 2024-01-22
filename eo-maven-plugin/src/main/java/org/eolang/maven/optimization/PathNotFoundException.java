@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,31 +23,25 @@
  */
 package org.eolang.maven.optimization;
 
-import com.jcabi.xml.XML;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.util.function.Function;
 
 /**
- * Abstraction for XML optimizations.
- *
- * @since 0.28.11
+ * If the path isn't valid.
+ * @since 0.35.0
  */
-@FunctionalInterface
-public interface Optimization extends ThrowingFunction<Path, XML, FileNotFoundException> {
+public class PathNotFoundException extends RuntimeException {
 
     /**
-     * Return function if it works without exception.
-     *
-     * @return The function result
+     * Ctor.
+     * @param path The path.
+     * @param cause The cause.
      */
-    default Function<Path, XML> unchecked() {
-        return input -> {
-            try {
-                return this.apply(input);
-            } catch (final FileNotFoundException exception) {
-                throw new PathNotFoundException(input, exception);
-            }
-        };
+    PathNotFoundException(final Path path, final Throwable cause) {
+        super(
+            String.format(
+                "Cannot get XML from path '%s'", path
+            ),
+            cause
+        );
     }
 }

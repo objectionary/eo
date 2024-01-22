@@ -25,8 +25,10 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
 import org.eolang.maven.SpyTrain;
@@ -66,13 +68,16 @@ public final class OptSpy implements Optimization {
     }
 
     @Override
-    public XML apply(final XML xml) {
-        final Place place = new Place(xml.xpath("/program/@name").get(0));
-        final Path dir = place.make(this.target, "");
+    public XML apply(final Path path) throws FileNotFoundException {
+        final Path dir = new Place(
+            new XMLDocument(path)
+                .xpath("/program/@name")
+                .get(0))
+            .make(this.target, "");
         Logger.debug(
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)
         );
-        return new OptTrain(new SpyTrain(this.train, dir)).apply(xml);
+        return new OptTrain(new SpyTrain(this.train, dir)).apply(path);
     }
 }
