@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.optimization;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.FileNotFoundException;
@@ -128,6 +129,20 @@ public final class OptCached implements Optimization {
                     Files.getLastModifiedTime(path)
                         .toInstant()
                     );
+            Logger.info(
+                this,
+                "Last time program: '%s'",
+                Files.getLastModifiedTime(path)
+                    .toInstant()
+                    .toString()
+            );
+            Logger.info(
+                this,
+                "Last time cache: '%s'",
+                Files.getLastModifiedTime(cache)
+                    .toInstant()
+                    .toString()
+            );
         } else {
             res = false;
         }
