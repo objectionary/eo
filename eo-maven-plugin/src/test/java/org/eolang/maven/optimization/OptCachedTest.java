@@ -110,9 +110,13 @@ final class OptCachedTest {
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path cache, @TempDir final Path dir)
         throws IOException {
-        OptCachedTest.save(
+        final Path cached = OptCachedTest.save(
             cache,
             OptCachedTest.program("first program")
+        );
+        Files.setLastModifiedTime(
+            cached,
+            FileTime.fromMillis(System.currentTimeMillis() - 2000)
         );
         final Path current = OptCachedTest.save(
             dir,
