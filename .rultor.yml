@@ -14,6 +14,9 @@ install: |
   gem install pdd
   gem install texsc:0.6.0
   gem install texqc:0.6.0
+  sudo tlmgr option repository ctan
+  sudo tlmgr --verify-repo=none update --self
+  sudo tlmgr --verify-repo=none install acmart xstring totpages environ hyperxmp ifmtarg ncctools comment biblatex href-ul libertine ffcode upquote docshots paralist biber
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
