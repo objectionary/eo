@@ -24,9 +24,8 @@
 package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.util.function.Function;
+import org.cactoos.Func;
 
 /**
  * Abstraction for XML optimizations.
@@ -34,20 +33,5 @@ import java.util.function.Function;
  * @since 0.28.11
  */
 @FunctionalInterface
-public interface Optimization extends ThrowingFunction<Path, XML, FileNotFoundException> {
-
-    /**
-     * Return function if it works without exception.
-     *
-     * @return The function result
-     */
-    default Function<Path, XML> unchecked() {
-        return input -> {
-            try {
-                return this.apply(input);
-            } catch (final FileNotFoundException exception) {
-                throw new PathNotFoundException(input, exception);
-            }
-        };
-    }
+public interface Optimization extends Func<Path, XML> {
 }

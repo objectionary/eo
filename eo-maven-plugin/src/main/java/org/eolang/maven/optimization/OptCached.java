@@ -25,7 +25,6 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,7 +54,7 @@ public final class OptCached implements Optimization {
     private final Optimization delegate;
 
     /**
-     * Cache folder.
+     * Absolute path of cache folder.
      */
     private final Path folder;
 
@@ -74,7 +73,7 @@ public final class OptCached implements Optimization {
     }
 
     @Override
-    public XML apply(final Path path) throws FileNotFoundException {
+    public XML apply(final Path path) throws Exception {
         try {
             final XML optimized;
             if (this.contains(path)) {
@@ -89,8 +88,8 @@ public final class OptCached implements Optimization {
             }
             return optimized;
         } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format("Can't optimize '%s'", new XMLDocument(path)),
+            throw new IOException(
+                String.format("Can't optimize '%s'", path),
                 ex
             );
         }
