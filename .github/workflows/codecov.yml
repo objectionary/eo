@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: codecov-${{ github.ref }}
   cancel-in-progress: true
@@ -19,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 20
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -32,3 +37,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
+        if: github.ref == 'refs/heads/master'

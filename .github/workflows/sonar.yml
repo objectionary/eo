@@ -20,7 +20,7 @@ jobs:
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
       - uses: actions/setup-java@v4
         with:
-          java-version: 11
+          java-version: 20
           distribution: 'zulu'
       - uses: actions/cache@v4
         with:
