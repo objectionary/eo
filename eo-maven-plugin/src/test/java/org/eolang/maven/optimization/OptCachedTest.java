@@ -49,7 +49,7 @@ final class OptCachedTest {
     /**
      * Test case for XML program in cache.
      *
-     * @param cache Temp cache dir
+     * @param cache Temp cache dir.
      * @param dir Temp program dir
      * @throws IOException if I/O fails
      * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
