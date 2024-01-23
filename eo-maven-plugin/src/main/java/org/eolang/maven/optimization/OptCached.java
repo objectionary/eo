@@ -43,8 +43,8 @@ import org.eolang.maven.footprint.FtDefault;
  *  compare creation time of files.
  *  Don't forget to enable the tests.
  * @todo #2790:30min Get the XML name from its path,
- * but doesn't  use {@code xml.xpath("/program/@name").get(0)},
- * in classes {@link OptCached}, {@link OptTrain}, {@link OptSpy}.
+ *  but doesn't use {@code xml.xpath("/program/@name").get(0)},
+ *  in classes {@link OptCached}, {@link OptTrain}, {@link OptSpy}.
  */
 public final class OptCached implements Optimization {
 
