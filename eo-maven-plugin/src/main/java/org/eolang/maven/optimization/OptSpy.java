@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
 import org.eolang.maven.SpyTrain;
@@ -68,7 +67,7 @@ public final class OptSpy implements Optimization {
     }
 
     @Override
-    public XML apply(final Path path) throws FileNotFoundException {
+    public XML apply(final Path path) throws Exception {
         final Path dir = new Place(
             new XMLDocument(path)
                 .xpath("/program/@name")

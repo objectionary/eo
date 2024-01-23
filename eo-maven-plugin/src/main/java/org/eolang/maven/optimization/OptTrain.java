@@ -32,7 +32,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
 /**
@@ -120,7 +119,7 @@ public final class OptTrain implements Optimization {
     }
 
     @Override
-    public XML apply(final Path path) throws FileNotFoundException {
+    public XML apply(final Path path) throws Exception {
         return new Xsline(this.shifts).pass(this.delegate.apply(path));
     }
 }

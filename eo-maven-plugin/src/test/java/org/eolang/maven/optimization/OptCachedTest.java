@@ -59,7 +59,7 @@ final class OptCachedTest {
      */
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path cache, @TempDir final Path dir)
-        throws IOException {
+        throws Exception {
         final XML xml = OptCachedTest.program();
         final FileTime time = FileTime.fromMillis(System.currentTimeMillis());
         final Path program = OptCachedTest.save(dir, xml);
@@ -83,7 +83,7 @@ final class OptCachedTest {
         @TempDir final Path cache,
         @TempDir final Path dir
     )
-        throws IOException {
+        throws Exception {
         final XML xml = OptCachedTest.program();
         final Path program = OptCachedTest.save(dir, xml);
         OptCachedTest.setTime(
@@ -109,7 +109,7 @@ final class OptCachedTest {
 
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path cache, @TempDir final Path dir)
-        throws IOException {
+        throws Exception {
         final Path cached = OptCachedTest.save(
             cache,
             OptCachedTest.program("first program")
@@ -134,7 +134,7 @@ final class OptCachedTest {
 
     @Test
     void optimizesIfXmlIsAbsentInCache(@TempDir final Path cache, @TempDir final Path dir)
-        throws IOException {
+        throws Exception {
         final Path program = OptCachedTest.save(dir, OptCachedTest.program());
         MatcherAssert.assertThat(
             "We expect that the program will be created and returned as is (same instance)",
@@ -151,7 +151,7 @@ final class OptCachedTest {
     @Test
     void optimizesBecauseCacheIsExpired(
         @TempDir final Path cache,
-        @TempDir final Path dir) throws IOException {
+        @TempDir final Path dir) throws Exception {
         final Path program = OptCachedTest.save(
             dir,
             OptCachedTest.program("new program")
