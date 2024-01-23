@@ -41,6 +41,7 @@ import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -118,6 +119,11 @@ class UnphiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
     void convertsToXmirAndBack(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
+        if (map.get("skip") != null) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
         final String phi = map.get("phi").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
