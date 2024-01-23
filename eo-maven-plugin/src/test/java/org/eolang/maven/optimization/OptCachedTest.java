@@ -72,8 +72,9 @@ final class OptCachedTest {
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
                 },
-                cache
-            ).apply(program),
+                cache,
+                program
+            ).apply(xml),
             Matchers.equalTo(xml)
         );
     }
@@ -101,8 +102,9 @@ final class OptCachedTest {
                 path -> {
                     throw new IllegalStateException("This code shouldn't be executed");
                 },
-                cache
-            ).apply(program),
+                cache,
+                program
+            ).apply(xml),
             Matchers.equalTo(xml)
         );
     }
@@ -126,8 +128,9 @@ final class OptCachedTest {
             "Expecting current program to be compiled, but prev program was returned from cache.",
             new OptCached(
                 path -> OptCachedTest.program("second program"),
-                cache
-            ).apply(current),
+                cache,
+                current
+            ).apply(OptCachedTest.program("second program")),
             Matchers.equalTo(OptCachedTest.program("second program"))
         );
     }
@@ -138,7 +141,10 @@ final class OptCachedTest {
         final Path program = OptCachedTest.save(dir, OptCachedTest.program());
         MatcherAssert.assertThat(
             "We expect that the program will be created and returned as is (same instance)",
-            new OptCached(path -> OptCachedTest.program(), cache).apply(program),
+            new OptCached(
+                path -> OptCachedTest.program(), cache, program
+            )
+                .apply(OptCachedTest.program()),
             Matchers.equalTo(OptCachedTest.program())
         );
         MatcherAssert.assertThat(
@@ -169,9 +175,10 @@ final class OptCachedTest {
             "We expected that the program will be optimized because the cache is expired",
             new OptCached(
                 path -> OptCachedTest.program("new program"),
-                cache
+                cache,
+                program
             )
-                .apply(program),
+                .apply(OptCachedTest.program("new program")),
             Matchers.equalTo(OptCachedTest.program("new program"))
         );
     }

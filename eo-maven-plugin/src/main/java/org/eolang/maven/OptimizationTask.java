@@ -105,7 +105,7 @@ final class OptimizationTask {
             this.update.apply(
                 tojo,
                 this.make(
-                    this.optimization(tojo, common).apply(src), src
+                    this.optimization(tojo, common).apply(new XMLDocument(src)), src
                 ).toAbsolutePath()
             );
             return 1;
@@ -144,15 +144,18 @@ final class OptimizationTask {
      * @param tojo Tojo
      * @param common Optimization
      * @return Optimization for specific Tojo
+     * @throws Exception If fails
      */
-    private Optimization optimization(final ForeignTojo tojo, final Optimization common) {
+    private Optimization optimization(final ForeignTojo tojo, final Optimization common)
+        throws Exception {
         final Optimization res;
         if (tojo.hasHash()) {
             res = new OptCached(
                 common,
                 this.paths.get(
                     OptimizationFolder.CACHE.key()
-                ).resolve(this.dirs.get(OptimizationFolder.CACHE.key())).resolve(tojo.hash())
+                ).resolve(this.dirs.get(OptimizationFolder.CACHE.key())).resolve(tojo.hash()),
+                this.source.apply(tojo)
             );
         } else {
             res = common;

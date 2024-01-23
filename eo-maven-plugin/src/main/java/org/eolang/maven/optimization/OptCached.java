@@ -42,9 +42,6 @@ import org.eolang.maven.footprint.FtDefault;
  *  In ParseMojo we have condition {@code if (tojo.hasHash())}, in OptimizeMojo or ShakeMojo we
  *  compare creation time of files.
  *  Don't forget to enable the tests.
- * @todo #2790:30min Get the XML name from its path,
- *  but doesn't use {@code xml.xpath("/program/@name").get(0)},
- *  in classes {@link OptCached}, {@link OptTrain}, {@link OptSpy}.
  */
 public final class OptCached implements Optimization {
 
@@ -59,37 +56,46 @@ public final class OptCached implements Optimization {
     private final Path folder;
 
     /**
+     * Absolute path of program xml.
+     */
+    private final Path path;
+
+    /**
      * The main constructor.
      *
      * @param delegate Real optimization.
      * @param folder Cache folder.
+     * @param path XML file path.
      */
     public OptCached(
         final Optimization delegate,
-        final Path folder
+        final Path folder,
+        final Path path
     ) {
         this.delegate = delegate;
         this.folder = folder;
+        this.path = path;
     }
 
     @Override
-    public XML apply(final Path path) throws Exception {
+    public XML apply(final XML xml) {
+        final String name = xml.xpath("/program/@name").get(0);
         try {
             final XML optimized;
-            if (this.contains(path)) {
-                optimized = new XMLDocument(this.cached(path));
+            if (this.contains(name)) {
+                optimized = new XMLDocument(this.cached(name));
             } else {
-                optimized = this.delegate.apply(path);
+                optimized = this.delegate.apply(xml);
                 new FtDefault(this.folder).save(
-                    new XMLDocument(path).xpath("/program/@name").get(0),
+                    name,
                     AssembleMojo.IR_EXTENSION,
                     optimized::toString
                 );
             }
             return optimized;
         } catch (final IOException ex) {
-            throw new IOException(
-                String.format("Can't optimize '%s'", path),
+            throw new IllegalStateException(
+                String.format("Can't optimize '%s'", xml),
                 ex
             );
         }
@@ -98,33 +104,30 @@ public final class OptCached implements Optimization {
     /**
      * Returns the path to the cached program.
      * Pay attention that the path is not checked for existence.
-     * @param path Path eo program.
+     * @param name Name XML program.
      * @return Path to the cached program.
      * @throws IOException If fails.
      */
-    private Path cached(final Path path) throws IOException {
-        return new Place(
-            new XMLDocument(path)
-                .xpath("/program/@name").get(0)
-        )
+    private Path cached(final String name) throws IOException {
+        return new Place(name)
             .make(this.folder, AssembleMojo.IR_EXTENSION);
     }
 
     /**
      * Checks if the cache contains the program.
-     * @param path Path eo program.
+     * @param name Name XML program.
      * @return True if the cache contains the program.
      * @throws IOException If fails.
      */
-    private boolean contains(final Path path) throws IOException {
-        final Path cache = this.cached(path);
+    private boolean contains(final String name) throws IOException {
+        final Path cache = this.cached(name);
         final boolean res;
         if (Files.exists(cache)) {
             res = !Files
                 .getLastModifiedTime(cache)
                 .toInstant()
                 .isBefore(
-                    Files.getLastModifiedTime(path)
+                    Files.getLastModifiedTime(this.path)
                         .toInstant()
                     );
         } else {

@@ -25,7 +25,6 @@ package org.eolang.maven.optimization;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
@@ -67,9 +66,9 @@ public final class OptSpy implements Optimization {
     }
 
     @Override
-    public XML apply(final Path path) throws Exception {
+    public XML apply(final XML xml) {
         final Path dir = new Place(
-            new XMLDocument(path)
+            xml
                 .xpath("/program/@name")
                 .get(0)
         )
@@ -78,6 +77,6 @@ public final class OptSpy implements Optimization {
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)
         );
-        return new OptTrain(new SpyTrain(this.train, dir)).apply(path);
+        return new OptTrain(new SpyTrain(this.train, dir)).apply(xml);
     }
 }
