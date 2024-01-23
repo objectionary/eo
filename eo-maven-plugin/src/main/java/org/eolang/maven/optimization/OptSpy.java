@@ -58,7 +58,7 @@ public final class OptSpy implements Optimization {
 
     /**
      * The main constructor.
-     * @param trn Optimizations train
+     * @param trn Optimizations train.
      * @param target Where to track optimization steps.
      */
     public OptSpy(final Train<Shift> trn, final Path target) {
