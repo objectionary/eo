@@ -1,7 +1,7 @@
 architect:
   - yegor256
 docker:
-  image: yegor256/rultor-image:1.19.0
+  image: yegor256/rultor-image:1.22.0
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
@@ -11,14 +11,15 @@ install: |
   sudo pip3 install pygments
   javac -version
   pdd --file=/dev/null
-  sudo gem install pdd
-  sudo gem install texsc:0.6.0
-  sudo gem install texqc:0.6.0
+  gem install pdd
+  gem install texsc:0.6.0
+  gem install texqc:0.6.0
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
     cd paper; latexmk -pdf
 release:
+  pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
 
