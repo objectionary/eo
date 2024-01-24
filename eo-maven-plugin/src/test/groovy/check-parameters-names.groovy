@@ -29,7 +29,6 @@
 
 import groovy.xml.XmlSlurper
 
-this.println 'Verify that parameters passed to java are named consistently'
 plugin = basedir.toPath()
     .resolve("target")
     .resolve("classes")
