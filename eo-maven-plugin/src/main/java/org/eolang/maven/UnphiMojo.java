@@ -58,7 +58,7 @@ public final class UnphiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "unphiInputDir",
+        property = "eo.unphiInputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/phi"
     )
@@ -69,7 +69,7 @@ public final class UnphiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "unphiOutputDir",
+        property = "eo.unphiOutputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/1-parse"
     )
