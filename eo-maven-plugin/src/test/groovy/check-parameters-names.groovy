@@ -29,7 +29,7 @@
 
 import groovy.xml.XmlSlurper
 
-println 'Verify that parameters passed to java are named consistent'
+this.println 'Verify that parameters passed to java are named consistently'
 plugin = basedir.toPath()
     .resolve("target")
     .resolve("classes")
@@ -41,8 +41,8 @@ pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
 failures = []
 content.mojos.mojo.findAll {
     !(it.goal.text() in ["help"])
-}.configuration.each{
-    it.children().each{
+}.configuration.each {
+    it.children().each {
         final String text = it.text()
         if (!("" == text || text.matches(pattern))) {
             failures.add(text)

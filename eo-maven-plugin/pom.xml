@@ -397,7 +397,7 @@ SOFTWARE.
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>${project.basedir}/src/test/groovy/check-parameters-names.groovy</source>
+              <source>${project.basedir}/src/test/groovy/verify.groovy</source>
             </configuration>
           </execution>
         </executions>
