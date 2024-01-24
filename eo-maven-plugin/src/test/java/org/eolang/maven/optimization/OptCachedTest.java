@@ -61,10 +61,8 @@ final class OptCachedTest {
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
         final XML xml = OptCachedTest.program();
-        final Path program = OptCachedTest.save(dir, xml);
-        OptCachedTest.setTime(dir, 0);
-        OptCachedTest.save(cache, xml);
-        OptCachedTest.setTime(cache, 0);
+        final Path program = OptCachedTest.save(dir, xml, 0);
+        OptCachedTest.save(cache, xml, 0);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
             new OptCached(
@@ -85,10 +83,8 @@ final class OptCachedTest {
     )
         throws Exception {
         final XML xml = OptCachedTest.program();
-        final Path program = OptCachedTest.save(dir, xml);
-        OptCachedTest.setTime(dir, 0);
-        OptCachedTest.save(cache, xml);
-        OptCachedTest.setTime(cache, 2000);
+        final Path program = OptCachedTest.save(dir, xml, 0);
+        OptCachedTest.save(cache, xml, 2000);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
             new OptCached(
@@ -105,30 +101,22 @@ final class OptCachedTest {
     @Test
     void returnsFromCacheCorrectProgram(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
-        final Path cached = OptCachedTest.save(
-            cache,
-            OptCachedTest.program("first program")
-        );
-        OptCachedTest.setTime(cached, -2000);
-        final Path current = OptCachedTest.save(
-            dir,
-            OptCachedTest.program("second program")
-        );
+        final XML first = OptCachedTest.program("first program");
+        final XML second = OptCachedTest.program("second program");
+        OptCachedTest.save(cache, first, -2000);
+        final Path current = OptCachedTest.save(dir, second, 0);
         MatcherAssert.assertThat(
             "Expecting current program to be compiled, but prev program was returned from cache.",
-            new OptCached(
-                path -> OptCachedTest.program("second program"),
-                cache,
-                current
-            ).apply(OptCachedTest.program("second program")),
-            Matchers.equalTo(OptCachedTest.program("second program"))
+            new OptCached(path -> second, cache, current)
+                .apply(second),
+            Matchers.equalTo(second)
         );
     }
 
     @Test
     void optimizesIfXmlIsAbsentInCache(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
-        final Path program = OptCachedTest.save(dir, OptCachedTest.program());
+        final Path program = OptCachedTest.save(dir, OptCachedTest.program(), 0);
         MatcherAssert.assertThat(
             "We expect that the program will be created and returned as is (same instance)",
             new OptCached(
@@ -148,25 +136,15 @@ final class OptCachedTest {
     void optimizesBecauseCacheIsExpired(
         @TempDir final Path cache,
         @TempDir final Path dir) throws Exception {
-        final Path program = OptCachedTest.save(
-            dir,
-            OptCachedTest.program("new program")
-        );
-        OptCachedTest.setTime(dir, 0);
-        OptCachedTest.save(
-            cache,
-            OptCachedTest.program("old program")
-        );
-        OptCachedTest.setTime(cache, -5000);
+        final XML current = OptCachedTest.program("new program");
+        final XML old = OptCachedTest.program("old program");
+        final Path program = OptCachedTest.save(dir, current, 0);
+        OptCachedTest.save(cache, old, -5000);
         MatcherAssert.assertThat(
             "We expected that the program will be optimized because the cache is expired",
-            new OptCached(
-                path -> OptCachedTest.program("new program"),
-                cache,
-                program
-            )
-                .apply(OptCachedTest.program("new program")),
-            Matchers.equalTo(OptCachedTest.program("new program"))
+            new OptCached(path -> current, cache, program)
+                .apply(current),
+            Matchers.equalTo(current)
         );
     }
 
@@ -174,34 +152,21 @@ final class OptCachedTest {
      * Save XML program with hardcoded name to a temp directory.
      * @param tmp Temporary test directory.
      * @param xml XML program.
+     * @param time Time in milliseconds added to the current time.
      * @return Path to saved program.
      */
-    private static Path save(final Path tmp, final XML xml) throws IOException {
+    private static Path save(
+        final Path tmp,
+        final XML xml,
+        final Integer time) throws IOException {
         final Path path = Paths.get("main.xmir");
         final Path res = tmp.resolve(path);
         new HmBase(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
-        return res;
-    }
-
-    /**
-     * Set time of XML program use absolute path of program.
-     * @param path Temporary test directory.
-     * @param time XML program.
-     * @return Path to saved program.
-     */
-    private static void setTime(
-        final Path path,
-        final Integer time) throws IOException {
-        final Path program;
-        if (path.getFileName().toString().equals("main.xmir")) {
-            program = path;
-        } else {
-            program = path.resolve(Paths.get("main.xmir"));
-        }
         Files.setLastModifiedTime(
-            program,
+            res,
             FileTime.fromMillis(System.currentTimeMillis() + time)
         );
+        return res;
     }
 
     /**
