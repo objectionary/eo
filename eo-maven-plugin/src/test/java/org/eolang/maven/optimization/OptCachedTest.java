@@ -61,11 +61,10 @@ final class OptCachedTest {
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
         final XML xml = OptCachedTest.program();
-        final FileTime time = FileTime.fromMillis(System.currentTimeMillis());
         final Path program = OptCachedTest.save(dir, xml);
-        OptCachedTest.setTime(dir, time);
+        OptCachedTest.setTime(dir, 0);
         OptCachedTest.save(cache, xml);
-        OptCachedTest.setTime(cache, time);
+        OptCachedTest.setTime(cache, 0);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
             new OptCached(
@@ -87,15 +86,9 @@ final class OptCachedTest {
         throws Exception {
         final XML xml = OptCachedTest.program();
         final Path program = OptCachedTest.save(dir, xml);
-        OptCachedTest.setTime(
-            dir,
-            FileTime.fromMillis(System.currentTimeMillis())
-        );
+        OptCachedTest.setTime(dir, 0);
         OptCachedTest.save(cache, xml);
-        OptCachedTest.setTime(
-            cache,
-            FileTime.fromMillis(System.currentTimeMillis() + 2000)
-        );
+        OptCachedTest.setTime(cache, 2000);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
             new OptCached(
@@ -116,10 +109,7 @@ final class OptCachedTest {
             cache,
             OptCachedTest.program("first program")
         );
-        Files.setLastModifiedTime(
-            cached,
-            FileTime.fromMillis(System.currentTimeMillis() - 2000)
-        );
+        OptCachedTest.setTime(cached, -2000);
         final Path current = OptCachedTest.save(
             dir,
             OptCachedTest.program("second program")
@@ -162,15 +152,12 @@ final class OptCachedTest {
             dir,
             OptCachedTest.program("new program")
         );
-        OptCachedTest.setTime(dir, FileTime.fromMillis(System.currentTimeMillis()));
+        OptCachedTest.setTime(dir, 0);
         OptCachedTest.save(
             cache,
             OptCachedTest.program("old program")
         );
-        OptCachedTest.setTime(
-            cache,
-            FileTime.fromMillis(System.currentTimeMillis() - 5000)
-        );
+        OptCachedTest.setTime(cache, -5000);
         MatcherAssert.assertThat(
             "We expected that the program will be optimized because the cache is expired",
             new OptCached(
@@ -204,9 +191,17 @@ final class OptCachedTest {
      */
     private static void setTime(
         final Path path,
-        final FileTime time) throws IOException {
-        final Path program = path.resolve(Paths.get("main.xmir"));
-        Files.setLastModifiedTime(program, time);
+        final Integer time) throws IOException {
+        final Path program;
+        if (path.getFileName().toString().equals("main.xmir")) {
+            program = path;
+        } else {
+            program = path.resolve(Paths.get("main.xmir"));
+        }
+        Files.setLastModifiedTime(
+            program,
+            FileTime.fromMillis(System.currentTimeMillis() + time)
+        );
     }
 
     /**
