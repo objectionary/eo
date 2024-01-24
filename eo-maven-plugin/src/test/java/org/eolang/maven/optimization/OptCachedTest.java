@@ -55,6 +55,7 @@ final class OptCachedTest {
      * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
      *  We should resolve issues with unstable failures and only
      *  then enable the test.
+     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      * @todo #2790:30min There is repeating logic in tests.
      *  Code logic repeats in {@link OptCacedTest},
      *  {@link OptimizeMojoTest.getAlreadyOptimizedResultsFromCache}
@@ -66,7 +67,6 @@ final class OptCachedTest {
      *  FileTime.fromMillis(System.currentTimeMillis() + time)
      *  ); }.
      *  We need to think about how to remove this duplication.
-     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path cache, @TempDir final Path dir)
