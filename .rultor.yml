@@ -16,7 +16,7 @@ install: |
   gem install texqc:0.6.0
   sudo tlmgr option repository ctan
   sudo tlmgr --verify-repo=none update --self
-  sudo tlmgr --verify-repo=none install acmart xstring totpages environ hyperxmp ifmtarg ncctools comment biblatex href-ul libertine ffcode upquote docshots paralist biber cyrillic babel-russian hyphen-russian
+  sudo tlmgr --verify-repo=none install acmart xstring totpages environ hyperxmp ifmtarg ncctools comment biblatex href-ul libertine ffcode upquote docshots paralist biber cyrillic babel-russian hyphen-russian csquotes
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
