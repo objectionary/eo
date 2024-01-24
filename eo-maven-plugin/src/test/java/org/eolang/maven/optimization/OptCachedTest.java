@@ -55,14 +55,25 @@ final class OptCachedTest {
      * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
      *  We should resolve issues with unstable failures and only
      *  then enable the test.
+     * @todo #2790:30min There is repeating logic in tests.
+     *  Code logic repeats in {@link OptCacedTest},
+     *  {@link OptimizeMojoTest.getAlreadyOptimizedResultsFromCache}
+     *  and {@link ShakeMojoTest.getAlreadyShakenResultsFromCache}.
+     *  To check whether a program is loaded from the cache,
+     *  different tests use the same code
+     *  { @code Files.setLastModifiedTime(
+     *  res,
+     *  FileTime.fromMillis(System.currentTimeMillis() + time)
+     *  ); }.
+     *  We need to think about how to remove this duplication.
      *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
     @Test
     void returnsFromCacheIfXmlAlreadyInCache(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
         final XML xml = OptCachedTest.program();
-        final Path program = OptCachedTest.save(dir, xml, 0);
-        OptCachedTest.save(cache, xml, 0);
+        final Path program = OptCachedTest.save(dir, xml);
+        OptCachedTest.save(cache, xml);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
             new OptCached(
@@ -77,13 +88,13 @@ final class OptCachedTest {
     }
 
     @Test
-    void returnsFromCacheButTimesSaveAndExecuteDifferent(
+    void returnsFromCacheButLastModifiedTimesDifferent(
         @TempDir final Path cache,
         @TempDir final Path dir
     )
         throws Exception {
         final XML xml = OptCachedTest.program();
-        final Path program = OptCachedTest.save(dir, xml, 0);
+        final Path program = OptCachedTest.save(dir, xml);
         OptCachedTest.save(cache, xml, 2000);
         MatcherAssert.assertThat(
             "We expected that the program will be returned from the cache.",
@@ -104,7 +115,7 @@ final class OptCachedTest {
         final XML first = OptCachedTest.program("first program");
         final XML second = OptCachedTest.program("second program");
         OptCachedTest.save(cache, first, -2000);
-        final Path current = OptCachedTest.save(dir, second, 0);
+        final Path current = OptCachedTest.save(dir, second);
         MatcherAssert.assertThat(
             "Expecting current program to be compiled, but prev program was returned from cache.",
             new OptCached(path -> second, cache, current)
@@ -116,7 +127,7 @@ final class OptCachedTest {
     @Test
     void optimizesIfXmlIsAbsentInCache(@TempDir final Path cache, @TempDir final Path dir)
         throws Exception {
-        final Path program = OptCachedTest.save(dir, OptCachedTest.program(), 0);
+        final Path program = OptCachedTest.save(dir, OptCachedTest.program());
         MatcherAssert.assertThat(
             "We expect that the program will be created and returned as is (same instance)",
             new OptCached(
@@ -138,7 +149,7 @@ final class OptCachedTest {
         @TempDir final Path dir) throws Exception {
         final XML current = OptCachedTest.program("new program");
         final XML old = OptCachedTest.program("old program");
-        final Path program = OptCachedTest.save(dir, current, 0);
+        final Path program = OptCachedTest.save(dir, current);
         OptCachedTest.save(cache, old, -5000);
         MatcherAssert.assertThat(
             "We expected that the program will be optimized because the cache is expired",
@@ -150,6 +161,26 @@ final class OptCachedTest {
 
     /**
      * Save XML program with hardcoded name to a temp directory.
+     * @param tmp Temporary test directory.
+     * @param xml XML program.
+     * @return Path to saved program.
+     */
+    private static Path save(
+        final Path tmp,
+        final XML xml) throws IOException {
+        final Path path = Paths.get("main.xmir");
+        final Path res = tmp.resolve(path);
+        new HmBase(tmp).save(xml.toString().getBytes(StandardCharsets.UTF_8), path);
+        Files.setLastModifiedTime(
+            res,
+            FileTime.fromMillis(System.currentTimeMillis())
+        );
+        return res;
+    }
+
+    /**
+     * Save XML program with hardcoded name to a temp
+     * directory with setting last modification time.
      * @param tmp Temporary test directory.
      * @param xml XML program.
      * @param time Time in milliseconds added to the current time.
