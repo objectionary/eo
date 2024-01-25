@@ -41,15 +41,6 @@ import org.eolang.maven.util.Rel;
 /**
  * Optimized Tojos.
  * @since 0.34.0
- * @todo #2790:30min Can simplify code.
- *  The code {@code if (tojo.hasHash())
- *              res = new OptCached(...) } can be simplified,
- *  like
- *      if (tojo.hasHash() &&  contains(in_cache)) {
- *          return optimization from cache
- *      } else {
- *          run "common" optimization
- *      }.
  */
 final class OptimizationTask {
 
