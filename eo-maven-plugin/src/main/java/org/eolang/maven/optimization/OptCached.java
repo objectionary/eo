@@ -42,17 +42,17 @@ import org.eolang.maven.footprint.FtDefault;
  *  In ParseMojo we have condition {@code if (tojo.hasHash())}, in OptimizeMojo or ShakeMojo we
  *  compare creation time of files.
  *  Don't forget to enable the tests.
- *  @todo #2790:30min Refactor OptCache Class
- *   Currently, we have some concerns about the implementation of OptCache.
- *   It appears that the code is a bit too complicated.
- *   The OptCache class takes XMIR as an argument in OptCache#apply
- *   and the path to the same XMIR in the constructor, which seems odd.
- *   We need to consider how to refactor this class.
- *   Furthermore, the current implementation of OptCache
- *   and OptimizationTask has a similar logic of returning either from the cache
- *   or applying a default optimization.
- *   For more information, please refer to this discussion:
- *   <a href=“https://github.com/objectionary/eo/pull/2808#discussion_r1464941944”>issue</a>.
+ * @todo #2790:30min Refactor OptCache Class
+ *  Currently, we have some concerns about the implementation of OptCache.
+ *  It appears that the code is a bit too complicated.
+ *  The OptCache class takes XMIR as an argument in OptCache#apply
+ *  and the path to the same XMIR in the constructor, which seems odd.
+ *  We need to consider how to refactor this class.
+ *  Furthermore, the current implementation of OptCache
+ *  and OptimizationTask has a similar logic of returning either from the cache
+ *  or applying a default optimization.
+ *  For more information, please refer to this discussion:
+ *  <a href=“https://github.com/objectionary/eo/pull/2808#discussion_r1464941944”>issue</a>.
  */
 public final class OptCached implements Optimization {
 
