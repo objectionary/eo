@@ -157,14 +157,15 @@ the importance of their presence in specific quantity
 (for example, there has to be exactly one space after the closing square bracket at the
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
-\begin{ffcode*}{showspaces=true}
+{\lstset{showspaces=true}\begin{ffcode}
 # This is a vector in 2D space |$\label{ln:comment}$|
 [dx dy] > vector |$\label{ln:vector}$|
   sqrt. > length |$\label{ln:length}$|
     plus.
       dx.times dx
       dy.timex dy |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
-\end{ffcode*}
+\end{ffcode}
+}
 
 The code at \lref{comment} is a \emph{comment}.
 Two \emph{free attributes} \ff{dx} and \ff{dy}
