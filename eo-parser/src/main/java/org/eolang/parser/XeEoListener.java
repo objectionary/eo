@@ -122,6 +122,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterEop(final EoParser.EopContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitEop(final EoParser.EopContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterLicense(final EoParser.LicenseContext ctx) {
         this.dirs.addIf("license").set(
             new Joined(
@@ -177,12 +187,42 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterCommented(final EoParser.CommentedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommented(final EoParser.CommentedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterObject(final EoParser.ObjectContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitObject(final EoParser.ObjectContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterSlave(final EoParser.SlaveContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSlave(final EoParser.SlaveContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterMaster(final EoParser.MasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitMaster(final EoParser.MasterContext ctx) {
         // Nothing here
     }
 
@@ -467,49 +507,89 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
+    public void enterVapplicationArgBound(final EoParser.VapplicationArgBoundContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
+    public void exitVapplicationArgBound(final EoParser.VapplicationArgBoundContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
+    public void enterVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
+    public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterVapplicationArgHapplicationBinded(
-        final EoParser.VapplicationArgHapplicationBindedContext ctx
+    public void enterVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHapplicationBound(
+        final EoParser.VapplicationArgHapplicationBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplicationBinded(
-        final EoParser.VapplicationArgHapplicationBindedContext ctx
+    public void exitVapplicationArgHapplicationBound(
+        final EoParser.VapplicationArgHapplicationBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHapplicationUnbinded(
-        final EoParser.VapplicationArgHapplicationUnbindedContext ctx
+    public void enterVapplicationArgHapplicationUnbound(
+        final EoParser.VapplicationArgHapplicationUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplicationUnbinded(
-        final EoParser.VapplicationArgHapplicationUnbindedContext ctx
+    public void exitVapplicationArgHapplicationUnbound(
+        final EoParser.VapplicationArgHapplicationUnboundContext ctx
     ) {
         // Nothing here
     }
@@ -527,57 +607,57 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgVanonymUnbinded(
-        final EoParser.VapplicationArgVanonymUnbindedContext ctx
+    public void enterVapplicationArgVanonymUnbound(
+        final EoParser.VapplicationArgVanonymUnboundContext ctx
     ) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitVapplicationArgVanonymUnbinded(
-        final EoParser.VapplicationArgVanonymUnbindedContext ctx
+    public void exitVapplicationArgVanonymUnbound(
+        final EoParser.VapplicationArgVanonymUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgVanonymBinded(
-        final EoParser.VapplicationArgVanonymBindedContext ctx
+    public void enterVapplicationArgVanonymBound(
+        final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
         this.startObject(ctx).prop("abstract").leave();
     }
 
     @Override
-    public void exitVapplicationArgVanonymBinded(
-        final EoParser.VapplicationArgVanonymBindedContext ctx
+    public void exitVapplicationArgVanonymBound(
+        final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHanonymBinded(
-        final EoParser.VapplicationArgHanonymBindedContext ctx
+    public void enterVapplicationArgHanonymBound(
+        final EoParser.VapplicationArgHanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymBinded(
-        final EoParser.VapplicationArgHanonymBindedContext ctx
+    public void exitVapplicationArgHanonymBound(
+        final EoParser.VapplicationArgHanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHanonymUnbinded(
-        final EoParser.VapplicationArgHanonymUnbindedContext ctx
+    public void enterVapplicationArgHanonymUnbound(
+        final EoParser.VapplicationArgHanonymUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymUnbinded(
-        final EoParser.VapplicationArgHanonymUnbindedContext ctx
+    public void exitVapplicationArgHanonymUnbound(
+        final EoParser.VapplicationArgHanonymUnboundContext ctx
     ) {
         // Nothing here
     }
@@ -633,6 +713,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterVanonymTail(final EoParser.VanonymTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVanonymTail(final EoParser.VanonymTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterMethod(final EoParser.MethodContext ctx) {
         // Nothing here
     }
@@ -649,16 +739,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodAs(final EoParser.MethodAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodAs(final EoParser.MethodAsContext ctx) {
         // Nothing here
     }
 
