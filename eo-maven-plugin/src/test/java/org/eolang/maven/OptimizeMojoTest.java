@@ -114,10 +114,6 @@ final class OptimizeMojoTest {
      *
      * @param temp Temporary test directory.
      * @throws Exception if unexpected error happened.
-     * @todo #2422:60min This test is unstable for now.
-     *  We should resolve issues with unstable failures and only
-     *  then enable the test.
-     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      */
     @Test
     void getsAlreadyOptimizedResultsFromCache(@TempDir final Path temp) throws Exception {

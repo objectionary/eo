@@ -52,10 +52,6 @@ final class OptCachedTest {
      * @param cache Temp cache dir.
      * @param dir Temp program dir
      * @throws IOException if I/O fails
-     * @todo #2422:60min returnsFromCacheIfXmlAlreadyInCache: this test is unstable.
-     *  We should resolve issues with unstable failures and only
-     *  then enable the test.
-     *  Also, see this <a href="https://github.com/objectionary/eo/issues/2727">issue</a>.
      * @todo #2790:30min There is repeating logic in tests.
      *  Code logic repeats in {@link OptCacedTest},
      *  {@link OptimizeMojoTest.getAlreadyOptimizedResultsFromCache}
