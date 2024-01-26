@@ -79,7 +79,7 @@ final class EoIndentLexerTest {
     @Test
     void emitsUntab() throws IOException {
         final EoIndentLexer lexer = new EoIndentLexer(
-            new TextOf("\n  \n")
+            new TextOf("\n  \n  \n")
         );
         lexer.nextToken();
         lexer.nextToken();

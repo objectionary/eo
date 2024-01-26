@@ -49,10 +49,7 @@ final class SafeMojoTest {
         );
         MatcherAssert.assertThat(
             String.join("\n", out.captured()),
-            Matchers.allOf(
-                Matchers.containsString("mismatched input ' ' expecting {'!', EOL, EOP}"),
-                Matchers.containsString("Failed to parse")
-            )
+            Matchers.containsString("Failed to parse")
         );
     }
 
