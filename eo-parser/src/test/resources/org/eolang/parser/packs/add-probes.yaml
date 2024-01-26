@@ -19,7 +19,6 @@ eo: |
     start. > a
       engine.
         QQ.car
-
     and. > fib
       stdout
         sprintf
@@ -33,7 +32,6 @@ eo: |
         sprintf
           "%i"
     $.other 1 > one
-
     memory 0 > price
     [p] > set-price
       ^.price.write p > @
