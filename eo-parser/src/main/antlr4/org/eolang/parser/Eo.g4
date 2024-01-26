@@ -210,18 +210,18 @@ vapplicationHeadAs
 // Vertical application arguments
 // Ends on the next line
 vapplicationArgs
-    : EOL TAB vapplicationArg UNTAB
+    : EOL TAB vapplicationArgsSpecific UNTAB
     ;
 
 // Arguments for reversed vertical application
 vapplicationArgsReversed
-    : EOL TAB vapplicationArgUnbound vapplicationArg? UNTAB
+    : EOL TAB vapplicationArgUnbound vapplicationArgsSpecific? UNTAB
     ;
 
 // Arguments of vertical application
 // Must either all bound or all unbound
 // Ends on the next line
-vapplicationArg
+vapplicationArgsSpecific
     : vapplicationArgBound+
     | vapplicationArgUnbound+
     ;
@@ -244,7 +244,7 @@ vapplicationArgBoundCurrent
 // Ends on the next line
 vapplicationArgBoundNext
     : vapplicationArgVanonymBound // vertical anonym object
-    | vapplicationHeadAs oname? vapplicationArg // vertical application
+    | vapplicationHeadAs oname? vapplicationArgs // vertical application
     | reversed as oname? vapplicationArgsReversed // reversed vertical application
     ;
 
@@ -401,12 +401,12 @@ hmethodHeadExtended
 
 // Vertical method
 vmethod
-    : vmethodHead vmethodTail
+    : vmethodHead methodTail
     ;
 
 // Vertical method with version
 vmethodVersioned
-    : vmethodHead vmethodTailVersioned
+    : vmethodHead methodTailVersioned
     ;
 
 // Optional vertical method
@@ -424,28 +424,36 @@ vmethodOptional
 // 3. vertical application
 // 4. horizontal application. The same logic as with a vertical application
 // 5. just an object reference
+// Ends on the next line
 vmethodHead
-    : vmethodHead vmethodTailOptional vmethodHeadApplicationTail
-    | vmethodHeadHmethodExtended
+    : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | vmethodHeadHapplication
+    | vmethodHeadCurrent EOL
+    ;
+
+// Head of vertical method that ends on the current line
+vmethodHeadCurrent
+    : vmethodHeadHapplication
+    | vmethodHeadHmethodExtended
     | justNamed
     ;
 
-vmethodTailOptional
-    : vmethodTail
-    | vmethodTailVersioned
+methodTailOptional
+    : methodTail
+    | methodTailVersioned
     ;
 
 vmethodHeadApplicationTail
-    : oname? vapplicationArgs?
-    | happlicationTail oname?
+    : oname? (vapplicationArgs | EOL)
+    | happlicationTail oname? EOL
     ;
 
 vmethodHeadHmethodExtended
     : hmethodOptional oname?
     ;
 
+// Vertical application as head of vertical method
+// Ends on the next line
 vmethodHeadVapplication
     : (applicable | hmethodOptional | versioned) oname? vapplicationArgs
     | reversed oname? vapplicationArgsReversed
@@ -454,16 +462,6 @@ vmethodHeadVapplication
 vmethodHeadHapplication
     : (applicable | hmethodExtended) happlicationTail oname?
     | happlicationReversed oname?
-    ;
-
-// Tail of vertical method
-vmethodTail
-    : EOL methodTail
-    ;
-
-// Versioned tail of vertical method
-vmethodTailVersioned
-    : EOL methodTailVersioned
     ;
 
 // Tail of method

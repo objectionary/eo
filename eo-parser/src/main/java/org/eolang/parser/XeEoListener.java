@@ -497,12 +497,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArg(final EoParser.VapplicationArgContext ctx) {
+    public void enterVapplicationArgsSpecific(final EoParser.VapplicationArgsSpecificContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArg(final EoParser.VapplicationArgContext ctx) {
+    public void exitVapplicationArgsSpecific(final EoParser.VapplicationArgsSpecificContext ctx) {
         // Nothing here
     }
 
@@ -857,13 +857,23 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
+    public void enterVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
-        // Nothing here
+    public void exitVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
+     // Nothing here   
+    }
+
+    @Override
+    public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
+     // Nothing here   
+    }
+
+    @Override
+    public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
+     // Nothing here   
     }
 
     @Override
@@ -903,26 +913,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodTail(final EoParser.VmethodTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodTail(final EoParser.VmethodTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
         // Nothing here
     }
 
