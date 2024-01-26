@@ -1,0 +1,12 @@
+eo: |
+  [z] > main
+    [] > x
+    seq' > y
+phi: |
+  {
+    main ↦ ⟦
+      z ↦ ∅,
+      x ↦ ⟦⟧,
+      y ↦ Φ.org.eolang.seq()
+    ⟧
+  }
