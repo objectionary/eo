@@ -1,0 +1,15 @@
+# @todo #2610:30min Enable the test when PhiMojo supports "copy" syntax. The test is disabled
+#  because PhiMojo does not support converting "copy" EO syntax to phi. Need to extend
+#  "xmir-to-phi.xsl" and enable the test. Don't forget to remove the puzzle
+skip: true
+eo: |
+  [] > obj
+    cage' > x
+    cage' a > y
+phi: |
+  {
+    obj ↦ ⟦
+      x ↦ Φ.org.eolang.cage(),
+      y ↦ Φ.org.eolang.cage()(α0 ↦ Φ.org.eolang.a)
+    ⟧
+  }
