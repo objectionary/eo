@@ -109,7 +109,7 @@ public final class EoIndentLexer extends EoLexer {
     }
 
     /**
-     * Calculate shifts and emit corresponding token
+     * Calculate shifts and emit corresponding token.
      * @param tabs Current amount of tabs.
      * @param next Next token.
      */
