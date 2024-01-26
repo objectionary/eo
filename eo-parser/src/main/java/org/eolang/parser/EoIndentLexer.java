@@ -36,7 +36,7 @@ import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
 
 /**
- * Indentation-aware Lexer
+ * Indentation-aware Lexer.
  *
  * @since 1.0
  */
