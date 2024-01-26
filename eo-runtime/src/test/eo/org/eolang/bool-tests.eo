@@ -133,3 +133,117 @@
             x.write (x.as-int.plus 1)
             x
     FALSE
+
+[] > iterating-tuple-with-while-using-internal-iterator
+  * 1 1 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length.minus 1 > max
+  seq > @
+    *
+      if.
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
+        while.
+          iter.as-int.lt max
+          [i]
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      i
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
+
+# @todo #2785:60min Enable this test. For some reason this test fails. The only difference between
+#  this test and `iterating-tuple-with-while-using-internal-iterator` is that this test uses
+#  external iterator inside instead of standard `i` from `while` body.
+[] > iterating-tuple-with-while-using-external-iterator
+  * 1 1 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length.minus 1 > max
+  seq > nop
+    *
+      if.
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
+        while.
+          iter.as-int.lt max
+          [i]
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
+  TRUE > @
+
+[] > iterating-tuple-with-while-without-body-multiple
+  * 1 1 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length > max
+  seq > @
+    *
+      while.
+        []
+          if. > @
+            iter.as-int.lt max
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length
+
+# @todo #2437:60min Enable the test. For some reason this test fails. The only difference between
+#  this test and `iterating-tuple-with-while-without-body-multiple` is that in this test tuple
+#  consists of only one element.
+[] > iterating-tuple-with-while-without-body-single
+  * 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length > max
+  seq > nop
+    *
+      while.
+        []
+          if. > @
+            iter.as-int.lt max
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length
+  TRUE > @

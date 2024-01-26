@@ -14,6 +14,10 @@ install: |
   gem install pdd
   gem install texsc:0.6.0
   gem install texqc:0.6.0
+  sudo tlmgr option repository ctan
+  sudo tlmgr --verify-repo=none update --self
+  sudo tlmgr --verify-repo=none install $(cut -d' ' -f2 paper/DEPENDS.txt | uniq)
+  sudo tlmgr --verify-repo=none update $(cut -d' ' -f2 paper/DEPENDS.txt | uniq)
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never

@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: yegor256/latexmk-action@0.9.0
+      - uses: yegor256/latexmk-action@0.10.5
         with:
           path: paper
           opts: -pdf
-          packages: acmart cjk ffcode href-ul datetime fmtcount libertine paralist makecell footmisc currfile enumitem wrapfig lastpage biblatex titling svg trimspaces catchfile transparent textpos fvextra xstring framed environ totpages hyperxmp ifmtarg ncctools comment anyfontsize fdsymbol algpseudocodex algorithmicx stmaryrd preprint cyrillic cm-super babel-russian hyphen-russian lh to-be-determined cancel iexec csquotes pgfopts
+          depends: paper/DEPENDS.txt
