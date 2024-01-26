@@ -349,22 +349,26 @@ SOFTWARE.
       <xsl:value-of select="$arrow"/>
     </xsl:if>
     <xsl:value-of select="$lb"/>
-    <xsl:value-of select="eo:eol($tabs+1)"/>
-    <xsl:if test="@atom">
-      <xsl:value-of select="$lambda"/>
-      <xsl:value-of select="$dashed-arrow"/>
-      <xsl:text>Lambda</xsl:text>
-      <xsl:if test="count(o)&gt;0">
-        <xsl:value-of select="eo:comma(2, $tabs+1)"/>
+    <!-- Atom or not empty formation -->
+    <xsl:if test="@atom or count(o)>0">
+      <xsl:value-of select="eo:eol($tabs+1)"/>
+      <!-- Atom -->
+      <xsl:if test="@atom">
+        <xsl:value-of select="$lambda"/>
+        <xsl:value-of select="$dashed-arrow"/>
+        <xsl:text>Lambda</xsl:text>
+        <xsl:if test="count(o)&gt;0">
+          <xsl:value-of select="eo:comma(2, $tabs+1)"/>
+        </xsl:if>
       </xsl:if>
+      <xsl:for-each select="o">
+        <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
+        <xsl:apply-templates select=".">
+          <xsl:with-param name="tabs" select="$tabs+1"/>
+        </xsl:apply-templates>
+      </xsl:for-each>
+      <xsl:value-of select="eo:eol($tabs)"/>
     </xsl:if>
-    <xsl:for-each select="o">
-      <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
-      <xsl:apply-templates select=".">
-        <xsl:with-param name="tabs" select="$tabs+1"/>
-      </xsl:apply-templates>
-    </xsl:for-each>
-    <xsl:value-of select="eo:eol($tabs)"/>
     <xsl:value-of select="$rb"/>
   </xsl:template>
   <!-- Application -->
