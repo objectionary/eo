@@ -281,6 +281,11 @@ SOFTWARE.
             <xsl:value-of select="eo:specials(@base, false())"/>
           </xsl:otherwise>
         </xsl:choose>
+        <!-- Copy -->
+        <xsl:if test="@copy">
+          <xsl:text>()</xsl:text>
+        </xsl:if>
+        <!-- Nested objects -->
         <xsl:if test="count(o)&gt;0">
           <xsl:text>(</xsl:text>
           <xsl:value-of select="eo:eol($tabs+1)"/>
@@ -300,6 +305,11 @@ SOFTWARE.
           <xsl:with-param name="tabs" select="$tabs"/>
         </xsl:apply-templates>
         <xsl:value-of select="eo:specials(@base, true())"/>
+        <!-- Copy -->
+        <xsl:if test="@copy">
+          <xsl:text>()</xsl:text>
+        </xsl:if>
+        <!-- Nested objects -->
         <xsl:if test="count(o)&gt;1">
           <xsl:text>(</xsl:text>
           <xsl:value-of select="eo:eol($tabs+1)"/>
