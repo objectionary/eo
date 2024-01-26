@@ -350,7 +350,7 @@ SOFTWARE.
     </xsl:if>
     <xsl:value-of select="$lb"/>
     <!-- Atom or not empty formation -->
-    <xsl:if test="@atom or count(o)>0">
+    <xsl:if test="@atom or count(o)&gt;0">
       <xsl:value-of select="eo:eol($tabs+1)"/>
       <!-- Atom -->
       <xsl:if test="@atom">
