@@ -49,6 +49,7 @@ class PhiMojoTest {
             ),
             new FakeMaven(temp)
                 .withProgram(
+                    "# This is the default 64+ symbols comment in front of named abstract object",
                     "[] > cart",
                     "  memory 0 > total",
                     "  [i] > add",
