@@ -90,6 +90,7 @@ final class PullMojoTest {
         new FakeMaven(temp)
             .withProgram(
                 "+package org.eolang.custom\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
                 "[] > main",
                 "  QQ.io.stdout > @",
                 "    QQ.txt.sprintf",

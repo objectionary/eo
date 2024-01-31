@@ -14,7 +14,7 @@ origin: |
 strait: |
   +package sandbox
 
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [args] > main
     QQ
     .io
@@ -36,7 +36,7 @@ strait: |
 reversed: |
   +package sandbox
 
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [args] > main
     stdout. > @
       io.

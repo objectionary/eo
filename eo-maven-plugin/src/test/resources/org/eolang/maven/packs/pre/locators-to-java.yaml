@@ -18,14 +18,14 @@ tests:
   - //java[contains(text(), 'new PhLocated(ret_1, 10, 10, "Φ.bar.φ.α0")')]
   - //java[contains(text(), 'new PhLocated(ret, 11, 2, "Φ.bar.five")')]
 eo: |
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo
     42 > @
-    # This is the default 64+ symbols comment in front of named abstract object
+    # This is the default 64+ symbols comment in front of named abstract object.
     [y] > other
       43.plus y > @
 
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > bar
     42.plus 43 > @
     int 5 > five

@@ -16,11 +16,11 @@ tests:
   - /program/errors[count(*)=0]
   - //java[contains(text(), 'PhMethod(new PhMethod(rho, "σ"), "σ")')]
 eo: |
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [x] > foo
     $ > this
-    # This is the default 64+ symbols comment in front of named abstract object
+    # This is the default 64+ symbols comment in front of named abstract object.
     [] > xyz
-      # This is the default 64+ symbols comment in front of named abstract object
+      # This is the default 64+ symbols comment in front of named abstract object.
       [] > bar
         this.x > @

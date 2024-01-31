@@ -6,8 +6,10 @@ locators:
   - .foo .bar .a .x .π >bar .ρ ν=ν0
 eo: |
   +package foo.bar
-  
+
+  # This is the default 64+ symbols comment in front of named abstract object.
   [f] > a
     b 42 > x
+  # This is the default 64+ symbols comment in front of named abstract object.
   [t] > b
     a 256 > y

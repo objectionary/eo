@@ -22,15 +22,15 @@ tests:
   - //java[contains(text(), '  Phi ret_2_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
   - //java[contains(text(), '  Phi ret_2 = new PhMethod(ret_2_base, "empty");')]
 eo: |
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo
     * 1 2 (* 3 4) > @
 
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > bar
     zz 42 * > tt
 
-  # This is the default 64+ symbols comment in front of named abstract object
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > baz
     """
     абвгд
