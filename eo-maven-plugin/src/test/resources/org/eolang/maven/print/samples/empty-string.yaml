@@ -1,0 +1,24 @@
+origin: |
+  [] > app
+    QQ.io.stdout > @
+      QQ.txt.sprintf ""
+
+strait: |
+  [] > app
+    QQ
+    .io
+    .stdout > @
+      QQ
+      .txt
+      .sprintf
+        ""
+
+reversed: |
+  [] > app
+    stdout. > @
+      io.
+        QQ
+      sprintf.
+        txt.
+          QQ
+        ""

@@ -1,0 +1,21 @@
+origin: |
+  [] > app
+    QQ.io.stdout > @
+      """
+      Hello
+      it's me
+      """
+
+strait: |
+  [] > app
+    QQ
+    .io
+    .stdout > @
+      "Hello\nit's me"
+
+reversed: |
+  [] > app
+    stdout. > @
+      io.
+        QQ
+      "Hello\nit's me"
