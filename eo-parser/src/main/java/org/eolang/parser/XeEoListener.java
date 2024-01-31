@@ -48,6 +48,15 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
+ * @todo #921:90min Add comment validation. We need to make sure that mandatory comment before
+ *  abstract object is: starts with a capital letter, ends with a dot, includes only ASCII
+ *  printable characters (0x20-0x7f), is at least 64 characters long, is in Markdown.
+ *  It can be done either in
+ *  {@link XeEoListener#enterCommentMandatory(EoParser.CommentMandatoryContext)} method
+ *  or {@link XeEoListener#exitCommentMandatory(EoParser.CommentMandatoryContext)} method.
+ *  I would recommend not to throw an exception but to create a new warning in XMIR if comment is
+ *  invalid. Pay attention that whole eo-runtime may not built successfully because there are so
+ *  much code where we must have valid comments (at least 64 symbols length).
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
