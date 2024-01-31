@@ -187,12 +187,32 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterCommented(final EoParser.CommentedContext ctx) {
+    public void enterComment(final EoParser.CommentContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitCommented(final EoParser.CommentedContext ctx) {
+    public void exitComment(final EoParser.CommentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
         // Nothing here
     }
 
@@ -270,6 +290,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitFormation(final EoParser.FormationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterInnersOrEol(final EoParser.InnersOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitInnersOrEol(final EoParser.InnersOrEolContext ctx) {
         // Nothing here
     }
 
@@ -635,6 +665,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationArgHanonymBound(
         final EoParser.VapplicationArgHanonymBoundContext ctx
     ) {
@@ -683,42 +723,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.enter();
-    }
-
-    @Override
-    public void exitFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterInnerformatee(final EoParser.InnerformateeContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
-    }
-
-    @Override
-    public void exitInnerformatee(final EoParser.InnerformateeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterAhead(final EoParser.AheadContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitAhead(final EoParser.AheadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVanonymTail(final EoParser.VanonymTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVanonymTail(final EoParser.VanonymTailContext ctx) {
         // Nothing here
     }
 

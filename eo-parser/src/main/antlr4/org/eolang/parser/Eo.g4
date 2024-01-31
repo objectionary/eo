@@ -24,13 +24,19 @@ metas
 // Objects
 // Ends on the next line
 objects
-    : (commented EOL?)* commented
+    : (object EOL?)* object
     ;
 
-// Object with optional comment
-// Ends on the next line
-commented
-    : (COMMENT EOL)* object
+comment
+    : COMMENT EOL
+    ;
+
+commentOptional
+    : comment*
+    ;
+
+commentMandatory
+    : comment commentOptional
     ;
 
 // Object
@@ -43,17 +49,13 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 slave
-    : application
-    | methodNamed EOL
-    | justNamed EOL
+    : commentOptional (application | (methodNamed | justNamed) EOL)
     ;
 
 // Indeprendent objects that may have slaves (except atom)
 // Ends on the next line
 master
-    : atom EOL
-    | formation
-    | hanonym oname EOL
+    : commentMandatory (formation | (atom | hanonym oname) EOL)
     ;
 
 // Just an object reference without name
@@ -68,17 +70,21 @@ justNamed
     ;
 
 // Atom - abstract object with mandatory name and type
-// Comment can be placed before atom
 // Can't contain inner objects
-atom: ahead suffix type
+atom: attributes suffix type
     ;
 
 // Formation - abstract object with mandatory name
-// Comment can be placed before atom
 // Can contain inner objects
 // Ends on the next line
 formation
-    : ahead oname (inners | EOL)
+    : attributes oname innersOrEol
+    ;
+
+// Inners object inside formation or EOL
+innersOrEol
+    : inners
+    | EOL
     ;
 
 // Inner objects inside abstraction
@@ -282,23 +288,32 @@ vapplicationArgHapplicationUnbound
     ;
 
 // Vertical anonym object as argument of vertical application
+// todo - replace with formation?
 vapplicationArgVanonymUnbound
-    : attributes vanonymTail
+    : commentMandatory formation
+    | attributes innersOrEol
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : attributes as vanonymTail
+    : commentMandatory attributes as oname innersOrEol
+    | attributes as innersOrEol
+    ;
+
+vapplicationArgHanonymBoundBody
+    : LB hanonym RB as
     ;
 
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
-    : LB hanonym RB as oname?
+    : commentMandatory vapplicationArgHanonymBoundBody oname
+    | vapplicationArgHanonymBoundBody
     ;
 
 vapplicationArgHanonymUnbound
-    : hanonym oname?
+    : commentMandatory hanonym oname
+    | hanonym
     ;
 
 // Horizontal anonym object
@@ -312,31 +327,9 @@ hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
 
-// Abstract objects <- arguments of vertical anonym object <- argument of vertical application
-// Ends on the next line
-formatees
-    : EOL
-      TAB
-      (innerformatee | slave)
-      (slave | EOL? innerformatee)*
-      UNTAB
-    ;
-
-// Inner abstract object of formatees
-// Ends on the enxt line
-innerformatee
-    : ahead vanonymTail
-    ;
-
 // Optional comment + attributes
 ahead
     : (COMMENT EOL)* attributes
-    ;
-
-// Tail of vertical anonym objects
-// Ends on the next line
-vanonymTail
-    : oname? (formatees | EOL)
     ;
 
 // Method
