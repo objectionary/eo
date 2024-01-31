@@ -18,5 +18,6 @@ tests:
 eo: |
   +tests
   
+  # This is the default 64+ symbols comment in front of named abstract object
   [] > works
     1.eq 1 > @

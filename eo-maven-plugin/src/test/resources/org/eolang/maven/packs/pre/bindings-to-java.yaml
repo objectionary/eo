@@ -10,6 +10,7 @@ tests:
   - //java/text()[contains(., 'new PhWith(ret, "ρ"')]
   - //java/text()[contains(., 'new PhWith(ret, "text"')]
 eo: |
+  # This is the default 64+ symbols comment in front of named abstract object
   [] > main
     stdout x:0 > print1
     stdout x:^ > print2

@@ -9,20 +9,23 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'new PhLocated(ret, 2, 2, "Φ.foo.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_base, 4, 4, "Φ.foo.other.φ.ρ")')]
-  - //java[contains(text(), 'new PhLocated(ret, 4, 6, "Φ.foo.other.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_1, 4, 12, "Φ.foo.other.φ.α0")')]
-  - //java[contains(text(), 'new PhLocated(ret_base, 7, 2, "Φ.bar.φ.ρ")')]
-  - //java[contains(text(), 'new PhLocated(ret, 7, 4, "Φ.bar.φ")')]
-  - //java[contains(text(), 'new PhLocated(ret_1, 7, 10, "Φ.bar.φ.α0")')]
-  - //java[contains(text(), 'new PhLocated(ret, 8, 2, "Φ.bar.five")')]
+  - //java[contains(text(), 'new PhLocated(ret, 3, 2, "Φ.foo.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, 6, 4, "Φ.foo.other.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, 6, 6, "Φ.foo.other.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, 6, 12, "Φ.foo.other.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret_base, 10, 2, "Φ.bar.φ.ρ")')]
+  - //java[contains(text(), 'new PhLocated(ret, 10, 4, "Φ.bar.φ")')]
+  - //java[contains(text(), 'new PhLocated(ret_1, 10, 10, "Φ.bar.φ.α0")')]
+  - //java[contains(text(), 'new PhLocated(ret, 11, 2, "Φ.bar.five")')]
 eo: |
+  # This is the default 64+ symbols comment in front of named abstract object
   [] > foo
     42 > @
+    # This is the default 64+ symbols comment in front of named abstract object
     [y] > other
       43.plus y > @
 
+  # This is the default 64+ symbols comment in front of named abstract object
   [] > bar
     42.plus 43 > @
     int 5 > five
