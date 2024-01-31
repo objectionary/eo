@@ -72,7 +72,11 @@ final class EoSyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = "# hello, world!\n\n[] > x-н, 1\n";
+        final String src = String.join(
+            "\n",
+            "# At least 64 symbols length mandatory comment should be place before abstract object",
+            "[] > x-н, 1\n"
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new String(
@@ -117,10 +121,9 @@ final class EoSyntaxTest {
         "1 > x\r\n\r\n2 > y",
         "1 > x\n2 > y\n",
         "1 > x\n\n2 > y",
-        "[]",
-        "[] > x",
+        "# At least 64 symbols length mandatory comment should be place before abstract object\n[] > x",
         "a b c > x\n  x ^ > @",
-        "[] > x\n  x ^ > @"
+        "# At least 64 symbols length mandatory comment should be place before abstract object\n[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
         final EoSyntax syntax = new EoSyntax(
@@ -147,12 +150,20 @@ final class EoSyntaxTest {
 
     @Test
     void prasesNested() throws IOException {
+        final String src = String.join(
+            "\n",
+            "# At least 64 symbols length mandatory comment should be place before abstract object",
+            "[] > base",
+            "  memory 0 > x",
+            "  # At least 64 symbols length mandatory comment should be place before abstract object",
+            "  [self] > f",
+            "    v > @",
+            "      v\n"
+        );
         MatcherAssert.assertThat(
             new EoSyntax(
                 "test-it-4",
-                new InputOf(
-                    "[] > base\n  memory 0 > x\n  [self] > f\n    v > @\n      v\n"
-                )
+                new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
