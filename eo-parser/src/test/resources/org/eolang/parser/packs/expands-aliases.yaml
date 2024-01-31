@@ -8,7 +8,7 @@ eo: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin
   
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [args] > main
     and
       (scanner stdin).next-line > line!

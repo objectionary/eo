@@ -8,7 +8,7 @@ tests:
   - /program/errors/error[@line='11' and contains(text(),'pos=19')]
   - /program/errors/error[@line='17' and contains(text(),'pos=2')]
 eo: |
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > abs
     first
     second
@@ -16,11 +16,11 @@ eo: |
       23
       33
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [args] > main
     (stdout "Hello!").print
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > test
     a > @
     .b

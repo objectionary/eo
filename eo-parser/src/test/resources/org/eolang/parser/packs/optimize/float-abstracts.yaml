@@ -19,33 +19,33 @@ tests:
   - //o[@name='first$t2$second$third']/o[@base='stdout']/o[@base='a']
   - //o[@line and @name='aa']
 eo: |
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [a b] > first
     test > foo
       a > yes
-      # At least 64 symbols length mandatory comment should be place before abstract object
+      # This is the default 64+ symbols comment in front of abstract object
       [] > native
-      # At least 64 symbols length mandatory comment should be place before abstract object
+      # This is the default 64+ symbols comment in front of abstract object
       [x b] > second
         a > no
-        # At least 64 symbols length mandatory comment should be place before abstract object
+        # This is the default 64+ symbols comment in front of abstract object
         [b c] > third
           no > yes
           (stdout a b c x).print > print
         t
-          # At least 64 symbols length mandatory comment should be place before abstract object
+          # This is the default 64+ symbols comment in front of abstract object
           [] > third
             "hello, world!" > msg
         f
-          # At least 64 symbols length mandatory comment should be place before abstract object
+          # This is the default 64+ symbols comment in front of abstract object
           [] > third
             "hello, world!" > msg
-        # At least 64 symbols length mandatory comment should be place before abstract object
+        # This is the default 64+ symbols comment in front of abstract object
         [] > fourth
           "Failure" > failure
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [aa] > ooo
-    # At least 64 symbols length mandatory comment should be place before abstract object
+    # This is the default 64+ symbols comment in front of abstract object
     [bbb] > fff
       aa.test > a

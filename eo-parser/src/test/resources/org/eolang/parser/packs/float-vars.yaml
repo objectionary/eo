@@ -17,30 +17,30 @@ tests:
   - //o[@name='mm' and @base='int']
   - //o[@base='mm']
 eo: |
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > x
     first > ff
     one
-      # At least 64 symbols length mandatory comment should be place before abstract object
+      # This is the default 64+ symbols comment in front of abstract object
       [] > y
         two
           input > t!
             "Hello, world!"
-            # At least 64 symbols length mandatory comment should be place before abstract object
+            # This is the default 64+ symbols comment in front of abstract object
             [] > oops
               50
     three t
-    # At least 64 symbols length mandatory comment should be place before abstract object
+    # This is the default 64+ symbols comment in front of abstract object
     [] > last
       three 1
   
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [ppp] > pp
     one
-      # At least 64 symbols length mandatory comment should be place before abstract object
+      # This is the default 64+ symbols comment in front of abstract object
       [aaa] > kkk
         1 > ooo
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > head
     bb > @
       [zz]

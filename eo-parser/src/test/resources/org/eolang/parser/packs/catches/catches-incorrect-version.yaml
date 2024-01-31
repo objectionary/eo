@@ -12,6 +12,6 @@ eo: |
   +alias org.eolang.io.stdout
   +version 1.0.0-alpha.beta
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [x] > foo
     x.div in.nextInt > @

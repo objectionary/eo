@@ -5,6 +5,6 @@ tests:
   - /program/errors/error[@line='3']
   - /program/objects/o[@name='first']/o[@name='a']
 eo: |
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > first
     a > a

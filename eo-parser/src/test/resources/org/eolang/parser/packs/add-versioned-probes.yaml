@@ -14,7 +14,7 @@ eo: |
   +package org.eolang.custom
   +version 0.0.0
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > app
     QQ.cage|0.28.10 > cg-versioned
     QQ.cage > cg-simple

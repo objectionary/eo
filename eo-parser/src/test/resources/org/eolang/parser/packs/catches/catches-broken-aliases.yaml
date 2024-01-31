@@ -51,6 +51,6 @@ eo: |
   +alias with-dash
   +alias with-dash org.eolang.with-dash
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > main
     (stdout "Hello, world!").print

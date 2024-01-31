@@ -1,14 +1,14 @@
 line: 12
 eo: |
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > main
-    # At least 64 symbols length mandatory comment should be place before abstract object
+    # This is the default 64+ symbols comment in front of abstract object
     [] > x
-      # At least 64 symbols length mandatory comment should be place before abstract object
+      # This is the default 64+ symbols comment in front of abstract object
       [] > y
         x > z
 
-        # At least 64 symbols length mandatory comment should be place before abstract object
+        # This is the default 64+ symbols comment in front of abstract object
         [] > a
 
         a > c

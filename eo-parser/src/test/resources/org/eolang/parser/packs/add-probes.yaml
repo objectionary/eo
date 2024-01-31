@@ -13,7 +13,7 @@ eo: |
   +package org.eolang.custom
   +version 0.0.0
 
-  # At least 64 symbols length mandatory comment should be place before abstract object
+  # This is the default 64+ symbols comment in front of abstract object
   [] > app
     QQ.txt.sprintf > @
       "Hello, world!\n"
@@ -28,7 +28,7 @@ eo: |
           fibonacci n > f
       TRUE
 
-    # At least 64 symbols length mandatory comment should be place before abstract object
+    # This is the default 64+ symbols comment in front of abstract object
     [i] > other
       stdout > @
         sprintf
@@ -36,6 +36,6 @@ eo: |
     $.other 1 > one
     memory 0 > price
 
-    # At least 64 symbols length mandatory comment should be place before abstract object
+    # This is the default 64+ symbols comment in front of abstract object
     [p] > set-price
       ^.price.write p > @
