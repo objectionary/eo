@@ -177,7 +177,14 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             new EoSyntax(
                 "test-it-5",
-                new InputOf("[v] > p\n  f.write > @\n")
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# This is the default 64+ symbols comment in front of named abstract object",
+                        "[v] > p",
+                        "  f.write > @\n"
+                    )
+                )
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
