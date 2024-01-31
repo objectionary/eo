@@ -5,14 +5,21 @@ tests:
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
   - //o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=2]/o[@base='.with' and count(o)=3]/o[@base='foobar']
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > aliases
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > foo
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [y] > with
         42 > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > bar
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [x] > with
         foo > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > foobar
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [z d] > with
         bar > @
     eq. > @

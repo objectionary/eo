@@ -3,26 +3,40 @@ xsls:
 tests:
   - /program/errors[count(error[@severity='error'])=1]
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [a b c d e f] > with-many
     something > @
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [x y z] > main
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > zz /int
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > yy /int
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > uu /int
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > ff /int
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > oo /int
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [v] > pp /int
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > not-many-free-attributes
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > empty1
       TRUE > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > empty2
       TRUE > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > empty3
       TRUE > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > empty4
       TRUE > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > empty5
       TRUE > @
     TRUE > @

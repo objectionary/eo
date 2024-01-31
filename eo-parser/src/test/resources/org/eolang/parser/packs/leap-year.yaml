@@ -15,7 +15,9 @@ eo: |
   +package test
   +version 0.0.0
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [args] > main
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [y] > leap
       or. > @
         and.

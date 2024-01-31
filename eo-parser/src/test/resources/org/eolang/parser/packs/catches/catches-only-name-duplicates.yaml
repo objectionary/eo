@@ -13,6 +13,7 @@ eo: |
   +alias org.eolang.txt.sprintf
   +alias org.eolang.txt.sprintf
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [x] > foo
     stdout > @
       sprintf

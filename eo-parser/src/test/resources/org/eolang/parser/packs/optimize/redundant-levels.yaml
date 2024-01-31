@@ -29,9 +29,12 @@ tests:
 # ____
 
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > another
     eq. > @
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [] > first
         1 > @
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [] > second
         2 > @

@@ -5,7 +5,7 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=3]
-  - //o[@base='input' and @name='t' and @line='6' and @const and count(o)=2]
+  - //o[@base='input' and @name='t' and @line='8' and @const and count(o)=2]
   - //objects[count(.//o[@base='string'])=1]
   - //o[@name='y']/o[@name='t']
   - //o[@name='y']/o[@name='oops']
@@ -17,24 +17,30 @@ tests:
   - //o[@name='mm' and @base='int']
   - //o[@base='mm']
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > x
     first > ff
     one
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [] > y
         two
           input > t!
             "Hello, world!"
+            # At least 64 symbols length mandatory comment should be place before abstract object
             [] > oops
               50
     three t
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > last
       three 1
-
+  
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [ppp] > pp
     one
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [aaa] > kkk
         1 > ooo
-
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > head
     bb > @
       [zz]

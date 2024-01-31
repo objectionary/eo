@@ -4,11 +4,15 @@ tests:
   - //o[@base='bar' and count(o)=2]
   - //o[@base='foobar' and count(o)=2 and o[@base='foo' and count(o)=2]]
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > aliases
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [x y] > foo
       42 > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [z k] > bar
       43 > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [i j] > foobar
       44 > @
     eq. > @

@@ -2,4 +2,5 @@ xsls: []
 tests:
   - /program/comment()[1]
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > main

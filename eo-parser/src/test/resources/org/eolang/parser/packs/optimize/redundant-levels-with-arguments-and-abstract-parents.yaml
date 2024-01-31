@@ -46,10 +46,14 @@ tests:
 #   arg.two > @
 # ____
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [arg] > main
     sibling > @
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > sibling
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [] > first
         arg.one > @
+      # At least 64 symbols length mandatory comment should be place before abstract object
       [] > second
         arg.two > @

@@ -7,12 +7,14 @@ tests:
   - /program/errors/error[text()='This method is deprecated!']
 
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > foo
     cti > @
       2.times 2
       "error"
       "This method is deprecated!"
-  
+
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > app
     QQ.io.stdout > @
       QQ.txt.sprintf

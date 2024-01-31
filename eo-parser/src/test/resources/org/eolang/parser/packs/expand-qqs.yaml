@@ -11,6 +11,7 @@ tests:
 eo: |
   +alias QQ.txt.sprintfQQ
   
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > app
     QQ.io.stdout > @
       "Hello, world!\n"

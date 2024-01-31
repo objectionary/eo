@@ -9,5 +9,6 @@ eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdout org.eolang.io.stdout
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > main
     (stdout "Hello, world!").print

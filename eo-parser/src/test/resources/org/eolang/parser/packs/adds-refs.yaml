@@ -8,14 +8,15 @@ tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=3]
   - //objects[not(//o[@ref and @base='@'])]
-  - //o[@base='x' and @ref='1']
-  - //o[@base='x' and @line='7' and @ref='4']
-  - //o[@base='x' and @line='11' and @ref='4']
-  - //o[@base='a' and @line='9' and @ref='12']
-  - //o[@base='something' and @line='12' and @name='a' and not(@ref)]
-  - //o[@base='x' and @line='16' and @ref='14']
-  - //o[@base='first' and @line='17' and @ref='1']
+  - //o[@base='x' and @ref='2']
+  - //o[@base='x' and @line='8' and @ref='5']
+  - //o[@base='x' and @line='12' and @ref='5']
+  - //o[@base='a' and @line='10' and @ref='13']
+  - //o[@base='something' and @line='13' and @name='a' and not(@ref)]
+  - //o[@base='x' and @line='18' and @ref='16']
+  - //o[@base='first' and @line='19' and @ref='2']
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [x a] > first
     stdout x
     second > hello
@@ -29,11 +30,13 @@ eo: |
             x
       something > a
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [a] > x
     tt
       x 4
       first
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > y
     one
       [f]

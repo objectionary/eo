@@ -22,6 +22,8 @@ tests:
 #   arg.method > a
 # ____
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [arg] > first
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > second
       arg.method > a

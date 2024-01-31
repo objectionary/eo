@@ -7,6 +7,8 @@ eo: |
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0
-
+  
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [x] > foo
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > y

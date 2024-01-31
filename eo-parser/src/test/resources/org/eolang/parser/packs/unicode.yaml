@@ -2,10 +2,11 @@ xsls: []
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
-  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='3']
+  - //o[@name='iПрИвЕт_кАк-дЕла123_你好' and @line='4']
 eo: |
   +package test
-  
+
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [a bя xты-друг] > iПрИвЕт_кАк-дЕла123_你好
     process. > @
       a

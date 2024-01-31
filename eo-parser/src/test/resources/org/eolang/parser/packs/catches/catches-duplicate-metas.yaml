@@ -10,5 +10,6 @@ eo: |
   +home https://github.com/objectionary/eo
   +home https://github.com/objectionary/eo
 
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > main
     (stdout "Hello, world!").print

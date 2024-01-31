@@ -39,6 +39,7 @@ tests:
 #       2
 # ____
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > main
     * 0 (* 1 2) > arr
     eq > @

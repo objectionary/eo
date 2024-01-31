@@ -2,8 +2,10 @@ xsls:
   - /org/eolang/parser/errors/abstract-decoratee.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=1]
-  - /program/errors/error[@line='2']
+  - /program/errors/error[@line='4']
 eo: |
+  # At least 64 symbols length mandatory comment should be place before abstract object
   [] > main
+    # At least 64 symbols length mandatory comment should be place before abstract object
     [] > @
       hello > test

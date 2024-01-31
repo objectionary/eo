@@ -291,14 +291,26 @@ vapplicationArgHapplicationUnbound
 // todo - replace with formation?
 vapplicationArgVanonymUnbound
     : commentMandatory formation
-    | attributes innersOrEol
+    | formationNameless
+    ;
+
+formationNameless
+    : attributes innersOrEol
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentMandatory attributes as oname innersOrEol
-    | attributes as innersOrEol
+    : commentMandatory formationBound
+    | formationBoundNameless
+    ;
+
+formationBound
+    : attributes as oname innersOrEol
+    ;
+
+formationBoundNameless
+    : attributes as innersOrEol
     ;
 
 vapplicationArgHanonymBoundBody
@@ -325,11 +337,6 @@ hanonym
 // Does not contan elements in vertical notation
 hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
-    ;
-
-// Optional comment + attributes
-ahead
-    : (COMMENT EOL)* attributes
     ;
 
 // Method
