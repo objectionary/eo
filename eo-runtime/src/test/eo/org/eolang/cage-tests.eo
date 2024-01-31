@@ -57,6 +57,7 @@
 
 # Test.
 [] > cage-nested-objects
+  # Dummy object.
   [x] > dummy
     x > @
   cage dummy > c

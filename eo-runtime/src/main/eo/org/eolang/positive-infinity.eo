@@ -136,7 +136,7 @@
         num.eq num
 
     # Tests if given number is equal to nan, positive or negative infinity.
-    [num] > is-nan-or-infinite.
+    [num] > is-nan-or-infinite
       or. > @
         or.
           is-nan num
