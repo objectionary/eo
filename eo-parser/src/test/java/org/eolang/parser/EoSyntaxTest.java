@@ -48,6 +48,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
     @Test
     void parsesSimpleCode() throws Exception {
@@ -77,7 +78,7 @@ final class EoSyntaxTest {
         "Hello world., comment-length-check, Comment must be at least 64 characters long",
         "Привет мир., comment-content-check, Comment must contain only ASCII printable characters: 0x20-0x7f",
         "lowcase., comment-start-character-check, Comment must start with capital letter",
-        "without dot, comment-ending-check, Comment must end with dot",
+        "without dot, comment-ending-check, Comment must end with dot"
     })
     void containsCommentCheckErrors(
         final String comment,

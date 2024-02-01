@@ -72,6 +72,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
      * Minimum allowed comment length.
      */
+    @SuppressWarnings("PMD.LongVariable")
     private static final int MIN_COMMENT_LENGTH = 64;
 
     /**
