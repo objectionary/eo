@@ -3,9 +3,9 @@ tests:
   - //o[@name='b' and @copy and @base='a']
   - //o[@name='c' and @base='a' and @copy and o[@base='b' and @copy]]
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > foo
-    # This is the default 64+ symbols comment in front of abstract object
+    # This is the default 64+ symbols comment in front of abstract object.
     [i] > a
     a' > b
     a' b' > c

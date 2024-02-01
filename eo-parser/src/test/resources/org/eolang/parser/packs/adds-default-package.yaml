@@ -19,7 +19,7 @@ eo: |
   +alias stdout org.eolang.io.stdout
   +foo Some other meta
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [args] > main
     and
       (scanner stdin).next-line > line!

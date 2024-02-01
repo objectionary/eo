@@ -49,15 +49,13 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
- * @todo #921:90min Add comment validation. We need to make sure that mandatory comment before
- *  abstract object is: starts with a capital letter, ends with a dot, includes only ASCII
- *  printable characters (0x20-0x7f), is at least 64 characters long, is in Markdown.
- *  It can be done either in
- *  {@link XeEoListener#enterCommentMandatory(EoParser.CommentMandatoryContext)} method
- *  or {@link XeEoListener#exitCommentMandatory(EoParser.CommentMandatoryContext)} method.
- *  I would recommend not to throw an exception but to create a new warning in XMIR if comment is
- *  invalid. Pay attention that whole eo-runtime may not built successfully because there are so
- *  much code where we must have valid comments (at least 64 symbols length).
+ * @todo #2835:30min Change severity on comments validation. Current severity on comments validation
+ *  is "warning". We need to change it to "error" to prevent users from ignoring this type of error.
+ *  But there's a pitfall - there are so many little toy abstract objects in EO tests which we don't
+ *  really want to document. That's why we should not validate comments if there's "+junit" meta in
+ *  program. Also "eo-runtime" does not fail on warning now because it's not well documented. After
+ *  eo-runtime is documented well - we need to turn on "failOnWarning" trigger in pom.xml inside
+ *  "eo-runtime.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -129,16 +127,17 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             )
             .comment(XeEoListener.INFO)
             .add("listing").set(new SourceText(ctx)).up()
-            .add("errors");
+            .add("errors").up()
+            .add("sheets").up()
+            .add("license").up()
+            .add("metas").up();
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
-        this.dirs.append(this.errors).up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up()
-            .add("objects").append(this.objects).up()
+        this.dirs
+            .xpath("/program/errors")
+            .append(this.errors).up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
@@ -200,12 +199,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterObjects(final EoParser.ObjectsContext ctx) {
-        // Nothing here
+        this.dirs.add("objects");
     }
 
     @Override
     public void exitObjects(final EoParser.ObjectsContext ctx) {
-        // Nothing here
+        this.dirs.append(this.objects).up();
     }
 
     @Override

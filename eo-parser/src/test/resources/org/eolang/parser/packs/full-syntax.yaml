@@ -29,11 +29,11 @@ eo: |
   # This is just a simple string
   "Hello, друг!" > hello!
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [tt a] > atom /int
 
   # This is very good object
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [x] > first
     x > @
     second > hello
@@ -81,15 +81,15 @@ eo: |
         b
     oops
   
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > obj
     "some" > @
-    # This is the default 64+ symbols comment in front of abstract object
+    # This is the default 64+ symbols comment in front of abstract object.
     [] > foo
       ^.@ > @
 
   # Comments are allowed only in front of top-level objects
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > named
     one.two.three.four.five
       t.<
