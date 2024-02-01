@@ -129,15 +129,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             )
             .comment(XeEoListener.INFO)
             .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").append(this.errors).up()
-            .add("sheets").up()
-            .add("license").up()
-            .add("metas").up();
+            .add("errors");
     }
 
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
-        this.dirs
+        this.dirs.append(this.errors).up()
+            .add("sheets").up()
+            .add("license").up()
+            .add("metas").up()
+            .add("objects").append(this.objects).up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
     }
@@ -199,12 +200,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.add("objects");
+        // Nothing here
     }
 
     @Override
     public void exitObjects(final EoParser.ObjectsContext ctx) {
-        this.dirs.append(this.objects).up();
+        // Nothing here
     }
 
     @Override
