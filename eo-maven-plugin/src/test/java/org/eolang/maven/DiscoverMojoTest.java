@@ -148,6 +148,7 @@ final class DiscoverMojoTest {
             .with("withVersions", true)
             .withProgram(
                 "+alias org.eolang.txt.sprintf\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
                 "[] > main",
                 "  seq > @",
                 "    QQ.io.stdout",
@@ -180,8 +181,18 @@ final class DiscoverMojoTest {
     void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
-        final String first = String.join("\n", "[] > sprintf", "  text > @");
-        final String second = String.join("\n", "[] > sprintf", "  text|0.28.5 > @");
+        final String first = String.join(
+            "\n",
+            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "[] > sprintf",
+            "  text > @"
+        );
+        final String second = String.join(
+            "\n",
+            "# This is the default 64+ symbols comment in front of named abstract object.",
+            "[] > sprintf",
+            "  text|0.28.5 > @"
+        );
         final String one = hashes.get("0.28.1").value();
         final String two = hashes.get("0.28.2").value();
         final String three = hashes.get("0.28.5").value();

@@ -159,6 +159,7 @@ class UnphiMojoTest {
     ) throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
+                "# This is the default 64+ symbols comment in front of named abstract object.",
                 "[args] > app",
                 "  QQ.io.stdout > @",
                 "    \"Hello, world!\""

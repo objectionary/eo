@@ -48,6 +48,15 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
+ * @todo #921:90min Add comment validation. We need to make sure that mandatory comment before
+ *  abstract object is: starts with a capital letter, ends with a dot, includes only ASCII
+ *  printable characters (0x20-0x7f), is at least 64 characters long, is in Markdown.
+ *  It can be done either in
+ *  {@link XeEoListener#enterCommentMandatory(EoParser.CommentMandatoryContext)} method
+ *  or {@link XeEoListener#exitCommentMandatory(EoParser.CommentMandatoryContext)} method.
+ *  I would recommend not to throw an exception but to create a new warning in XMIR if comment is
+ *  invalid. Pay attention that whole eo-runtime may not built successfully because there are so
+ *  much code where we must have valid comments (at least 64 symbols length).
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -187,12 +196,32 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterCommented(final EoParser.CommentedContext ctx) {
+    public void enterComment(final EoParser.CommentContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitCommented(final EoParser.CommentedContext ctx) {
+    public void exitComment(final EoParser.CommentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
         // Nothing here
     }
 
@@ -265,11 +294,21 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterFormation(final EoParser.FormationContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
+        this.startAbstract(ctx);
     }
 
     @Override
     public void exitFormation(final EoParser.FormationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterInnersOrEol(final EoParser.InnersOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitInnersOrEol(final EoParser.InnersOrEolContext ctx) {
         // Nothing here
     }
 
@@ -610,7 +649,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterVapplicationArgVanonymUnbound(
         final EoParser.VapplicationArgVanonymUnboundContext ctx
     ) {
-        this.startObject(ctx).prop("abstract").leave();
+        // Nothing here
     }
 
     @Override
@@ -621,16 +660,56 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterFormationNameless(final EoParser.FormationNamelessContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationNameless(final EoParser.FormationNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationArgVanonymBound(
         final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
-        this.startObject(ctx).prop("abstract").leave();
+        // Nothing here
     }
 
     @Override
     public void exitVapplicationArgVanonymBound(
         final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFormationBound(final EoParser.FormationBoundContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationBound(final EoParser.FormationBoundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
         // Nothing here
     }
 
@@ -664,7 +743,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterHanonym(final EoParser.HanonymContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
+        this.startAbstract(ctx);
     }
 
     @Override
@@ -680,46 +759,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitHanonymInner(final EoParser.HanonymInnerContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.enter();
-    }
-
-    @Override
-    public void exitFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterInnerformatee(final EoParser.InnerformateeContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
-    }
-
-    @Override
-    public void exitInnerformatee(final EoParser.InnerformateeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterAhead(final EoParser.AheadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAhead(final EoParser.AheadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVanonymTail(final EoParser.VanonymTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVanonymTail(final EoParser.VanonymTailContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -1226,6 +1265,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
+    }
+
+    /**
+     * Start abstract object.
+     *
+     * @param ctx Context
+     * @return Xembly objects after creating abstract object 
+     */
+    private Objects startAbstract(final ParserRuleContext ctx) {
+        return this.startObject(ctx).prop("abstract").leave();
     }
 
     /**

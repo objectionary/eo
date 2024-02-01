@@ -5,7 +5,7 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=3]
-  - //o[@base='input' and @name='t' and @line='6' and @const and count(o)=2]
+  - //o[@base='input' and @name='t' and @line='8' and @const and count(o)=2]
   - //objects[count(.//o[@base='string'])=1]
   - //o[@name='y']/o[@name='t']
   - //o[@name='y']/o[@name='oops']
@@ -17,24 +17,30 @@ tests:
   - //o[@name='mm' and @base='int']
   - //o[@base='mm']
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object
   [] > x
     first > ff
     one
+      # This is the default 64+ symbols comment in front of abstract object
       [] > y
         two
           input > t!
             "Hello, world!"
+            # This is the default 64+ symbols comment in front of abstract object
             [] > oops
               50
     three t
+    # This is the default 64+ symbols comment in front of abstract object
     [] > last
       three 1
-
+  
+  # This is the default 64+ symbols comment in front of abstract object
   [ppp] > pp
     one
+      # This is the default 64+ symbols comment in front of abstract object
       [aaa] > kkk
         1 > ooo
-
+  # This is the default 64+ symbols comment in front of abstract object
   [] > head
     bb > @
       [zz]
