@@ -35,7 +35,6 @@ xsls:
   - /org/eolang/parser/warnings/mandatory-version-meta.xsl
   - /org/eolang/parser/warnings/correct-package-meta.xsl
   - /org/eolang/parser/errors/unused-aliases.xsl
-  - /org/eolang/parser/errors/data-objects.xsl
   - /org/eolang/parser/warnings/unit-test-without-phi.xsl
   - /org/eolang/parser/set-locators.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
@@ -60,6 +59,7 @@ eo: |
   +package org.eolang
   +version 0.0.0
   
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     * 0 (* 1 2) > arr
     eq > @

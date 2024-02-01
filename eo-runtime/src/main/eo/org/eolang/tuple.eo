@@ -28,10 +28,12 @@
 
 # Tuple.
 [head tail] > tuple
-  # Empty tuple
+  # Empty tuple.
   [] > empty
+    # Take one element from the tuple, at the given position.
     [i] > at
       error "Can't get an object from the empty tuple" > @
+    # Take one element from the tuple, at the given position.
     [x] > with
       tuple > @
         tuple.empty

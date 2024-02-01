@@ -36,10 +36,13 @@ tests:
 #   arg.two > @
 # ____
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object
   [arg] > main
     sibling > @
     eq. > sibling
+      # This is the default 64+ symbols comment in front of abstract object
       [] > first
         arg.one > @
+      # This is the default 64+ symbols comment in front of abstract object
       [] > second
         arg.two > @

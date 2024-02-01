@@ -6,7 +6,7 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
-  - //o[@base='org.eolang.and' and @line='8']
+  - //o[@base='org.eolang.and' and @line='9']
   - //o[@base='foo']
   - //o[@base='$']
   - //o[@base='^']
@@ -19,6 +19,7 @@ eo: |
   +alias stdout org.eolang.io.stdout
   +foo Some other meta
 
+  # This is the default 64+ symbols comment in front of abstract object
   [args] > main
     and
       (scanner stdin).next-line > line!

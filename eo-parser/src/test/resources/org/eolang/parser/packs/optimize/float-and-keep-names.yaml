@@ -5,9 +5,11 @@ xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/optimize/fix-missed-names.xsl
 tests:
-  - //o[@base='first$second' and @line='4']
+  - //o[@base='first$second' and @line='6']
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object
   [a] > first
+    # This is the default 64+ symbols comment in front of abstract object
     [b] > second
       print
         second 1

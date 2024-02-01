@@ -1,8 +1,9 @@
-line: 6
+line: 7
 eo: |
   +home https://github.com/objectionary/eo
   +package a.b.c
   +version 0.0.0
 
+  # This is the default 64+ symbols comment in front of abstract object
   [] > x
     (1.plus 2) > y

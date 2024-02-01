@@ -2,8 +2,9 @@ xsls:
   - /org/eolang/parser/errors/self-naming.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=1]
-  - /program/errors/error[@line='2']
+  - /program/errors/error[@line='3']
   - /program/objects/o[@name='first']/o[@name='a']
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object
   [] > first
     a > a

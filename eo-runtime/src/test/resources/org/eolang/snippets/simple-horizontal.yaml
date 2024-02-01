@@ -6,4 +6,5 @@ eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout
 
+  # This is the default 64+ symbols comment in front of named abstract object.
   [args] (stdout "Hello, Jeff!" > @) > simple-horizontal

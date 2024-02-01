@@ -2,8 +2,9 @@ xsls:
   - /org/eolang/parser/errors/external-weak-typed-atoms.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=1]
-  - /program/errors/error[@line='3']
+  - /program/errors/error[@line='4']
 eo: |
   +package my.awesome.package
 
+  # This is the default 64+ symbols comment in front of abstract object
   [] > my-awesome-object /?

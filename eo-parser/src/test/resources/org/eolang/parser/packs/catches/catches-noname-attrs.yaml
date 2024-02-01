@@ -3,11 +3,12 @@ xsls:
   - /org/eolang/parser/errors/noname-attributes.xsl
 tests:
   - /program/errors[count(error[@severity='error'])=4]
-  - /program/errors/error[@line='2' and contains(text(),'pos=2')]
   - /program/errors/error[@line='3' and contains(text(),'pos=2')]
-  - /program/errors/error[@line='9' and contains(text(),'pos=19')]
-  - /program/errors/error[@line='14' and contains(text(),'pos=2')]
+  - /program/errors/error[@line='4' and contains(text(),'pos=2')]
+  - /program/errors/error[@line='11' and contains(text(),'pos=19')]
+  - /program/errors/error[@line='17' and contains(text(),'pos=2')]
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object
   [] > abs
     first
     second
@@ -15,9 +16,11 @@ eo: |
       23
       33
 
+  # This is the default 64+ symbols comment in front of abstract object
   [args] > main
     (stdout "Hello!").print
 
+  # This is the default 64+ symbols comment in front of abstract object
   [] > test
     a > @
     .b

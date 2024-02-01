@@ -73,6 +73,7 @@ class VerifyMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
                     "  QQ.io.stdout",
                     "    \"Hello world\""
@@ -97,6 +98,7 @@ class VerifyMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
                     "    \"Hello world\""
                 )
@@ -120,7 +122,9 @@ class VerifyMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
+                    "  # This is the default 64+ symbols comment in front of named abstract object.",
                     "  [] > @",
                     "    \"Hello world\" > @"
                 )
@@ -141,7 +145,9 @@ class VerifyMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
+                    "  # This is the default 64+ symbols comment in front of named abstract object.",
                     "  [] > @",
                     "    \"Hello world\" > @"
                 )
@@ -159,6 +165,7 @@ class VerifyMojoTest {
                 .withProgram(
                     "+package f",
                     "+alias THIS-IS-WRONG org.eolang.io.stdout\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[args] > main",
                     "  (stdout \"Hello!\").print > @"
                 )
@@ -174,6 +181,7 @@ class VerifyMojoTest {
             () -> new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[args] > main",
                     "  seq > @",
                     "    TRUE > x",
@@ -212,7 +220,9 @@ class VerifyMojoTest {
                 "+architect yegor256@gmail.com",
                 "+tests",
                 "+package org.eolang.examples\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
                 "[] > main",
+                "  # This is the default 64+ symbols comment in front of named abstract object.",
                 "  [] > @",
                 "    hello > test"
             );

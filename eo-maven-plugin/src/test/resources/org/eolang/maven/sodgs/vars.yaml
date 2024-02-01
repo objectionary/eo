@@ -5,10 +5,13 @@ locators:
 eo: |
   +package foo
   
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > x
     42 > a
+    # This is the default 64+ symbols comment in front of named abstract object.
     [] > y
       33 > b
+      # This is the default 64+ symbols comment in front of named abstract object.
       [] > z
         a > c
         b > d
