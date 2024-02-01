@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -71,6 +72,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private static final XmirInfo INFO = new XmirInfo();
 
     /**
+     * Minimum allowed comment length.
+     */
+    private static final int MIN_COMMENT_LENGTH = 64;
+
+    /**
      * The name of it.
      */
     private final String name;
@@ -86,6 +92,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final Objects objects;
 
     /**
+     * Xembly directives to build errors.
+     */
+    private final Directives errors;
+
+    /**
      * When we start.
      */
     private final long start;
@@ -98,6 +109,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
+        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -117,7 +129,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             )
             .comment(XeEoListener.INFO)
             .add("listing").set(new SourceText(ctx)).up()
-            .add("errors").up()
+            .add("errors").append(this.errors).up()
             .add("sheets").up()
             .add("license").up()
             .add("metas").up();
@@ -217,7 +229,49 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        // Nothing here
+        final String comment = String.join(
+            "",
+            ctx.comment().COMMENT().getText().substring(1).trim(),
+            ctx.commentOptional().comment().stream().map(
+                context -> context.COMMENT().getText().substring(1).trim()
+            ).collect(Collectors.joining(""))
+        );
+        final String length = String.format(
+            "Comment must be at least %d characters long",
+            XeEoListener.MIN_COMMENT_LENGTH
+        );
+        final String warning = "warning";
+        if (comment.isEmpty()) {
+            this.addError(ctx, "comment-length-check", warning, length);
+        } else {
+            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
+                this.addError(ctx, "comment-length-check", warning, length);
+            }
+            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
+                this.addError(
+                    ctx,
+                    "comment-content-check",
+                    warning,
+                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
+                );
+            }
+            if (!Character.isUpperCase(comment.charAt(0))) {
+                this.addError(
+                    ctx,
+                    "comment-start-character-check",
+                    warning,
+                    "Comment must start with capital letter"
+                );
+            }
+            if (comment.charAt(comment.length() - 1) != '.') {
+                this.addError(
+                    ctx,
+                    "comment-ending-check",
+                    warning,
+                    "Comment must end with dot"
+                );
+            }
+        }
     }
 
     @Override
@@ -1275,6 +1329,27 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
         return this.startObject(ctx).prop("abstract").leave();
+    }
+
+    /**
+     * Add error to {@link XeEoListener#errors} directives.
+     * @param ctx Context
+     * @param check Check type
+     * @param severity Error severity level
+     * @param message Error message
+     */
+    private void addError(
+        final ParserRuleContext ctx,
+        final String check,
+        final String severity,
+        final String message
+    ) {
+        this.errors.add("error")
+            .attr("line", ctx.getStart().getLine())
+            .attr("check", check)
+            .attr("severity", severity)
+            .set(message)
+            .up();
     }
 
     /**
