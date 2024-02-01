@@ -108,6 +108,26 @@
             x.as-int
     3
 
+# @todo #2785:60min Enable this test. For some reason this test fails. The only differences between
+#  this test and `last-while-dataization-object` is that in this test we additionally iterate
+#  over a tuple and perform one less iteration. This leads to the case when `while` dataizes as `1`
+#  instead of `2`.
+[] > last-while-dataization-object-modified
+  memory 0 > x
+  eq. > nop
+    while.
+      x.as-int.lt 1
+      [i]
+        seq > @
+          *
+            at.
+              * 0 1
+              x.as-int
+            x.write (x.as-int.plus 1)
+            x.as-int
+    2
+    TRUE > @
+
 [] > while-without-last-dataization
   memory 0 > x
   eq. > @
@@ -218,7 +238,7 @@
         acc.as-int
         arr.length
 
-# @todo #2437:60min Enable the test. For some reason this test fails. The only difference between
+# @todo #2785:60min Enable the test. For some reason this test fails. The only difference between
 #  this test and `iterating-tuple-with-while-without-body-multiple` is that in this test tuple
 #  consists of only one element.
 [] > iterating-tuple-with-while-without-body-single

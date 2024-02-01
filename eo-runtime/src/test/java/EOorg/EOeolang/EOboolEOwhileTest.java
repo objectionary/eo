@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
  *   memory TRUE > toggle
  *   toggle.while > @
  *     [x] > kid
- *       ^.^.write FALSE
+ *       ^.^.write FALSE > @
  *
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
@@ -157,6 +157,34 @@ final class EOboolEOwhileTest {
         );
     }
 
+    @Test
+    void loopsOverTupleComplex() {
+        final Phi counter = new PhMethod(new ComplexParent(Phi.Φ), "counter");
+        new Dataized(
+            new PhWith(
+                new PhCopy(
+                    new PhMethod(counter, "write")
+                ),
+                0, new Data.ToPhi(0L)
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(
+                            new PhCopy(new PhMethod(counter.attr("as-int").get(), "lt")),
+                            0, new Data.ToPhi(1L)
+                        ),
+                        "while"
+                    ),
+                    0, new ComplexKid(Phi.Φ, counter)
+                )
+            ).take(Long.class),
+            Matchers.equalTo(2L)
+        );
+    }
+
     /**
      * Parent Phi.
      * @since 1.0
@@ -213,6 +241,110 @@ final class EOboolEOwhileTest {
                         ).take();
                         return new Data.ToPhi(1L);
                     }
+                )
+            );
+        }
+    }
+
+    /**
+     * Parent Phi.
+     * @since 1.0
+     */
+    private static final class ComplexParent extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        ComplexParent(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "counter",
+                new AtComposite(
+                    this,
+                    EOmemory::new
+                )
+            );
+        }
+    }
+
+    /**
+     * ComplexKid Phi.
+     *
+     * [] > complex-parent
+     *   memory 0 > counter
+     *   while. > @
+     *     counter.as-int.lt 1
+     *     [i] > complex-kid
+     *       seq > @
+     *         *
+     *           at.
+     *             * 0 1
+     *             counter.as-int
+     *           counter.write (counter.as-int.plus 1)
+     *           counter.as-int
+     *
+     * @since 0.1
+     * @checkstyle TypeNameCheck (4 lines)
+     */
+    private static final class ComplexKid extends PhDefault {
+        /**
+         * Counter.
+         */
+        private final Phi counter;
+
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         * @param ctr Counter
+         */
+        ComplexKid(final Phi sigma, final Phi ctr) {
+            super(sigma);
+            this.counter = ctr;
+            this.add("i", new AtFree());
+            final Phi get = new PhWith(
+                new PhWith(
+                    new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                    0, new Data.ToPhi(0L)
+                ).attr("with").get().copy(),
+                0, new Data.ToPhi(1L)
+            ).attr("at").get().copy();
+            get.attr(0).put(this.counter.attr("as-int").get());
+            final Phi increment = new PhWith(
+                new PhCopy(
+                    new PhMethod(this.counter, "write")
+                ),
+                0,
+                new PhWith(
+                    this.counter.attr("as-int").get().attr("plus").get(),
+                    0,
+                    new Data.ToPhi(1L)
+                )
+            );
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi(
+                        new Dataized(
+                            new PhWith(
+                                new EOseq(Phi.Φ),
+                                0,
+                                new PhWith(
+                                    new PhWith(
+                                        new PhWith(
+                                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                                            0,
+                                            get
+                                        ).attr("with").get().copy(),
+                                        0,
+                                        increment
+                                    ).attr("with").get().copy(),
+                                    0,
+                                    this.counter.attr("as-int").get()
+                                )
+                            )
+                        ).take(Long.class)
+                    )
                 )
             );
         }
