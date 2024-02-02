@@ -27,8 +27,12 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhCopy;
+import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -81,4 +85,96 @@ public final class EOseqTest {
             Matchers.startsWith("Hello")
         );
     }
+
+    /**
+     * Test
+     *
+     * [] > parent
+     *   memory 0 > counter
+     *   seq > @
+     *     *
+     *       at.
+     *         * 0 1
+     *         counter.as-int
+     *       counter.write (counter.as-int.plus 1)
+     *       counter.as-int
+     *
+     * @since 1.0
+     */
+    @Test
+    public void calculatesWithTupleAndReturnsObject() {
+        final Phi counter = new PhMethod(new Parent(Phi.Φ), "counter");
+        new Dataized(
+            new PhWith(
+                new PhCopy(
+                    new PhMethod(counter, "write")
+                ),
+                0, new Data.ToPhi(0L)
+            )
+        ).take();
+        final Phi get = new PhWith(
+            new PhWith(
+                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                0, new Data.ToPhi(0L)
+            ).attr("with").get().copy(),
+            0, new Data.ToPhi(1L)
+        ).attr("at").get().copy();
+        get.attr(0).put(counter.attr("as-int").get());
+        final Phi increment = new PhWith(
+            new PhCopy(
+                new PhMethod(counter, "write")
+            ),
+            0,
+            new PhWith(
+                counter.attr("as-int").get().attr("plus").get(),
+                0,
+                new Data.ToPhi(1L)
+            )
+        );
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new EOseq(Phi.Φ),
+                    0,
+                    new PhWith(
+                        new PhWith(
+                            new PhWith(
+                                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                                0,
+                                get
+                            ).attr("with").get().copy(),
+                            0,
+                            increment
+                        ).attr("with").get().copy(),
+                        0,
+                        counter.attr("as-int").get()
+                    )
+                )
+            ).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
+    /**
+     * Parent Phi.
+     *
+     * @since 1.0
+     */
+    private static final class Parent extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        Parent(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "counter",
+                new AtComposite(
+                    this,
+                    EOmemory::new
+                )
+            );
+        }
+    }
+
 }

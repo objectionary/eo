@@ -70,3 +70,28 @@
           counter.as-int.plus 1
         counter.as-int
     1
+
+# Test.
+[] > seq-single-dataization-int-equal-than-test
+  memory 0 > x
+  eq. > @
+    seq
+      *
+        x.write 0
+        x.write (x.as-int.plus 1)
+        x.as-int
+    1
+
+# Test.
+[] > seq-single-dataization-int-equal-to-test-bug
+  memory 0 > x
+  eq. > nop
+    seq
+      *
+        at.
+          * 0 1
+          x.as-int
+        x.write (x.as-int.plus 1)
+        x.as-int
+    1
+  TRUE > @
