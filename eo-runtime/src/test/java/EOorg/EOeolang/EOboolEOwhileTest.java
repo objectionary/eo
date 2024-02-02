@@ -157,6 +157,22 @@ final class EOboolEOwhileTest {
         );
     }
 
+    /**
+     * Testing loop over a tuple
+     *
+     * [] > complex-parent
+     *   memory 0 > counter
+     *   while. > @
+     *     counter.as-int.lt 1
+     *     [i] > complex-kid
+     *       seq > @
+     *         *
+     *           at.
+     *             * 0 1
+     *             counter.as-int
+     *           counter.write (counter.as-int.plus 1)
+     *           counter.as-int
+     */
     @Test
     void loopsOverTupleComplex() {
         final Phi counter = new PhMethod(new ComplexParent(Phi.Φ), "counter");
@@ -247,7 +263,8 @@ final class EOboolEOwhileTest {
     }
 
     /**
-     * Parent Phi.
+     * Complex Parent Phi.
+     *
      * @since 1.0
      */
     private static final class ComplexParent extends PhDefault {
@@ -268,20 +285,7 @@ final class EOboolEOwhileTest {
     }
 
     /**
-     * ComplexKid Phi.
-     *
-     * [] > complex-parent
-     *   memory 0 > counter
-     *   while. > @
-     *     counter.as-int.lt 1
-     *     [i] > complex-kid
-     *       seq > @
-     *         *
-     *           at.
-     *             * 0 1
-     *             counter.as-int
-     *           counter.write (counter.as-int.plus 1)
-     *           counter.as-int
+     * Complex Kid Phi.
      *
      * @since 0.1
      * @checkstyle TypeNameCheck (4 lines)
