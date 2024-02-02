@@ -29,9 +29,7 @@ package EOorg.EOeolang;
 
 import java.io.IOException;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;

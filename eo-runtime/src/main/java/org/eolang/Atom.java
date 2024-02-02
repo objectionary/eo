@@ -35,29 +35,4 @@ public interface Atom {
      * @throws Exception If fails.
      */
     Phi lambda() throws Exception;
-
-    /**
-     * Executes λ function safely.
-     * @return Object calculated from λ function.
-     */
-    default Phi lambdaSafe() {
-        try {
-            return this.lambda();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
-            throw new ExFailure(
-                String.format(
-                    "Unexpected error '%s' of type %s",
-                    ex.getMessage(),
-                    ex.getClass().getSimpleName()
-                ),
-                ex
-            );
-        }
-    }
 }

@@ -30,7 +30,6 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
