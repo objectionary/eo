@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "string.as-bytes")
-public class EOstring$EOas_bytes extends PhDefault implements Atom {
+public final class EOstring$EOas_bytes extends PhDefault implements Atom {
 
     /**
      * Ctor.

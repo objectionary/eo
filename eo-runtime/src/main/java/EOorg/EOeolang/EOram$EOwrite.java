@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "ram.write")
-public class EOram$EOwrite extends PhDefault implements Atom {
+public final class EOram$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma

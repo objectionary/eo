@@ -28,12 +28,12 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.NoSuchElementException;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 
 /**
  * Standard Input. Consumes only one line.
@@ -42,7 +42,7 @@ import org.eolang.Atom;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOstdin$EOnext_line extends PhDefault implements Atom {
+public final class EOstdin$EOnext_line extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma

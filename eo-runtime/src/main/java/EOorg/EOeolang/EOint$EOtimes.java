@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "int.times")
-public class EOint$EOtimes extends PhDefault implements Atom {
+public final class EOint$EOtimes extends PhDefault implements Atom {
 
     /**
      * Ctor.

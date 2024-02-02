@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "string.slice")
-public class EOstring$EOslice extends PhDefault implements Atom {
+public final class EOstring$EOslice extends PhDefault implements Atom {
 
     /**
      * Ctor.

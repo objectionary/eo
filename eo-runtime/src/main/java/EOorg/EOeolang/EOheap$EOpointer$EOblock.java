@@ -48,7 +48,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "heap.pointer.block")
-public class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
+public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
 
     /**
      * Ctor.

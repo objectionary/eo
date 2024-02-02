@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "try")
-public class EOtry extends PhDefault implements Atom {
+public final class EOtry extends PhDefault implements Atom {
 
     /**
      * Ctor.

@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "string.length")
-public class EOstring$EOlength extends PhDefault implements Atom {
+public final class EOstring$EOlength extends PhDefault implements Atom {
 
     /**
      * Ctor.

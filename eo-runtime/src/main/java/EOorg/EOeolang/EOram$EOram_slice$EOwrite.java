@@ -43,7 +43,7 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
+public final class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma

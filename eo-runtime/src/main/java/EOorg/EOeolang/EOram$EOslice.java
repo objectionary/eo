@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "ram.slice")
-public class EOram$EOslice extends PhDefault implements Atom {
+public final class EOram$EOslice extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma

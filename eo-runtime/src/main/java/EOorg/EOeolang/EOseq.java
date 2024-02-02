@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "seq")
-public class EOseq extends PhDefault implements Atom {
+public final class EOseq extends PhDefault implements Atom {
 
     /**
      * Ctor.

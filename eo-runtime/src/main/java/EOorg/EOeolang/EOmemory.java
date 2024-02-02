@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "memory")
-public class EOmemory extends PhDefault implements Atom {
+public final class EOmemory extends PhDefault implements Atom {
 
     /**
      * Ctor.

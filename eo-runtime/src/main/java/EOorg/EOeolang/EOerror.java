@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.ExFailure;
@@ -35,7 +36,6 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.VerboseBytesAsString;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**

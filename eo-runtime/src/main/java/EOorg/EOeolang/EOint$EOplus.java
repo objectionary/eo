@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "int.plus")
-public class EOint$EOplus extends PhDefault implements Atom {
+public final class EOint$EOplus extends PhDefault implements Atom {
 
     /**
      * Ctor.

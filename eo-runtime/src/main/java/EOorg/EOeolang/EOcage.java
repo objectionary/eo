@@ -30,13 +30,13 @@ package EOorg.EOeolang;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.Volatile;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -48,7 +48,7 @@ import org.eolang.XmirObject;
 @Versionized
 @Volatile
 @XmirObject(oname = "cage")
-public class EOcage extends PhDefault implements Atom {
+public final class EOcage extends PhDefault implements Atom {
 
     /**
      * Ctor.

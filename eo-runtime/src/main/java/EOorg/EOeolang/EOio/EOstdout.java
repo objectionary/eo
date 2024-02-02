@@ -29,12 +29,12 @@ package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "stdout")
-public class EOstdout extends PhDefault implements Atom {
+public final class EOstdout extends PhDefault implements Atom {
     /**
      * Default out print stream.
      */

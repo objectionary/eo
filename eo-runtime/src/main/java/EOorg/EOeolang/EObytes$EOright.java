@@ -28,12 +28,12 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.right")
-public class EObytes$EOright extends PhDefault implements Atom {
+public final class EObytes$EOright extends PhDefault implements Atom {
 
     /**
      * Ctor.

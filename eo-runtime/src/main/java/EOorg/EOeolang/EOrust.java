@@ -67,7 +67,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "rust")
-public class EOrust extends PhDefault implements Atom {
+public final class EOrust extends PhDefault implements Atom {
 
     /**
      * Map with location of the `code` attribute as the key
@@ -136,6 +136,40 @@ public class EOrust extends PhDefault implements Atom {
         this.add("code", new AtFree());
         this.add("portal", new AtFree());
         this.add("params", new AtFree());
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final String name = NAMES.get(
+            this.attr("code").get().locator().split(":")[0]
+        );
+        final Method method = Class.forName(
+            String.format(
+                "EOrust.natives.%s",
+                name
+            )
+        ).getDeclaredMethod(name, Universe.class);
+        if (method.getReturnType() != byte[].class) {
+            throw new ExFailure(
+                "Return type of %s is %s, required %s",
+                method,
+                method.getReturnType(),
+                byte[].class
+            );
+        }
+        final Phi portal = this.attr("portal").get();
+        return this.translate(
+            (byte[]) method.invoke(
+                null,
+                new UniverseSafe(
+                    new UniverseDefault(
+                        portal, this.phis
+                    ),
+                    this.error
+                )
+            ),
+            this.attr("code").get().locator()
+        );
     }
 
     /**
@@ -247,39 +281,5 @@ public class EOrust extends PhDefault implements Atom {
                 );
         }
         return ret;
-    }
-
-    @Override
-    public Phi lambda() throws Exception {
-        final String name = NAMES.get(
-            this.attr("code").get().locator().split(":")[0]
-        );
-        final Method method = Class.forName(
-            String.format(
-                "EOrust.natives.%s",
-                name
-            )
-        ).getDeclaredMethod(name, Universe.class);
-        if (method.getReturnType() != byte[].class) {
-            throw new ExFailure(
-                "Return type of %s is %s, required %s",
-                method,
-                method.getReturnType(),
-                byte[].class
-            );
-        }
-        final Phi portal = this.attr("portal").get();
-        return this.translate(
-            (byte[]) method.invoke(
-                null,
-                new UniverseSafe(
-                    new UniverseDefault(
-                        portal, this.phis
-                    ),
-                    this.error
-                )
-            ),
-            this.attr("code").get().locator()
-        );
     }
 }

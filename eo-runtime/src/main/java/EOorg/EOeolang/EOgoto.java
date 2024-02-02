@@ -29,13 +29,13 @@ package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "goto")
-public class EOgoto extends PhDefault implements Atom {
+public final class EOgoto extends PhDefault implements Atom {
 
     /**
      * Ctor.

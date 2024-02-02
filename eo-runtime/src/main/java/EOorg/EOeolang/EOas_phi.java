@@ -28,11 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "as-phi")
-public class EOas_phi extends PhDefault implements Atom {
+public final class EOas_phi extends PhDefault implements Atom {
 
     /**
      * Ctor.

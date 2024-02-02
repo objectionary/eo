@@ -29,13 +29,13 @@ package EOorg.EOeolang;
 
 import java.util.Arrays;
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
-import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.eq")
-public class EObytes$EOeq extends PhDefault implements Atom {
+public final class EObytes$EOeq extends PhDefault implements Atom {
 
     /**
      * Ctor.
