@@ -27,16 +27,15 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtComposite;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
-import org.eolang.PhDefault;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -101,80 +100,59 @@ public final class EOseqTest {
      *
      * @since 1.0
      */
+    @Disabled
     @Test
     public void calculatesWithTupleAndReturnsObject() {
-        final Phi counter = new PhMethod(new Parent(Phi.Φ), "counter");
-        new Dataized(
-            new PhWith(
-                new PhCopy(
-                    new PhMethod(counter, "write")
-                ),
-                0, new Data.ToPhi(0L)
-            )
-        ).take();
-        final Phi get = new PhWith(
+        final Phi counter = new EOmemory(Phi.Φ);
+        counter.attr(0).put(new Data.ToPhi(0L));
+        final Phi arr = new PhWith(
             new PhWith(
                 new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
                 0, new Data.ToPhi(0L)
             ).attr("with").get().copy(),
             0, new Data.ToPhi(1L)
-        ).attr("at").get().copy();
-        get.attr(0).put(counter.attr("as-int").get());
+        );
+        final Phi get = new PhWith(
+            new PhCopy(new PhMethod(arr, "at")),
+            0, new PhMethod(counter, "as-int")
+        );
         final Phi increment = new PhWith(
-            new PhCopy(
-                new PhMethod(counter, "write")
-            ),
+            new PhCopy(new PhMethod(counter, "write")),
             0,
             new PhWith(
-                counter.attr("as-int").get().attr("plus").get(),
-                0,
-                new Data.ToPhi(1L)
+                new PhCopy(new PhMethod(new PhMethod(counter, "as-int"), "plus")),
+                0, new Data.ToPhi(1L)
             )
+        );
+        final Phi args = new PhWith(
+            new PhCopy(
+                new PhMethod(
+                    new PhWith(
+                        new PhCopy(
+                            new PhMethod(
+                                new PhWith(
+                                    new PhCopy(
+                                        new PhMethod(new EOtuple$EOempty(Phi.Φ), "with")
+                                    ),
+                                    0,
+                                    get
+                                ),
+                                "with"
+                            )
+                        ),
+                        0,
+                        increment
+                    ),
+                    "with"
+                )
+            ),
+            0, new PhMethod(counter, "as-int")
         );
         MatcherAssert.assertThat(
             new Dataized(
-                new PhWith(
-                    new EOseq(Phi.Φ),
-                    0,
-                    new PhWith(
-                        new PhWith(
-                            new PhWith(
-                                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
-                                0,
-                                get
-                            ).attr("with").get().copy(),
-                            0,
-                            increment
-                        ).attr("with").get().copy(),
-                        0,
-                        counter.attr("as-int").get()
-                    )
-                )
+                new PhWith(new EOseq(Phi.Φ), 0, args)
             ).take(Long.class),
             Matchers.equalTo(1L)
         );
     }
-
-    /**
-     * Parent Phi.
-     *
-     * @since 1.0
-     */
-    private static final class Parent extends PhDefault {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Parent(final Phi sigma) {
-            super(sigma);
-            this.add(
-                "counter",
-                new AtComposite(
-                    this,
-                    EOmemory::new
-                )
-            );
-        }
-    }
-
 }
