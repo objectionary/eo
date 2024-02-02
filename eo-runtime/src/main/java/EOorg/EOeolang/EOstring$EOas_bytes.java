@@ -55,7 +55,7 @@ public class EOstring$EOas_bytes extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new Data.ToPhi(
             new Param(this).strong(String.class).getBytes(StandardCharsets.UTF_8)
         );

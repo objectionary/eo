@@ -91,7 +91,7 @@ public final class EOstdoutTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"lt", "gt", "lte", "gte"})
+    @CsvSource({"lt", "gt", "lte", "gte", "eq"})
     public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
@@ -119,7 +119,7 @@ public final class EOstdoutTest {
                     )
                 )
             )
-        ).take(String.class);
+        ).take();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)

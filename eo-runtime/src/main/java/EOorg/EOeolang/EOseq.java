@@ -57,7 +57,7 @@ public class EOseq extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi args = new PhConst(this.attr("steps").get());
         final Long length = new Dataized(
             args.attr("length").get()

@@ -56,7 +56,7 @@ public class EOram$EOslice extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final long pos = new Param(this, "position").strong(Long.class);
         final long len = new Param(this, "size").strong(Long.class);
         return new PhWith(

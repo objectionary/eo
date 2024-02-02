@@ -54,7 +54,7 @@ public class EOstring$EOlength extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new Data.ToPhi(
             (long) new Param(this).strong(String.class).length()
         );

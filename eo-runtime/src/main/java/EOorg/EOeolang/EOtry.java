@@ -57,7 +57,7 @@ public class EOtry extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi body = this.attr("main").get().copy();
         body.attr("ρ").put(this);
         Phi ret;

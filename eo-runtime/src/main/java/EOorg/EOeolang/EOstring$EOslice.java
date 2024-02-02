@@ -58,7 +58,7 @@ public class EOstring$EOslice extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final String str = new Param(this).strong(String.class);
         final int start = new Param(this, "start").strong(Long.class).intValue();
         final int length = new Param(this, "len").strong(Long.class).intValue();

@@ -40,9 +40,8 @@ import java.util.stream.Collectors;
  * A simple object.
  *
  * The class is thread-safe.
- *
- * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
+ * @since 0.1
  */
 @Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
@@ -247,26 +246,24 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (attr == null) {
             final Phi found;
             if (this instanceof Atom) {
-                found = ((Atom) this).lambdaSafe().attr(name).get();
+                found = this.cached.get(name, ((Atom) this)::lambdaSafe).attr(name).get();
+                found.attr("ρ").put(this);
+                attr = new AtSimple(found);
+            } else if (this.attrs.containsKey(Attr.PHI)) {
+                final Attr aphi = this.attrs.get(Attr.PHI);
+                found = this.cached.get(name, aphi::get).attr(name).get();
                 found.attr("ρ").put(this);
                 attr = new AtSimple(found);
             } else {
-                final Attr aphi = this.attrs.get(Attr.PHI);
-                if (aphi == null) {
-                    attr = new AtAbsent(
-                        name,
-                        String.format(
-                            " among other %d attrs (%s) and %s is absent",
-                            this.attrs.size(),
-                            String.join(", ", this.attrs.keySet()),
-                            Attr.PHI
-                        )
-                    );
-                } else {
-                    found = this.cached.get(name, aphi::get).attr(name).get();
-                    found.attr("ρ").put(this);
-                    attr = new AtSimple(found);
-                }
+                attr = new AtAbsent(
+                    name,
+                    String.format(
+                        " among other %d attrs (%s) and %s is absent",
+                        this.attrs.size(),
+                        String.join(", ", this.attrs.keySet()),
+                        Attr.PHI
+                    )
+                );
             }
         }
         attr = this.named(attr, name);
@@ -316,7 +313,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
      * protected. Not the brightest design, I admit.
-     *
      * @param name The name
      * @param attr The attr
      */
