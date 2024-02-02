@@ -27,12 +27,12 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Ram;
 import org.eolang.Versionized;
 
 /**
@@ -41,28 +41,26 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOram$EOram_slice$EOφ extends PhDefault {
+public class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
     public EOram$EOram_slice$EOφ(final Phi sigma) {
         super(sigma);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    Ram.INSTANCE.read(
-                        rho.attr("ρ").get().attr("ρ").get().attr("ρ").get(),
-                        new Param(
-                            rho.attr("ρ").get(), "position"
-                        ).strong(Long.class).intValue(),
-                        new Param(
-                            rho.attr("ρ").get(), "size"
-                        ).strong(Long.class).intValue()
-                    )
-                )
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            Ram.INSTANCE.read(
+                this.attr("ρ").get().attr("ρ").get().attr("ρ").get(),
+                new Param(
+                    this.attr("ρ").get(), "position"
+                ).strong(Long.class).intValue(),
+                new Param(
+                    this.attr("ρ").get(), "size"
+                ).strong(Long.class).intValue()
             )
         );
     }

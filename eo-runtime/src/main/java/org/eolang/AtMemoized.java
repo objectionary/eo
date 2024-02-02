@@ -25,14 +25,7 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
-
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.ExFailure;
-import org.eolang.Param;
-import org.eolang.Phi;
-import org.eolang.Versionized;
+package org.eolang;
 
 /**
  * An attribute that knows how to memoize an object.

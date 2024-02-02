@@ -27,13 +27,12 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -44,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.not")
-public class EObytes$EOnot extends PhDefault {
+public class EObytes$EOnot extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -52,17 +51,15 @@ public class EObytes$EOnot extends PhDefault {
      */
     public EObytes$EOnot(final Phi sigma) {
         super(sigma);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho)
-                        .asBytes()
-                        .not()
-                        .take()
-                )
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this)
+                .asBytes()
+                .not()
+                .take()
         );
     }
 }

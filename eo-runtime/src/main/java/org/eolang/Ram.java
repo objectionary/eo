@@ -25,7 +25,7 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package org.eolang;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

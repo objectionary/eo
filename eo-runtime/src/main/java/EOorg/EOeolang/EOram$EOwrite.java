@@ -27,13 +27,16 @@
  */
 package EOorg.EOeolang;
 
+import java.io.IOException;
 import org.eolang.AtFree;
 import org.eolang.AtLambda;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Ram;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
@@ -44,7 +47,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "ram.write")
-public class EOram$EOwrite extends PhDefault {
+public class EOram$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -53,17 +56,13 @@ public class EOram$EOwrite extends PhDefault {
         super(sigma);
         this.add("position", new AtFree());
         this.add("data", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final int pos = new Param(rho, "position").strong(Long.class).intValue();
-                    final byte[] bytes = new Param(rho, "data").strong(byte[].class);
-                    Ram.INSTANCE.write(rho.attr("ρ").get(), pos, bytes);
-                    return new Data.ToPhi(true);
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() throws IOException {
+        final int pos = new Param(this, "position").strong(Long.class).intValue();
+        final byte[] bytes = new Param(this, "data").strong(byte[].class);
+        Ram.INSTANCE.write(this.attr("ρ").get(), pos, bytes);
+        return new Data.ToPhi(true);
     }
 }

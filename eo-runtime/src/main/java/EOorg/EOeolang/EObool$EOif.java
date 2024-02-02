@@ -28,12 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -44,8 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bool.if")
-public class EObool$EOif extends PhDefault {
-
+public class EObool$EOif extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -54,21 +52,17 @@ public class EObool$EOif extends PhDefault {
         super(sigma);
         this.add("t", new AtFree());
         this.add("f", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final boolean term = new Param(rho).strong(Boolean.class);
-                    final Phi out;
-                    if (term) {
-                        out = rho.attr("t").get();
-                    } else {
-                        out = rho.attr("f").get();
-                    }
-                    return out;
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        final boolean term = new Param(this).strong(Boolean.class);
+        final Phi out;
+        if (term) {
+            out = this.attr("t").get();
+        } else {
+            out = this.attr("f").get();
+        }
+        return out;
     }
 }

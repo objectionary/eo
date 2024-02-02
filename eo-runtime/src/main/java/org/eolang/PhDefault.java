@@ -244,29 +244,29 @@ public abstract class PhDefault implements Phi, Cloneable {
         } else {
             attr = this.attrs.get(name);
         }
-        if (null == attr) {
-            final String through;
-            if (this.attrs.containsKey(Attr.PHI)) {
-                through = Attr.PHI;
-            } else {
-                through = Attr.LAMBDA;
-            }
-            final Attr aphi = this.attrs.get(through);
-            if (null == aphi) {
-                attr = new AtAbsent(
-                    name,
-                    String.format(
-                        " among other %d attrs (%s) and %s is absent",
-                        this.attrs.size(),
-                        String.join(", ", this.attrs.keySet()),
-                        through
-                    )
-                );
-            } else {
-                final Phi phi = this.cached.get(name, aphi::get);
-                final Phi found = phi.attr(name).get();
+        if (attr == null) {
+            final Phi found;
+            if (this instanceof Atom) {
+                found = ((Atom) this).lambdaSafe().attr(name).get();
                 found.attr("ρ").put(this);
                 attr = new AtSimple(found);
+            } else {
+                final Attr aphi = this.attrs.get(Attr.PHI);
+                if (aphi == null) {
+                    attr = new AtAbsent(
+                        name,
+                        String.format(
+                            " among other %d attrs (%s) and %s is absent",
+                            this.attrs.size(),
+                            String.join(", ", this.attrs.keySet()),
+                            Attr.PHI
+                        )
+                    );
+                } else {
+                    found = this.cached.get(name, aphi::get).attr(name).get();
+                    found.attr("ρ").put(this);
+                    attr = new AtSimple(found);
+                }
             }
         }
         attr = this.named(attr, name);

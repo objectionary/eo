@@ -28,12 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -44,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "as-phi")
-public class EOas_phi extends PhDefault {
+public class EOas_phi extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,16 +52,12 @@ public class EOas_phi extends PhDefault {
     public EOas_phi(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi obj = rho.attr("x").get();
-                    obj.attr("ν").get();
-                    return new Data.ToPhi(obj.φTerm());
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        final Phi obj = this.attr("x").get();
+        obj.attr("ν").get();
+        return new Data.ToPhi(obj.φTerm());
     }
 }

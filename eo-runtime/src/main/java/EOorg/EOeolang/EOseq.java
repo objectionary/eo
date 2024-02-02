@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhConst;
@@ -46,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "seq")
-public class EOseq extends PhDefault {
+public class EOseq extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -55,34 +54,30 @@ public class EOseq extends PhDefault {
     public EOseq(final Phi sigma) {
         super(sigma);
         this.add("steps", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                self -> {
-                    final Phi args = new PhConst(self.attr("steps").get());
-                    final Long length = new Dataized(
-                        args.attr("length").get()
-                    ).take(Long.class);
-                    for (long idx = 0; idx < length - 1; ++idx) {
-                        new Dataized(
-                            new PhWith(
-                                args.attr("at").get().copy(),
-                                0, new Data.ToPhi(idx)
-                            )
-                        ).take();
-                    }
-                    final Phi ret;
-                    if (length > 0) {
-                        final Phi last = args.attr("at").get().copy();
-                        last.attr(0).put(new Data.ToPhi(length - 1));
-                        ret = last;
-                    } else {
-                        ret = new Data.ToPhi(false);
-                    }
-                    return ret;
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final Phi args = new PhConst(this.attr("steps").get());
+        final Long length = new Dataized(
+            args.attr("length").get()
+        ).take(Long.class);
+        for (long idx = 0; idx < length - 1; ++idx) {
+            new Dataized(
+                new PhWith(
+                    args.attr("at").get().copy(),
+                    0, new Data.ToPhi(idx)
+                )
+            ).take();
+        }
+        final Phi ret;
+        if (length > 0) {
+            final Phi last = args.attr("at").get().copy();
+            last.attr(0).put(new Data.ToPhi(length - 1));
+            ret = last;
+        } else {
+            ret = new Data.ToPhi(false);
+        }
+        return ret;
     }
 }

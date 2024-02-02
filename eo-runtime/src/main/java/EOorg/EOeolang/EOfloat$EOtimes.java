@@ -28,13 +28,12 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "float.times")
-public class EOfloat$EOtimes extends PhDefault {
+public class EOfloat$EOtimes extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -54,15 +53,13 @@ public class EOfloat$EOtimes extends PhDefault {
     public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).strong(Double.class)
-                        * new Param(rho, "x").strong(Double.class)
-                )
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this).strong(Double.class)
+                * new Param(this, "x").strong(Double.class)
         );
     }
 }

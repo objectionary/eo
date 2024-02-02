@@ -29,14 +29,13 @@ package EOorg.EOeolang;
 
 import java.util.Arrays;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -47,7 +46,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.eq")
-public class EObytes$EOeq extends PhDefault {
+public class EObytes$EOeq extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -56,18 +55,16 @@ public class EObytes$EOeq extends PhDefault {
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    Arrays.equals(
-                        new Dataized(
-                            rho.attr("b").get().attr("as-bytes").get()
-                        ).take(byte[].class),
-                        new Param(rho).strong(byte[].class)
-                    )
-                )
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            Arrays.equals(
+                new Dataized(
+                    this.attr("b").get().attr("as-bytes").get()
+                ).take(byte[].class),
+                new Param(this).strong(byte[].class)
             )
         );
     }

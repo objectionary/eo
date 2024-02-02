@@ -28,13 +28,12 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.xor")
-public class EObytes$EOxor extends PhDefault {
+public class EObytes$EOxor extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -54,17 +53,14 @@ public class EObytes$EOxor extends PhDefault {
     public EObytes$EOxor(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).asBytes().xor(
-                        new Param(rho, "b").asBytes()
-                    ).take()
-                )
-            )
-        );
     }
 
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this).asBytes().xor(
+                new Param(this, "b").asBytes()
+            ).take()
+        );
+    }
 }

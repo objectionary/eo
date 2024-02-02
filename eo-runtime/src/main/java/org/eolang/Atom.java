@@ -21,45 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtFree;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.Atom;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * DIV.
- *
- * @since 0.23
- * @checkstyle TypeNameCheck (5 lines)
+ * Atom.
+ * Atoms must have λ function.
+ * @since 0.36.0
  */
-@Versionized
-@XmirObject(oname = "float.div")
-public class EOfloat$EOdiv extends PhDefault implements Atom {
+public interface Atom {
+    /**
+     * Executes λ function and calculate object.
+     * @return Object calculated from λ function.
+     * @throws Exception If fails.
+     */
+    Phi lambda() throws Exception;
 
     /**
-     * Ctor.
-     * @param sigma Sigma
+     * Executes λ function safely.
+     * @return Object calculated from λ function.
      */
-    public EOfloat$EOdiv(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-    }
-
-    @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            new Param(this).strong(Double.class)
-                / new Param(this, "x").strong(Double.class)
-        );
+    default Phi lambdaSafe() {
+        try {
+            return this.lambda();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted();
+            // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Throwable ex) {
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error '%s' of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
+        }
     }
 }

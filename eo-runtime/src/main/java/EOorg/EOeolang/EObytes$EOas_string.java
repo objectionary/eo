@@ -28,13 +28,12 @@
 package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.Atom;
 import org.eolang.XmirObject;
 
 /**
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.as-string")
-public class EObytes$EOas_string extends PhDefault {
+public class EObytes$EOas_string extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,14 +52,14 @@ public class EObytes$EOas_string extends PhDefault {
      */
     public EObytes$EOas_string(final Phi sigma) {
         super(sigma);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final byte[] array = new Param(rho).strong(byte[].class);
-                    return new Data.ToPhi(new String(array, StandardCharsets.UTF_8));
-                }
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new String(
+                new Param(this).strong(byte[].class),
+                StandardCharsets.UTF_8
             )
         );
     }

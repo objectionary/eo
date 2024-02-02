@@ -29,7 +29,8 @@ package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.AtMemoized;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -44,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "memory")
-public class EOmemory extends PhDefault {
+public class EOmemory extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,8 +54,12 @@ public class EOmemory extends PhDefault {
     public EOmemory(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtMemoized());
-        this.add(Attr.LAMBDA, new AtLambda(this, rho -> rho.attr("enclosure").get()));
         this.add("write", new EOmemory.AtMemoryWrite(this));
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.attr("enclosure").get();
     }
 
     /**
@@ -81,7 +86,7 @@ public class EOmemory extends PhDefault {
      * @since 1.0
      */
     @XmirObject(oname = "memory.write")
-    private static final class Write extends PhDefault {
+    private static final class Write extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -89,17 +94,13 @@ public class EOmemory extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add(
-                Attr.LAMBDA,
-                new AtLambda(
-                    this,
-                    rho -> {
-                        final Attr enclosure = rho.attr("σ").get().attr("enclosure");
-                        enclosure.put(rho.attr("x").get());
-                        return enclosure.get();
-                    }
-                )
-            );
+        }
+
+        @Override
+        public Phi lambda() {
+            final Attr enclosure = this.attr("σ").get().attr("enclosure");
+            enclosure.put(this.attr("x").get());
+            return enclosure.get();
         }
     }
 }

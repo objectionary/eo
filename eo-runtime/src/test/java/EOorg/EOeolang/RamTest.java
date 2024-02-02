@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import org.eolang.Data;
 import org.eolang.PhWith;
 import org.eolang.Phi;
+import org.eolang.Ram;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
