@@ -13,7 +13,7 @@ eop : EOL EOL
 
 // Licence
 license
-    : (COMMENT EOL)* COMMENT eop
+    : (COMMENTARY EOL)* COMMENTARY eop
     ;
 
 // Metas
@@ -28,7 +28,7 @@ objects
     ;
 
 comment
-    : COMMENT EOL
+    : COMMENTARY EOL
     ;
 
 commentOptional
@@ -545,7 +545,7 @@ data: BYTES
     | HEX
     ;
 
-COMMENT
+COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
