@@ -25,12 +25,14 @@ package org.eolang;
 
 /**
  * Atom.
- * Atoms must have λ function.
+ * A native object implemented in the language EO is compiled into.
+ * For EO end user atoms look like magic box. That's why all atoms have
+ * λ function, that calculates the final object.
  * @since 0.36.0
  */
 public interface Atom {
     /**
-     * Executes λ function and calculate object.
+     * Executes λ function and calculates object.
      * @return Object calculated from λ function.
      * @throws Exception If fails.
      */
