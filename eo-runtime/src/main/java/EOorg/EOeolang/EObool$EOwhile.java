@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
@@ -46,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bool.while")
-public class EObool$EOwhile extends PhDefault {
+public final class EObool$EOwhile extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -55,26 +54,22 @@ public class EObool$EOwhile extends PhDefault {
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    Phi last = new Data.ToPhi(false);
-                    long count = 0L;
-                    while (true) {
-                        if (!new Param(rho).strong(Boolean.class)) {
-                            break;
-                        }
-                        new Dataized(last).take();
-                        last = rho.attr("f").get().copy();
-                        last.attr("ρ").put(rho);
-                        last.attr(0).put(new Data.ToPhi(count));
-                        ++count;
-                    }
-                    return last;
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        Phi last = new Data.ToPhi(false);
+        long count = 0L;
+        while (true) {
+            if (!new Param(this).strong(Boolean.class)) {
+                break;
+            }
+            new Dataized(last).take();
+            last = this.attr("f").get().copy();
+            last.attr("ρ").put(this);
+            last.attr(0).put(new Data.ToPhi(count));
+            ++count;
+        }
+        return last;
     }
 }

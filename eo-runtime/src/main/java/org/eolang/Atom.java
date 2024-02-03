@@ -21,45 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtFree;
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * TIMES.
- *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Atom.
+ * A native object implemented in the language EO is compiled into.
+ * For EO end user atoms look like magic box. That's why all atoms have
+ * λ function, that calculates the final object.
+ * @since 0.36.0
  */
-@Versionized
-@XmirObject(oname = "int.times")
-public final class EOint$EOtimes extends PhDefault implements Atom {
-
+public interface Atom {
     /**
-     * Ctor.
-     * @param sigma Sigma
+     * Executes λ function and calculates object.
+     * @return Object calculated from λ function.
+     * @throws Exception If fails.
      */
-    public EOint$EOtimes(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
-    }
-
-    @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            new Param(this).strong(Long.class)
-                * new Param(this, "x").strong(Long.class)
-        );
-    }
+    Phi lambda() throws Exception;
 }

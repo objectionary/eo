@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "ram.slice")
-public class EOram$EOslice extends PhDefault {
+public final class EOram$EOslice extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -54,24 +53,20 @@ public class EOram$EOslice extends PhDefault {
         super(sigma);
         this.add("position", new AtFree());
         this.add("size", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final long pos = new Param(rho, "position").strong(Long.class);
-                    final long len = new Param(rho, "size").strong(Long.class);
-                    return new PhWith(
-                        new PhWith(
-                            new EOram$EOram_slice(rho),
-                            "position",
-                            new Data.ToPhi(pos)
-                        ),
-                        "size",
-                        new Data.ToPhi(len)
-                    );
-                }
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        final long pos = new Param(this, "position").strong(Long.class);
+        final long len = new Param(this, "size").strong(Long.class);
+        return new PhWith(
+            new PhWith(
+                new EOram$EOram_slice(this),
+                "position",
+                new Data.ToPhi(pos)
+            ),
+            "size",
+            new Data.ToPhi(len)
         );
     }
 }

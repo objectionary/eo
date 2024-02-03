@@ -29,8 +29,7 @@ package EOorg.EOeolang;
 
 import java.util.Arrays;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -46,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.slice")
-public class EObytes$EOslice extends PhDefault {
+public final class EObytes$EOslice extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -56,21 +55,16 @@ public class EObytes$EOslice extends PhDefault {
         super(sigma);
         this.add("start", new AtFree());
         this.add("len", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final long start = new Param(rho, "start").strong(Long.class);
-                    final long length = new Param(rho, "len").strong(Long.class);
-                    final byte[] array = new Param(rho).strong(byte[].class);
-                    final byte[] target = Arrays.copyOfRange(
-                        array, (int) start, (int) (start + length)
-                    );
-                    return new Data.ToPhi(target);
-                }
-            )
-        );
     }
 
+    @Override
+    public Phi lambda() {
+        final long start = new Param(this, "start").strong(Long.class);
+        final long length = new Param(this, "len").strong(Long.class);
+        final byte[] array = new Param(this).strong(byte[].class);
+        final byte[] target = Arrays.copyOfRange(
+            array, (int) start, (int) (start + length)
+        );
+        return new Data.ToPhi(target);
+    }
 }

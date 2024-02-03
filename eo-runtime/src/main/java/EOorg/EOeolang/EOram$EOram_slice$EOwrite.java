@@ -27,13 +27,14 @@
  */
 package EOorg.EOeolang;
 
+import java.io.IOException;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Ram;
 import org.eolang.Versionized;
 
 /**
@@ -42,7 +43,7 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOram$EOram_slice$EOwrite extends PhDefault {
+public final class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -50,18 +51,14 @@ public class EOram$EOram_slice$EOwrite extends PhDefault {
     public EOram$EOram_slice$EOwrite(final Phi sigma) {
         super(sigma);
         this.add("data", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi ram = rho.attr("ρ").get();
-                    final int pos = new Param(ram, "position").strong(Long.class).intValue();
-                    final byte[] bytes = new Param(rho, "data").strong(byte[].class);
-                    Ram.INSTANCE.write(ram.attr("ρ").get(), pos, bytes);
-                    return new Data.ToPhi(true);
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() throws IOException {
+        final Phi ram = this.attr("ρ").get();
+        final int pos = new Param(ram, "position").strong(Long.class).intValue();
+        final byte[] bytes = new Param(this, "data").strong(byte[].class);
+        Ram.INSTANCE.write(ram.attr("ρ").get(), pos, bytes);
+        return new Data.ToPhi(true);
     }
 }
