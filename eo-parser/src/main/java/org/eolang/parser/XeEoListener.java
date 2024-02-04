@@ -160,7 +160,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 "\n",
                 new Mapped<>(
                     cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENT()
+                    ctx.COMMENTARY()
                 )
             )
         ).up();
@@ -232,9 +232,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
         final String comment = String.join(
             "",
-            ctx.comment().COMMENT().getText().substring(1).trim(),
+            ctx.comment().COMMENTARY().getText().substring(1).trim(),
             ctx.commentOptional().comment().stream().map(
-                context -> context.COMMENT().getText().substring(1).trim()
+                context -> context.COMMENTARY().getText().substring(1).trim()
             ).collect(Collectors.joining(""))
         );
         final String length = String.format(
