@@ -35,6 +35,6 @@ tests = [
 ]
 for (it in tests) {
   def res = evaluate folder.resolve(it).toFile()
-  println String.format('Verified with %s - OK. Result: %s', it, res)
+  log.info String.format('Verified with %s - OK. Result: %s', it, res)
 }
 true

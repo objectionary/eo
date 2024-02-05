@@ -36,6 +36,7 @@ plugin = basedir.toPath()
     .resolve("maven")
     .resolve("plugin.xml")
 content = new XmlSlurper().parseText(new File(plugin.toString()).text)
+// For example, "${eo.foreignFormat}":
 pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
 failures = []
 content.mojos.mojo.findAll {
