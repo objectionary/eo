@@ -49,7 +49,7 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
- * @todo #2835:30min Change severity on comments validation. Current severity on comments validation
+ * @todo #2841:30min Change severity on comments validation. Current severity on comments validation
  *  is "warning". We need to change it to "error" to prevent users from ignoring this type of error.
  *  But there's a pitfall - there are so many little toy abstract objects in EO tests which we don't
  *  really want to document. That's why we should not validate comments if there's "+junit" meta in
@@ -76,6 +76,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private static final int MIN_COMMENT_LENGTH = 64;
 
     /**
+     * Meta for testing.
+     */
+    private static final String TESTS_META = "tests";
+
+    /**
      * The name of it.
      */
     private final String name;
@@ -99,6 +104,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * When we start.
      */
     private final long start;
+
+    /**
+     * If metas has "+tests" meta.
+     */
+    private boolean tests = false;
 
     /**
      * Ctor.
@@ -176,9 +186,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         this.dirs.addIf("metas");
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
+            final String head = pair[0].substring(1);
+            if (head.equals(XeEoListener.TESTS_META)) {
+                this.tests = true;
+            }
             this.dirs.add("meta")
                 .attr("line", node.getSymbol().getLine())
-                .add("head").set(pair[0].substring(1)).up()
+                .add("head").set(head).up()
                 .add("tail");
             if (pair.length > 1) {
                 this.dirs.set(pair[1].trim()).up();
@@ -230,47 +244,49 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        final String comment = String.join(
-            "",
-            ctx.comment().COMMENTARY().getText().substring(1).trim(),
-            ctx.commentOptional().comment().stream().map(
-                context -> context.COMMENTARY().getText().substring(1).trim()
-            ).collect(Collectors.joining(""))
-        );
-        final String length = String.format(
-            "Comment must be at least %d characters long",
-            XeEoListener.MIN_COMMENT_LENGTH
-        );
-        final String warning = "warning";
-        if (comment.isEmpty()) {
-            this.addError(ctx, "comment-length-check", warning, length);
-        } else {
-            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
+        if (this.tests) {
+            final String comment = String.join(
+                "",
+                ctx.comment().COMMENTARY().getText().substring(1).trim(),
+                ctx.commentOptional().comment().stream().map(
+                    context -> context.COMMENTARY().getText().substring(1).trim()
+                ).collect(Collectors.joining(""))
+            );
+            final String length = String.format(
+                "Comment must be at least %d characters long",
+                XeEoListener.MIN_COMMENT_LENGTH
+            );
+            final String warning = "warning";
+            if (comment.isEmpty()) {
                 this.addError(ctx, "comment-length-check", warning, length);
-            }
-            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
-                this.addError(
-                    ctx,
-                    "comment-content-check",
-                    warning,
-                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
-                );
-            }
-            if (!Character.isUpperCase(comment.charAt(0))) {
-                this.addError(
-                    ctx,
-                    "comment-start-character-check",
-                    warning,
-                    "Comment must start with capital letter"
-                );
-            }
-            if (comment.charAt(comment.length() - 1) != '.') {
-                this.addError(
-                    ctx,
-                    "comment-ending-check",
-                    warning,
-                    "Comment must end with dot"
-                );
+            } else {
+                if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
+                    this.addError(ctx, "comment-length-check", warning, length);
+                }
+                if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
+                    this.addError(
+                        ctx,
+                        "comment-content-check",
+                        warning,
+                        "Comment must contain only ASCII printable characters: 0x20-0x7f"
+                    );
+                }
+                if (!Character.isUpperCase(comment.charAt(0))) {
+                    this.addError(
+                        ctx,
+                        "comment-start-character-check",
+                        warning,
+                        "Comment must start with capital letter"
+                    );
+                }
+                if (comment.charAt(comment.length() - 1) != '.') {
+                    this.addError(
+                        ctx,
+                        "comment-ending-check",
+                        warning,
+                        "Comment must end with dot"
+                    );
+                }
             }
         }
     }
