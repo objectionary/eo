@@ -112,9 +112,11 @@ public final class PrintMojo extends SafeMojo {
                         );
                         Logger.info(
                             this,
-                            "Printed: %[file]s => %[file]s",
+                            "Printed: %[file]s (%[size]s) => %[file]s (%[size]s)",
                             source,
-                            this.printOutputDir.toPath().resolve(relative)
+                            source.toFile().length(),
+                            this.printOutputDir.toPath().resolve(relative),
+                            this.printOutputDir.toPath().resolve(relative).toFile().length()
                         );
                         return 1;
                     },
