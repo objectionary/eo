@@ -51,11 +51,8 @@ import org.xembly.Directives;
  * @since 0.1
  * @todo #2841:30min Change severity on comments validation. Current severity on comments validation
  *  is "warning". We need to change it to "error" to prevent users from ignoring this type of error.
- *  But there's a pitfall - there are so many little toy abstract objects in EO tests which we don't
- *  really want to document. That's why we should not validate comments if there's "+junit" meta in
- *  program. Also "eo-runtime" does not fail on warning now because it's not well documented. After
- *  eo-runtime is documented well - we need to turn on "failOnWarning" trigger in pom.xml inside
- *  "eo-runtime.
+ *  But firstly we have to make "eo-runtime" documented well. After it's done - we need to turn
+ *  on "failOnWarning" trigger in pom.xml inside "eo-runtime.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
