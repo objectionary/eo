@@ -48,7 +48,9 @@ class OyIndexedTest {
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
             new TextOf(new OyIndexed(new Objectionary.Fake()).get("foo")).asString(),
-            Matchers.equalTo("[] > sprintf\n")
+            Matchers.equalTo(
+                "# This is the default 64+ symbols comment in front of named abstract object.\n[] > sprintf\n"
+            )
         );
     }
 

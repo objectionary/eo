@@ -28,10 +28,12 @@
 
 # Tuple.
 [head tail] > tuple
-  # Empty tuple
+  # Empty tuple.
   [] > empty
+    # Take one element from the tuple, at the given position.
     [i] > at
       error "Can't get an object from the empty tuple" > @
+    # Take one element from the tuple, at the given position.
     [x] > with
       tuple > @
         tuple.empty
@@ -39,16 +41,17 @@
     0 > length
 
   # Obtain the length of the tuple.
-  [] > length
+  [] > length!
     ^.head.length.plus 1 > @
 
   # Take one element from the tuple, at the given position.
   [i] > at
+    i > idx!
     ^.length > len!
     if. > index!
-      i.lt 0
-      len.plus i
-      i
+      idx.lt 0
+      len.plus idx
+      idx
     if. > @
       or.
         index.lt 0

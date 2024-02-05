@@ -57,11 +57,11 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  *
- * @todo #2660:30min One snippet is disabled now, in
- *  the "src/test/resources/snippets/*.yaml" because it doesn't work.
- *  I don't understand what's wrong with it (parenting.yaml). Let's
- *  try to find out and enable it (by removing the "skip" attribute from
- *  the YAML file).
+ * @todo #2718:30min One snippet is disabled now, in
+ *  the "src/test/resources/snippets/*.yaml" because there's no
+ *  "sprintf" object in objectionary (fibo.yaml).
+ *  When "sprintf" is in objectionary again - we need to enable
+ *  it (by removing the "skip" attribute from the YAML file).
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

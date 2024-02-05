@@ -30,10 +30,13 @@ tests:
 #   2 > @
 # ____
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > main
     sibling > @
     eq. > sibling
+      # This is the default 64+ symbols comment in front of abstract object.
       [] > first
         1 > @
+      # This is the default 64+ symbols comment in front of abstract object.
       [] > second
         2 > @

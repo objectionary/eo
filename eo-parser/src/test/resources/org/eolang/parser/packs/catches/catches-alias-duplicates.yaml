@@ -9,5 +9,6 @@ eo: |
   +alias stdout org.eolang.io.stdout
   +alias stdout org.eolang.io.stdout
 
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > main
     (stdout "Hello, world!").print

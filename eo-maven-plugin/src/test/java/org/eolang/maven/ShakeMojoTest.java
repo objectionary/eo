@@ -25,8 +25,10 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
@@ -37,7 +39,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -82,7 +83,6 @@ final class ShakeMojoTest {
         );
     }
 
-    @Disabled
     @Test
     void getsAlreadyShakenResultsFromCache(@TempDir final Path temp) throws Exception {
         final TextOf cached = new TextOf(
@@ -95,6 +95,10 @@ final class ShakeMojoTest {
             Paths.get(ShakeMojo.SHAKEN)
                 .resolve(hash)
                 .resolve("foo/x/main.xmir")
+        );
+        Files.setLastModifiedTime(
+            cache.resolve(Paths.get(ShakeMojo.SHAKEN).resolve(hash).resolve("foo/x/main.xmir")),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
         new FakeMaven(temp)
             .withHelloWorld()

@@ -26,17 +26,18 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
+# String.
 [as-bytes] > string
   as-bytes > @
 
-  # Is true if both objects are equal
+  # Is true if both objects are equal.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Get the length of it
+  # Get the length of it.
   [] > length /int
 
-  # Takes a piece of a string as another string
+  # Takes a piece of a string as another string.
   [start len] > slice /string

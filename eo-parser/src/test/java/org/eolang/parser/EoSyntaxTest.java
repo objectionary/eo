@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.yaml.snakeyaml.Yaml;
 
@@ -47,6 +48,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
     @Test
     void parsesSimpleCode() throws Exception {
@@ -70,9 +72,51 @@ final class EoSyntaxTest {
         );
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "  , comment-length-check, Comment must be at least 64 characters long",
+        "Hello world., comment-length-check, Comment must be at least 64 characters long",
+        "Привет мир., comment-content-check, Comment must contain only ASCII printable characters: 0x20-0x7f",
+        "lowcase., comment-start-character-check, Comment must start with capital letter",
+        "without dot, comment-ending-check, Comment must end with dot"
+    })
+    void containsCommentCheckErrors(
+        final String comment,
+        final String check,
+        final String message
+    ) throws IOException {
+        MatcherAssert.assertThat(
+            XhtmlMatchers.xhtml(
+                new String(
+                    new EoSyntax(
+                        "test-1",
+                        new InputOf(
+                            String.join(
+                                "\n",
+                                String.format("# %s", comment),
+                                "[] > app\n"
+                            )
+                        )
+                    ).parsed().toString().getBytes(),
+                    StandardCharsets.UTF_8
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                String.format(
+                    "//errors/error[@line and @check='%s' and @severity='%s' and text()='%s']",
+                    check, "warning", message
+                )
+            )
+        );
+    }
+
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = "# hello, world!\n\n[] > x-н, 1\n";
+        final String src = String.join(
+            "\n",
+            "# This is the default 64+ symbols comment in front of abstract object.",
+            "[] > x-н, 1\n"
+        );
         MatcherAssert.assertThat(
             XhtmlMatchers.xhtml(
                 new String(
@@ -117,10 +161,9 @@ final class EoSyntaxTest {
         "1 > x\r\n\r\n2 > y",
         "1 > x\n2 > y\n",
         "1 > x\n\n2 > y",
-        "[]",
-        "[] > x",
+        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x",
         "a b c > x\n  x ^ > @",
-        "[] > x\n  x ^ > @"
+        "# This is the default 64+ symbols comment in front of abstract object.\n[] > x\n  x ^ > @"
     })
     void parsesSuccessfully(final String code) {
         final EoSyntax syntax = new EoSyntax(
@@ -147,12 +190,20 @@ final class EoSyntaxTest {
 
     @Test
     void prasesNested() throws IOException {
+        final String src = String.join(
+            "\n",
+            "# This is the default 64+ symbols comment in front of abstract object.",
+            "[] > base",
+            "  memory 0 > x",
+            "  # This is the default 64+ symbols comment in front of abstract object.",
+            "  [self] > f",
+            "    v > @",
+            "      v\n"
+        );
         MatcherAssert.assertThat(
             new EoSyntax(
                 "test-it-4",
-                new InputOf(
-                    "[] > base\n  memory 0 > x\n  [self] > f\n    v > @\n      v\n"
-                )
+                new InputOf(src)
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
@@ -166,7 +217,14 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             new EoSyntax(
                 "test-it-5",
-                new InputOf("[v] > p\n  f.write > @\n")
+                new InputOf(
+                    String.join(
+                        "\n",
+                        "# This is the default 64+ symbols comment in front of named abstract object.",
+                        "[v] > p",
+                        "  f.write > @\n"
+                    )
+                )
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",

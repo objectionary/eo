@@ -2,9 +2,10 @@ xsls:
   - /org/eolang/parser/critical-errors/duplicate-names.xsl
 tests:
   - /program/errors[count(error[@severity='critical'])=2]
-  - /program/errors/error[@line='2']
+  - /program/errors/error[@line='3']
   - /program/objects/o[@name='first']/o[@name='x']
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
   [x] > first
     second > x
 

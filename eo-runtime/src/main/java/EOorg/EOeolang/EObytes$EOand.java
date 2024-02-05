@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.and")
-public class EObytes$EOand extends PhDefault {
+public final class EObytes$EOand extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -54,16 +53,14 @@ public class EObytes$EOand extends PhDefault {
     public EObytes$EOand(final Phi sigma) {
         super(sigma);
         this.add("b", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).asBytes().and(
-                        new Param(rho, "b").asBytes()
-                    ).take()
-                )
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this).asBytes().and(
+                new Param(this, "b").asBytes()
+            ).take()
         );
     }
 }

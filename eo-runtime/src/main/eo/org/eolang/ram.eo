@@ -34,7 +34,10 @@
   # Slice fixed size of bytes from position.
   [position size] > slice /ram-slice
 
+  # Slice fixed size of bytes from position.
   [position size] > ram-slice
+    # Fixed sliced bytes from position.
     [] > @ /bytes
 
+    # Write bytes to memory from position, according to the ram.slice object.
     [data] > write /bytes

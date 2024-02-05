@@ -7,12 +7,14 @@ tests:
   - /program/errors/error[text()='This method is deprecated!']
 
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > foo
     cti > @
       2.times 2
       "warning"
       "This method is deprecated!"
-  
+
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > app
     QQ.io.stdout > @
       QQ.txt.sprintf

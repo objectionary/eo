@@ -1,0 +1,14 @@
+eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [z] > main
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > x
+    seq' > y
+phi: |
+  {
+    main ↦ ⟦
+      z ↦ ∅,
+      x ↦ ⟦⟧,
+      y ↦ Φ.org.eolang.seq()
+    ⟧
+  }

@@ -9,11 +9,13 @@ tests:
   - //java/text()[not(contains(., '&amp;'))]
 
 eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo
     5 > five
-  
     a > @
   
+    # This is the default 64+ symbols comment in front of named abstract object.
     [] > a
+      # This is the default 64+ symbols comment in front of named abstract object.
       [] > @
         &.&.five > @

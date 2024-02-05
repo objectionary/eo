@@ -30,17 +30,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtLambda}.
+ * Test case for {@link AtComposite}.
  *
  * @since 0.16
  */
-final class AtLambdaTest {
+final class AtCompositeTest {
 
     @Test
     void decoratesCheckedException() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new AtLambda(
+            () -> new AtComposite(
                 Phi.Φ,
                 self -> {
                     throw new InstantiationException("intended checked");
@@ -53,7 +53,7 @@ final class AtLambdaTest {
     void decoratesUncheckedException() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new AtLambda(
+            () -> new AtComposite(
                 Phi.Φ,
                 self -> {
                     throw new IllegalStateException("intended unchecked");
@@ -113,7 +113,7 @@ final class AtLambdaTest {
             super();
             this.add(
                 Attr.LAMBDA,
-                new AtLambda(
+                new AtComposite(
                     this,
                     rho -> {
                         this.self = rho;
@@ -136,7 +136,7 @@ final class AtLambdaTest {
             super();
             this.add(
                 Attr.LAMBDA,
-                new AtLambda(
+                new AtComposite(
                     this,
                     rho -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )

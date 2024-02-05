@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -44,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "try")
-public class EOtry extends PhDefault {
+public final class EOtry extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -55,30 +54,26 @@ public class EOtry extends PhDefault {
         this.add("main", new AtFree());
         this.add("catch", new AtFree());
         this.add("finally", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi body = rho.attr("main").get().copy();
-                    body.attr("ρ").put(rho);
-                    Phi ret;
-                    try {
-                        ret = body;
-                        new Dataized(body).take();
-                    } catch (final EOerror.ExError ex) {
-                        final Phi ctch = rho.attr("catch").get().copy();
-                        ctch.attr("ρ").put(rho);
-                        ctch.attr(0).put(ex.enclosure());
-                        ret = ctch;
-                    } finally {
-                        final Phi fin = rho.attr("finally").get().copy();
-                        fin.attr("ρ").put(rho);
-                        new Dataized(fin).take();
-                    }
-                    return ret;
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        final Phi body = this.attr("main").get().copy();
+        body.attr("ρ").put(this);
+        Phi ret;
+        try {
+            ret = body;
+            new Dataized(body).take();
+        } catch (final EOerror.ExError ex) {
+            final Phi ctch = this.attr("catch").get().copy();
+            ctch.attr("ρ").put(this);
+            ctch.attr(0).put(ex.enclosure());
+            ret = ctch;
+        } finally {
+            final Phi fin = this.attr("finally").get().copy();
+            fin.attr("ρ").put(this);
+            new Dataized(fin).take();
+        }
+        return ret;
     }
 }

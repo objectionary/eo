@@ -57,7 +57,7 @@ public final class OptSpy implements Optimization {
 
     /**
      * The main constructor.
-     * @param trn Optimizations train
+     * @param trn Optimizations train.
      * @param target Where to track optimization steps.
      */
     public OptSpy(final Train<Shift> trn, final Path target) {
@@ -67,8 +67,8 @@ public final class OptSpy implements Optimization {
 
     @Override
     public XML apply(final XML xml) {
-        final Place place = new Place(xml.xpath("/program/@name").get(0));
-        final Path dir = place.make(this.target, "");
+        final Path dir = new Place(xml.xpath("/program/@name").get(0))
+            .make(this.target, "");
         Logger.debug(
             this, "Optimization steps will be tracked to %s",
             new Rel(dir)

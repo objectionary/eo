@@ -29,6 +29,7 @@ import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,6 +49,7 @@ class PhiMojoTest {
             ),
             new FakeMaven(temp)
                 .withProgram(
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > cart",
                     "  memory 0 > total",
                     "  [i] > add",
@@ -64,6 +66,11 @@ class PhiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
     void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
+        if (map.get("skip") != null) {
+            Assumptions.abort(
+                String.format("%s is not ready", pack)
+            );
+        }
         MatcherAssert.assertThat(
             String.format(
                 "Result phi expression should be equal to %s, but it doesn't",
