@@ -68,7 +68,7 @@ public final class PhiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "phiInputDir",
+        property = "eo.phiInputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/2-optimize"
     )
@@ -79,7 +79,7 @@ public final class PhiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "phiOutputDir",
+        property = "eo.phiOutputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/phi"
     )

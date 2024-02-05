@@ -207,7 +207,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "rewriteBinaries", defaultValue = "true")
+    @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
     @SuppressWarnings("PMD.ImmutableField")
     protected boolean rewriteBinaries = true;
 
