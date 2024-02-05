@@ -244,7 +244,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        if (this.tests) {
+        if (!this.tests) {
             final String comment = String.join(
                 "",
                 ctx.comment().COMMENTARY().getText().substring(1).trim(),
