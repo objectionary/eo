@@ -39,8 +39,9 @@ content = new XmlSlurper().parseText(new File(plugin.toString()).text)
 // For example, "${eo.foreignFormat}":
 pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
 failures = []
+toBeExcluded = ["help"]
 content.mojos.mojo.findAll {
-    !(it.goal.text() in ["help"])
+    !(it.goal.text() in toBeExcluded)
 }.configuration.each {
     it.children().each {
         final String text = it.text()
