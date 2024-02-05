@@ -105,7 +105,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
      * If metas has "+tests" meta.
      */
-    private boolean tests = false;
+    private boolean tests;
 
     /**
      * Ctor.
