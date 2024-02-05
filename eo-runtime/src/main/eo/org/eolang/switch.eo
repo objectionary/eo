@@ -42,6 +42,9 @@
 # This object returns value of only first truly statement.
 [cases] > switch
   cases.length > len!
+  # Take case by given index.
+  # If case key is TRUE, return case value.
+  # Otherwise take next case.
   [index] > case-at
     if. > @
       index.eq ^.len

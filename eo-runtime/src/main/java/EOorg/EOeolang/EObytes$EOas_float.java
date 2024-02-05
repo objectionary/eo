@@ -27,8 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -44,24 +43,21 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.as-float")
-public class EObytes$EOas_float extends PhDefault {
-
+public final class EObytes$EOas_float extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param sigma Sigma.
      */
     public EObytes$EOas_float(final Phi sigma) {
         super(sigma);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho)
-                        .asBytes()
-                        .asNumber(Double.class)
-                )
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this)
+                .asBytes()
+                .asNumber(Double.class)
         );
     }
 }

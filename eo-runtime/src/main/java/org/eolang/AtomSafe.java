@@ -21,60 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
 /**
- * Attribute with lambda expression inside.
- *
- * @since 0.33.0
+ * Atom that catches exceptions.
+ * @since 0.36.0
  */
-@Versionized
-public final class AtLambda implements Attr {
-
+public final class AtomSafe implements Atom {
     /**
-     * The \rho to send to the expression.
+     * Original atom.
      */
-    private final Phi rho;
-
-    /**
-     * The expression itself.
-     */
-    private final Expr expr;
+    private final Atom origin;
 
     /**
      * Ctor.
-     * @param obj The \rho
-     * @param exp The expression
+     * @param atom Original atom.
      */
-    public AtLambda(final Phi obj, final Expr exp) {
-        this.rho = obj;
-        this.expr = exp;
+    public AtomSafe(final Atom atom) {
+        this.origin = atom;
     }
 
     @Override
-    public String toString() {
-        return this.φTerm();
-    }
-
-    @Override
-    public String φTerm() {
-        return Attr.LAMBDA;
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtLambda(self, this.expr);
-    }
-
-    @Override
-    public Phi get() {
+    public Phi lambda() {
         try {
-            return this.expr.get(this.rho);
+            return this.origin.lambda();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
-        // @checkstyle IllegalCatchCheck (3 line)
+            // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
         } catch (final Throwable ex) {
@@ -87,12 +61,5 @@ public final class AtLambda implements Attr {
                 ex
             );
         }
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        throw new ExReadOnly(
-            "You can't overwrite lambda expression"
-        );
     }
 }

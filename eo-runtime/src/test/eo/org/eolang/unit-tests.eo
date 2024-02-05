@@ -26,10 +26,13 @@
 +package org.eolang
 +version 0.0.0
 
+# Test.
 [] > x
   TRUE > @
 
+# Test.
 [] > z
+  # Y.
   [x] > y
     x > @
   TRUE > @

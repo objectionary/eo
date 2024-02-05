@@ -25,7 +25,7 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package org.eolang;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,9 +34,6 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.eolang.Versionized;
 
 /**
  * Random access.

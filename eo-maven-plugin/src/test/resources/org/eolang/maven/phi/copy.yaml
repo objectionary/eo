@@ -1,0 +1,14 @@
+eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > obj
+    cage' > x
+    cage' a > y
+phi: |
+  {
+    obj ↦ ⟦
+      x ↦ Φ.org.eolang.cage(),
+      y ↦ Φ.org.eolang.cage()(
+        α0 ↦ Φ.org.eolang.a
+      )
+    ⟧
+  }

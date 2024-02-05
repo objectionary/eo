@@ -13,8 +13,11 @@ tests:
 eo: |
   +tests
   
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > a
+    # This is the default 64+ symbols comment in front of named abstract object.
     [] > b
+      # This is the default 64+ symbols comment in front of named abstract object.
       [] > c
         d > @
           []

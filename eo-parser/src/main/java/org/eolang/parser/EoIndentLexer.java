@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Stack;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
@@ -51,6 +52,11 @@ public final class EoIndentLexer extends EoLexer {
     private final Deque<Integer> indent;
 
     /**
+     * Spaces.
+     */
+    private final Stack<String> spaces;
+
+    /**
      * Ctor.
      * @param txt Source code.
      * @throws IOException If fails.
@@ -69,6 +75,7 @@ public final class EoIndentLexer extends EoLexer {
             Collections.singletonList(0)
         );
         this.tokens = new LinkedList<>();
+        this.spaces = new Stack<>();
     }
 
     @Override
@@ -83,24 +90,52 @@ public final class EoIndentLexer extends EoLexer {
      * Look for upcoming token.
      */
     private void lookAhead() {
-        final Token token = super.nextToken();
-        if (token.getType() == EoParser.EOL
-            || token.getType() == EoParser.EOP) {
-            final int tabs = this.getText().replaceAll("[\r\n]", "").length() / 2;
-            final int last = this.indent.peekLast();
-            final int shift = tabs - last;
-            if (shift < 0) {
-                this.emitDedent(-shift);
-            } else if (shift > 0) {
-                this.emitIndent(shift);
-            }
-            this.indent.add(tabs);
+        final Token current = this.getToken();
+        final Token next = super.nextToken();
+        if (next.getType() == EoParser.EOL
+            && (current == null || current.getType() != EoParser.EOL)) {
+            this.spaces.push(this.textSpaces());
+            this.tokens.offer(next);
+        } else if (current != null && current.getType() == EoParser.EOL
+            && next.getType() != EoParser.EOL) {
+            this.handleTabs(this.spaces.pop().length() / 2, next);
+        } else if (current != null && current.getType() == EoParser.EOL
+            && next.getType() == EoParser.EOL) {
+            this.spaces.push(this.textSpaces());
+            this.handleTabs(this.spaces.peek().length() / 2, next);
+        } else {
+            this.tokens.offer(next);
         }
-        this.tokens.addFirst(token);
+    }
+
+    /**
+     * Calculate shifts and emit corresponding token.
+     * @param tabs Current amount of tabs.
+     * @param next Next token.
+     */
+    private void handleTabs(final int tabs, final Token next) {
+        final int last = this.indent.peekLast();
+        final int shift = tabs - last;
+        if (shift < 0) {
+            this.emitDedent(-shift);
+        } else if (shift > 0) {
+            this.emitIndent(shift);
+        }
+        this.indent.add(tabs);
+        this.tokens.add(next);
+    }
+
+    /**
+     * Get string with spaces from current text.
+     * @return Spaces from text.
+     */
+    private String textSpaces() {
+        return this.getText().replaceAll("[\r\n]", "");
     }
 
     /**
      * Indent.
+     *
      * @param shift Number of tabs
      */
     private void emitIndent(final int shift) {
@@ -111,17 +146,18 @@ public final class EoIndentLexer extends EoLexer {
 
     /**
      * De-indent.
+     *
      * @param shift Number of un-tabs.
      */
     private void emitDedent(final int shift) {
         for (int idx = 0; idx < shift; ++idx) {
             this.emitToken(EoParser.UNTAB);
-            this.emitToken(EoParser.EOL);
         }
     }
 
     /**
      * Emit token at the next line.
+     *
      * @param type Type.
      */
     private void emitToken(final int type) {
@@ -129,5 +165,4 @@ public final class EoIndentLexer extends EoLexer {
         tkn.setLine(this.getLine() + 1);
         this.tokens.offer(tkn);
     }
-
 }

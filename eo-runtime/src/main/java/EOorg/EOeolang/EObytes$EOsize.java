@@ -27,8 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -44,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.size")
-public class EObytes$EOsize extends PhDefault {
+public final class EObytes$EOsize extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -52,15 +51,10 @@ public class EObytes$EOsize extends PhDefault {
      */
     public EObytes$EOsize(final Phi sigma) {
         super(sigma);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final byte[] array = new Param(rho).strong(byte[].class);
-                    return new Data.ToPhi((long) array.length);
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi((long) new Param(this).strong(byte[].class).length);
     }
 }

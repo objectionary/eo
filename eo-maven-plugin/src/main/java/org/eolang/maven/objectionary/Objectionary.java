@@ -77,7 +77,13 @@ public interface Objectionary {
          */
         public Fake() {
             this(
-                s -> new InputOf("[] > sprintf\n")
+                s -> new InputOf(
+                    String.join(
+                        "\n",
+                        "# This is the default 64+ symbols comment in front of named abstract object.",
+                            "[] > sprintf\n"
+                    )
+                )
             );
         }
 

@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
  */
-public class EOintTest {
+public final class EOintTest {
 
     @Test
     void hasEqualHashes() {

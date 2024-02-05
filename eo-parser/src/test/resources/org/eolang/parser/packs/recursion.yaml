@@ -1,12 +1,14 @@
 tests:
   - /program/errors[count(*)=0]
-  - //o[@name='f' and @line='6']
-  - //o[@base='f' and @ref='6']
+  - //o[@name='f' and @line='8']
+  - //o[@base='f' and @ref='8']
 eo: |
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0
   
+  # This is the default 64+ symbols comment in front of abstract object.
   [args] > main
+    # This is the default 64+ symbols comment in front of abstract object.
     [n] > f
       f 5 > @

@@ -28,8 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Param;
@@ -46,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "int.div")
-public class EOint$EOdiv extends PhDefault {
+public final class EOint$EOdiv extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -55,18 +54,14 @@ public class EOint$EOdiv extends PhDefault {
     public EOint$EOdiv(final Phi sigma) {
         super(sigma);
         this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Long arg = new Param(rho, "x").strong(Long.class);
-                    if (arg == 0L) {
-                        throw new ExFailure("Can't divide by integer zero");
-                    }
-                    return new Data.ToPhi(new Param(rho).strong(Long.class) / arg);
-                }
-            )
-        );
+    }
+
+    @Override
+    public Phi lambda() {
+        final Long arg = new Param(this, "x").strong(Long.class);
+        if (arg == 0L) {
+            throw new ExFailure("Can't divide by integer zero");
+        }
+        return new Data.ToPhi(new Param(this).strong(Long.class) / arg);
     }
 }

@@ -29,7 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "goto")
-public class EOgoto extends PhDefault {
+public final class EOgoto extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -55,36 +55,32 @@ public class EOgoto extends PhDefault {
     public EOgoto(final Phi sigma) {
         super(sigma);
         this.add("f", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi body = rho.attr("f").get().copy();
-                    body.attr("ρ").put(rho);
-                    body.attr(0).put(new EOgoto.Token(rho));
-                    Phi ret;
-                    while (true) {
-                        try {
-                            ret = body;
-                            new Dataized(body).take();
-                            break;
-                        } catch (final EOgoto.BackwardException ex) {
-                            if (!ex.sigma.attr("σ").get().equals(rho)) {
-                                throw ex;
-                            }
-                        } catch (final EOgoto.ForwardException ex) {
-                            if (!ex.sigma.attr("σ").get().equals(rho)) {
-                                throw ex;
-                            }
-                            ret = ex.ret;
-                            break;
-                        }
-                    }
-                    return ret;
+    }
+
+    @Override
+    public Phi lambda() {
+        final Phi body = this.attr("f").get().copy();
+        body.attr("ρ").put(this);
+        body.attr(0).put(new EOgoto.Token(this));
+        Phi ret;
+        while (true) {
+            try {
+                ret = body;
+                new Dataized(body).take();
+                break;
+            } catch (final EOgoto.BackwardException ex) {
+                if (!ex.sigma.attr("σ").get().equals(this)) {
+                    throw ex;
                 }
-            )
-        );
+            } catch (final EOgoto.ForwardException ex) {
+                if (!ex.sigma.attr("σ").get().equals(this)) {
+                    throw ex;
+                }
+                ret = ex.ret;
+                break;
+            }
+        }
+        return ret;
     }
 
     /**
@@ -148,23 +144,19 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "goto.token.backward")
-    private static final class Backward extends PhDefault {
+    private static final class Backward extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param sigma Sigma
          */
         Backward(final Phi sigma) {
             super(sigma);
-            this.add(
-                Attr.LAMBDA,
-                new AtLambda(
-                    this,
-                    rho -> {
-                        throw new EOgoto.BackwardException(
-                            rho.attr("σ").get()
-                        );
-                    }
-                )
+        }
+
+        @Override
+        public Phi lambda() {
+            throw new EOgoto.BackwardException(
+                this.attr("σ").get()
             );
         }
     }
@@ -174,7 +166,7 @@ public class EOgoto extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "goto.token.forward")
-    private static final class Forward extends PhDefault {
+    private static final class Forward extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -182,17 +174,13 @@ public class EOgoto extends PhDefault {
         Forward(final Phi sigma) {
             super(sigma);
             this.add("ret", new AtFree());
-            this.add(
-                Attr.LAMBDA,
-                new AtLambda(
-                    this,
-                    rho -> {
-                        throw new EOgoto.ForwardException(
-                            rho.attr("σ").get(),
-                            rho.attr("ret").get()
-                        );
-                    }
-                )
+        }
+
+        @Override
+        public Phi lambda() {
+            throw new EOgoto.ForwardException(
+                this.attr("σ").get(),
+                this.attr("ret").get()
             );
         }
     }

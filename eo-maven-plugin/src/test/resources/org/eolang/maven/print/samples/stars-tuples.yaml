@@ -1,0 +1,14 @@
+origin: |
+  * 1 "Hello" x > array
+
+strait: |
+  * > array
+    1
+    "Hello"
+    x
+
+reversed: |
+  * > array
+    1
+    "Hello"
+    x

@@ -7,29 +7,55 @@ program
     : license? metas? objects EOF
     ;
 
+// Double EOL
+eop : EOL EOL
+    ;
+
 // Licence
 license
-    : (COMMENT EOL)* COMMENT EOP
+    : (COMMENTARY EOL)* COMMENTARY eop
     ;
 
 // Metas
 metas
-    : (META EOL)* META EOP
+    : (META EOL)* META eop
     ;
 
 // Objects
+// Ends on the next line
 objects
-    : ((COMMENT EOL)* object (EOL | EOP))+
+    : (object EOL?)* object
+    ;
+
+comment
+    : COMMENTARY EOL
+    ;
+
+commentOptional
+    : comment*
+    ;
+
+commentMandatory
+    : comment commentOptional
     ;
 
 // Object
+// Ends on the next line
 object
-    : atom          // Atom
-    | formation     // Formation
-    | hanonym oname // Horizontal anonym with name
-    | application   // Application
-    | methodNamed   // Method
-    | justNamed     // Just an object reference
+    : master
+    | slave
+    ;
+
+// Objects that may be used inside abstract object
+// Ends on the next line
+slave
+    : commentOptional (application | (methodNamed | justNamed) EOL)
+    ;
+
+// Indeprendent objects that may have slaves (except atom)
+// Ends on the next line
+master
+    : commentMandatory (formation | (atom | hanonym oname) EOL)
     ;
 
 // Just an object reference without name
@@ -44,29 +70,35 @@ justNamed
     ;
 
 // Atom - abstract object with mandatory name and type
-// Comment can be placed before atom
 // Can't contain inner objects
-atom: ahead suffix type
+atom: attributes suffix type
     ;
 
 // Formation - abstract object with mandatory name
-// Comment can be placed before atom
 // Can contain inner objects
+// Ends on the next line
 formation
-    : ahead oname inners?
+    : attributes oname innersOrEol
+    ;
+
+// Inners object inside formation or EOL
+innersOrEol
+    : inners
+    | EOL
     ;
 
 // Inner objects inside abstraction
 // Every inner object must be indented
+// Ends on the next line
+// No empty lines before "slave"
+// May be one empty line before "master"
 inners
-    : EOL TAB (object (EOL | EOP))+ UNTAB
+    : EOL TAB object (slave | EOL? master)* UNTAB
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
 attributes
-    : LSQ
-      (attribute (SPACE attribute)*)?
-      RSQ
+    : LSQ (attribute (SPACE attribute)*)? RSQ
     ;
 
 // Attribute
@@ -79,10 +111,11 @@ type: SPACE SLASH (NAME | QUESTION)
     ;
 
 // Application
-// - horizontal with optional name
+// - horizontal
 // - vertical
+// Ends on the next line
 application
-    : happlicationExtended oname?
+    : happlicationExtended oname? EOL
     | vapplication
     ;
 
@@ -156,6 +189,7 @@ happlicationArg
     ;
 
 // Vertical application
+// Ends on the next line
 vapplication
     : vapplicationHeadNamed vapplicationArgs
     | reversed oname? vapplicationArgsReversed
@@ -180,73 +214,118 @@ vapplicationHeadAs
     ;
 
 // Vertical application arguments
+// Ends on the next line
 vapplicationArgs
-    : EOL
-      TAB
-      vapplicationArg
-      UNTAB
+    : EOL TAB vapplicationArgsSpecific UNTAB
     ;
 
+// Arguments for reversed vertical application
 vapplicationArgsReversed
-    : EOL
-      TAB
-      vapplicationArgUnbinded
-      ((EOL vapplicationArg?) | EOP)
-      UNTAB
+    : EOL TAB vapplicationArgUnbound vapplicationArgsSpecific? UNTAB
     ;
 
-vapplicationArg
-    : (vapplicationArgBinded (EOL | EOP))+
-    | (vapplicationArgUnbinded (EOL | EOP))+
+// Arguments of vertical application
+// Must either all bound or all unbound
+// Ends on the next line
+vapplicationArgsSpecific
+    : vapplicationArgBound+
+    | vapplicationArgUnbound+
     ;
 
 // Vertical application arguments with bindings
-vapplicationArgBinded
-    : vapplicationArgVanonymBinded // vertical anonym object
-    | vapplicationArgHanonymBinded // horizontal anonym object
-    | vapplicationArgHapplicationBinded // horizontal application
+vapplicationArgBound
+    : vapplicationArgBoundCurrent EOL
+    | vapplicationArgBoundNext
+    ;
+
+// Vertical application arguments with bindings
+// Ends on the current line
+vapplicationArgBoundCurrent
+    : vapplicationArgHapplicationBound // horizontal application
+    | vapplicationArgHanonymBound // horizontal anonym object
+    | (just | method) as oname? // just an object reference | method
+    ;
+
+// Vertical application arguments with bindings
+// Ends on the next line
+vapplicationArgBoundNext
+    : vapplicationArgVanonymBound // vertical anonym object
     | vapplicationHeadAs oname? vapplicationArgs // vertical application
     | reversed as oname? vapplicationArgsReversed // reversed vertical application
-    | just as oname? // Just an object reference with binding
-    | methodAs oname? // Method with binding
     ;
 
 // Vertical application arguments without bindings
-vapplicationArgUnbinded
-    : vapplicationArgVanonymUnbinded // vertical anonym object
-    | vapplicationArgHanonymUnbinded // horizontal anonym object
-    | vapplicationArgHapplicationUnbinded // horizontal application
+// Ends on the next line
+vapplicationArgUnbound
+    : vapplicationArgUnboundCurrent EOL
+    | vapplicationArgUnboundNext
+    ;
+
+// Vertical application arguments without bindings
+// Ends on the current line
+vapplicationArgUnboundCurrent
+    : vapplicationArgHapplicationUnbound // horizontal application
+    | vapplicationArgHanonymUnbound // horizontal anonym object
+    | justNamed // just an object reference
+    | methodNamed // method
+    ;
+
+// Vertical application arguments without bindings
+// Ends on the next line
+vapplicationArgUnboundNext
+    : vapplicationArgVanonymUnbound // vertical anonym object
     | vapplicationHeadNamed vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed verical application
-    | justNamed // Just an object reference
-    | methodNamed // Method
     ;
 
 // Horizontal application as argument of vertical application
-vapplicationArgHapplicationBinded
+vapplicationArgHapplicationBound
     : LB happlicationExtended RB as oname?
     ;
 
-vapplicationArgHapplicationUnbinded
+vapplicationArgHapplicationUnbound
     : happlicationExtended oname?
     ;
 
 // Vertical anonym object as argument of vertical application
-vapplicationArgVanonymUnbinded
-    : attributes oname? formatees?
+// todo - replace with formation?
+vapplicationArgVanonymUnbound
+    : commentMandatory formation
+    | formationNameless
     ;
 
-vapplicationArgVanonymBinded
-    : attributes as oname? formatees?
+formationNameless
+    : attributes innersOrEol
     ;
 
-// Horizontal anonym object as argument of vertical application
-vapplicationArgHanonymBinded
-    : LB hanonym RB as oname?
+// Bound vertical anonym abstract object as argument of vertical application argument
+// Ends on the next line
+vapplicationArgVanonymBound
+    : commentMandatory formationBound
+    | formationBoundNameless
     ;
 
-vapplicationArgHanonymUnbinded
-    : hanonym oname?
+formationBound
+    : attributes as oname innersOrEol
+    ;
+
+formationBoundNameless
+    : attributes as innersOrEol
+    ;
+
+vapplicationArgHanonymBoundBody
+    : LB hanonym RB as
+    ;
+
+// Horizontal anonym abstract object as argument of vertical application
+vapplicationArgHanonymBound
+    : commentMandatory vapplicationArgHanonymBoundBody oname
+    | vapplicationArgHanonymBoundBody
+    ;
+
+vapplicationArgHanonymUnbound
+    : commentMandatory hanonym oname
+    | hanonym
     ;
 
 // Horizontal anonym object
@@ -260,24 +339,6 @@ hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
 
-// Abstract objects <- arguments of vertical anonym object <- argument of vertical application
-formatees
-    : EOL
-      TAB
-      ((innerformatee | application | justNamed | methodNamed) (EOL | EOP))+
-      UNTAB
-    ;
-
-// Inner abstract object of formatees
-innerformatee
-    : ahead oname? formatees?
-    ;
-
-// Optional comment + attributes
-ahead
-    : (COMMENT EOL)* attributes
-    ;
-
 // Method
 method
     : hmethodOptional
@@ -287,11 +348,6 @@ method
 // Method with optional name
 methodNamed
     : method oname?
-    ;
-
-// Method with bindning
-methodAs
-    : method as
     ;
 
 // Horizontal method
@@ -345,12 +401,12 @@ hmethodHeadExtended
 
 // Vertical method
 vmethod
-    : vmethodHead vmethodTail
+    : vmethodHead methodTail
     ;
 
 // Vertical method with version
 vmethodVersioned
-    : vmethodHead vmethodTailVersioned
+    : vmethodHead methodTailVersioned
     ;
 
 // Optional vertical method
@@ -368,28 +424,36 @@ vmethodOptional
 // 3. vertical application
 // 4. horizontal application. The same logic as with a vertical application
 // 5. just an object reference
+// Ends on the next line
 vmethodHead
-    : vmethodHead vmethodTailOptional vmethodHeadApplicationTail
-    | vmethodHeadHmethodExtended
+    : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | vmethodHeadHapplication
+    | vmethodHeadCurrent EOL
+    ;
+
+// Head of vertical method that ends on the current line
+vmethodHeadCurrent
+    : vmethodHeadHapplication
+    | vmethodHeadHmethodExtended
     | justNamed
     ;
 
-vmethodTailOptional
-    : vmethodTail
-    | vmethodTailVersioned
+methodTailOptional
+    : methodTail
+    | methodTailVersioned
     ;
 
 vmethodHeadApplicationTail
-    : oname? vapplicationArgs?
-    | happlicationTail oname?
+    : oname? (vapplicationArgs | EOL)
+    | happlicationTail oname? EOL
     ;
 
 vmethodHeadHmethodExtended
     : hmethodOptional oname?
     ;
 
+// Vertical application as head of vertical method
+// Ends on the next line
 vmethodHeadVapplication
     : (applicable | hmethodOptional | versioned) oname? vapplicationArgs
     | reversed oname? vapplicationArgsReversed
@@ -398,16 +462,6 @@ vmethodHeadVapplication
 vmethodHeadHapplication
     : (applicable | hmethodExtended) happlicationTail oname?
     | happlicationReversed oname?
-    ;
-
-// Tail of vertical method
-vmethodTail
-    : EOL methodTail
-    ;
-
-// Versioned tail of vertical method
-vmethodTailVersioned
-    : EOL methodTailVersioned
     ;
 
 // Tail of method
@@ -491,7 +545,7 @@ data: BYTES
     | HEX
     ;
 
-COMMENT
+COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
@@ -566,9 +620,6 @@ fragment LINEBREAK
     ;
 
 EOL : LINEBREAK INDENT*
-    ;
-
-EOP : LINEBREAK LINEBREAK INDENT*
     ;
 
 fragment BYTE

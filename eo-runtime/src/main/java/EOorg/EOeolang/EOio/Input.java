@@ -48,7 +48,7 @@ public final class Input {
     /**
      * Scanner.
      */
-    private Scanner scanner;
+    private final Scanner scanner;
 
     /**
      * Ctor.

@@ -31,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -48,6 +49,13 @@ import org.xembly.Directives;
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @since 0.1
+ * @todo #2835:30min Change severity on comments validation. Current severity on comments validation
+ *  is "warning". We need to change it to "error" to prevent users from ignoring this type of error.
+ *  But there's a pitfall - there are so many little toy abstract objects in EO tests which we don't
+ *  really want to document. That's why we should not validate comments if there's "+junit" meta in
+ *  program. Also "eo-runtime" does not fail on warning now because it's not well documented. After
+ *  eo-runtime is documented well - we need to turn on "failOnWarning" trigger in pom.xml inside
+ *  "eo-runtime.
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -60,6 +68,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * Info about xmir.
      */
     private static final XmirInfo INFO = new XmirInfo();
+
+    /**
+     * Minimum allowed comment length.
+     */
+    @SuppressWarnings("PMD.LongVariable")
+    private static final int MIN_COMMENT_LENGTH = 64;
 
     /**
      * The name of it.
@@ -77,6 +91,11 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     private final Objects objects;
 
     /**
+     * Xembly directives to build errors.
+     */
+    private final Directives errors;
+
+    /**
      * When we start.
      */
     private final long start;
@@ -89,6 +108,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public XeEoListener(final String name) {
         this.name = name;
         this.dirs = new Directives();
+        this.errors = new Directives();
         this.objects = new Objects.ObjXembly();
         this.start = System.nanoTime();
     }
@@ -117,8 +137,20 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitProgram(final EoParser.ProgramContext ctx) {
         this.dirs
+            .xpath("/program/errors")
+            .append(this.errors).up()
             .attr("ms", (System.nanoTime() - this.start) / (1000L * 1000L))
             .up();
+    }
+
+    @Override
+    public void enterEop(final EoParser.EopContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitEop(final EoParser.EopContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -128,7 +160,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 "\n",
                 new Mapped<>(
                     cmt -> cmt.getText().substring(1).trim(),
-                    ctx.COMMENT()
+                    ctx.COMMENTARY()
                 )
             )
         ).up();
@@ -177,12 +209,104 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterComment(final EoParser.CommentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitComment(final EoParser.CommentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitCommentOptional(final EoParser.CommentOptionalContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
+        final String comment = String.join(
+            "",
+            ctx.comment().COMMENTARY().getText().substring(1).trim(),
+            ctx.commentOptional().comment().stream().map(
+                context -> context.COMMENTARY().getText().substring(1).trim()
+            ).collect(Collectors.joining(""))
+        );
+        final String length = String.format(
+            "Comment must be at least %d characters long",
+            XeEoListener.MIN_COMMENT_LENGTH
+        );
+        final String warning = "warning";
+        if (comment.isEmpty()) {
+            this.addError(ctx, "comment-length-check", warning, length);
+        } else {
+            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
+                this.addError(ctx, "comment-length-check", warning, length);
+            }
+            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
+                this.addError(
+                    ctx,
+                    "comment-content-check",
+                    warning,
+                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
+                );
+            }
+            if (!Character.isUpperCase(comment.charAt(0))) {
+                this.addError(
+                    ctx,
+                    "comment-start-character-check",
+                    warning,
+                    "Comment must start with capital letter"
+                );
+            }
+            if (comment.charAt(comment.length() - 1) != '.') {
+                this.addError(
+                    ctx,
+                    "comment-ending-check",
+                    warning,
+                    "Comment must end with dot"
+                );
+            }
+        }
+    }
+
+    @Override
+    public void exitCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterObject(final EoParser.ObjectContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitObject(final EoParser.ObjectContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterSlave(final EoParser.SlaveContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSlave(final EoParser.SlaveContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterMaster(final EoParser.MasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitMaster(final EoParser.MasterContext ctx) {
         // Nothing here
     }
 
@@ -225,11 +349,21 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterFormation(final EoParser.FormationContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
+        this.startAbstract(ctx);
     }
 
     @Override
     public void exitFormation(final EoParser.FormationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterInnersOrEol(final EoParser.InnersOrEolContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitInnersOrEol(final EoParser.InnersOrEolContext ctx) {
         // Nothing here
     }
 
@@ -457,59 +591,99 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArg(final EoParser.VapplicationArgContext ctx) {
+    public void enterVapplicationArgsSpecific(final EoParser.VapplicationArgsSpecificContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArg(final EoParser.VapplicationArgContext ctx) {
+    public void exitVapplicationArgsSpecific(final EoParser.VapplicationArgsSpecificContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
+    public void enterVapplicationArgBound(final EoParser.VapplicationArgBoundContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitVapplicationArgBinded(final EoParser.VapplicationArgBindedContext ctx) {
+    public void exitVapplicationArgBound(final EoParser.VapplicationArgBoundContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
+    public void enterVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgBoundCurrent(final EoParser.VapplicationArgBoundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgBoundNext(final EoParser.VapplicationArgBoundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
         this.objects.enter();
     }
 
     @Override
-    public void exitVapplicationArgUnbinded(final EoParser.VapplicationArgUnbindedContext ctx) {
+    public void exitVapplicationArgUnbound(final EoParser.VapplicationArgUnboundContext ctx) {
         this.objects.leave();
     }
 
     @Override
-    public void enterVapplicationArgHapplicationBinded(
-        final EoParser.VapplicationArgHapplicationBindedContext ctx
+    public void enterVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgUnboundCurrent(final EoParser.VapplicationArgUnboundCurrentContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgUnboundNext(final EoParser.VapplicationArgUnboundNextContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHapplicationBound(
+        final EoParser.VapplicationArgHapplicationBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplicationBinded(
-        final EoParser.VapplicationArgHapplicationBindedContext ctx
+    public void exitVapplicationArgHapplicationBound(
+        final EoParser.VapplicationArgHapplicationBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHapplicationUnbinded(
-        final EoParser.VapplicationArgHapplicationUnbindedContext ctx
+    public void enterVapplicationArgHapplicationUnbound(
+        final EoParser.VapplicationArgHapplicationUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHapplicationUnbinded(
-        final EoParser.VapplicationArgHapplicationUnbindedContext ctx
+    public void exitVapplicationArgHapplicationUnbound(
+        final EoParser.VapplicationArgHapplicationUnboundContext ctx
     ) {
         // Nothing here
     }
@@ -527,64 +701,104 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgVanonymUnbinded(
-        final EoParser.VapplicationArgVanonymUnbindedContext ctx
-    ) {
-        this.startObject(ctx).prop("abstract").leave();
-    }
-
-    @Override
-    public void exitVapplicationArgVanonymUnbinded(
-        final EoParser.VapplicationArgVanonymUnbindedContext ctx
+    public void enterVapplicationArgVanonymUnbound(
+        final EoParser.VapplicationArgVanonymUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgVanonymBinded(
-        final EoParser.VapplicationArgVanonymBindedContext ctx
-    ) {
-        this.startObject(ctx).prop("abstract").leave();
-    }
-
-    @Override
-    public void exitVapplicationArgVanonymBinded(
-        final EoParser.VapplicationArgVanonymBindedContext ctx
+    public void exitVapplicationArgVanonymUnbound(
+        final EoParser.VapplicationArgVanonymUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHanonymBinded(
-        final EoParser.VapplicationArgHanonymBindedContext ctx
+    public void enterFormationNameless(final EoParser.FormationNamelessContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationNameless(final EoParser.FormationNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgVanonymBound(
+        final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymBinded(
-        final EoParser.VapplicationArgHanonymBindedContext ctx
+    public void exitVapplicationArgVanonymBound(
+        final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void enterVapplicationArgHanonymUnbinded(
-        final EoParser.VapplicationArgHanonymUnbindedContext ctx
+    public void enterFormationBound(final EoParser.FormationBoundContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationBound(final EoParser.FormationBoundContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
+        this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgHanonymBoundBody(final EoParser.VapplicationArgHanonymBoundBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHanonymBound(
+        final EoParser.VapplicationArgHanonymBoundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
-    public void exitVapplicationArgHanonymUnbinded(
-        final EoParser.VapplicationArgHanonymUnbindedContext ctx
+    public void exitVapplicationArgHanonymBound(
+        final EoParser.VapplicationArgHanonymBoundContext ctx
+    ) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterVapplicationArgHanonymUnbound(
+        final EoParser.VapplicationArgHanonymUnboundContext ctx
+    ) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitVapplicationArgHanonymUnbound(
+        final EoParser.VapplicationArgHanonymUnboundContext ctx
     ) {
         // Nothing here
     }
 
     @Override
     public void enterHanonym(final EoParser.HanonymContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
+        this.startAbstract(ctx);
     }
 
     @Override
@@ -600,36 +814,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitHanonymInner(final EoParser.HanonymInnerContext ctx) {
         this.objects.leave();
-    }
-
-    @Override
-    public void enterFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.enter();
-    }
-
-    @Override
-    public void exitFormatees(final EoParser.FormateesContext ctx) {
-        this.objects.leave();
-    }
-
-    @Override
-    public void enterInnerformatee(final EoParser.InnerformateeContext ctx) {
-        this.startObject(ctx).prop("abstract").leave();
-    }
-
-    @Override
-    public void exitInnerformatee(final EoParser.InnerformateeContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterAhead(final EoParser.AheadContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitAhead(final EoParser.AheadContext ctx) {
-        // Nothing here
     }
 
     @Override
@@ -649,16 +833,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitMethodNamed(final EoParser.MethodNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterMethodAs(final EoParser.MethodAsContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitMethodAs(final EoParser.MethodAsContext ctx) {
         // Nothing here
     }
 
@@ -777,13 +951,23 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
+    public void enterVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitVmethodTailOptional(final EoParser.VmethodTailOptionalContext ctx) {
-        // Nothing here
+    public void exitVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
+     // Nothing here   
+    }
+
+    @Override
+    public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
+     // Nothing here   
+    }
+
+    @Override
+    public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
+     // Nothing here   
     }
 
     @Override
@@ -823,26 +1007,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodTail(final EoParser.VmethodTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodTail(final EoParser.VmethodTailContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodTailVersioned(final EoParser.VmethodTailVersionedContext ctx) {
         // Nothing here
     }
 
@@ -1156,6 +1320,37 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             ctx.getStart().getLine(),
             ctx.getStart().getCharPositionInLine()
         );
+    }
+
+    /**
+     * Start abstract object.
+     *
+     * @param ctx Context
+     * @return Xembly objects after creating abstract object 
+     */
+    private Objects startAbstract(final ParserRuleContext ctx) {
+        return this.startObject(ctx).prop("abstract").leave();
+    }
+
+    /**
+     * Add error to {@link XeEoListener#errors} directives.
+     * @param ctx Context
+     * @param check Check type
+     * @param severity Error severity level
+     * @param message Error message
+     */
+    private void addError(
+        final ParserRuleContext ctx,
+        final String check,
+        final String severity,
+        final String message
+    ) {
+        this.errors.add("error")
+            .attr("line", ctx.getStart().getLine())
+            .attr("check", check)
+            .attr("severity", severity)
+            .set(message)
+            .up();
     }
 
     /**

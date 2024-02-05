@@ -30,7 +30,7 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -48,7 +48,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "heap.pointer.block")
-public class EOheap$EOpointer$EOblock extends PhDefault {
+public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -59,25 +59,21 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         this.add("len", new AtFree());
         this.add("inverse", new AtFree());
         this.add("write", new AtWrite(this));
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final Phi pointer = rho.attr("σ").get();
-                    final int address =
-                        new Param(pointer, "address").strong(Long.class).intValue();
-                    final int len = new Param(rho, "len").strong(Long.class).intValue();
-                    final byte[] chunk = Arrays.copyOfRange(
-                        Heaps.INSTANCE.get().data(pointer),
-                        address, address + len
-                    );
-                    final Phi inverse = rho.attr("inverse").get().copy();
-                    inverse.attr("ρ").put(rho);
-                    return new PhWith(inverse, 0, new Data.ToPhi(chunk));
-                }
-            )
+    }
+
+    @Override
+    public Phi lambda() {
+        final Phi pointer = this.attr("σ").get();
+        final int address =
+            new Param(pointer, "address").strong(Long.class).intValue();
+        final int len = new Param(this, "len").strong(Long.class).intValue();
+        final byte[] chunk = Arrays.copyOfRange(
+            Heaps.INSTANCE.get().data(pointer),
+            address, address + len
         );
+        final Phi inverse = this.attr("inverse").get().copy();
+        inverse.attr("ρ").put(this);
+        return new PhWith(inverse, 0, new Data.ToPhi(chunk));
     }
 
     /**
@@ -104,7 +100,7 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
      * @since 0.19
      */
     @XmirObject(oname = "heap.pointer.block.write")
-    private static final class Write extends PhDefault {
+    private static final class Write extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -112,22 +108,18 @@ public class EOheap$EOpointer$EOblock extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add(
-                Attr.LAMBDA,
-                new AtLambda(
-                    this,
-                    rho -> {
-                        final Phi block = rho.attr("σ").get();
-                        final Phi pointer = block.attr("σ").get();
-                        final int address =
-                            new Param(pointer, "address").strong(Long.class).intValue();
-                        final byte[] source = new Param(rho, "x").strong(byte[].class);
-                        final byte[] data = Heaps.INSTANCE.get().data(pointer);
-                        System.arraycopy(source, 0, data, address, source.length);
-                        return new Data.ToPhi(true);
-                    }
-                )
-            );
+        }
+
+        @Override
+        public Phi lambda() {
+            final Phi block = this.attr("σ").get();
+            final Phi pointer = block.attr("σ").get();
+            final int address =
+                new Param(pointer, "address").strong(Long.class).intValue();
+            final byte[] source = new Param(this, "x").strong(byte[].class);
+            final byte[] data = Heaps.INSTANCE.get().data(pointer);
+            System.arraycopy(source, 0, data, address, source.length);
+            return new Data.ToPhi(true);
         }
     }
 

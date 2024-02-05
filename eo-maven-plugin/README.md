@@ -35,7 +35,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.35.0</version>
+        <version>0.35.1</version>
         <executions>
           <execution>
             <goals>
@@ -151,7 +151,7 @@ This can be achieved by disabling `maven-invoker-plugin` execution within `eo-ma
   ...
   <plugin>
     <artifactId>maven-invoker-plugin</artifactId>
-    <version>0.35.0</version>
+    <version>0.35.1</version>
     <configuration>
         <skipInstallation>true</skipInstallation>
         <skipInvocation>true</skipInvocation>

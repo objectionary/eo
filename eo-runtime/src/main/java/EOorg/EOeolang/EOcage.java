@@ -30,7 +30,7 @@ package EOorg.EOeolang;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
-import org.eolang.AtLambda;
+import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
@@ -48,7 +48,7 @@ import org.eolang.XmirObject;
 @Versionized
 @Volatile
 @XmirObject(oname = "cage")
-public class EOcage extends PhDefault {
+public final class EOcage extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -57,8 +57,12 @@ public class EOcage extends PhDefault {
     public EOcage(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtCage());
-        this.add(Attr.LAMBDA, new AtLambda(this, rho -> rho.attr("enclosure").get()));
         this.add("write", new AtWrite(this));
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.attr("enclosure").get();
     }
 
     /**
@@ -86,7 +90,7 @@ public class EOcage extends PhDefault {
      * @since 0.17
      */
     @XmirObject(oname = "cage.write")
-    private static final class Write extends PhDefault {
+    private static final class Write extends PhDefault implements Atom {
         /**
          * Ctor.
          * @param sigma Sigma
@@ -94,18 +98,14 @@ public class EOcage extends PhDefault {
         Write(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add(
-                Attr.LAMBDA,
-                new AtLambda(
-                    this,
-                    rho -> {
-                        rho.attr("σ").get().attr("enclosure").put(
-                            rho.attr("x").get()
-                        );
-                        return new Data.ToPhi(true);
-                    }
-                )
+        }
+
+        @Override
+        public Phi lambda() {
+            this.attr("σ").get().attr("enclosure").put(
+                this.attr("x").get()
             );
+            return new Data.ToPhi(true);
         }
     }
 }

@@ -29,18 +29,23 @@ package org.eolang;
  * constructs an object.
  *
  * @since 0.1
- * @todo #2566:60min Remove AtComposite class. AtComposite duplicates the functionality of
- *  {@link AtLambda} and it's used only because the style of generated (from EO) java is
- *  imperative. We need to make transpilation declarative (for example
+ * @todo #2566:60min Remove AtComposite class. AtComposite is used only because the style of
+ *  generated (from EO) java is imperative. We need to make transpilation declarative (for example
  *  new PhLocated(new PhWith(new PhMethod(...), ...), ...)) so we would not need AtComposite
  *  anymore. Don't forget to remove the puzzle.
  */
 @Versionized
 public final class AtComposite implements Attr {
+
     /**
-     * Original attribute.
+     * The \rho to send to the expression.
      */
-    private final Attr origin;
+    private final Phi rho;
+
+    /**
+     * The expression itself.
+     */
+    private final Expr expr;
 
     /**
      * Ctor.
@@ -48,39 +53,51 @@ public final class AtComposite implements Attr {
      * @param exp The expression
      */
     public AtComposite(final Phi obj, final Expr exp) {
-        this(new AtLambda(obj, exp));
-    }
-
-    /**
-     * Ctor.
-     * @param attr Attribute.
-     */
-    AtComposite(final Attr attr) {
-        this.origin = attr;
+        this.rho = obj;
+        this.expr = exp;
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.φTerm();
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return Attr.LAMBDA;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(this.origin.copy(self));
+        return new AtComposite(self, this.expr);
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        try {
+            return this.expr.get(this.rho);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted();
+            // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Throwable ex) {
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error '%s' of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
+        }
     }
 
     @Override
     public void put(final Phi phi) {
-        this.origin.put(phi);
+        throw new ExReadOnly(
+            "You can't overwrite lambda expression"
+        );
     }
 }

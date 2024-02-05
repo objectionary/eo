@@ -8,5 +8,6 @@ eo: |
   +alias stdout org.eolang.io.stdout
   +home https://github.com/objectionary/eo
 
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > main
     (stdout "Hello, world!").print

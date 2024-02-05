@@ -13,13 +13,18 @@ tests:
   - //java[contains(text(), 'ret_1 = new PhWith(ret_1, "Δ", new Data.Value<>(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'ret = new PhWith(ret, "Δ", new Data.Value<>(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > t
     TRUE > @
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > f
     bool FALSE > @
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > i
     42 > @
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > f
     float 3.5 > @
+  # This is the default 64+ symbols comment in front of named abstract object.
   [] > b
     01-AF > @

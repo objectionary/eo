@@ -7,6 +7,8 @@ eo: |
   +home https://github.com/objectionary/eo
   +package test
   +version 0.0.0
-
+  
+  # This is the default 64+ symbols comment in front of abstract object.
   [x] > foo
+    # This is the default 64+ symbols comment in front of abstract object.
     [] > y

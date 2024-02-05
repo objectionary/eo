@@ -3,9 +3,10 @@ xsls:
   - /org/eolang/parser/errors/broken-refs.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //o[@base='a' and @line='3' and @ref='2']
-  - //o[@base='a' and @line='3' and @ref!='']
+  - //o[@base='a' and @line='4' and @ref='3']
+  - //o[@base='a' and @line='4' and @ref!='']
 eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > app
     42 > a
     a.plus 1 > @

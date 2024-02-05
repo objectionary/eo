@@ -192,6 +192,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         if (XePhiListener.hasLambdaPackage(ctx)) {
             this.objs.poll();
         }
+        if (this.properties.peek().equals("as") && ctx.binding().size() == 0) {
+            this.objects().prop("copy");
+        }
     }
 
     @Override

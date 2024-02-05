@@ -60,18 +60,18 @@
         p
         TRUE
 
-  # Pointer inside the heap
+  # Pointer inside the heap.
   [address length] > pointer
     address > @
 
-    # Increment this pointer by x steps forward
+    # Increment this pointer by x steps forward.
     [x] > add
       &.^.pointer > @
         address.plus
           length.times x
         length
 
-    # Decrement this pointer by x steps backward
+    # Decrement this pointer by x steps backward.
     [x] > sub
       &.add > @
         x.times -1
