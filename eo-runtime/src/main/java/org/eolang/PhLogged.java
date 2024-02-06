@@ -109,4 +109,8 @@ public final class PhLogged implements Phi {
         return this.origin.toString();
     }
 
+    @Override
+    public byte[] take() {
+        return this.origin.take();
+    }
 }

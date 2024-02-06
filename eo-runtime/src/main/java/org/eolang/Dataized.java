@@ -88,50 +88,7 @@ public final class Dataized implements Data {
 
     @Override
     public byte[] take() {
-        final int before = Dataized.LEVEL.get();
-        Dataized.LEVEL.set(before + 1);
-        try {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("Δ").get();
-                if (!(src instanceof Data)) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "The attribute Δ of %s has %s instead of %s",
-                            this.phi.getClass().getCanonicalName(),
-                            src.getClass().getCanonicalName(),
-                            Data.class.getCanonicalName()
-                        )
-                    );
-                }
-            }
-            final Object data = Data.class.cast(src).take();
-            if (!(data instanceof byte[])) {
-                throw new ExFailure(
-                    "data of %s must be %s, but was %s",
-                    this.phi.toString(),
-                    byte[].class,
-                    data.getClass()
-                );
-            }
-            if (this.logger.isLoggable(Level.FINE)
-                && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
-            ) {
-                this.logger.log(
-                    Level.FINE,
-                    String.format(
-                        "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
-                        String.join("", Collections.nCopies(before, "·")),
-                        this.phi.locator(),
-                        this.phi.toString().replaceAll("[\n\t]", ""),
-                        new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
-                    )
-                );
-            }
-            return (byte[]) data;
-        } finally {
-            Dataized.LEVEL.set(before);
-        }
+        return this.phi.take();
     }
 
     /**

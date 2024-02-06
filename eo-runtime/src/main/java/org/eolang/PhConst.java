@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Versionized
 public final class PhConst implements Phi {
-
     /**
      * The origin being turned into a const.
      */
@@ -106,5 +105,10 @@ public final class PhConst implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
+    }
+
+    @Override
+    public byte[] take() {
+        return this.origin.take();
     }
 }

@@ -59,11 +59,13 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        System.out.println(this.attr("b").get().toString());
+        System.out.println(this.attr("b").get().forma());
         return new Data.ToPhi(
             Arrays.equals(
                 new Dataized(
                     this.attr("b").get().attr("as-bytes").get()
-                ).take(byte[].class),
+                ).take(),
                 new Param(this).strong(byte[].class)
             )
         );

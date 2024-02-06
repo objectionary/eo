@@ -105,9 +105,9 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void put(final int vertex, final byte[] bytes) {
-        this.get(vertex).attr("Δ").put(
-            new Data.Value<>(bytes)
-        );
+//        this.get(vertex).attr("Δ").put(
+//            new Data.Value<>(bytes)
+//        );
     }
 
     @Override

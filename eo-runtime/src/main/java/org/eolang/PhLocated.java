@@ -128,4 +128,8 @@ public final class PhLocated implements Phi {
         return this.origin.forma();
     }
 
+    @Override
+    public byte[] take() {
+        return this.origin.take();
+    }
 }

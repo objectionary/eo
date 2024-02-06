@@ -30,8 +30,6 @@ import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 /**
  * A data container.
@@ -46,86 +44,6 @@ public interface Data {
      * @return The data
      */
     byte[] take();
-
-    /**
-     * Data being returned only once, from encapsulated object.
-     *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Once implements Data {
-
-        /**
-         * Data.
-         */
-        private final Data<T> src;
-
-        /**
-         * Reference.
-         */
-        private final AtomicReference<T> ref;
-
-        /**
-         * Blank supplier.
-         */
-        private final Supplier<String> blank;
-
-        /**
-         * Ctor.
-         * @param data Data to return
-         * @param txt Missing data text
-         */
-        public Once(final Data<T> data, final Supplier<String> txt) {
-            this.src = data;
-            this.ref = new AtomicReference<>();
-            this.blank = txt;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.take().hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            return this.take().equals(((Once<?>) obj).take());
-        }
-
-        @Override
-        public String toString() {
-            final T data = this.ref.get();
-            String txt = this.blank.get();
-            if (txt.isEmpty()) {
-                txt = this.take().toString();
-            } else if (data != null) {
-                txt = data.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            synchronized (this.ref) {
-                return this.ref.updateAndGet(
-                    t -> {
-                        final T result;
-                        if (t == null) {
-                            result = Once.this.src.take();
-                        } else {
-                            result = t;
-                        }
-                        return result;
-                    }
-                );
-            }
-        }
-    }
 
     /**
      * Makes a {@link Phi} out of a Java object, like {@link String} or {@link Integer}.
@@ -192,9 +110,9 @@ public interface Data {
             }
             final Phi phi;
             if (delta) {
-                phi = new Phi.WithData(object, bytes);
+                phi = new PhData(object, bytes);
             } else {
-                object.attr(0).put(new Phi.WithData(new EObytes(Phi.Φ), bytes));
+                object.attr(0).put(new PhData(new EObytes(Phi.Φ), bytes));
                 phi = object;
             }
             return phi;

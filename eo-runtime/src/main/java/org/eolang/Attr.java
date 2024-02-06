@@ -47,6 +47,11 @@ public interface Attr extends Term {
     String DELTA = "Δ";
 
     /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to

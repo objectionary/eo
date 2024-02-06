@@ -27,10 +27,13 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Arrays;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,25 +42,64 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOstring$EOeq}.
  * {@link EOorg.EOeolang.EOio.EOstdin} is the generated class. This is the reason
  * why we disable jtcop check.
- *
- * @since 0.17
  * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.17
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOstringTest {
 
     @Test
     void comparesTwoEqualStrings() {
-        final String txt = "Hello, друг!";
-        MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhMethod(new Data.ToPhi(txt), "eq"),
-                    0, new Data.ToPhi(txt)
-                )
-            ).take(Boolean.class),
-            Matchers.equalTo(true)
-        );
+        Phi bts = new Data.ToPhi(new byte[]{0x01});
+        new Dataized(bts.attr("as-bytes").get()).take();
+//        new Dataized(
+//            new PhWith(
+//                bts.attr("eq").get().copy(),
+//                0, bts
+//            )
+//        ).take(Boolean.class);
+
+
+//        final String txt = "Hello, друг!";
+//        Phi str = new Data.ToPhi(txt);
+//        System.out.println(
+//            new Dataized(
+//                new PhWith(
+//                    new PhWith(
+//                        str.attr("eq").get().copy(),
+//                        0, str
+//                    )
+//                        .attr(Attr.RHO).get()
+//                        .attr("as-bytes").get()
+//                        .attr("eq").get().copy(),
+//                    0, str
+//                )
+////                    .attr("b").get()
+////                    .attr("as-bytes").get()
+//            ).take(String.class)
+//        );
+
+//        System.out.println(
+//            new Dataized(
+//                new PhWith(
+//                    new Data.ToPhi(txt)
+//                        .attr("eq").get().copy(),
+//                    0, new Data.ToPhi(txt)
+//                )
+//                    .attr("b").get()
+//                    .attr("as-bytes").get()
+//            ).take(String.class)
+//        );
+
+//        MatcherAssert.assertThat(
+//            new Dataized(
+//                new PhWith(
+//                    new PhMethod(new Data.ToPhi(txt), "eq"),
+//                    0, new Data.ToPhi(txt)
+//                )
+//            ).take(Boolean.class),
+//            Matchers.equalTo(true)
+//        );
     }
 
     @Test

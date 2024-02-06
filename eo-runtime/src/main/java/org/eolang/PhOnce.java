@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -33,7 +34,6 @@ import java.util.function.Supplier;
  */
 @Versionized
 class PhOnce implements Phi {
-
     /**
      * The object fetched.
      */
@@ -47,68 +47,87 @@ class PhOnce implements Phi {
     /**
      * Supplier to get string representation.
      */
-    private final Supplier<String> str;
+    private final Supplier<String> string;
+
+    /**
+     * Reference.
+     */
+    private final AtomicReference<Phi> reference;
 
     /**
      * Ctor.
-     *
-     * @param data The object
-     * @param blank The string value
-     * @param expr The expression
+     * @param obj Fetched object
+     * @param str String representation
+     * @param trm Term representation
      */
-    PhOnce(final Data<Phi> data, final Supplier<String> blank,
-        final Supplier<String> expr) {
-        this.object = new Data.Once<>(data, blank);
-        this.exp = expr;
+    PhOnce(final Supplier<Phi> obj, final Supplier<String> str, final Supplier<String> trm) {
+        this.reference = new AtomicReference<>();
+        this.object = () -> {
+            synchronized (this.reference) {
+                return this.reference.updateAndGet(
+                    t -> {
+                        final Phi result;
+                        if (t == null) {
+                            result = obj.get();
+                        } else {
+                            result = t;
+                        }
+                        return result;
+                    }
+                );
+            }
+        };
+        this.string = str;
+        this.term = trm;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return this.object.take().equals(obj);
+        return this.object.get().equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return this.object.hashCode();
+        return this.object.get().hashCode();
     }
 
     @Override
     public final String toString() {
-        return this.object.toString();
+        return this.string.get();
     }
 
     @Override
     public final String φTerm() {
-        return this.exp.get();
+        return this.term.get();
     }
 
     @Override
     public final Phi copy() {
-        return this.object.take().copy();
+        return this.object.get().copy();
     }
 
     @Override
     public final Attr attr(final int pos) {
-        return this.object.take().attr(pos);
+        return this.object.get().attr(pos);
     }
 
     @Override
     public final Attr attr(final String name) {
-        return this.object.take().attr(name);
+        return this.object.get().attr(name);
     }
 
     @Override
     public String locator() {
-        return this.object.take().locator();
+        return this.object.get().locator();
     }
 
     @Override
     public String forma() {
-        return this.object.take().forma();
+        return this.object.get().forma();
     }
 
     @Override
     public byte[] take() {
-        return new byte[0];
+        return this.object.get().take();
     }
 }

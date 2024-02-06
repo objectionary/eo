@@ -25,64 +25,56 @@
 package org.eolang;
 
 /**
- * An object that ignores all moves.
- *
- * @since 0.23
+ * Phi with encapsulated data as bytes.
+ * @since 0.36.0
  */
-@Versionized
-final class PhImmovable implements Phi {
-
+public class PhData implements Phi {
     /**
-     * The original.
+     * Original phi.
      */
     private final Phi origin;
 
     /**
-     * Ctor.
-     *
-     * @param phi The object
+     * Data.
      */
-    PhImmovable(final Phi phi) {
+    private final byte[] data;
+
+    /**
+     * Ctor.
+     * @param phi Original phi
+     * @param bytes Bytes
+     */
+    public PhData(final Phi phi, final byte[] bytes) {
         this.origin = phi;
+        this.data = bytes;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
+    public byte[] take() {
+        return this.data;
     }
 
     @Override
     public Phi copy() {
-        return new PhImmovable(this.origin.copy());
+        return new PhData(this.origin.copy(), this.data);
     }
 
     @Override
     public Attr attr(final int pos) {
-        return this.origin.attr(pos);
+        return new AtOnce(new AtComposite(this, rho -> {
+            final Phi phi = this.origin.attr(pos).get();
+            phi.attr(Attr.RHO).put(rho);
+            return phi;
+        }));
     }
 
     @Override
-    public Attr attr(final String attr) {
-        Attr val = this.origin.attr(attr);
-        if ("ρ".equals(attr)) {
-            val = new AtFixed(val);
-        }
-        return val;
+    public Attr attr(final String name) {
+        return new AtOnce(new AtComposite(this, rho -> {
+            final Phi phi = this.origin.attr(name).get();
+            phi.attr(Attr.RHO).put(rho);
+            return phi;
+        }));
     }
 
     @Override
@@ -96,7 +88,23 @@ final class PhImmovable implements Phi {
     }
 
     @Override
-    public byte[] take() {
-        return this.origin.take();
+    public String toString() {
+        final StringBuilder out = new StringBuilder(0);
+        out.append(this.origin.toString()).append("=");
+        for (final byte bte : this.data) {
+            if (out.length() > 0) {
+                out.append('-');
+            }
+            out.append(String.format("%02X", bte));
+        }
+        if (out.length() == 0) {
+            out.append('-');
+        }
+        return out.toString();
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

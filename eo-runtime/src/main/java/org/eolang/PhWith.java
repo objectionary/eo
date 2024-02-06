@@ -72,6 +72,8 @@ public final class PhWith extends PhOnce {
                 return txt;
             }
         );
+//        System.out.println(phi);
+//        System.out.println(name);
     }
 
     /**
@@ -114,6 +116,7 @@ public final class PhWith extends PhOnce {
                 return txt;
             }
         );
+//        System.out.println(phi);
+//        System.out.println(pos);
     }
-
 }
