@@ -199,7 +199,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
+        if (ctx.tauBinding() != null || ctx.emptyBinding() != null) {
             this.objects().start();
         }
     }
@@ -208,8 +208,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
-            if (ctx.alphaBinding() != null) {
-                if (ctx.alphaBinding().attribute().VTX() != null) {
+            if (ctx.tauBinding() != null) {
+                if (ctx.tauBinding().attribute().VTX() != null) {
                     this.objects().remove();
                 } else {
                     this.objects().leave();
@@ -225,12 +225,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
+    public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
+    public void exitTauBinding(final PhiParser.TauBindingContext ctx) {
         // Nothing here
     }
 
@@ -248,8 +248,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
-        } else if (ctx.alphaAttr() != null) {
-            attr = ctx.alphaAttr().INDEX().getText();
+        } else if (ctx.tauAttr() != null) {
+            attr = ctx.tauAttr().INDEX().getText();
         } else {
             attr = "";
         }
@@ -262,12 +262,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
+    public void enterTauAttr(final PhiParser.TauAttrContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
+    public void exitTauAttr(final PhiParser.TauAttrContext ctx) {
         // Nothing here
     }
 
