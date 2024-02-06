@@ -36,8 +36,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term {
-
+public interface Phi extends Term, Data {
     /**
      * The global scope object, which owns all other objects.
      *
@@ -93,6 +92,11 @@ public interface Phi extends Term {
         public String forma() {
             return this.pkg.forma();
         }
+
+        @Override
+        public byte[] take() {
+            return this.pkg.take();
+        }
     };
 
     /**
@@ -129,4 +133,42 @@ public interface Phi extends Term {
      * @return Forma of it as {@link String}.
      */
     String forma();
+
+    public class WithData extends PhWrap {
+        /**
+         * Data.
+         */
+        private final byte[] data;
+
+        /**
+         * Ctor.
+         * @param phi Original phi
+         * @param bytes Bytes
+         */
+        WithData(final Phi phi, final byte[] bytes) {
+            super(phi);
+            this.data = bytes;
+        }
+
+        @Override
+        public byte[] take() {
+            return this.data;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder out = new StringBuilder(0);
+            out.append(super.toString()).append("=");
+            for (final byte bte : this.data) {
+                if (out.length() > 0) {
+                    out.append('-');
+                }
+                out.append(String.format("%02X", bte));
+            }
+            if (out.length() == 0) {
+                out.append('-');
+            }
+            return out.toString();
+        }
+    }
 }

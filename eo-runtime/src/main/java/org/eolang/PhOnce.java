@@ -37,12 +37,17 @@ class PhOnce implements Phi {
     /**
      * The object fetched.
      */
-    private final Data<Phi> object;
+    private final Supplier<Phi> object;
 
     /**
-     * The expression provider.
+     * Supplier to get term representation.
      */
-    private final Supplier<String> exp;
+    private final Supplier<String> term;
+
+    /**
+     * Supplier to get string representation.
+     */
+    private final Supplier<String> str;
 
     /**
      * Ctor.
@@ -100,5 +105,10 @@ class PhOnce implements Phi {
     @Override
     public String forma() {
         return this.object.take().forma();
+    }
+
+    @Override
+    public byte[] take() {
+        return new byte[0];
     }
 }

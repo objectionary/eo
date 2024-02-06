@@ -36,17 +36,16 @@ import java.util.function.Supplier;
 /**
  * A data container.
  *
- * @param <T> Data type.
  * @since 0.1
  */
 @Versionized
-public interface Data<T> {
+public interface Data {
 
     /**
      * Take the data.
      * @return The data
      */
-    T take();
+    byte[] take();
 
     /**
      * Data being returned only once, from encapsulated object.
@@ -54,7 +53,7 @@ public interface Data<T> {
      * @param <T> The type of data
      * @since 0.1
      */
-    final class Once<T> implements Data<T> {
+    final class Once implements Data {
 
         /**
          * Data.
@@ -139,105 +138,48 @@ public interface Data<T> {
      *
      * @since 0.1
      */
-    final class ToPhi implements Phi {
-
-        /**
-         * Data.
-         */
-        private final Phi value;
-
-        /**
-         * Phi object.
-         */
-        private final Phi object;
-
+    final class ToPhi extends PhWrap {
         /**
          * Ctor.
          * @param obj Data
          */
         public ToPhi(final Object obj) {
-            this.value = new Data.Value<>(obj);
-            this.object = Data.ToPhi.toPhi(obj, this.value);
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            return this.value.equals(obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.value.hashCode();
-        }
-
-        @Override
-        public Phi copy() {
-            return this;
-        }
-
-        @Override
-        public Attr attr(final int pos) {
-            return this.object.attr(pos);
-        }
-
-        @Override
-        public Attr attr(final String name) {
-            return this.object.attr(name);
-        }
-
-        @Override
-        public String locator() {
-            return this.object.locator();
-        }
-
-        @Override
-        public String forma() {
-            return this.object.forma();
-        }
-
-        @Override
-        public String φTerm() {
-            return this.object.φTerm();
-        }
-
-        @Override
-        public String toString() {
-            return this.object.toString();
+            super(Data.ToPhi.toPhi(obj));
         }
 
         /**
          * Convert to Phi object.
          * @param obj Object to convert
-         * @param value Data value
          * @return Constructed Phi
          */
-        private static Phi toPhi(final Object obj, final Phi value) {
-            final Phi phi;
-            byte[] bytes = new byte[0];
+        private static Phi toPhi(final Object obj) {
+            final Phi object;
+            byte[] bytes;
             final boolean delta;
             if (obj instanceof Boolean) {
-                phi = new EObool(Phi.Φ);
+                object = new EObool(Phi.Φ);
                 delta = false;
                 if (obj.equals(true)) {
-                    bytes = new byte[] {0x01};
+                    bytes = new byte[]{0x01};
                 } else {
-                    bytes = new byte[] {0x00};
+                    bytes = new byte[]{0x00};
                 }
             } else if (obj instanceof byte[]) {
-                phi = new EObytes(Phi.Φ);
+                object = new EObytes(Phi.Φ);
                 delta = true;
+                bytes = (byte[]) obj;
             } else if (obj instanceof Long) {
-                phi = new EOint(Phi.Φ);
+                object = new EOint(Phi.Φ);
                 delta = false;
                 bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
-                phi = new EOstring(Phi.Φ);
+                object = new EOstring(Phi.Φ);
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                phi = new EOfloat(Phi.Φ);
+                object = new EOfloat(Phi.Φ);
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
             } else {
@@ -248,12 +190,12 @@ public interface Data<T> {
                     )
                 );
             }
+            final Phi phi;
             if (delta) {
-                phi.attr(Attr.DELTA).put(value);
+                phi = new Phi.WithData(object, bytes);
             } else {
-                final Phi bts = new EObytes(Phi.Φ);
-                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
-                phi.attr(0).put(bts);
+                object.attr(0).put(new Phi.WithData(new EObytes(Phi.Φ), bytes));
+                phi = object;
             }
             return phi;
         }
@@ -356,93 +298,4 @@ public interface Data<T> {
             return unescaped.toString();
         }
     }
-
-    /**
-     * A single value as {@code Phi}.
-     *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Value<T> extends PhDefault implements Data<T> {
-
-        /**
-         * Value.
-         */
-        private final T val;
-
-        /**
-         * Ctor.
-         * @param value Value
-         */
-        public Value(final T value) {
-            super(Phi.Φ);
-            this.val = value;
-            this.vertex = PhDefault.VTX.best(value);
-        }
-
-        @Override
-        public String φTerm() {
-            final String txt;
-            if (this.val instanceof Term) {
-                txt = Term.class.cast(this.val).φTerm();
-            } else if (this.val instanceof Phi[]) {
-                final StringBuilder out = new StringBuilder(0);
-                final Phi[] items = Phi[].class.cast(this.val);
-                for (int idx = 0; idx < items.length; ++idx) {
-                    if (out.length() > 0) {
-                        out.append(",\n");
-                    }
-                    out.append('ι').append(idx).append(" ↦ ");
-                    if (items[idx] == null) {
-                        out.append('Ø');
-                    } else {
-                        out.append(items[idx].φTerm());
-                    }
-                }
-                txt = String.format("⟦\n\t%s\n⟧", out.toString());
-            } else {
-                txt = this.toString()
-                    .replace("⟦", "\\uE29FA6")
-                    .replace("⟧", "\\uE29FA7")
-                    .replace(", ", "\\u2C ");
-            }
-            return txt;
-        }
-
-        @Override
-        public String toString() {
-            final String txt;
-            if (this.val instanceof String) {
-                txt = String.format(
-                    "\"%s\"",
-                    this.val.toString()
-                        .replace("\n", "\\n")
-                        .replace("\r", "\\r")
-                );
-            } else if (this.val instanceof byte[]) {
-                final StringBuilder out = new StringBuilder(0);
-                for (final byte data : (byte[]) this.val) {
-                    if (out.length() > 0) {
-                        out.append('-');
-                    }
-                    out.append(String.format("%02X", data));
-                }
-                if (out.length() == 0) {
-                    out.append('-');
-                }
-                txt = out.toString();
-            } else if (this.val.getClass().isArray()) {
-                txt = String.format("array[%d]", ((Object[]) this.val).length);
-            } else {
-                txt = this.val.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            return this.val;
-        }
-    }
-
 }

@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * @since 0.1
  */
 @Versionized
-public final class Dataized {
+public final class Dataized implements Data {
 
     /**
      * Dataization level.
@@ -86,10 +86,7 @@ public final class Dataized {
         this.logger = log;
     }
 
-    /**
-     * Take the object, no matter the type.
-     * @return The data
-     */
+    @Override
     public byte[] take() {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
@@ -177,5 +174,4 @@ public final class Dataized {
         Dataized.LEVEL.remove();
         Dataized.MAX_LEVEL.remove();
     }
-
 }

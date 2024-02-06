@@ -523,11 +523,14 @@ SOFTWARE.
     <xsl:param name="name" select="'o'"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new Data.Value(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, </xsl:text>
+    <!--    <xsl:text> = new PhWith(</xsl:text>-->
+    <!--    <xsl:value-of select="$name"/>-->
+    <!--    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>-->
     <xsl:value-of select="text()"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <xsl:template match="class" mode="tests">

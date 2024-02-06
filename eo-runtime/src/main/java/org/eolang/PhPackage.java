@@ -147,4 +147,11 @@ final class PhPackage implements Phi {
         }
         return res;
     }
+
+    @Override
+    public byte[] take() {
+        throw new ExFailure(
+            String.format("Can't #take() data from package object '%s'", this.pkg)
+        );
+    }
 }
