@@ -153,10 +153,8 @@ class UnphiMojoTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void convertsValidXmirAndParsableEO(
-        final boolean reversed,
-        @TempDir final Path temp
-    ) throws Exception {
+    void convertsValidXmirAndParsableEO(final boolean reversed, @TempDir final Path temp)
+        throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(
                 "# This is the default 64+ symbols comment in front of named abstract object.",
