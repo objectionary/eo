@@ -41,7 +41,7 @@ public class PhData implements Phi {
 
     /**
      * Ctor.
-     * @param phi Original phi
+     * @param phi   Original phi
      * @param bytes Bytes
      */
     public PhData(final Phi phi, final byte[] bytes) {
@@ -61,20 +61,12 @@ public class PhData implements Phi {
 
     @Override
     public Attr attr(final int pos) {
-        return new AtOnce(new AtComposite(this, rho -> {
-            final Phi phi = this.origin.attr(pos).get();
-            phi.attr(Attr.RHO).put(rho);
-            return phi;
-        }));
+        return new AtData(this, this.origin.attr(pos));
     }
 
     @Override
     public Attr attr(final String name) {
-        return new AtOnce(new AtComposite(this, rho -> {
-            final Phi phi = this.origin.attr(name).get();
-            phi.attr(Attr.RHO).put(rho);
-            return phi;
-        }));
+        return new AtData(this, this.origin.attr(name));
     }
 
     @Override

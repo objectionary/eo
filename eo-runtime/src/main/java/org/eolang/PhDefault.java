@@ -301,13 +301,10 @@ public abstract class PhDefault implements Phi, Cloneable {
     public byte[] take() {
         final byte[] data;
         if (this instanceof Atom) {
-            System.out.println(this);
             data = new AtomSafe((Atom) this).lambda().take();
         } else if (this.attrs.containsKey(Attr.PHI)) {
-            System.out.println(this);
             data = this.attr(Attr.PHI).get().take();
         } else {
-            System.out.println(this);
             throw new ExFailure(
                 "There's no data in the object, can't take it"
             );

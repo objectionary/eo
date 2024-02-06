@@ -50,56 +50,16 @@ final class EOstringTest {
 
     @Test
     void comparesTwoEqualStrings() {
-        Phi bts = new Data.ToPhi(new byte[]{0x01});
-        new Dataized(bts.attr("as-bytes").get()).take();
-//        new Dataized(
-//            new PhWith(
-//                bts.attr("eq").get().copy(),
-//                0, bts
-//            )
-//        ).take(Boolean.class);
-
-
-//        final String txt = "Hello, друг!";
-//        Phi str = new Data.ToPhi(txt);
-//        System.out.println(
-//            new Dataized(
-//                new PhWith(
-//                    new PhWith(
-//                        str.attr("eq").get().copy(),
-//                        0, str
-//                    )
-//                        .attr(Attr.RHO).get()
-//                        .attr("as-bytes").get()
-//                        .attr("eq").get().copy(),
-//                    0, str
-//                )
-////                    .attr("b").get()
-////                    .attr("as-bytes").get()
-//            ).take(String.class)
-//        );
-
-//        System.out.println(
-//            new Dataized(
-//                new PhWith(
-//                    new Data.ToPhi(txt)
-//                        .attr("eq").get().copy(),
-//                    0, new Data.ToPhi(txt)
-//                )
-//                    .attr("b").get()
-//                    .attr("as-bytes").get()
-//            ).take(String.class)
-//        );
-
-//        MatcherAssert.assertThat(
-//            new Dataized(
-//                new PhWith(
-//                    new PhMethod(new Data.ToPhi(txt), "eq"),
-//                    0, new Data.ToPhi(txt)
-//                )
-//            ).take(Boolean.class),
-//            Matchers.equalTo(true)
-//        );
+        final String txt = "Hello, друг!";
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(new Data.ToPhi(txt), "eq"),
+                    0, new Data.ToPhi(txt)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
     }
 
     @Test
