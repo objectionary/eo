@@ -155,4 +155,52 @@ public final class EOseqTest {
             Matchers.equalTo(1L)
         );
     }
+
+    /**
+     * Test
+     *
+     * [] > parent
+     *   memory 0 > counter
+     *   seq > @
+     *     *
+     *       counter.write (counter.as-int.plus 1)
+     *       counter.as-int
+     *
+     * @since 1.0
+     */
+    @Disabled
+    @Test
+    public void calculatesWithoutTupleAndReturnsObject() {
+        final Phi counter = new EOmemory(Phi.Φ);
+        counter.attr(0).put(new Data.ToPhi(0L));
+        final Phi increment = new PhWith(
+            new PhCopy(new PhMethod(counter, "write")),
+            0,
+            new PhWith(
+                new PhCopy(new PhMethod(new PhMethod(counter, "as-int"), "plus")),
+                0, new Data.ToPhi(1L)
+            )
+        );
+        final Phi args = new PhWith(
+            new PhCopy(
+                new PhMethod(
+                    new PhWith(
+                        new PhCopy(
+                            new PhMethod(new EOtuple$EOempty(Phi.Φ), "with")
+                        ),
+                        0,
+                        increment
+                    ),
+                    "with"
+                )
+            ),
+            0, new PhMethod(counter, "as-int")
+        );
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(new EOseq(Phi.Φ), 0, args)
+            ).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
 }
