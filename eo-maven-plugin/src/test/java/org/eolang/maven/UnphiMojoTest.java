@@ -100,7 +100,6 @@ class UnphiMojoTest {
                 )
             ).asString()
         );
-        System.out.println(doc.toString());
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
@@ -127,12 +126,6 @@ class UnphiMojoTest {
             );
         }
         final String phi = map.get("phi").toString();
-        final String after;
-        if (map.containsKey("after")) {
-            after = map.get("after").toString();
-        } else {
-            after = phi;
-        }
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
@@ -140,9 +133,6 @@ class UnphiMojoTest {
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         maven.foreignTojos().add("name")
             .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
-        System.out.println(
-            new TextOf(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR))).asString()
-        );
         final Path result = maven
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
@@ -155,7 +145,7 @@ class UnphiMojoTest {
         );
         MatcherAssert.assertThat(
             "Origin phi should equal to phi got from \"unphied\" xmir, but it isn't",
-            after,
+            phi,
             Matchers.equalTo(
                 new TextOf(result).asString()
             )
