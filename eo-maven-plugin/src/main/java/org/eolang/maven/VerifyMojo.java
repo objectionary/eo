@@ -114,9 +114,7 @@ public final class VerifyMojo extends SafeMojo {
             ).back()
         );
         if (this.failOnWarning) {
-            opt = new OptTrain(
-                opt, "/org/eolang/parser/fail-on-warnings.xsl"
-            );
+            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
         }
         return opt;
     }
