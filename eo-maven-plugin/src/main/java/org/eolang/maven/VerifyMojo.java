@@ -119,6 +119,23 @@ public final class VerifyMojo extends SafeMojo {
         return opt;
     }
 
-
+    /**
+     * Such {@link Optimization} that just logs errors (with any severity) of xmir.
+     * @return Optimization.
+     */
+    private Optimization loggingOfErrors() {
+        return xml -> {
+            for (final XML message: xml.nodes("/program/errors/error")) {
+                Logger.warn(
+                    this,
+                    "%[file]s, line %s: %s",
+                    xml.xpath("/program/@source").get(0),
+                    message.xpath("@line").get(0),
+                    message.xpath("text()").get(0)
+                );
+            }
+            return xml;
+        };
+    }
 
 }
