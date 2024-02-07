@@ -86,7 +86,7 @@ public final class EOseqTest {
     }
 
     /**
-     * Test
+     * Test.
      *
      * [] > parent
      *   memory 0 > counter
@@ -157,7 +157,7 @@ public final class EOseqTest {
     }
 
     /**
-     * Test
+     * Test.
      *
      * [] > parent
      *   memory 0 > counter
