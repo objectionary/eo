@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.nio.file.Path;
@@ -105,6 +106,7 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
+            this.loggingOfErrors(),
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/parser/fail-on-errors.xsl",
@@ -112,9 +114,30 @@ public final class VerifyMojo extends SafeMojo {
             ).back()
         );
         if (this.failOnWarning) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
+            opt = new OptTrain(
+                opt, "/org/eolang/parser/fail-on-warnings.xsl"
+            );
         }
         return opt;
+    }
+
+    /**
+     * Such {@link Optimization} that just logs errors (with any severity) of xmir.
+     * @return Optimization.
+     */
+    private Optimization loggingOfErrors() {
+        return xml -> {
+            for (final XML message: xml.nodes("/program/errors/error")) {
+                Logger.warn(
+                    this,
+                    "%[file]s, line %s: %s",
+                    xml.xpath("/program/@source").get(0),
+                    message.xpath("@line").get(0),
+                    message.xpath("text()").get(0)
+                );
+            }
+            return xml;
+        };
     }
 
 }
