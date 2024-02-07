@@ -4,9 +4,11 @@ eo: |
     d > @
 phi: |
   {
-    c ↦ ⟦
-      a ↦ ∅,
-      b ↦ ∅,
-      φ ↦ Φ.org.eolang.d
+    ⟦
+      c ↦ ⟦
+        a ↦ ∅,
+        b ↦ ∅,
+        φ ↦ Φ.org.eolang.d
+      ⟧
     ⟧
   }

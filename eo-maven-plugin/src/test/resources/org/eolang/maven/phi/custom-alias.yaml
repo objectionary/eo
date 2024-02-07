@@ -7,16 +7,18 @@ eo: |
     x y > z
 phi: |
   {
-    foo ↦ ⟦
-      bar ↦ ⟦
-        main ↦ ⟦
-          y ↦ ∅,
-          z ↦ Φ.com.yegor256.x(
-            α0 ↦ ξ.y
-          )
+    ⟦
+      foo ↦ ⟦
+        bar ↦ ⟦
+          main ↦ ⟦
+            y ↦ ∅,
+            z ↦ Φ.com.yegor256.x(
+              α0 ↦ ξ.y
+            )
+          ⟧,
+          λ ⤍ Package
         ⟧,
         λ ⤍ Package
-      ⟧,
-      λ ⤍ Package
+      ⟧
     ⟧
   }

@@ -56,7 +56,7 @@ class UnphiMojoTest {
     @Test
     void createsFile(@TempDir final Path temp) throws Exception {
         new HmBase(temp).save(
-            "{std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x}",
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/phi/std.phi")
         );
         MatcherAssert.assertThat(
@@ -93,14 +93,16 @@ class UnphiMojoTest {
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
+        final XML doc = new XMLDocument(
+            new TextOf(
+                temp.resolve(
+                    Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
+                )
+            ).asString()
+        );
+        System.out.println(doc.toString());
         for (final String xpath : (Iterable<String>) map.get("tests")) {
-            final List<XML> nodes = new XMLDocument(
-                new TextOf(
-                    temp.resolve(
-                        Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
-                    )
-                ).asString()
-            ).nodes(xpath);
+            final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
                 failures.add(xpath);
             }
@@ -125,6 +127,12 @@ class UnphiMojoTest {
             );
         }
         final String phi = map.get("phi").toString();
+        final String after;
+        if (map.containsKey("after")) {
+            after = map.get("after").toString();
+        } else {
+            after = phi;
+        }
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
@@ -132,6 +140,9 @@ class UnphiMojoTest {
         final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
         maven.foreignTojos().add("name")
             .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
+        System.out.println(
+            new TextOf(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR))).asString()
+        );
         final Path result = maven
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
@@ -144,7 +155,7 @@ class UnphiMojoTest {
         );
         MatcherAssert.assertThat(
             "Origin phi should equal to phi got from \"unphied\" xmir, but it isn't",
-            phi,
+            after,
             Matchers.equalTo(
                 new TextOf(result).asString()
             )

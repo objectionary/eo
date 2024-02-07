@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2024 Objectionary.com
+ * Copyright (c) 2016-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,6 @@ import org.xembly.Directives;
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
- * @checkstyle NestedIfDepthCheck (1300 lines)
  * @since 0.34.0
  */
 @SuppressWarnings({
@@ -133,12 +132,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .add("sheets").up()
             .add("license").up()
             .add("metas").up();
-        this.properties.push("name");
+        if (ctx.object() != null && ctx.object().formation() == null) {
+            this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
     }
 
     @Override
     public void exitProgram(final PhiParser.ProgramContext ctx) {
-        this.properties.pop();
         if (!this.packages.isEmpty()) {
             final String pckg = String.join(".", this.packages);
             this.dirs.xpath("metas[last()]").strict(1)
@@ -147,6 +147,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 .add("tail").set(pckg).up()
                 .add("part").set(pckg).up()
                 .up().up();
+        }
+        if (ctx.object() != null && ctx.object().formation() == null) {
+            this.objects().leave();
         }
         this.dirs.add("objects")
             .append(this.objs.pollLast())
@@ -172,7 +175,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitFormation(final PhiParser.FormationContext ctx) {
         this.properties.pop();
-        if (!XePhiListener.hasLambdaPackage(ctx.bindings())) {
+        if (!XePhiListener.hasLambdaPackage(ctx.bindings())
+            && !this.attributes.empty()
+            && this.objs.size() > this.packages.size()
+        ) {
             this.objects()
                 .prop("abstract")
                 .prop(this.properties.peek(), this.attributes.pop());
@@ -200,7 +206,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterBinding(final PhiParser.BindingContext ctx) {
         if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
-            this.objects().start();
+            this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
     }
 
@@ -284,7 +290,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
         this.objects()
-            .start()
+            .start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine())
             .prop("data", "bytes")
             .prop("base", "org.eolang.bytes");
         if (!ctx.BYTES().getText().equals("--")) {
@@ -343,9 +349,11 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitDispatch(final PhiParser.DispatchContext ctx) {
         this.objects().enter();
-        final String attribute = this.attributes.pop();
-        if (!attribute.isEmpty()) {
-            this.objects().prop(this.properties.peek(), attribute);
+        if (!this.attributes.empty()) {
+            final String attribute = this.attributes.pop();
+            if (!attribute.isEmpty()) {
+                this.objects().prop(this.properties.peek(), attribute);
+            }
         }
     }
 
@@ -371,7 +379,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterAttr(final PhiParser.AttrContext ctx) {
-        this.objects().start();
+        this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
     }
 
     @Override

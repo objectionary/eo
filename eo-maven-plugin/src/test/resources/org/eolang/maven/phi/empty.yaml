@@ -6,9 +6,11 @@ eo: |
     seq' > y
 phi: |
   {
-    main ↦ ⟦
-      z ↦ ∅,
-      x ↦ ⟦⟧,
-      y ↦ Φ.org.eolang.seq()
+    ⟦
+      main ↦ ⟦
+        z ↦ ∅,
+        x ↦ ⟦⟧,
+        y ↦ Φ.org.eolang.seq()
+      ⟧
     ⟧
   }
