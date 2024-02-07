@@ -106,7 +106,7 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
-            this.loggingOfErrors(),
+            this::logErrors,
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/parser/fail-on-errors.xsl",
@@ -120,22 +120,21 @@ public final class VerifyMojo extends SafeMojo {
     }
 
     /**
-     * Such {@link Optimization} that just logs errors (with any severity) of xmir.
-     * @return Optimization.
+     * Log errors of xml.
+     * @param xml XMIR.
+     * @return XML.
      */
-    private Optimization loggingOfErrors() {
-        return xml -> {
-            for (final XML message: xml.nodes("/program/errors/error")) {
-                Logger.warn(
-                    this,
-                    "%[file]s, line %s: %s",
-                    xml.xpath("/program/@source").get(0),
-                    message.xpath("@line").get(0),
-                    message.xpath("text()").get(0)
-                );
-            }
-            return xml;
-        };
+    private XML logErrors(final XML xml) {
+        for (final XML message: xml.nodes("/program/errors/error")) {
+            Logger.warn(
+                this,
+                "%[file]s, line %s: %s",
+                xml.xpath("/program/@source").get(0),
+                message.xpath("@line").get(0),
+                message.xpath("text()").get(0)
+            );
+        }
+        return xml;
     }
 
 }
