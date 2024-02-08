@@ -125,14 +125,27 @@ public final class VerifyMojo extends SafeMojo {
      * @return XML.
      */
     private XML logErrors(final XML xml) {
-        for (final XML message: xml.nodes("/program/errors/error")) {
-            Logger.warn(
-                this,
+        for (final XML error: xml.nodes("/program/errors/error")) {
+            final String message = Logger.format(
                 "%[file]s, line %s: %s",
                 xml.xpath("/program/@source").get(0),
-                message.xpath("@line").get(0),
-                message.xpath("text()").get(0)
+                error.xpath("@line").get(0),
+                error.xpath("text()").get(0)
             );
+            final String severity = error.xpath("@severity").get(0);
+            switch (severity) {
+                case "warning":
+                    Logger.warn(this, message);
+                    break;
+                case "error":
+                case "critical":
+                    Logger.error(this, message);
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                        String.format("Incorrect severity: %s", severity)
+                    );
+            }
         }
         return xml;
     }
