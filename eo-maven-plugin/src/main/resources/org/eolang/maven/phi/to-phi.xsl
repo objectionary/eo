@@ -33,8 +33,8 @@ SOFTWARE.
   <xsl:variable name="delta">
     <select>Δ</select>
   </xsl:variable>
-  <xsl:variable name="tau">
-    <select>τ</select>
+  <xsl:variable name="alpha">
+    <select>α</select>
   </xsl:variable>
   <xsl:variable name="phi">
     <select>φ</select>
@@ -383,12 +383,12 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="@as">
         <xsl:if test="matches(@as,'^[0-9][1-9]*$')">
-          <xsl:value-of select="$tau"/>
+          <xsl:value-of select="$alpha"/>
         </xsl:if>
         <xsl:value-of select="eo:specials(@as, true())"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$tau"/>
+        <xsl:value-of select="$alpha"/>
         <xsl:value-of select="$position - 1"/>
       </xsl:otherwise>
     </xsl:choose>
