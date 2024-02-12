@@ -26,13 +26,13 @@ bindings
     ;
 
 binding
-    : tauBinding
+    : alphaBinding
     | emptyBinding
     | deltaBidning
     | lambdaBidning
     ;
 
-tauBinding
+alphaBinding
     : attribute ARROW object
     ;
 
@@ -42,11 +42,11 @@ attribute
     | SIGMA
     | VTX
     | LABEL
-    | tauAttr
+    | alphaAttr
     ;
 
-tauAttr
-    : TAU INDEX
+alphaAttr
+    : ALPHA INDEX
     ;
 
 emptyBinding
@@ -118,8 +118,8 @@ ARROW
 DASHED_ARROW
     : '⤍'
     ;
-TAU
-    : 'τ'
+ALPHA
+    : 'α'
     ;
 EMPTY
     : '∅'
