@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 concurrency:
   group: sonar-${{ github.ref }}
   cancel-in-progress: true
