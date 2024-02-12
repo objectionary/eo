@@ -183,8 +183,10 @@ SOFTWARE.
   <xsl:template match="program">
     <phi>
       <xsl:text>{</xsl:text>
-      <xsl:variable name="tabs" select="1"/>
-      <xsl:value-of select="eo:eol($tabs)"/>
+      <xsl:variable name="tabs" select="2"/>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:value-of select="$lb"/>
+      <xsl:value-of select="eo:eol(2)"/>
       <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
       <xsl:variable name="package" select="metas/meta[head[text()='package']]/tail[1]"/>
       <xsl:variable name="parts" select="tokenize($package,'\.')"/>
@@ -215,6 +217,8 @@ SOFTWARE.
           </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:value-of select="eo:eol(1)"/>
+      <xsl:value-of select="$rb"/>
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>}</xsl:text>
     </phi>

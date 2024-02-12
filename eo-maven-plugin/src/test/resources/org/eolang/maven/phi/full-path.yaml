@@ -3,6 +3,8 @@ eo: |
   Q.org.eolang.x > y
 phi: |
   {
-    std ↦ Φ.org.eolang.io.stdout,
-    y ↦ Φ.org.eolang.x
+    ⟦
+      std ↦ Φ.org.eolang.io.stdout,
+      y ↦ Φ.org.eolang.x
+    ⟧
   }

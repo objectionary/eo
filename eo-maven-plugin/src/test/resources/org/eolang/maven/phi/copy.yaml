@@ -5,10 +5,12 @@ eo: |
     cage' a > y
 phi: |
   {
-    obj ↦ ⟦
-      x ↦ Φ.org.eolang.cage(),
-      y ↦ Φ.org.eolang.cage()(
-        τ0 ↦ Φ.org.eolang.a
-      )
+    ⟦
+      obj ↦ ⟦
+        x ↦ Φ.org.eolang.cage(),
+        y ↦ Φ.org.eolang.cage()(
+          α0 ↦ Φ.org.eolang.a
+        )
+      ⟧
     ⟧
   }

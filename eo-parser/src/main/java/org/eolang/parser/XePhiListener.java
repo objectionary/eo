@@ -133,12 +133,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .add("sheets").up()
             .add("license").up()
             .add("metas").up();
-        this.properties.push("name");
+        if (ctx.object() != null && ctx.object().formation() == null) {
+            this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        }
     }
 
     @Override
     public void exitProgram(final PhiParser.ProgramContext ctx) {
-        this.properties.pop();
         if (!this.packages.isEmpty()) {
             final String pckg = String.join(".", this.packages);
             this.dirs.xpath("metas[last()]").strict(1)
@@ -147,6 +148,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 .add("tail").set(pckg).up()
                 .add("part").set(pckg).up()
                 .up().up();
+        }
+        if (ctx.object() != null && ctx.object().formation() == null) {
+            this.objects().leave();
         }
         this.dirs.add("objects")
             .append(this.objs.pollLast())
@@ -172,7 +176,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitFormation(final PhiParser.FormationContext ctx) {
         this.properties.pop();
-        if (!XePhiListener.hasLambdaPackage(ctx.bindings())) {
+        if (!XePhiListener.hasLambdaPackage(ctx.bindings())
+            && !this.attributes.empty()
+            && this.objs.size() > this.packages.size()
+        ) {
             this.objects()
                 .prop("abstract")
                 .prop(this.properties.peek(), this.attributes.pop());
@@ -199,8 +206,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.tauBinding() != null || ctx.emptyBinding() != null) {
-            this.objects().start();
+        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
+            this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
         }
     }
 
@@ -208,8 +215,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
-            if (ctx.tauBinding() != null) {
-                if (ctx.tauBinding().attribute().VTX() != null) {
+            if (ctx.alphaBinding() != null) {
+                if (ctx.alphaBinding().attribute().VTX() != null) {
                     this.objects().remove();
                 } else {
                     this.objects().leave();
@@ -225,12 +232,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
+    public void enterAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitTauBinding(final PhiParser.TauBindingContext ctx) {
+    public void exitAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
         // Nothing here
     }
 
@@ -248,8 +255,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
-        } else if (ctx.tauAttr() != null) {
-            attr = ctx.tauAttr().INDEX().getText();
+        } else if (ctx.alphaAttr() != null) {
+            attr = ctx.alphaAttr().INDEX().getText();
         } else {
             attr = "";
         }
@@ -262,12 +269,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterTauAttr(final PhiParser.TauAttrContext ctx) {
+    public void enterAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitTauAttr(final PhiParser.TauAttrContext ctx) {
+    public void exitAlphaAttr(final PhiParser.AlphaAttrContext ctx) {
         // Nothing here
     }
 
@@ -284,7 +291,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
         this.objects()
-            .start()
+            .start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine())
             .prop("data", "bytes")
             .prop("base", "org.eolang.bytes");
         if (!ctx.BYTES().getText().equals("--")) {
@@ -371,7 +378,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterAttr(final PhiParser.AttrContext ctx) {
-        this.objects().start();
+        this.objects().start(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
     }
 
     @Override

@@ -7,18 +7,20 @@ eo: |
       $.greater-than 0
 phi: |
   {
-    prints-itself ↦ ⟦
-      φ ↦ Φ.org.eolang.assert-that(
-        τ0 ↦ Φ.org.eolang.as-phi(
-          τ0 ↦ ξ
-        ).length,
-        τ1 ↦ ξ.greater-than(
-          τ0 ↦ Φ.org.eolang.int(
-            τ0 ↦ Φ.org.eolang.bytes(
-              Δ ⤍ 00-00-00-00-00-00-00-00
+    ⟦
+      prints-itself ↦ ⟦
+        φ ↦ Φ.org.eolang.assert-that(
+          α0 ↦ Φ.org.eolang.as-phi(
+            α0 ↦ ξ
+          ).length,
+          α1 ↦ ξ.greater-than(
+            α0 ↦ Φ.org.eolang.int(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 00-00-00-00-00-00-00-00     
+              )
             )
           )
         )
-      )
+      ⟧
     ⟧
   }

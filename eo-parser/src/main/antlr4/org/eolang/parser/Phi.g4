@@ -5,7 +5,8 @@ WS  : [ \t\r\n]+ -> skip
     ;
 
 program
-    : LCB bindings RCB
+    : HOME ARROW object
+    | LCB object RCB
     ;
 
 object

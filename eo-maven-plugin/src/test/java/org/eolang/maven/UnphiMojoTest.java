@@ -56,7 +56,7 @@ class UnphiMojoTest {
     @Test
     void createsFile(@TempDir final Path temp) throws Exception {
         new HmBase(temp).save(
-            "{std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x}",
+            "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/phi/std.phi")
         );
         MatcherAssert.assertThat(
@@ -93,14 +93,15 @@ class UnphiMojoTest {
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
         final List<String> failures = new ListOf<>();
         new FakeMaven(temp).execute(UnphiMojo.class);
+        final XML doc = new XMLDocument(
+            new TextOf(
+                temp.resolve(
+                    Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
+                )
+            ).asString()
+        );
         for (final String xpath : (Iterable<String>) map.get("tests")) {
-            final List<XML> nodes = new XMLDocument(
-                new TextOf(
-                    temp.resolve(
-                        Paths.get(String.format("target/%s/main.xmir", ParseMojo.DIR))
-                    )
-                ).asString()
-            ).nodes(xpath);
+            final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
                 failures.add(xpath);
             }

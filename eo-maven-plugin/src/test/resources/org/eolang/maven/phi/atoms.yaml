@@ -7,12 +7,14 @@ eo: |
     [] > inner /bytes
 phi: |
   {
-    main ↦ ⟦
-      λ ⤍ Lambda
-    ⟧,
-    outer ↦ ⟦
-      inner ↦ ⟦
+    ⟦
+      main ↦ ⟦
         λ ⤍ Lambda
+      ⟧,
+      outer ↦ ⟦
+        inner ↦ ⟦
+          λ ⤍ Lambda
+        ⟧
       ⟧
     ⟧
   }
