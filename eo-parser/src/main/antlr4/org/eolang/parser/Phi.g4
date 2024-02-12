@@ -1,4 +1,4 @@
-grammar Phi;
+grammar Phi
 
 // Skip spaces, tabs, newLines
 WS  : [ \t\r\n]+ -> skip
