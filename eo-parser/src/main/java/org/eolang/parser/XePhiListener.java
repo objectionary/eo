@@ -350,11 +350,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void exitDispatch(final PhiParser.DispatchContext ctx) {
         this.objects().enter();
-        if (!this.attributes.empty()) {
-            final String attribute = this.attributes.pop();
-            if (!attribute.isEmpty()) {
-                this.objects().prop(this.properties.peek(), attribute);
-            }
+        final String attribute = this.attributes.pop();
+        if (!attribute.isEmpty()) {
+            this.objects().prop(this.properties.peek(), attribute);
         }
     }
 
