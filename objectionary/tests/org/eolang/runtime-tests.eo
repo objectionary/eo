@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,22 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > understands-this-correctly
+  # Abstract a.
   [x] > a
     $.x > @
   eq. > @
     a 42
     42
 
+# Test.
 [] > takes-parent-object
+  # Abstract a.
   [x] > a
+    # Take.
     [] > take
       ^.x > @
     take > @
@@ -43,7 +48,9 @@
     a 42
     42
 
+# Test.
 [] > makes-object-a-constant
+  # Foo.
   [] > foo
     times. > @
       50
@@ -53,8 +60,11 @@
     f
     f
 
+# Test.
 [] > kids-are-accessible-in-const-object
+  # Test.
   [] > a
+    # Hello.
     [] > hello
       42 > @
   a > b!
@@ -62,26 +72,34 @@
     b.hello
     42
 
+# Test.
 [] > takes-parent-through-attribute
   42 > x
   $ > this
+  # Phi1.
   [] > @
+    # Phi2.
     [] > @
+      # Phi3.
       [] > @
         eq. > @
           this.x
           42
 
+# Test.
 [] > throws-when-applies-to-closed-object
+  # A.
   [x] > a
     x > @
   a FALSE > closed
   closed TRUE > @
 
+# Test.
 [] > makes-deep-object-recursively
   eq. > @
     x 5
     0
+  # X.
   [i] > x
     if. > @
       i.lt 0
@@ -89,6 +107,7 @@
       x
         i.minus 1
 
+# Test.
 [] > iterates-over-sigma
   memory 0 > x
   eq. > @
@@ -102,8 +121,10 @@
               &.x.write FALSE > @
     FALSE
 
+# Test.
 [] > calculates-only-once-BROKEN
   memory 0 > x
+  # A.
   [] > a
     seq > @
       *
@@ -117,6 +138,7 @@
         x
     1
 
+# Test.
 [] > rho-of-add-should-not-change
   memory 0 > f1
   cage 0 > f2
@@ -130,15 +152,17 @@
         f1.write f2
         TRUE
 
+# Test.
 [] > positive-object-vertices
   eq. > @
     or.
       or.
-        42.<.eq (42.<)
-        "Hello".<.eq ("Hello".<)
-      45-1F-E7.<.eq (45-1F-E7.<)
+        42.<.eq 42.<
+        "Hello".<.eq "Hello".<
+      45-1F-E7.<.eq 45-1F-E7.<
     FALSE
 
+# Test.
 [] > take-vertex-as-vertical-attribute
   not. > @
     eq.
@@ -146,22 +170,26 @@
         42
       42.<
 
+# Test.
 [] > negative-object-vertices
+  # A.
   [x] > a
   eq. > @
     or.
       or.
         or.
           or.
-            (2.plus 3).<.eq (5.<)
-            42.<.eq (42.0.<)
-          45-1F-E8.<.eq (45-1F-E8-83.<)
-        (a 5).<.eq ((a 5).<)
-      (* 1 2 3).<.eq ((* 1 2 3).<)
+            (2.plus 3).<.eq 5.<
+            42.<.eq 42.0.<
+          45-1F-E8.<.eq 45-1F-E8-83.<
+        (a 5).<.eq (a 5).<
+      (* 1 2 3).<.eq (* 1 2 3).<
     FALSE
 
+# Test.
 [] > recursion-without-arguments
   memory 0 > n
+  # Func.
   [] > func
     if. > @
       n.as-int.gt 0
@@ -178,22 +206,30 @@
         func
     TRUE
 
+# Test.
 [] > returns-same-object
+  # Foo.
   [] > foo
-    [] > @
-      memory 0 > x
+    memory 0 > x
   eq. > @
     foo.x.<
     foo.x.<
 
+# Test.
 [] > compiles-correctly-with-long-duplicate-names
+  # Long object 1.
   [] > long-object-name
+    # Long object 2.
     [] > long-object-name
+      # Long object 3.
       [] > long-object-name
+        # Long object 4.
         [] > long-object-name
+          # Long object 5.
           [] > long-object-name
   TRUE > @
 
+# Test.
 [] > refers-to-inner-vars-correctly
   memory 0 > go
   eq. > @
@@ -211,15 +247,18 @@
         TRUE
     TRUE
 
+# Test.
 [] > named-inner-abstract-object
-  [] > @
-    seq > @
-      *
-        [] > a
-          TRUE > @
+  seq > @
+    *
+      # A.
+      [] > a
+        TRUE > @
 
+# Test.
 [] > calling-caged-function
   cage 0 > h
+  # Func.
   [x] > func
     2.plus x > @
   nop > @
@@ -230,8 +269,11 @@
           h.@ 8
       10
 
+# Test.
 [] > app-that-calls-func
+  # App.
   [] > app
+    # App.f.
     [args] > f
       1 > a
       2 > @
@@ -242,6 +284,7 @@
     output
     2
 
+# Test.
 [] > directly-accesses-objects-from-root
   Q.org.eolang.memory 0 > m
   eq. > @
@@ -254,6 +297,7 @@
           m.as-int.minus 2
     40
 
+# Test.
 [] > directly-accesses-objects-from-standard-root
   QQ.memory 0 > m
   eq. > @
@@ -266,6 +310,7 @@
           m.as-int.minus 2
     40
 
+# Test.
 [] > standard-root-and-root
   QQ.io.stdout > stand-root
     "one"
@@ -275,8 +320,11 @@
     root
     stand-root
 
+# Test.
 [] > extract-attribute-from-decoratee
+  # Return.
   [foo] > return
+  # A.
   [] > a
     return > @
       plus.
@@ -286,13 +334,17 @@
     a.foo
     43
 
+# Test.
 [] > takes-object-id-from-abstract-empty
+  # Foo.
   [] > foo
+    # Foo.y
     [] > y
   eq. > @
     foo.y.<
     foo.y.<
 
+# Test.
 [] > compares-two-foreign-objects
   stdout.< > vtx
   nop > @
@@ -300,14 +352,17 @@
       vtx.eq QQ.io.stdout.<
       vtx.eq Q.org.eolang.io.stdout.<
 
+# Test.
 [] > compares-two-local-objects
   not. > @
     eq.
       5.plus.<
       5.plus.<
 
+# Test.
 [] > constant-defends-against-side-effects
   memory 7 > a
+  # Increment.
   [x] > inc
     seq > @
       *
@@ -321,9 +376,12 @@
       n
     64
 
+# Test.
 [] > makes-shallow-copy
+  # A.
   [] > a
     memory' > v
+  # B.
   [] > b
     a > @
   b' > b1
@@ -336,7 +394,9 @@
         b1.v
         1
 
+# Test.
 [] > copy-object-with-dot
+  # Book.
   [] > book
     "qwerty" > title
   book.title' > copy-title
@@ -344,9 +404,12 @@
     copy-title
     "qwerty"
 
+# Test.
 [] > parent-in-vertical-notation
   memory 5 > m
+  # Value.
   [] > value
+    # Phi.
     [] > @
       m. > @
         ^.
@@ -355,17 +418,23 @@
     value
     5
 
+# Test.
 [] > parent-in-horizontal-notation
   memory 5 > m
+  # Value.
   [] > value
+    # Phi.
     [] > @
       ^.^.m > @
   eq. > @
     value
     5
 
+# Test.
 [] > phi-in-vertical-notation
+  # Value.
   [] > value
+    # Phi.
     [] > @
       100 > @
   eq. > @
@@ -373,38 +442,51 @@
       value
     100
 
+# Test.
 [] > phi-in-horizontal-notation
+  # Value.
   [] > value
+    # Phi.
     [] > @
       100 > @
   eq. > @
     value.@
     100
 
+# Test.
 [] > moves-copy-to-new-parent
   eq. > @
+    # App.
     [] > app
+      # App.phi.
       [] > @
         42 > x
         foo > @
           $:^
           24:h
+      # Foo.
       [h] > foo
         plus. > @
           h
           ^.x
     66
 
+# Test.
 [] > right-way-to-use-hierarchy
+  # Bool mock
   [value] > pybool
     value > @
+  # Integer mock.
   [value] > pyint
+    # Equal.
     [x] > eq
-      pybool (value.eq (x.value)) > @
+      pybool (value.eq x.value) > @
+    # Add.
     [x] > add
-      ^.^.pyint (value.plus (x.value)) > @
+      ^.^.pyint (value.plus x.value) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
+# Test.
 [] > check-triple-quotes
   eq. > @
     """
@@ -414,7 +496,9 @@
     """
     "Hello\n\nHello"
 
+# Test.
 [] > correctly-handles-same-name-attrs-simplified
+  # Calculate.
   [first second] > calc
     plus. > @
       first
@@ -423,15 +507,19 @@
     calc
       []
         build 1 > @
+        # Build first.
         [x] > build
           x > @
       []
         build 2 > @
+        # Build second.
         [y] > build
           y > @
     3
 
+# Test.
 [] > correctly-handles-same-name-attrs
+  # Calculate.
   [f s] > calc
     plus. > @
       f.next
@@ -439,6 +527,7 @@
   eq. > @
     calc
       []
+        # Build first.
         [x] > build
           x.plus 1 > @
           build > next
@@ -447,6 +536,7 @@
               1
         build 1 > @
       []
+        # Build second.
         [y] > build
           y.plus 2 > @
           build > next

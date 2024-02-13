@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
+# Boolean.
 [as-bytes] > bool
   as-bytes > @
 
@@ -35,16 +36,16 @@
       ^.as-bytes
       x.as-bytes
 
-  # If true, return "t", otherwise "f"
+  # If true, return "t", otherwise "f".
   [t f] > if /?
 
-  # NOT
+  # NOT.
   [] > not
     eq. > @
       ^
       FALSE
 
-  # AND
+  # AND.
   [x] > and
     if. > @
       ^
@@ -54,7 +55,7 @@
         FALSE
       FALSE
 
-  # OR
+  # OR.
   [x] > or
     if. > @
       ^

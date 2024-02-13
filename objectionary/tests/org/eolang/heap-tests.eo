@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > allocates-and-uses
   "Hello, друг!" > txt
   txt.as-bytes > bytes
@@ -41,6 +42,7 @@
         data
     txt
 
+# Test.
 [] > malloc-returns-different-pointers
   heap 1024 > h!
   h.malloc 64 > p1!
@@ -50,6 +52,7 @@
       p1
       p2
 
+# Test.
 [] > mallocs-do-not-overlap
   heap 1024 > h!
   h.malloc 64 > p1!
@@ -62,6 +65,7 @@
         p1.minus 32
     TRUE
 
+# Test.
 [] > malloc-return-error
   heap 2 > h!
   eq. > @
@@ -74,15 +78,18 @@
       nop
     "Allocation failed: bad alloc (not enough memory in the heap)"
 
+# Test.
 [] > write-and-read-without-error
   heap 1024 > h
   h.pointer 0 8 > p
+  # Mem.
   [] > mem
     p.block 8 > @
   eq. > @
     mem.write 01-02-03
     TRUE
 
+# Test.
 [] > increments-pointer
   heap 1024 > h
   h.pointer 0 2 > p1
@@ -91,7 +98,7 @@
   eq. > @
     and.
       and.
-        (p1.block 6).write ("HELLO!".as-bytes)
+        (p1.block 6).write "HELLO!".as-bytes
         eq.
           p2.block
             2

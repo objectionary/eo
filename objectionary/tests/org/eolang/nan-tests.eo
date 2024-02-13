@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,16 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > nan-not-eq-number
   not. > @
     eq.
       nan
       42
 
+# Test.
 [] > nan-not-eq-nan
   nan > not-a-number!
   not. > @
@@ -39,104 +41,122 @@
       not-a-number
       not-a-number
 
+# Test.
 [] > nan-not-lt-number
   eq. > @
     nan.lt 42
     FALSE
 
+# Test.
 [] > nan-not-lt-nan
   nan > not-a-number!
   eq. > @
     not-a-number.lt not-a-number
     FALSE
 
+# Test.
 [] > nan-not-lte-number
   eq. > @
     nan.lte 42
     FALSE
 
+# Test.
 [] > nan-not-lte-nan
   nan > not-a-number!
   eq. > @
     not-a-number.lte not-a-number
     FALSE
 
+# Test.
 [] > nan-not-gt-number
   eq. > @
     nan.gt 42
     FALSE
 
+# Test.
 [] > nan-not-gt-nan
   nan > not-a-number!
   eq. > @
     not-a-number.gt not-a-number
     FALSE
 
+# Test.
 [] > nan-not-gte-number
   eq. > @
     nan.gte 42
     FALSE
 
+# Test.
 [] > nan-not-gte-nan
   nan > not-a-number!
   eq. > @
     not-a-number.gte not-a-number
     FALSE
 
+# Test.
 [] > nan-times-number-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.times 42).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-times-nan-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.times not-a-number).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-div-number-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.div 42).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-div-nan-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.div not-a-number).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-plus-number-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.plus 42).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-plus-nan-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.plus not-a-number).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-neg-is-nan
   nan > not-a-number!
   eq. > @
     not-a-number.neg.as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-minus-number-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.minus 42).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-minus-nan-is-nan
   nan > not-a-number!
   eq. > @
     (not-a-number.minus not-a-number).as-bytes
     not-a-number.as-bytes
 
+# Test.
 [] > nan-as-bytes-is-bytes-of-zero-div-zero
   eq. > @
     nan.as-bytes

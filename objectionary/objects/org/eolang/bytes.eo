@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +23,21 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
+# Bytes.
 [] > bytes
-  # Equals to another object
+  # Equals to another object.
   [x] > eq /bool
 
-  # Total number of bytes
+  # Total number of bytes.
   [] > size /int
 
-  # Represents a sub-sequence inside the current one
+  # Represents a sub-sequence inside the current one.
   [start len] > slice /bytes
 
-  # Turn this chain of bytes into a string in UTF-8
+  # Turn this chain of bytes into a string in UTF-8.
   [] > as-string /string
 
   # Turn this chain of eight bytes into an integer.
@@ -49,34 +50,34 @@
   # be an error returned.
   [] > as-float /float
 
-  # Calculate bitwise and
+  # Calculate bitwise and.
   [b] > and /bytes
 
-  # Calculate bitwise or
+  # Calculate bitwise or.
   [b] > or /bytes
 
-  # Calculate bitwise xor
+  # Calculate bitwise xor.
   [b] > xor /bytes
 
-  # Calculate bitwise not
+  # Calculate bitwise not.
   [] > not /bytes
 
-  # Calculate bitwise left shift
+  # Calculate bitwise left shift.
   [x] > left
-    ^.right (x.neg) > @
+    ^.right x.neg > @
 
-  # Calculate bitwise right shift
+  # Calculate bitwise right shift.
   [x] > right /bytes
 
-  # Converts to bool
+  # Converts to bool.
   [] > as-bool
     ^.eq 01- > @
 
-  # Return itself
+  # Return itself.
   [] > as-bytes
     ^ > @
 
   # Concatenation of two byte sequences:
   # the current and the provided one,
-  # as a new sequence
+  # as a new sequence.
   [b] > concat /bytes

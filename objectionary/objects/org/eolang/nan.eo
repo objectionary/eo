@@ -23,49 +23,49 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
-# Not a number
+# Not a number.
 [] > nan
   0.0.div 0.0 > @
 
-  # Tests that $ = x
+  # Tests that $ = x.
   [x] > eq
     FALSE > @
 
-  # Tests that $ < x
+  # Tests that $ < x.
   [x] > lt
     FALSE > @
 
-  # Tests that $ ≤ x
+  # Tests that $ ≤ x.
   [x] > lte
     FALSE > @
 
-  # Tests that $ > x
+  # Tests that $ > x.
   [x] > gt
     FALSE > @
 
-  # Tests that $ ≥ x
+  # Tests that $ ≥ x.
   [x] > gte
     FALSE > @
 
-  # Multiplication of $ and x
+  # Multiplication of $ and x.
   [x] > times
     ^ > @
 
-  # Sum of $ and x
+  # Sum of $ and x.
   [x] > plus
     ^ > @
 
-  # Negation of $
+  # Negation of $.
   [] > neg
     ^ > @
 
-  # Difference between $ and x
+  # Difference between $ and x.
   [x] > minus
     ^ > @
 
-  # Quotient of the division of $ by x
+  # Quotient of the division of $ by x.
   [x] > div
     ^ > @

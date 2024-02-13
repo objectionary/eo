@@ -23,19 +23,20 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
+# Integer.
 [as-bytes] > int
   as-bytes > @
 
-  # Tests that $ = x
+  # Tests that $ = x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x
+  # Tests that $ < x.
   [x] > lt
     gt. > @
       plus.
@@ -44,32 +45,32 @@
           ^
       0
 
-  # Tests that $ ≤ x
+  # Tests that $ ≤ x.
   [x] > lte
     not. > @
       ^.gt x
 
-  # Tests that $ > x
+  # Tests that $ > x.
   [x] > gt /bool
 
-  # Tests that $ ≥ x
+  # Tests that $ ≥ x.
   [x] > gte
     not. > @
       ^.lt x
 
-  # Change the sign of the number
+  # Change the sign of the number.
   [] > neg
     ^.times -1 > @
 
-  # Add to the current one
+  # Add to the current one.
   [x] > plus /int
 
-  # Subtract from the current one
+  # Subtract from the current one.
   [x] > minus
     ^.plus x.neg > @
 
-  # Multiplication this one by another int
+  # Multiplication this one by another int.
   [x] > times /int
 
-  # Divide this one by another int
+  # Divide this one by another int.
   [x] > div /int

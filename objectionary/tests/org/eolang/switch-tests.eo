@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > switch-simple-case
   eq. > @
     switch
@@ -38,6 +39,7 @@
           "2"
     "2"
 
+# Test.
 [] > switch-strings-case
   memory "swordfish" > password
   eq. > @
@@ -54,6 +56,7 @@
           "password is wrong"
     "password is correct!"
 
+# Test.
 [] > switch-with-several-true-cases
   eq. > @
     switch
@@ -69,6 +72,7 @@
           "TRUE2"
     "TRUE1"
 
+# Test.
 [] > switch-with-all-false-cases
   eq. > @
     switch
@@ -81,6 +85,7 @@
           "FALSE2"
     TRUE
 
+# Test.
 [] > switch-case-with-error
   try > @
     switch *
@@ -90,11 +95,15 @@
         "switch cases are empty"
     nop
 
+# Test.
 [] > switch-complex-case
+  # Inner object 1.
   [] > c1
     FALSE > @
+  # Inner object 1.
   [] > c2
     "1".eq "2" > @
+  # Inner object 1.
   [] > c3
     TRUE > @
   eq. > @

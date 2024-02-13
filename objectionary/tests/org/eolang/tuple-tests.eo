@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,31 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > makes-tuple-through-special-syntax
   eq. > @
     (* 1 2).length
     2
 
+# Test.
 [] > gets-lengths-of-empty-tuple-through-special-syntax
   eq. > @
     *.length
     0
 
-# check that an empty tuples .length equals to zero
+# Check that an empty tuples .length equals to zero.
 [] > empty-tuple-length
+  # Array.
   [elements] > arr
   eq. > @
     (arr *).elements.length
     0
 
-# check that tuple.length works properly for non-empty tuples
+# Check that tuple.length works properly for non-empty tuples.
 [] > non-empty-tuple-length-test
+  # Array.
   [elements] > arr
   eq. > @
     arr
@@ -53,12 +57,14 @@
     .length
     5
 
+# Test.
 [] > tuple-as-a-bound-attribute-size-0
   * > anArray
   eq. > @
     anArray.length
     0
 
+# Test.
 [] > tuple-as-a-bound-attribute-size-1
   * > anArray
     100
@@ -66,6 +72,7 @@
     anArray.at 0
     100
 
+# Test.
 [] > tuple-as-a-bound-attribute-size-2
   * > arr!
     1
@@ -78,6 +85,7 @@
       arr.at 1
       2
 
+# Test.
 [] > tuple-with
   with. > arr!
     * 1 2 3
@@ -98,6 +106,7 @@
       arr.at 3
       "with"
 
+# Test.
 [] > tuple-at-with-error
   eq. > @
     try
@@ -110,6 +119,7 @@
       nop
     "Given index is out of tuple bounds"
 
+# Test.
 [] > tuple-fluent-with
   ((*.with 1).with 2).with 3 > arr
   and. > @
@@ -124,6 +134,7 @@
       arr.at 2
       3
 
+# Test.
 [] > tuple-fluent-with-indented
   *
   .with 1
@@ -141,23 +152,27 @@
       arr.at 2
       3
 
+# Test.
 [] > gets-lengths-of-empty-tuple
   tuple.empty > a
   eq. > @
     a.length
     0
 
+# Test.
 [] > gets-lengths-of-empty-tuple-without-additional-obj
   eq. > @
     tuple.empty.length
     0
 
+# Test.
 [] > creates-empty-tuple-with-number
   tuple.empty.with 3 > a
   eq. > @
     a.at 0
     3
 
+# Test.
 [] > tuple-empty-fluent-with-indented-keyword
   tuple
   .empty
@@ -176,18 +191,21 @@
       arr.at 2
       3
 
+# Test.
 [] > tuple-with-negative-index-gets-last
   * 0 1 2 3 4 > arr
   eq. > @
     arr.at -1
     4
 
+# Test.
 [] > tuple-with-negative-index-gets-first
   * 0 1 2 3 4 > arr
   eq. > @
     arr.at -5
     0
 
+# Test.
 [] > tuple-with-negative-index-out-of-bounds
   * 0 1 2 3 4 > arr
   eq. > @

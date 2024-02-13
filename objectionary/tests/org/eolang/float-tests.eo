@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,38 +24,45 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > less-true
   eq. > @
     -10.5.lt 50.3
     TRUE
 
+# Test.
 [] > less-equal
   eq. > @
     -10.7.lt -10.7
     FALSE
 
+# Test.
 [] > less-false
   eq. > @
     10.13.lt -5.3
     FALSE
 
+# Test.
 [] > greater-true
   gt. > @
     -200.1
     -1000.0
 
+# Test.
 [] > greater-false
   eq. > @
     0.5.gt 100.1
     FALSE
 
+# Test.
 [] > greater-equal
   eq. > @
     0.7.gt 0.7
     FALSE
 
+# Test.
 [] > leq-true
   eq. > @
     lte.
@@ -63,6 +70,7 @@
       -100.6
     TRUE
 
+# Test.
 [] > leq-equal
   eq. > @
     lte.
@@ -70,6 +78,7 @@
       50.1
     TRUE
 
+# Test.
 [] > leq-false
   eq. > @
     lte.
@@ -77,6 +86,7 @@
       -10.11
     FALSE
 
+# Test.
 [] > gte-true
   eq. > @
     gte.
@@ -84,6 +94,7 @@
       -1100.1
     TRUE
 
+# Test.
 [] > gte-equal
   eq. > @
     gte.
@@ -91,6 +102,7 @@
       113.333
     TRUE
 
+# Test.
 [] > gte-false
   eq. > @
     gte.
@@ -98,26 +110,31 @@
       10.9
     FALSE
 
+# Test.
 [] > float-zero-not-equal-to-nan
   eq. > @
     0.0.eq nan
     FALSE
 
+# Test.
 [] > float-not-equal-to-nan
   eq. > @
     52.4.eq nan
     FALSE
 
+# Test.
 [] > float-not-equal-to-positive-infinity
   eq. > @
     52.4.eq positive-infinity
     FALSE
 
+# Test.
 [] > float-not-equal-to-negative-infinity
   eq. > @
     52.4.eq negative-infinity
     FALSE
 
+# Test.
 [] > zero-eq-to-zero
   eq. > @
     eq.
@@ -125,81 +142,97 @@
       0.0
     TRUE
 
+# Test.
 [] > zero-equal-to-neg-zero
   eq. > @
     0.0.eq -0.0
     TRUE
 
+# Test.
 [] > neg-zero-equal-to-zero
   eq. > @
     -0.0.eq 0.0
     TRUE
 
+# Test.
 [] > zero-not-greater-that-neg-zero
   eq. > @
     0.0.gt -0.0
     FALSE
 
+# Test.
 [] > neg-zero-not-greater-that-zero
   eq. > @
     -0.0.gt 0.0
     FALSE
 
+# Test.
 [] > zero-not-less-that-neg-zero
   eq. > @
     0.0.lt -0.0
     FALSE
 
+# Test.
 [] > neg-zero-not-less-that-zero
   eq. > @
     -0.0.lt 0.0
     FALSE
 
+# Test.
 [] > zero-gte-neg-zero
   eq. > @
     0.0.gte -0.0
     TRUE
 
+# Test.
 [] > neg-zero-gte-zero
   eq. > @
     -0.0.gte 0.0
     TRUE
 
+# Test.
 [] > zero-lte-neg-zero
   eq. > @
     0.0.lte -0.0
     TRUE
 
+# Test.
 [] > neg-zero-lte-zero
   eq. > @
     -0.0.lte 0.0
     TRUE
 
+# Test.
 [] > float-zero-eq-to-int-zero
   eq. > @
     0.0
     0
 
+# Test.
 [] > float-neg-zero-eq-to-int-zero
   eq. > @
     -0.0
     0
 
+# Test.
 [] > eq-true
   eq. > @
     123.5
     123.5
 
+# Test.
 [] > eq-false
   eq. > @
     123.5.eq 42.4
     FALSE
 
+# Test.
 [] > compares-two-different-types
   eq. > @
     3.14.eq "Hello"
     FALSE
 
+# Test.
 [] > times-by-zero
   eq. > @
     times.
@@ -207,6 +240,7 @@
       0.0
     0.0
 
+# Test.
 [] > times-by-one
   eq. > @
     times.
@@ -214,6 +248,7 @@
       1.0
     574.9
 
+# Test.
 [] > times-two-positives
   eq. > @
     times.
@@ -221,6 +256,7 @@
       311.985
     179235.3825
 
+# Test.
 [] > times-two-negatives
   eq. > @
     times.
@@ -228,6 +264,7 @@
       -311.985
     179235.3825
 
+# Test.
 [] > times-diff-sign
   eq. > @
     times.
@@ -235,6 +272,7 @@
       0.311985
     -0.1792353825
 
+# Test.
 [] > add-test
   eq. > @
     plus.
@@ -242,6 +280,7 @@
       311.985
     886.485
 
+# Test.
 [] > add-wrong-args
   not. > @
     eq.
@@ -255,11 +294,13 @@
         nop
       66.5
 
+# Test.
 [] > neg-test
   eq. > @
     886.485.neg
     -886.485
 
+# Test.
 [] > sub-test
   eq. > @
     minus.
@@ -267,6 +308,7 @@
       311.985
     262.515
 
+# Test.
 [] > div-test
   eq. > @
     div.
@@ -274,11 +316,13 @@
       0.5
     31.0
 
+# Test.
 [] > zero-div-zero-as-bytes-is-equal-to-nan-as-bytes
   eq. > @
     (0.0.div 0.0).as-bytes
     nan.as-bytes
 
+# Test.
 [] > float-times-nan-is-nan
   nan > not-a-number!
   eq. > @
@@ -286,6 +330,7 @@
       35.2.times not-a-number
     not-a-number.as-bytes
 
+# Test.
 [] > float-plus-nan-is-nan
   nan > not-a-number!
   eq. > @
@@ -293,6 +338,7 @@
       35.2.plus not-a-number
     not-a-number.as-bytes
 
+# Test.
 [] > float-minus-nan-is-nan
   nan > not-a-number!
   eq. > @
@@ -300,6 +346,7 @@
       35.2.minus not-a-number
     not-a-number.as-bytes
 
+# Test.
 [] > float-div-nan-is-nan
   nan > not-a-number!
   eq. > @
@@ -307,122 +354,145 @@
       35.2.div not-a-number
     not-a-number.as-bytes
 
+# Test.
 [] > float-not-gt-nan
   eq. > @
     52.3.gt nan
     FALSE
 
+# Test.
 [] > float-not-gte-nan
   eq. > @
     52.3.gte nan
     FALSE
 
+# Test.
 [] > float-not-lt-nan
   eq. > @
     52.3.lt nan
     FALSE
 
+# Test.
 [] > float-not-lte-nan
   eq. > @
     52.3.lte nan
     FALSE
 
+# Test.
 [] > one-div-zero-is-positive-infinity
   eq. > @
     1.0.div 0.0
     positive-infinity
 
+# Test.
 [] > minus-one-div-zero-is-negative-infinity
   eq. > @
     -1.0.div 0.0
     negative-infinity
 
+# Test.
 [] > positive-float-plus-positive-infinity
   positive-infinity > pos-inf
   eq. > @
     42.5.plus pos-inf
     pos-inf
 
+# Test.
 [] > positive-float-minus-positive-infinity
   eq. > @
     42.5.minus positive-infinity
     negative-infinity
 
+# Test.
 [] > positive-float-times-positive-infinity
   positive-infinity > pos-inf
   eq. > @
     42.5.times pos-inf
     pos-inf
 
+# Test.
 [] > positive-float-div-positive-infinity
   eq. > @
     42.5.div positive-infinity
     0.0
 
+# Test.
 [] > negative-float-plus-positive-infinity
   positive-infinity > pos-inf
   eq. > @
     -42.5.plus pos-inf
     pos-inf
 
+# Test.
 [] > negative-float-minus-positive-infinity
   eq. > @
     -42.5.minus positive-infinity
     negative-infinity
 
+# Test.
 [] > negative-float-times-positive-infinity
   eq. > @
     -42.5.times positive-infinity
     negative-infinity
 
+# Test.
 [] > negative-float-div-positive-infinity
   eq. > @
     -42.5.div positive-infinity
     -0.0
 
+# Test.
 [] > positive-float-plus-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     42.5.plus neg-inf
     neg-inf
 
+# Test.
 [] > positive-float-minus-negative-infinity
   eq. > @
     42.5.minus negative-infinity
     positive-infinity
 
+# Test.
 [] > positive-float-times-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     42.5.times neg-inf
     neg-inf
 
+# Test.
 [] > positive-float-div-negative-infinity
   eq. > @
     42.5.div negative-infinity
     -0.0
 
+# Test.
 [] > negative-float-plus-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     -42.5.plus neg-inf
     neg-inf
 
+# Test.
 [] > negative-float-minus-negative-infinity
   eq. > @
     -42.5.minus negative-infinity
     positive-infinity
 
+# Test.
 [] > negative-float-times-negative-infinity
   eq. > @
     -42.5.times negative-infinity
     positive-infinity
 
+# Test.
 [] > negative-float-div-negative-infinity
   eq. > @
     -42.5.div negative-infinity
     0.0
 
+# Test.
 [] > to-bytes-and-backwards
   eq. > @
     as-float.
@@ -430,15 +500,18 @@
         3.1415926
     3.1415926
 
+# Test.
 [] > as-bytes-equals-to-float
   eq. > @
     3.1415926.as-bytes
     3.1415926
 
+# Test.
 [] > as-bytes-equals-to-float-backwards
   eq. > @
     3.1415926.as-bytes
     3.1415926
 
+# Test.
 [] > inline-float-computation
   (4.0.plus 5.7).eq 9.7 > @

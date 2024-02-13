@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,98 +24,111 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.35.0
++version 0.35.2
 
-# Equal to
+# Equal to.
 [] > negative-infinity-is-equal-to-one-div-zero
   eq. > @
     negative-infinity
     -1.0.div 0.0
 
+# Test.
 [] > negative-infinity-eq-negative-infinity
   eq. > @
     negative-infinity
     negative-infinity
 
+# Test.
 [] > negative-infinity-not-eq-positive-infinity
   not. > @
     eq.
       negative-infinity
       positive-infinity
 
+# Test.
 [] > negative-infinity-not-eq-nan
   not. > @
     eq.
       negative-infinity
       nan
 
+# Test.
 [] > negative-infinity-not-eq-int
   not. > @
     eq.
       negative-infinity
       42
 
+# Test.
 [] > negative-infinity-not-eq-float
   not. > @
     eq.
       negative-infinity
       42.5
 
-# Less than
+# Less than.
 [] > negative-infinity-lt-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     neg-inf.lt neg-inf
     FALSE
 
+# Test.
 [] > negative-infinity-lt-positive-infinity
   eq. > @
     negative-infinity.lt positive-infinity
     TRUE
 
+# Test.
 [] > negative-infinity-not-lt-nan
   eq. > @
     negative-infinity.lt nan
     FALSE
 
+# Test.
 [] > negative-infinity-lt-int
   lt. > @
     negative-infinity
     42
 
+# Test.
 [] > negative-infinity-lt-float
   lt. > @
     negative-infinity
     42.5
 
-# Less or equal than
+# Less or equal than.
 [] > negative-infinity-lte-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     neg-inf.lte neg-inf
     TRUE
 
+# Test.
 [] > negative-infinity-lte-positive-infinity
   eq. > @
     negative-infinity.lte positive-infinity
     TRUE
 
+# Test.
 [] > negative-infinity-not-lte-nan
   eq. > @
     negative-infinity.lte nan
     FALSE
 
+# Test.
 [] > negative-infinity-lte-int
   eq. > @
     negative-infinity.lte 42
     TRUE
 
+# Test.
 [] > negative-infinity-lte-float
   eq. > @
     negative-infinity.lte 42.5
     TRUE
 
-# Greater than
+# Greater than.
 [] > negative-infinity-gt-negative-infinity
   negative-infinity > neg-inf
   not. > @
@@ -123,48 +136,56 @@
       neg-inf
       neg-inf
 
+# Test.
 [] > negative-infinity-not-gt-positive-infinity
   eq. > @
     negative-infinity.gt positive-infinity
     FALSE
 
+# Test.
 [] > negative-infinity-not-gt-nan
   eq. > @
     negative-infinity.gt nan
     FALSE
 
+# Test.
 [] > negative-infinity-not-gt-int
   eq. > @
     negative-infinity.gt 42
     FALSE
 
+# Test.
 [] > negative-infinity-not-gt-float
   eq. > @
     negative-infinity.gt 42.5
     FALSE
 
-# Greater or equal than
+# Greater or equal than.
 [] > negative-infinity-gte-negative-infinity
   negative-infinity > neg-inf
   eq. > @
     neg-inf.gte neg-inf
     TRUE
 
+# Test.
 [] > negative-infinity-not-gte-positive-infinity
   eq. > @
     negative-infinity.gte positive-infinity
     FALSE
 
+# Test.
 [] > negative-infinity-not-gte-nan
   eq. > @
     negative-infinity.gte nan
     FALSE
 
+# Test.
 [] > negative-infinity-not-gte-int
   eq. > @
     negative-infinity.gte 42
     FALSE
 
+# Test.
 [] > negative-infinity-not-gte-float
   eq. > @
     negative-infinity.gte 42.5
@@ -529,7 +550,7 @@
 #    as-bytes.
 #      negative-infinity.div 22 positive-infinity -11
 #    nan.as-bytes
-# Bytes
+# Bytes.
 [] > negative-infinity-as-bytes-is-valid
   eq. > @
     negative-infinity.as-bytes

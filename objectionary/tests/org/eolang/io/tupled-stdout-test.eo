@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,15 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.35.0
++version 0.35.2
 
+# Single tupled stdout.
 [] > tupled-stdout-single
   tupled-stdout > @
     *
       "Hello, world! Single tupled.\n"
 
+# Tupled stdout with several objects.
 [] > tupled-stdout-several
   tupled-stdout > @
     *
@@ -42,6 +44,7 @@
       "Several "
       "tupled.\n"
 
+# Test.
 [] > tupled-stdout-empty
   eq. > @
     try

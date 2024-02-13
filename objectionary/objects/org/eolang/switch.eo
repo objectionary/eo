@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
 # Allow to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
@@ -42,6 +42,9 @@
 # This object returns value of only first truly statement.
 [cases] > switch
   cases.length > len!
+  # Take case by given index.
+  # If case key is TRUE, return case value.
+  # Otherwise take next case.
   [index] > case-at
     if. > @
       index.eq ^.len

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > writes-and-slice-ram
   ram 1024 > r
   eq. > @
@@ -38,6 +39,7 @@
           s.slice 0 5
     "Hello"
 
+# Test.
 [] > writes-integer-to-ram
   ram 1024 > r
   3.as-bytes > b
@@ -48,6 +50,7 @@
       (r.slice 0 8).as-int.eq 3
     TRUE
 
+# Test.
 [] > several-slices-ram
   ram 1024 > r
   eq. > @
@@ -63,6 +66,7 @@
           (r.slice 10 6).slice 0 6
     "abcdef"
 
+# Test.
 [] > intersection-writes-in-ram
   ram 64 > r
   eq. > @
@@ -78,8 +82,10 @@
           (r.slice 0 10).slice 0 10
     "12345-----"
 
+# Test.
 [] > slice-chain
   ram 1024 > r
+  # Cut hello.
   [] > cut-hello
     seq > @
       *

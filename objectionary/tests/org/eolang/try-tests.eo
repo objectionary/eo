@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > simple-division-by-zero
   try > @
     []
@@ -37,6 +38,7 @@
       QQ.io.stdout > @
         "\nfinally"
 
+# Test.
 [] > catches-simple-exception
   eq. > @
     try
@@ -51,6 +53,7 @@
         FALSE > @
     "Start index + length must not exceed string length but was 12 > 11"
 
+# Test.
 [] > two-nested-try-blocks
   eq. > @
     try
@@ -69,6 +72,7 @@
       nop
     "Start index + length must not exceed string length but was 12 > 11"
 
+# Test.
 [] > try-without-error-block
   eq. > @
     try
@@ -79,6 +83,7 @@
       nop
     32
 
+# Test.
 [] > try-memory-update
   memory 0 > m
   eq. > @
@@ -94,6 +99,7 @@
         m.as-int
     3
 
+# Test.
 [] > try-memory-update-catch
   memory 0 > m
   eq. > @

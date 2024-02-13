@@ -23,46 +23,47 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
-# Negative infinity
+# Negative infinity.
 [] > negative-infinity
   -1.0.div 0.0 > @
 
-  # Tests that $ = x
+  # Tests that $ = x.
   [x] > eq
     eq. > @
       ^.as-bytes
       x.as-bytes
 
-  # Tests that $ < x
+  # Tests that $ < x.
   [x] > lt
     x > value!
     not. > @
       or.
-        value.as-bytes.eq (nan.as-bytes)
+        value.as-bytes.eq nan.as-bytes
         ^.eq value
 
-  # Tests that $ ≤ x
+  # Tests that $ ≤ x.
   [x] > lte
     not. > @
       eq.
         x.as-bytes
         nan.as-bytes
 
-  # Tests that $ > x
+  # Tests that $ > x.
   [x] > gt
     FALSE > @
 
-  # Tests that $ ≥ x
+  # Tests that $ ≥ x.
   [x] > gte
     ^.eq x > @
 
-  # Multiplication of $ and x
+  # Multiplication of $ and x.
   [x] > times
     x > value!
 
+    # Tests if given number is greater than float or integer zero.
     [num] > is-num-gt-zero
       try > @
         []
@@ -71,11 +72,12 @@
           num.gt 0.0 > @
         FALSE
 
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
 
+    # Tests if given number is equal to nan, float or integer zero.
     [num] > is-nan-or-zero
       or. > @
         or.
@@ -92,7 +94,7 @@
         negative-infinity
         positive-infinity
 
-  # Sum of $ and x
+  # Sum of $ and x.
   [x] > plus
     positive-infinity.as-bytes > pos-inf-as-bytes!
     x > value!
@@ -108,12 +110,12 @@
       nan
       negative-infinity
 
-  # Difference between $ and x
+  # Difference between $ and x.
   [x] > minus
     x > value!
     negative-infinity.as-bytes > neg-inf-as-bytes!
 
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
@@ -127,11 +129,12 @@
   # Quotient of the division of $ by x
   [x] > div
     x > value!
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
     [num] > is-nan
       not. > @
         num.eq num
 
+    # Tests if given number is equal to nan, positive or negative infinity.
     [num] > is-nan-or-infinite
       or. > @
         or.
@@ -139,6 +142,7 @@
           num.eq positive-infinity
         num.eq negative-infinity
 
+    # Tests if given number is greater or equal to float or integer zero.
     [num] > is-num-gte-zero
       try > @
         []

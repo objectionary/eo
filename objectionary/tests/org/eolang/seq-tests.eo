@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > seq-single-dataization-float-less-than-test
   memory 0.0 > counter
   lt. > @
@@ -36,6 +37,7 @@
         counter.as-float
     2.0
 
+# Test.
 [] > seq-single-dataization-float-greater-than-test
   memory 0.0 > counter
   not. > @
@@ -47,6 +49,7 @@
           counter.as-float
       1.1
 
+# Test.
 [] > seq-single-dataization-int-less-than-test
   memory 0 > counter
   lt. > @
@@ -57,6 +60,7 @@
         counter.as-int
     2
 
+# Test.
 [] > seq-single-dataization-int-greater-than-test
   memory 0 > counter
   lte. > @

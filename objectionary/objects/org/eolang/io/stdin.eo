@@ -23,13 +23,14 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.35.0
-+version 0.35.0
++rt jvm org.eolang:eo-runtime:0.35.2
++version 0.35.2
 
+# Stdin.
 [] > stdin
   # Consumes only one line from the standard input stream
-  # Datarizes to an error object if there is no line to consume
+  # Datarizes to an error object if there is no line to consume.
   [] > next-line /string
 
-  # Consumes all data from the standard input stream
+  # Consumes all data from the standard input stream.
   [] > @ /string

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > less-true
   eq. > @
     lt.
@@ -33,6 +34,7 @@
       50
     TRUE
 
+# Test.
 [] > less-equal
   eq. > @
     not.
@@ -41,6 +43,7 @@
         10
     TRUE
 
+# Test.
 [] > less-false
   eq. > @
     not.
@@ -49,6 +52,7 @@
         -5
     TRUE
 
+# Test.
 [] > greater-true
   eq. > @
     gt.
@@ -56,6 +60,7 @@
       -1000
     TRUE
 
+# Test.
 [] > greater-false
   eq. > @
     not.
@@ -64,6 +69,7 @@
         100
     TRUE
 
+# Test.
 [] > greater-equal
   eq. > @
     not.
@@ -72,6 +78,7 @@
         0
     TRUE
 
+# Test.
 [] > leq-true
   eq. > @
     lte.
@@ -79,6 +86,7 @@
       -100
     TRUE
 
+# Test.
 [] > leq-equal
   eq. > @
     lte.
@@ -86,6 +94,7 @@
       50
     TRUE
 
+# Test.
 [] > leq-false
   eq. > @
     not.
@@ -94,6 +103,7 @@
         -10
     TRUE
 
+# Test.
 [] > gte-true
   eq. > @
     gte.
@@ -101,6 +111,7 @@
       -1100
     TRUE
 
+# Test.
 [] > gte-equal
   eq. > @
     gte.
@@ -108,6 +119,7 @@
       113
     TRUE
 
+# Test.
 [] > gte-false
   eq. > @
     not.
@@ -116,6 +128,7 @@
         10
     TRUE
 
+# Test.
 [] > int-equal-to-nan-and-infinites-is-false
   eq. > @
     and.
@@ -131,6 +144,7 @@
       (42.eq negative-infinity).eq FALSE
     TRUE
 
+# Test.
 [] > zero-eq-to-zero
   eq. > @
     eq.
@@ -138,6 +152,7 @@
       0
     TRUE
 
+# Test.
 [] > int-zero-eq-to-float-zero
   eq. > @
     eq.
@@ -145,6 +160,7 @@
       0.0
     TRUE
 
+# Test.
 [] > eq-true
   eq. > @
     eq.
@@ -152,6 +168,7 @@
       123
     TRUE
 
+# Test.
 [] > eq-false
   eq. > @
     not.
@@ -160,12 +177,15 @@
         42
     TRUE
 
+# Test.
 [] > compares-two-different-types
   eq. > @
     68.eq "12345678"
     FALSE
 
+# Test.
 [] > calculates-fibonacci-number-with-recursion
+  # Fibonacci.
   [n] > fibo
     if. > @
       n.lt 3
@@ -177,20 +197,27 @@
     fibo 4
     3
 
+# Test.
 [] > calculates-fibonacci-number-with-tail
   eq. > @
     fibonacci 4
     3
+
+  # Fibonacci.
   [n] > fibonacci
     if. > @
       n.lt 3
       small n
       rec n 1 1
+
+    # Small.
     [n] > small
       if. > @
         n.eq 2
         1
         n
+
+    # Recursive.
     [n minus1 minus2] > rec
       if. > @
         n.eq 3
@@ -227,11 +254,13 @@
     13.div -5
     -2
 
+# Test.
 [] > div-less-than-one
   eq. > @
     1.div 5
     0
 
+# Test.
 [] > to-bytes-and-backwards
   eq. > @
     as-int.
@@ -239,16 +268,19 @@
         42
     42
 
+# Test.
 [] > as-bytes-equals-to-int
   eq. > @
     42
     42.as-bytes
 
+# Test.
 [] > as-bytes-equals-to-int-backwards
   eq. > @
     42.as-bytes
     42
 
+# Test.
 [] > multiply-by-zero
   eq. > @
     1000.times 0

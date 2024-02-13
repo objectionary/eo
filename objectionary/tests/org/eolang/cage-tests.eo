@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2023 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,11 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.0
++version 0.35.2
 
+# Test.
 [] > writes-into-cage
+  # Object with free attribute.
   [z] > a
   cage a > x
   eq. > @
@@ -37,6 +39,7 @@
         x.z
     7
 
+# Test.
 [] > avoid-infinite-loop
   cage > x
     TRUE.if
@@ -52,7 +55,9 @@
         x
     1
 
+# Test.
 [] > cage-nested-objects
+  # Dummy object.
   [x] > dummy
     x > @
   cage dummy > c
@@ -66,6 +71,7 @@
         c.x.x
     42
 
+# Test.
 [] > dataizes-encaged-object-lazily-first
   cage 0 > x
   cage 0.plus > sum
@@ -79,6 +85,7 @@
         sum
     8
 
+# Test.
 [] > dataizes-encaged-object-lazily-second
   cage 0 > x
   cage 0.plus > sum
@@ -92,6 +99,7 @@
         sum
     8
 
+# Test.
 [] > dataizes-encaged-object-lazily-third
   cage 0 > x
   cage 0 > y
@@ -108,6 +116,7 @@
         sum
     17
 
+# Test.
 [] > stores-abstract-object-into-cage
   eq. > @
     seq
@@ -118,12 +127,17 @@
         c.@
     112
 
+# Test.
 [] > multi-layer-volatility
   memory 0 > ma
   cage a > ca
+  # Layer A.
   [] > a
+    # Layer A.phi.
     [] > @
+      # Layer A.phi.phi.
       [] > @
+        # Layer A.phi.phi.phi.
         [] > @
           seq > @
             *
@@ -131,9 +145,13 @@
               ma.as-int
   memory 0 > mb
   cage b > cb
+  # Layer B.
   [] > b
+    # Layer B.phi.
     [] > @
+      # Layer B.phi.phi.
       [] > @
+        # Layer B.phi.phi.phi.
         [] > @
           seq > z
             *
@@ -149,10 +167,13 @@
         cb.z
         cb.z.plus 40
 
+# Test.
 [] > infinite-loop-check
+  # Recursive sum object.
   [value] > pyint
+    # Add.
     [y] > add
-      pyint (value.plus (y.value)) > @
+      pyint (value.plus y.value) > @
   cage pyint > x
   cage > tmp
     x.add
@@ -166,6 +187,7 @@
         tmp.value
     1
 
+# Test.
 [] > catches-writing-objects-of-different-types
   cage 5 > cge
   eq. > @
