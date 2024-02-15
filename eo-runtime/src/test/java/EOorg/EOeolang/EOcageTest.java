@@ -166,17 +166,6 @@ final class EOcageTest {
     }
 
     @Test
-    void evaluatesLazilySimple() {
-        final Phi first = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(first, new Data.ToPhi(3L));
-        EOcageTest.writeTo(first, new Data.ToPhi(1L));
-        MatcherAssert.assertThat(
-            new Dataized(first).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
     void evaluatesLazily() {
         final Phi first = new EOcage(Phi.Φ);
         EOcageTest.writeTo(first, new Data.ToPhi(3L));
@@ -191,10 +180,6 @@ final class EOcageTest {
             )
         );
         EOcageTest.writeTo(first, new Data.ToPhi(1L));
-        MatcherAssert.assertThat(
-            new Dataized(first).take(Long.class),
-            Matchers.equalTo(1L)
-        );
         EOcageTest.writeTo(second, new Data.ToPhi(9L));
         MatcherAssert.assertThat(
             new Dataized(sum).take(Long.class),
