@@ -74,8 +74,7 @@ bnds: (LB bindings RB)+
 
 dispatch
     : (formation | termination) bnds? attr+ disp
-    | HOME attr+ disp
-    | XI attr+ disp
+    | (HOME | XI) (attr+ disp)?
     ;
 
 disp:

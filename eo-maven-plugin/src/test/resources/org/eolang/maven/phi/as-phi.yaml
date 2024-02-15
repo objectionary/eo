@@ -1,7 +1,3 @@
-# @todo #2864:30min Enable phi test pack. Current test pack is disabled because it fails on
-#  UnphiMojoTest#convertsToXmirAndBack because our Phi grammar (Phi.g4) does not support XI without
-#  dispatch (see line 77). We need to resolve it and enable test pack.
-skip: true
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > prints-itself
@@ -20,7 +16,7 @@ phi: |
           α1 ↦ ξ.greater-than(
             α0 ↦ Φ.org.eolang.int(
               α0 ↦ Φ.org.eolang.bytes(
-                Δ ⤍ 00-00-00-00-00-00-00-00     
+                Δ ⤍ 00-00-00-00-00-00-00-00
               )
             )
           )
