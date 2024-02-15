@@ -40,6 +40,10 @@ import org.eolang.Versionized;
 import org.eolang.Volatile;
 import org.eolang.XmirObject;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * CAGE.
  *
@@ -63,6 +67,7 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        System.out.println("EOcage::lambda");
         return new PhTracedEnclosure(this.attr("enclosure").get(), this.hashCode());
     }
 
@@ -103,6 +108,7 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
+            System.out.println("write");
             this.attr("σ").get().attr("enclosure").put(
                 this.attr("x").get()
             );
@@ -110,11 +116,10 @@ public final class EOcage extends PhDefault implements Atom {
         }
     }
 
-
-
     public static final class PhTracedEnclosure implements Phi {
         final Phi enclosure;
         final int cage;
+        private static final Set<Integer> cages_dataizing = new HashSet<>();
 
         public PhTracedEnclosure(final Phi enclosure, final int cage) {
             this.enclosure = enclosure;
@@ -123,17 +128,30 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi copy() {
-            return this.enclosure.copy();
+            System.out.println("PhTracedEnclosure::copy");
+            return new PhTracedEnclosure(this.enclosure, cage);
         }
 
         @Override
         public Attr attr(int pos) {
-            return new AtTracedEnclosure(enclosure.attr(pos).get(), cage);
+            return new AtTracedEnclosure(enclosure.attr(pos), cage);
         }
 
         @Override
         public Attr attr(String name) {
-            return new AtTracedEnclosure(enclosure.attr(name).get(), cage);
+            if (cages_dataizing.contains(cage)) {
+                throw new RuntimeException("the cage is already dataizing");
+                //System.out.println("ABOBA");
+            }
+            cages_dataizing.add(cage);
+            if (this.enclosure.hashCode() == this.cage) {
+                System.out.println("ABOBA");
+            }
+            System.out.printf("start PhTracedEnclosure::attr(\"%s\"), enclosure = %d, cage = %d\n", name, enclosure.hashCode(), cage);
+            final Attr ret = new AtTracedEnclosure(enclosure.attr(name), cage);
+            System.out.printf("finish PhTracedEnclosure::attr(\"%s\")\n", name);
+            cages_dataizing.remove(cage);
+            return enclosure.attr(name);
         }
 
         @Override
@@ -150,38 +168,45 @@ public final class EOcage extends PhDefault implements Atom {
         public String φTerm() {
             return this.getClass() + " -> " + enclosure.forma();
         }
+
+        @Override
+        public int hashCode() {
+            return enclosure.hashCode();
+        }
     }
 
     public static class AtTracedEnclosure implements Attr {
 
-        Phi enclosure;
+        Attr enclosure;
         int cage;
 
-        public AtTracedEnclosure(Phi enclosure, int cage) {
+        public AtTracedEnclosure(final Attr enclosure, final int cage) {
             this.enclosure = enclosure;
             this.cage = cage;
         }
 
         @Override
-        public Attr copy(Phi self) {
-            return new AtTracedEnclosure(enclosure, cage);
+        public Attr copy(final Phi self) {
+            return this.enclosure.copy(self);
         }
 
         @Override
         public Phi get() {
-            System.out.println("cage = " + cage + ", enclosure = " + this.enclosure.hashCode() + " = " + this.enclosure.forma() + ", " + this.enclosure.toString());
+            //System.out.println("cage = " + cage + ", enclosure = " + this.enclosure.hashCode() + " = " + this.enclosure.forma() + ", " + this.enclosure.toString());
             if (cage == this.enclosure.hashCode()) {
                 throw new ExFailure("Cage stackoverflow");
             }
-            if (enclosure instanceof Data) {
-                return enclosure;
+            Phi ret = enclosure.get();
+            if (!(ret instanceof Data)) {
+                ret = new PhTracedEnclosure(enclosure.get(), cage);
             }
-            return new PhTracedEnclosure(enclosure, cage);
+            return ret;
         }
 
         @Override
         public void put(Phi phi) {
-            this.enclosure = phi;
+            System.out.println("AtTracedEnclosure::put");
+            this.enclosure.put(phi);
             this.cage = 0;
         }
 

@@ -246,6 +246,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (attr == null) {
             final Phi found;
             if (this instanceof Atom) {
+                //System.out.println("PhDefault::attr, branch this instanceof Atom");
                 found = this.cached.get(name, new AtomSafe((Atom) this)::lambda).attr(name).get();
                 found.attr("ρ").put(this);
                 attr = new AtSimple(found);
