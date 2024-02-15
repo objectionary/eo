@@ -200,3 +200,42 @@
           nop
         cge.eq 10
     TRUE
+
+# Test
+[] > example-stack-overflow
+  cage > cge
+    plus.
+      1
+      1
+  seq > @
+    *
+      cge.write
+        plus.
+          cge
+          2
+      cge
+      TRUE
+
+# Test
+[] > not-stack-overflow
+  # Fibonacci.
+  [n] > fibo
+    if. > @
+      n.lt 2
+      1
+      times.
+        fibo (n.minus 1)
+  cage > cge
+    if.
+      TRUE
+      0
+      0
+  seq > @
+    *
+      cge.write
+        if.
+          cge.lt 2
+          cge
+          cge
+      cge
+      TRUE

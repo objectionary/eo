@@ -33,6 +33,7 @@ import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -62,7 +63,7 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return this.attr("enclosure").get();
+        return new PhTracedEnclosure(this.attr("enclosure").get(), this.hashCode());
     }
 
     /**
@@ -106,6 +107,87 @@ public final class EOcage extends PhDefault implements Atom {
                 this.attr("x").get()
             );
             return new Data.ToPhi(true);
+        }
+    }
+
+
+
+    public static final class PhTracedEnclosure implements Phi {
+        final Phi enclosure;
+        final int cage;
+
+        public PhTracedEnclosure(final Phi enclosure, final int cage) {
+            this.enclosure = enclosure;
+            this.cage = cage;
+        }
+
+        @Override
+        public Phi copy() {
+            return this.enclosure.copy();
+        }
+
+        @Override
+        public Attr attr(int pos) {
+            return new AtTracedEnclosure(enclosure.attr(pos).get(), cage);
+        }
+
+        @Override
+        public Attr attr(String name) {
+            return new AtTracedEnclosure(enclosure.attr(name).get(), cage);
+        }
+
+        @Override
+        public String locator() {
+            return enclosure.locator();
+        }
+
+        @Override
+        public String forma() {
+            return enclosure.forma();
+        }
+
+        @Override
+        public String φTerm() {
+            return this.getClass() + " -> " + enclosure.forma();
+        }
+    }
+
+    public static class AtTracedEnclosure implements Attr {
+
+        Phi enclosure;
+        int cage;
+
+        public AtTracedEnclosure(Phi enclosure, int cage) {
+            this.enclosure = enclosure;
+            this.cage = cage;
+        }
+
+        @Override
+        public Attr copy(Phi self) {
+            return new AtTracedEnclosure(enclosure, cage);
+        }
+
+        @Override
+        public Phi get() {
+            System.out.println("cage = " + cage + ", enclosure = " + this.enclosure.hashCode() + " = " + this.enclosure.forma() + ", " + this.enclosure.toString());
+            if (cage == this.enclosure.hashCode()) {
+                throw new ExFailure("Cage stackoverflow");
+            }
+            if (enclosure instanceof Data) {
+                return enclosure;
+            }
+            return new PhTracedEnclosure(enclosure, cage);
+        }
+
+        @Override
+        public void put(Phi phi) {
+            this.enclosure = phi;
+            this.cage = 0;
+        }
+
+        @Override
+        public String φTerm() {
+            return this.enclosure.φTerm();
         }
     }
 }
