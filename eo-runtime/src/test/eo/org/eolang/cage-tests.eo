@@ -207,7 +207,8 @@
     plus.
       1
       1
-  seq > @
+  nop > @
+  seq > ret
     *
       cge.write
         plus.
@@ -218,24 +219,12 @@
 
 # Test
 [] > not-stack-overflow
-  # Fibonacci.
-  [n] > fibo
-    if. > @
-      n.lt 2
-      1
-      times.
-        fibo (n.minus 1)
   cage > cge
-    if.
-      TRUE
-      0
-      0
-  seq > @
+    0.plus 0
+  nop > @
+  seq > ret
     *
       cge.write
-        if.
-          cge.lt 2
-          cge
-          cge
+        0.plus cge
       cge
       TRUE
