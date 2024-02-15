@@ -116,7 +116,7 @@ public final class EOcage extends PhDefault implements Atom {
     /**
      * Class to trace if the cage got into recursion during the dataization.
      * @since 0.36
-     * @todo #2836: 60min Add a new parameter of recursion depth. This parameter
+     * @todo #2836:60min Add a new parameter of recursion depth. This parameter
      *   should be set by user via pom.xml. We can make DATAIZING_CAGES a
      *   ConsurrentHashMap which will add thread safety to the class.
      */
