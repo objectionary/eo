@@ -27,9 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
@@ -123,19 +123,18 @@ public final class EOcage extends PhDefault implements Atom {
          * Cages that are currently dataizing. If one cage is datazing and
          * it needs to be dataized inside current dataizing, the cage will be here,
          */
-        private static final Set<Integer> DATAIZING_CAGES =
-            new ConcurrentHashMap<Integer, Object>().keySet();
+        private static final Set<Integer> DATAIZING_CAGES = new HashSet<>();
 
         /**
          * Enclosure.
          */
-        final Phi enclosure;
+        private final Phi enclosure;
 
         /**
          * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
          * was retrieved.
          */
-        final int cage;
+        private final int cage;
 
         /**
          * Ctor.
@@ -149,37 +148,42 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi copy() {
-            return new PhTracedEnclosure(this.enclosure, cage);
-        }
-
-        @Override
-        public Attr attr(int pos) {
-            return this.getAttrSafely(() -> enclosure.attr(pos));
-        }
-
-        @Override
-        public Attr attr(String name) {
-            return this.getAttrSafely(() -> enclosure.attr(name));
+            return new PhTracedEnclosure(this.enclosure, this.cage);
         }
 
         @Override
         public String locator() {
-            return enclosure.locator();
+            return this.enclosure.locator();
         }
 
         @Override
         public String forma() {
-            return enclosure.forma();
+            return this.enclosure.forma();
         }
 
         @Override
         public String φTerm() {
-            return enclosure.φTerm();
+            return this.enclosure.φTerm();
+        }
+
+        @Override
+        public Attr attr(final int pos) {
+            return this.getAttrSafely(() -> this.enclosure.attr(pos));
+        }
+
+        @Override
+        public Attr attr(final String name) {
+            return this.getAttrSafely(() -> this.enclosure.attr(name));
         }
 
         @Override
         public int hashCode() {
-            return enclosure.hashCode();
+            return this.enclosure.hashCode();
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return obj instanceof Phi && this.hashCode() == obj.hashCode();
         }
 
         /**
@@ -188,12 +192,12 @@ public final class EOcage extends PhDefault implements Atom {
          * @return The {@link Attr} if there is no StackOverflow case.
          */
         private Attr getAttrSafely(final Supplier<Attr> supplier) {
-            if (DATAIZING_CAGES.contains(cage)) {
+            if (EOcage.PhTracedEnclosure.DATAIZING_CAGES.contains(this.cage)) {
                 throw new ExFailure("The cage %s is already dataizing", this.cage);
             }
-            DATAIZING_CAGES.add(cage);
+            EOcage.PhTracedEnclosure.DATAIZING_CAGES.add(this.cage);
             final Attr ret = supplier.get();
-            DATAIZING_CAGES.remove(cage);
+            EOcage.PhTracedEnclosure.DATAIZING_CAGES.remove(this.cage);
             return ret;
         }
     }
