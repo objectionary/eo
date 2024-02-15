@@ -201,30 +201,21 @@
         cge.eq 10
     TRUE
 
-# Test
-[] > example-stack-overflow
+# Check that cage stack leads to error. Just prints the error
+# message if passes.
+[] > catches-stack-overflow
   cage > cge
-    plus.
-      1
-      1
-  nop > @
-  seq > ret
-    *
-      cge.write
-        plus.
+    0.plus
+  try > @
+    []
+      seq > @
+        *
+          cge.write
+            0.plus cge
           cge
-          2
-      cge
-      TRUE
-
-# Test
-[] > not-stack-overflow
-  cage > cge
-    0.plus 0
-  nop > @
-  seq > ret
-    *
-      cge.write
-        0.plus cge
-      cge
-      TRUE
+          FALSE
+    [stack-overflow-message]
+      QQ.io.stdout > @
+        stack-overflow-message
+    []
+      FALSE > @

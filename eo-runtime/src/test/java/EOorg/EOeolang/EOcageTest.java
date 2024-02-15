@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
@@ -267,6 +268,16 @@ final class EOcageTest {
                 new PhWith(new EOcage(Phi.Φ), 0, dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             )
+        );
+    }
+
+    @Test
+    void throwsExceptionIfRecursion() {
+        final Phi cage = new EOcage(Phi.Φ);
+        writeTo(cage, cage);
+        Assertions.assertThrows(
+            ExAbstract.class,
+            new Dataized(cage)::take
         );
     }
 

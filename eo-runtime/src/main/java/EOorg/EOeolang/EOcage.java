@@ -27,6 +27,9 @@
  */
 package EOorg.EOeolang;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import java.util.Set;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
@@ -39,10 +42,6 @@ import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.Volatile;
 import org.eolang.XmirObject;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * CAGE.
@@ -67,7 +66,6 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        System.out.println("EOcage::lambda");
         return new PhTracedEnclosure(this.attr("enclosure").get(), this.hashCode());
     }
 
@@ -108,7 +106,6 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
-            System.out.println("write");
             this.attr("σ").get().attr("enclosure").put(
                 this.attr("x").get()
             );
@@ -116,42 +113,53 @@ public final class EOcage extends PhDefault implements Atom {
         }
     }
 
-    public static final class PhTracedEnclosure implements Phi {
-        final Phi enclosure;
-        final int cage;
-        private static final Set<Integer> cages_dataizing = new HashSet<>();
+    /**
+     * Class to trace if the cage got into recursion during the dataization.
+     * @since 0.36
+     */
+    private static final class PhTracedEnclosure implements Phi {
 
-        public PhTracedEnclosure(final Phi enclosure, final int cage) {
+        /**
+         * Cages that are currently dataizing. If one cage is datazing and
+         * it needs to be dataized inside current dataizing, the cage will be here,
+         */
+        private static final Set<Integer> DATAIZING_CAGES =
+            new ConcurrentHashMap<Integer, Object>().keySet();
+
+        /**
+         * Enclosure.
+         */
+        final Phi enclosure;
+
+        /**
+         * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
+         * was retrieved.
+         */
+        final int cage;
+
+        /**
+         * Ctor.
+         * @param enclosure Enclosure.
+         * @param cage Vertex of source cage.
+         */
+        PhTracedEnclosure(final Phi enclosure, final int cage) {
             this.enclosure = enclosure;
             this.cage = cage;
         }
 
         @Override
         public Phi copy() {
-            System.out.println("PhTracedEnclosure::copy");
             return new PhTracedEnclosure(this.enclosure, cage);
         }
 
         @Override
         public Attr attr(int pos) {
-            return new AtTracedEnclosure(enclosure.attr(pos), cage);
+            return this.getAttrSafely(() -> enclosure.attr(pos));
         }
 
         @Override
         public Attr attr(String name) {
-            if (cages_dataizing.contains(cage)) {
-                throw new RuntimeException("the cage is already dataizing");
-                //System.out.println("ABOBA");
-            }
-            cages_dataizing.add(cage);
-            if (this.enclosure.hashCode() == this.cage) {
-                System.out.println("ABOBA");
-            }
-            System.out.printf("start PhTracedEnclosure::attr(\"%s\"), enclosure = %d, cage = %d\n", name, enclosure.hashCode(), cage);
-            final Attr ret = new AtTracedEnclosure(enclosure.attr(name), cage);
-            System.out.printf("finish PhTracedEnclosure::attr(\"%s\")\n", name);
-            cages_dataizing.remove(cage);
-            return enclosure.attr(name);
+            return this.getAttrSafely(() -> enclosure.attr(name));
         }
 
         @Override
@@ -166,53 +174,27 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public String φTerm() {
-            return this.getClass() + " -> " + enclosure.forma();
+            return enclosure.φTerm();
         }
 
         @Override
         public int hashCode() {
             return enclosure.hashCode();
         }
-    }
 
-    public static class AtTracedEnclosure implements Attr {
-
-        Attr enclosure;
-        int cage;
-
-        public AtTracedEnclosure(final Attr enclosure, final int cage) {
-            this.enclosure = enclosure;
-            this.cage = cage;
-        }
-
-        @Override
-        public Attr copy(final Phi self) {
-            return this.enclosure.copy(self);
-        }
-
-        @Override
-        public Phi get() {
-            //System.out.println("cage = " + cage + ", enclosure = " + this.enclosure.hashCode() + " = " + this.enclosure.forma() + ", " + this.enclosure.toString());
-            if (cage == this.enclosure.hashCode()) {
-                throw new ExFailure("Cage stackoverflow");
+        /**
+         * Get attribute tracing cages.
+         * @param supplier Ordinary way to get attribute.
+         * @return The {@link Attr} if there is no StackOverflow case.
+         */
+        private Attr getAttrSafely(final Supplier<Attr> supplier) {
+            if (DATAIZING_CAGES.contains(cage)) {
+                throw new ExFailure("The cage %s is already dataizing", this.cage);
             }
-            Phi ret = enclosure.get();
-            if (!(ret instanceof Data)) {
-                ret = new PhTracedEnclosure(enclosure.get(), cage);
-            }
+            DATAIZING_CAGES.add(cage);
+            final Attr ret = supplier.get();
+            DATAIZING_CAGES.remove(cage);
             return ret;
-        }
-
-        @Override
-        public void put(Phi phi) {
-            System.out.println("AtTracedEnclosure::put");
-            this.enclosure.put(phi);
-            this.cage = 0;
-        }
-
-        @Override
-        public String φTerm() {
-            return this.enclosure.φTerm();
         }
     }
 }
