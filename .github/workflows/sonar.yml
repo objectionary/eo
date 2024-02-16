@@ -33,4 +33,4 @@ jobs:
           CONVERT_PATH: /tmp/antlr4-to-bnf-converter
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn install -Pjacoco --batch-mode --errors && mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.qualitygate.wait=true --batch-mode --errors
+        run: mvn install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pjacoco -Dsonar.qualitygate.wait=true --batch-mode --errors
