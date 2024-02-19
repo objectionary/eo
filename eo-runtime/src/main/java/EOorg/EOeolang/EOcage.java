@@ -127,7 +127,7 @@ public final class EOcage extends PhDefault implements Atom {
 
         /**
          * Cages that are currently dataizing. If one cage is datazing and
-         * it needs to be dataized inside current dataizing, the cage will be here,
+         * it needs to be dataized inside current dataizing, the cage will be here.
          */
         private static final Set<Integer> DATAIZING_CAGES = new HashSet<>();
 
