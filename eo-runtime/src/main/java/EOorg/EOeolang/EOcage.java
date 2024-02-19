@@ -151,7 +151,7 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi copy() {
-            return new PhTracedEnclosure(this.enclosure, this.cage);
+            return new PhTracedEnclosure(this.enclosure.copy(), this.cage);
         }
 
         @Override
