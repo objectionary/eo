@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: sonar-${{ github.ref }}
   cancel-in-progress: true
@@ -35,4 +39,4 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn --batch-mode -DskipTests -Dinvoker.skip verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.qualitygate.wait=true
+        run: mvn --batch-mode install -Dinvoker.skip org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pjacoco -Dsonar.qualitygate.wait=true
