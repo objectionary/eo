@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -327,8 +328,10 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws TimeoutException If timeout limit reached
      */
     private void execWithTimeout() throws ExecutionException, TimeoutException {
+        ExecutorService service = null;
         try {
-            Executors.newSingleThreadExecutor().submit(
+            service = Executors.newSingleThreadExecutor();
+            service.submit(
                 () -> {
                     this.exec();
                     return new Object();
@@ -343,6 +346,10 @@ abstract class SafeMojo extends AbstractMojo {
                 ),
                 ex
             );
+        } finally {
+            if (service != null) {
+                service.shutdown();
+            }
         }
     }
 
