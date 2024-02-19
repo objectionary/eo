@@ -263,7 +263,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             ExAbstract.class,
             new Dataized(cage)::take,
-            "Throws exception if recursion happened"
+            "We expect the exception to be thrown since we have recursion here"
         );
     }
 
