@@ -119,7 +119,7 @@ public final class EOcage extends PhDefault implements Atom {
      * @todo #2836:60min Add a new parameter of recursion depth. This parameter
      *   should be set by user via pom.xml. We can make DATAIZING_CAGES a
      *   Map and count how many  times the cage was met.
-     * @todo #2836: 60min Make the class thread safe. It has private static
+     * @todo #2836:60min Make the class thread safe. It has private static
      *  field which can be accessed from differ thread and is not thread safe.
      *  Needs to synchronize this field.
      */
