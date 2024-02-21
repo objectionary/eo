@@ -27,16 +27,12 @@
  */
 package EOorg.EOeolang;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Supplier;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.PhTracedEnclosure;
 import org.eolang.Phi;
