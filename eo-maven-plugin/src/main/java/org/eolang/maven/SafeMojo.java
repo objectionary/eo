@@ -328,9 +328,8 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws TimeoutException If timeout limit reached
      */
     private void execWithTimeout() throws ExecutionException, TimeoutException {
-        ExecutorService service = null;
+        final ExecutorService service = Executors.newSingleThreadExecutor();
         try {
-            service = Executors.newSingleThreadExecutor();
             service.submit(
                 () -> {
                     this.exec();
@@ -347,9 +346,7 @@ abstract class SafeMojo extends AbstractMojo {
                 ex
             );
         } finally {
-            if (service != null) {
-                service.shutdown();
-            }
+            service.shutdown();
         }
     }
 
