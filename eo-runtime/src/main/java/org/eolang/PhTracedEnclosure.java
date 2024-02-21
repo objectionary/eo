@@ -37,6 +37,7 @@ import java.util.function.Supplier;
  *  field which can be accessed from differ thread and is not thread safe.
  *  Needs to synchronize this field.
  */
+@Versionized
 public final class PhTracedEnclosure implements Phi {
 
     /**
