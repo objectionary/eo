@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: sonar-${{ github.ref }}
   cancel-in-progress: true
