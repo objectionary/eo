@@ -38,6 +38,7 @@ import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedEnclosure;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.Volatile;
@@ -113,98 +114,4 @@ public final class EOcage extends PhDefault implements Atom {
         }
     }
 
-    /**
-     * Class to trace if the cage got into recursion during the dataization.
-     * @since 0.36
-     * @todo #2836:60min Add a new parameter of recursion depth. This parameter
-     *   should be set by user via pom.xml. We can make DATAIZING_CAGES a
-     *   Map and count how many  times the cage was met.
-     * @todo #2836:60min Make the class thread safe. It has private static
-     *  field which can be accessed from differ thread and is not thread safe.
-     *  Needs to synchronize this field.
-     */
-    private static final class PhTracedEnclosure implements Phi {
-
-        /**
-         * Cages that are currently dataizing. If one cage is datazing and
-         * it needs to be dataized inside current dataizing, the cage will be here.
-         */
-        private static final Set<Integer> DATAIZING_CAGES = new HashSet<>();
-
-        /**
-         * Enclosure.
-         */
-        private final Phi enclosure;
-
-        /**
-         * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
-         * was retrieved.
-         */
-        private final int cage;
-
-        /**
-         * Ctor.
-         * @param enclosure Enclosure.
-         * @param cage Vertex of source cage.
-         */
-        PhTracedEnclosure(final Phi enclosure, final int cage) {
-            this.enclosure = enclosure;
-            this.cage = cage;
-        }
-
-        @Override
-        public Phi copy() {
-            return new PhTracedEnclosure(this.enclosure.copy(), this.cage);
-        }
-
-        @Override
-        public String locator() {
-            return this.enclosure.locator();
-        }
-
-        @Override
-        public String forma() {
-            return this.enclosure.forma();
-        }
-
-        @Override
-        public String φTerm() {
-            return this.enclosure.φTerm();
-        }
-
-        @Override
-        public Attr attr(final int pos) {
-            return this.getAttrSafely(() -> this.enclosure.attr(pos));
-        }
-
-        @Override
-        public Attr attr(final String name) {
-            return this.getAttrSafely(() -> this.enclosure.attr(name));
-        }
-
-        @Override
-        public int hashCode() {
-            return this.enclosure.hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            return obj instanceof Phi && this.hashCode() == obj.hashCode();
-        }
-
-        /**
-         * Get attribute tracing cages.
-         * @param supplier Ordinary way to get attribute.
-         * @return The {@link Attr} if there is no StackOverflow case.
-         */
-        private Attr getAttrSafely(final Supplier<Attr> supplier) {
-            if (EOcage.PhTracedEnclosure.DATAIZING_CAGES.contains(this.cage)) {
-                throw new ExFailure("The cage %s is already dataizing", this.cage);
-            }
-            EOcage.PhTracedEnclosure.DATAIZING_CAGES.add(this.cage);
-            final Attr ret = supplier.get();
-            EOcage.PhTracedEnclosure.DATAIZING_CAGES.remove(this.cage);
-            return ret;
-        }
-    }
 }
