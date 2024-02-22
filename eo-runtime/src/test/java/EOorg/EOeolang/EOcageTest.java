@@ -28,18 +28,27 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtFree;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
+import org.eolang.ExFailure;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
+import org.eolang.PhTracedEnclosure;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Test case for {@link EOcage}.
@@ -256,15 +265,117 @@ final class EOcageTest {
         );
     }
 
-    @Test
-    void throwsExceptionIfRecursion() {
-        final Phi cage = new EOcage(Phi.Φ);
-        writeTo(cage, cage);
-        Assertions.assertThrows(
-            ExAbstract.class,
-            new Dataized(cage)::take,
-            "We expect the exception to be thrown since we have recursion here"
-        );
+
+    /**
+     * Cases to test behaviour of cage with recursion.
+     * @since 0.1
+     */
+    @Nested
+    class RecursionTests {
+
+        private static final int DEPTH = 50;
+
+        @BeforeEach
+        void setDepth() {
+            System.setProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY, String.valueOf(DEPTH));
+        }
+
+        @AfterEach
+        void clearDepth() {
+            System.clearProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY);
+        }
+
+        @Test
+        void throwsExceptionIfRecursion() {
+            final Phi cage = new EOcage(Phi.Φ);
+            writeTo(cage, cage);
+            Assertions.assertThrows(
+                ExAbstract.class,
+                new Dataized(cage)::take,
+                "We expect the exception to be thrown since we have recursion here"
+            );
+        }
+
+        @Test
+        void doesNotThrowExceptionIfWithBigDepth() {
+            final EOcage cage = new EOcage(Phi.Φ);
+            writeTo(
+                cage,
+                new RecursiveDummi(DEPTH - 1, new AtomicReference<>(0), cage)
+            );
+            Assertions.assertDoesNotThrow(
+                () -> new Dataized(cage).take(),
+                String.format(
+                    "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
+                    PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY,
+                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY),
+                    ExAbstract.class
+                )
+            );
+        }
+
+        @Test
+        void throwsExceptionIfWithBigDepth() {
+            final EOcage cage = new EOcage(Phi.Φ);
+            writeTo(
+                cage,
+                new RecursiveDummi(DEPTH, new AtomicReference<>(0), cage)
+            );
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(cage).take(),
+                String.format(
+                    "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
+                    PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY,
+                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY),
+                    ExAbstract.class
+                )
+            );
+        }
+
+        /**
+         * Recursive {@link Phi}.
+         * @since 0.1
+         */
+        private final class RecursiveDummi extends PhDefault implements Atom {
+
+            /**
+             * How many times should we met the cage while dataizing it eventually.
+             */
+            final int depth;
+
+            /**
+             * Counts how many times we already met the cage.
+             */
+            final AtomicReference<Integer> counter;
+
+            /**
+             * The cage.
+             */
+            final EOcage cage;
+
+
+            /**
+             * Ctor.
+             * @param depth Depth.
+             * @param counter Counter.
+             * @param cage Cage.
+             */
+            public RecursiveDummi(int depth, final AtomicReference<Integer> counter, final EOcage cage) {
+                this.depth = depth;
+                this.counter = counter;
+                this.cage = cage;
+            }
+
+            @Override
+            public Phi lambda() {
+                if (counter.get() > this.depth) {
+                    return new Data.ToPhi(1L);
+                }
+                counter.getAndUpdate(val -> val + 1);
+                return cage;
+            }
+        }
     }
 
     private static void writeTo(final Phi cage, final Phi obj) {
@@ -291,5 +402,4 @@ final class EOcageTest {
             this.add("x", new AtFree());
         }
     }
-
 }

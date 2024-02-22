@@ -23,16 +23,15 @@
  */
 package org.eolang;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 /**
  * Class to trace if the cage got into recursion during the dataization.
  * @since 0.36
- * @todo #2836:60min Add a new parameter of recursion depth. This parameter
- *   should be set by user via pom.xml. We can make DATAIZING_CAGES a
- *   Map and count how many  times the cage was met.
  * @todo #2836:60min Make the class thread safe. It has private static
  *  field which can be accessed from differ thread and is not thread safe.
  *  Needs to synchronize this field.
@@ -44,7 +43,17 @@ public final class PhTracedEnclosure implements Phi {
      * Cages that are currently dataizing. If one cage is datazing and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
-    private static final Set<Integer> DATAIZING_CAGES = new HashSet<>();
+    private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
+
+    /**
+     * Name of property that responsible for keeping max depth.
+     */
+    public static final String MAX_CAGE_RECURSION_PROPERTY = "EO_MAX_CAGE_RECURSION";
+
+    /**
+     * Max depth of cage recursion.
+     */
+    private static final int MAX_CAGE_RECURSION = Integer.parseInt(System.getProperty(MAX_CAGE_RECURSION_PROPERTY, "100"));
 
     /**
      * Enclosure.
@@ -132,15 +141,27 @@ public final class PhTracedEnclosure implements Phi {
 
         @Override
         public Attr get() {
-            if (PhTracedEnclosure.DATAIZING_CAGES.contains(PhTracedEnclosure.this.cage)) {
-                throw new ExFailure(
-                    "The cage %s is already dataizing",
-                    PhTracedEnclosure.this.cage
-                );
-            }
-            PhTracedEnclosure.DATAIZING_CAGES.add(PhTracedEnclosure.this.cage);
+            PhTracedEnclosure.DATAIZING_CAGES.compute(
+                PhTracedEnclosure.this.cage, (key, value) -> {
+                    final int ret;
+                    if (value == null) {
+                        ret = 1;
+                    } else {
+                        if (value > MAX_CAGE_RECURSION) {
+                            throw new ExFailure(
+                                "The cage %s is already dataizing",
+                                PhTracedEnclosure.this.cage
+                            );
+                        }
+                        ret = value + 1;
+                    }
+                    return ret;
+                }
+            );
             final Attr ret = this.attr.get();
-            PhTracedEnclosure.DATAIZING_CAGES.remove(PhTracedEnclosure.this.cage);
+            PhTracedEnclosure.DATAIZING_CAGES.compute(
+                PhTracedEnclosure.this.cage, (key, value) -> value - 1
+            );
             return ret;
         }
     }
