@@ -346,7 +346,19 @@ abstract class SafeMojo extends AbstractMojo {
                 ex
             );
         } finally {
+            boolean terminated = false;
             service.shutdown();
+            while (!terminated) {
+                try {
+                    terminated = service.awaitTermination(60, TimeUnit.SECONDS);
+                    if (terminated) {
+                        service.shutdownNow();
+                    }
+                } catch (final InterruptedException ex) {
+                    service.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 
