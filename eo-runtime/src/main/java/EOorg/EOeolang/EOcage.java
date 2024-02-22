@@ -34,6 +34,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedEnclosure;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.Volatile;
@@ -62,7 +63,7 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return this.attr("enclosure").get();
+        return new PhTracedEnclosure(this.attr("enclosure").get(), this.hashCode());
     }
 
     /**
@@ -108,4 +109,5 @@ public final class EOcage extends PhDefault implements Atom {
             return new Data.ToPhi(true);
         }
     }
+
 }

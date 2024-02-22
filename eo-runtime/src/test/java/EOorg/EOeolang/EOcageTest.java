@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
@@ -170,9 +171,9 @@ final class EOcageTest {
         EOcageTest.writeTo(first, new Data.ToPhi(3L));
         final Phi second = new EOcage(Phi.Φ);
         EOcageTest.writeTo(second, new Data.ToPhi(5L));
-        final Phi cage = new EOcage(Phi.Φ);
+        final Phi sum = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
-            cage,
+            sum,
             new PhWith(
                 new PhCopy(new PhMethod(first, "plus")),
                 0, second
@@ -181,7 +182,7 @@ final class EOcageTest {
         EOcageTest.writeTo(first, new Data.ToPhi(1L));
         EOcageTest.writeTo(second, new Data.ToPhi(9L));
         MatcherAssert.assertThat(
-            new Dataized(cage).take(Long.class),
+            new Dataized(sum).take(Long.class),
             Matchers.equalTo(10L)
         );
     }
@@ -252,6 +253,17 @@ final class EOcageTest {
                 new PhWith(new EOcage(Phi.Φ), 0, dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             )
+        );
+    }
+
+    @Test
+    void throwsExceptionIfRecursion() {
+        final Phi cage = new EOcage(Phi.Φ);
+        writeTo(cage, cage);
+        Assertions.assertThrows(
+            ExAbstract.class,
+            new Dataized(cage)::take,
+            "We expect the exception to be thrown since we have recursion here"
         );
     }
 
