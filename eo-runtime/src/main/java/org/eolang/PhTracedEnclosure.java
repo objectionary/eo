@@ -24,9 +24,7 @@
 package org.eolang;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -40,20 +38,22 @@ import java.util.function.Supplier;
 public final class PhTracedEnclosure implements Phi {
 
     /**
+     * Name of property that responsible for keeping max depth.
+     */
+    public static final String MAX_CAGE_RECURSION_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION";
+
+    /**
      * Cages that are currently dataizing. If one cage is datazing and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
     private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
 
     /**
-     * Name of property that responsible for keeping max depth.
-     */
-    public static final String MAX_CAGE_RECURSION_PROPERTY = "EO_MAX_CAGE_RECURSION";
-
-    /**
      * Max depth of cage recursion.
      */
-    private static final int MAX_CAGE_RECURSION = Integer.parseInt(System.getProperty(MAX_CAGE_RECURSION_PROPERTY, "100"));
+    private static final int MAX_CAGE_RECURSION = Integer.parseInt(
+        System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, "100")
+    );
 
     /**
      * Enclosure.
