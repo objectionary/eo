@@ -49,13 +49,6 @@ public final class PhTracedEnclosure implements Phi {
     private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
 
     /**
-     * Max depth of cage recursion.
-     */
-    private static final int MAX_CAGE_RECURSION = Integer.parseInt(
-        System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, "100")
-    );
-
-    /**
      * Enclosure.
      */
     private final Phi enclosure;
@@ -67,13 +60,35 @@ public final class PhTracedEnclosure implements Phi {
     private final int cage;
 
     /**
+     * Max depth of cage recursion.
+     */
+    private final int depth;
+
+    /**
      * Ctor.
      * @param enclosure Enclosure.
      * @param cage Vertex of source cage.
      */
     public PhTracedEnclosure(final Phi enclosure, final int cage) {
+        this(
+            enclosure,
+            cage,
+            Integer.parseInt(
+                System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, "100")
+            )
+        );
+    }
+
+    /**
+     * The main constructor.
+     * @param enclosure Enclosure.
+     * @param cage Cage.
+     * @param depth Max depth of cage recursion.
+     */
+    public PhTracedEnclosure(final Phi enclosure, final int cage, final int depth) {
         this.enclosure = enclosure;
         this.cage = cage;
+        this.depth = depth;
     }
 
     @Override
@@ -147,7 +162,8 @@ public final class PhTracedEnclosure implements Phi {
                     if (value == null) {
                         ret = 1;
                     } else {
-                        if (value > MAX_CAGE_RECURSION) {
+                        if (value > depth) {
+                            System.out.println("value > MAX_CAGE_RECURSION");
                             throw new ExFailure(
                                 "The cage %s is already dataizing",
                                 PhTracedEnclosure.this.cage
