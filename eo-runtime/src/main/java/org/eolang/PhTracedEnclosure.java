@@ -25,6 +25,7 @@ package org.eolang;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -46,7 +47,7 @@ public final class PhTracedEnclosure implements Phi {
      * Cages that are currently dataizing. If one cage is datazing and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
-    private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
+    private static final Map<Integer, Integer> DATAIZING_CAGES = new ConcurrentHashMap<>();
 
     /**
      * Enclosure.
