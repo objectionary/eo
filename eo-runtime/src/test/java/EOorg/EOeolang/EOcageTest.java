@@ -328,7 +328,6 @@ final class EOcageTest {
         @Test
         void throwsExceptionIfWithBigDepth() {
             final EOcage cage = new EOcage(Phi.Φ);
-            System.out.println("cage hash = " + cage.hashCode());
             writeTo(
                 cage,
                 new RecursiveDummi(DEPTH, new AtomicReference<>(0), cage)
