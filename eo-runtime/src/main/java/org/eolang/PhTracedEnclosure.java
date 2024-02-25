@@ -163,8 +163,7 @@ public final class PhTracedEnclosure implements Phi {
                     if (value == null) {
                         ret = 1;
                     } else {
-                        if (value > depth) {
-                            System.out.println("value > MAX_CAGE_RECURSION");
+                        if (value > PhTracedEnclosure.this.depth) {
                             throw new ExFailure(
                                 "The cage %s is already dataizing",
                                 PhTracedEnclosure.this.cage
