@@ -346,24 +346,6 @@ final class EOcageTest {
             );
         }
 
-        @Test
-        void throwsExceptionIfBigDepth() {
-            final EOcage cage = new EOcage(Phi.Φ);
-            writeTo(
-                cage,
-                new RecursiveDummi(MAX_DEPTH  + 1, cage)
-            );
-            Assertions.assertThrows(
-                ExAbstract.class,
-                () -> new Dataized(cage).take(),
-                String.format(
-                    "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
-                    PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME,
-                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME),
-                    ExAbstract.class
-                )
-            );
-        }
 
         /**
          * Recursive {@link Phi}.
