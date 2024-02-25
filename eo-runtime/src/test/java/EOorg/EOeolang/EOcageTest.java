@@ -312,7 +312,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH / 2, new AtomicReference<>(0), cage)
+                new RecursiveDummi(MAX_DEPTH / 2, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -326,14 +326,14 @@ final class EOcageTest {
         }
 
         /**
-         * The boundary case.
+         * The boundary case when the depth is equal to the maximum allowed.
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH, new AtomicReference<>(0), cage)
+                new RecursiveDummi(MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -351,7 +351,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH  + 1, new AtomicReference<>(0), cage)
+                new RecursiveDummi(MAX_DEPTH  + 1, cage)
             );
             Assertions.assertThrows(
                 ExAbstract.class,
@@ -377,27 +377,26 @@ final class EOcageTest {
             private final int depth;
 
             /**
-             * Counts how many times we already met the cage.
-             */
-            private final AtomicReference<Integer> counter;
-
-            /**
              * The cage.
              */
             private final EOcage cage;
 
             /**
+             * Counts how many times we already met the cage.
+             */
+            private final AtomicReference<Integer> counter;
+
+            /**
              * Ctor.
              * @param depth Depth.
-             * @param counter Counter.
              * @param cage Cage.
              */
             RecursiveDummi(
-                final int depth, final AtomicReference<Integer> counter, final EOcage cage
+                final int depth, final EOcage cage
             ) {
                 this.depth = depth;
-                this.counter = counter;
                 this.cage = cage;
+                this.counter = new AtomicReference<>(0);
             }
 
             @Override
