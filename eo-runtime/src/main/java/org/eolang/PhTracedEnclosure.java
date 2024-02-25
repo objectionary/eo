@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -165,16 +164,16 @@ public final class PhTracedEnclosure implements Phi {
 
         /**
          * Increments counter of cage in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
-         * @return new value in the map.
+         * @return New value in the map.
          */
         private Integer incrementCageCounter() {
             return PhTracedEnclosure.DATAIZING_CAGES.compute(
-                PhTracedEnclosure.this.cage, (cage, counter) -> {
-                    final int ret = Incremented(counter);
+                PhTracedEnclosure.this.cage, (key, counter) -> {
+                    final int ret = this.incremented(counter);
                     if (ret > PhTracedEnclosure.this.depth) {
                         throw new ExFailure(
                             "The cage %s is already dataizing",
-                            cage
+                            key
                         );
                     }
                     return ret;
@@ -185,9 +184,11 @@ public final class PhTracedEnclosure implements Phi {
         /**
          * Creates incremented number.
          * @param number Number.
-         * @return incremented number. 1 if number is null.
+         * @return Incremented number. 1 if number is null.
+         * @checkstyle NonStaticMethodCheck (10 lines). Static declarations in
+         *  inner classes are not supported at language level '8'.
          */
-        private Integer Incremented(final Integer number) {
+        private Integer incremented(final Integer number) {
             final int ret;
             if (number == null) {
                 ret = 1;
