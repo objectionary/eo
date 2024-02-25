@@ -282,12 +282,12 @@ final class EOcageTest {
         /**
          * DEPTH.
          */
-        private static final int DEPTH = 50;
+        private static final int MAX_DEPTH = 50;
 
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, String.valueOf(DEPTH)
+                PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
             );
         }
 
@@ -308,11 +308,11 @@ final class EOcageTest {
         }
 
         @Test
-        void doesNotThrowExceptionIfWithBigDepth() {
+        void doesNotThrowExceptionIfSmallDepth() {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(DEPTH - 1, new AtomicReference<>(0), cage)
+                new RecursiveDummi(MAX_DEPTH / 2, new AtomicReference<>(0), cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -325,12 +325,33 @@ final class EOcageTest {
             );
         }
 
+        /**
+         * The boundary case.
+         */
         @Test
-        void throwsExceptionIfWithBigDepth() {
+        void doesNotThrowExceptionIfMaxDepth() {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(DEPTH, new AtomicReference<>(0), cage)
+                new RecursiveDummi(MAX_DEPTH, new AtomicReference<>(0), cage)
+            );
+            Assertions.assertDoesNotThrow(
+                () -> new Dataized(cage).take(),
+                String.format(
+                    "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
+                    PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME,
+                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME),
+                    ExAbstract.class
+                )
+            );
+        }
+
+        @Test
+        void throwsExceptionIfBigDepth() {
+            final EOcage cage = new EOcage(Phi.Φ);
+            writeTo(
+                cage,
+                new RecursiveDummi(MAX_DEPTH  + 1, new AtomicReference<>(0), cage)
             );
             Assertions.assertThrows(
                 ExAbstract.class,
@@ -382,10 +403,10 @@ final class EOcageTest {
             @Override
             public Phi lambda() {
                 final Phi ret;
-                if (this.counter.get() > this.depth) {
-                    ret = new Data.ToPhi(1L);
+                this.counter.getAndUpdate(val -> val + 1);
+                if (this.counter.get() == this.depth) {
+                    ret = new Data.ToPhi(0L);
                 } else {
-                    this.counter.getAndUpdate(val -> val + 1);
                     ret = this.cage;
                 }
                 return ret;

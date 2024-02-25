@@ -157,28 +157,62 @@ public final class PhTracedEnclosure implements Phi {
 
         @Override
         public Attr get() {
-            PhTracedEnclosure.DATAIZING_CAGES.compute(
-                PhTracedEnclosure.this.cage, (key, value) -> {
-                    final int ret;
-                    if (value == null) {
-                        ret = 1;
-                    } else {
-                        if (value > PhTracedEnclosure.this.depth) {
-                            throw new ExFailure(
-                                "The cage %s is already dataizing",
-                                PhTracedEnclosure.this.cage
-                            );
-                        }
-                        ret = value + 1;
+            final Integer incremented = this.incrementCageCounter();
+            final Attr ret = this.attr.get();
+            this.decrementCageCounter(incremented);
+            return ret;
+        }
+
+        /**
+         * Increments counter of cage in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * @return new value in the map.
+         */
+        private Integer incrementCageCounter() {
+            return PhTracedEnclosure.DATAIZING_CAGES.compute(
+                PhTracedEnclosure.this.cage, (cage, counter) -> {
+                    final int ret = Incremented(counter);
+                    if (ret > PhTracedEnclosure.this.depth) {
+                        throw new ExFailure(
+                            "The cage %s is already dataizing",
+                            cage
+                        );
                     }
                     return ret;
                 }
             );
-            final Attr ret = this.attr.get();
-            PhTracedEnclosure.DATAIZING_CAGES.compute(
-                PhTracedEnclosure.this.cage, (key, value) -> value - 1
-            );
+        }
+
+        /**
+         * Creates incremented number.
+         * @param number Number.
+         * @return incremented number. 1 if number is null.
+         */
+        private Integer Incremented(final Integer number) {
+            final int ret;
+            if (number == null) {
+                ret = 1;
+            } else {
+                ret = number + 1;
+            }
             return ret;
+        }
+
+        /**
+         * Decrements counter in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * @param incremented Current value of counter. This argument ensures
+         *  temporal coupling with {@link TracingWhileGetting#incrementCageCounter} method.
+         */
+        private void decrementCageCounter(final int incremented) {
+            final int decremented = incremented - 1;
+            if (decremented == 0) {
+                PhTracedEnclosure.DATAIZING_CAGES.remove(
+                    PhTracedEnclosure.this.cage
+                );
+            } else {
+                PhTracedEnclosure.DATAIZING_CAGES.put(
+                    PhTracedEnclosure.this.cage, decremented
+                );
+            }
         }
     }
 }
