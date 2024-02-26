@@ -312,7 +312,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             EOcageTest.writeTo(
                 cage,
-                new RecursiveDummi(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
+                new RecursionTests.Dummi(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -333,7 +333,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH, cage)
+                new RecursionTests.Dummi(MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -351,7 +351,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
+                new Dummi(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
             );
             Assertions.assertThrows(
                 ExAbstract.class,
@@ -369,7 +369,7 @@ final class EOcageTest {
          * Recursive {@link Phi}.
          * @since 0.1
          */
-        private final class RecursiveDummi extends PhDefault implements Atom {
+        private final class Dummi extends PhDefault implements Atom {
 
             /**
              * How many times should we met the cage while dataizing it eventually.
@@ -391,7 +391,7 @@ final class EOcageTest {
              * @param depth Depth.
              * @param cage Cage.
              */
-            RecursiveDummi(
+            Dummi(
                 final int depth, final EOcage cage
             ) {
                 this.depth = depth;
