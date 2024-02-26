@@ -302,7 +302,7 @@ final class EOcageTest {
             writeTo(cage, cage);
             Assertions.assertThrows(
                 ExAbstract.class,
-                new Dataized(cage)::take,
+                () -> new Dataized(cage).take(),
                 "We expect the exception to be thrown since we have recursion here"
             );
         }
