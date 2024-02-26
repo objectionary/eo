@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: markdown-lint-${{ github.ref }}
   cancel-in-progress: true
