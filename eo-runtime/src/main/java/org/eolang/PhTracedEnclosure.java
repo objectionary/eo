@@ -41,7 +41,7 @@ public final class PhTracedEnclosure implements Phi {
     /**
      * Name of property that responsible for keeping max depth.
      */
-    public static final String MAX_CAGE_RECURSION_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION";
+    public static final String MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
 
     /**
      * Cages that are currently dataizing. If one cage is datazing and
@@ -75,7 +75,7 @@ public final class PhTracedEnclosure implements Phi {
             enclosure,
             cage,
             Integer.parseInt(
-                System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_PROPERTY_NAME, "100")
+                System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
             )
         );
     }
