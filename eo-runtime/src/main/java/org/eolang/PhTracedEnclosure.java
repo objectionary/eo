@@ -44,10 +44,10 @@ public final class PhTracedEnclosure implements Phi {
     public static final String MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
 
     /**
-     * Cages that are currently dataizing. If one cage is datazing and
+     * Cages that are currently dataizing. If one cage is datazing, and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
-    private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
+    private static final Map<Phi, Integer> DATAIZING_CAGES = new HashMap<>();
 
     /**
      * Enclosure.
@@ -58,7 +58,7 @@ public final class PhTracedEnclosure implements Phi {
      * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
      * was retrieved.
      */
-    private final int cage;
+    private final Phi cage;
 
     /**
      * Max depth of cage recursion.
@@ -70,7 +70,7 @@ public final class PhTracedEnclosure implements Phi {
      * @param enclosure Enclosure.
      * @param cage Vertex of source cage.
      */
-    public PhTracedEnclosure(final Phi enclosure, final int cage) {
+    public PhTracedEnclosure(final Phi enclosure, final Phi cage) {
         this(
             enclosure,
             cage,
@@ -86,7 +86,7 @@ public final class PhTracedEnclosure implements Phi {
      * @param cage Cage.
      * @param depth Max depth of cage recursion.
      */
-    public PhTracedEnclosure(final Phi enclosure, final int cage, final int depth) {
+    public PhTracedEnclosure(final Phi enclosure, final Phi cage, final int depth) {
         this.enclosure = enclosure;
         this.cage = cage;
         this.depth = depth;
@@ -174,8 +174,9 @@ public final class PhTracedEnclosure implements Phi {
                     final int ret = this.incremented(counter);
                     if (ret > PhTracedEnclosure.this.depth) {
                         throw new ExFailure(
-                            "The cage %s is already dataizing",
-                            key
+                            "The cage %s has reached the maximum nesting depth = %d",
+                            key.φTerm(),
+                            PhTracedEnclosure.this.depth
                         );
                     }
                     return ret;
