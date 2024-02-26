@@ -355,7 +355,7 @@ final class EOcageTest {
             );
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new Dataized(cage).take(),
+                new Dataized(cage)::take,
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
                     PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
