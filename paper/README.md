@@ -7,7 +7,7 @@ This is a more or less formal description of EOLANG and φ-calculus.
 To build it, just run:
 
 ```bash
-$ make
+make
 ```
 
 You need to have
