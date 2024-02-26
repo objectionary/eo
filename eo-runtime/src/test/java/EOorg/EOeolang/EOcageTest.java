@@ -312,7 +312,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             EOcageTest.writeTo(
                 cage,
-                new RecursionTests.Dummi(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
+                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -333,7 +333,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursionTests.Dummi(MAX_DEPTH, cage)
+                new RecursiveDummy(MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -351,11 +351,11 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new Dummi(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
+                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
             );
             Assertions.assertThrows(
                 ExAbstract.class,
-                new Dataized(cage)::take,
+                () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
                     PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
@@ -369,7 +369,7 @@ final class EOcageTest {
          * Recursive {@link Phi}.
          * @since 0.1
          */
-        private final class Dummi extends PhDefault implements Atom {
+        private final class RecursiveDummy extends PhDefault implements Atom {
 
             /**
              * How many times should we met the cage while dataizing it eventually.
@@ -391,7 +391,7 @@ final class EOcageTest {
              * @param depth Depth.
              * @param cage Cage.
              */
-            Dummi(
+            RecursiveDummy(
                 final int depth, final EOcage cage
             ) {
                 this.depth = depth;
