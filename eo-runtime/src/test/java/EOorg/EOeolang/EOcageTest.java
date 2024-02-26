@@ -310,7 +310,7 @@ final class EOcageTest {
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
             final EOcage cage = new EOcage(Phi.Φ);
-            writeTo(
+            EOcageTest.writeTo(
                 cage,
                 new RecursiveDummi(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
