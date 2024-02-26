@@ -312,7 +312,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH / 2, cage)
+                new RecursiveDummi(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
@@ -351,7 +351,7 @@ final class EOcageTest {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummi(MAX_DEPTH  + 1, cage)
+                new RecursiveDummi(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
             );
             Assertions.assertThrows(
                 ExAbstract.class,
