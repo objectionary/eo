@@ -138,7 +138,7 @@ public final class PhTracedEnclosure implements Phi {
 
     /**
      * Supplier that traces the cage while gets.
-     * NOT thread-saf.
+     * NOT thread-safe.
      * @since 0.36
      */
     private final class TracingWhileGetting implements Supplier<Attr> {
