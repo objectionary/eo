@@ -254,6 +254,23 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.4.0</version>
+        <executions>
+          <execution>
+            <id>check-licenses</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check-file-header</goal>
+            </goals>
+            <configuration>
+              <licenseName>mit</licenseName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
         <version>2.1.1</version>
