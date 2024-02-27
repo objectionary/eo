@@ -59,15 +59,15 @@
       error "Given index is out of tuple bounds"
       ^.at-without-checks index
 
-  # Takes element from the tuple without checking i.
-  # i must be less than length and greater or equal 0.
-  # This is faster than at.
-  [i] > at-without-checks
-    i > idx!
-    if. > @
-      idx.lt head.length
-      ^.head.at-without-checks idx
-      ^.tail
+    # Takes element from the tuple without checking i.
+    # i must be less than length and greater or equal 0.
+    # This is faster than at.
+    [i] > at-without-checks
+      i > idx!
+      if. > @
+        idx.lt head.length
+        ^.^.head.at.at-without-checks idx
+        ^.^.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

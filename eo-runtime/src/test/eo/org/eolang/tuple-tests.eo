@@ -175,16 +175,18 @@
 # Test
 [] > at-without-checks-with-first-element
   eq. > @
-    at.
-      * 100 101 102
+    at-without-checks.
+      at.
+        * 100 101 102
       0
     100
 
 # Test
 [] > at-without-checks-with-last-element
   eq. > @
-    at.
-      * 100 101 102
+    at-without-checks.
+      at.
+        * 100 101 102
       2
     102
 
