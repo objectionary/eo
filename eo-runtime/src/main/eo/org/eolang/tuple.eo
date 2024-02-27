@@ -57,7 +57,7 @@
         index.lt 0
         index.gte len
       error "Given index is out of tuple bounds"
-      ^.at.at-without-checks index
+      at-without-checks index
 
     # Takes element from the tuple without checking i.
     # i must be less than length and greater or equal 0.
