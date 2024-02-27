@@ -172,6 +172,22 @@
     a.at 0
     3
 
+# Test
+[] > at-without-checks-with-first-element
+  eq. > @
+    at.
+      * 100 101 102
+      0
+    100
+
+# Test
+[] > at-without-checks-with-last-element
+  eq. > @
+    at.
+      * 100 101 102
+      2
+    102
+
 # Test.
 [] > tuple-empty-fluent-with-indented-keyword
   tuple
