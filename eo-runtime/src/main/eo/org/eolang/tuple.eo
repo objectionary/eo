@@ -65,8 +65,8 @@
   [i] > at-without-checks
     i > idx!
     if. > @
-      i.lt head.length
-      ^.head.at-without-checks i
+      idx.lt head.length
+      ^.head.at-without-checks idx
       ^.tail
 
   # Create a new tuple with this element added to the end of it.
