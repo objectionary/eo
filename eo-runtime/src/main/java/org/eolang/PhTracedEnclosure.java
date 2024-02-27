@@ -23,16 +23,14 @@
  */
 package org.eolang;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
  * Class to trace if the cage got into recursion during the dataization.
+ * NOT thread-safe.
  * @since 0.36
- * @todo #2836:60min Add a new parameter of recursion depth. This parameter
- *   should be set by user via pom.xml. We can make DATAIZING_CAGES a
- *   Map and count how many  times the cage was met.
  * @todo #2836:60min Make the class thread safe. It has private static
  *  field which can be accessed from differ thread and is not thread safe.
  *  Needs to synchronize this field.
@@ -41,10 +39,16 @@ import java.util.function.Supplier;
 public final class PhTracedEnclosure implements Phi {
 
     /**
-     * Cages that are currently dataizing. If one cage is datazing and
+     * Name of property that responsible for keeping max depth.
+     */
+    public static final String
+        MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
+
+    /**
+     * Cages that are currently dataizing. If one cage is datazing, and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
-    private static final Set<Integer> DATAIZING_CAGES = new HashSet<>();
+    private static final Map<Phi, Integer> DATAIZING_CAGES = new HashMap<>();
 
     /**
      * Enclosure.
@@ -55,16 +59,38 @@ public final class PhTracedEnclosure implements Phi {
      * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
      * was retrieved.
      */
-    private final int cage;
+    private final Phi cage;
+
+    /**
+     * Max depth of cage recursion.
+     */
+    private final int depth;
 
     /**
      * Ctor.
      * @param enclosure Enclosure.
      * @param cage Vertex of source cage.
      */
-    public PhTracedEnclosure(final Phi enclosure, final int cage) {
+    public PhTracedEnclosure(final Phi enclosure, final Phi cage) {
+        this(
+            enclosure,
+            cage,
+            Integer.parseInt(
+                System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
+            )
+        );
+    }
+
+    /**
+     * The main constructor.
+     * @param enclosure Enclosure.
+     * @param cage Cage.
+     * @param depth Max depth of cage recursion.
+     */
+    public PhTracedEnclosure(final Phi enclosure, final Phi cage, final int depth) {
         this.enclosure = enclosure;
         this.cage = cage;
+        this.depth = depth;
     }
 
     @Override
@@ -113,6 +139,7 @@ public final class PhTracedEnclosure implements Phi {
 
     /**
      * Supplier that traces the cage while gets.
+     * NOT thread-safe.
      * @since 0.36
      */
     private final class TracingWhileGetting implements Supplier<Attr> {
@@ -132,16 +159,65 @@ public final class PhTracedEnclosure implements Phi {
 
         @Override
         public Attr get() {
-            if (PhTracedEnclosure.DATAIZING_CAGES.contains(PhTracedEnclosure.this.cage)) {
-                throw new ExFailure(
-                    "The cage %s is already dataizing",
+            final Integer incremented = this.incrementCageCounter();
+            final Attr ret = this.attr.get();
+            this.decrementCageCounter(incremented);
+            return ret;
+        }
+
+        /**
+         * Increments counter of cage in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * @return New value in the map.
+         */
+        private Integer incrementCageCounter() {
+            return PhTracedEnclosure.DATAIZING_CAGES.compute(
+                PhTracedEnclosure.this.cage, (key, counter) -> {
+                    final int ret = this.incremented(counter);
+                    if (ret > PhTracedEnclosure.this.depth) {
+                        throw new ExFailure(
+                            "The cage %s has reached the maximum nesting depth = %d",
+                            key.φTerm(),
+                            PhTracedEnclosure.this.depth
+                        );
+                    }
+                    return ret;
+                }
+            );
+        }
+
+        /**
+         * Creates incremented number.
+         * @param number Number.
+         * @return Incremented number. 1 if number is null.
+         * @checkstyle NonStaticMethodCheck (10 lines). Static declarations in
+         *  inner classes are not supported at language level '8'.
+         */
+        private Integer incremented(final Integer number) {
+            final int ret;
+            if (number == null) {
+                ret = 1;
+            } else {
+                ret = number + 1;
+            }
+            return ret;
+        }
+
+        /**
+         * Decrements counter in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * @param incremented Current value of counter. This argument ensures
+         *  temporal coupling with {@link TracingWhileGetting#incrementCageCounter} method.
+         */
+        private void decrementCageCounter(final int incremented) {
+            final int decremented = incremented - 1;
+            if (decremented == 0) {
+                PhTracedEnclosure.DATAIZING_CAGES.remove(
                     PhTracedEnclosure.this.cage
                 );
+            } else {
+                PhTracedEnclosure.DATAIZING_CAGES.put(
+                    PhTracedEnclosure.this.cage, decremented
+                );
             }
-            PhTracedEnclosure.DATAIZING_CAGES.add(PhTracedEnclosure.this.cage);
-            final Attr ret = this.attr.get();
-            PhTracedEnclosure.DATAIZING_CAGES.remove(PhTracedEnclosure.this.cage);
-            return ret;
         }
     }
 }

@@ -63,7 +63,7 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return new PhTracedEnclosure(this.attr("enclosure").get(), this.hashCode());
+        return new PhTracedEnclosure(this.attr("enclosure").get(), this);
     }
 
     /**
