@@ -81,15 +81,15 @@ The entire process of turning an `.eo` program into an executable
 binary code consists of a few high-level steps, which must be done
 one after another:
 
-  * **Parsing**.
+* **Parsing**.
     It's done by the `org.eolang.parser.EoSyntax` class in the `eo-parser` module. It takes
     the source code in a plain text format and parses into XML document,
     using [ANTLR4](https://www.antlr.org/) and [Xembly](https://www.xembly.org).
     The output of the parser you can find in the `target/eo/parse` directory.
-    Parsed objects which are versioned (normally pulled from 
-    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/parsed` folder. 
+    Parsed objects which are versioned (normally pulled from
+    [Objectionary](https://github.com/objectionary/home)) are cached in `.eo/parsed` folder.
 
-  * **Optimization**.
+* **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
     that need to be done
     with the XML document in order to make it ready for compilation.
@@ -99,7 +99,7 @@ one after another:
     `org.eolang.parser.Pack` class. Some of XLST files are sanity checks (or linters).
     The output of each transformation you can find in the `target/eo/optimize` directory.
 
-  * **Compilation**.
+* **Compilation**.
     The class `org.eolang.maven.TranspileMojo` in the `eo-maven-plugin` module is responsible
     for taking parsed and optimized XMIRs and then transforming
     the XML document into a collection of `.java` files. There are a number
@@ -117,35 +117,40 @@ If any external object is used in EO program it will be pulled from [Objectionar
 By default, during compilation the plugin will check local cache (`~/.eo`) for required objects
 and only download (and cache) them in case they are not found locally.
 
-This behaviour can be changed to always download objects from remote by providing 
+This behaviour can be changed to always download objects from remote by providing
 Maven option `-U` (see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
 
 ```shell
 mvn -U clean install
 ```
 
-If you want to build your project or run your tests which use eo-maven-plugin, you can change stack size for your purposes by stack-size option:
+If you want to build your project or run your tests which use eo-maven-plugin, you can change stack
+size for your purposes by stack-size option:
 
 ```shell
 mvn clean install -Pqulice -Dstack-size=1M
 ```
+
 where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin, maximum size is 1G.
 
 ## How to run Integration Tests only
 
-If you want to run a specific integration test without waiting until other unit or integration tests are executed you need to go to `eo-maven-plugin` 
-directory and execute the next command:
+If you want to run a specific integration test without waiting until other unit or integration tests
+are executed you need to go to `eo-maven-plugin` directory and execute the next command:
 
 ```shell
 mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
 ```
 
-Here `fibonacci` is the name of the desired integration test, `-DskipTests` is used in order to skip `eo-maven-plugin` unit tests.
+Here `fibonacci` is the name of the desired integration test, `-DskipTests` is used in order to skip
+`eo-maven-plugin` unit tests.
 
 ## How to disable Integration Tests
 
-It is sometime necessary to temporary disable the integration tests (for example for introducing braking changes into plugin or EO runtime). 
-This can be achieved by disabling `maven-invoker-plugin` execution within `eo-maven-plugin/pom.xml`:
+It is sometime necessary to temporary disable the integration tests (for example for introducing
+braking changes into plugin or EO runtime). This can be achieved by disabling `maven-invoker-plugin`
+execution within `eo-maven-plugin/pom.xml`:
+
 ```xml
 <plugins>
   ...

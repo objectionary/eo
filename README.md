@@ -32,26 +32,26 @@ they are good enough, including:
 [C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
 All of them have something **we don't tolerate**:
 
-  * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
-  * static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
-  * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
-  * implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
-  * mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html) and [why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
-  * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
-  * global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
-  * type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
-  * reflection ([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
-  * scalar types and data primitives
-  * annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
-  * operators
-  * traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
-  * flow control statements (`for`, `while`, `if`, etc)
-  * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
+* types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
+* static/class methods or attributes ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
+* classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
+* implementation inheritance ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
+* mutability ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html) and [why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
+* NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
+* global scope ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
+* type casting ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+* reflection ([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
+* scalar types and data primitives
+* annotations ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
+* operators
+* traits and mixins ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
+* flow control statements (`for`, `while`, `if`, etc)
+* [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) ([why?](https://github.com/objectionary/eo/issues/51))
 
 ## Quick Start
 
 First, install [Java SE](https://www.oracle.com/java/technologies/downloads/),
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), 
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm),
 [Rust with Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
 and [eoc](https://github.com/objectionary/eoc).
 
@@ -66,13 +66,13 @@ Then, start with a simple EO program in `app.eo` file:
 Compile it like this (may take a minute or so):
 
 ```
-$ eoc link
+eoc link
 ```
 
 Then, run it:
 
 ```
-$ eoc --alone dataize app
+eoc --alone dataize app
 ```
 
 You should see "Hello, world!" printed.
@@ -189,8 +189,8 @@ This is the [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_fo
 
 <img alt="ENBF of 𝜑-calculus" src="https://www.eolang.org/ebnf/Phi.png" width="100%" />
 
-The images were [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml). 
-It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg) 
+The images were [auto-generated](https://github.com/objectionary/eo/actions/workflows/ebnf.yml).
+It's better to use [ebnf/Eo.svg](https://www.eolang.org/ebnf/Eo.svg)
 and [ebnf/Phi.svg](https://www.eolang.org/ebnf/Phi.svg).
 
 ## What's Next?
@@ -202,7 +202,8 @@ Watch [video](https://www.youtube.com/watch?v=QaKIw1Bh3Oc) about EOLANG basics.
 Read [our blog](https://news.eolang.org), especially the section with
 [recently published papers](https://news.eolang.org/papers.html).
 
-Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html), a dialect of XML, which we use to represent EO program.
+Learn [XMIR](https://news.eolang.org/2022-11-25-xmir-guide.html), a dialect of XML, which we use to
+represent EO program.
 
 See the full collection of canonical objects: [objectionary](https://github.com/objectionary/home).
 
@@ -222,12 +223,13 @@ provided they don't violate our quality standards. To avoid frustration,
 before sending us your pull request please run full Maven build:
 
 ```bash
-$ mvn clean install -Pqulice
+mvn clean install -Pqulice
 ```
 
 You will need [Maven 3.3+](https://maven.apache.org) and Java 8+ installed.
 
 ## Special thanks
+
 We are using the [YourKit Java Profiler](https://www.yourkit.com/java/profiler)
 to enhance the performance of EO components:
 
