@@ -61,7 +61,6 @@
 
     # Takes element from the tuple without checking i.
     # i must be less than length and greater or equal 0.
-    # This is faster than at.
     [i] > at-without-checks
       i > idx!
       if. > @
