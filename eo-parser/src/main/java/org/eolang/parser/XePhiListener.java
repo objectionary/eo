@@ -209,13 +209,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
             if (ctx.alphaBinding() != null) {
-                if (ctx.alphaBinding().attribute().VTX() != null) {
+                if (ctx.alphaBinding().attribute().VERTEX() != null) {
                     this.objects().remove();
                 } else {
                     this.objects().leave();
                 }
             } else if (ctx.emptyBinding() != null) {
-                if (ctx.emptyBinding().attribute().VTX() != null) {
+                if (ctx.emptyBinding().attribute().VERTEX() != null) {
                     this.objects().remove();
                 } else {
                     this.objects().leave();
@@ -244,7 +244,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "^";
         } else if (ctx.SIGMA() != null) {
             attr = "&";
-        } else if (ctx.VTX() != null) {
+        } else if (ctx.VERTEX() != null) {
             attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
