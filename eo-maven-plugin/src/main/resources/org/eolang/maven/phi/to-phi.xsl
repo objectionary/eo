@@ -244,7 +244,7 @@ SOFTWARE.
     <xsl:param name="find"/>
     <xsl:variable name="parent" select="parent::*"/>
     <xsl:variable name="rho-dot">
-      <xsl:value-of select="eo:specials('^', true())"/>
+      <xsl:value-of select="eo:specials('&amp;', true())"/>
       <xsl:text>.</xsl:text>
     </xsl:variable>
     <xsl:choose>
