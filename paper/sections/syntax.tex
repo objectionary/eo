@@ -102,7 +102,7 @@ This is a declaration of an abstract object \ff{book},
 which has a single \emph{identity} attribute \ff{isbn}:
 
 \begin{ffcode}
-[isbn] > book |$\label{ln:book}$|
+[isbn] > book |\(\label{ln:book}\)|
 \end{ffcode}
 
 To make a new object with a specific ISBN, the \ff{book}
@@ -119,9 +119,9 @@ A similar abstract object, but with two new \emph{state} attributes, would
 look like:
 
 \begin{ffcode}
-[isbn] > book2  |$\label{ln:book2}$|
+[isbn] > book2  |\(\label{ln:book2}\)|
   "Object Thinking" > title
-  memory 0 > price |$\label{ln:book2-end}$|
+  memory 0 > price |\(\label{ln:book2-end}\)|
 \end{ffcode}
 
 The attribute \ff{title} is a constant, while the \ff{price}
@@ -136,11 +136,11 @@ A \emph{behavior} may be added to an object with a new \emph{inner}
 abstract object \ff{set-price}:
 
 \begin{ffcode}
-[isbn] > book3 |$\label{ln:book3}$|
+[isbn] > book3 |\(\label{ln:book3}\)|
   "Object Thinking" > title
   memory 0 > price
   [p] > set-price
-    ^.price.write p > @ |$\label{ln:book3-end}$|
+    ^.price.write p > @ |\(\label{ln:book3-end}\)|
 \end{ffcode}
 
 The price of the book may be changed with this one-liner:
@@ -158,12 +158,12 @@ the importance of their presence in specific quantity
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
 {\lstset{showspaces=true}\begin{ffcode}
-# This is a vector in 2D space |$\label{ln:comment}$|
-[dx dy] > vector |$\label{ln:vector}$|
-  sqrt. > length |$\label{ln:length}$|
+# This is a vector in 2D space |\(\label{ln:comment}\)|
+[dx dy] > vector |\(\label{ln:vector}\)|
+  sqrt. > length |\(\label{ln:length}\)|
     plus.
       dx.times dx
-      dy.timex dy |$\label{ln:length-end}$| |$\label{ln:vector-end}$|
+      dy.timex dy |\(\label{ln:length-end}\)| |\(\label{ln:vector-end}\)|
 \end{ffcode}
 }
 
@@ -190,10 +190,10 @@ this expression in multiple lines without the usage of
 inverse notation, but it will look less readable:
 
 \begin{ffcode}
-dx.times dx |$\label{ln:dx-pow}$|
+dx.times dx |\(\label{ln:dx-pow}\)|
 .plus
-  dy.timex dy |$\label{ln:dx-pow-2}$|
-.sqrt > length |$\label{ln:dx-pow-3}$|
+  dy.timex dy |\(\label{ln:dx-pow-2}\)|
+.sqrt > length |\(\label{ln:dx-pow-3}\)|
 \end{ffcode}
 
 Here, \lref{dx-pow} is the application of the object \ff{dx.times} with
@@ -223,11 +223,11 @@ mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
 \begin{ffcode}
-[x] |$\label{ln:succ}$|
+[x] |\(\label{ln:succ}\)|
   x.plus > succ
     1
   x.minus > prev
-    1 |$\label{ln:succ-end}$|
+    1 |\(\label{ln:succ-end}\)|
 \end{ffcode}
 
 This abstract object can also be written in a horizontal mode,
@@ -283,13 +283,13 @@ This syntax would be translated to XMIR (XML based
 data format explained in Sec.~\ref{sec:xmir}):
 
 \begin{ffcode}
-<o name="circle"> |$\label{ln:xml-circle}$|
+<o name="circle"> |\(\label{ln:xml-circle}\)|
   <o name="r"/>
   <o base=".times" name="circumference">
-    <o base="r"/>  |$\label{ln:xml-circle-r}$|
+    <o base="r"/>  |\(\label{ln:xml-circle-r}\)|
     <o base="float" data="float">3.14</o>
   </o>
-</o> |$\label{ln:xml-circle-end}$|
+</o> |\(\label{ln:xml-circle-end}\)|
 \end{ffcode}
 
 Each object, if it is not abstract, has a ``base'' attribute in XML,
@@ -327,11 +327,11 @@ directly. There is a special syntax for making tuples,
 which looks similar to object copying:
 
 \begin{ffcode}
-* "Lucy" "Jeff" 3.14 |$\label{ln:tuple-1}$|
-* > a |$\label{ln:tuple-2a}$|
+* "Lucy" "Jeff" 3.14 |\(\label{ln:tuple-1}\)|
+* > a |\(\label{ln:tuple-2a}\)|
   (* "a")
-  TRUE |$\label{ln:tuple-2b}$|
-* > b |$\label{ln:tuple-3}$|
+  TRUE |\(\label{ln:tuple-2b}\)|
+* > b |\(\label{ln:tuple-3}\)|
 \end{ffcode}
 
 The code at \lref{tuple-1} makes a tuple of three elements: two strings
@@ -346,8 +346,8 @@ meaning that any number or zero arguments may be provided. All of them
 will be packaged in a tuple by the compiler, for example:
 
 \begin{ffcode}
-[x...] > sum |$\label{ln:sum-def}$|
-sum 8 13 -9 |$\label{ln:sum-instance}$|
+[x...] > sum |\(\label{ln:sum-def}\)|
+sum 8 13 -9 |\(\label{ln:sum-instance}\)|
 \end{ffcode}
 
 Here, at the first line the abstract object \ff{sum} is defined
@@ -370,7 +370,7 @@ sum 42 7
 Brackets can be used to group object arguments in horizontal mode:
 
 \begin{ffcode}
-sum (div 45 5) 10  |$\label{ln:sum}$|
+sum (div 45 5) 10  |\(\label{ln:sum}\)|
 \end{ffcode}
 
 The \ff{(div 45 5)} is a copy of the abstract object \ff{div}
@@ -393,7 +393,7 @@ for example:
 # A point on a 2D canvas
 [x y] > point
   [to] > distance
-    length. > len |$\label{ln:vector-length}$|
+    length. > len |\(\label{ln:vector-length}\)|
       vector
         to.x.minus (^.x)
         to.y.minus (^.y)
@@ -407,7 +407,7 @@ with a reference to its \emph{parent} object \ff{point}, via
 a special attribute denoted by the \ff{\^{}} symbol:
 
 \begin{ffcode}
-distance. |$\label{ln:point-copy}$|
+distance. |\(\label{ln:point-copy}\)|
   point
     5:x
     -3:y
@@ -427,12 +427,12 @@ provided argument.
 An object may extend another object by \emph{decorating} it:
 
 \begin{ffcode}
-[center radius] > circle |$\label{ln:circle}$|
-  center > @ |$\label{ln:circle-phi}$|
+[center radius] > circle |\(\label{ln:circle}\)|
+  center > @ |\(\label{ln:circle-phi}\)|
   [p] > is-inside
     lte. > @
-      ^.@.distance $.p  |$\label{ln:circle-phi-2}$|
-      ^.radius |$\label{ln:circle-end}$|
+      ^.@.distance \(.p  |\)\label{ln:circle-phi-2}$|
+      ^.radius |\(\label{ln:circle-end}\)|
 \end{ffcode}
 
 The object \ff{circle} has a special attribute \ff{@}
@@ -464,10 +464,10 @@ from there, and then make a copy of it with the attribute \ff{p}
 taken from the current object (denoted by the \ff{\$} symbol).
 
 The object \ff{circle} may be used like this, to understand whether
-the $(0,0)$ point is inside the circle at $(-3,9)$ with the radius $40$:
+the \((0,0)\) point is inside the circle at \((-3,9)\) with the radius \(40\):
 
 \begin{ffcode}
-circle (point -3 9) 40 > c  |$\label{ln:circle-c}$|
+circle (point -3 9) 40 > c  |\(\label{ln:circle-c}\)|
 c.is-inside (point 0 0) > i
 \end{ffcode}
 
@@ -627,7 +627,7 @@ runtime. This is how the object may be defined:
 +rt jvm org.eolang:eo-runtime:0.7.0
 +rt ruby eolang:0.1.0
 
-[text] > stdout /bool |$\label{ln:stdout}$|
+[text] > stdout /bool |\(\label{ln:stdout}\)|
 \end{ffcode}
 
 The \ff{/bool} suffix informs the compiler that this object must
@@ -651,11 +651,11 @@ object where the abstract was defined, for example this is
 how object \ff{tuple.map} is implemented in Objectionary:
 
 \begin{ffcode}
-[] > list |$\label{ln:list-parent}$|
-  [f] > mapi /list |$\label{ln:list-map}$|
+[] > list |\(\label{ln:list-parent}\)|
+  [f] > mapi /list |\(\label{ln:list-map}\)|
   [f] > map
     ^.mapi > @
-      [x i] |$\label{ln:map-inner}$|
+      [x i] |\(\label{ln:map-inner}\)|
         &.f x > @
 \end{ffcode}
 
