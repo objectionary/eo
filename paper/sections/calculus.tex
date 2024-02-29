@@ -52,7 +52,7 @@ and the text in double quotes is data.
 \subsection{Attributes}
 
 \begin{definition}\label{def:attribute}
-In an object \(x\), \(a\) is a free \textbf{attribute}
+In an object \(x\), \(a\) is a void \textbf{attribute}
 with the \textbf{name} \(a\)
 iff \((a, \varnothing) \in x\); it is an attached attribute
 with the \textbf{value} \(v\)
@@ -61,7 +61,7 @@ iff \(\exists (a, v)\in x\) and \(v\not=\varnothing\);
 
 In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
 are the attributes of the object \ff{book2}.
-The attribute \ff{isbn} is free, while the other two are attached.
+The attribute \ff{isbn} is void, while the other two are attached.
 
 \begin{definition}\label{def:dot}
 If \(x\) is an object and \(\exists (a, v) \in x\), then \(v\) may be referenced as \(x.a\);
@@ -90,7 +90,7 @@ For example, the scope of the object at Eq.~\ref{eq:book2} consists of three ide
 \subsection{Abstraction}
 
 \begin{definition}\label{def:abstraction}
-An object \(x\) is \textbf{abstract} iff at least one of its attributes is free,
+An object \(x\) is \textbf{abstract} iff at least one of its attributes is void,
 i.e. \(\exists (a, \varnothing)\in x\);
 the process of creating such an object is called \textbf{abstraction}.
 \end{definition}
@@ -98,7 +98,7 @@ the process of creating such an object is called \textbf{abstraction}.
 An alternative ``arrow notation'' may be used to denote an object \(x\) in a more
 compact way, where free attributes stay in the parentheses on the left side of the
 mapping symbol \(\mapsto\) and pairs,
-which represent bound attributes, stay on the right side, in double-square brackets.
+which represent attached attributes, stay on the right side, in double-square brackets.
 Eq.~\ref{eq:book2} may be written as
 \begin{equation}\label{eq:book2-compact}
 \begin{split}
@@ -119,17 +119,17 @@ If \(x\) is an abstract object and \(y\) is an object
   \(v=y.a\) if \(x.a=\varnothing\) and \(v=x.a\) otherwise.
 \end{definition}
 
-Application makes some free attributes of \(x\) bound---by binding objects to them.
+Application makes some free attributes of \(x\) attached---by binding objects to them.
 The produced object has exactly the same set of attributes, but some of them,
-which were free before, become bound.
+which were free before, become attached.
 
-It is not expected that all free attributes turn into bound ones during application.
+It is not expected that all free attributes turn into attached ones during application.
 Some of them may remain free, which will lead
 to creating a new abstract object. To the contrary,
 if all free attributes are substituted with \emph{arguments} during copying,
 a newly created object will be \emph{closed}.
 
-Once set, bound attributes may not be reset.
+Once set, attached attributes may not be reset.
 This may be interpreted as \emph{immutability} property of objects.
 
 Arrow notation may also be used to denote object copying,
@@ -152,8 +152,8 @@ and may further be simplified since the order of parameters is obvious:
 \end{equation}
 
 An application without arguments is a copy of an object. For example,
-in these expressions the attribute \ff{p1} is bound to the same object
-as the attribute \ff{p}, while the attribute \ff{p2} is bound to a new
+in these expressions the attribute \ff{p1} is attached to the same object
+as the attribute \ff{p}, while the attribute \ff{p2} is attached to a new
 object, a copy of \ff{p}:
 \begin{equation*}
 \begin{split}
@@ -324,7 +324,7 @@ For example, the object at \lref{stdout} would be denoted as
 \end{equation}
 where \(M_\texttt{stdout}\) is a \(\lambda\)-term defined externally.
 
-In atoms, \(\lambda\)-terms are bound to \(\lambda\) attribute.
+In atoms, \(\lambda\)-terms are attached to \(\lambda\) attribute.
 Thus, a more formal form of the Eq.~\ref{def:stdout} is:
 \begin{equation*}
 \ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto M_\text{stdout} \rrbracket.

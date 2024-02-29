@@ -181,19 +181,19 @@ following ordered sequence of SODGs:
 
 \begin{twocols}
 \begin{ffcode}
-ADD(|\(\Phi\)|)
-ADD(|\(v_1\)|);
-ATOM(|\(v_1\)|, |\(M_1\)|);
-BIND(|\(\Phi\)|, |\(v_1\)|, memory);
-ADD(|\(v_2\)|);
-BIND(|\(\Phi\)|, |\(v_2\)|, book2);
-ADD(|\(v_3\)|);
-BIND(|\(v_2\)|, |\(v_3\)|, isbn);
-ADD(|\(v_4\)|);
-BIND(|\(v_2\)|, |\(v_4\)|, title);
-REF(e, |\(v_2\)|, |\(\Phi\)|.memory, price);
-ADD(|\(d_4\)|);
-BIND(|\(v_4\)|, |\(d_4\)|, |\(\Delta\)|);
+ADD((*@\(\Phi\)@*))
+ADD((*@\(v_1@\)*));
+ATOM((*@\(v_1\)@*), (*@\(M_1\)@*));
+BIND((*@\(\Phi\)@*), (*@\(v_1\)@*), memory);
+ADD((*@\(v_2\)@*));
+BIND((*@\(\Phi\)@*), (*@\(v_2\)@*), book2);
+ADD((*@\(v_3\)@*));
+BIND((*@\(v_2\)@*), (*@\(v_3\)@*), isbn);
+ADD((*@\(v_4\)@*));
+BIND((*@\(v_2\)@*), (*@\(v_4\)@*), title);
+REF(e, (*@\(v_2\)@*), (*@\(\Phi\)@*).memory, price);
+ADD((*@\(d_4\)@*));
+BIND((*@\(v_4\)@*), (*@\(d_4\)@*), (*@\(\Delta\)@*));
 \end{ffcode}
 \end{twocols}
 

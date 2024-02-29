@@ -13,9 +13,9 @@ referring it to the line inside XML document, where the object \ff{r} is defined
 
 \begin{ffcode}
 <o name="circle">
-  <o name="r"/> |\(\label{ln:xml-circle2-r}\)| <!-- Line no.|\(\texttt{\ref{ln:xml-circle2-r}}\)| -->
+  <o name="r"/> (*@\label{ln:xml-circle2-r}@*) <!-- Line no.(*@\texttt{\ref{ln:xml-circle2-r}}@*) -->
   <o base=".times" name="square">
-    <o base="r" |\(\textbf{\texttt{ref="\ref{ln:xml-circle2-r}"}}\)|/>
+    <o base="r" (*@\textbf{\texttt{ref="\ref{ln:xml-circle2-r}"}}@*)/>
     <o base="int" data="int">2</o>
     <o base="float" data="float">3.14</o>
   </o>

@@ -8,14 +8,16 @@ There are no keywords in \eolang{} but only a few special symbols
 denoting grammar constructs:
   \ff{>} for the attributes naming,
   \ff{.} for the dot notation,
-  \ff{[]} for the specification of parameters of abstract objects,
+  \ff{[]} for the specification of parameters of formations,
   \ff{()} for scope limitations,
   \ff{!} for turning objects into constants,
   \ff{:} for naming arguments,
   \ff{"} (double quotes) for string literals,
   \ff{@} for the \nospell{decoratee},
   \ff{'} (apostroph) for explicit copying,
+  \ff{<} for object identity,
   \ff{\^{}} for referring to the parent object,
+  \ff{\&{}} for referring to the home object,
   and
   \ff{\$} for referring to the current object.
 Attributes, which are the only identifiers that exist in \eolang{}, may have
@@ -38,14 +40,14 @@ Behavior is how an object acts and reacts, in terms of its state changes and mes
 Identity is that property of an object which distinguishes it from all other objects.''
 The syntax of \eolang{} makes a difference between these three categories.
 
-This is a declaration of an abstract object \ff{book},
+This is a formation of a new object \ff{book},
 which has a single \emph{identity} attribute \ff{isbn}:
 
 \begin{ffcode}
-[isbn] > book |\(\label{ln:book}\)|
+[isbn] > book (*@\label{ln:book}@*)
 \end{ffcode}
 
-To make a new object with a specific ISBN, the \ff{book}
+To make another object with a specific ISBN, the \ff{book}
 has to be \emph{copied}, with the \emph{data} as an argument:
 
 \begin{ffcode}
@@ -55,32 +57,32 @@ book "978-1519166913" > b1
 Here, \ff{b1} is a new object created.
 Its only attribute is accessible as \ff{b1.isbn}.
 
-A similar abstract object, but with two new \emph{state} attributes, would
+A similar \emph{abstract} object, but with two new \emph{state} attributes, would
 look like:
 
 \begin{ffcode}
-[isbn] > book2  |\(\label{ln:book2}\)|
+[isbn] > book2  (*@\label{ln:book2}@*)
   "Object Thinking" > title
-  memory 0 > price |\(\label{ln:book2-end}\)|
+  memory 0 > price (*@\label{ln:book2-end}@*)
 \end{ffcode}
 
 The attribute \ff{title} is a constant, while the \ff{price}
 represents a mutable chunk of bytes in computing memory. They both are
 accessible similar to the \ff{isbn}, via \ff{book2.title}
 and \ff{book2.price}. It is legal to access them in the abstract
-object, since they are bound to objects. However, accessing \ff{book2.isbn}
-will lead to an error, since the attribute \ff{isbn} is free
+object, since they are attached to objects. However, accessing \ff{book2.isbn}
+will lead to an error, since the attribute \ff{isbn} is \emph{void}
 in the abstract object \ff{book2}.
 
 A \emph{behavior} may be added to an object with a new \emph{inner}
 abstract object \ff{set-price}:
 
 \begin{ffcode}
-[isbn] > book3 |\(\label{ln:book3}\)|
+[isbn] > book3 (*@\label{ln:book3}@*)
   "Object Thinking" > title
   memory 0 > price
   [p] > set-price
-    ^.price.write p > @ |\(\label{ln:book3-end}\)|
+    ^.price.write p > @ (*@\label{ln:book3-end}@*)
 \end{ffcode}
 
 The price of the book may be changed with this one-liner:
@@ -98,21 +100,21 @@ the importance of their presence in specific quantity
 second line and the \ff{>} symbol, while two spaces will break the syntax):
 
 {\lstset{showspaces=true}\begin{ffcode}
-# This is a vector in 2D space |\(\label{ln:comment}\)|
-[dx dy] > vector |\(\label{ln:vector}\)|
-  sqrt. > length |\(\label{ln:length}\)|
+# This is a vector in 2D space (*@\label{ln:comment}@*)
+[dx dy] > vector (*@\label{ln:vector}@*)
+  sqrt. > length (*@\label{ln:length}@*)
     plus.
       dx.times dx
-      dy.timex dy |\(\label{ln:length-end}\)| |\(\label{ln:vector-end}\)|
+      dy.timex dy (*@\label{ln:length-end}@*) (*@\label{ln:vector-end}@*)
 \end{ffcode}
 }
 
 The code at \lref{comment} is a \emph{comment}.
-Two \emph{free attributes} \ff{dx} and \ff{dy}
+Two \emph{void attributes} \ff{dx} and \ff{dy}
 are listed in square brackets at \lref{vector}.
 The \emph{name} of the object goes after the \ff{>} symbol.
 The code at \lref{length} defines
-a \emph{bound attribute} \ff{length}. Anywhere when an object
+an \emph{attached attribute} \ff{length}. Anywhere when an object
 has to get a name, the \ff{>} symbol can be added after the object.
 
 The declaration of the attribute \ff{length} at \lrefs{length}{length-end}
@@ -130,10 +132,10 @@ this expression in multiple lines without the usage of
 inverse notation, but it will look less readable:
 
 \begin{ffcode}
-dx.times dx |\(\label{ln:dx-pow}\)|
+dx.times dx (*@\label{ln:dx-pow}@*)
 .plus
-  dy.timex dy |\(\label{ln:dx-pow-2}\)|
-.sqrt > length |\(\label{ln:dx-pow-3}\)|
+  dy.timex dy (*@\label{ln:dx-pow-2}@*)
+.sqrt > length (*@\label{ln:dx-pow-3}@*)
 \end{ffcode}
 
 Here, \lref{dx-pow} is the application of the object \ff{dx.times} with
@@ -146,11 +148,11 @@ at the previous line, and gives it the name \ff{length}.
 Indentation is used for two purposes: either to define attributes
 of an abstract object or to specify arguments for object application, also
 known as making a \emph{copy}.
-A definition of an abstract object starts with a list of free attributes
-in square brackets on one line, followed by a list of bound attributes
+A definition of an abstract object starts with a list of void attributes
+in square brackets on one line, followed by a list of attached attributes
 each in its own line. For example, this is an abstract \emph{anonymous} object
 (it doesn't have a name)
-with one free attribute \ff{x} and two bound attributes \ff{succ} and \ff{prev}:
+with one void attribute \ff{x} and two attached attributes \ff{succ} and \ff{prev}:
 
 \begin{ffcode}
 [x]
@@ -163,11 +165,11 @@ mode, without the use of indentation. It is possible to rewrite this code
 in a \emph{vertical} mode, where indentation will be required:
 
 \begin{ffcode}
-[x] |\(\label{ln:succ}\)|
+[x] (*@\label{ln:succ}@*)
   x.plus > succ
     1
   x.minus > prev
-    1 |\(\label{ln:succ-end}\)|
+    1 (*@\label{ln:succ-end}@*)
 \end{ffcode}
 
 This abstract object can also be written in a horizontal mode,
@@ -179,7 +181,7 @@ because it is anonymous:
 
 \subsection{\eolang{} to XML}\label{sec:xml}
 
-Due the nesting nature of \eolang{}, its program can be transformed
+Due to the nesting nature of \eolang{}, its program can be transformed
 to an XML document. The abstract object \ff{vector} would produce
 this XML tree of elements and attributes:
 
@@ -204,8 +206,8 @@ this XML tree of elements and attributes:
 
 Each object is represented by an \ff{<o/>} XML element with a few
 optional attributes, such as \ff{name} and \ff{base}. Each
-attribute is either a named reference to an object (if the attribute is bound,
-such as \ff{length}), or a name without a reference (if it is free,
+attribute is either a named reference to an object (if the attribute is attached,
+such as \ff{length}), or a name without a reference (if it is void,
 such as \ff{dx} and \ff{dy}).
 
 \subsection{Data Objects and Tuples}
@@ -223,25 +225,20 @@ This syntax would be translated to XMIR (XML based
 data format explained in Sec.~\ref{sec:xmir}):
 
 \begin{ffcode}
-<o name="circle"> |\(\label{ln:xml-circle}\)|
+<o name="circle"> (*@\label{ln:xml-circle}@*)
   <o name="r"/>
   <o base=".times" name="circumference">
-    <o base="r"/>  |\(\label{ln:xml-circle-r}\)|
-    <o base="float" data="float">3.14</o>
+    <o base="r"/>  (*@\label{ln:xml-circle-r}@*)
+    <o base="float">
+      <o base="bytes">40-09-1E-B8-51-EB-85-1F</o>
+    </o>
   </o>
-</o> |\(\label{ln:xml-circle-end}\)|
+</o> (*@\label{ln:xml-circle-end}@*)
 \end{ffcode}
 
-Each object, if it is not abstract, has a ``base'' attribute in XML,
-which contains that name of an abstract object to be copied. The
-object \ff{float} is abstract, but its name
-can't be used directly in a program, similar to how \ff{r} or \ff{times}
-are used. The only way to make a copy of the abstract object \ff{float}
-is to use a numeric literal like \ff{3.14}.
-
-The abstract objects which can't be used directly and can only be
-created by the compiler through "data" syntax construct---are called \emph{data}.
-The examples of some possible data are in the Tab.~\ref{tab:types}.
+Each object, if it is not a formation, has a ``base'' attribute in XML,
+which contains that name of a formation to be copied.
+The examples of some possible \emph{data objects} are in~\cref{tab:types}.
 
 \begin{table}
 \begin{tabularx}{\columnwidth}{l|X|r}
@@ -267,11 +264,11 @@ directly. There is a special syntax for making tuples,
 which looks similar to object copying:
 
 \begin{ffcode}
-* "Lucy" "Jeff" 3.14 |\(\label{ln:tuple-1}\)|
-* > a |\(\label{ln:tuple-2a}\)|
+* "Lucy" "Jeff" 3.14 (*@\label{ln:tuple-1}@*)
+* > a (*@\label{ln:tuple-2a}@*)
   (* "a")
-  TRUE |\(\label{ln:tuple-2b}\)|
-* > b |\(\label{ln:tuple-3}\)|
+  TRUE (*@\label{ln:tuple-2b}@*)
+* > b (*@\label{ln:tuple-3}@*)
 \end{ffcode}
 
 The code at \lref{tuple-1} makes a tuple of three elements: two strings
@@ -279,38 +276,12 @@ and one float. The code at \lrefs{tuple-2a}{tuple-2b} makes a tuple named \ff{a}
 tuple as its first element and \ff{TRUE} as the second item.
 The code at \lref{tuple-3} is an empty tuple with the name \ff{b}.
 
-\subsection{Varargs}
-
-The last free attribute in an abstract object may be a \emph{vararg},
-meaning that any number or zero arguments may be provided. All of them
-will be packaged in a tuple by the compiler, for example:
-
-\begin{ffcode}
-[x...] > sum |\(\label{ln:sum-def}\)|
-sum 8 13 -9 |\(\label{ln:sum-instance}\)|
-\end{ffcode}
-
-Here, at the first line the abstract object \ff{sum} is defined
-with a free vararg attribute \ff{x}. At the second line a copy of the
-abstract object is made with three arguments. The internals of
-the \ff{sum} will see \ff{x} as an \ff{tuple} with three
-elements inside.
-
-It is possible to provide a tuple as a parameter for vararg attribute
-(both variants are semantically equivalent):
-
-\begin{ffcode}
-* 42 7 > a
-sum ...a
-sum 42 7
-\end{ffcode}
-
 \subsection{Scope Brackets}
 
 Brackets can be used to group object arguments in horizontal mode:
 
 \begin{ffcode}
-sum (div 45 5) 10  |\(\label{ln:sum}\)|
+sum (div 45 5) 10  (*@\label{ln:sum}@*)
 \end{ffcode}
 
 The \ff{(div 45 5)} is a copy of the abstract object \ff{div}
@@ -333,21 +304,21 @@ for example:
 # A point on a 2D canvas
 [x y] > point
   [to] > distance
-    length. > len |\(\label{ln:vector-length}\)|
+    length. > len (*@\label{ln:vector-length}@*)
       vector
         to.x.minus (^.x)
         to.y.minus (^.y)
 \end{ffcode}
 
-The object \ff{point} has two free attributes \ff{x} and \ff{y}
-and the attribute \ff{distance}, which is bound to an abstract
-object with one free attribute \ff{to} and one bound attribute \ff{len}.
+The object \ff{point} has two void attributes \ff{x} and \ff{y}
+and the attribute \ff{distance}, which is attached to an abstract
+object with one void attribute \ff{to} and one attached attribute \ff{len}.
 The \emph{inner} abstract object \ff{distance} may only be copied
 with a reference to its \emph{parent} object \ff{point}, via
 a special attribute denoted by the \ff{\^{}} symbol:
 
 \begin{ffcode}
-distance. |\(\label{ln:point-copy}\)|
+distance. (*@\label{ln:point-copy}@*)
   point
     5:x
     -3:y
@@ -357,9 +328,9 @@ distance. |\(\label{ln:point-copy}\)|
 \end{ffcode}
 
 The parent object is \ff{(point 5 -3)}, while the object \ff{(point 13 3.9)}
-is the argument for the free attribute \ff{to} of the object \ff{distance}.
+is the argument for the void attribute \ff{to} of the object \ff{distance}.
 Suffixes \ff{:x}, \ff{:y}, and \ff{:to} are optional and may be used
-to denote the exact name of the free attribute to be bound to the
+to denote the exact name of the void attribute to be attached to the
 provided argument.
 
 \subsection{Decorators}
@@ -367,12 +338,12 @@ provided argument.
 An object may extend another object by \emph{decorating} it:
 
 \begin{ffcode}
-[center radius] > circle |\(\label{ln:circle}\)|
-  center > @ |\(\label{ln:circle-phi}\)|
+[center radius] > circle (*@\label{ln:circle}@*)
+  center > @ (*@\label{ln:circle-phi}@*)
   [p] > is-inside
     lte. > @
       ^.@.distance \(.p  |\)\label{ln:circle-phi-2}$|
-      ^.radius |\(\label{ln:circle-end}\)|
+      ^.radius (*@\label{ln:circle-end}@*)
 \end{ffcode}
 
 The object \ff{circle} has a special attribute \ff{@}
@@ -407,20 +378,20 @@ The object \ff{circle} may be used like this, to understand whether
 the \((0,0)\) point is inside the circle at \((-3,9)\) with the radius \(40\):
 
 \begin{ffcode}
-circle (point -3 9) 40 > c  |\(\label{ln:circle-c}\)|
+circle (point -3 9) 40 > c  (*@\label{ln:circle-c}@*)
 c.is-inside (point 0 0) > i
 \end{ffcode}
 
 Here, \ff{i} will be a copy of \ff{bool} behaving like \ff{TRUE}
 because \ff{lte} decorates \ff{bool}.
 
-It is also possible to make decoratee free, similar to other free
-attributes, specifying it in the list of free attributes in
+It is also possible to make decoratee void, similar to other void
+attributes, specifying it in the list of void attributes in
 square brackets.
 
-\subsection{Anonymous Abstract Objects}
+\subsection{Anonymous Formations}
 
-An abstract object may be used as an argument of another object while
+A formation may be used as an argument of another object while
 making a copy of it, for example:
 
 \begin{ffcode}
@@ -431,14 +402,13 @@ making a copy of it, for example:
 \end{ffcode}
 
 Here the object \ff{walk} is copied with a single argument:
-the one-item tuple, which is an
-abstract object with a single free attribute \ff{f}. The \ff{walk}
-will use this abstract object, which doesn't have a name, in order
+the one-item tuple, which is a formation with a single void attribute \ff{f}. The \ff{walk}
+will use this formation, which doesn't have a name, in order
 to filter out files while traversing the tree of directories. It will
-make a copy of the abstract object and then treat it as a boolean
+make a copy of the formation and then treat it as a boolean
 value in order to make a decision about each file.
 
-The syntax may be simplified and the abstract object may be inlined
+The syntax may be simplified and the formation may be inlined
 (the tuple is also inlined):
 
 \begin{ffcode}
@@ -446,7 +416,7 @@ The syntax may be simplified and the abstract object may be inlined
   * ([f] (f.is-dir > @))
 \end{ffcode}
 
-An anonymous abstract object may have multiple attributes:
+An anonymous formation may have multiple attributes:
 
 \begin{ffcode}
 [x] (x.plus 1 > succ) (x.minus 1 > prev)
@@ -549,7 +519,7 @@ to the file:
 +package org.example
 +alias org.eolang.io.stdout
 
-[args...] > app
+[args] > app
   stdout > @
     "Hello, world!\n"
 \end{ffcode}
@@ -567,7 +537,7 @@ runtime. This is how the object may be defined:
 +rt jvm org.eolang:eo-runtime:0.7.0
 +rt ruby eolang:0.1.0
 
-[text] > stdout /bool |\(\label{ln:stdout}\)|
+[text] > stdout /bool (*@\label{ln:stdout}@*)
 \end{ffcode}
 
 The \ff{/bool} suffix informs the compiler that this object must
@@ -591,11 +561,11 @@ object where the abstract was defined, for example this is
 how object \ff{tuple.map} is implemented in Objectionary:
 
 \begin{ffcode}
-[] > list |\(\label{ln:list-parent}\)|
-  [f] > mapi /list |\(\label{ln:list-map}\)|
+[] > list (*@\label{ln:list-parent}@*)
+  [f] > mapi /list (*@\label{ln:list-map}@*)
   [f] > map
     ^.mapi > @
-      [x i] |\(\label{ln:map-inner}\)|
+      [x i] (*@\label{ln:map-inner}@*)
         &.f x > @
 \end{ffcode}
 
