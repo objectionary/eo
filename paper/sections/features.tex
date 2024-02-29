@@ -55,7 +55,7 @@ To our knowledge, there are no other OO languages without methods.
 Unlike Java or C++, \eolang{} doesn't allow programmers to alter
 the process of object construction or suggest alternative
 paths of object instantiation via additional constructions.
-Instead, all arguments are assigned to attributes ``as is'' and can't be modified.
+Instead, all arguments are attached to attributes ``as is'' and can't be modified.
 
 \feature{no-static}{No Static Entities}
 %
@@ -114,8 +114,8 @@ and less readable, as explained by~\citet{holub2004more}.
 
 \feature{no-global}{No Global Scope}
 %
-All objects in \eolang{} are assigned to some attributes. Objects constructed
-in the global scope of visibility are assigned to attributes of the
+All objects in \eolang{} are attached to some attributes. Objects constructed
+in the global scope of visibility are attached to attributes of the
 \(\Phi\) object of the highest level of abstraction.
 Newspeak and Eiffel are two programming languages that does not have global scope as well.
 
@@ -130,7 +130,7 @@ don't mean constants though. While the latter will
 always expose the same functionality, the former may represent mutable
 entities, being known as read-only references~\citep{birka2004practical}.
 For example, an attribute \ff{r} may have an object \ff{random.pseudo}
-assigned to it, which is a random number generator. \eolang{} won't allow
+attached to it, which is a random number generator. \eolang{} won't allow
 assigning another object to the attribute \ff{r}. However, every time
 the attribute is dataized, its value will be different.
 %
