@@ -155,7 +155,7 @@ Even though there are no explicitly defined types in \phic{},
 the comformance between objects is derived and ``strongly'' checked
 in compile time. In the example above, it would not be possible to
 compile the code that adds elements to the set \ff{emps}, if any
-of them lacks the attribute \ff{print}. Since in \eo{},
+of them lacks the attribute \ff{print}. Since in \eolang{},
 there is no reflection on types or any other mechanisms
 of alternative object instantiation, it is always known where
 objects are constructed or copied and what is the structure of them.
@@ -195,13 +195,13 @@ is one of the main reasons why there is no information hiding in \phic{}.
 Instead, all attributes of all objects in \phic{}
 are visible to any other object.
 
-In \eo{} the primary goal of encapsulation is achieved differently.
+In \eolang{} the primary goal of encapsulation is achieved differently.
 The goal is to reduce coupling between objects:
 the less they know about each other the thinner the
 the connection between them, which is one of the virtues of
 software design, according to~\citet{yourdon1979structured}.
 
-In \eo{} the tightness of coupling between objects should be controlled
+In \eolang{} the tightness of coupling between objects should be controlled
 during the build, similar to how the threshold of test code coverage is
 usually controlled. At compile-time the compiler collects the information
 about the relationships between objects and calculates the coupling depth of each connection.

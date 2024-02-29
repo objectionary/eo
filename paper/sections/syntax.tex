@@ -1,9 +1,9 @@
-Fig.~\ref{fig:bnf} demonstrates the entire syntax of \eo{} language in BNF.
-Similar to Python~\citep{lutz2013learning}, indentation in \eo{} is part of the syntax:
+Fig.~\ref{fig:bnf} demonstrates the entire syntax of \eolang{} language in BNF.
+Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax:
 the scope of a code block is determined by its horizontal position
 in relation to other blocks, which is also known as ``off-side rule''~\citep{landin1966next}.
 
-There are no keywords in \eo{} but only a few special symbols
+There are no keywords in \eolang{} but only a few special symbols
 denoting grammar constructs:
   \ff{>} for the attributes naming,
   \ff{.} for the dot notation,
@@ -17,7 +17,7 @@ denoting grammar constructs:
   \ff{\^{}} for referring to the parent object,
   and
   \ff{\$} for referring to the current object.
-Attributes, which are the only identifiers that exist in \eo{}, may have
+Attributes, which are the only identifiers that exist in \eolang{}, may have
 any Unicode symbols in their names, as long as they start with a small English letter
 and don't contain spaces, line breaks, or special symbols mentioned above:
 \ff{test-File} and
@@ -81,7 +81,7 @@ Java-notation is used for numbers and strings.
 \T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{ \RE{e(+|-)?\textbackslash{}d+} } \\
 \end{tabbing}
 \end{multicols}
-\figcap{The full syntax of \eo{} in BNF.
+\figcap{The full syntax of \eolang{} in BNF.
   \lex{eol} is a line ending that preserves the indentation of the previous line.
   \lex{tab} is a right-shift of the indentation, while \lex{untab} is a left-shift.
   \lex{any} is any symbol excluding \lex{eol}, \V{.}, and \V{␣}.
@@ -96,7 +96,7 @@ According to~\citet{grady2007object}, an object in OOP has state, behavior, and 
 the object plus the current values of each of these properties.
 Behavior is how an object acts and reacts, in terms of its state changes and message passing.
 Identity is that property of an object which distinguishes it from all other objects.''
-The syntax of \eo{} makes a difference between these three categories.
+The syntax of \eolang{} makes a difference between these three categories.
 
 This is a declaration of an abstract object \ff{book},
 which has a single \emph{identity} attribute \ff{isbn}:
@@ -237,9 +237,9 @@ because it is anonymous:
 [x] (x.plus 1 > succ) (x.minus 1 > prev)
 \end{ffcode}
 
-\subsection{\eo{} to XML}\label{sec:xml}
+\subsection{\eolang{} to XML}\label{sec:xml}
 
-Due the nesting nature of \eo{}, its program can be transformed
+Due the nesting nature of \eolang{}, its program can be transformed
 to an XML document. The abstract object \ff{vector} would produce
 this XML tree of elements and attributes:
 
@@ -520,7 +520,7 @@ the object \ff{walk} and will point to the \ff{walk} object itself.
 
 \subsection{Constants}
 
-\eo{} is a declarative language with lazy evaluations. This means
+\eolang{} is a declarative language with lazy evaluations. This means
 that this code would read the input stream two times:
 
 \begin{ffcode}
@@ -616,7 +616,7 @@ to the file:
 
 \subsection{Atoms}
 
-Some objects in \eo{} programs may need to be platform specific
+Some objects in \eolang{} programs may need to be platform specific
 and can't be composed from other existing objects---they are called
 \emph{atoms}.
 For example, the object \ff{app} uses the object \ff{stdout},
@@ -631,7 +631,7 @@ runtime. This is how the object may be defined:
 \end{ffcode}
 
 The \ff{/bool} suffix informs the compiler that this object must
-not be compiled from \eo{} to the target language. The object
+not be compiled from \eolang{} to the target language. The object
 with this suffix already exists in the target language and most
 probably could be found in the library specified by the \ff{rt}
 meta. The exact library to import has to be selected by the compiler.
@@ -642,7 +642,7 @@ The \ff{bool} part after the \ff{/} is the name of
 object, which \ff{stdout} decorates. The name may be replaced by
 a question mark, if uncertain about the object being decorated.
 
-Atoms in \eo{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods in C\#: this mechanism is also known as foreign function interface (FFI).
+Atoms in \eolang{} are similar to ``native'' methods in Java and ``\nospell{extern}'' methods in C\#: this mechanism is also known as foreign function interface (FFI).
 
 \subsection{Home Object}
 

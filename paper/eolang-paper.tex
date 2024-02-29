@@ -25,13 +25,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[maxnames=1,minnames=1,maxbibnames=100,natbib=true,citestyle=authoryear,bibstyle=authoryear,doi=false,url=false,isbn=false,isbn=false,backend=biber]{biblatex}
 \addbibresource{main.bib}
-
-\ifnum\pdfshellescape=1
-  \usepackage[finalizecache]{minted}
-\else
-  \usepackage[frozencache]{minted}
-\fi
-
 \usepackage[T2A,T1]{fontenc}
 \usepackage{stmaryrd} % for arrows, like \mapstochar
 \let\Bbbk\relax\usepackage{amssymb} % for special symbols
@@ -45,6 +38,7 @@
 \usepackage{paralist} % for inlined lists
 \usepackage{cancel} % to enable \cancel command
 \usepackage{anyfontsize} % To get rid of font not found warnings
+\usepackage{eolang} % for EO sources and formulas
 \usepackage{tabularx} % for special tables
 \usepackage{to-be-determined} % for \tbd command
 \usepackage{href-ul} % for nicely underscored links
@@ -62,9 +56,6 @@
 \newcommand\nospell[1]{#1}
 \newcommand\br{\\[-4pt]}
 \newcommand\figcap[1]{\caption{#1}\Description{#1}}
-\newcommand\phic{$\varphi$-calculus}
-\newcommand\eo{{\sffamily EO}}
-\newcommand\XMIR{{\sffamily XMIR}}
 \newcommand\lref[1]{the line no.~\ref{ln:#1}}
 \newcommand\lrefs[2]{the lines~\ref{ln:#1}--\ref{ln:#2}}
 
@@ -122,7 +113,7 @@ programming is based on. There were a number of attempts to formalize
 OOP, but none of them managed to cover all the features available in
 modern OO programming languages, such as C++ or Java.
 We have made yet another attempt and created \phic{}. We also
-created EOLANG (also called \eo{}), an experimental
+created EOLANG (also called \eolang{}), an experimental
 programming language based on \phic{}.
 \end{abstract}
 
@@ -139,7 +130,7 @@ the calculus itself, its semantics, and pragmatics.
 In order to make it easier to understand, we start
 the discussion with the syntax of the language, while the calculus
 is derived from it. Then, we discuss the
-key features of \eo{} and the differences between it and other
+key features of \eolang{} and the differences between it and other
 programming languages. We also discuss how the absence of traditional
 OOP features, such as mutability or inheritance, affect the complexity of code.
 At the end of the paper we overview the work done by others in the area of

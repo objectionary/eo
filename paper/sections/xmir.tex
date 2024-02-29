@@ -1,4 +1,4 @@
-Consider this sample \eo{} snippet:
+Consider this sample \eolang{} snippet:
 
 \begin{ffcode}
 [x y...] > app
@@ -16,14 +16,14 @@ It will be compiled to the following XMIR:
   <o line="1" name="x"/>
   <o line="1" name="y" vararg=""/>
   <o base="int" const="" data="int"
-    line="2" name="n">42</o>   |$\label{ln:xml-data}$|
+    line="2" name="n">42</o>   |\(\label{ln:xml-data}\)|
   <o line="3" name="read">
     <o line="3" name="t"/>
-    <o base=".minus" line="4"> |$\label{ln:xml-minus}$|
-      <o base="n" line="5"/> |$\label{ln:method-start}$|
-      <o base=".neg" line="5" method=""/>  |$\label{ln:method-end}$|
+    <o base=".minus" line="4"> |\(\label{ln:xml-minus}\)|
+      <o base="n" line="5"/> |\(\label{ln:method-start}\)|
+      <o base=".neg" line="5" method=""/>  |\(\label{ln:method-end}\)|
       <o base="t" line="6"/>
-    </o> |$\label{ln:xml-minus-end}$|
+    </o> |\(\label{ln:xml-minus-end}\)|
   </o>
 </o>
 \end{ffcode}
@@ -46,12 +46,12 @@ at \lrefs{xml-minus}{xml-minus-end} to the following (the attribute \ff{method}
 goes away):
 
 \begin{ffcode}
-<o base=".minus" line="4"> |$\label{ln:new-minus}$|
-  <o base=".neg" line="5"/> |$\label{ln:xml-neg}$|
+<o base=".minus" line="4"> |\(\label{ln:new-minus}\)|
+  <o base=".neg" line="5"/> |\(\label{ln:xml-neg}\)|
     <o base="n" line="5"/>
-  </o> |$\label{ln:xml-neg-end}$|
+  </o> |\(\label{ln:xml-neg-end}\)|
   <o base="t" line="6"/>
-</o> |$\label{ln:new-minus-end}$|
+</o> |\(\label{ln:new-minus-end}\)|
 \end{ffcode}
 
 The semantics of the element \ff{.minus} at~\lref{xml-minus}
@@ -59,7 +59,7 @@ and the element \ff{.neg} at~\lref{xml-neg} are similar: prefix
 notation for child-parent relationships. The XML element at~\lrefs{xml-neg}{xml-neg-end}
 means \ff{neg. n} or \ff{n.neg}. The
 leading dot at the attribute \ff{base} means that the first
-child of this XML element is the \eo{} parent of it.
+child of this XML element is the \eolang{} parent of it.
 Similarly, the XML element at ~\lrefs{new-minus}{new-minus-end}
 means \ff{minus. (neg. n) t}, or \ff{(neg. n).minus t}, or \ff{n.neg.minus t}.
 
