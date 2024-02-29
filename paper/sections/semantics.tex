@@ -39,7 +39,7 @@ in the runtime.}
 \end{figure}
 
 The vertice at the top of the graph is the ``root'' object (see Def.~\ref{def:locator}),
-where all other objects that are not anonymous (see Def.~\ref{def:parent}) are bound to.
+where all other objects that are not anonymous (see Def.~\ref{def:parent}) are attached to.
 The vertice \(v_2\) is the abstract object \ff{book2}. The name of the object within the
 scope of \(\Phi\) is the label on the edge from \(\Phi\) to \(v_2\). The labeled edge
 between \(v_2\) and \(v_3\) makes the object \(v_3\) an attribute of \(v_2\) with the
@@ -229,7 +229,7 @@ used in practical examples below. Instead, single integer indexes will
 be used to denote vertices and edges, being incremented sequentially
 in order to avoid duplication.
 
-Consider for example the abstract object bound to the attribute \ff{is-inside} in Eq.~\ref{eq:c-empty}.
+Consider for example the abstract object attached to the attribute \ff{is-inside} in Eq.~\ref{eq:c-empty}.
 The premise \(v_5|E\) will stand when the focus is at the vertice representing the object \ff{circle},
 where \(v_5\) would be the vertice of it (the numbers
 \(5\) and \(12\) don't mean anything and are just placeholders):
