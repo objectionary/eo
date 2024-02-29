@@ -1,21 +1,21 @@
 First, the source code of \eolang{} is parsed by ANTLR4-powered
 parser and an intermediate representation is built in XML,
-as was demonstrated in the Section~\ref{sec:xml}.
+as was demonstrated in \cref{sec:xml}.
 The output format is called \xmir{}.
 One \ff{.eo} file with
 the source code in \eolang{} produces one \xmir{} file with \ff{.xml} extension.
 
 \xmir{} is then refined via a \emph{pipeline} of XSLT stylesheets.
-For example, \xmir{} at \ref{ln:xml-circle}--\ref{ln:xml-circle-end} contains a
-reference to the object \ff{r} at the line no.\ref{ln:xml-circle-r}.
+For example, \xmir{} at \lrefs{xml-circle}{xml-circle-end} contains a
+reference to the object \ff{r} at \lref{xml-circle-r}.
 An XSL transformation adds an attribute \ff{ref} to the XML element \ff{<o/>},
 referring it to the line inside XML document, where the object \ff{r} is defined:
 
 \begin{ffcode}
 <o name="circle">
-  <o name="r"/> (*@\label{ln:xml-circle2-r}@*) <!-- Line no.(*@\texttt{\ref{ln:xml-circle2-r}}@*) -->
+  <o name="r"/> (*@\label{ln:xml-circle2-r}@*) <!-- (*@\texttt{\lref{xml-circle2-r}}@*) -->
   <o base=".times" name="square">
-    <o base="r" (*@\textbf{\texttt{ref="\ref{ln:xml-circle2-r}"}}@*)/>
+    <o base="r" (*@\textbf{\texttt{ref="\lref{xml-circle2-r}"}}@*)/>
     <o base="int" data="int">2</o>
     <o base="float" data="float">3.14</o>
   </o>

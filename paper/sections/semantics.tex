@@ -10,8 +10,8 @@ be translated into imperative instructions of a target computing platform, we
 \subsection{Object Graph}\label{ssec:graph}
 
 Consider the object from \lrefs{book2}{book2-end},
-which is also represented by the expression in Eq.~\ref{eq:book}.
-Fig.~\ref{fig:book2} represents it as a graph.
+which is also represented by the expression in \cref{eq:book}.
+\Cref{fig:book2} represents it as a graph.
 
 \begin{figure}[t!]
 \begin{phigure}
@@ -32,21 +32,21 @@ Fig.~\ref{fig:book2} represents it as a graph.
     \(d_{4} \to \ff{"Object Thinking"}\)
   \end{minipage}};
 \end{phigure}
-\figcap{The object graph with a few objects from Eq.~\ref{eq:book2}, where
+\figcap{The object graph with a few objects from \cref{eq:book2}, where
 \(d_4\) is \ff{"Object Thinking"} data and \(M_1\) is a lambda expression defined
 in the runtime.}
 \label{fig:book2}
 \end{figure}
 
-The vertice at the top of the graph is the ``root'' object (see Def.~\ref{def:locator}),
-where all other objects that are not anonymous (see Def.~\ref{def:parent}) are attached to.
+The vertice at the top of the graph is the ``root'' object (see \cref{def:locator}),
+where all other objects that are not anonymous (see \cref{def:parent}) are attached to.
 The vertice \(v_2\) is the abstract object \ff{book2}. The name of the object within the
 scope of \(\Phi\) is the label on the edge from \(\Phi\) to \(v_2\). The labeled edge
 between \(v_2\) and \(v_3\) makes the object \(v_3\) an attribute of \(v_2\) with the
 identifier \ff{isbn}. Even though the object \(v_3\) is \(\varnothing\), the graph
 depicts it as any other object.
 
-The rectangle attached to the vertice \(v_1\) makes it an atom (see Def.~\ref{def:atom})
+The rectangle attached to the vertice \(v_1\) makes it an atom (see \cref{def:atom})
 and \(M_1\), the content of the rectangle, is its \(\lambda\)-term. Atoms
 are depicted with double-lined circles. The data \(d_4\)
 attached to the vertice \(v_4\) by the named edge \(\Delta\)
@@ -176,7 +176,7 @@ we introduced a few SODGs:
 
 All SODGs are idempotent, meaning that they have no additional effect
 if they are called more than once with the same input parameters.
-The object graph at Fig.~\ref{fig:book2} may be generated with the
+The object graph at \cref{fig:book2} may be generated with the
 following ordered sequence of SODGs:
 
 \begin{twocols}
@@ -229,7 +229,7 @@ used in practical examples below. Instead, single integer indexes will
 be used to denote vertices and edges, being incremented sequentially
 in order to avoid duplication.
 
-Consider for example the abstract object attached to the attribute \ff{is-inside} in Eq.~\ref{eq:c-empty}.
+Consider for example the abstract object attached to the attribute \ff{is-inside} in \cref{eq:c-empty}.
 The premise \(v_5|E\) will stand when the focus is at the vertice representing the object \ff{circle},
 where \(v_5\) would be the vertice of it (the numbers
 \(5\) and \(12\) don't mean anything and are just placeholders):
@@ -405,7 +405,7 @@ attaching lambda expressions to vertices:
   \jrule{lambda}
 \end{equation*}
 Visually, the rule would produce the following modifications on the graph
-for Eq.~\ref{def:stdout}:
+for \cref{def:stdout}:
 
 \begin{center}\begin{phigure}
   \node[object] (phi) {\(\Phi\)};
@@ -418,9 +418,9 @@ for Eq.~\ref{def:stdout}:
     \draw (phi-d) -- (v1d) node [attr] {\ff{stdout}};
 \end{phigure}\end{center}
 
-In order to demonstrate a larger example, Fig.~\ref{fig:is} shows
+In order to demonstrate a larger example, \cref{fig:is} shows
 an object graph, which the described rules
-would generate by transforming the object \ff{is} from Eq.~\ref{eq:is}.
+would generate by transforming the object \ff{is} from \cref{eq:is}.
 
 \subsection{Dataization}
 
@@ -510,8 +510,8 @@ a single attribute \(\Delta\) connected to the data returned, where
 \(i\) is the next available index in the graph.
 
 For example, \(\mathbb{R}(\Phi.\ff{c}.\ff{center}.\ff{y},\Delta, \varnothing)\)
-being executed on the graph presented at the
-Fig.~\ref{fig:is} would return the vertice \(d_{21}\), which is \(+9\).
+being executed on the graph presented at
+\cref{fig:is} would return the vertice \(d_{21}\), which is \(+9\).
 
 We also define a dataization function, which turns an object into data:
 
@@ -623,7 +623,7 @@ Program terminates with an error message when \(\mathbb{D}(x)\) is \(\perp\).
     \(M_7 \to \mathbb{R}(\xi.\ff{t}, \ff{distance}, s)\) \\
   \end{minipage}};
 \end{phigure}}
-\figcap{The graph of the object \ff{is} from Eq.~\ref{eq:is}.}
+\figcap{The graph of the object \ff{is} from \cref{eq:is}.}
 \label{fig:is}
 \end{figure*}
 

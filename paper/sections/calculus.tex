@@ -22,7 +22,7 @@ The object at \lref{book} may be represented as
 \end{split}
 \end{equation}
 where \ff{isbn} is an identifier and \(\varnothing\) is an empty
-set, which is a proper object, according to the Def.~\ref{def:object}.
+set, which is a proper object, according to~\cref{def:object}.
 
 \begin{definition}\label{def:data}
 An object may have properties of \textbf{data},
@@ -59,7 +59,7 @@ with the \textbf{value} \(v\)
 iff \(\exists (a, v)\in x\) and \(v\not=\varnothing\);
 \end{definition}
 
-In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
+In \cref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
 are the attributes of the object \ff{book2}.
 The attribute \ff{isbn} is void, while the other two are attached.
 
@@ -84,7 +84,7 @@ is its \textbf{scope} and the cardinality of \(|\hat{x}|\) is
 the \textbf{arity} of \(x\).
 \end{definition}
 
-For example, the scope of the object at Eq.~\ref{eq:book2} consists of three identifiers:
+For example, the scope of the object at~\cref{eq:book2} consists of three identifiers:
 \ff{isbn}, \ff{title}, and \ff{price}.
 
 \subsection{Formation}
@@ -98,7 +98,7 @@ An alternative ``arrow notation'' may be used to denote an object \(x\) in a mor
 compact way, where void attributes stay in the parentheses on the left side of the
 mapping symbol \(\mapsto\) and pairs,
 which represent attached attributes, stay on the right side, in double-square brackets.
-Eq.~\ref{eq:book2} may be written as
+\Cref{eq:book2} may be written as
 \begin{equation}\label{eq:book2-compact}
 \begin{split}
 & \ff{book2}(\ff{isbn}) \mapsto \llbracket \br
@@ -170,8 +170,8 @@ is called \textbf{formation}.
 \end{definition}
 
 Syntactically, object formation is denoted by double square brackets,
-as in Eq.~\ref{eq:book2-compact}, to the contrary of object application,
-which is denoted by round brackets, as in Eq.~\ref{eq:point}.
+as in \cref{eq:book2-compact}, to the contrary of object application,
+which is denoted by round brackets, as in \cref{eq:point}.
 Object abstraction is a special case of object formation.
 The following expression is a formation of the object \(x\):
 \begin{equation*}
@@ -266,8 +266,8 @@ producing:
 \end{equation}
 
 Because of decoration, the expression
-\(\rho.\varphi.\ff{distance}\) in Eq.~\ref{eq:c-empty} is semantically equivalent to a shorter expression
-\(\rho.\ff{distance}\) in Eq.~\ref{eq:c-fin}.
+\(\rho.\varphi.\ff{distance}\) in \cref{eq:c-empty} is semantically equivalent to a shorter expression
+\(\rho.\ff{distance}\) in \cref{eq:c-fin}.
 
 The following expression makes a new object \ff{is}, which represents
 a sequence of object applications ending with a copy of \ff{lte}:
@@ -302,22 +302,6 @@ then it is an abstract object called an \textbf{atom}, \(M\) is its \(\lambda\)-
 and \(s\) is its void attribute.
 \end{definition}
 
-For example, the atom at \lref{sum-def} would be represented as
-\begin{equation}
-\begin{split}
-& \ff{sum}(\ff{x}) \mapsto \lambda s . \sum\limits_{i=0}^{s[0].\ff{x}.\ff{size} - 1} s[0].\ff{x}.\ff{get}(i),
-\end{split}
-\end{equation}
-where the function calculates an arithmetic sum of all items
-in the tuple \ff{x} and returns the result as a data. The argument of
-the function is a vector \(s\) where the first element is the object under
-consideration, the second element is its parent object, the third element
-is the parent of the parent, and so on. Thus, \(s[0]\) is the object
-\ff{sum} itself, while \(s[0].\ff{x}\) is its inner object \ff{x},
-and \(s[0].\ff{x}.\ff{get}(0)\) is the first element of it, if it is a tuple.
-It is expected that the tuple has an attribute \ff{size} representing
-the total number of elements in the tuple.
-
 Atoms may have their \(\lambda\)-terms defined outside of \phic{} formal scope.
 For example, the object at \lref{stdout} would be denoted as
 \begin{equation}\label{def:stdout}
@@ -326,60 +310,10 @@ For example, the object at \lref{stdout} would be denoted as
 where \(M_\texttt{stdout}\) is a \(\lambda\)-term defined externally.
 
 In atoms, \(\lambda\)-terms are attached to \(\lambda\) attribute.
-Thus, a more formal form of the Eq.~\ref{def:stdout} is:
+Thus, a more formal form of the \cref{def:stdout} is:
 \begin{equation*}
 \ff{stdout} \mapsto \llbracket \ff{text} \mapsto \varnothing, \lambda \mapsto M_\text{stdout} \rrbracket.
 \end{equation*}
-
-\subsection{Locators}
-
-\begin{definition}\label{def:locator}
-Object \textbf{locator} is a unique dot-separated not-empty
-collection of identifiers prepended by either \(\xi\), \(\rho\), \(\sigma\), or \(\Phi\).
-\end{definition}
-
-Locators are used to avoid ambiguity when referencing objects.
-For example, Eq.~\ref{eq:c-fin} may be refined as
-\begin{equation}
-\begin{split}
-& \ff{c} \mapsto \llbracket \br
-& \quad \ff{center} \mapsto \Phi.\ff{point}(\Phi.\ff{-3}, \Phi.\ff{9}), \br
-& \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
-& \quad \varphi \mapsto \xi.\ff{center}, \br
-& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \rho.\ff{distance}(\xi.\ff{p}).\ff{lte}( \br
-& \quad \quad \quad \rho.\ff{radius} \br
-& \quad \quad ) \br
-& \quad \rrbracket \br
-& \rrbracket,
-\end{split}
-\end{equation}
-where \(\xi\) denotes the current abstract object
-and \(\Phi\) refers to the anonymous closed ``root'' object.
-Defining an object in a global scope
-means binding it to the object \(\Phi\), unless it is an anonymous
-object, as the one at \lrefs{succ}{succ-end}.
-
-The most precise and complete formula for the object in the
-Eq.~\ref{eq:c-fin2} would also include attribute names for
-the object application:
-\begin{equation}
-\begin{split}
-& \ff{c} \mapsto \llbracket \br
-& \quad \ff{center} \mapsto \Phi.\ff{point}( \br
-& \quad \quad \ff{x} \mapsto \Phi.\ff{-3}, \br
-& \quad \quad \ff{y} \mapsto \Phi.\ff{9} \br
-& \quad ), \br
-& \quad \ff{radius} \mapsto \Phi.\ff{40}, \br
-& \quad \varphi \mapsto \xi.\ff{center}, \br
-& \quad \ff{is-inside}(\ff{p}) \mapsto \llbracket \br
-& \quad \quad \varphi \mapsto \xi.\rho.\ff{distance}(\ff{to} \mapsto \xi.\ff{p}).\ff{lte}( \br
-& \quad \quad \quad \ff{other} \mapsto \xi.\rho.\ff{radius} \br
-& \quad \quad ) \br
-& \quad \rrbracket \br
-& \rrbracket.
-\end{split}
-\end{equation}
 
 \subsection{Constant}
 
