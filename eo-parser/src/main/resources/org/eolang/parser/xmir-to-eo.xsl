@@ -174,6 +174,10 @@ SOFTWARE.
           <xsl:when test="empty(text())">
             <xsl:text>--</xsl:text>
           </xsl:when>
+          <xsl:when test="string-length(text())=2">
+            <xsl:value-of select="text()"/>
+            <xsl:text>-</xsl:text>
+          </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="replace(text(), ' ', '-')"/>
           </xsl:otherwise>
