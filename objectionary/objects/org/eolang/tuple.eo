@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.2
-+version 0.35.2
++rt jvm org.eolang:eo-runtime:0.35.4
++version 0.35.4
 
 # Tuple.
 [head tail] > tuple
@@ -57,10 +57,16 @@
         index.lt 0
         index.gte len
       error "Given index is out of tuple bounds"
-      if.
-        index.lt (len.plus -1)
-        ^.head.at index
-        ^.tail
+      at-without-checks index
+
+    # Takes element from the tuple without index validation.
+    # Here `i` must be an object that can be comparable with `int` using `lt` attribute.
+    [i] > at-without-checks
+      i > idx!
+      if. > @
+        idx.lt head.length
+        ^.^.head.at.at-without-checks idx
+        ^.^.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with
