@@ -1,4 +1,5 @@
-Fig.~\ref{fig:bnf} demonstrates the entire syntax of \eolang{} language in BNF.
+The entire syntax of \eolang{} language in BNF is available on the first page of the
+\texttt{objectionary/eo} Github repository\footnote{\url{https://github.com/objectionary/eo}}.
 Similar to Python~\citep{lutz2013learning}, indentation in \eolang{} is part of the syntax:
 the scope of a code block is determined by its horizontal position
 in relation to other blocks, which is also known as ``off-side rule''~\citep{landin1966next}.
@@ -27,67 +28,6 @@ and don't contain spaces, line breaks, or special symbols mentioned above:
  are valid identifiers.
 Identifiers are case-sentitive: \ff{car} and \ff{Car} are two different identifiers.
 Java-notation is used for numbers and strings.
-
-\newcommand\sntx[1]{{\sffamily #1}}
-\begin{figure*}
-\raggedright
-\small
-\setlength\columnsep{24pt}
-\newcommand\T[1]{\sntx{#1}}
-\newcommand\V[1]{{\ttfamily `#1'}}
-\newcommand\RE[1]{{\ttfamily \textcolor{gray}{/}#1\textcolor{gray}{/}}}
-\newcommand\alt{ \textcolor{gray}{|} }
-\newcommand\grp[1]{\textcolor{gray}{(} #1 \textcolor{gray}{)}}
-\newcommand\opt[1]{\textcolor{gray}{[} #1 \textcolor{gray}{]}}
-\newcommand\few[1]{\textcolor{gray}{\{} #1 \textcolor{gray}{\}}}
-\newcommand\lex[1]{{\scshape\textcolor{darkgray}{#1}}}
-\newcommand\df{\>{\ttfamily\textcolor{gray}{::=} }}
-\begin{multicols}{2}
-\begin{tabbing}
-\hspace*{1.6cm}\= \kill
-
-\T{program} \df \opt{\T{license}} \opt{\T{metas}} \T{objects} \\
-\T{objects} \df \T{object} \lex{eol} \few{\T{object} \lex{eol}} \\
-\T{license} \df \few{\T{comment}} \lex{eol} \\
-\T{metas} \df \few{\T{meta}} \lex{eol} \\
-\T{comment} \df \V{\#} \few{\lex{any}} \lex{eol} \\
-\T{meta} \df \V{+} \T{name} \opt{\V{␣} \lex{any} \few{\lex{any}}} \lex{eol} \\
-\T{name} \df \RE{[a-z]} \few{\lex{any}} \\
-\T{object} \df \grp{ \T{foreign} \alt \T{local} } \\
-\T{foreign} \df \T{abstraction} \V{␣/} \T{name} \alt \V{?} \\
-\T{local} \df \grp{ \T{abstraction} \alt \T{application} } \T{details} \\
-\T{details} \df \opt{\T{tail}} \few{\T{vtail}} \\
-\T{tail} \df \lex{eol} \lex{tab} \few{\T{object} \lex{eol}} \lex{untab} \\
-\T{vtail} \df \lex{eol} \T{ref} \opt{\T{htail}} \opt{\T{suffix}} \opt{\T{tail}} \\
-\T{abstraction} \df \T{attributes} \opt{ \T{suffix} } \\
-\T{attributes} \df \V{[} \T{attribute} \few{\V{␣} \T{attribute}} \V{]} \\
-\T{attribute} \df \V{@} \alt \T{name} \opt{\V{...}} \\
-\T{suffix} \df \V{␣} \V{>} \V{␣} \grp{\V{@} \alt \T{name}} \opt{\V{!}} \\
-\T{ref} \df \V{.} \grp{ \T{name} \alt \V{\^{}} \alt \V{@} \alt \V{<} } \\
-\T{application} \df \T{head} \opt{\T{htail}} \\
-\T{htail} \df \T{application} \T{ref} \\
-  \> \alt \V{(} \T{application} \V{)} \\
-  \> \alt \T{application} \V{:} \T{name} \\
-  \> \alt \T{application} \T{suffix} \\
-  \> \alt \T{application} \V{␣} \T{application} \\
-\T{head} \df \opt{\V{...}} \grp{ \T{name} \opt{\V{'}} \alt \T{data} \alt \V{@} \alt \V{\$} \alt \V{\&} \\
-  \> \alt \V{\^{}} \alt \V{*} \alt \T{name} \V{.} \alt \V{Q} \alt \V{QQ} } \\
-\T{data} \df \T{bytes} \alt \T{bool} \alt \T{string} \alt \T{integer} \alt \T{float} \\
-\T{bytes} \df \T{byte} \few{\V{-} \T{byte}} \alt \V{-{}-} \\
-\T{bool} \df \V{TRUE} \alt \V{FALSE} \\
-\T{byte} \df \RE{[\textbackslash{}dA-F][\textbackslash{}dA-F]} \\
-\T{string} \df \RE{"[\^{}"]*"} \\
-\T{integer} \df \RE{[+-]?\textbackslash{}d+|0x[a-f\textbackslash{}d]+} \\
-\T{float} \df \RE{[+-]?\textbackslash{}d+(\textbackslash{}.\textbackslash{}d+)?} \opt{ \RE{e(+|-)?\textbackslash{}d+} } \\
-\end{tabbing}
-\end{multicols}
-\figcap{The full syntax of \eolang{} in BNF.
-  \lex{eol} is a line ending that preserves the indentation of the previous line.
-  \lex{tab} is a right-shift of the indentation, while \lex{untab} is a left-shift.
-  \lex{any} is any symbol excluding \lex{eol}, \V{.}, and \V{␣}.
-  The texts between forward slashes are Perl-style regular expressions.}
-\label{fig:bnf}
-\end{figure*}
 
 \subsection{Identity, State, and Behavior}
 
@@ -300,7 +240,7 @@ are used. The only way to make a copy of the abstract object \ff{float}
 is to use a numeric literal like \ff{3.14}.
 
 The abstract objects which can't be used directly and can only be
-created by the compiler through \sntx{data}---are called \emph{data}.
+created by the compiler through "data" syntax construct---are called \emph{data}.
 The examples of some possible data are in the Tab.~\ref{tab:types}.
 
 \begin{table}

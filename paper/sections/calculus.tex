@@ -54,21 +54,21 @@ and the text in double quotes is data.
 \begin{definition}\label{def:attribute}
 In an object \(x\), \(a\) is a free \textbf{attribute}
 with the \textbf{name} \(a\)
-iff \((a, \varnothing) \in x\); it is a bound attribute
+iff \((a, \varnothing) \in x\); it is an attached attribute
 with the \textbf{value} \(v\)
 iff \(\exists (a, v)\in x\) and \(v\not=\varnothing\);
 \end{definition}
 
 In Eq.~\ref{eq:book2}, identifiers \ff{isbn}, \ff{title}, and \ff{price}
 are the attributes of the object \ff{book2}.
-The attribute \ff{isbn} is free, while the other two are bound.
+The attribute \ff{isbn} is free, while the other two are attached.
 
 \begin{definition}\label{def:dot}
 If \(x\) is an object and \(\exists (a, v) \in x\), then \(v\) may be referenced as \(x.a\);
 this referencing mechanism is called \textbf{dot notation}.
 \end{definition}
 
-Both free and bound attributes of an object are accessible using
+Both void and attached attributes of an object are accessible using
 the dot notation. There is no such thing as
 visibility restriction in \phic{}:
 all attributes are visible to all objects outside of the one they belong to.
