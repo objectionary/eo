@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 concurrency:
   group: shellcheck-${{ github.ref }}
   cancel-in-progress: true
