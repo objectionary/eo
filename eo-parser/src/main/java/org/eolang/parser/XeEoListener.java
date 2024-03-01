@@ -964,16 +964,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodHeadCurrent(final EoParser.VmethodHeadCurrentContext ctx) {
-     // Nothing here   
-    }
-
-    @Override
     public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
      // Nothing here   
     }
@@ -994,32 +984,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVmethodHeadHmethodExtended(final EoParser.VmethodHeadHmethodExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodHeadHmethodExtended(final EoParser.VmethodHeadHmethodExtendedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
     public void enterVmethodHeadVapplication(final EoParser.VmethodHeadVapplicationContext ctx) {
         // Nothing here
     }
 
     @Override
     public void exitVmethodHeadVapplication(final EoParser.VmethodHeadVapplicationContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVmethodHeadHapplication(final EoParser.VmethodHeadHapplicationContext ctx) {
         // Nothing here
     }
 
