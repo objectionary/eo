@@ -1,0 +1,220 @@
+%%
+%% This is file `iexec.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% iexec.dtx  (with options: `package')
+%% (The MIT License)
+%% 
+%% Copyright (c) 2021-2024 Yegor Bugayenko
+%% 
+%% Permission is hereby granted, free of charge, to any person obtaining a copy
+%% of this software and associated documentation files (the 'Software'), to deal
+%% in the Software without restriction, including without limitation the rights
+%% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%% copies of the Software, and to permit persons to whom the Software is
+%% furnished to do so, subject to the following conditions:
+%% 
+%% The above copyright notice and this permission notice shall be included in all
+%% copies or substantial portions of the Software.
+%% 
+%% THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%% FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+%% SOFTWARE.
+
+
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{iexec}
+[0000-00-00 0.0.0 Inputable Shell Executions]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\RequirePackage{shellesc}
+
+\RequirePackage{pgfopts}
+\pgfkeys{
+  /iexec/.cd,
+  trace/.store in=\iexec@trace,
+}
+\ProcessPgfPackageOptions{/iexec}
+
+\RequirePackage{pgfkeys}
+\makeatletter\pgfkeys{
+  /iexec/.is family,
+  /iexec,
+  exit/.store in = \iexec@exit,
+  exit/.default = iexec.ret,
+  stdout/.store in = \iexec@stdout,
+  stdout/.default = iexec.tmp,
+  stderr/.store in = \iexec@stderr,
+  trace/.store in = \iexec@traceit,
+  append/.store in = \iexec@append,
+  log/.store in = \iexec@log,
+  null/.store in = \iexec@null,
+  unskip/.store in = \iexec@unskip,
+  quiet/.store in = \iexec@quiet,
+  ignore/.store in = \iexec@ignore,
+  maybe/.store in = \iexec@maybe,
+  stdout,exit
+}\makeatother
+
+\RequirePackage{expl3}
+\makeatletter\ExplSyntaxOn
+\NewDocumentCommand{\iexec@typeout}{m}{
+  \iexec_typeout_file:n { #1 }}
+\ior_new:N \g_iexec_typeout_ior
+\cs_new_protected:Nn \iexec_typeout_file:n
+{
+  \ior_open:Nn \g_iexec_typeout_ior { #1 }
+  \ior_str_map_inline:Nn \g_iexec_typeout_ior
+    {\iow_term:n { ##1 }}
+  \ior_close:N \g_iexec_typeout_ior
+}
+\ExplSyntaxOff\makeatother
+
+\makeatletter
+\newread\iexec@exitfile
+\newcommand\iexec[2][]{%
+  \begingroup%
+    \pgfqkeys{/iexec}{#1}%
+    \ifnum\ShellEscapeStatus=1%
+      \begingroup%
+        \ifdefined\iexec@log%
+          \message{^^J}%
+        \fi%
+        \let\%\@percentchar%
+        \let\\\@backslashchar%
+        \let\{\@charlb%
+        \let\}\@charrb%
+        \def\iexec@cmd{(#2)
+          \ifdefined\iexec@append>\fi>
+          \ifdefined\iexec@null/dev/null\else\iexec@stdout\fi
+          \space\ifdefined\iexec@stderr2>\iexec@stderr\else2>&1\fi;
+          /bin/echo -n \string$?\% >\iexec@exit}%
+        \ShellEscape{\iexec@cmd}%
+        \ifdefined\iexec@log%
+          \message{iexec: [\iexec@cmd]^^J}%
+        \fi%
+      \endgroup%
+      \immediate\openin\iexec@exitfile=\iexec@exit%
+      \read\iexec@exitfile to \iexec@code%
+      \immediate\closein\iexec@exitfile%
+      \ifdefined\iexec@null\else%
+        \IfFileExists
+          {\iexec@stdout}
+          {}
+          {\PackageError{iexec}{The "\iexec@stdout" file is absent
+            after processing, looks like some internal error}{}}%
+        \ifdefined\iexec@log%
+          \message{iexec: This is the content of '\iexec@stdout':^^J}%
+          \IfFileExists
+            {\iexec@stdout}
+            {\iexec@typeout{\iexec@stdout}}
+            {\PackageError{iexec}{The "\iexec@stdout" file is absent
+              after processing, looks like some internal error}{}}%
+          \message{<EOF>^^J}%
+        \else%
+          \ifnum\iexec@code=0\else%
+            \ifdefined\iexec@ignore\else%
+              \message{iexec: See the content of '\iexec@stdout'
+                after failure:^^J}%
+              \iexec@typeout{\iexec@stdout}%
+              \message{<EOF>^^J}%
+            \fi%
+          \fi%
+        \fi%
+      \fi%
+      \ifnum\iexec@code=0\else%
+        \ifdefined\iexec@ignore%
+          \ifdefined\iexec@log%
+            \message{iexec: Execution failure ignored,
+              the exit code was \iexec@code^^J}%
+          \fi%
+        \else%
+          \PackageError{iexec}{Execution failure,
+            the exit code was \iexec@code}{}%
+        \fi%
+      \fi%
+      \ifdefined\iexec@null\else%
+      \ifdefined\iexec@quiet%
+        \ifdefined\iexec@log%
+          \message{iexec: Due to 'quiet' option we didn't read
+          the content of '\iexec@stdout'
+          \ifdefined\pdffilesize (\pdffilesize{\iexec@stdout}
+          bytes)\fi^^J}%
+        \fi%
+      \else%
+        \ifdefined\iexec@log%
+          \message{iexec: We are going to include the content of
+          '\iexec@stdout'\ifdefined\pdffilesize (\pdffilesize
+          {\iexec@stdout} bytes)\fi...^^J}%
+        \fi%
+        \input{\iexec@stdout}%
+        \ifdefined\iexec@unskip\unskip\fi%
+        \message{iexec: The content of '\iexec@stdout'
+        was included into the document^^J}%
+      \fi\fi%
+      \ifdefined\iexec@null\else%
+      \ifdefined\iexec@trace%
+        \ifdefined\iexec@log%
+          \message{iexec: Due to package option 'trace',
+          the files '\iexec@stdout' and `\iexec@exit` were
+          not deleted^^J}%
+        \fi%
+      \else%
+        \ifdefined\iexec@traceit%
+          \ifdefined\iexec@log%
+            \message{iexec: Due to 'trace' package option,
+            the files '\iexec@stdout' and '\iexec@exit'
+            were not deleted^^J}%
+          \fi%
+        \else%
+          \ShellEscape{rm \iexec@stdout}%
+          \ifdefined\iexec@log%
+            \message{iexec: The file '\iexec@stdout' was deleted^^J}%
+          \fi%
+          \ShellEscape{rm \iexec@exit}%
+          \ifdefined\iexec@log%
+            \message{iexec: The file '\iexec@exit' was deleted^^J}%
+          \fi%
+        \fi%
+      \fi\fi%
+    \else%
+      \ifdefined\iexec@maybe%
+        \message{iexec: The execution skipped because -shell-escape
+          is not set and 'maybe' option is provided^^J}%
+      \else%
+        \PackageError{iexec}{You must run TeX processor with
+        --shell-escape option}{}%
+      \fi%
+    \fi%
+  \endgroup%
+}\makeatother
+
+
+
+\endinput
+%%
+%% End of file `iexec.sty'.
