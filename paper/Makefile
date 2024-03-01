@@ -20,8 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.SHELLFLAGS = -e -x -c
+.SHELLFLAGS=-e -x -c
 .ONESHELL:
+.PHONY: clean
+SHELL=bash
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
 PACKAGES=ffcode to-be-determined href-ul minted
@@ -43,7 +45,7 @@ zip: *.tex sections/*.tex
 	${gsed} -i "s|0\.0\.0|$${version}|g" eolang-paper.tex
 	${gsed} -i "s|REPOSITORY|$(REPO)|g" eolang-paper.tex
 	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
-	biber eolang-paper
+	bibtex eolang-paper
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	pdflatex -halt-on-error eolang-paper.tex > /dev/null
 	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
