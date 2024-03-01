@@ -20,12 +20,11 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[sigplan,nonacm,natbib=false]{acmart}
+\documentclass[sigplan,nonacm]{acmart}
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 \usepackage[utf8]{inputenc}
-\usepackage[maxnames=1,minnames=1,maxbibnames=100,natbib=true,citestyle=authoryear,bibstyle=authoryear,doi=false,url=false,isbn=false,isbn=false,backend=biber]{biblatex}
-\addbibresource{main.bib}
 \usepackage[T2A,T1]{fontenc}
+\usepackage{natbib} % for \citep and \citet
 \usepackage{stmaryrd} % for arrows, like \mapstochar
 \let\Bbbk\relax\usepackage{amssymb} % for special symbols
 \usepackage{amsmath}
@@ -49,6 +48,9 @@
 \usepackage{multicol} % for two cols in BNF
 \usepackage{pgffor} % to enable \foreach
 \usepackage{mathtools} % for matrix* environment
+
+\usepackage{silence}
+  \WarningFilter{acmart}{\vspace should only be used to provide space above/below}
 
 \tolerance=1500
 \raggedbottom
@@ -176,7 +178,9 @@ formalization of OOP.
 \section{Acknowledgments}
 \input{sections/acks}
 
-\printbibliography
+\raggedright
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{main}
 
 \clearpage
 

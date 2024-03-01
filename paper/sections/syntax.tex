@@ -221,8 +221,7 @@ a special syntax for data, for example:
   r.times 3.14 > circumference
 \end{ffcode}
 
-This syntax would be translated to XMIR (XML based
-data format explained in \cref{sec:xmir}):
+This syntax would be translated to XMIR (XML based data format):
 
 \begin{ffcode}
 <o name="circle"> (*@\label{ln:xml-circle}@*)
@@ -342,7 +341,7 @@ An object may extend another object by \emph{decorating} it:
   center > @ (*@\label{ln:circle-phi}@*)
   [p] > is-inside
     lte. > @
-      ^.@.distance \(.p  |\)\label{ln:circle-phi-2}$|
+      ^.@.distance $.p (*@\label{ln:circle-phi-2}@*)
       ^.radius (*@\label{ln:circle-end}@*)
 \end{ffcode}
 
