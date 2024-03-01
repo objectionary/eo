@@ -26,7 +26,7 @@
 SHELL=bash
 
 TLROOT=$$(kpsewhich -var-value TEXMFDIST)
-PACKAGES=ffcode to-be-determined href-ul iexec eolang
+PACKAGES=ffcode to-be-determined href-ul iexec eolang bibcop
 REPO=objectionary/eo
 
 gsed=$(if $(shell which gsed),gsed,sed)
