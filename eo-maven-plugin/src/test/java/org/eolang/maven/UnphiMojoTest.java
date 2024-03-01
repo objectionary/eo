@@ -96,7 +96,10 @@ class UnphiMojoTest {
             "Unphied XMIR must contain metas, added via \"unphiMetas\" parameter",
             new XMLDocument(
                 new FakeMaven(temp)
-                    .with("unphiMetas", new SetOf<>("+tests", "+home https://github.com/objectionary/eo"))
+                    .with(
+                        "unphiMetas",
+                        new SetOf<>("+tests", "+home https://github.com/objectionary/eo")
+                    )
                     .execute(UnphiMojo.class)
                     .result()
                     .get(String.format("target/%s/std.xmir", ParseMojo.DIR))
@@ -107,7 +110,7 @@ class UnphiMojoTest {
             )
         );
     }
-    
+
     @Test
     void failsIfPackageMetaIsAdded(@TempDir final Path temp) throws IOException {
         new HmBase(temp).save(

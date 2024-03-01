@@ -29,7 +29,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -37,7 +36,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.IterableEnvelope;
-import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -48,10 +46,8 @@ import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.PhiSyntax;
-import org.eolang.parser.XeEoListener;
 import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * Read PHI files and parse them to the XMIR.
@@ -89,6 +85,7 @@ public final class UnphiMojo extends SafeMojo {
      * Extra metas to add to unphied XMIR.
      * @checkstyle MemberNameCheck (10 lines)
      */
+    @SuppressWarnings("PMD.ImmutableField")
     @Parameter(property = "eo.unphiMetas")
     private Set<String> unphiMetas = new SetOf<>();
 
