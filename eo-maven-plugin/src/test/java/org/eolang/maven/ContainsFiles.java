@@ -35,7 +35,11 @@ import org.hamcrest.TypeSafeMatcher;
  * Asserting that path contains a files matching provided globs.
  * @since 0.31.0
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "JTCOP.RuleInheritanceInTests"
+})
 final class ContainsFiles extends TypeSafeMatcher<Path> {
     /**
      * Patterns.
