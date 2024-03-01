@@ -151,7 +151,7 @@ public final class UnphiMojo extends SafeMojo {
         /**
          * Package meta.
          */
-        private static final String PACKAGE = "+package";
+        private static final String PACKAGE = "package";
 
         /**
          * Ctor.
@@ -166,11 +166,12 @@ public final class UnphiMojo extends SafeMojo {
                             final String head = pair[0].substring(1);
                             if (head.equals(UnphiMojo.Metas.PACKAGE)) {
                                 throw new IllegalStateException(
-                                    "+package meta can't be attached to unphied XMIR"
+                                    "+package meta is prohibited for attaching to unphied XMIR"
                                 );
                             }
                             final Directives dirs = new Directives()
                                 .xpath("/program/metas")
+                                .add("meta")
                                 .add("head").set(head).up()
                                 .add("tail");
                             if (pair.length > 1) {

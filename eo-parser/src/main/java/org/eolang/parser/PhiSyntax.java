@@ -98,7 +98,7 @@ public final class PhiSyntax implements Syntax {
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(
-                new Directives(xel).append(spy).append(extra)
+                new Directives(xel).append(spy).append(this.extra)
             ).domQuietly()
         );
         new Schema(dom).check();
