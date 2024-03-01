@@ -27,6 +27,7 @@ import com.jcabi.matchers.XhtmlMatchers;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
+import org.xembly.Directives;
 
 /**
  * Test cases for {@link PhiSyntax}.
@@ -43,6 +44,21 @@ class PhiSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPath(
                 "//errors[count(error)>0]"
+            )
+        );
+    }
+
+    @Test
+    void addsExtra() throws IOException {
+        MatcherAssert.assertThat(
+            "Result XML must contain extra object",
+            new PhiSyntax(
+                "test",
+                () -> "{⟦obj ↦ ⟦⟧⟧}",
+                new Directives().xpath("/program/objects").add("o").attr("base", "x")
+            ).parsed(),
+            XhtmlMatchers.hasXPath(
+                "//objects/o[@base='x']"
             )
         );
     }
