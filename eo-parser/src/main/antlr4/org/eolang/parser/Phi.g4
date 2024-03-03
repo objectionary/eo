@@ -40,7 +40,7 @@ attribute
     : PHI
     | RHO
     | SIGMA
-    | VTX
+    | VERTEX
     | LABEL
     | alphaAttr
     ;
@@ -131,7 +131,8 @@ RHO : 'ρ'
 SIGMA
     : 'σ'
     ;
-VTX : 'ν'
+VERTEX
+    : 'ν'
     ;
 DELTA
     : 'Δ'
