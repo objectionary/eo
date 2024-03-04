@@ -280,6 +280,7 @@ final class UnplaceMojoTest {
      *
      * @return Stream of arguments.
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static Stream<Arguments> testArgsProvider() {
         return Stream.of(
             Arguments.of((Object) new String[]{"keepBinaries"}),
