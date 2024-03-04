@@ -104,7 +104,7 @@ class VerifyMojoTest {
     @CaptureLogs
     void detectsCriticalErrorsSuccessfully(
         @TempDir final Path temp,
-        final Logs out) throws Exception {
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
