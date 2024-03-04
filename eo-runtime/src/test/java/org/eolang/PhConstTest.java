@@ -171,20 +171,7 @@ final class PhConstTest {
     @Test
     void dataizesOnlyOnceViaEnvelopes() {
         final Dummy dummy = new Dummy("x");
-        final Phi phi = new PhConst(
-            new PhWith(
-                new Envelope(Phi.Φ),
-                0,
-                new PhWith(
-                    new Envelope(Phi.Φ),
-                    0,
-                    new PhWith(
-                        new Envelope(Phi.Φ),
-                        0, dummy
-                    )
-                )
-            )
-        );
+        final Phi phi = new PhConst(new EnvelopedDummy(Phi.Φ, dummy));
         phi.attr("eq").get();
         new Dataized(phi).take(Long.class);
         MatcherAssert.assertThat(
@@ -196,20 +183,7 @@ final class PhConstTest {
     @Test
     void dataizesOnlyOnceViaMethods() {
         final Dummy dummy = new Dummy("x");
-        final Phi phi = new PhConst(
-            new PhWith(
-                new Envelope(Phi.Φ),
-                0,
-                new PhWith(
-                    new Envelope(Phi.Φ),
-                    0,
-                    new PhWith(
-                        new Envelope(Phi.Φ),
-                        0, dummy
-                    )
-                )
-            )
-        );
+        final Phi phi = new PhConst(new EnvelopedDummy(Phi.Φ, dummy));
         new Dataized(phi).take();
         new Dataized(phi).take();
         MatcherAssert.assertThat(
@@ -306,6 +280,43 @@ final class PhConstTest {
             super(sigma);
             this.add("x", new AtFree());
             this.add("φ", new AtOnce(new AtComposite(this, rho -> rho.attr("x").get())));
+        }
+    }
+
+    /**
+     * Enveloped dummy Phi.
+     * @since 1.0
+     */
+    private static class EnvelopedDummy extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         * @param dummy Dummy to be enveloped
+         */
+        EnvelopedDummy(final Phi sigma, final Phi dummy) {
+            super(sigma);
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> new Data.ToPhi(
+                        new Dataized(
+                            new PhWith(
+                                new Envelope(Phi.Φ),
+                                0,
+                                new PhWith(
+                                    new Envelope(Phi.Φ),
+                                    0,
+                                    new PhWith(
+                                        new Envelope(Phi.Φ),
+                                        0, dummy
+                                    )
+                                )
+                            )
+                        ).take(Long.class)
+                    )
+                )
+            );
         }
     }
 
