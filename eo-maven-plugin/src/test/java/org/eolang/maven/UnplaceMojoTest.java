@@ -127,12 +127,9 @@ final class UnplaceMojoTest {
     @Test
     void unplacesWithKeepAndRemoveBinariesParamTogether(@TempDir final Path temp) throws Exception {
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
+        final Map<String, Path> res = UnplaceMojoTest.fakeResult(
+            temp, placed, KeepRemoveBinaries.KEEP_REMOVE
+        );
         MatcherAssert.assertThat(
             res.values().stream().noneMatch(UnplaceMojoTest::isClass),
             Matchers.is(true)
@@ -149,11 +146,9 @@ final class UnplaceMojoTest {
     @Test
     void unplacesWithRemoveBinariesParam(@TempDir final Path temp) throws Exception {
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
+        final Map<String, Path> res = UnplaceMojoTest.fakeResult(
+            temp, placed, KeepRemoveBinaries.REMOVE
+        );
         MatcherAssert.assertThat(
             res.values().stream().noneMatch(UnplaceMojoTest::isClass),
             Matchers.is(true)
@@ -170,11 +165,9 @@ final class UnplaceMojoTest {
     @Test
     void unplacesWithKeepBinariesParam(@TempDir final Path temp) throws Exception {
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
+        final Map<String, Path> res = UnplaceMojoTest.fakeResult(
+            temp, placed, KeepRemoveBinaries.KEEP
+        );
         MatcherAssert.assertThat(
             res.values().stream().anyMatch(UnplaceMojoTest::isClass),
             Matchers.is(true)
@@ -295,6 +288,56 @@ final class UnplaceMojoTest {
      */
     private static boolean isClass(final Path path) {
         return path.toString().endsWith(".class");
+    }
+
+    /**
+     * Set of parameters for {@link FakeMaven}.
+     */
+    private enum KeepRemoveBinaries {
+        /**
+         * {@code "keepBinaries"} param.
+         */
+        KEEP,
+
+        /**
+         * {@code "removeBinaries"} param.
+         */
+        REMOVE,
+
+        /**
+         * {@code "keepBinaries"} and {@code "removeBinaries"} params.
+         */
+        KEEP_REMOVE
+    }
+
+    /**
+     * Instantiates {@link FakeMaven} with given parameters, executes it and return result.
+     *
+     * @param temp Test temporary directory.
+     * @param placed Path to the placed tojos file.
+     * @param action Action to be performed with binaries.
+     * @return The result map with all files and folders that was created or compiled during fake
+     *  mojo execution.
+     */
+    private static Map<String, Path> fakeResult(
+        final Path temp, final Path placed, final KeepRemoveBinaries action) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("placed", placed.toFile());
+        switch (action) {
+            case KEEP:
+                maven.with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN);
+                break;
+            case REMOVE:
+                maven.with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN);
+                break;
+            case KEEP_REMOVE:
+                maven.with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
+                    .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN);
+                break;
+            default:
+                throw new IllegalArgumentException("No such option");
+        }
+        return maven.execute(UnplaceMojo.class).result();
     }
 }
 
