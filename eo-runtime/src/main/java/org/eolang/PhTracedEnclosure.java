@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 
 /**
  * Class to trace if the cage got into recursion during the dataization.
- * NOT thread-safe.
  * @since 0.36
  */
 @Versionized
@@ -137,7 +136,6 @@ public final class PhTracedEnclosure implements Phi {
 
     /**
      * Supplier that traces the cage while gets.
-     * NOT thread-safe.
      * @since 0.36
      */
     private final class TracingWhileGetting implements Supplier<Attr> {
