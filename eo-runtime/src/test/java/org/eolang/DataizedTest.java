@@ -48,7 +48,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new TestHandler(logs);
+        final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
         new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
@@ -68,7 +68,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new TestHandler(logs);
+        final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
         final Phi wrong = new PhIncorrect(Phi.Φ);
         IntStream.range(0, 5).forEach(
@@ -95,7 +95,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new TestHandler(logs);
+        final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
@@ -125,7 +125,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new TestHandler(logs);
+        final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
@@ -201,16 +201,29 @@ final class DataizedTest {
         }
     }
 
-    private static class TestHandler extends Handler {
-        final List<LogRecord> logs;
+    /**
+     * Handler implementation for tests.
+     *
+     * @since 1.0
+     */
+    private static class Hnd extends Handler {
+        /**
+         * Logs.
+         */
+        private final List<LogRecord> logs;
 
-        TestHandler(final List<LogRecord> logs) {
+        /**
+         * Ctor.
+         *
+         * @param logs Logs
+         */
+        Hnd(final List<LogRecord> logs) {
             this.logs = logs;
         }
 
         @Override
         public void publish(final LogRecord record) {
-            logs.add(record);
+            this.logs.add(record);
         }
 
         @Override
