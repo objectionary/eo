@@ -48,22 +48,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Handler() {
-            @Override
-            public void publish(final LogRecord record) {
-                logs.add(record);
-            }
-
-            @Override
-            public void flush() {
-                throw new UnsupportedOperationException("#flush()");
-            }
-
-            @Override
-            public void close() throws SecurityException {
-                throw new UnsupportedOperationException("#close()");
-            }
-        };
+        final Handler hnd = new TestHandler(logs);
         log.addHandler(hnd);
         new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
@@ -83,22 +68,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Handler() {
-            @Override
-            public void publish(final LogRecord record) {
-                logs.add(record);
-            }
-
-            @Override
-            public void flush() {
-                throw new UnsupportedOperationException("#flush()");
-            }
-
-            @Override
-            public void close() throws SecurityException {
-                throw new UnsupportedOperationException("#close()");
-            }
-        };
+        final Handler hnd = new TestHandler(logs);
         log.addHandler(hnd);
         final Phi wrong = new PhIncorrect(Phi.Φ);
         IntStream.range(0, 5).forEach(
@@ -125,22 +95,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Handler() {
-            @Override
-            public void publish(final LogRecord record) {
-                logs.add(record);
-            }
-
-            @Override
-            public void flush() {
-                throw new UnsupportedOperationException("#flush()");
-            }
-
-            @Override
-            public void close() throws SecurityException {
-                throw new UnsupportedOperationException("#close()");
-            }
-        };
+        final Handler hnd = new TestHandler(logs);
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
@@ -170,22 +125,7 @@ final class DataizedTest {
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Handler() {
-            @Override
-            public void publish(final LogRecord record) {
-                logs.add(record);
-            }
-
-            @Override
-            public void flush() {
-                throw new UnsupportedOperationException("#flush()");
-            }
-
-            @Override
-            public void close() throws SecurityException {
-                throw new UnsupportedOperationException("#close()");
-            }
-        };
+        final Handler hnd = new TestHandler(logs);
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
@@ -259,6 +199,30 @@ final class DataizedTest {
                 )
             );
         }
+    }
+
+    private static class TestHandler extends Handler {
+        final List<LogRecord> logs;
+
+        TestHandler(final List<LogRecord> logs) {
+            this.logs = logs;
+        }
+
+        @Override
+        public void publish(final LogRecord record) {
+            logs.add(record);
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException("#flush()");
+        }
+
+        @Override
+        public void close() throws SecurityException {
+            throw new UnsupportedOperationException("#close()");
+        }
+
     }
 
 }
