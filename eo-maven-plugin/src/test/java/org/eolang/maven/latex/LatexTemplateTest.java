@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.30
  */
-class LatexTemplateTest {
+final class LatexTemplateTest {
 
     /**
      * Check the full template.

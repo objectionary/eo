@@ -123,9 +123,9 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
+     * @since 0.11.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.11.0
      */
     @Parameter(
         property = "eo.placed",
@@ -144,9 +144,9 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * The path to a text file where paths of generated java files per EO program.
+     * @since 0.11.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.11.0
      */
     @Parameter(
         property = "eo.transpiled",
@@ -157,8 +157,8 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Mojo execution timeout in seconds.
-     * @checkstyle VisibilityModifierCheck (10 lines)
      * @since 0.28.12
+     * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.timeout")
     protected Integer timeout = Integer.MAX_VALUE;
@@ -174,9 +174,9 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
+     * @since 0.29.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.29.0
      */
     @Parameter(property = "eo.unrollExitError")
     protected boolean unrollExitError = true;

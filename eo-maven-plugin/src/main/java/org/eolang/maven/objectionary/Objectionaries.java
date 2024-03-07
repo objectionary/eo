@@ -56,7 +56,7 @@ public interface Objectionaries {
      *
      * @since 0.29.6
      */
-    class Fake implements Objectionaries {
+    final class Fake implements Objectionaries {
         /**
          * Default objectionary.
          */

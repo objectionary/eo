@@ -49,8 +49,8 @@ import org.eolang.maven.util.Walk;
  * Take binary files from where ResolveMojo placed them and
  * copy to target/classes.
  *
- * @since 0.11
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
+ * @since 0.11
  */
 @Mojo(
     name = "place",

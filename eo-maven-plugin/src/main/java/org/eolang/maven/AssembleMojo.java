@@ -113,8 +113,8 @@ public final class AssembleMojo extends SafeMojo {
 
     /**
      * Pull again even if the .eo file is already present?
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
@@ -122,8 +122,8 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Track optimization steps into intermediate XML files?
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
@@ -139,16 +139,16 @@ public final class AssembleMojo extends SafeMojo {
 
     /**
      * Skip artifact with the version 0.0.0.
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
     private boolean skipZeroVersions;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
@@ -156,8 +156,8 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * Fail resolution process on conflicting dependencies.
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 1.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
     @SuppressWarnings("PMD.LongVariable")
@@ -196,9 +196,9 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
+     * @since 0.29.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.29.0
      */
     @Parameter(property = "eo.unrollExitError")
     @SuppressWarnings("PMD.ImmutableField")

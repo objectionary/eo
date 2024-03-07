@@ -69,8 +69,8 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Skip artifact with the version 0.0.0.
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.9.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
     private boolean skipZeroVersions;
@@ -78,8 +78,8 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Shall we discover JAR artifacts for .EO sources?
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.12.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
     private boolean discoverSelf;
@@ -87,8 +87,8 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Fail resolution process on conflicting dependencies.
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 1.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.ignoreVersionConflicts", required = true, defaultValue = "false")
     @SuppressWarnings("PMD.LongVariable")
