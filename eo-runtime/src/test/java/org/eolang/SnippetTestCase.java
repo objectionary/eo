@@ -40,6 +40,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -80,6 +81,7 @@ final class SnippetTestCase {
      * @throws IOException If fails
      */
     @ParameterizedTest
+    @Tag("slow")
     @ExtendWith(WeAreOnline.class)
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")

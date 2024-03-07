@@ -349,6 +349,7 @@ SOFTWARE.
             <systemPropertyVariables>
               <basedir>${project.basedir}</basedir>
             </systemPropertyVariables>
+            <excludedGroups>slow</excludedGroups>
             <properties>
               <configurationParameters>
                 junit.jupiter.execution.parallel.enabled = true
