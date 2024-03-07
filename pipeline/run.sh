@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -euo pipefail
 
 if ! [ -d node_modules ]; then npm i; fi
@@ -7,13 +9,12 @@ export LC_ALL=C.UTF-8
 shopt -s extglob
 shopt -s expand_aliases
 
-EO="0.35.8"
-alias eo="npx eoc --parser=${EO}"
+alias eo="npx eoc --parser=0.35.8"
 
 DATA_DIR=".data"
 
 function prepare_directory {
-    printf "\nClean $DATA_DIR directory\n\n"
+    printf "\nClean %s directory\n\n" "$DATA_DIR"
 
     rm -rf "$DATA_DIR"
 
@@ -23,7 +24,7 @@ function prepare_directory {
 }
 
 function enter_directory {
-    printf "\nEnter the $DATA_DIR directory\n\n"
+    printf "\nEnter the %s directory\n\n" "$DATA_DIR"
 
     mkdir -p "$DATA_DIR"
     cd "$DATA_DIR"
