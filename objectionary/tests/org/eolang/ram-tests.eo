@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.5
++version 0.35.8
 
 # Test.
 [] > writes-and-slice-ram
@@ -92,7 +92,8 @@
         write.
           r.slice 200 13 > s
           "Hello, world!".as-bytes
-        s.slice 0 5
+        s
+        .slice 0 5
         .slice 0 4
         .slice 0 1
   eq. > @
