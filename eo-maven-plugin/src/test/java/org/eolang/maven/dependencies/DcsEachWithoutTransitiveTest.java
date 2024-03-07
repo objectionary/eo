@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.30
  */
-class DcsEachWithoutTransitiveTest {
+final class DcsEachWithoutTransitiveTest {
 
     @Test
     void failsIfHasTransitiveDependencies() {

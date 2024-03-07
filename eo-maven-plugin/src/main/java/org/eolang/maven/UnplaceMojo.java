@@ -58,8 +58,8 @@ public final class UnplaceMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
-     * @since 0.24
      * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
+     * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -67,8 +67,8 @@ public final class UnplaceMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for placing (ONLY these files will stay).
-     * @since 0.24
      * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
+     * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter

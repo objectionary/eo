@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.30
  */
-class StEoLoggedTest {
+final class StEoLoggedTest {
 
     @Test
     void hasTheSameUid() {

@@ -34,7 +34,7 @@ import org.xembly.Directives;
  *
  * @since 0.35.0
  */
-class PhiSyntaxTest {
+final class PhiSyntaxTest {
     @Test
     void addsError() throws IOException {
         MatcherAssert.assertThat(

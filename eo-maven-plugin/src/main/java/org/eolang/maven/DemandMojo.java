@@ -44,8 +44,8 @@ public final class DemandMojo extends SafeMojo {
 
     /**
      * List of object names to add.
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.17.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(required = true)
     private List<String> objects;

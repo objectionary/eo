@@ -75,8 +75,8 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * Track optimization steps into intermediate XML files?
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
