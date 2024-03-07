@@ -30,6 +30,7 @@ executable transform-eo-tests
     , extra
     , filepath
     , mtl
+    , optparse-applicative
     , text
     , with-utf8
     , yaml

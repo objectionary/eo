@@ -19,18 +19,26 @@ import Data.Functor ((<&>))
 import Data.Maybe (fromMaybe)
 import Data.String (IsString (..))
 import Data.Text qualified as T
-import Data.Yaml (FromJSON, Parser, ToJSON (..), Value (String), decodeFileThrow, encodeFile)
+import Data.Yaml (FromJSON, ToJSON (..), Value (String), decodeFileThrow, encodeFile)
+import Data.Yaml qualified as Yaml
 import Data.Yaml.Aeson (FromJSON (..), withText)
 import GHC.Generics (Generic)
 import Main.Utf8 (withUtf8)
 import System.Directory.Extra (createDirectoryIfMissing, removeFile)
 import System.FilePath.Posix
 import Text.Read (readMaybe)
+import Options.Applicative
+
+configPathParser :: Parser (Maybe FilePath)
+configPathParser = optional $ strArgument (metavar "FILE" <> help "Config FILE. Defaults to ./config.yaml")
+
+opts :: ParserInfo (Maybe FilePath)
+opts = info (configPathParser <**> helper) (fullDesc <> progDesc "Transform EO tests")
 
 main :: IO ()
 main = withUtf8 do
-  let testDir = "."
-  config <- decodeFileThrow @_ @TestConfig (testDir </> "config.yaml")
+  configPath <- fromMaybe "./config.yaml" <$> customExecParser (prefs showHelpOnEmpty) opts
+  config <- decodeFileThrow @_ @TestConfig configPath
   forM_ (filter (fromMaybe True . (.enable)) config.sets) $ \set -> do
     test@Test{source, meta} <- parseTest set.source
     let exclude = fromMaybe [] set.exclude
@@ -87,7 +95,7 @@ instance ToJSON Pos where
   toJSON Pos{..} = String (fromString (file <> ":" <> show line))
 
 instance FromJSON Pos where
-  parseJSON :: Value -> Parser Pos
+  parseJSON :: Value -> Yaml.Parser Pos
   parseJSON = withText "Pos" $ \(T.unpack -> x) -> do
     let (file, rs) = span (/= ':') x
     guard (not . null $ file)

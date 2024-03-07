@@ -15,15 +15,6 @@ description: Please see the README on GitHub at <https://github.com/value/transf
 default-extensions:
   - ImportQualifiedPost
 
-dependencies:
-  - base >= 4.7 && < 5
-  - yaml
-  - extra
-  - filepath
-  - mtl
-  - with-utf8
-  - text
-
 ghc-options:
   - -Wall
 
@@ -31,3 +22,12 @@ executables:
   transform-eo-tests:
     main: Main.hs
     source-dirs: app
+    dependencies:
+      - base >= 4.7 && < 5
+      - yaml
+      - extra
+      - filepath
+      - mtl
+      - with-utf8
+      - text
+      - optparse-applicative
