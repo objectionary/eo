@@ -1,0 +1,36 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           transform-eo-tests
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/value/transform-eo-tests#readme>
+homepage:       https://github.com/value/transform-eo-tests#readme
+bug-reports:    https://github.com/value/transform-eo-tests/issues
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/value/transform-eo-tests
+
+executable transform-eo-tests
+  main-is: Main.hs
+  other-modules:
+      Paths_transform_eo_tests
+  hs-source-dirs:
+      app
+  default-extensions:
+      ImportQualifiedPost
+  ghc-options: -Wall
+  build-depends:
+      base >=4.7 && <5
+    , extra
+    , filepath
+    , mtl
+    , text
+    , with-utf8
+    , yaml
+  default-language: Haskell2010

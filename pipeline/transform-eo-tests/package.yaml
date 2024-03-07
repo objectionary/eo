@@ -1,0 +1,33 @@
+name: transform-eo-tests
+version: 0.1.0.0
+github: "value/transform-eo-tests"
+license: BSD3
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            value
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description: Please see the README on GitHub at <https://github.com/value/transform-eo-tests#readme>
+
+default-extensions:
+  - ImportQualifiedPost
+
+dependencies:
+  - base >= 4.7 && < 5
+  - yaml
+  - extra
+  - filepath
+  - mtl
+  - with-utf8
+  - text
+
+ghc-options:
+  - -Wall
+
+executables:
+  transform-eo-tests:
+    main: Main.hs
+    source-dirs: app
