@@ -46,6 +46,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link EOcage}.
@@ -277,6 +279,7 @@ final class EOcageTest {
      * @since 0.1
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     class RecursionTests {
 
         /**
