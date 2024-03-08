@@ -30,12 +30,7 @@ package org.eolang;
  * @since 0.23
  */
 @Versionized
-final class PhImmovable implements Phi {
-
-    /**
-     * The original.
-     */
-    private final Phi origin;
+final class PhImmovable extends PhDecorator {
 
     /**
      * Ctor.
@@ -43,17 +38,7 @@ final class PhImmovable implements Phi {
      * @param phi The object
      */
     PhImmovable(final Phi phi) {
-        this.origin = phi;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
+        super(phi);
     }
 
     @Override

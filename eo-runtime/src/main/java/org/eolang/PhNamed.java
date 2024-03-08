@@ -30,12 +30,7 @@ package org.eolang;
  * @since 0.17
  */
 @Versionized
-final class PhNamed implements Phi {
-
-    /**
-     * The original.
-     */
-    private final Phi origin;
+final class PhNamed extends PhDecorator {
 
     /**
      * The name.
@@ -49,7 +44,7 @@ final class PhNamed implements Phi {
      * @param txt The name
      */
     PhNamed(final Phi phi, final String txt) {
-        this.origin = phi;
+        super(phi);
         this.name = txt;
     }
 

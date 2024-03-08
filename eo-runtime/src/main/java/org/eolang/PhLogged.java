@@ -33,12 +33,7 @@ package org.eolang;
  * @since 0.24
  */
 @Versionized
-public final class PhLogged implements Phi {
-
-    /**
-     * The origin being turned into a const.
-     */
-    private final Phi origin;
+public final class PhLogged extends PhDecorator {
 
     /**
      * Ctor.
@@ -46,7 +41,7 @@ public final class PhLogged implements Phi {
      * @param phi The origin
      */
     public PhLogged(final Phi phi) {
-        this.origin = phi;
+        super(phi);
     }
 
     @Override

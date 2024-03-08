@@ -35,12 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 0.16
  */
 @Versionized
-public final class PhConst implements Phi {
-
-    /**
-     * The origin being turned into a const.
-     */
-    private final Phi origin;
+public final class PhConst extends PhDecorator {
 
     /**
      * Cached attributes.
@@ -53,7 +48,7 @@ public final class PhConst implements Phi {
      * @param phi The origin
      */
     public PhConst(final Phi phi) {
-        this.origin = phi;
+        super(phi);
     }
 
     @Override
