@@ -190,7 +190,7 @@ public final class EOrust extends PhDefault implements Atom {
             if (result.getClass() != ConcurrentHashMap.class) {
                 throw new ClassCastException(
                     String.format(
-                        "Object inside %s has wrong class %s",
+                        "Object inside %s has wrong class %s, a ConcurrentHashMap was expected",
                         src,
                         result.getClass()
                     )
@@ -200,7 +200,7 @@ public final class EOrust extends PhDefault implements Atom {
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
-                    "File %s contains invalid data",
+                    "File %s contains invalid data, a ConcurrentHashMap objects was expected",
                     src
                 ),
                 exc
