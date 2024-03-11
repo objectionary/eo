@@ -309,11 +309,7 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
-            final EOcage cage = new EOcage(Phi.Φ);
-            EOcageTest.writeTo(
-                cage,
-                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
-            );
+            final EOcage cage = cageWithDepth(MAX_DEPTH / 2);
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
                 String.format(
@@ -330,11 +326,7 @@ final class EOcageTest {
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
-            final EOcage cage = new EOcage(Phi.Φ);
-            writeTo(
-                cage,
-                new RecursiveDummy(MAX_DEPTH, cage)
-            );
+            final EOcage cage = cageWithDepth(MAX_DEPTH);
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
                 String.format(
@@ -348,11 +340,7 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfBigDepth() {
-            final EOcage cage = new EOcage(Phi.Φ);
-            writeTo(
-                cage,
-                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
-            );
+            final EOcage cage = cageWithDepth(MAX_DEPTH + 1);
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(cage).take(),
@@ -363,6 +351,29 @@ final class EOcageTest {
                     ExAbstract.class
                 )
             );
+        }
+
+        @Test
+        void doesNotThrowIfDataizesConcurrently() {
+            final EOcage cage = cageWithDepth(MAX_DEPTH);
+            Assertions.assertDoesNotThrow(
+                () -> new Dataized(cage).take(),
+                String.format(
+                    "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
+                    PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    ExAbstract.class
+                )
+            );
+        }
+
+        private EOcage cageWithDepth(int depth) {
+            final EOcage cage = new EOcage(Phi.Φ);
+            writeTo(
+                cage,
+                new RecursiveDummy(MAX_DEPTH, cage)
+            );
+            return cage;
         }
 
         /**
