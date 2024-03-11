@@ -35,7 +35,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-class ChNarrowTest {
+final class ChNarrowTest {
 
     @ParameterizedTest
     @CsvSource({

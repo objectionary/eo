@@ -50,8 +50,8 @@ import org.eolang.parser.ParsingTrain;
 /**
  * Parse rust inserts.
  *
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings("PMD.LongVariable")
 public final class BinarizeParse {

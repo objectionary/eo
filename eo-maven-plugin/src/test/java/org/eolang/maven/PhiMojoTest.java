@@ -39,7 +39,7 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link PhiMojo}.
  * @since 0.34.0
  */
-class PhiMojoTest {
+final class PhiMojoTest {
     @Test
     void createsFiles(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(

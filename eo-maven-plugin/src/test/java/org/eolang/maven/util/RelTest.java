@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-class RelTest {
+final class RelTest {
 
     @ParameterizedTest
     @CsvSource({
