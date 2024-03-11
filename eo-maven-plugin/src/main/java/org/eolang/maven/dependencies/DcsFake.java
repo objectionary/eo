@@ -119,11 +119,14 @@ public final class DcsFake implements Iterable<Dependency> {
      */
     private static Dependency randDep() {
         final Random rand = new SecureRandom();
+        final String scope = new String[] {
+            "test", "compiled", "runtime",
+        }[rand.nextInt(3)];
         return DcsFake.dep(
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
             String.valueOf(Math.abs(rand.nextInt())),
-            new String[]{"test", "compiled", "runtime"}[rand.nextInt(3)]
+            scope
         );
     }
 

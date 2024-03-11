@@ -87,8 +87,8 @@ public final class PullMojo extends SafeMojo {
 
     /**
      * Pull again even if the .eo file is already present?
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.10.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;

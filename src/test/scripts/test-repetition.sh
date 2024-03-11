@@ -24,7 +24,8 @@ do
       compilation=$1
       ;;
     *)
-      echo "Invalid option: $1. Please, specify --max, --folder or --compilation options, for example, --max 15 --folder /some/path"
+      echo "Invalid option: $1. Please, specify --max, --folder or --compilation options, \
+for example, --max 15 --folder /some/path"
       exit 1
       ;;
   esac

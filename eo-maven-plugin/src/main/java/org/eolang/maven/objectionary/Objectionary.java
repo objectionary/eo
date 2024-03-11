@@ -56,8 +56,8 @@ public interface Objectionary {
     /**
      * Objectionary with lambda-function Ctor-s for testing.
      *
-     * @checkstyle IllegalCatchCheck (150 lines)
      * @since 0.28.11
+     * @checkstyle IllegalCatchCheck (150 lines)
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     final class Fake implements Objectionary {

@@ -43,11 +43,11 @@ import org.xembly.Directives;
 /**
  * The PHI-CALCULUS grammar listener for ANTLR4 walker.
  *
+ * @since 0.34.0
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
  * @checkstyle NestedIfDepthCheck (1300 lines)
- * @since 0.34.0
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
