@@ -143,7 +143,7 @@ public final class EOstdoutTest {
     }
 
     /**
-     * Handler implementation for tests.
+     * PrintWithCmp Phi
      *
      * @since 1.0
      */
