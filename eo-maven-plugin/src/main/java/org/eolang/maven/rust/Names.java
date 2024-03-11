@@ -189,13 +189,20 @@ public final class Names {
             final Object result = map.readObject();
             if (result.getClass() != ConcurrentHashMap.class) {
                 throw new ClassCastException(
-                    String.format("Object inside %s has wrong class %s", src, result.getClass())
+                    String.format(
+                        "Object inside %s has wrong class %s",
+                        src,
+                        result.getClass()
+                    )
                 );
             }
             return (ConcurrentHashMap<String, String>) result;
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
-                String.format("File %s contains invalid data", src),
+                String.format(
+                    "File %s contains invalid data",
+                    src
+                ),
                 exc
             );
         }
