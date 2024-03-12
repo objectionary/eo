@@ -214,13 +214,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterBinding(final PhiParser.BindingContext ctx) {
         if (ctx.alphaBinding() != null) {
-            if (ctx.alphaBinding().attribute().VTX() != null) {
+            if (ctx.alphaBinding().attribute().VERTEX() != null) {
                 this.objs.add(new Objects.ObjXembly());
             }
             this.objects().start();
         }
         if (ctx.emptyBinding() != null) {
-            if (ctx.emptyBinding().attribute().VTX() != null) {
+            if (ctx.emptyBinding().attribute().VERTEX() != null) {
                 this.objs.add(new Objects.ObjXembly());
             }
             this.objects().start();
