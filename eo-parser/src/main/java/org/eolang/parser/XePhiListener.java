@@ -39,7 +39,6 @@ import org.cactoos.list.ListOf;
 import org.eolang.parser.xmir.XmirInfo;
 import org.xembly.Directive;
 import org.xembly.Directives;
-import org.xembly.Xembler;
 
 /**
  * The PHI-CALCULUS grammar listener for ANTLR4 walker.
@@ -183,7 +182,8 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterScoped(PhiParser.ScopedContext ctx) {
+    @SuppressWarnings("PMD.ConfusingTernary")
+    public void enterScoped(final PhiParser.ScopedContext ctx) {
         if (ctx.HOME() != null) {
             this.objects().prop("base", "Q").leave();
         } else if (ctx.XI() != null) {
@@ -192,7 +192,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitScoped(PhiParser.ScopedContext ctx) {
+    public void exitScoped(final PhiParser.ScopedContext ctx) {
         // Nothing here
     }
 
@@ -212,6 +212,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBinding(final PhiParser.BindingContext ctx) {
         if (ctx.alphaBinding() != null) {
             if (ctx.alphaBinding().attribute().VERTEX() != null) {
@@ -228,6 +229,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
+    @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
             if (ctx.alphaBinding() != null) {
@@ -235,14 +237,18 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                     this.attributes.pop();
                     this.objs.removeLast();
                 } else {
-                    this.objects().enter().prop(this.properties.peek(), this.attributes.pop()).leave();
+                    this.objects().enter()
+                        .prop(this.properties.peek(), this.attributes.pop())
+                        .leave();
                 }
             } else if (ctx.emptyBinding() != null) {
                 if (ctx.emptyBinding().attribute().VERTEX() != null) {
                     this.attributes.pop();
                     this.objs.removeLast();
                 } else {
-                    this.objects().enter().prop(this.properties.peek(), this.attributes.pop()).leave();
+                    this.objects().enter()
+                        .prop(this.properties.peek(), this.attributes.pop())
+                        .leave();
                 }
             }
         }
@@ -349,7 +355,6 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         this.properties.pop();
     }
 
-
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterDispatch(final PhiParser.DispatchContext ctx) {
@@ -362,12 +367,12 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterApplicationsOrDispatches(PhiParser.ApplicationsOrDispatchesContext ctx) {
+    public void enterApplicationsOrDispatches(final PhiParser.ApplicationsOrDispatchesContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitApplicationsOrDispatches(PhiParser.ApplicationsOrDispatchesContext ctx) {
+    public void exitApplicationsOrDispatches(final PhiParser.ApplicationsOrDispatchesContext ctx) {
         // Nothing here
     }
 
@@ -423,8 +428,10 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         return ctx.binding()
             .stream()
             .anyMatch(
-                context -> context.lambdaBidning() != null
-                    && context.lambdaBidning().FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE)
+                context -> context.lambdaBidning() != null && context.lambdaBidning()
+                    .FUNCTION()
+                    .getText()
+                    .equals(XePhiListener.LAMBDA_PACKAGE)
             );
     }
 }
