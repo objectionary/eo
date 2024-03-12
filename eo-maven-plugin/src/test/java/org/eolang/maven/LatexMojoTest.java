@@ -34,7 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.29
  */
-class LatexMojoTest {
+final class LatexMojoTest {
 
     /**
      * Generate simple main.tex file from main.xmir file

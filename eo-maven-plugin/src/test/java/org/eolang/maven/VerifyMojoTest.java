@@ -57,7 +57,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  error Assertion since now it is hard to get why it failed.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
-class VerifyMojoTest {
+final class VerifyMojoTest {
 
     @Test
     void doesNotFailWithNoErrorsAndWarnings(@TempDir final Path temp) {

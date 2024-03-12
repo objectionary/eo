@@ -44,10 +44,11 @@ import org.xembly.Xembler;
 /**
  * The PHI-CALCULUS grammar listener for ANTLR4 walker.
  *
+ * @since 0.34.0
  * @checkstyle CyclomaticComplexityCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle MethodCountCheck (1300 lines)
- * @since 0.34.0
+ * @checkstyle NestedIfDepthCheck (1300 lines)
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
@@ -230,14 +231,14 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void exitBinding(final PhiParser.BindingContext ctx) {
         if (this.objs.size() > this.packages.size()) {
             if (ctx.alphaBinding() != null) {
-                if (ctx.alphaBinding().attribute().VTX() != null) {
+                if (ctx.alphaBinding().attribute().VERTEX() != null) {
                     this.attributes.pop();
                     this.objs.removeLast();
                 } else {
                     this.objects().enter().prop(this.properties.peek(), this.attributes.pop()).leave();
                 }
             } else if (ctx.emptyBinding() != null) {
-                if (ctx.emptyBinding().attribute().VTX() != null) {
+                if (ctx.emptyBinding().attribute().VERTEX() != null) {
                     this.attributes.pop();
                     this.objs.removeLast();
                 } else {
@@ -267,7 +268,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "^";
         } else if (ctx.SIGMA() != null) {
             attr = "&";
-        } else if (ctx.VTX() != null) {
+        } else if (ctx.VERTEX() != null) {
             attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();

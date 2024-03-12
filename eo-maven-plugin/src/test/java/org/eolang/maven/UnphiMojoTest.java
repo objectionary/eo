@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import org.cactoos.io.InputOf;
 import org.cactoos.list.ListOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.util.HmBase;
@@ -52,7 +53,7 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
  */
-class UnphiMojoTest {
+final class UnphiMojoTest {
     @Test
     void createsFile(@TempDir final Path temp) throws Exception {
         new HmBase(temp).save(
@@ -82,6 +83,46 @@ class UnphiMojoTest {
             () -> new FakeMaven(temp)
                 .execute(UnphiMojo.class),
             "UnphiMojo execution should fail because of parsing errors"
+        );
+    }
+
+    @Test
+    void addsMetas(@TempDir final Path temp) throws IOException {
+        new HmBase(temp).save(
+            "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
+            Paths.get("target/phi/std.phi")
+        );
+        MatcherAssert.assertThat(
+            "Unphied XMIR must contain metas, added via \"unphiMetas\" parameter",
+            new XMLDocument(
+                new FakeMaven(temp)
+                    .with(
+                        "unphiMetas",
+                        new SetOf<>("+tests", "+home https://github.com/objectionary/eo")
+                    )
+                    .execute(UnphiMojo.class)
+                    .result()
+                    .get(String.format("target/%s/std.xmir", ParseMojo.DIR))
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/program/metas/meta[head/text()='tests' and not(tail/text())]",
+                "/program/metas/meta[head/text()='home' and tail/text()='https://github.com/objectionary/eo']"
+            )
+        );
+    }
+
+    @Test
+    void failsIfPackageMetaIsAdded(@TempDir final Path temp) throws IOException {
+        new HmBase(temp).save(
+            "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
+            Paths.get("target/phi/std.phi")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("unphiMetas", new SetOf<>("+package org.eolang"))
+                .execute(UnphiMojo.class),
+            "UnphiMojo execution should fail if \"+package\" meta is added"
         );
     }
 

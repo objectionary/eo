@@ -286,7 +286,6 @@ SOFTWARE.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <excludedGroups>slow</excludedGroups>
           <argLine>@{argLine} -Xss${stack-size}</argLine>
           <systemPropertyVariables>
             <runtime.path>${project.basedir}/../eo-runtime</runtime.path>
@@ -488,13 +487,6 @@ SOFTWARE.
                 <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml
                 </exclude>
               </excludes>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <excludedGroups>nothing-to-exclude</excludedGroups>
             </configuration>
           </plugin>
           <plugin>

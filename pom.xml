@@ -349,6 +349,7 @@ SOFTWARE.
             <systemPropertyVariables>
               <basedir>${project.basedir}</basedir>
             </systemPropertyVariables>
+            <excludedGroups>slow</excludedGroups>
             <properties>
               <configurationParameters>
                 junit.jupiter.execution.parallel.enabled = true
@@ -377,9 +378,17 @@ SOFTWARE.
             </configuration>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!--In order to include slow tests too-->
+              <excludedGroups>nothing-to-exclude</excludedGroups>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.0</version>
             <configuration>
               <ignoreGeneratedTests>true</ignoreGeneratedTests>
               <exclusions>
