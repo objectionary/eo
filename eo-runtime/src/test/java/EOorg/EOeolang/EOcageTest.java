@@ -27,7 +27,11 @@
  */
 package EOorg.EOeolang;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.number.SumOf;
 import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -312,7 +316,7 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
-            final EOcage cage = cageWithDepth(MAX_DEPTH / 2);
+            final EOcage cage = this.cageWithDepth(MAX_DEPTH / 2);
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
                 String.format(
@@ -329,7 +333,7 @@ final class EOcageTest {
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
-            final EOcage cage = cageWithDepth(MAX_DEPTH);
+            final EOcage cage = this.cageWithDepth(MAX_DEPTH);
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
                 String.format(
@@ -343,7 +347,7 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfBigDepth() {
-            final EOcage cage = cageWithDepth(MAX_DEPTH + 1);
+            final EOcage cage = this.cageWithDepth(MAX_DEPTH + 1);
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(cage).take(),
@@ -358,23 +362,29 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowIfDataizesConcurrently() {
-            final EOcage cage = cageWithDepth(MAX_DEPTH);
-            Assertions.assertDoesNotThrow(
-                () -> new Dataized(cage).take(),
-                String.format(
-                    "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
-                    PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
-                    ExAbstract.class
-                )
+            final EOcage cage = this.cageWithDepth(MAX_DEPTH);
+            final int threads = 500;
+            MatcherAssert.assertThat(
+                new SumOf(
+                    new Threads<>(
+                        threads,
+                        Stream.generate(
+                            () -> (Scalar<Integer>) () -> {
+                                new Dataized(cage).take();
+                                return 1;
+                            }
+                        ).limit(threads).collect(Collectors.toList())
+                    )
+                ).intValue(),
+                Matchers.equalTo(threads)
             );
         }
 
-        private EOcage cageWithDepth(int depth) {
+        private EOcage cageWithDepth(final int depth) {
             final EOcage cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
-                new RecursiveDummy(MAX_DEPTH, cage)
+                new RecursiveDummy(depth, cage)
             );
             return cage;
         }
@@ -398,7 +408,7 @@ final class EOcageTest {
             /**
              * Counts how many times we already met the cage.
              */
-            private final AtomicReference<Integer> counter;
+            private final ThreadLocal<Integer> counter;
 
             /**
              * Ctor.
@@ -410,14 +420,14 @@ final class EOcageTest {
             ) {
                 this.depth = depth;
                 this.cage = cage;
-                this.counter = new AtomicReference<>(0);
+                this.counter = ThreadLocal.withInitial(() -> 0);
             }
 
             @Override
             public Phi lambda() {
                 final Phi ret;
-                this.counter.getAndUpdate(val -> val + 1);
-                if (this.counter.get() == this.depth) {
+                this.counter.set(this.counter.get() + 1);
+                if (this.counter.get() >= this.depth) {
                     ret = new Data.ToPhi(0L);
                 } else {
                     ret = this.cage;
