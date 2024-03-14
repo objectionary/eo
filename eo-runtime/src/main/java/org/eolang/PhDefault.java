@@ -116,8 +116,8 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("ρ", new AtSimple(sigma));
-        this.add("σ", new AtFixed(new AtSimple(sigma)));
+        this.add(Attr.RHO, new AtRho());
+        this.add(Attr.SIGMA, new AtFixed(sigma));
     }
 
     @Override
@@ -189,8 +189,9 @@ public abstract class PhDefault implements Phi, Cloneable {
             copy.form = this.form;
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            Attr attr;
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
+                map.put(ent.getKey(), new AtSetRho(ent.getValue().copy(copy), copy, ent.getKey()));
             }
             copy.attrs = map;
             return copy;
@@ -244,16 +245,20 @@ public abstract class PhDefault implements Phi, Cloneable {
             attr = this.attrs.get(name);
         }
         if (attr == null) {
-            final Phi found;
             if (this instanceof Atom) {
-                found = this.cached.get(name, new AtomSafe((Atom) this)::lambda).attr(name).get();
-                found.attr("ρ").put(this);
-                attr = new AtSimple(found);
+                attr = new AtSimple(
+                    this.cached.get(
+                        name,
+                        new AtomSafe((Atom) this)::lambda
+                    ).attr(name).get()
+                );
             } else if (this.attrs.containsKey(Attr.PHI)) {
-                final Attr aphi = this.attrs.get(Attr.PHI);
-                found = this.cached.get(name, aphi::get).attr(name).get();
-                found.attr("ρ").put(this);
-                attr = new AtSimple(found);
+                attr = new AtSimple(
+                    this.cached.get(
+                        name,
+                        this.attrs.get(Attr.PHI)::get
+                    ).attr(name).get()
+                );
             } else {
                 attr = new AtAbsent(
                     name,

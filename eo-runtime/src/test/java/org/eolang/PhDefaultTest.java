@@ -263,6 +263,85 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void doesNotHaveRho() {
+        // [] > int
+        //   [] > plus
+        Phi integer = new Int();
+        // int.^ -> absent
+        Assertions.assertThrows(
+            ExUnset.class,
+            integer.attr(Attr.RHO)::get
+        );
+        // int.plus.^ -> absent
+        Assertions.assertThrows(
+            ExUnset.class,
+            integer.attr("plus").get().attr(Attr.RHO)::get
+        );
+        // int' > int1
+        Phi int1 = integer.copy();
+        // int1.^ -> absent
+        Assertions.assertThrows(
+            ExUnset.class,
+            int1.attr(Attr.RHO)::get
+        );
+        // int.plus != int1.plus
+        MatcherAssert.assertThat(
+            integer.attr("plus").get(),
+            Matchers.not(
+                Matchers.equalTo(int1.attr("plus").get())
+            )
+        );
+        // int.^ -> absent
+        Assertions.assertThrows(
+            ExUnset.class,
+            integer.attr(Attr.RHO)::get
+        );
+        // int.plus.^ -> absent
+        Assertions.assertThrows(
+            ExUnset.class,
+            integer.attr("plus").get().attr(Attr.RHO)::get
+        );
+        // int1.plus.^ -> int1
+        MatcherAssert.assertThat(
+            int1.attr("plus").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(int1)
+        );
+        // int1' > int2
+        Phi int2 = int1.copy();
+        // int1.plus != int2.plus
+        MatcherAssert.assertThat(
+            int1.attr("plus").get(),
+            Matchers.not(
+                Matchers.equalTo(int2.attr("plus").get())
+            )
+        );
+        // int2.plus.^ -> int1
+        MatcherAssert.assertThat(
+            int2.attr("plus").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(int1)
+        );
+
+        // int1.plus.^ == int2.plus.^
+        MatcherAssert.assertThat(
+            int1.attr("plus").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(int2.attr("plus").get().attr(Attr.RHO).get())
+        );
+    }
+
+    public static class Int extends PhDefault {
+        Int() {
+            super(Phi.Φ);
+            this.add("plus", new AtSimple(new Plus(this)));
+        }
+    }
+
+    public static class Plus extends PhDefault {
+        Plus(final Phi sigma) {
+            super(sigma);
+        }
+    }
+
     /**
      * Foo.
      * @since 1.0

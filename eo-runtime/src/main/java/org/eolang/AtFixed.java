@@ -35,34 +35,37 @@ final class AtFixed implements Attr {
     /**
      * Origin.
      */
-    private final Attr origin;
+    private final Phi fixed;
+
+    private final Attr attr;
 
     /**
      * Ctor.
-     * @param attr Attribute
+     * @param phi Fixed phi
      */
-    AtFixed(final Attr attr) {
-        this.origin = attr;
+    AtFixed(final Phi phi) {
+        this.fixed = phi;
+        this.attr = new AtSimple(fixed);
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.attr.toString();
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return this.attr.φTerm();
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFixed(this.origin.copy(self));
+        return new AtFixed(this.fixed);
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        return this.fixed;
     }
 
     @Override

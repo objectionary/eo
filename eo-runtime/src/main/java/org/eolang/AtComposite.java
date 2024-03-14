@@ -69,7 +69,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(self, this.expr);
+        return new AtComposite(this.rho, (rho) -> this.get().copy());
     }
 
     @Override

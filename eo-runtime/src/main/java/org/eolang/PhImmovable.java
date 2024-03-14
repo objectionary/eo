@@ -79,9 +79,9 @@ final class PhImmovable implements Phi {
     @Override
     public Attr attr(final String attr) {
         Attr val = this.origin.attr(attr);
-        if ("ρ".equals(attr)) {
-            val = new AtFixed(val);
-        }
+//        if ("ρ".equals(attr)) {
+//            val = new AtFixed(val);
+//        }
         return val;
     }
 
