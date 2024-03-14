@@ -56,8 +56,8 @@ public final class PhTracedEnclosure implements Phi {
     private final Phi enclosure;
 
     /**
-     * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
-     * was retrieved.
+     * Cage where the {@link PhTracedEnclosure#enclosure}
+     * was retrieved from.
      */
     private final Phi cage;
 
@@ -174,8 +174,9 @@ public final class PhTracedEnclosure implements Phi {
                     final int ret = this.incremented(counter);
                     if (ret > PhTracedEnclosure.this.depth) {
                         throw new ExFailure(
-                            "The cage %s has reached the maximum nesting depth = %d",
+                            "The cage %s counter = %d has reached the maximum nesting depth = %d",
                             key.φTerm(),
+                            ret,
                             PhTracedEnclosure.this.depth
                         );
                     }
