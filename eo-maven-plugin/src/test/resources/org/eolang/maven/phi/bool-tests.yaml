@@ -60,10 +60,7 @@ eo: |
       01-.as-bytes.eq TRUE
       00-.as-bytes.eq FALSE
 
-  # @todo #2437:30min Enable the test. After getting rid of delta attributes in data primitives
-  #  this test started to execute infinitely long while other tests with "bool.while" are executed
-  #  without any troubles. Need to find what's the problem and make the test enable again. Don't
-  #  forget to remove the puzzle.
+  # Test.
   [] > complex-bool-expression-in-while
     memory 0 > m
     seq > res
@@ -152,9 +149,6 @@ eo: |
           arr.length
 
   # Test.
-  # @todo #2785:60min Enable this test. For some reason this test fails. The only difference between
-  #  this test and `iterating-tuple-with-while-using-internal-iterator` is that this test uses
-  #  external iterator inside instead of standard `i` from `while` body.
   [] > iterating-tuple-with-while-using-external-iterator
     * 1 1 1 1 > arr
     memory 0 > iter
@@ -211,9 +205,6 @@ eo: |
           arr.length
 
   # Test.
-  # @todo #2437:60min Enable the test. For some reason this test fails. The only difference between
-  #  this test and `iterating-tuple-with-while-without-body-multiple` is that in this test tuple
-  #  consists of only one element.
   [] > iterating-tuple-with-while-without-body-single
     * 1 > arr
     memory 0 > iter
