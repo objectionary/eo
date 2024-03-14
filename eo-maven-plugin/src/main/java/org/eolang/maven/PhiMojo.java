@@ -108,6 +108,12 @@ public final class PhiMojo extends SafeMojo {
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     xmir -> () -> {
+                        final Path processed = this.phiInputDir.toPath().relativize(xmir);
+                        Logger.info(
+                            this,
+                            "Processing XMIR: %[file]s (%[size]s)",
+                            processed, xmir.toFile().length()
+                        );
                         final XML xml = new XMLDocument(
                             new TextOf(xmir).asString()
                         );
@@ -121,8 +127,11 @@ public final class PhiMojo extends SafeMojo {
                         home.save(PhiMojo.translated(train, xml), relative);
                         Logger.info(
                             this,
-                            "Translated to phi: %s -> %s",
-                            xmir, this.phiOutputDir.toPath().resolve(relative)
+                            "Translated to phi: %[file]s (%[size]s) -> %[file]s (%[size]s)",
+                            processed,
+                            xmir.toFile().length(),
+                            relative,
+                            this.phiOutputDir.toPath().resolve(relative).toFile().length()
                         );
                         return 1;
                     },
