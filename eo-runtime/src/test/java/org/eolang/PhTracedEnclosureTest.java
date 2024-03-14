@@ -55,7 +55,7 @@ public class PhTracedEnclosureTest {
             new Data.ToPhi(data), new EOcage(Phi.Φ), 1
         );
         MatcherAssert.assertThat(
-            "dataization of object without recursion is allowed if depth is more than 0",
+            "Dataization of object without recursion is allowed if depth is more than 0",
             new Dataized(traced).take(Long.class),
             Matchers.equalTo(data)
         );
