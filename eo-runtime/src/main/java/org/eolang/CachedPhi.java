@@ -33,6 +33,10 @@ import java.util.function.Supplier;
  * The class is thread-safe.
  *
  * @since 0.17
+ * @todo #2891:90min Add testing of thread safety. There was an error about safety
+ *  in reset method. After that maybe it is better to add documentation because
+ *  "running field" looks like a field for synchronizing but I don't see
+ *  sense in it.
  */
 @Versionized
 final class CachedPhi {
@@ -63,7 +67,9 @@ final class CachedPhi {
      * Reset it to NULL.
      */
     public void reset() {
-        this.cached.set(null);
+        synchronized (this.cached) {
+            this.cached.set(null);
+        }
     }
 
     /**
