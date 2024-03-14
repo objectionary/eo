@@ -39,6 +39,8 @@ import org.junit.jupiter.params.provider.CsvSource;
  * Test case for {@link DcsDepgraph.DcsJson}.
  *
  * @since 0.28.11
+ * @todo #2297:60min Add message to all JUnit assertions and remove corresponding
+ *  {@code @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")} annotation.
  */
 final class DcsDepgraphTest {
 
@@ -47,6 +49,7 @@ final class DcsDepgraphTest {
         "eo-math-dependencies-transient-dependency.json, 3",
         "eo-math-dependencies-without-foreign.json, 7"
     })
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void readsAllDependenciesFromJsonFile(
         final String name,
         final long number,

@@ -37,10 +37,13 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link DcsEachWithoutTransitive}.
  *
  * @since 0.30
+ * @todo #2297:60min Add message to all JUnit assertions and remove corresponding
+ *  {@code @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")} annotation.
  */
 final class DcsEachWithoutTransitiveTest {
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void failsIfHasTransitiveDependencies() {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -52,6 +55,7 @@ final class DcsEachWithoutTransitiveTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
@@ -64,6 +68,7 @@ final class DcsEachWithoutTransitiveTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
@@ -76,6 +81,7 @@ final class DcsEachWithoutTransitiveTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(

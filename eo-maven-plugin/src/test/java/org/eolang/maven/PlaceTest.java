@@ -33,10 +33,14 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Place}.
  *
  * @since 0.11
+ * @todo #2297:60min Add message to all JUnit assertions and remove corresponding
+ *  {@code @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")} annotation.
  */
+@SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
 final class PlaceTest {
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void makesPath() {
         MatcherAssert.assertThat(
             new Place("hello.foo.bar")
@@ -48,6 +52,7 @@ final class PlaceTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void makesSimplePath() {
         MatcherAssert.assertThat(
             new Place("hey")
