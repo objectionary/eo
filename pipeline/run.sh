@@ -9,7 +9,7 @@ export LC_ALL=C.UTF-8
 shopt -s extglob
 shopt -s expand_aliases
 
-alias eo="npx eoc --parser=0.35.8"
+alias eo="npx eoc --parser=0.35.9"
 
 DATA_DIR=".data"
 
