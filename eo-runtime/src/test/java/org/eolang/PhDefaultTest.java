@@ -362,7 +362,7 @@ final class PhDefaultTest {
          */
         Foo(final Phi sigma, final Object data) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
             this.add(
                 "kid",
                 new AtComposite(
@@ -456,7 +456,7 @@ final class PhDefaultTest {
          */
         Kid(final Phi sigma) {
             super(sigma);
-            this.add("z", new AtFree());
+            this.add("z", new AtVoid());
             this.add(
                 "φ",
                 new AtComposite(
@@ -479,7 +479,7 @@ final class PhDefaultTest {
          */
         First(final Phi sigma) {
             super(sigma);
-            this.add("a", new AtFree(new Data.ToPhi(1L)));
+            this.add("a", new AtVoid(new Data.ToPhi(1L)));
             this.add(
                 "φ",
                 new AtComposite(

@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -427,7 +427,7 @@ final class EOcageTest {
          */
         Dummy(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
         }
     }
 }

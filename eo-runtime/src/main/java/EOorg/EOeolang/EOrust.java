@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
@@ -133,9 +132,9 @@ public final class EOrust extends PhDefault implements Atom {
      */
     public EOrust(final Phi sigma) {
         super(sigma);
-        this.add("code", new AtFree());
-        this.add("portal", new AtFree());
-        this.add("params", new AtFree());
+        this.add("code", new AtVoid());
+        this.add("portal", new AtVoid());
+        this.add("params", new AtVoid());
     }
 
     @Override

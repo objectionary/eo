@@ -280,7 +280,7 @@ final class PhConstTest {
          */
         Kid(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
             this.add(
                 "φ",
                 new AtComposite(
@@ -304,7 +304,7 @@ final class PhConstTest {
          */
         Envelope(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
             this.add("φ", new AtOnce(new AtComposite(this, rho -> rho.attr("x").get())));
         }
     }
@@ -347,7 +347,7 @@ final class PhConstTest {
          */
         Sub(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }

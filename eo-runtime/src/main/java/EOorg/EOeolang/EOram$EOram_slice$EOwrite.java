@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import java.io.IOException;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -50,7 +50,7 @@ public final class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
      */
     public EOram$EOram_slice$EOwrite(final Phi sigma) {
         super(sigma);
-        this.add("data", new AtFree());
+        this.add("data", new AtVoid());
     }
 
     @Override

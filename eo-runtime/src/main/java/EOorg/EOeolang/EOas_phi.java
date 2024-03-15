@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.PhDefault;
@@ -51,7 +51,7 @@ public final class EOas_phi extends PhDefault implements Atom {
      */
     public EOas_phi(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtVoid());
     }
 
     @Override

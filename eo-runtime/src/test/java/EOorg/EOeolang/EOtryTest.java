@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -188,7 +188,7 @@ public final class EOtryTest {
          */
         public Catcher(final Phi sigma) {
             super(sigma);
-            this.add("ex", new AtFree());
+            this.add("ex", new AtVoid());
             this.add(
                 "φ",
                 new AtComposite(

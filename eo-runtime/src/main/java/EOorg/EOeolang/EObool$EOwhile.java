@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -53,7 +53,7 @@ public final class EObool$EOwhile extends PhDefault implements Atom {
      */
     public EObool$EOwhile(final Phi sigma) {
         super(sigma);
-        this.add("f", new AtFree());
+        this.add("f", new AtVoid());
     }
 
     @Override

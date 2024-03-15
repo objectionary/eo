@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.AtMemoized;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -93,7 +93,7 @@ public final class EOmemory extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
         }
 
         @Override

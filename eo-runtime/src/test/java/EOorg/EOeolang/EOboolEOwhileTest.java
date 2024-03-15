@@ -30,7 +30,7 @@ package EOorg.EOeolang;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -196,7 +196,7 @@ final class EOboolEOwhileTest {
         Kid(final Phi sigma, final Phi tgl) {
             super(sigma);
             this.toggle = tgl;
-            this.add("x", new AtFree());
+            this.add("x", new AtVoid());
             this.add(
                 "φ",
                 new AtComposite(
