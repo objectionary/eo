@@ -53,7 +53,6 @@ sets:
   destination: .data/eo/runtime-tests.eo
   exclude:
   - constant-defends-against-side-effects
-  - takes-object-id-from-abstract-empty
 - source: ../eo-runtime/src/test/eo/org/eolang/rust-tests.eo
   yaml: .data/yaml/rust-tests.yaml
   destination: .data/eo/rust-tests.eo
