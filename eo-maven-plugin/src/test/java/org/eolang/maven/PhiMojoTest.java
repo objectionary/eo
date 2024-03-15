@@ -66,7 +66,7 @@ final class PhiMojoTest {
         );
     }
 
-    @Test
+    @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
     void convertsXmirsToPhiWithoutErrors(final String xmir, @TempDir final Path temp)
         throws IOException {
