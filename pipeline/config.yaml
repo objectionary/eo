@@ -52,7 +52,6 @@ sets:
   yaml: .data/yaml/runtime-tests.yaml
   destination: .data/eo/runtime-tests.eo
   exclude:
-  # - compiles-correctly-with-long-duplicate-names
   - constant-defends-against-side-effects
   - takes-object-id-from-abstract-empty
 - source: ../eo-runtime/src/test/eo/org/eolang/rust-tests.eo
