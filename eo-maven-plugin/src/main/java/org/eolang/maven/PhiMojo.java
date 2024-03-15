@@ -34,6 +34,7 @@ import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -108,6 +109,12 @@ public final class PhiMojo extends SafeMojo {
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     xmir -> () -> {
+                        final Path processed = this.phiInputDir.toPath().relativize(xmir);
+                        Logger.info(
+                            this,
+                            "Processing XMIR: %[file]s (%[size]s)",
+                            processed, xmir.toFile().length()
+                        );
                         final XML xml = new XMLDocument(
                             new TextOf(xmir).asString()
                         );
@@ -118,11 +125,26 @@ public final class PhiMojo extends SafeMojo {
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
-                        home.save(PhiMojo.translated(train, xml), relative);
+                        try {
+                            home.save(PhiMojo.translated(train, xml), relative);
+                        } catch (final ImpossibleToPhiTranslationException exception) {
+                            Logger.debug(
+                                this,
+                                "XML is not translatable to phi:\n%s",
+                                xml.toString()
+                            );
+                            throw new IllegalStateException(
+                                String.format("Couldn't translate %s to phi", processed),
+                                exception
+                            );
+                        }
                         Logger.info(
                             this,
-                            "Translated to phi: %s -> %s",
-                            xmir, this.phiOutputDir.toPath().resolve(relative)
+                            "Translated to phi: %[file]s (%[size]s) -> %[file]s (%[size]s)",
+                            processed,
+                            xmir.toFile().length(),
+                            relative,
+                            this.phiOutputDir.toPath().resolve(relative).toFile().length()
                         );
                         return 1;
                     },
@@ -148,13 +170,34 @@ public final class PhiMojo extends SafeMojo {
      * @param train Train that optimize and traslates given xmir
      * @param xmir Text of xmir
      * @return Translated xmir
+     * @throws ImpossibleToPhiTranslationException If fails to translate given XMIR to phi
      */
-    private static String translated(final Train<Shift> train, final XML xmir) {
-        return new Xsline(
+    private static String translated(final Train<Shift> train, final XML xmir)
+        throws ImpossibleToPhiTranslationException {
+        final XML translated = new Xsline(
             train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
-        )
-            .pass(xmir)
-            .xpath("phi/text()")
-            .get(0);
+        ).pass(xmir);
+        Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
+        final List<String> phi = translated.xpath("phi/text()");
+        if (phi.isEmpty()) {
+            throw new ImpossibleToPhiTranslationException(
+                "Xpath 'phi/text()' is not found in translated XMIR"
+            );
+        }
+        return phi.get(0);
+    }
+
+    /**
+     * Exception which indicates that translation to phi can't be processed.
+     * @since 0.36.0
+     */
+    private static class ImpossibleToPhiTranslationException extends Exception {
+        /**
+         * Ctor.
+         * @param cause Cause of the exception.
+         */
+        ImpossibleToPhiTranslationException(final String cause) {
+            super(cause);
+        }
     }
 }

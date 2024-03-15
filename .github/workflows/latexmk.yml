@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: yegor256/latexmk-action@0.10.9
+      - uses: yegor256/latexmk-action@0.11.1
         with:
           path: paper
           opts: -pdf

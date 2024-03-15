@@ -81,6 +81,7 @@
     01-.as-bytes.eq TRUE
     00-.as-bytes.eq FALSE
 
+# Test.
 # @todo #2437:30min Enable the test. After getting rid of delta attributes in data primitives
 #  this test started to execute infinitely long while other tests with "bool.while" are executed
 #  without any troubles. Need to find what's the problem and make the test enable again. Don't
