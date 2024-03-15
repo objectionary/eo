@@ -1,0 +1,17 @@
+---
+name: reports-check
+on:
+  issues:
+    types: [opened]
+permissions:
+  issues: write
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tracehubpm/reports-check-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          openai_token: ${{ secrets.OPENAI_TOKEN }}
