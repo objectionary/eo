@@ -189,7 +189,7 @@ public final class PhiMojo extends SafeMojo {
      * Exception which indicates that translation to phi can't be processed.
      * @since 0.36.0
      */
-    static class ImpossibleToPhiTranslationException extends Exception {
+    private static class ImpossibleToPhiTranslationException extends Exception {
         /**
          * Ctor.
          * @param cause Cause of the exception.
