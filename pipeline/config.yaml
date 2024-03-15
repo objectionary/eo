@@ -5,7 +5,6 @@ sets:
 - source: ../eo-runtime/src/test/eo/org/eolang/bool-tests.eo
   yaml: .data/yaml/bool-tests.yaml
   destination: .data/eo/bool-tests.eo
-  enable: false
 - source: ../eo-runtime/src/test/eo/org/eolang/bytes-tests.eo
   yaml: .data/yaml/bytes-tests.yaml
   destination: .data/eo/bytes-tests.eo
