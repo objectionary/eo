@@ -25,14 +25,10 @@
 package org.eolang;
 
 /**
- * Static attribute with an expression inside, which
- * constructs an object.
+ * Attribute that constructs object lazily.
+ * The attribute depends on context (argument of lambda expression).
  *
  * @since 0.1
- * @todo #2566:60min Remove AtComposite class. AtComposite is used only because the style of
- *  generated (from EO) java is imperative. We need to make transpilation declarative (for example
- *  new PhLocated(new PhWith(new PhMethod(...), ...), ...)) so we would not need AtComposite
- *  anymore. Don't forget to remove the puzzle.
  */
 @Versionized
 public final class AtComposite implements Attr {
@@ -69,7 +65,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(this.rho, (rho) -> this.get().copy());
+        return new AtComposite(self, this.expr);
     }
 
     @Override

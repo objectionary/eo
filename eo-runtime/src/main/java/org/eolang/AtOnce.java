@@ -27,7 +27,8 @@ package org.eolang;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Read only once.
+ * Attribute that retrieve object only once.
+ * It's highly recommended to use it with {@link AtComposite}.
  *
  * @since 0.1
  */

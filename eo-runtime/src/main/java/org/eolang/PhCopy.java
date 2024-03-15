@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import java.util.function.Supplier;
-
 /**
  * A copy-making object.
  *
@@ -40,14 +38,10 @@ public final class PhCopy extends PhOnce {
      * @param phi The object
      */
     public PhCopy(final Phi phi) {
-        this(() -> phi);
-    }
-
-    public PhCopy(final Supplier<Phi> phi) {
         super(
-            () -> phi.get().copy(),
-            () -> String.format("%s'", phi.get()),
-            () -> String.format("%s", phi.get().φTerm())
+            phi::copy,
+            () -> String.format("%s'", phi),
+            () -> String.format("%s", phi.φTerm())
         );
     }
 }
