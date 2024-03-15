@@ -128,7 +128,7 @@ public final class PhiMojo extends SafeMojo {
                         try {
                             home.save(PhiMojo.translated(train, xml), relative);
                         } catch (final ImpossibleToPhiTranslationException exception) {
-                            Logger.error(
+                            Logger.info(
                                 this,
                                 "XML is not translatable to phi:\n%s",
                                 xml.toString()
@@ -172,15 +172,17 @@ public final class PhiMojo extends SafeMojo {
      * @return Translated xmir
      */
     private static String translated(final Train<Shift> train, final XML xmir) throws ImpossibleToPhiTranslationException {
-        final List<String> translated = new Xsline(
+        final XML translated = new Xsline(
             train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
-        ).pass(xmir).xpath("phi/text()");
-        if (translated.isEmpty()) {
+        ).pass(xmir);
+        Logger.info(PhiMojo.class, "XML after translation to phi:\n%s", translated);
+        final List<String> phi = translated.xpath("phi/text()");
+        if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
                 "Xpath 'phi/text()' is not found in translated XMIR"
             );
         }
-        return translated.get(0);
+        return phi.get(0);
     }
 
     /**
