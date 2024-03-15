@@ -71,11 +71,8 @@ final class PhiMojoTest {
     void convertsXmirsToPhiWithoutErrors(final String xmir, @TempDir final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        new HmBase(temp).save(xmir, Paths.get("target/1-parse/test.xmir"));
-        maven.foreignTojos().add("test").withXmir(temp.resolve("target/1-parse/test.xmir"));
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(OptimizeMojo.class).execute(PhiMojo.class)
-        );
+        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
+        Assertions.assertDoesNotThrow(() -> maven.execute(PhiMojo.class));
     }
 
     @ParameterizedTest
