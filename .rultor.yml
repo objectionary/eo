@@ -3,7 +3,7 @@ architect:
 ec2:
   type: t2.large
 docker:
-  image: yegor256/rultor-image:1.23.0
+  image: yegor256/rultor-image:1.23.1
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
