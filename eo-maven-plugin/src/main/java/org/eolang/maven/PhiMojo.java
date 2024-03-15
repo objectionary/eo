@@ -128,7 +128,7 @@ public final class PhiMojo extends SafeMojo {
                         try {
                             home.save(PhiMojo.translated(train, xml), relative);
                         } catch (final ImpossibleToPhiTranslationException exception) {
-                            Logger.info(
+                            Logger.debug(
                                 this,
                                 "XML is not translatable to phi:\n%s",
                                 xml.toString()
@@ -175,7 +175,7 @@ public final class PhiMojo extends SafeMojo {
         final XML translated = new Xsline(
             train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
         ).pass(xmir);
-        Logger.info(PhiMojo.class, "XML after translation to phi:\n%s", translated);
+        Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
         final List<String> phi = translated.xpath("phi/text()");
         if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
