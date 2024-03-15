@@ -23,12 +23,16 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -62,8 +66,20 @@ final class PhiMojoTest {
         );
     }
 
+    @Test
+    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
+    void convertsXmirsToPhiWithoutErrors(final String xmir, @TempDir final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        new HmBase(temp).save(xmir, Paths.get("target/1-parse/test.xmir"));
+        maven.foreignTojos().add("test").withXmir(temp.resolve("target/1-parse/test.xmir"));
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(OptimizeMojo.class).execute(PhiMojo.class)
+        );
+    }
+
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/maven/phi/yaml", glob = "**.yaml")
     void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         if (map.get("skip") != null) {
