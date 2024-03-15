@@ -46,8 +46,6 @@ sets:
 - source: ../eo-runtime/src/test/eo/org/eolang/ram-tests.eo
   yaml: .data/yaml/ram-tests.yaml
   destination: .data/eo/ram-tests.eo
-  exclude:
-  - slice-chain
 - source: ../eo-runtime/src/test/eo/org/eolang/runtime-tests.eo
   yaml: .data/yaml/runtime-tests.yaml
   destination: .data/eo/runtime-tests.eo
