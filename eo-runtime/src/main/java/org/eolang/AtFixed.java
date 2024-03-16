@@ -26,6 +26,8 @@ package org.eolang;
 
 /**
  * Attribute that ignores putting and copying.
+ * The only usage for the attribute is keeping \sigma
+ * attribute.
  *
  * @since 0.1
  */
