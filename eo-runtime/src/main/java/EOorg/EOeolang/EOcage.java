@@ -27,12 +27,15 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Locale;
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
+import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhTracedEnclosure;
 import org.eolang.Phi;
@@ -58,32 +61,12 @@ public final class EOcage extends PhDefault implements Atom {
     public EOcage(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtCage());
-        this.add("write", new AtWrite(this));
+        this.add("write", new AtSimple(new Write(this)));
     }
 
     @Override
     public Phi lambda() {
         return new PhTracedEnclosure(this.attr("enclosure").get(), this);
-    }
-
-    /**
-     * Cage.write attribute.
-     * @since 0.33.0
-     */
-    private static final class AtWrite extends AtAtom {
-
-        /**
-         * Ctor.
-         * @param cage The {@link EOcage} object
-         */
-        AtWrite(final Phi cage) {
-            super(new EOcage.Write(cage));
-        }
-
-        @Override
-        public Attr copy(final Phi self) {
-            return new AtWrite(self);
-        }
     }
 
     /**
@@ -103,9 +86,15 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
-            this.attr("σ").get().attr("enclosure").put(
+            final Phi rho = this.attr(Attr.RHO).get();
+            this.attr(Attr.RHO).get().attr("enclosure").put(
                 this.attr("x").get()
             );
+//            System.out.println(
+//                new Dataized(
+//                    this.attr(Attr.RHO).get().attr("enclosure").get()
+//                ).take(Long.class)
+//            );
             return new Data.ToPhi(true);
         }
     }
