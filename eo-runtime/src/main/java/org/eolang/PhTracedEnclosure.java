@@ -29,11 +29,10 @@ import java.util.function.Supplier;
 
 /**
  * Class to trace if the cage got into recursion during the dataization.
- * NOT thread-safe.
+ * This class is thread safe in the meaning that different threads
+ * can safely use different instances of the class and recursion
+ * (If a thread dataizes the same recursively) will still be detected.
  * @since 0.36
- * @todo #2836:60min Make the class thread safe. It has private static
- *  field which can be accessed from differ thread and is not thread safe.
- *  Needs to synchronize this field.
  */
 @Versionized
 public final class PhTracedEnclosure implements Phi {
@@ -48,7 +47,8 @@ public final class PhTracedEnclosure implements Phi {
      * Cages that are currently dataizing. If one cage is datazing, and
      * it needs to be dataized inside current dataizing, the cage will be here.
      */
-    private static final Map<Phi, Integer> DATAIZING_CAGES = new HashMap<>();
+    private static final ThreadLocal<Map<Phi, Integer>> DATAIZING_CAGES =
+        ThreadLocal.withInitial(() -> new HashMap<>(0));
 
     /**
      * Enclosure.
@@ -56,8 +56,8 @@ public final class PhTracedEnclosure implements Phi {
     private final Phi enclosure;
 
     /**
-     * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
-     * was retrieved.
+     * Cage where the {@link PhTracedEnclosure#enclosure}
+     * was retrieved from.
      */
     private final Phi cage;
 
@@ -139,7 +139,6 @@ public final class PhTracedEnclosure implements Phi {
 
     /**
      * Supplier that traces the cage while gets.
-     * NOT thread-safe.
      * @since 0.36
      */
     private final class TracingWhileGetting implements Supplier<Attr> {
@@ -170,13 +169,14 @@ public final class PhTracedEnclosure implements Phi {
          * @return New value in the map.
          */
         private Integer incrementCageCounter() {
-            return PhTracedEnclosure.DATAIZING_CAGES.compute(
+            return PhTracedEnclosure.DATAIZING_CAGES.get().compute(
                 PhTracedEnclosure.this.cage, (key, counter) -> {
                     final int ret = this.incremented(counter);
                     if (ret > PhTracedEnclosure.this.depth) {
                         throw new ExFailure(
-                            "The cage %s has reached the maximum nesting depth = %d",
+                            "The cage %s counter = %d has reached the maximum nesting depth = %d",
                             key.φTerm(),
+                            ret,
                             PhTracedEnclosure.this.depth
                         );
                     }
@@ -210,11 +210,11 @@ public final class PhTracedEnclosure implements Phi {
         private void decrementCageCounter(final int incremented) {
             final int decremented = incremented - 1;
             if (decremented == 0) {
-                PhTracedEnclosure.DATAIZING_CAGES.remove(
+                PhTracedEnclosure.DATAIZING_CAGES.get().remove(
                     PhTracedEnclosure.this.cage
                 );
             } else {
-                PhTracedEnclosure.DATAIZING_CAGES.put(
+                PhTracedEnclosure.DATAIZING_CAGES.get().put(
                     PhTracedEnclosure.this.cage, decremented
                 );
             }
