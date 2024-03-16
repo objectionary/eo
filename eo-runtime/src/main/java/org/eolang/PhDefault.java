@@ -247,7 +247,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             if (this instanceof Atom) {
                 attr = new AtomSafe((Atom) this).lambda().attr(name);
             } else if (this.attrs.containsKey(Attr.PHI)) {
-                attr = this.attrs.get(Attr.PHI).get().attr(name);
+                attr = this.attr(Attr.PHI).get().attr(name);
             } else {
                 attr = new AtAbsent(
                     name,
@@ -260,14 +260,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 );
             }
         }
-        attr = this.named(attr, name);
-//        if (Attr.PHI.equals(name)) {
-//            attr = new AtPhiSensitive(attr, this.cached);
-//        }
-//        if (this.getClass().isAnnotationPresent(Volatile.class)) {
-//            this.cached.reset();
-//        }
-        attr = new AtSafe(attr);
+        attr = new AtSafe(this.named(attr, name));
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",
