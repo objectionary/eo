@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtAtom;
 import org.eolang.AtFree;
 import org.eolang.AtMemoized;
 import org.eolang.AtSimple;

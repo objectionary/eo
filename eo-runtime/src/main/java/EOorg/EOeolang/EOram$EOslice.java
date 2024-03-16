@@ -56,9 +56,7 @@ public final class EOram$EOslice extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi rho = this.attr(Attr.RHO).get();
-        System.out.println(rho);
         Phi slice = rho.attr("ram-slice").get();
-        System.out.println(slice);
         slice = slice.copy();
         slice.attr("position").put(this.attr("position").get().copy());
         slice.attr("size").put(this.attr("size").get().copy());

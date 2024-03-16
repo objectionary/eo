@@ -217,7 +217,6 @@ public final class EOmemoryTest {
                 0, new Data.ToPhi(42L)
             )
         ).take();
-        System.out.println(new Dataized(mem).take(Long.class));
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),
             Matchers.equalTo(false)
