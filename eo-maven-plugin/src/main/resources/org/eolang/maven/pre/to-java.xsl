@@ -55,23 +55,6 @@ SOFTWARE.
       <xsl:text>").get()</xsl:text>
     </xsl:for-each>
   </xsl:function>
-  <!--  -->
-  <!--  &lt;!&ndash;  &ndash;&gt;-->
-  <!--  <xsl:function name="eo:type-of">-->
-  <!--    <xsl:param name="root"/>-->
-  <!--    <xsl:param name="o"/>-->
-  <!--    <xsl:choose>-->
-  <!--      <xsl:when test="$o/@base and $o/@ref">-->
-  <!--        <xsl:copy-of select="eo:type-of($root, $root//o[@name=$o/@base and @line=$o/@ref])"/>-->
-  <!--      </xsl:when>-->
-  <!--      <xsl:when test="not($o/@base) and not($o/@ref) and contains($o/@line, '.')">-->
-  <!--        <xsl:copy-of select="eo:type-of($root, $root//o[@line=substring-after($o/@line, '.') and @name=$o/@name])"/>-->
-  <!--      </xsl:when>-->
-  <!--      <xsl:otherwise>-->
-  <!--        <xsl:copy-of select="$o"/>-->
-  <!--      </xsl:otherwise>-->
-  <!--    </xsl:choose>-->
-  <!--  </xsl:function>-->
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -356,12 +339,10 @@ SOFTWARE.
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:value-of select="$rho"/>
-        <xsl:text>.attr("ρ").get()</xsl:text>
+        <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
       </xsl:when>
       <xsl:when test="@base='&amp;'">
-        <xsl:value-of select="$rho"/>
-        <xsl:text>.attr("σ").get()</xsl:text>
+        <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
       <!-- TBD -->
       <xsl:when test="$source/@ancestors">
@@ -375,16 +356,21 @@ SOFTWARE.
         <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
       </xsl:when>
       <xsl:when test="$source/@level">
-        <xsl:value-of select="$rho"/>
-        <xsl:for-each select="1 to $source/@level">
-          <xsl:text>.attr("σ").get()</xsl:text>
+        <xsl:for-each select="0 to $source/@level">
+          <xsl:text>new PhMethod(</xsl:text>
         </xsl:for-each>
+        <xsl:text>rho</xsl:text>
+        <xsl:for-each select="1 to $source/@level">
+          <xsl:text>, "σ")</xsl:text>
+        </xsl:for-each>
+        <xsl:text>, "</xsl:text>
+        <xsl:value-of select="$source/@name"/>
+        <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:when test="$source">
-        <xsl:value-of select="$rho"/>
-        <xsl:text>.attr("</xsl:text>
+        <xsl:text>new PhMethod(rho, "</xsl:text>
         <xsl:value-of select="eo:attr-name(@base)"/>
-        <xsl:text>").get()</xsl:text>
+        <xsl:text>")</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:fetch(@base)"/>
@@ -424,9 +410,9 @@ SOFTWARE.
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text> = </xsl:text>
+    <xsl:text> = new PhMethod(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>_base.attr("</xsl:text>
+    <xsl:text>_base, "</xsl:text>
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
     <xsl:choose>
       <xsl:when test="$method='^'">
@@ -442,7 +428,7 @@ SOFTWARE.
         <xsl:value-of select="eo:attr-name($method)"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>").get();</xsl:text>
+    <xsl:text>");</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
@@ -462,13 +448,13 @@ SOFTWARE.
   <!-- Empty application  -->
   <xsl:template match="o[@copy]" mode="copy">
     <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
+    <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = </xsl:text>
+    <xsl:text> = new PhCopy(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>.copy();</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Location of object -->
@@ -504,8 +490,13 @@ SOFTWARE.
         <xsl:value-of select="$indent"/>
         <xsl:value-of select="$name"/>
         <xsl:text> = </xsl:text>
+        <xsl:text>new PhCopy(</xsl:text>
         <xsl:value-of select="$name"/>
-        <xsl:text>.copy();</xsl:text>
+        <xsl:if test="$rho">
+          <xsl:text>, </xsl:text>
+          <xsl:value-of select="$rho"/>
+        </xsl:if>
+        <xsl:text>);</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
       </xsl:if>
       <xsl:variable name="n">
@@ -526,10 +517,9 @@ SOFTWARE.
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text>.attr(</xsl:text>
-      <!--      <xsl:text> = new PhWith(</xsl:text>-->
-      <!--      <xsl:value-of select="$name"/>-->
-      <!--      <xsl:text>, </xsl:text>-->
+      <xsl:text> = new PhWith(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>, </xsl:text>
       <xsl:choose>
         <xsl:when test="@as">
           <xsl:choose>
@@ -550,8 +540,7 @@ SOFTWARE.
           <xsl:value-of select="position() - 1"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:text>).put(</xsl:text>
-      <!--      <xsl:text>, </xsl:text>-->
+      <xsl:text>, </xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>_</xsl:text>
       <xsl:value-of select="position()"/>

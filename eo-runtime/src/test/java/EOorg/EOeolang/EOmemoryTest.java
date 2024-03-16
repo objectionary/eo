@@ -65,6 +65,24 @@ public final class EOmemoryTest {
     }
 
     @Test
+    void rewritesAfterInit() {
+        final Phi mem = new EOmemory(Phi.Φ).copy();
+        mem.attr(0).put(new Data.ToPhi(0L));
+        final Phi write = mem.attr("write").get();
+        final Phi write1 = write.copy();
+        write1.attr(0).put(new Data.ToPhi(42L));
+        new Dataized(write1).take();
+        final Phi minus = mem.attr("as-int").get().attr("minus").get().copy();
+        minus.attr(0).put(new Data.ToPhi(2L));
+        final Phi write2 = write.copy();
+        write2.attr(0).put(minus);
+        MatcherAssert.assertThat(
+            new Dataized(write2).take(Long.class),
+            Matchers.equalTo(40L)
+        );
+    }
+
+    @Test
     public void takesAsIntAndUpdates() {
         final Phi mem = new EOmemory(Phi.Φ).copy();
         mem.attr(0).put(new Data.ToPhi(1L));
