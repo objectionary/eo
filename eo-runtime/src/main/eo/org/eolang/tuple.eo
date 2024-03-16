@@ -45,6 +45,9 @@
     ^.head.length.plus 1 > @
 
   # Take one element from the tuple, at the given position.
+  # @todo #2931:30min Return previous optimizations for the object.
+  #  The optimization was removed because it does not work with new rho logic.
+  #  Please check previous version of the object and try to implement it again.
   [i] > at
     i > idx!
     ^.length > len!
