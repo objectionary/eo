@@ -32,8 +32,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>This class is thread-safe.</p>
  *
  * @since 0.16
- * @todo #1614:30min This class don't have enough tests. We need to add more, at least for
- *  the next methods: toString(), φTerm(), copy(), put().
+ * @todo #2931:30min Class does not work properly. Also the does nott have enough tests.
+ *  We need to add more, at least for the next methods: toString(), φTerm(), copy(), put() and make
+ *  sure that caching works properly
  */
 @Versionized
 final class AtConst implements Attr {
@@ -95,9 +96,7 @@ final class AtConst implements Attr {
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                final Phi phi = this.origin.get();
-//                phi.attr("ρ").put(this.rho);
-                this.cache.set(phi);
+                this.cache.set(this.origin.get());
             }
         }
         return this.cache.get();
