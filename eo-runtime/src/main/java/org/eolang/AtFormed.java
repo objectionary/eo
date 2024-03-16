@@ -62,4 +62,9 @@ public class AtFormed implements Attr {
     public String φTerm() {
         return this.get().φTerm();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%sF", this.get().toString());
+    }
 }

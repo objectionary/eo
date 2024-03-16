@@ -58,18 +58,24 @@ public final class AtFree implements Attr {
 
     @Override
     public String toString() {
-        return "Void";
+        final String term;
+        if (this.object.get() == null) {
+            term = "Ø";
+        } else {
+            term = String.format("%sV", this.object.get().toString());
+        }
+        return term;
     }
 
     @Override
     public String φTerm() {
-//        final String term;
-//        if (this.set.get()) {
-//            term = this.origin.φTerm();
-//        } else {
-//            term = "Ø";
-//        }
-        return "Ø";
+        final String term;
+        if (this.object.get() == null) {
+            term = "Ø";
+        } else {
+            term = this.object.get().φTerm();
+        }
+        return term;
     }
 
     @Override
