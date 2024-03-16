@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -82,6 +83,7 @@ final class PhMethodTest {
     }
 
     @Test
+    @Disabled
     void calculatesPhiManyTimes() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");

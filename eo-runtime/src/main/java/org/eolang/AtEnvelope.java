@@ -61,4 +61,9 @@ public class AtEnvelope implements Attr {
     public String φTerm() {
         return this.origin.φTerm();
     }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
 }

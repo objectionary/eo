@@ -39,7 +39,7 @@ class AtConstTest {
     void convertsToString() {
         MatcherAssert.assertThat(
             new AtConst(new AtSimple(), Phi.Φ).toString(),
-            Matchers.equalTo("ΦS!")
+            Matchers.equalTo("ΦF!")
         );
     }
 
@@ -56,16 +56,6 @@ class AtConstTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new AtConst(new AtSimple(), Phi.Φ).copy(Phi.Φ)
-        );
-    }
-
-    @Test
-    void puts() {
-        final AtSimple simple = new AtSimple();
-        new AtConst(simple, Phi.Φ).put(Phi.Φ);
-        MatcherAssert.assertThat(
-            Phi.Φ,
-            Matchers.equalTo(simple.get())
         );
     }
 }

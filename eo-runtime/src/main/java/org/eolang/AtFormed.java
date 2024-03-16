@@ -55,7 +55,9 @@ public class AtFormed implements Attr {
 
     @Override
     public void put(Phi phi) {
-        throw new ExUnset("");
+        throw new ExReadOnly(
+            "Formed attribute is read only"
+        );
     }
 
     @Override

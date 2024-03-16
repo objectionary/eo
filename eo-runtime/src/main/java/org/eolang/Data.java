@@ -202,7 +202,7 @@ public interface Data<T> {
 
         @Override
         public String toString() {
-            return this.object.toString();
+            return String.format("D=%s", this.value.toString());
         }
 
         /**

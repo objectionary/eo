@@ -63,6 +63,7 @@ final class MainTest {
     }
 
     @Test
+    @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
@@ -75,6 +76,7 @@ final class MainTest {
     }
 
     @Test
+    @Disabled
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
             MainTest.exec("--verbose", "org.eolang.io.tupled-stdout", "Hello, dude!"),

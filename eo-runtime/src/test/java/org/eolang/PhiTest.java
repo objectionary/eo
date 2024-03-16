@@ -96,18 +96,11 @@ final class PhiTest {
     @Test
     void getsLocation() {
         MatcherAssert.assertThat(
-            new PhWith(
-                new PhLocated(
-                    new PhMethod(
-                        Phi.Φ,
-                        "x"
-                    ),
-                    123,
-                    56,
-                    "Φ.org.eolang$obj"
-                ),
-                "Δ",
-                new Data.Value<>("aaa")
+            new PhLocated(
+                Phi.Φ,
+                123,
+                56,
+                "Φ.org.eolang$obj"
             ).locator(),
             Matchers.equalTo("Φ.org.eolang$obj:123:56")
         );
