@@ -58,10 +58,6 @@ public final class EOint$EOplus extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        Phi rho = this.attr(Attr.RHO).get();
-        System.out.println(
-            new Param(this).strong(Long.class)
-        );
         return new Data.ToPhi(
             Long.sum(
                 new Param(this).strong(Long.class),

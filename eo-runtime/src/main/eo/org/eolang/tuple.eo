@@ -52,17 +52,19 @@
     i > idx!
     ^.length > len!
     if. > index!
-      idx.lt 0
-      len.plus idx
-      idx
+      i.lt 0
+      len.plus i
+      i
     if. > @
       or.
         index.lt 0
         index.gte len
       error "Given index is out of tuple bounds"
       if.
-        idx.lt ^.head.length
-        ^.head.at idx
+        lt.
+          index
+          len.plus -1
+        ^.head.at index
         ^.tail
 
   # Create a new tuple with this element added to the end of it.

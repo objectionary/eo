@@ -86,15 +86,9 @@ public final class EOcage extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
-            final Phi rho = this.attr(Attr.RHO).get();
             this.attr(Attr.RHO).get().attr("enclosure").put(
                 this.attr("x").get()
             );
-//            System.out.println(
-//                new Dataized(
-//                    this.attr(Attr.RHO).get().attr("enclosure").get()
-//                ).take(Long.class)
-//            );
             return new Data.ToPhi(true);
         }
     }

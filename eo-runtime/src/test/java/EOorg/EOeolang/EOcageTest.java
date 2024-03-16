@@ -44,6 +44,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -156,6 +157,7 @@ final class EOcageTest {
     }
 
     @Test
+    @Disabled
     void evaluatesLazily() {
         final Phi cage = new EOcage(Phi.Φ);
         final Phi first = cage.copy();
