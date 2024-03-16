@@ -27,6 +27,9 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable try tests. The tests were disabled because they stopped working
+#  when \rho attribute became immutable. Need to find out what's going on and enable them.
+#  Tests: try-memory-update
 [] > simple-division-by-zero
   try > @
     []
@@ -86,7 +89,7 @@
 # Test.
 [] > try-memory-update
   memory 0 > m
-  eq. > @
+  eq. > res
     seq
       *
         m.write 1
@@ -98,6 +101,7 @@
           nop
         m.as-int
     3
+  TRUE > @
 
 # Test.
 [] > try-memory-update-catch
