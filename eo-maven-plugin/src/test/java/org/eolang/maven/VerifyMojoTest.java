@@ -35,8 +35,9 @@ import org.cactoos.io.ResourceOf;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -70,7 +71,6 @@ final class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     @CaptureLogs
     void detectsErrorsSuccessfully(
         @TempDir final Path temp,
@@ -89,6 +89,11 @@ final class VerifyMojoTest {
             "Program with noname attributes should have failed or error, but it didn't"
         );
         final String message = this.getMessage(out, "Errors identified");
+        MatcherAssert.assertThat(
+            "Errors message should have program name and error line number",
+            message,
+            Matchers.matchesPattern(this.createRegEx(temp, "Errors identified"))
+        );
         Assertions.assertTrue(
             message.matches(this.createRegEx(temp, "Errors identified")),
             "Errors message should have program name and error line number"
@@ -99,7 +104,7 @@ final class VerifyMojoTest {
     @CaptureLogs
     void detectsCriticalErrorsSuccessfully(
         @TempDir final Path temp,
-        final Logs out) throws Exception {
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
