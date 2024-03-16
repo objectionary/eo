@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
 import org.eolang.AtMemoized;
+import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.PhDefault;
@@ -54,31 +55,12 @@ public final class EOmemory extends PhDefault implements Atom {
     public EOmemory(final Phi sigma) {
         super(sigma);
         this.add("enclosure", new AtMemoized());
-        this.add("write", new EOmemory.AtMemoryWrite(this));
+        this.add("write", new AtSimple(new Write(this)));
     }
 
     @Override
     public Phi lambda() {
         return this.attr("enclosure").get();
-    }
-
-    /**
-     * Memory.write attribute.
-     * @since 0.33.0
-     */
-    private static final class AtMemoryWrite extends AtAtom {
-        /**
-         * Ctor.
-         * @param memory The {@link EOmemory} object
-         */
-        AtMemoryWrite(final Phi memory) {
-            super(new EOmemory.Write(memory));
-        }
-
-        @Override
-        public Attr copy(final Phi self) {
-            return new AtMemoryWrite(self);
-        }
     }
 
     /**
@@ -98,7 +80,7 @@ public final class EOmemory extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
-            final Attr enclosure = this.attr("σ").get().attr("enclosure");
+            final Attr enclosure = this.attr(Attr.RHO).get().attr("enclosure");
             enclosure.put(this.attr("x").get());
             return enclosure.get();
         }

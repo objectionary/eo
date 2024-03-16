@@ -57,6 +57,7 @@ public final class EOint$EOgt extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        System.out.println(new Param(this).strong(Long.class));
         return new Data.ToPhi(
             new Param(this).strong(Long.class)
                 > new Param(this, "x").strong(Long.class)
