@@ -50,6 +50,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test case for {@link EOstdout}.
  * @since 0.1
+ * @todo #2931:30min Enable the test {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
+ *  The test was disabled after new rho logic was introduced and {@link org.eolang.PhConst} stopped
+ *  working properly. Need to enable the test when it's possible.
  */
 public final class EOstdoutTest {
     @Test
