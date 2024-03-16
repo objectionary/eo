@@ -130,7 +130,7 @@ final class PhWithTest {
          */
         DummyWithAtFree(final String attr, final Phi sigma) {
             super(sigma);
-            this.add(attr, new AtVoid());
+            this.add(attr, new AtFree());
         }
     }
 

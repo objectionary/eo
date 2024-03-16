@@ -29,7 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
 import org.eolang.AtCage;
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -98,7 +98,7 @@ public final class EOcage extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtVoid());
+            this.add("x", new AtFree());
         }
 
         @Override

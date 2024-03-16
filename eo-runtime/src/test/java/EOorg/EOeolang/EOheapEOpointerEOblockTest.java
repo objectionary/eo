@@ -29,7 +29,7 @@ package EOorg.EOeolang;
 
 import java.nio.charset.StandardCharsets;
 import org.eolang.AtComposite;
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -87,7 +87,7 @@ final class EOheapEOpointerEOblockTest {
          */
         Inverse(final Phi sigma) {
             super(sigma);
-            this.add("b", new AtVoid());
+            this.add("b", new AtFree());
             this.add(
                 "φ",
                 new AtComposite(

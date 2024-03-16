@@ -57,16 +57,10 @@
         index.lt 0
         index.gte len
       error "Given index is out of tuple bounds"
-      at-without-checks index
-
-    # Takes element from the tuple without index validation.
-    # Here `i` must be an object that can be comparable with `int` using `lt` attribute.
-    [i] > at-without-checks
-      i > idx!
-      if. > @
-        idx.lt head.length
-        ^.^.head.at.at-without-checks idx
-        ^.^.tail
+      if.
+        idx.lt ^.head.length
+        ^.head.at idx
+        ^.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

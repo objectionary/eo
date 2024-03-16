@@ -25,20 +25,14 @@
 package org.eolang;
 
 /**
- * Default attribute.
+ * Default attribute that just keeps single object.
  *
  * The class is NOT thread-safe.
  *
  * @since 0.1
  */
 @Versionized
-public final class AtSimple implements Attr {
-
-    /**
-     * Parent φ.
-     */
-    private Phi phi;
-
+public final class AtSimple extends AtEnvelope {
     /**
      * Ctor.
      */
@@ -48,34 +42,9 @@ public final class AtSimple implements Attr {
 
     /**
      * Ctor.
-     * @param src Source φ
+     * @param object Object that attribute keeps
      */
-    public AtSimple(final Phi src) {
-        this.phi = src;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%sS", this.phi.toString());
-    }
-
-    @Override
-    public String φTerm() {
-        return this.phi.φTerm();
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtSimple(new PhCopy(this.phi));
-    }
-
-    @Override
-    public Phi get() {
-        return this.phi;
-    }
-
-    @Override
-    public void put(final Phi src) {
-        this.phi = src;
+    public AtSimple(final Phi object) {
+        super(new AtFormed(() -> object));
     }
 }

@@ -25,7 +25,7 @@
 package org.eolang;
 
 /**
- * Attribute that is read-only.
+ * Attribute that ignores putting and copying.
  *
  * @since 0.1
  */
@@ -33,10 +33,13 @@ package org.eolang;
 final class AtFixed implements Attr {
 
     /**
-     * Origin.
+     * Phi that is fixed.
      */
     private final Phi fixed;
 
+    /**
+     * Attribute.
+     */
     private final Attr attr;
 
     /**

@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtAtom;
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Dataized;
@@ -54,7 +54,7 @@ public final class EOgoto extends PhDefault implements Atom {
      */
     public EOgoto(final Phi sigma) {
         super(sigma);
-        this.add("f", new AtVoid());
+        this.add("f", new AtFree());
     }
 
     @Override
@@ -173,7 +173,7 @@ public final class EOgoto extends PhDefault implements Atom {
          */
         Forward(final Phi sigma) {
             super(sigma);
-            this.add("ret", new AtVoid());
+            this.add("ret", new AtFree());
         }
 
         @Override

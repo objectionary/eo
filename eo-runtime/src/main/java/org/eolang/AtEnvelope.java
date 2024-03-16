@@ -22,44 +22,43 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtFree;
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * TIMES.
- *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * Wrapper for {@link Attr}.
+ * @since 0.36.0
  */
-@Versionized
-@XmirObject(oname = "int.times")
-public final class EOint$EOtimes extends PhDefault implements Atom {
+public class AtEnvelope implements Attr {
+    /**
+     * Original attribute.
+     */
+    private final Attr origin;
 
     /**
      * Ctor.
-     * @param sigma Sigma
+     * @param attr Attribute
      */
-    public EOint$EOtimes(final Phi sigma) {
-        super(sigma);
-        this.add("x", new AtFree());
+    public AtEnvelope(final Attr attr) {
+        this.origin = attr;
     }
 
     @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            new Param(this).strong(Long.class)
-                * new Param(this, "x").strong(Long.class)
-        );
+    public Attr copy(final Phi self) {
+        return this.origin.copy(self);
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

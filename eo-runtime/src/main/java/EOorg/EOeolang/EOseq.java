@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -53,7 +53,7 @@ public final class EOseq extends PhDefault implements Atom {
      */
     public EOseq(final Phi sigma) {
         super(sigma);
-        this.add("steps", new AtVoid());
+        this.add("steps", new AtFree());
     }
 
     @Override

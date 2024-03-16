@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -52,7 +52,7 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
      */
     public EObytes$EOconcat(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtVoid());
+        this.add("b", new AtFree());
     }
 
     @Override

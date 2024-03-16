@@ -172,7 +172,7 @@ public interface Data<T> {
 
         @Override
         public Phi copy() {
-            return this;
+            return this.object.copy();
         }
 
         @Override
@@ -215,8 +215,9 @@ public interface Data<T> {
             final Phi phi;
             byte[] bytes = new byte[0];
             final boolean delta;
+            final Phi eolang = Phi.Φ.attr("org").get().attr("eolang").get();
             if (obj instanceof Boolean) {
-                phi = new EObool(Phi.Φ);
+                phi = eolang.attr("bool").get().copy();
                 delta = false;
                 if (obj.equals(true)) {
                     bytes = new byte[] {0x01};
@@ -224,20 +225,20 @@ public interface Data<T> {
                     bytes = new byte[] {0x00};
                 }
             } else if (obj instanceof byte[]) {
-                phi = new EObytes(Phi.Φ);
+                phi = eolang.attr("bytes").get().copy();
                 delta = true;
             } else if (obj instanceof Long) {
-                phi = new EOint(Phi.Φ);
+                phi = eolang.attr("int").get().copy();
                 delta = false;
                 bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
-                phi = new EOstring(Phi.Φ);
+                phi = eolang.attr("string").get().copy();
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                phi = new EOfloat(Phi.Φ);
+                phi = eolang.attr("float").get().copy();
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
             } else {
@@ -251,7 +252,7 @@ public interface Data<T> {
             if (delta) {
                 phi.attr(Attr.DELTA).put(value);
             } else {
-                final Phi bts = new EObytes(Phi.Φ);
+                final Phi bts = eolang.attr("bytes").get().copy();
                 bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
                 phi.attr(0).put(bts);
             }

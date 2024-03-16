@@ -189,7 +189,6 @@ public abstract class PhDefault implements Phi, Cloneable {
             copy.form = this.form;
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            Attr attr;
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), new AtSetRho(ent.getValue().copy(copy), copy, ent.getKey()));
             }
@@ -239,26 +238,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     public final Attr attr(final String name) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
-        if ("ν".equals(name)) {
+        if (name.equals(Attr.VERTEX)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
         } else {
             attr = this.attrs.get(name);
         }
         if (attr == null) {
             if (this instanceof Atom) {
-                attr = new AtSimple(
-                    this.cached.get(
-                        name,
-                        new AtomSafe((Atom) this)::lambda
-                    ).attr(name).get()
-                );
+                attr = new AtomSafe((Atom) this).lambda().attr(name);
             } else if (this.attrs.containsKey(Attr.PHI)) {
-                attr = new AtSimple(
-                    this.cached.get(
-                        name,
-                        this.attrs.get(Attr.PHI)::get
-                    ).attr(name).get()
-                );
+                attr = this.attrs.get(Attr.PHI).get().attr(name);
             } else {
                 attr = new AtAbsent(
                     name,
@@ -272,12 +261,12 @@ public abstract class PhDefault implements Phi, Cloneable {
             }
         }
         attr = this.named(attr, name);
-        if (Attr.PHI.equals(name)) {
-            attr = new AtPhiSensitive(attr, this.cached);
-        }
-        if (this.getClass().isAnnotationPresent(Volatile.class)) {
-            this.cached.reset();
-        }
+//        if (Attr.PHI.equals(name)) {
+//            attr = new AtPhiSensitive(attr, this.cached);
+//        }
+//        if (this.getClass().isAnnotationPresent(Volatile.class)) {
+//            this.cached.reset();
+//        }
         attr = new AtSafe(attr);
         PhDefault.debug(
             String.format(

@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
+import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -52,7 +52,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
      */
     public EObytes$EOright(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtVoid());
+        this.add("x", new AtFree());
     }
 
     @Override
