@@ -83,9 +83,7 @@ public final class EOerror extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Phi enclosure = this.attr("α").get();
-        enclosure.attr("ρ").put(this);
-        throw new ExError(enclosure);
+        throw new ExError(this.attr("α").get());
     }
 
     /**
