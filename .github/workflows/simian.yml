@@ -24,4 +24,4 @@ jobs:
       - run: |
           wget --quiet http://public.yegor256.com/simian.jar -O /tmp/simian.jar
       - run: |
-          java -jar /tmp/simian.jar -threshold=30 -excludes=**/gen -excludes=**/it **/*.java
+          java -jar /tmp/simian.jar -threshold=20 -excludes=**/gen -excludes=**/it **/*.java
