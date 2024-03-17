@@ -48,6 +48,8 @@
   # @todo #2931:30min Return previous optimizations for the object.
   #  The optimization was removed because it does not work with new rho logic.
   #  Please check previous version of the object and try to implement it again.
+  #  Also we need to enable the tuple tests: at-without-checks-with-first-element,
+  #  at-without-checks-with-last-element
   [i] > at
     i > idx!
     ^.length > len!
