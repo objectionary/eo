@@ -50,7 +50,7 @@ final class AtFixed implements Attr {
      */
     AtFixed(final Phi phi) {
         this.fixed = phi;
-        this.attr = new AtSimple(fixed);
+        this.attr = new AtSimple(this.fixed);
     }
 
     @Override

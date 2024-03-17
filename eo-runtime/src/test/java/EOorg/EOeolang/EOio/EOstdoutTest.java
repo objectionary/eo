@@ -64,10 +64,10 @@ public final class EOstdoutTest {
         copy.attr(0).put(tuple.attr("empty").get());
         copy.attr(1).put(new Data.ToPhi("Hello"));
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final Phi at0 = copy.attr("at").get().copy();
-        at0.attr(0).put(new Data.ToPhi(0L));
+        final Phi ret = copy.attr("at").get().copy();
+        ret.attr(0).put(new Data.ToPhi(0L));
         final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream)).copy();
-        stdout.attr(0).put(at0);
+        stdout.attr(0).put(ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
             stream.toString(),

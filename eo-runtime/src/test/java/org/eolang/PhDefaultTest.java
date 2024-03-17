@@ -61,7 +61,6 @@ final class PhDefaultTest {
         );
     }
 
-
     @Test
     void comparesTwoCopies() {
         final Phi phi = new PhDefaultTest.Int();
@@ -104,13 +103,13 @@ final class PhDefaultTest {
     @Test
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi plus1 = phi.attr("plus").get();
-        final Phi plus2 = phi.copy().attr("plus").get();
+        final Phi first = phi.attr("plus").get();
+        final Phi second = phi.copy().attr("plus").get();
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
-            plus1,
+            first,
             Matchers.not(
-                Matchers.equalTo(plus2)
+                Matchers.equalTo(second)
             )
         );
     }
@@ -139,13 +138,13 @@ final class PhDefaultTest {
     @Test
     void hasDifferentKidsAfterDoubleCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi copy1 = phi.copy();
-        final Phi copy2 = copy1.copy();
+        final Phi first = phi.copy();
+        final Phi second = first.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
-            copy1.attr("plus").get(),
+            first.attr("plus").get(),
             Matchers.not(
-                Matchers.equalTo(copy2.attr("plus").get())
+                Matchers.equalTo(second.attr("plus").get())
             )
         );
     }
@@ -153,20 +152,20 @@ final class PhDefaultTest {
     @Test
     void doesNotChangeRhoAfterDoubleCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi copy1 = phi.copy();
-        final Phi copy2 = copy1.copy();
+        final Phi first = phi.copy();
+        final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format("%s attribute should not be changed after double copying", Attr.RHO),
-            copy1.attr("plus").get().attr(Attr.RHO).get(),
-            Matchers.equalTo(copy2.attr("plus").get().attr(Attr.RHO).get())
+            first.attr("plus").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(second.attr("plus").get().attr(Attr.RHO).get())
         );
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of second copy kid should be equal to first copy",
                 Attr.RHO
             ),
-            copy2.attr("plus").get().attr(Attr.RHO).get(),
-            Matchers.equalTo(copy1)
+            second.attr("plus").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(first)
         );
     }
 
@@ -174,16 +173,16 @@ final class PhDefaultTest {
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi copy = phi.copy();
-        final Phi plus1 = copy.attr("plus").get();
-        final Phi plus2 = plus1.copy();
+        final Phi first = copy.attr("plus").get();
+        final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
                 Attr.RHO
             ),
-            plus1.attr(Attr.RHO).get(),
+            first.attr(Attr.RHO).get(),
             Matchers.equalTo(
-                plus2.attr(Attr.RHO).get()
+                second.attr(Attr.RHO).get()
             )
         );
     }
@@ -402,14 +401,28 @@ final class PhDefaultTest {
             super(Phi.Φ);
             this.add("void", new AtFree());
             this.add("plus", new AtSimple(new Plus(this)));
-            this.add(Attr.PHI, new AtOnce(new AtComposite(
-                this, rho -> rho.attr("void").get())
-            ));
-            this.add("context", new AtOnce(new AtComposite(this, rho -> {
-                final Phi plus = new Data.ToPhi(5L).attr("plus").get().copy();
-                plus.attr(0).put(new Data.ToPhi(6L));
-                return plus;
-            })));
+            this.add(
+                Attr.PHI,
+                new AtOnce(
+                    new AtComposite(
+                    this,
+                        rho -> rho.attr("void").get()
+                    )
+                )
+            );
+            this.add(
+                "context",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        rho -> {
+                            final Phi plus = new Data.ToPhi(5L).attr("plus").get().copy();
+                            plus.attr(0).put(new Data.ToPhi(6L));
+                            return plus;
+                        }
+                    )
+                )
+            );
         }
     }
 
@@ -465,10 +478,15 @@ final class PhDefaultTest {
          */
         Dummy(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtFormed(() -> {
-                ++PhDefaultTest.Dummy.count;
-                return new Data.ToPhi(1L);
-            }));
+            this.add(
+                Attr.PHI,
+                new AtFormed(
+                    () -> {
+                        ++PhDefaultTest.Dummy.count;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
         }
     }
 
@@ -488,10 +506,15 @@ final class PhDefaultTest {
          */
         Counter(final Phi sigma) {
             super(sigma);
-            this.add("φ", new AtFormed(() -> {
-                ++this.count;
-                return new Data.ToPhi(new byte[] {(byte) 0x01});
-            }));
+            this.add(
+                Attr.PHI,
+                new AtFormed(
+                    () -> {
+                        ++this.count;
+                        return new Data.ToPhi(new byte[] {(byte) 0x01});
+                    }
+                )
+            );
             this.add("count", new AtFormed(() -> new Data.ToPhi(this.count)));
         }
     }
@@ -508,7 +531,7 @@ final class PhDefaultTest {
         Kid(final Phi sigma) {
             super(sigma);
             this.add("z", new AtFree());
-            this.add("φ", new AtSimple(new EOstdout(Phi.Φ)));
+            this.add(Attr.PHI, new AtSimple(new EOstdout(Phi.Φ)));
         }
     }
 
@@ -529,7 +552,7 @@ final class PhDefaultTest {
         EndlessRecursion(final Phi sigma) {
             super(sigma);
             this.add(
-                "φ",
+                Attr.PHI,
                 new AtComposite(
                     this,
                     self -> {

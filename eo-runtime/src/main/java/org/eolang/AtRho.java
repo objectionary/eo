@@ -27,7 +27,7 @@ package org.eolang;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * \Rho attribute.
+ * Special attribute for \rho.
  * The attribute can be set only once, and it ignores all other puts.
  * When attribute is copied, the \rho inside isn't copied.
  * It allows to have the same \rho if objects were copied recursively:
@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  * @since 0.36.0
  */
-public class AtRho implements Attr {
+public final class AtRho implements Attr {
     /**
      * Rho.
      */
@@ -73,7 +73,9 @@ public class AtRho implements Attr {
     @Override
     public Phi get() {
         if (this.rho.get() == null) {
-            throw new ExUnset("");
+            throw new ExUnset(
+                String.format("%s attribute is not set", Attr.RHO)
+            );
         }
         return this.rho.get();
     }

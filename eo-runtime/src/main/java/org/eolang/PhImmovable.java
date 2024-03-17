@@ -32,15 +32,12 @@ package org.eolang;
  *  I believe it was introduced in the days when the {@link Phi} object has method "move" which
  *  changes \rho attribute. Now rho attribute is immutable and can't be "moved". So we have to
  *  to decide if we need this class anymore.
- *  The method {@link PhImmovable#attr(String)} looked like: <p>
- *  {@code
+ *  The method {@link PhImmovable#attr(String)} looked like:
  *  Attr val = this.origin.attr(attr);
  *  if ("ρ".equals(attr)) {
  *     val = new AtFixed(val);
- *  }
  *  return val;
- *  Now this code is not compilable, so it was changed
- *  </p>
+ *  Now this code is not compilable, so it was changed.
  */
 @Versionized
 final class PhImmovable implements Phi {

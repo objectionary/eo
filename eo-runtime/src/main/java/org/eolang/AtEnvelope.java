@@ -27,8 +27,9 @@ package org.eolang;
 /**
  * Wrapper for {@link Attr}.
  * @since 0.36.0
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
-public class AtEnvelope implements Attr {
+public abstract class AtEnvelope implements Attr {
     /**
      * Original attribute.
      */

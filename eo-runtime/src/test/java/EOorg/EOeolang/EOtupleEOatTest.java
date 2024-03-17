@@ -110,31 +110,6 @@ final class EOtupleEOatTest {
         );
     }
 
-    private static class Parenting extends PhDefault {
-        Parenting(final Phi sigma) {
-            super(sigma);
-            this.add("args", new AtFree());
-            this.add("take", new AtSimple(new Take(this)));
-            this.add(Attr.PHI, new AtOnce(
-                new AtComposite(this, (rho) -> new PhMethod(rho, "take"))
-            ));
-        }
-    }
-
-    private static class Take extends PhDefault {
-        Take(final Phi sigma) {
-            super(sigma);
-            this.add(Attr.PHI, new AtComposite(this, (rho) -> {
-                final Phi at0 = rho.attr(Attr.RHO).get()
-                    .attr("args").get()
-                    .attr("at").get()
-                    .copy();
-                at0.attr(0).put(new Data.ToPhi(0L));
-                return at0;
-            }));
-        }
-    }
-
     private Phi get(final long index) {
         final String first = "first";
         final String second = "second";
@@ -149,5 +124,47 @@ final class EOtupleEOatTest {
         final Phi get = tuple.attr("at").get().copy();
         get.attr(0).put(idx);
         return get;
+    }
+
+    /**
+     * Parenting.
+     * @since 0.36.0
+     */
+    private static class Parenting extends PhDefault {
+        Parenting(final Phi sigma) {
+            super(sigma);
+            this.add("args", new AtFree());
+            this.add("take", new AtSimple(new Take(this)));
+            this.add(
+                Attr.PHI,
+                new AtOnce(
+                    new AtComposite(this, rho -> new PhMethod(rho, "take"))
+                )
+            );
+        }
+    }
+
+    /**
+     * Take.
+     * @since 0.36.0
+     */
+    private static class Take extends PhDefault {
+        Take(final Phi sigma) {
+            super(sigma);
+            this.add(
+                Attr.PHI,
+                new AtComposite(
+                    this,
+                    rho -> {
+                        final Phi ret = rho.attr(Attr.RHO).get()
+                            .attr("args").get()
+                            .attr("at").get()
+                            .copy();
+                        ret.attr(0).put(new Data.ToPhi(0L));
+                        return ret;
+                    }
+                )
+            );
+        }
     }
 }
