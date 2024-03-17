@@ -55,7 +55,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.19
  * @todo #2931:30min Resolve test {@link EOcageTest#evaluatesLazily}. This test stopped working
  *  after introducing new rho logic. Need to decide either we can remove the test or we can resolve
- *  it somehow
+ *  it somehow.
  */
 final class EOcageTest {
 
