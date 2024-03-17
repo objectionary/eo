@@ -40,6 +40,9 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Main}.
  *
  * @since 0.1
+ * @todo #2931:30min Enable all disabled test in the class. The tests were disabled because object
+ *  tupled-stdout.eo was removed from eo-runtime tests because it wasn't working in CI.
+ *  Need to refactor them and enable.
  */
 final class MainTest {
 
