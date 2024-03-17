@@ -55,7 +55,7 @@
     ^.length > len!
     if. > index!
       idx.lt 0
-      len.plus i
+      len.plus idx
       idx
     if. > @
       or.
