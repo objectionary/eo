@@ -27,6 +27,14 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable or remove bool tests. Object bool.while stopped working properly when
+#  \rho attribute became immutable. Need to either remove the tests or refactor and enable them.
+#  Tests: iterates-over-simple-counter, complex-bool-expression-in-while,
+#  last-while-dataization-object, while-without-last-dataization,
+#  last-while-dataization-object-with-false-condition,
+#  iterating-tuple-with-while-using-internal-iterator,
+#  iterating-tuple-with-while-using-external-iterator,
+#  iterating-tuple-with-while-without-body-multiple, iterating-tuple-with-while-without-body-single
 [] > compares-two-bools
   eq. > @
     TRUE
@@ -49,9 +57,6 @@
     42
 
 # Test.
-# @todo #2931:30min Enable or remove the test "iterates-over-simple-counter". Object bool.while
-#  stopped working properly when \rho attribute became immutable. Need to either remove the test or
-#  refactor and enable it
 [] > iterates-over-simple-counter
   memory 0 > x
   and. > res
@@ -86,10 +91,6 @@
     00-.as-bytes.eq FALSE
 
 # Test.
-# @todo #2437:30min Enable the test. After getting rid of delta attributes in data primitives
-#  this test started to execute infinitely long while other tests with "bool.while" are executed
-#  without any troubles. Need to find what's the problem and make the test enable again. Don't
-#  forget to remove the puzzle.
 [] > complex-bool-expression-in-while
   memory 0 > m
   seq > res
@@ -109,9 +110,6 @@
   nop > @
 
 # Test.
-# @todo #2931:30min Enable or remove the test "last-while-dataization-object". Object bool.while
-#  stopped working properly when \rho attribute became immutable. Need to either remove the test or
-#  refactor and enable it
 [] > last-while-dataization-object
   memory 0 > x
   eq. > res
@@ -126,9 +124,6 @@
   nop > @
 
 # Test.
-# @todo #2931:30min Enable or remove the test "while-without-last-dataization". Object bool.while
-#  stopped working properly when \rho attribute became immutable. Need to either remove the test or
-#  refactor and enable it
 [] > while-without-last-dataization
   memory 0 > x
   eq. > res
@@ -145,9 +140,6 @@
   nop > @
 
 # Test.
-# @todo #2931:30min Enable or remove the test "last-while-dataization-object-with-false-condition".
-#  Object bool.while stopped working properly when \rho attribute became immutable.
-#  Need to either remove the test or refactor and enable it
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
   eq. > res
@@ -162,9 +154,6 @@
   nop > @
 
 # Test.
-# @todo #2931:30min Enable or remove the test "iterating-tuple-with-while-using-internal-iterator".
-#  Object bool.while stopped working properly when \rho attribute became immutable.
-#  Need to either remove the test or refactor and enable it
 [] > iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
   memory 0 > iter
@@ -194,9 +183,6 @@
   nop > @
 
 # Test.
-# @todo #2785:60min Enable this test. For some reason this test fails. The only difference between
-#  this test and `iterating-tuple-with-while-using-internal-iterator` is that this test uses
-#  external iterator inside instead of standard `i` from `while` body.
 [] > iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
   memory 0 > iter
@@ -226,9 +212,6 @@
   TRUE > @
 
 # Test.
-# @todo #2931:30min Enable or remove the test "iterating-tuple-with-while-without-body-multiple".
-#  Object bool.while stopped working properly when \rho attribute became immutable.
-#  Need to either remove the test or refactor and enable it
 [] > iterating-tuple-with-while-without-body-multiple
   * 1 1 1 1 > arr
   memory 0 > iter
@@ -257,9 +240,6 @@
   nop > @
 
 # Test.
-# @todo #2437:60min Enable the test. For some reason this test fails. The only difference between
-#  this test and `iterating-tuple-with-while-without-body-multiple` is that in this test tuple
-#  consists of only one element.
 [] > iterating-tuple-with-while-without-body-single
   * 1 > arr
   memory 0 > iter
