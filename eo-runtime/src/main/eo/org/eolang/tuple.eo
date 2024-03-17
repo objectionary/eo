@@ -54,9 +54,9 @@
     i > idx!
     ^.length > len!
     if. > index!
-      i.lt 0
+      idx.lt 0
       len.plus i
-      i
+      idx
     if. > @
       or.
         index.lt 0
