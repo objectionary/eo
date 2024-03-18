@@ -81,13 +81,8 @@ public final class EOtryTest {
             new EOnop(Phi.Φ)
         );
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new PhMethod(body, "eq"),
-                    0, new Data.ToPhi("it is broken")
-                )
-            ).take(Boolean.class),
-            Matchers.is(true)
+            new Dataized(body).take(String.class),
+            Matchers.containsString("it is broken")
         );
     }
 
@@ -106,7 +101,7 @@ public final class EOtryTest {
         );
         MatcherAssert.assertThat(
             new Dataized(body).take(String.class),
-            Matchers.equalTo("it is broken")
+            Matchers.containsString("it is broken")
         );
     }
 

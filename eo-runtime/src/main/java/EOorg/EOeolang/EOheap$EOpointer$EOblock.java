@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtAtom;
 import org.eolang.AtFree;
+import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -58,41 +59,21 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
         super(sigma);
         this.add("len", new AtFree());
         this.add("inverse", new AtFree());
-        this.add("write", new AtWrite(this));
+        this.add("write", new AtSimple(new Write(this)));
     }
 
     @Override
     public Phi lambda() {
-        final Phi pointer = this.attr("σ").get();
-        final int address =
-            new Param(pointer, "address").strong(Long.class).intValue();
+        final Phi pointer = this.attr(Attr.RHO).get();
+        final int address = new Param(pointer, "address").strong(Long.class).intValue();
         final int len = new Param(this, "len").strong(Long.class).intValue();
         final byte[] chunk = Arrays.copyOfRange(
             Heaps.INSTANCE.get().data(pointer),
             address, address + len
         );
         final Phi inverse = this.attr("inverse").get().copy();
-        inverse.attr("ρ").put(this);
+        inverse.attr(Attr.RHO).put(this);
         return new PhWith(inverse, 0, new Data.ToPhi(chunk));
-    }
-
-    /**
-     * Head.pointer.block.write attribute.
-     * @since 0.33.0
-     */
-    private static final class AtWrite extends AtAtom {
-        /**
-         * Ctor.
-         * @param block The {@link EOheap$EOpointer$EOblock} object
-         */
-        AtWrite(final Phi block) {
-            super(new EOheap$EOpointer$EOblock.Write(block));
-        }
-
-        @Override
-        public Attr copy(final Phi self) {
-            return new AtWrite(self);
-        }
     }
 
     /**
@@ -112,10 +93,9 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
-            final Phi block = this.attr("σ").get();
-            final Phi pointer = block.attr("σ").get();
-            final int address =
-                new Param(pointer, "address").strong(Long.class).intValue();
+            final Phi block = this.attr(Attr.RHO).get();
+            final Phi pointer = block.attr(Attr.RHO).get();
+            final int address = new Param(pointer, "address").strong(Long.class).intValue();
             final byte[] source = new Param(this, "x").strong(byte[].class);
             final byte[] data = Heaps.INSTANCE.get().data(pointer);
             System.arraycopy(source, 0, data, address, source.length);

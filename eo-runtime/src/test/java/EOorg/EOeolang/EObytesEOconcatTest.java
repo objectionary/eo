@@ -46,18 +46,18 @@ final class EObytesEOconcatTest {
 
     @Test
     void concatenatesBytes() {
-        final Phi current = new EOstring$EOas_bytes(new Data.ToPhi("привет "));
-        final Phi provided = new EOstring$EOas_bytes(new Data.ToPhi("mr. ㄤㄠ!"));
+        final Phi current = new Data.ToPhi("привет ").attr("as-bytes").get();
+        final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").attr("as-bytes").get();
         final Phi phi = new PhMethod(
             new PhWith(
-                new EObytes$EOconcat(current),
+                current.attr("concat").get().copy(),
                 "b",
                 provided
             ),
             "as-string"
         );
         MatcherAssert.assertThat(
-            new Dataized(phi.copy()).take(String.class),
+            new Dataized(phi).take(String.class),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );
     }

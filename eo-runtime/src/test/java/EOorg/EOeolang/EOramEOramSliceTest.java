@@ -66,24 +66,16 @@ final class EOramEOramSliceTest {
         final int len,
         final String result
     ) throws IOException {
-        final Phi ref = new PhWith(new EOram(Phi.Φ), 0, new Data.ToPhi(total));
-        Ram.INSTANCE.write(ref, wrt, data.getBytes(StandardCharsets.UTF_8));
-        final Phi slice = new PhMethod(ref, "slice");
-        final Phi phi = new PhWith(
-            new PhWith(
-                slice,
-                "position",
-                new Data.ToPhi((long) rdr)
-            ),
-            "size",
-            new Data.ToPhi((long) len)
-        );
-        final byte[] bytes = new Dataized(phi).take(byte[].class);
+        final Phi ram = new EOram(Phi.Φ).copy();
+        ram.attr(0).put(new Data.ToPhi(total));
+        Ram.INSTANCE.write(ram, wrt, data.getBytes(StandardCharsets.UTF_8));
+        final Phi slice = ram.attr("slice").get().copy();
+        slice.attr("position").put(new Data.ToPhi((long) rdr));
+        slice.attr("size").put(new Data.ToPhi((long) len));
+        final byte[] bytes = new Dataized(slice).take(byte[].class);
         MatcherAssert.assertThat(
             new String(bytes, StandardCharsets.UTF_8),
-            Matchers.is(
-                result
-            )
+            Matchers.is(result)
         );
     }
 

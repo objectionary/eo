@@ -116,8 +116,8 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new ArrayList<>(0);
-        this.add("ρ", new AtSimple(sigma));
-        this.add("σ", new AtFixed(new AtSimple(sigma)));
+        this.add(Attr.RHO, new AtRho());
+        this.add(Attr.SIGMA, new AtFixed(sigma));
     }
 
     @Override
@@ -190,7 +190,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
+                map.put(ent.getKey(), new AtSetRho(ent.getValue().copy(copy), copy, ent.getKey()));
             }
             copy.attrs = map;
             return copy;
@@ -238,22 +238,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     public final Attr attr(final String name) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
-        if ("ν".equals(name)) {
+        if (name.equals(Attr.VERTEX)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
         } else {
             attr = this.attrs.get(name);
         }
         if (attr == null) {
-            final Phi found;
             if (this instanceof Atom) {
-                found = this.cached.get(name, new AtomSafe((Atom) this)::lambda).attr(name).get();
-                found.attr("ρ").put(this);
-                attr = new AtSimple(found);
+                attr = new AtomSafe((Atom) this).lambda().attr(name);
             } else if (this.attrs.containsKey(Attr.PHI)) {
-                final Attr aphi = this.attrs.get(Attr.PHI);
-                found = this.cached.get(name, aphi::get).attr(name).get();
-                found.attr("ρ").put(this);
-                attr = new AtSimple(found);
+                attr = this.attr(Attr.PHI).get().attr(name);
             } else {
                 attr = new AtAbsent(
                     name,
@@ -266,14 +260,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 );
             }
         }
-        attr = this.named(attr, name);
-        if (Attr.PHI.equals(name)) {
-            attr = new AtPhiSensitive(attr, this.cached);
-        }
-        if (this.getClass().isAnnotationPresent(Volatile.class)) {
-            this.cached.reset();
-        }
-        attr = new AtSafe(attr);
+        attr = new AtSafe(this.named(attr, name));
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",

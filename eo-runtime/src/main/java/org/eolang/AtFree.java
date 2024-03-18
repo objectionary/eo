@@ -24,10 +24,10 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Free attribute.
+ * Void attribute.
  *
  * The attribute is not yet set, but can be set. It's writable, but
  * only once.
@@ -37,82 +37,63 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Versionized
 public final class AtFree implements Attr {
     /**
-     * Origin.
+     * Object that attribute keeps.
      */
-    private final Attr origin;
-
-    /**
-     * If this is set.
-     */
-    private final AtomicBoolean set;
+    private final AtomicReference<Phi> object;
 
     /**
      * Ctor.
      */
     public AtFree() {
-        this(new AtSimple());
+        this(null);
     }
 
     /**
-     * Ctor.
-     * @param phi Enclosing phi
+     * Ctor for copying.
+     * @param phi Object
      */
-    public AtFree(final Phi phi) {
-        this(new AtSimple(phi));
-    }
-
-    /**
-     * Ctor.
-     * @param attr Attribute
-     */
-    public AtFree(final Attr attr) {
-        this(attr, false);
-    }
-
-    /**
-     * Ctor.
-     * @param attr Attribute
-     * @param used If the attribute is set
-     */
-    public AtFree(final Attr attr, final boolean used) {
-        this(attr, new AtomicBoolean(used));
-    }
-
-    /**
-     * Ctor.
-     * @param attr Attribute
-     * @param used If the attribute is set
-     */
-    public AtFree(final Attr attr, final AtomicBoolean used) {
-        this.origin = attr;
-        this.set = used;
+    private AtFree(final Phi phi) {
+        this.object = new AtomicReference<>(phi);
     }
 
     @Override
     public String toString() {
-        return String.format("%sF", this.origin.toString());
+        final String term;
+        if (this.object.get() == null) {
+            term = "Ø";
+        } else {
+            term = String.format("%sV", this.object.get().toString());
+        }
+        return term;
     }
 
     @Override
     public String φTerm() {
         final String term;
-        if (this.set.get()) {
-            term = this.origin.φTerm();
-        } else {
+        if (this.object.get() == null) {
             term = "Ø";
+        } else {
+            term = this.object.get().φTerm();
         }
         return term;
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFree(this.origin.copy(self), new AtomicBoolean(this.set.get()));
+        final Phi obj = this.object.get();
+        final Phi copy;
+        if (obj == null) {
+            copy = null;
+        } else {
+            copy = obj.copy();
+        }
+        return new AtFree(copy);
     }
 
     @Override
     public Phi get() {
-        final Phi phi = this.origin.get();
-        if (phi.equals(Phi.Φ)) {
+        final Phi phi = this.object.get();
+        if (phi == null) {
             throw new ExUnset(
                 "The attribute is not initialized, can't read"
             );
@@ -122,11 +103,11 @@ public final class AtFree implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        if (this.set.compareAndSet(false, true)) {
-            this.origin.put(phi);
+        if (this.object.get() == null) {
+            this.object.set(phi);
         } else {
             throw new ExReadOnly(
-                "This free attribute is already set, can't reset"
+                "This void attribute is already set, can't reset"
             );
         }
     }

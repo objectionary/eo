@@ -28,6 +28,16 @@ package org.eolang;
  * An object that ignores all moves.
  *
  * @since 0.23
+ * @todo #2931:30min Decide if we need this class. Looks like this class is redundant.
+ *  I believe it was introduced in the days when the {@link Phi} object has method "move" which
+ *  changes \rho attribute. Now rho attribute is immutable and can't be "moved". So we have to
+ *  to decide if we need this class anymore.
+ *  The method {@link PhImmovable#attr(String)} looked like:
+ *  Attr val = this.origin.attr(attr);
+ *  if ("ρ".equals(attr)) {
+ *     val = new AtFixed(val);
+ *  return val;
+ *  Now this code is not compilable, so it was changed.
  */
 @Versionized
 final class PhImmovable implements Phi {
@@ -78,11 +88,7 @@ final class PhImmovable implements Phi {
 
     @Override
     public Attr attr(final String attr) {
-        Attr val = this.origin.attr(attr);
-        if ("ρ".equals(attr)) {
-            val = new AtFixed(val);
-        }
-        return val;
+        return this.origin.attr(attr);
     }
 
     @Override

@@ -22,35 +22,49 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+package org.eolang;
 
 /**
- * Test case for {@link EOstring}.
- *
- * @since 0.17
- * @checkstyle TypeNameCheck (4 lines)
+ * Wrapper for {@link Attr}.
+ * @since 0.36.0
+ * @checkstyle DesignForExtensionCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOstringEOasBytesTest {
+public abstract class AtEnvelope implements Attr {
+    /**
+     * Original attribute.
+     */
+    private final Attr origin;
 
-    @Test
-    void convertsStringToBytes() {
-        final Phi str = new Data.ToPhi("Hello, друг!");
-        final Phi phi = str.attr("as-bytes").get();
-        MatcherAssert.assertThat(
-            new Dataized(phi).take(byte[].class).length,
-            Matchers.equalTo(16)
-        );
+    /**
+     * Ctor.
+     * @param attr Attribute
+     */
+    public AtEnvelope(final Attr attr) {
+        this.origin = attr;
     }
 
+    @Override
+    public Attr copy(final Phi self) {
+        return this.origin.copy(self);
+    }
+
+    @Override
+    public Phi get() {
+        return this.origin.get();
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
+    }
+
+    @Override
+    public String φTerm() {
+        return this.origin.φTerm();
+    }
+
+    @Override
+    public String toString() {
+        return this.origin.toString();
+    }
 }

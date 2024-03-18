@@ -24,76 +24,71 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
- * Attribute that constructs object lazily.
- * The attribute depends on context (argument of lambda expression).
- *
- * @since 0.1
+ * Special attribute for \rho.
+ * The attribute can be set only once, and it ignores all other puts.
+ * When attribute is copied, the \rho inside isn't copied.
+ * It allows to have the same \rho if objects were copied recursively:
+ * <p>
+ * {@code
+ * [] > x
+ *   [] > y
+ * x.y.^ # absent
+ * x' > x1
+ * x1.y.^ # refers to x1
+ * x1' > x2
+ * x2.y.^ # refers to x1
+ * }
+ * </p>
+ * @since 0.36.0
  */
-@Versionized
-public final class AtComposite implements Attr {
-
+public final class AtRho implements Attr {
     /**
-     * The \rho to send to the expression.
+     * Rho.
      */
-    private final Phi rho;
-
-    /**
-     * The expression itself.
-     */
-    private final Expr expr;
+    private final AtomicReference<Phi> rho;
 
     /**
      * Ctor.
-     * @param obj The \rho
-     * @param exp The expression
      */
-    public AtComposite(final Phi obj, final Expr exp) {
-        this.rho = obj;
-        this.expr = exp;
+    public AtRho() {
+        this(null);
     }
 
-    @Override
-    public String toString() {
-        return this.φTerm();
-    }
-
-    @Override
-    public String φTerm() {
-        return Attr.LAMBDA;
+    /**
+     * Ctor.
+     * @param rho Rho.
+     */
+    private AtRho(final Phi rho) {
+        this.rho = new AtomicReference<>(rho);
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(self, this.expr);
+        return new AtRho(this.rho.get());
     }
 
     @Override
     public Phi get() {
-        try {
-            return this.expr.get(this.rho);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
-            throw new ExFailure(
-                String.format(
-                    "Unexpected error '%s' of type %s",
-                    ex.getMessage(),
-                    ex.getClass().getSimpleName()
-                ),
-                ex
+        if (this.rho.get() == null) {
+            throw new ExUnset(
+                String.format("%s attribute is not set", Attr.RHO)
             );
         }
+        return this.rho.get();
     }
 
     @Override
     public void put(final Phi phi) {
-        throw new ExReadOnly(
-            "You can't overwrite lambda expression"
-        );
+        if (this.rho.get() == null) {
+            this.rho.set(phi);
+        }
+    }
+
+    @Override
+    public String φTerm() {
+        return null;
     }
 }
