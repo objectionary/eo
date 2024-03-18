@@ -58,7 +58,7 @@ emptyBinding
     ;
 
 deltaBidning
-    : DELTA DASHED_ARROW BYTES
+    : DELTA DASHED_ARROW (BYTES | EMPTY)
     ;
 
 lambdaBidning
