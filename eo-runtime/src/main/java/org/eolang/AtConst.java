@@ -96,7 +96,9 @@ final class AtConst implements Attr {
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                this.cache.set(this.origin.get());
+                this.cache.set(
+                    new PhFakeRho(this.origin.get(), this.rho)
+                );
             }
         }
         return this.cache.get();
