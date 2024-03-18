@@ -24,37 +24,58 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
-
 /**
- * The attribute that catches {@link ExFailure} and
- * throws {@link EOerror.ExError}.
- * Every time attribute is taken from an object (when method {@link PhDefault#attr(String)}
- * is called) - this attribute is being wrapped by this {@link AtSafe}.
- * It allows to catch {@link ExFailure} inside encapsulated attributes and transform them into
- * {@link EOerror.ExError} which is cached by {@link EOorg.EOeolang.EOtry} lately.
- *
- * @since 0.26
+ * Attribute that tries to set \rho to retrieved object.
+ * Attribute does not set \rho if retrieved object is \rho or \sigma.
+ * Since every \rho attribute of {@link Phi} is {@link AtRho} it won't be
+ * reset because {@link AtRho} ignores all puts except first.
+ * @since 0.36.0
  */
-@Versionized
-public final class AtSafe implements Attr {
-
+public final class AtSetRho implements Attr {
     /**
-     * Origin attribute.
+     * Original attribute.
      */
     private final Attr origin;
 
     /**
+     * Rho to put.
+     */
+    private final Phi rho;
+
+    /**
+     * Name of the attribute to get.
+     */
+    private final String name;
+
+    /**
      * Ctor.
      * @param attr Origin attribute
+     * @param rho Rho that will be set
+     * @param name Name of the attribute
      */
-    public AtSafe(final Attr attr) {
+    public AtSetRho(final Attr attr, final Phi rho, final String name) {
         this.origin = attr;
+        this.rho = rho;
+        this.name = name;
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public Attr copy(final Phi self) {
+        return new AtSetRho(this.origin.copy(self), self, this.name);
+    }
+
+    @Override
+    public Phi get() {
+        final Phi ret = this.origin.get();
+        if (!this.name.equals(Attr.RHO) && !this.name.equals(Attr.SIGMA)) {
+            ret.attr(Attr.RHO).put(this.rho);
+        }
+        return ret;
+    }
+
+    @Override
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 
     @Override
@@ -63,28 +84,7 @@ public final class AtSafe implements Attr {
     }
 
     @Override
-    public Attr copy(final Phi self) {
-        return new AtSafe(this.origin.copy(self));
-    }
-
-    @Override
-    public Phi get() {
-        Phi phi;
-        try {
-            phi = this.origin.get();
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
-        if (!(phi instanceof Data)) {
-            phi = new PhSafe(phi);
-        }
-        return phi;
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
+    public String toString() {
+        return this.origin.toString();
     }
 }

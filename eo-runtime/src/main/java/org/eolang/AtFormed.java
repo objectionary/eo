@@ -24,54 +24,48 @@
 
 package org.eolang;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Attribute that constructs object lazily.
- * The attribute depends on context (argument of lambda expression).
- *
- * @since 0.1
+ * The main difference between this attribute and {@link AtComposite} is
+ * it does not depend on context. It means that every new copy of the attribute
+ * is linked to the origin one (which was initialized first).
+ * @since 0.36.0
  */
-@Versionized
-public final class AtComposite implements Attr {
+public final class AtFormed implements Attr {
+    /**
+     * Object.
+     */
+    private final AtomicReference<Phi> object;
 
     /**
-     * The \rho to send to the expression.
+     * Callback to retrieve object.
      */
-    private final Phi rho;
-
-    /**
-     * The expression itself.
-     */
-    private final Expr expr;
+    private final Callable<Phi> callback;
 
     /**
      * Ctor.
-     * @param obj The \rho
-     * @param exp The expression
+     * @param func Callback to retrieve object.
      */
-    public AtComposite(final Phi obj, final Expr exp) {
-        this.rho = obj;
-        this.expr = exp;
-    }
-
-    @Override
-    public String toString() {
-        return this.φTerm();
-    }
-
-    @Override
-    public String φTerm() {
-        return Attr.LAMBDA;
+    public AtFormed(final Callable<Phi> func) {
+        this.callback = func;
+        this.object = new AtomicReference<>(null);
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtComposite(self, this.expr);
+        return new AtFormed(() -> this.get().copy());
     }
 
     @Override
     public Phi get() {
         try {
-            return this.expr.get(this.rho);
+            if (this.object.get() == null) {
+                this.object.set(this.callback.call());
+            }
+            return this.object.get();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
@@ -93,7 +87,17 @@ public final class AtComposite implements Attr {
     @Override
     public void put(final Phi phi) {
         throw new ExReadOnly(
-            "You can't overwrite lambda expression"
+            "Formed attribute is read only"
         );
+    }
+
+    @Override
+    public String φTerm() {
+        return this.get().φTerm();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%sF", this.get().toString());
     }
 }

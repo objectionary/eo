@@ -52,20 +52,20 @@
 
   # Multiplication of $ and x.
   [x] > times
-    ^ > @
+    & > @
 
   # Sum of $ and x.
   [x] > plus
-    ^ > @
+    & > @
 
   # Negation of $.
   [] > neg
-    ^ > @
+    & > @
 
   # Difference between $ and x.
   [x] > minus
-    ^ > @
+    & > @
 
   # Quotient of the division of $ by x.
   [x] > div
-    ^ > @
+    & > @

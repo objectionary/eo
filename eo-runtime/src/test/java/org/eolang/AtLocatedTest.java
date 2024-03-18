@@ -39,7 +39,7 @@ class AtLocatedTest {
     void convertsToString() {
         MatcherAssert.assertThat(
             new AtLocated(new AtSimple(), 10, 10).toString(),
-            Matchers.equalTo("<?:10:10>ΦS")
+            Matchers.equalTo("<?:10:10>ΦF")
         );
     }
 

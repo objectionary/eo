@@ -44,5 +44,4 @@ public final class PhCopy extends PhOnce {
             () -> String.format("%s", phi.φTerm())
         );
     }
-
 }
