@@ -28,8 +28,23 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A constant object.
- *
+ * A constant object that caches attributes.
+ * The object caches only the outer incoming attributes.
+ * It means that if attribute is retrieved through other attributes, like {@link Attr#PHI},
+ * they won't be cached.
+ * {@code
+ * 1. [] > x!
+ * 2.   y > @
+ * 3.   [] > y
+ * 4.     "Hello" > z
+ * 5. x.z
+ * 6. x.z
+ * }
+ * Here, at the line 6 "x" can't get attribute "z" directly, because it doesn't have it.
+ * "x" takes attribute "@" which refers to "y" and then takes "z" from "y".
+ * When "x" gets the attribute "z" it caches it.
+ * Then, at the line 6 "x" does take attribute "@" again, it just retrieves attribute "y"
+ * from its cache.
  * <p>This class is thread-safe.</p>
  *
  * @since 0.16
@@ -49,7 +64,6 @@ public final class PhConst implements Phi {
 
     /**
      * Ctor.
-     *
      * @param phi The origin
      */
     public PhConst(final Phi phi) {
@@ -92,7 +106,7 @@ public final class PhConst implements Phi {
         if (this.cached.containsKey(name)) {
             ret = this.cached.get(name);
         } else {
-            ret = new AtConst(this.origin.attr(name), this);
+            ret = new AtConst(this.origin, this, name);
             this.cached.put(name, ret);
         }
         return ret;

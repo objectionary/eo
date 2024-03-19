@@ -21,44 +21,69 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Object with fake rho attribute.
+ * Object with possible fake \rho attribute.
+ * When \rho attribute is retrieved from the object, the attribute is
+ * wrapped with {@link AtFakeRho}.
+ * It's necessary so that \rho attribute is possibly replaced with cached
+ * one ({@link PhConst}).
+ * The word "possibly" is used because attribute may be absent, or retrieved \rho object may be not
+ * equal to the original object which is wrapped with {@link PhConst}.
  * @since 0.36.0
  */
-public class PhFakeRho implements Phi {
+final class PhFakeRho implements Phi {
     /**
-     * Original phi.
+     * Original object.
      */
     private final Phi origin;
 
     /**
-     * Rho object.
+     * Possible parent.
+     */
+    private final Phi parent;
+
+    /**
+     * Possible \rho.
      */
     private final Phi rho;
 
     /**
-     * Rho attribute.
+     * The cache for \rho attribute.
      */
     private final AtomicReference<Attr> attribute;
 
     /**
      * Ctor.
      * @param phi Original object
-     * @param rho Rho to overwrite
+     * @param parent Possible original \rho
+     * @param rho The possible \rho to replace with the original one
      */
-    public PhFakeRho(final Phi phi, final Phi rho) {
+    public PhFakeRho(final Phi phi, final Phi parent, final Phi rho) {
+        this(phi, parent, rho, null);
+    }
+
+    /**
+     * Ctor for copying.
+     * @param phi Original object
+     * @param parent Possible original \rho
+     * @param rho The possible \rho to replace with the original one
+     * @param attr The attribute that replaces \rho
+     */
+    private PhFakeRho(final Phi phi, final Phi parent, final Phi rho, final Attr attr) {
         this.origin = phi;
+        this.parent = parent;
         this.rho = rho;
-        this.attribute = new AtomicReference<>(null);
+        this.attribute = new AtomicReference<>(attr);
     }
 
     @Override
     public Phi copy() {
-        return new PhFakeRho(this.origin, this.rho);
+        return new PhFakeRho(this.origin, this.parent, this.rho, this.attribute.get());
     }
 
     @Override
@@ -72,7 +97,13 @@ public class PhFakeRho implements Phi {
         if (name.equals(Attr.RHO)) {
             synchronized (this.attribute) {
                 if (this.attribute.get() == null) {
-                    this.attribute.set(new AtSimple(this.rho));
+                    this.attribute.set(
+                        new AtFakeRho(
+                            this.origin.attr(name),
+                            this.parent,
+                            this.rho
+                        )
+                    );
                 }
             }
             attr = this.attribute.get();

@@ -28,24 +28,28 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Const attribute.
+ * When the object is retrieved, it's wrapped with {@link PhFakeRho}.
+ * There's no need to wrap instances of {@link Data.Value}. It means that cached attribute
+ * was {@link Attr#DELTA}.
+ * The wrapping is necessary so that retrieved object doesn't lose information about its
+ * "possible" cached \rho ({@link PhConst}).
+ * The word "possible" is used, because object may either do not have \rho attribute,
+ * or its \rho does not equal to the original parent object wrapped with {@link PhConst}.
  *
  * <p>This class is thread-safe.</p>
  *
  * @since 0.16
- * @todo #2931:30min Class does not work properly. Also the does not have enough tests.
- *  We need to add more, at least for the next methods: toString(), φTerm(), copy(), put() and make
- *  sure that caching works properly.
  */
 @Versionized
 final class AtConst implements Attr {
 
     /**
-     * The original attribute to make const.
+     * The original object.
      */
-    private final Attr origin;
+    private final Phi origin;
 
     /**
-     * Its \rho.
+     * Its possible \rho.
      */
     private final Phi rho;
 
@@ -55,24 +59,21 @@ final class AtConst implements Attr {
     private final AtomicReference<Phi> cache;
 
     /**
-     * Ctor.
-     * @param attr The attr
-     * @param phi Its \rho
+     * Cached attribute.
      */
-    AtConst(final Attr attr, final Phi phi) {
-        this(attr, phi, null);
-    }
+    private final Attr attr;
 
     /**
      * Ctor.
-     * @param attr The original
-     * @param phi Its \rho
-     * @param cached The value to be cached
+     * @param object The original object
+     * @param rho The \rho that possibly will be swapped with \rho of original object
+     * @param name The value
      */
-    private AtConst(final Attr attr, final Phi phi, final Phi cached) {
-        this.origin = attr;
-        this.rho = phi;
-        this.cache = new AtomicReference<>(cached);
+    public AtConst(final Phi object, final Phi rho, final String name) {
+        this.origin = object;
+        this.rho = rho;
+        this.attr = new AtFormed(() -> this.origin.attr(name).get());
+        this.cache = new AtomicReference<>(null);
     }
 
     @Override
@@ -96,9 +97,14 @@ final class AtConst implements Attr {
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                this.cache.set(
-                    new PhFakeRho(this.origin.get(), this.rho)
-                );
+                final Phi ret = this.attr.get();
+                if (ret instanceof Data.Value) {
+                    this.cache.set(ret);
+                } else {
+                    this.cache.set(
+                        new PhFakeRho(ret, this.origin, this.rho)
+                    );
+                }
             }
         }
         return this.cache.get();
@@ -106,10 +112,8 @@ final class AtConst implements Attr {
 
     @Override
     public void put(final Phi src) {
-        synchronized (this.cache) {
-            this.origin.put(src);
-            this.cache.set(null);
-        }
+        throw new ExFailure(
+            "Constant attribute can't decorate void one"
+        );
     }
-
 }
