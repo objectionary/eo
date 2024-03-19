@@ -313,6 +313,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
+        if (ctx.EMPTY() != null) {
+            throw new ParsingException(
+                "It's impossible to represent Δ ⤍ ∅ binding in EO",
+                new IllegalStateException(),
+                ctx.getStart().getLine()
+            );
+        }
         this.objects()
             .start()
             .prop("data", "bytes")
