@@ -62,8 +62,8 @@ final class AtFakeRho implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFakeRho(
-            this.origin, this.current, this.alternate
+        throw new IllegalStateException(
+            "Should never happen"
         );
     }
 
@@ -81,7 +81,9 @@ final class AtFakeRho implements Attr {
 
     @Override
     public void put(Phi phi) {
-        throw new ExFailure("");
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override

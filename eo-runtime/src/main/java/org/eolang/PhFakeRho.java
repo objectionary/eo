@@ -32,8 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * wrapped with {@link AtFakeRho}.
  * It's necessary so that \rho attribute is possibly replaced with cached
  * one ({@link PhConst}).
- * The word "possibly" is used because attribute may be absent, or retrieved \rho object may be not
- * equal to the original object which is wrapped with {@link PhConst}.
+ * The word "possibly" is used because attribute may be absent, or retrieved \rho object may not
+ * need to be reset.
  * @since 0.36.0
  */
 final class PhFakeRho implements Phi {
@@ -64,26 +64,15 @@ final class PhFakeRho implements Phi {
      * @param rho The possible \rho to replace with the original one
      */
     public PhFakeRho(final Phi phi, final Phi parent, final Phi rho) {
-        this(phi, parent, rho, null);
-    }
-
-    /**
-     * Ctor for copying.
-     * @param phi Original object
-     * @param parent Possible original \rho
-     * @param rho The possible \rho to replace with the original one
-     * @param attr The attribute that replaces \rho
-     */
-    private PhFakeRho(final Phi phi, final Phi parent, final Phi rho, final Attr attr) {
         this.origin = phi;
         this.parent = parent;
         this.rho = rho;
-        this.attribute = new AtomicReference<>(attr);
+        this.attribute = new AtomicReference<>(null);
     }
 
     @Override
     public Phi copy() {
-        return new PhFakeRho(this.origin, this.parent, this.rho, this.attribute.get());
+        return new PhFakeRho(this.origin.copy(), this.parent, this.rho);
     }
 
     @Override

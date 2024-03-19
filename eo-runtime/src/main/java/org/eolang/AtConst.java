@@ -29,12 +29,12 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Const attribute.
  * When the object is retrieved, it's wrapped with {@link PhFakeRho}.
- * There's no need to wrap instances of {@link Data.Value}. It means that cached attribute
+ * There's no need to wrap instances of {@link Data}. It means that cached attribute
  * was {@link Attr#DELTA}.
  * The wrapping is necessary so that retrieved object doesn't lose information about its
  * "possible" cached \rho ({@link PhConst}).
  * The word "possible" is used, because object may either do not have \rho attribute,
- * or its \rho does not equal to the original parent object wrapped with {@link PhConst}.
+ * or it may already have \rho which does not need to be reset.
  *
  * <p>This class is thread-safe.</p>
  *
@@ -78,7 +78,7 @@ final class AtConst implements Attr {
 
     @Override
     public String toString() {
-        return String.format("%s!", this.origin.toString());
+        return String.format("%s!", this.attr.toString());
     }
 
     @Override
@@ -98,7 +98,7 @@ final class AtConst implements Attr {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
                 final Phi ret = this.attr.get();
-                if (ret instanceof Data.Value) {
+                if (ret instanceof Data) {
                     this.cache.set(ret);
                 } else {
                     this.cache.set(

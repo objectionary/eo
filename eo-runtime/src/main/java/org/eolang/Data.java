@@ -162,12 +162,12 @@ public interface Data<T> {
 
         @Override
         public boolean equals(final Object obj) {
-            return this.value.equals(obj);
+            return this.object.equals(obj);
         }
 
         @Override
         public int hashCode() {
-            return this.value.hashCode();
+            return this.object.hashCode();
         }
 
         @Override

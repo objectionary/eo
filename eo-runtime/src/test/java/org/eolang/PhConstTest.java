@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 final class PhConstTest {
 
     @Test
-    void makesObjectConstant() {
+    void makesDataObjectConstant() {
         MatcherAssert.assertThat(
             new Dataized(
                 new PhConst(

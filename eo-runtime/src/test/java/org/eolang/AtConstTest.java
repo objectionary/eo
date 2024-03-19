@@ -38,24 +38,118 @@ class AtConstTest {
     @Test
     void convertsToString() {
         MatcherAssert.assertThat(
-            new AtConst(new AtSimple(), Phi.Φ).toString(),
-            Matchers.equalTo("ΦF!")
+            new AtConst(Phi.Φ, Phi.Φ, "org").toString(),
+            Matchers.equalTo("Φ.orgF!")
         );
     }
 
     @Test
-    void convertsToTerm() {
+    void doesNotWrapData() {
+        final Phi ret = new AtConst(new Obj(), Phi.Φ, "data").get();
         MatcherAssert.assertThat(
-            new AtConst(new AtSimple(), Phi.Φ).φTerm(),
-            Matchers.equalTo("Φ!")
+            "Data attribute should not be wrapped with PhFakeRho",
+            ret,
+            Matchers.not(
+                Matchers.instanceOf(PhFakeRho.class)
+            )
+        );
+        MatcherAssert.assertThat(
+            "Data attribute should not be wrapped at all",
+            ret, Matchers.instanceOf(Data.class)
         );
     }
 
     @Test
-    void copies() {
+    void wrapsRegularPhiWithPhFakeRho() {
+        final Phi ret = new AtConst(new Obj(), Phi.Φ, "attr").get();
+        MatcherAssert.assertThat(
+            "Regular object should be wrapped with PhFakeRho decorator",
+            ret, Matchers.instanceOf(PhFakeRho.class)
+        );
+    }
+
+    @Test
+    void cachesObject() {
+        final Phi obj = new Obj();
+        final Attr attr = new AtConst(obj, Phi.Φ, "composite");
+        final Phi first = attr.get();
+        final Phi second = attr.get();
+        MatcherAssert.assertThat(
+            "AtConst should cache kept object",
+            first, Matchers.equalTo(second)
+        );
+        MatcherAssert.assertThat(
+            "Cached attribute should be calculated only once",
+            new Dataized(obj.attr("counter").get()).take(Long.class),
+            Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    void shouldFailOnPut() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new AtConst(new Obj(), Phi.Φ, "attr").put(Phi.Φ),
+            "AtConst should allow attributes injection"
+        );
+    }
+
+    @Test
+    void shouldFailOnCopy() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new AtConst(new AtSimple(), Phi.Φ).copy(Phi.Φ)
+            () -> new AtConst(new Obj(), Phi.Φ, "attr").copy(Phi.Φ),
+            "AtConst is not supposed to be copied"
         );
+    }
+
+    @Test
+    void fakesResultRho() {
+        final Phi obj = new Obj().copy();
+        final Phi rho = new PhFake(() -> new Data.ToPhi(10L));
+        MatcherAssert.assertThat(
+            "Result \\rho object of obj.attr should be faked",
+            new AtConst(obj, rho, "attr").get().attr(Attr.RHO).get(),
+            Matchers.equalTo(rho)
+        );
+    }
+
+    /**
+     * Object to be cached.
+     * @since 0.36.0
+     */
+    private static class Obj extends PhDefault {
+        /**
+         * Count.
+         */
+        private long count = 0;
+
+        /**
+         * Ctor.
+         */
+        Obj() {
+            super(Phi.Φ);
+            this.add("attr", new AtSimple(new Attribute(this)));
+            this.add("data", new AtSimple(new Data.Value<>("Hello")));
+            this.add("composite", new AtComposite(this, rho -> {
+                this.count++;
+                return new Attribute(rho);
+            }));
+            this.add("counter", new AtFormed(() -> new Data.ToPhi(this.count)));
+        }
+    }
+
+    /**
+     * Attribute of cached object.
+     * @since 0.36.0
+     */
+    private static class Attribute extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        Attribute(final Phi sigma) {
+            super(sigma);
+        }
     }
 }
