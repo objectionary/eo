@@ -101,7 +101,17 @@
           nop
         m.as-int
     3
-  TRUE > @
+  QQ.io.stdout > @
+    seq
+      *
+        m.write 1
+        try
+          []
+            m.write (m.as-int.plus 1) > @
+          [e]
+            e > @
+          nop
+        m.as-int
 
 # Test.
 [] > try-memory-update-catch
