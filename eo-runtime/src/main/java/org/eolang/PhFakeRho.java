@@ -30,11 +30,15 @@ import java.util.concurrent.atomic.AtomicReference;
  * Object with possible fake \rho attribute.
  * When \rho attribute is retrieved from the object, the attribute is
  * wrapped with {@link AtFakeRho}.
- * It's necessary so that \rho attribute is possibly replaced with cached
- * one ({@link PhConst}).
  * The word "possibly" is used because attribute may be absent, or retrieved \rho object may not
  * need to be reset.
  * @since 0.36.0
+ * @todo #2845:30min Use this class to fake \rho attribute when {@link Attr#DELTA} is not an
+ *  attribute but asset. To remove {@link Attr#DELTA} from attribute, we will need to introduce
+ *  some {@link Phi} decorator, that would encapsulate origin phi ({@link EOorg.EOeolang.EObytes})
+ *  and data (sequence of bytes). But in such case attributes of {@link EOorg.EOeolang.EObytes}
+ *  should know that their \rho should refer to this decorator, but not instance of
+ *  {@link EOorg.EOeolang.EObytes}. Here we can use this {@link PhFakeRho}.
  */
 final class PhFakeRho implements Phi {
     /**
