@@ -46,12 +46,13 @@ public class PhFakeRhoTest {
 
     @Test
     void retrievesRegularAttributeFromOrigin() {
-        final Phi fake = new PhFake(() -> new Data.ToPhi(10L));
+        final Phi data = new Data.ToPhi(10L);
+        final Phi fake = new PhFake(() -> data);
         final Phi phi = new PhFakeRho(fake, Phi.Φ, Phi.Φ);
         MatcherAssert.assertThat(
             "PhFakeRho should return attribute from origin",
-            phi.attr(Attr.PHI),
-            Matchers.equalTo(fake.attr(Attr.PHI))
+            phi.attr(Attr.PHI).get(),
+            Matchers.equalTo(fake.attr(Attr.PHI).get())
         );
     }
 

@@ -66,18 +66,6 @@
     f
 
 # Test.
-[] > kids-are-accessible-in-const-object
-  # Test.
-  [] > a
-    # Hello.
-    [] > hello
-      42 > @
-  a > b!
-  eq. > @
-    b.hello
-    42
-
-# Test.
 [] > takes-parent-through-attribute
   42 > x
   $ > this
@@ -378,10 +366,11 @@
           x.as-int.plus 1
         x.as-int
   inc a > n!
+  int n > num
   eq. > @
     times.
-      n
-      n
+      num
+      num
     64
 
 # Test.

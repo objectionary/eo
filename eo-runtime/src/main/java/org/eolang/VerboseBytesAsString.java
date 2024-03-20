@@ -78,7 +78,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
             default:
                 result = String.format(
                     "%s = \"%s\"",
-                    Arrays.toString(this.data),
+//                    Arrays.toString(this.data),
                     new String(this.data, StandardCharsets.UTF_8)
                 );
         }

@@ -44,10 +44,13 @@ public class AtFakeRhoTest {
 
     @Test
     void failsOnPut() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new AtFakeRho(new AtFree(), Phi.Φ, Phi.Φ).put(Phi.Φ),
-            "AtFakeRho is not supposed to be changed at all"
+        final Attr free = new AtFree();
+        final Phi data = new Data.Value<>("Hello");
+        new AtFakeRho(free, Phi.Φ, Phi.Φ).put(data);
+        MatcherAssert.assertThat(
+            "AtFakeRho#put() should call #put() on origin",
+            free.get(),
+            Matchers.equalTo(data)
         );
     }
 
