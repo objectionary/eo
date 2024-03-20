@@ -74,7 +74,7 @@
 
 # Test.
 [] > tuple-as-a-bound-attribute-size-2
-  * > arr!
+  * > arr
     1
     2
   and. > @
@@ -87,7 +87,7 @@
 
 # Test.
 [] > tuple-with
-  with. > arr!
+  with. > arr
     * 1 2 3
     "with"
   and. > @

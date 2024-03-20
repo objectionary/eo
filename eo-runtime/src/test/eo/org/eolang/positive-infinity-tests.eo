@@ -373,7 +373,7 @@
 [] > positive-infinity-div-neg-float-zero
   eq. > @
     positive-infinity.div -0.0
-    positive-infinity
+    negative-infinity
 
 # Test.
 [] > positive-infinity-div-int-zero

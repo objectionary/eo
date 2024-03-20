@@ -41,8 +41,9 @@
     0 > length
 
   # Obtain the length of the tuple.
-  [] > length!
-    ^.head.length.plus 1 > @
+  [] > length
+    ^.head.length.plus 1 > len!
+    int len > @
 
   # Take one element from the tuple, at the given position.
   # @todo #2931:30min Return previous optimizations for the object.
@@ -52,20 +53,20 @@
   #  at-without-checks-with-last-element
   [i] > at
     i > idx!
-    ^.length > len!
+    ^.length > len
     if. > index!
-      idx.lt 0
+      0.gt idx
       len.plus idx
       idx
     if. > @
       or.
-        index.lt 0
-        index.gte len
+        0.gt index
+        len.lte index
       error "Given index is out of tuple bounds"
       if.
-        lt.
-          index
+        gt.
           len.plus -1
+          index
         ^.head.at index
         ^.tail
 
