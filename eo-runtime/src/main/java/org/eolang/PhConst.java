@@ -44,7 +44,7 @@ public final class PhConst implements Phi {
     private final Phi wrapped;
 
     /**
-     * Bytes retrieved from the wrapped object
+     * Bytes retrieved from the wrapped object.
      */
     private final AtomicReference<Phi> bytes;
 

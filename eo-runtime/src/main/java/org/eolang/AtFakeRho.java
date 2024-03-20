@@ -54,7 +54,7 @@ final class AtFakeRho implements Attr {
      * @param parent Possible current \rho
      * @param rho Possible alternate \rho
      */
-    public AtFakeRho(final Attr attr, final Phi parent, final Phi rho) {
+    AtFakeRho(final Attr attr, final Phi parent, final Phi rho) {
         this.origin = attr;
         this.current = parent;
         this.alternate = rho;

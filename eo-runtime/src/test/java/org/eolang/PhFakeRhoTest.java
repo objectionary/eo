@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link PhFakeRho}.
+ * @since 0.36.0
  */
 public class PhFakeRhoTest {
     @Test

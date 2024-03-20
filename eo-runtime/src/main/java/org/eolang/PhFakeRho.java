@@ -67,7 +67,7 @@ final class PhFakeRho implements Phi {
      * @param parent Possible original \rho
      * @param rho The possible \rho to replace with the original one
      */
-    public PhFakeRho(final Phi phi, final Phi parent, final Phi rho) {
+    PhFakeRho(final Phi phi, final Phi parent, final Phi rho) {
         this.origin = phi;
         this.parent = parent;
         this.rho = rho;
