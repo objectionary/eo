@@ -186,8 +186,8 @@
 # Test
 [] > one-minus-one
   eq. > @
-    1.plus 1
-    2
+    1.minus 1
+    0
 
 # Test.
 [] > compares-two-different-types
