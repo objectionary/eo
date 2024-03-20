@@ -58,13 +58,11 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  *
- * @todo #2718:30min Two snippets are disabled now, in
- *  the "src/test/resources/snippets/*.yaml". The first needs
+ * @todo #2718:30min One snippets is disabled now, in
+ *  the "src/test/resources/snippets/*.yaml". It needs
  *  "sprintf" object in objectionary (fibo.yaml).
  *  When "sprintf" is in objectionary again - we need to enable
  *  it (by removing the "skip" attribute from the YAML file).
- *  The second fails with "stackOverflow" exception. Maybe we just need
- *  to increase stack size in snippet tests.
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
