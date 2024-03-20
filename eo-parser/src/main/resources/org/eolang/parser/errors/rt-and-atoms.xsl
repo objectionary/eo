@@ -39,7 +39,7 @@ SOFTWARE.
             <xsl:attribute name="severity">
               <xsl:text>error</xsl:text>
             </xsl:attribute>
-            <xsl:text>Using atoms without +rt meta</xsl:text>
+            <xsl:text>Using atoms without +rt meta is prohibited</xsl:text>
           </xsl:element>
         </xsl:if>
       </xsl:if>
@@ -55,7 +55,7 @@ SOFTWARE.
             <xsl:attribute name="severity">
               <xsl:text>error</xsl:text>
             </xsl:attribute>
-            <xsl:text>Using +rt meta without atoms</xsl:text>
+            <xsl:text>Using +rt meta without atoms is prohibited</xsl:text>
           </xsl:element>
         </xsl:if>
       </xsl:if>
