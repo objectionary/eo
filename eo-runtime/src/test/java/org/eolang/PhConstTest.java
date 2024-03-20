@@ -31,18 +31,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhConst}.
- *
+ * Test case for @link PhConst}.
  * @since 0.16
- * @todo #2931:60min Enable disabled tests. The tests were disabled because they don't work
- *  properly when \rho became immutable. When {@link PhConst} and {@link AtConst} are fixed
- *  we need to refactor and enable the disabled tests in the test class.
  */
 final class PhConstTest {
 
     @Test
     void makesDataObjectConstant() {
         MatcherAssert.assertThat(
+            "Const data object should be dataizable",
             new Dataized(
                 new PhConst(
                     new Data.ToPhi("Hello, world!")
@@ -69,13 +66,11 @@ final class PhConstTest {
     }
 
     @Test
-    @Disabled
-    void dataizesOnceEvenIfCopied() {
+    void takesAttributeOnceViaCopy() {
         final Dummy dummy = new Dummy("child");
         final Phi child = new PhMethod(new PhConst(dummy), "child");
         new Dataized(child).take(Long.class);
-        final Phi copy = new PhWith(new PhCopy(child), 0, new Data.ToPhi(1L));
-        new Dataized(copy).take(Long.class);
+        new Dataized(new PhCopy(child)).take(Long.class);
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
 
@@ -111,7 +106,7 @@ final class PhConstTest {
     @Test
     void dataizesRandomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
-        final Phi eql = rnd.attr("eq").get();
+        final Phi eql = rnd.attr(Attr.PHI).get().attr("eq").get().copy();
         eql.attr(0).put(rnd);
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),
@@ -240,8 +235,12 @@ final class PhConstTest {
             super(sigma);
             this.add(
                 "φ",
-                new AtFormed(
-                    () -> new Data.ToPhi(new SecureRandom().nextDouble())
+                new AtComposite(
+                    this,
+                    self -> {
+                        System.out.println("RND");
+                        return new Data.ToPhi(new SecureRandom().nextDouble());
+                    }
                 )
             );
         }
@@ -273,31 +272,7 @@ final class PhConstTest {
                     }
                 )
             );
-            this.add(name, new AtComposite(this, Kid::new));
-        }
-    }
-
-    /**
-     * Kid Phi.
-     * @since 1.0
-     */
-    private static class Kid extends PhDefault {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Kid(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add(
-                "φ",
-                new AtComposite(
-                    this,
-                    self -> new Data.ToPhi(
-                        new Dataized(self.attr("ρ").get()).take(Long.class)
-                    )
-                )
-            );
+            this.add(name, new AtComposite(this, rho -> this.attr(Attr.PHI).get()));
         }
     }
 

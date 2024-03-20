@@ -25,6 +25,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
  * Const attribute.
@@ -61,7 +62,7 @@ final class AtConst implements Attr {
     /**
      * Cached attribute.
      */
-    private final Attr attr;
+    private final Supplier<Attr> attr;
 
     /**
      * Ctor.
@@ -72,7 +73,12 @@ final class AtConst implements Attr {
     public AtConst(final Phi object, final Phi rho, final String name) {
         this.origin = object;
         this.rho = rho;
-        this.attr = new AtFormed(() -> this.origin.attr(name).get());
+        this.attr = () -> {
+            System.out.println(object.toString());
+            System.out.println("const");
+            System.out.println(name);
+            return this.origin.attr(name);
+        };
         this.cache = new AtomicReference<>(null);
     }
 
@@ -97,7 +103,7 @@ final class AtConst implements Attr {
     public Phi get() {
         synchronized (this.cache) {
             if (this.cache.get() == null) {
-                final Phi ret = this.attr.get();
+                final Phi ret = this.attr.get().get();
                 if (ret instanceof Data) {
                     this.cache.set(ret);
                 } else {
@@ -112,8 +118,9 @@ final class AtConst implements Attr {
 
     @Override
     public void put(final Phi src) {
-        throw new ExFailure(
-            "Constant attribute can't decorate void one"
-        );
+        synchronized (this.cache) {
+            this.attr.get().put(src);
+            this.cache.set(null);
+        }
     }
 }

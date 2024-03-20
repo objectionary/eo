@@ -80,10 +80,8 @@ final class AtFakeRho implements Attr {
     }
 
     @Override
-    public void put(Phi phi) {
-        throw new IllegalStateException(
-            "Should never happen"
-        );
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 
     @Override
