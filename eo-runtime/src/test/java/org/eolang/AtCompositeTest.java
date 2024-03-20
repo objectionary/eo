@@ -75,34 +75,6 @@ final class AtCompositeTest {
     }
 
     /**
-     * Dummy phi.
-     * @since 1.0
-     */
-    private static class Dummy extends PhDefault {
-        /**
-         * Self.
-         */
-        private Phi self;
-
-        /**
-         * Ctor.
-         */
-        Dummy() {
-            super();
-            this.add(
-                "x",
-                new AtComposite(
-                    this,
-                    rho -> {
-                        this.self = rho;
-                        return new Data.ToPhi(1L);
-                    }
-                )
-            );
-        }
-    }
-
-    /**
      * Rnd.
      * @since 1.0
      */
