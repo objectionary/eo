@@ -89,7 +89,7 @@
 # Test.
 [] > try-memory-update
   memory 0 > m
-  eq. > res
+  eq. > @
     seq
       *
         m.write 1
@@ -100,18 +100,7 @@
             e > @
           nop
         m.as-int
-    3
-  QQ.io.stdout > @
-    seq
-      *
-        m.write 1
-        try
-          []
-            m.write (m.as-int.plus 1) > @
-          [e]
-            e > @
-          nop
-        m.as-int
+    2
 
 # Test.
 [] > try-memory-update-catch
