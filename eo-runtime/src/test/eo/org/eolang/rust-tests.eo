@@ -26,369 +26,365 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:60min Enable rust tests. They were fully disabled because they don't work for
-#  some reason when \rho attribute became immutable. Need to find out what's wrong and enable
-#  all the tests.
-[] > rust-tests
-  TRUE > @
-  # Test.
-  [] > rust-returns-positive-int
-    QQ.rust > r
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
+[] > rust-returns-positive-int
+  QQ.rust > r
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        println!("Hello world from rust");
-        Some(EOInt(2))
-      }
-      """
-      []
-      *
-    eq. > @
-      r
-      2
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      println!("Hello world from rust");
+      Some(EOInt(2))
+    }
+    """
+    []
+    *
+  eq. > @
+    r
+    2
 
-  # Test.
-  [] > rust-returns-negative-int
-    QQ.rust > r
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
+# Test.
+[] > rust-returns-negative-int
+  QQ.rust > r
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        println!("Hello world from rust");
-        Some(EOInt(-10))
-      }
-      """
-      []
-      *
-    eq. > @
-      r
-      -10
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      println!("Hello world from rust");
+      Some(EOInt(-10))
+    }
+    """
+    []
+    *
+  eq. > @
+    r
+    -10
 
-  # Test.
-  [] > rust-returns-positive-double
-    QQ.rust > r
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOFloat};
+# Test.
+[] > rust-returns-positive-double
+  QQ.rust > r
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOFloat};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        Some(EOFloat(1.23456789))
-      }
-      """
-      []
-      *
-    eq. > @
-      r
-      1.23456789
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(EOFloat(1.23456789))
+    }
+    """
+    []
+    *
+  eq. > @
+    r
+    1.23456789
 
-  # Test.
-  [] > rust-returns-negative-double
-    QQ.rust > r
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOFloat};
+# Test.
+[] > rust-returns-negative-double
+  QQ.rust > r
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOFloat};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        Some(EOFloat(-1.23456789))
-      }
-      """
-      []
-      *
-    eq. > @
-      r
-      -1.23456789
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(EOFloat(-1.23456789))
+    }
+    """
+    []
+    *
+  eq. > @
+    r
+    -1.23456789
 
-  # Test.
-  [] > rust-is-byte-array
-    QQ.rust > my-bytes
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EORaw};
+# Test.
+[] > rust-is-byte-array
+  QQ.rust > my-bytes
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EORaw};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        Some(
-          EORaw(
-            Box::from(
-              [0x00, 0x1a, 0xEE]
-            )
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(
+        EORaw(
+          Box::from(
+            [0x00, 0x1a, 0xEE]
           )
         )
-      }
-      """
-      []
-      *
-    eq. > @
-      my-bytes
-      00-1A-EE
+      )
+    }
+    """
+    []
+    *
+  eq. > @
+    my-bytes
+    00-1A-EE
 
-  # Test.
-  [] > rust-find-returns-int
-    123 > a
-    QQ.rust > r
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
+# Test.
+[] > rust-find-returns-int
+  123 > a
+  QQ.rust > r
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        Some(
-          EOInt(portal.find("$.^.a")? as i64)
-        )
-      }
-      """
-      []
-      *
-    not. > @
-      lt.
-        r
-        0
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      Some(
+        EOInt(portal.find("$.&.a")? as i64)
+      )
+    }
+    """
+    []
+    *
+  not. > @
+    lt.
+      r
+      0
 
-  # Test.
-  [] > rust-returns-vertex
-    "content" > book
-    QQ.rust > read
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOVertex};
+# Test.
+[] > rust-returns-vertex
+  "content" > book
+  QQ.rust > read
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOVertex};
 
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let v = portal.find("$.^.book")?;
-        Some(EOVertex(v))
-      }
-      """
-      []
-      *
-    eq. > @
-      read
-      "content"
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let v = portal.find("$.&.book")?;
+      Some(EOVertex(v))
+    }
+    """
+    []
+    *
+  eq. > @
+    read
+    "content"
 
-  # Test.
-  [] > rust-is-string
-    QQ.rust > content
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOString};
+# Test.
+[] > rust-is-string
+  QQ.rust > content
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOString};
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        Some(EOString("Привет world".to_string()))
-      }
-      """
-      []
-      *
-    eq. > @
-      content
-      "Привет world"
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(EOString("Привет world".to_string()))
+    }
+    """
+    []
+    *
+  eq. > @
+    content
+    "Привет world"
 
-  # Test.
-  [] > rust-invalid-put
-    QQ.rust > put
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt, EOError};
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        portal.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
-        Some(EOError("put failed".to_string()))
-      }
-      """
-      []
-      *
-    eq. > @
-      slice.
-        try
-          []
-            put > @
-          [e]
-            e > @
-          nop
-        0
-        18
-      "Rust insert failed"
+# Test.
+[] > rust-invalid-put
+  QQ.rust > put
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt, EOError};
 
-  # Test.
-  [] > rust-bind-not-fails
-    1 > a
-    2 > b
-    "Rust insert failed" > to-check!
-    QQ.rust > insert
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let v1 = portal.find("$.^.a")?;
-        let v2 = portal.find("$.^.b")?;
-        portal.bind(v1 , v2, "EO-att")?;
-        Some(EOInt(0 as i64))
-      }
-      """
-      []
-      *
-    try > res!
-      []
-        insert > @
-      [e]
-        e > @
-      nop
-    eq. > @
-      res.slice
-        0
-        to-check.length
-      to-check
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      portal.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
+      Some(EOError("put failed".to_string()))
+    }
+    """
+    []
+    *
+  eq. > @
+    slice.
+      try
+        []
+          put > @
+        [e]
+          e > @
+        nop
+      0
+      18
+    "Rust insert failed"
 
-  # Test.
-  [] > rust-copy-not-fails
-    123 > a
-    QQ.rust > copy
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOVertex};
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let v = portal.find("$.^.a")?;
-        let copy = portal.copy(v)?;
-        Some(EOVertex(copy))
-      }
-      """
-      []
-      *
-    eq. > @
-      copy
-      123
+# Test.
+[] > rust-bind-not-fails
+  1 > a
+  2 > b
+  "Rust insert failed" > to-check
+  QQ.rust > insert
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-  # Test.
-  [] > rust-dataize-not-fails
-    1 > a
-    QQ.rust > dataized
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let v = portal.find("$.^.a")?;
-        let _bytes = portal.dataize(v)?;
-        Some(EOInt(v as i64))
-      }
-      """
-      []
-      *
-    not. > @
-      lt.
-        dataized
-        0
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let v1 = portal.find("$.&.a")?;
+      let v2 = portal.find("$.&.b")?;
+      portal.bind(v1 , v2, "EO-att")?;
+      Some(EOInt(0 as i64))
+    }
+    """
+    []
+    *
+  try > res
+    []
+      insert > @
+    [e]
+      e > @
+    nop
+  eq. > @
+    res.slice
+      0
+      to-check.length
+    to-check
 
-  # Test.
-  [] > rust-plus
-    5 > a
-    10 > b
-    QQ.rust > plus
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOInt};
-      use byteorder::{BigEndian, ReadBytesExt};
+# Test.
+[] > rust-copy-not-fails
+  123 > a
+  QQ.rust > copy
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOVertex};
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let v = portal.find("$.&.a")?;
+      let copy = portal.copy(v)?;
+      Some(EOVertex(copy))
+    }
+    """
+    []
+    *
+  eq. > @
+    copy
+    123
 
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let a = portal.find("$.^.a")?;
-        let bytes_a = portal.dataize(a)?;
-        let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
+# Test.
+[] > rust-dataize-not-fails
+  1 > a
+  QQ.rust > dataized
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
 
-        let b = portal.find("$.^.b")?;
-        let bytes_b = portal.dataize(b)?;
-        let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
-        println!("sum 5 + 10 = {}", a + b);
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let v = portal.find("$.&.a")?;
+      let _bytes = portal.dataize(v)?;
+      Some(EOInt(v as i64))
+    }
+    """
+    []
+    *
+  not. > @
+    lt.
+      dataized
+      0
 
-        Some(EOInt(a + b))
-      }
-      """
-      []
-      *
-        "byteorder:1.4.3"
-    eq. > @
-      plus
-      15
+# Test.
+[] > rust-plus
+  5 > a
+  10 > b
+  QQ.rust > plus
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
+    use byteorder::{BigEndian, ReadBytesExt};
 
-  # Test.
-  [] > rust-error
-    "Rust insert failed " > message!
-    QQ.rust > err!
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOError};
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let a = portal.find("$.&.a")?;
+      let bytes_a = portal.dataize(a)?;
+      let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
-      pub fn foo(_portal: &mut Portal) -> Option<EO> {
-        Some(EOError("Custom error".to_string()))
-      }
-      """
-      []
-      *
-    try > res
-      []
-        err > @
-      [e]
-        e > @
-      nop
-    eq. > @
-      slice.
-        res
-        0
-        length.
-          message
-      message
+      let b = portal.find("$.&.b")?;
+      let bytes_b = portal.dataize(b)?;
+      let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
+      println!("sum 5 + 10 = {}", a + b);
 
-  # Test.
-  [] > rust-put-to-copy
-    QQ.rust > data
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOVertex, EOError};
+      Some(EOInt(a + b))
+    }
+    """
+    []
+    *
+      "byteorder:1.4.3"
+  eq. > @
+    plus
+    15
 
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let eobytes = portal.find("Q.org.eolang.bytes")?;
-        let copy = portal.copy(eobytes)?;
-        portal.put(copy.clone(), &[0x00, 0x1a, 0xEE])?;
-        Some(EOVertex(copy))
-      }
-      """
-      []
-      *
-    eq. > @
-      data
-      00-1A-EE
+# Test.
+[] > rust-error
+  "Rust insert failed " > message
+  QQ.rust > err
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOError};
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(EOError("Custom error".to_string()))
+    }
+    """
+    []
+    *
+  try > res
+    []
+      err > @
+    [e]
+      e > @
+    nop
+  eq. > @
+    slice.
+      res
+      0
+      length.
+        message
+    message
 
-  # Test.
-  [] > rust-bind-to-copy
-    # Book.
-    [content] > book
-    "qwerty" > line
-    QQ.rust > applied
-      """
-      use eo::Portal;
-      use eo::eo_enum::EO;
-      use eo::eo_enum::EO::{EOVertex};
+# Test.
+[] > rust-put-to-copy
+  QQ.rust > data
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOVertex, EOError};
 
-      pub fn foo(portal: &mut Portal) -> Option<EO> {
-        let eobook = portal.find("$.^.book")?;
-        let copy = portal.copy(eobook)?;
-        let eoline = portal.find("$.^.line")?;
-        portal.bind(copy.clone(), eoline, "content")?;
-        Some(EOVertex(copy))
-      }
-      """
-      []
-      *
-    eq. > @
-      applied.content
-      "qwerty"
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let eobytes = portal.find("Q.org.eolang.bytes")?;
+      let copy = portal.copy(eobytes)?;
+      portal.put(copy.clone(), &[0x00, 0x1a, 0xEE])?;
+      Some(EOVertex(copy))
+    }
+    """
+    []
+    *
+  eq. > @
+    data
+    00-1A-EE
+
+# Test.
+[] > rust-bind-to-copy
+  # Book.
+  [content] > book
+  "qwerty" > line
+  QQ.rust > applied
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOVertex};
+
+    pub fn foo(portal: &mut Portal) -> Option<EO> {
+      let eobook = portal.find("$.&.book")?;
+      let copy = portal.copy(eobook)?;
+      let eoline = portal.find("$.&.line")?;
+      portal.bind(copy.clone(), eoline, "content")?;
+      Some(EOVertex(copy))
+    }
+    """
+    []
+    *
+  eq. > @
+    applied.content
+    "qwerty"
