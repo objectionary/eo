@@ -48,15 +48,6 @@
       42
 
 # Test.
-[] > forks-on-condition
-  eq. > @
-    if.
-      5.eq 8
-      123
-      42
-    42
-
-# Test.
 [] > iterates-over-simple-counter
   memory 0 > x
   and. > res
@@ -161,7 +152,7 @@
   arr.length.minus 1 > max
   seq > res
     *
-      if.
+      if
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -190,7 +181,7 @@
   arr.length.minus 1 > max
   seq > nop
     *
-      if.
+      if
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -221,7 +212,7 @@
     *
       while.
         []
-          if. > @
+          if > @
             iter.as-int.lt max
             seq
               *
@@ -249,7 +240,7 @@
     *
       while.
         []
-          if. > @
+          if > @
             iter.as-int.lt max
             seq
               *

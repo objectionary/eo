@@ -94,7 +94,7 @@
     0
   # X.
   [i] > x
-    if. > @
+    if > @
       i.lt 0
       0
       x
@@ -185,7 +185,7 @@
   memory 0 > n
   # Func.
   [] > func
-    if. > @
+    if > @
       n.as-int.gt 0
       seq
         *

@@ -47,17 +47,17 @@
   # If case key is TRUE, return case value.
   # Otherwise take next case.
   [index] > case-at
-    if. > @
+    if > @
       index.eq ^.len
       TRUE
-      if.
+      if
         at.
           ^.cases.at index > case
           0
         case.at 1
         ^.case-at
           index.plus 1
-  if. > @
+  if > @
     len.eq 0
     error "switch cases are empty"
     case-at 0

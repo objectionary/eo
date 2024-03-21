@@ -38,30 +38,31 @@ import org.eolang.XmirObject;
 /**
  * IF.
  *
- * @since 1.0
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "bool.if")
-public final class EObool$EOif extends PhDefault implements Atom {
+@XmirObject(oname = "if")
+public final class EOif extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EObool$EOif(final Phi sigma) {
+    public EOif(final Phi sigma) {
         super(sigma);
-        this.add("t", new AtFree());
-        this.add("f", new AtFree());
+        this.add("condition", new AtFree());
+        this.add("left", new AtFree());
+        this.add("right", new AtFree());
     }
 
     @Override
     public Phi lambda() {
-        final boolean term = new Param(this).strong(Boolean.class);
+        final boolean term = new Param(this, "condition").strong(Boolean.class);
         final Phi out;
         if (term) {
-            out = this.attr("t").get();
+            out = this.attr("left").get();
         } else {
-            out = this.attr("f").get();
+            out = this.attr("right").get();
         }
         return out;
     }

@@ -54,16 +54,16 @@
   [i] > at
     i > idx!
     ^.length > len
-    if. > index!
+    if > index!
       0.gt idx
       len.plus idx
       idx
-    if. > @
+    if > @
       or.
         0.gt index
         len.lte index
       error "Given index is out of tuple bounds"
-      if.
+      if
         gt.
           len.plus -1
           index
