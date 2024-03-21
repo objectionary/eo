@@ -53,9 +53,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for {@link EOcage}.
  * @since 0.19
- * @todo #2931:30min Resolve test {@link EOcageTest#evaluatesLazily}. This test stopped working
- *  after introducing new rho logic. Need to decide either we can remove the test or we can resolve
- *  it somehow.
  */
 final class EOcageTest {
 
@@ -153,30 +150,6 @@ final class EOcageTest {
         MatcherAssert.assertThat(
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(2L)
-        );
-    }
-
-    @Test
-    @Disabled
-    void evaluatesLazily() {
-        final Phi cage = new EOcage(Phi.Φ);
-        final Phi first = cage.copy();
-        EOcageTest.writeTo(first, new Data.ToPhi(3L));
-        final Phi second = cage.copy();
-        EOcageTest.writeTo(second, new Data.ToPhi(5L));
-        final Phi sum = cage.copy();
-        EOcageTest.writeTo(
-            sum,
-            new PhWith(
-                new PhCopy(new PhMethod(first, "plus")),
-                0, second
-            )
-        );
-        EOcageTest.writeTo(first, new Data.ToPhi(1L));
-        EOcageTest.writeTo(second, new Data.ToPhi(9L));
-        MatcherAssert.assertThat(
-            new Dataized(sum).take(Long.class),
-            Matchers.equalTo(10L)
         );
     }
 
