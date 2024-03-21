@@ -27,6 +27,12 @@
 +version 0.0.0
 
 # Test.
+[] > simple-double-eq
+  eq. > @
+    50.3
+    50.3
+
+# Test.
 [] > less-true
   eq. > @
     -10.5.lt 50.3
