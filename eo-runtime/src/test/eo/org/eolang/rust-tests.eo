@@ -214,7 +214,7 @@
 [] > rust-bind-not-fails
   1 > a
   2 > b
-  "Rust insert failed" > to-check!
+  "Rust insert failed" > to-check
   QQ.rust > insert
     """
     use eo::Portal;
@@ -230,7 +230,7 @@
     """
     []
     *
-  try > res!
+  try > res
     []
       insert > @
     [e]
@@ -317,8 +317,8 @@
 
 # Test.
 [] > rust-error
-  "Rust insert failed " > message!
-  QQ.rust > err!
+  "Rust insert failed " > message
+  QQ.rust > err
     """
     use eo::Portal;
     use eo::eo_enum::EO;
