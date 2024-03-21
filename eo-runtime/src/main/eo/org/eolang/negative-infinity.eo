@@ -41,7 +41,7 @@
     x > value!
     not. > @
       or.
-        value.as-bytes.eq nan.as-bytes
+        value.eq nan.as-bytes
         &.eq value
 
   # Tests that $ ≤ x.
@@ -67,15 +67,14 @@
     [num] > is-num-gt-zero
       try > @
         []
-          num.gt 0 > @
+          0.lt num > @
         [e]
-          num.gt 0.0 > @
+          0.0.lt num > @
         FALSE
 
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
+    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
-      not. > @
-        num.eq num
+      num.eq nan.as-bytes > @
 
     # Tests if given number is equal to nan, float or integer zero.
     [num] > is-nan-or-zero
@@ -99,40 +98,37 @@
     positive-infinity.as-bytes > pos-inf-as-bytes!
     x > value!
 
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN
+    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
-      not. > @
-        num.eq num
+      num.eq nan.as-bytes > @
     if. > @
       or.
         is-nan value
-        value.as-bytes.eq pos-inf-as-bytes
+        value.eq pos-inf-as-bytes
       nan
       negative-infinity
 
   # Difference between $ and x.
   [x] > minus
     x > value!
-    negative-infinity.as-bytes > neg-inf-as-bytes!
+    negative-infinity > neg-inf-as-bytes!
 
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
+    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
-      not. > @
-        num.eq num
+      num.eq nan.as-bytes > @
     if. > @
       or.
         is-nan value
-        value.as-bytes.eq neg-inf-as-bytes
+        value.eq neg-inf-as-bytes
       nan
       negative-infinity
 
   # Quotient of the division of $ by x
   [x] > div
     x > value!
-    # Here we use the rule "NaN != NaN is TRUE" to check if "num" is NaN.
+    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
-      not. > @
-        num.eq num
+      num.eq nan.as-bytes > @
 
     # Tests if given number is equal to nan, positive or negative infinity.
     [num] > is-nan-or-infinite
@@ -146,9 +142,9 @@
     [num] > is-num-gte-zero
       try > @
         []
-          num.gte 0 > @
+          0.lte num > @
         [e]
-          num.gte 0.0 > @
+          0.0.lte num > @
         FALSE
     if. > @
       is-nan-or-infinite value

@@ -245,15 +245,11 @@ SOFTWARE.
       </xsl:with-param>
       <xsl:with-param name="rho" select="'this'"/>
     </xsl:apply-templates>
-    <!--
-      #2931:30min Enable caching on java generation. Caching seems not to work properly and
-       produces some side effects, so it was disabled for now. Need to enable it when caching works.
-    -->
-    <!--    <xsl:if test="o[@const]">-->
-    <!--      <xsl:value-of select="eo:tabs(3)"/>-->
-    <!--      <xsl:text>ret = new PhConst(ret);</xsl:text>-->
-    <!--      <xsl:value-of select="eo:eol(0)"/>-->
-    <!--    </xsl:if>-->
+    <xsl:if test="o[@const]">
+      <xsl:value-of select="eo:tabs(3)"/>
+      <xsl:text>ret = new PhConst(ret);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
@@ -271,11 +267,11 @@ SOFTWARE.
       </xsl:with-param>
       <xsl:with-param name="rho" select="'rho'"/>
     </xsl:apply-templates>
-    <!--    <xsl:if test="o[@const]">-->
-    <!--      <xsl:value-of select="eo:tabs(3)"/>-->
-    <!--      <xsl:text>ret = new PhConst(ret);</xsl:text>-->
-    <!--      <xsl:value-of select="eo:eol(0)"/>-->
-    <!--    </xsl:if>-->
+    <xsl:if test="o[@const]">
+      <xsl:value-of select="eo:tabs(3)"/>
+      <xsl:text>ret = new PhConst(ret);</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>

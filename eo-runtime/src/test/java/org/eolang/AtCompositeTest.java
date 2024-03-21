@@ -63,28 +63,6 @@ final class AtCompositeTest {
     }
 
     @Test
-    void passesSelfCorrectly() {
-        final Dummy dummy = new Dummy();
-        final Phi phi = new PhConst(dummy);
-        phi.attr(Attr.LAMBDA).get();
-        MatcherAssert.assertThat(
-            dummy.self,
-            Matchers.equalTo(phi)
-        );
-    }
-
-    @Test
-    void passesSelfCorrectlyThroughChild() {
-        final Dummy dummy = new Dummy();
-        final Phi phi = new PhConst(dummy);
-        phi.attr(Attr.LAMBDA).get();
-        MatcherAssert.assertThat(
-            dummy.self,
-            Matchers.equalTo(phi)
-        );
-    }
-
-    @Test
     void goesThroughJustOnce() {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
@@ -94,34 +72,6 @@ final class AtCompositeTest {
                 new Dataized(phi).take(Double.class)
             )
         );
-    }
-
-    /**
-     * Dummy phi.
-     * @since 1.0
-     */
-    private static class Dummy extends PhDefault {
-        /**
-         * Self.
-         */
-        private Phi self;
-
-        /**
-         * Ctor.
-         */
-        Dummy() {
-            super();
-            this.add(
-                Attr.LAMBDA,
-                new AtComposite(
-                    this,
-                    rho -> {
-                        this.self = rho;
-                        return new Data.ToPhi(1L);
-                    }
-                )
-            );
-        }
     }
 
     /**

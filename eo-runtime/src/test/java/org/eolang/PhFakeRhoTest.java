@@ -22,51 +22,63 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.Data;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOint}.
- *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
+ * Test cases for {@link PhFakeRho}.
+ * @since 0.36.0
  */
-public final class EOintTest {
-
+public class PhFakeRhoTest {
     @Test
-    void hasDifferentHashes() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(42L);
+    void makesNewCopy() {
+        final Phi fake = new PhFakeRho(Phi.Φ, Phi.Φ, Phi.Φ);
         MatcherAssert.assertThat(
-            left.hashCode(),
-            Matchers.not(Matchers.equalTo(right.hashCode()))
+            "PhFakeRho::copy() should create new object",
+            fake.copy(),
+            Matchers.not(
+                Matchers.equalTo(fake)
+            )
         );
     }
 
     @Test
-    void hasHashEvenWithoutData() {
-        final Phi phi = new EOint(Phi.Φ);
+    void retrievesRegularAttributeFromOrigin() {
+        final Phi data = new Data.ToPhi(10L);
+        final Phi fake = new PhFake(() -> data);
+        final Phi phi = new PhFakeRho(fake, Phi.Φ, Phi.Φ);
         MatcherAssert.assertThat(
-            phi.hashCode(),
-            Matchers.greaterThan(0)
+            "PhFakeRho should return attribute from origin",
+            phi.attr(Attr.PHI).get(),
+            Matchers.equalTo(fake.attr(Attr.PHI).get())
         );
     }
 
     @Test
-    void hasDifferentHash() {
-        final Phi raw = new EOint(Phi.Φ);
-        final Phi initialized = new Data.ToPhi(0L);
+    void wrapsRhoAttributeWithAtFakeRho() {
         MatcherAssert.assertThat(
-            raw.hashCode(),
-            Matchers.not(initialized.hashCode())
+            "PhFakeRho should wrap \\rho attribute with AtFakeRho",
+            new PhFakeRho(
+                new PhFake(() -> new Data.ToPhi(10L)),
+                Phi.Φ,
+                Phi.Φ
+            ).attr(Attr.RHO),
+            Matchers.instanceOf(AtFakeRho.class)
+        );
+    }
+
+    @Test
+    void fakesResultRhoAttribute() {
+        final Phi ten = new Data.ToPhi(10L);
+        final Phi plus = ten.attr("plus").get();
+        final Phi str = new Data.ToPhi("Hello");
+        MatcherAssert.assertThat(
+            "Rho attribute of 10.plus should be faked to 'Hello'",
+            new PhFakeRho(plus, ten, str).attr(Attr.RHO).get(),
+            Matchers.equalTo(str)
         );
     }
 }

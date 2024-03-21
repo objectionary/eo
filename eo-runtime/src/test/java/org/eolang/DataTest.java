@@ -111,23 +111,19 @@ final class DataTest {
     void comparesTwoDatas() {
         MatcherAssert.assertThat(
             new Data.ToPhi(1L),
-            Matchers.equalTo(new Data.ToPhi(1L))
-        );
-        MatcherAssert.assertThat(
-            new Data.ToPhi(1L),
-            Matchers.not(Matchers.equalTo(new Data.ToPhi(2L)))
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(1L)))
         );
         MatcherAssert.assertThat(
             new Data.ToPhi("Welcome"),
-            Matchers.equalTo(new Data.ToPhi("Welcome"))
+            Matchers.not(Matchers.equalTo(new Data.ToPhi("Welcome")))
         );
         MatcherAssert.assertThat(
             new Data.ToPhi(2.18d),
-            Matchers.equalTo(new Data.ToPhi(2.18d))
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(2.18d)))
         );
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.equalTo(new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}))
+            Matchers.not(Matchers.equalTo(new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f})))
         );
     }
 

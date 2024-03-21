@@ -64,7 +64,7 @@ class PhOnce implements Phi {
 
     @Override
     public int hashCode() {
-        return this.object.hashCode();
+        return this.object.take().hashCode();
     }
 
     @Override
