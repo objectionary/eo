@@ -45,7 +45,7 @@
               seq > @
                 *
                   i.write (i.as-int.plus 1)
-                  if.
+                  if
                     i.as-int.lt 10
                     g.backward
                     TRUE
@@ -65,7 +65,7 @@
               seq > @
                 *
                   i.write (i.as-int.plus 1)
-                  if.
+                  if
                     i.as-int.lt 10
                     g.backward
                     TRUE
@@ -87,7 +87,7 @@
             [g]
               seq > @
                 *
-                  if.
+                  if
                     x.eq 0
                     g.forward TRUE
                     TRUE
@@ -111,7 +111,7 @@
         [g]
           seq > @
             *
-              if.
+              if
                 a.gt b
                 g.forward a
                 TRUE

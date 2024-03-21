@@ -59,7 +59,7 @@ public final class EOerror extends PhDefault implements Atom {
      */
     public EOerror(final Phi sigma) {
         super(sigma);
-        this.add("α", new AtFree());
+        this.add("message", new AtFree());
     }
 
     /**
@@ -83,7 +83,7 @@ public final class EOerror extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        throw new ExError(this.attr("α").get());
+        throw new ExError(this.attr("message").get());
     }
 
     /**

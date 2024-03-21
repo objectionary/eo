@@ -9,9 +9,9 @@ eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [args] > vbm
     stdout > @
-      if.
-        TRUE
-        "second":1
+      if
+        "second":2
+        TRUE:0
         "first"
         .as-bytes
-        .as-string:0
+        .as-string:1

@@ -42,16 +42,16 @@
 # Test.
 [] > avoid-infinite-loop
   cage > x
-    TRUE.if
+    if
   x' > copy
   eq. > @
     seq
       *
         x.write
-          TRUE.if 1 0
+          if TRUE 1 0
         copy.<
         x.write
-          TRUE.if copy 0
+          if TRUE copy 0
         x
     1
 

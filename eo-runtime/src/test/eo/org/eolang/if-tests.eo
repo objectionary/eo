@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,24 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
++tests
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# This object must be used in order to terminate the program
-# due to an error. Just make a copy of it with any encapsulated object.
-# The first attempt to dataize it will lead to runtime error and program
-# termination. The only way to catch such an error is by using
-# the object 'try'.
-[message] > error /?
+# Test.
+[] > forks-on-true-condition
+  eq. > @
+    if
+      5.eq 5
+      123
+      42
+    123
+
+# Test.
+[] > forks-on-false-condition
+  eq. > @
+    if
+      5.eq 8
+      123
+      42
+    42
