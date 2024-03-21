@@ -27,6 +27,12 @@
 +version 0.0.0
 
 # Test.
+[] > should-be-equal
+  eq. > @
+    55.5
+    55.6
+
+# Test.
 [] > less-true
   eq. > @
     -10.5.lt 50.3
