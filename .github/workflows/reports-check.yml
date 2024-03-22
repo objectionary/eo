@@ -15,4 +15,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           openai_token: ${{ secrets.OPENAI_API_KEY }}
-
