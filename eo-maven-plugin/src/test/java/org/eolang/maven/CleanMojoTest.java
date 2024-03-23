@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.28.6
  */
-class CleanMojoTest {
+final class CleanMojoTest {
 
     @Test
     void cleansSuccessfully(@TempDir final Path temp) throws IOException {

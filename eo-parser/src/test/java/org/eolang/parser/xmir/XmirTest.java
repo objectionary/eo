@@ -46,9 +46,9 @@ import org.yaml.snakeyaml.Yaml;
 final class XmirTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/samples/", glob = "**.yaml")
-    void printsStrait(final String pack) throws IOException {
+    void printsStraight(final String pack) throws IOException {
         final Map<String, Object> map = new Yaml().load(pack);
-        final String key = "strait";
+        final String key = "straight";
         final String eolang = this.eolang((String) map.get("origin"), Xmir.Default::new);
         MatcherAssert.assertThat(
             "Result EO should be parsed without errors",
@@ -103,9 +103,9 @@ final class XmirTest {
             first,
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
-        Logger.debug(this, "First:%n%s", first);
+        Logger.info(this, "First:%n%s", first);
         final String eolang = xmir.apply(first).toEO();
-        Logger.debug(this, "EOLANG:%n%s", eolang);
+        Logger.info(this, "EOLANG:%n%s", eolang);
         return eolang;
     }
 }

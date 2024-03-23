@@ -46,7 +46,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  */
 @Execution(ExecutionMode.SAME_THREAD)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-class LogFormatTest {
+final class LogFormatTest {
 
     /**
      * Expected log message format.

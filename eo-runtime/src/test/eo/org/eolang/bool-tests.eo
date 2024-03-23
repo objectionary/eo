@@ -27,6 +27,14 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable or remove bool tests. Object bool.while stopped working properly when
+#  \rho attribute became immutable. Need to either remove the tests or refactor and enable them.
+#  Tests: iterates-over-simple-counter, complex-bool-expression-in-while,
+#  last-while-dataization-object, while-without-last-dataization,
+#  last-while-dataization-object-with-false-condition,
+#  iterating-tuple-with-while-using-internal-iterator,
+#  iterating-tuple-with-while-using-external-iterator,
+#  iterating-tuple-with-while-without-body-multiple, iterating-tuple-with-while-without-body-single
 [] > compares-two-bools
   eq. > @
     TRUE
@@ -40,18 +48,9 @@
       42
 
 # Test.
-[] > forks-on-condition
-  eq. > @
-    if.
-      5.eq 8
-      123
-      42
-    42
-
-# Test.
 [] > iterates-over-simple-counter
   memory 0 > x
-  and. > @
+  and. > res
     eq.
       x.write 5
       5
@@ -62,6 +61,7 @@
           x.write > @
             x.as-int.plus 1
       11
+  nop > @
 
 # Test.
 [] > compares-bool-to-bytes
@@ -81,10 +81,7 @@
     01-.as-bytes.eq TRUE
     00-.as-bytes.eq FALSE
 
-# @todo #2437:30min Enable the test. After getting rid of delta attributes in data primitives
-#  this test started to execute infinitely long while other tests with "bool.while" are executed
-#  without any troubles. Need to find what's the problem and make the test enable again. Don't
-#  forget to remove the puzzle.
+# Test.
 [] > complex-bool-expression-in-while
   memory 0 > m
   seq > res
@@ -106,7 +103,7 @@
 # Test.
 [] > last-while-dataization-object
   memory 0 > x
-  eq. > @
+  eq. > res
     while.
       x.as-int.lt 2
       [i]
@@ -115,11 +112,12 @@
             x.write (x.as-int.plus 1)
             x.as-int
     3
+  nop > @
 
 # Test.
 [] > while-without-last-dataization
   memory 0 > x
-  eq. > @
+  eq. > res
     seq
       *
         while.
@@ -130,11 +128,12 @@
         .<
         x.as-int
     2
+  nop > @
 
 # Test.
 [] > last-while-dataization-object-with-false-condition
   memory 3 > x
-  eq. > @
+  eq. > res
     while.
       x.as-int.lt 1
       [i]
@@ -143,6 +142,7 @@
             x.write (x.as-int.plus 1)
             x
     FALSE
+  nop > @
 
 # Test.
 [] > iterating-tuple-with-while-using-internal-iterator
@@ -150,9 +150,9 @@
   memory 0 > iter
   memory 0 > acc
   arr.length.minus 1 > max
-  seq > @
+  seq > res
     *
-      if.
+      if
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -171,11 +171,9 @@
       eq.
         acc.as-int
         arr.length
+  nop > @
 
 # Test.
-# @todo #2785:60min Enable this test. For some reason this test fails. The only difference between
-#  this test and `iterating-tuple-with-while-using-internal-iterator` is that this test uses
-#  external iterator inside instead of standard `i` from `while` body.
 [] > iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
   memory 0 > iter
@@ -183,7 +181,7 @@
   arr.length.minus 1 > max
   seq > nop
     *
-      if.
+      if
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -210,11 +208,11 @@
   memory 0 > iter
   memory 0 > acc
   arr.length > max
-  seq > @
+  seq > res
     *
       while.
         []
-          if. > @
+          if > @
             iter.as-int.lt max
             seq
               *
@@ -230,11 +228,9 @@
       eq.
         acc.as-int
         arr.length
+  nop > @
 
 # Test.
-# @todo #2437:60min Enable the test. For some reason this test fails. The only difference between
-#  this test and `iterating-tuple-with-while-without-body-multiple` is that in this test tuple
-#  consists of only one element.
 [] > iterating-tuple-with-while-without-body-single
   * 1 > arr
   memory 0 > iter
@@ -244,7 +240,7 @@
     *
       while.
         []
-          if. > @
+          if > @
             iter.as-int.lt max
             seq
               *

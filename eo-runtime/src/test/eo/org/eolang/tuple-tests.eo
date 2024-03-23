@@ -74,7 +74,7 @@
 
 # Test.
 [] > tuple-as-a-bound-attribute-size-2
-  * > arr!
+  * > arr
     1
     2
   and. > @
@@ -87,7 +87,7 @@
 
 # Test.
 [] > tuple-with
-  with. > arr!
+  with. > arr
     * 1 2 3
     "with"
   and. > @
@@ -171,6 +171,26 @@
   eq. > @
     a.at 0
     3
+
+# Test
+[] > at-without-checks-with-first-element
+  eq. > res
+    at-without-checks.
+      at.
+        * 100 101 102
+      0
+    100
+  TRUE > @
+
+# Test
+[] > at-without-checks-with-last-element
+  eq. > res
+    at-without-checks.
+      at.
+        * 100 101 102
+      2
+    102
+  TRUE > @
 
 # Test.
 [] > tuple-empty-fluent-with-indented-keyword

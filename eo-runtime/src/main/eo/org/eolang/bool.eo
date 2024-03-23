@@ -36,9 +36,6 @@
       ^.as-bytes
       x.as-bytes
 
-  # If true, return "t", otherwise "f".
-  [t f] > if /?
-
   # NOT.
   [] > not
     eq. > @
@@ -47,9 +44,9 @@
 
   # AND.
   [x] > and
-    if. > @
+    if > @
       ^
-      if.
+      if
         x
         TRUE
         FALSE
@@ -57,10 +54,10 @@
 
   # OR.
   [x] > or
-    if. > @
+    if > @
       ^
       TRUE
-      if.
+      if
         x
         TRUE
         FALSE

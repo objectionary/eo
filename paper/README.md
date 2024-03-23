@@ -1,5 +1,6 @@
-<img src="https://rawgithub.com/yegor256/elegantobjects/master/cactus.svg" height="100px"/>
+<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
+[![arXiv](https://img.shields.io/badge/arXiv-2111.13384-green.svg)](https://arxiv.org/abs/2111.13384)
 [![make](https://github.com/objectionary/eo/actions/workflows/latexmk.yml/badge.svg)](https://github.com/objectionary/eo/actions/workflows/latexmk.yml)
 
 This is a more or less formal description of EOLANG and φ-calculus.
@@ -7,7 +8,7 @@ This is a more or less formal description of EOLANG and φ-calculus.
 To build it, just run:
 
 ```bash
-$ make
+make
 ```
 
 You need to have

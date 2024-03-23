@@ -91,7 +91,7 @@ SOFTWARE.
     <!-- This is required for later correct replacement of argLine -->
     <argLine/>
     <!-- This is the size of the stack, which you can modify from command line -->
-    <stack-size>128M</stack-size>
+    <stack-size>256M</stack-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -140,26 +140,26 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.10.1</version>
+        <version>5.10.2</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.10.1</version>
+        <version>5.10.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.10.1</version>
+        <version>5.10.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.10.1</version>
+        <version>5.10.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -219,7 +219,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.11</version>
+        <version>2.0.12</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -254,6 +254,23 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.4.0</version>
+        <executions>
+          <execution>
+            <id>check-licenses</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check-file-header</goal>
+            </goals>
+            <configuration>
+              <licenseName>mit</licenseName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
         <version>2.1.1</version>
@@ -273,7 +290,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.20</version>
+            <version>3.0.21</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -332,6 +349,7 @@ SOFTWARE.
             <systemPropertyVariables>
               <basedir>${project.basedir}</basedir>
             </systemPropertyVariables>
+            <excludedGroups>slow</excludedGroups>
             <properties>
               <configurationParameters>
                 junit.jupiter.execution.parallel.enabled = true
@@ -360,9 +378,17 @@ SOFTWARE.
             </configuration>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <!--In order to include slow tests too-->
+              <excludedGroups>nothing-to-exclude</excludedGroups>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>com.github.volodya-lombrozo</groupId>
             <artifactId>jtcop-maven-plugin</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.0</version>
             <configuration>
               <ignoreGeneratedTests>true</ignoreGeneratedTests>
               <exclusions>

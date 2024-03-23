@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -54,12 +55,12 @@ public final class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
     public Phi lambda() throws Exception {
         return new Data.ToPhi(
             Ram.INSTANCE.read(
-                this.attr("ρ").get().attr("ρ").get().attr("ρ").get(),
+                this.attr(Attr.RHO).get().attr(Attr.RHO).get(),
                 new Param(
-                    this.attr("ρ").get(), "position"
+                    this.attr(Attr.RHO).get(), "position"
                 ).strong(Long.class).intValue(),
                 new Param(
-                    this.attr("ρ").get(), "size"
+                    this.attr(Attr.RHO).get(), "size"
                 ).strong(Long.class).intValue()
             )
         );

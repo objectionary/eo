@@ -11,10 +11,10 @@ concurrency:
   cancel-in-progress: true
 jobs:
   latexmk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: yegor256/latexmk-action@0.10.5
+      - uses: yegor256/latexmk-action@0.11.1
         with:
           path: paper
           opts: -pdf

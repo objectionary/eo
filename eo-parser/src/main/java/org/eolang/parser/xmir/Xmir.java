@@ -43,7 +43,7 @@ public interface Xmir {
     String toEO();
 
     /**
-     * Default Xmir that prints EO with strait vertical methods.
+     * Default Xmir that prints EO with straight vertical methods.
      *
      * This class will help you turn XMIR (XML document) into EOLANG
      * plain text source code. It's as simple as this:

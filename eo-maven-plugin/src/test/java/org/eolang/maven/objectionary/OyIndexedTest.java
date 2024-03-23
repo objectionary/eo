@@ -37,7 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.29
  */
-class OyIndexedTest {
+final class OyIndexedTest {
 
     /**
      * Object name for stdout.

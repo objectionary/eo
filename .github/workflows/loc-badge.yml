@@ -1,0 +1,25 @@
+---
+name: loc-badge
+on:
+  push:
+    branches:
+      - master
+concurrency:
+  group: loc-badge-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  loc-badge:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: shadowmoose/GHA-LoC-Badge@1.0.0
+        with:
+          debug: true
+          directory: .
+          badge: target/loc-badge.svg
+      - uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          branch: gh-pages
+          folder: target
+          clean: false
+        if: github.ref == 'refs/heads/master'

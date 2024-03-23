@@ -5,4 +5,4 @@ tests:
   - /program/objects/o[@abstract and @name='main']/o[@base='.org' and @method]
   - /program/objects/o[@abstract and @name='main']/o[@base='.eolang' and @method]
   - /program/objects/o[@abstract and @name='main']/o[@base='.stdout' and @method and @name='@']
-phi: "{foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧}"
+phi: "{⟦foo ↦ ⟦bar ↦ ⟦baz ↦ ⟦main ↦ ⟦φ ↦ Φ.org.eolang.stdout⟧, λ ⤍ Package⟧, λ ⤍ Package⟧, λ ⤍ Package⟧⟧}"

@@ -1,0 +1,9 @@
+xsls: []
+tests:
+  - /program/errors[count(error)=0]
+eo: |
+  +tests
+
+  # wrong comment
+  [] > main
+    nop > @

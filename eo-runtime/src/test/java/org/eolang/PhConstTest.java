@@ -24,21 +24,22 @@
 package org.eolang;
 
 import java.security.SecureRandom;
+import net.sf.saxon.expr.parser.Loc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link PhConst}.
- *
+ * Test case for @link PhConst}.
  * @since 0.16
  */
 final class PhConstTest {
-
     @Test
-    void makesObjectConstant() {
+    void makesDataObjectConstant() {
         MatcherAssert.assertThat(
+            "Const data object should be dataizable",
             new Dataized(
                 new PhConst(
                     new Data.ToPhi("Hello, world!")
@@ -49,8 +50,17 @@ final class PhConstTest {
     }
 
     @Test
+    void behavesAsBytes() {
+        MatcherAssert.assertThat(
+            "Const object should have 'as-int' attribute which is from 'bytes' object",
+            new Dataized(new PhConst(new Data.ToPhi(42L)).attr("as-int").get()).take(Long.class),
+            Matchers.equalTo(42L)
+        );
+    }
+
+    @Test
     void caclulatesPhiOnlyOnce() {
-        final Dummy dummy = new Dummy("any");
+        final Dummy dummy = new PhConstTest.Dummy("any");
         final Phi phi = new PhConst(dummy);
         for (int idx = 0; idx < 10; ++idx) {
             MatcherAssert.assertThat(
@@ -65,13 +75,13 @@ final class PhConstTest {
     }
 
     @Test
-    void dataizesOnceEvenIfCopied() {
-        final Dummy dummy = new Dummy("child");
-        final Phi child = new PhMethod(new PhConst(dummy), "child");
-        new Dataized(child).take(Long.class);
-        final Phi copy = new PhWith(new PhCopy(child), 0, new Data.ToPhi(1L));
-        new Dataized(copy).take(Long.class);
-        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
+    void doesNotHaveAttributesOfDecoratedPhi() {
+        final Phi phi = new PhConst(new PhConstTest.Dummy("attr"));
+        Assertions.assertThrows(
+            ExUnset.class,
+            () -> phi.attr("attr").get(),
+            "Const object should behave as bytes, not as decorated object"
+        );
     }
 
     @Test
@@ -91,21 +101,9 @@ final class PhConstTest {
     }
 
     @Test
-    void dataizesNegRandomToConst() {
-        final Phi cnst = new PhConst(new PhConstTest.Rnd(Phi.Φ));
-        final double first = new Dataized(
-            cnst.attr("neg").get()
-        ).take(Double.class);
-        final double second = new Dataized(
-            cnst.attr("neg").get()
-        ).take(Double.class);
-        MatcherAssert.assertThat(first, Matchers.equalTo(second));
-    }
-
-    @Test
     void dataizesRandomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
-        final Phi eql = rnd.attr("eq").get();
+        final Phi eql = rnd.attr("eq").get().copy();
         eql.attr(0).put(rnd);
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),
@@ -114,41 +112,15 @@ final class PhConstTest {
     }
 
     @Test
-    void doesNotAllowAttributesOfDecorateeToBeSet() {
-        final Phi phi = new Boom();
-        Assertions.assertThrows(
-            ExUnset.class,
-            () -> phi.attr("x").put(new Data.ToPhi(1L))
-        );
-    }
-
-    @Test
-    void makesRhoConstToo() {
-        final String name = "kid";
-        final Dummy dummy = new Dummy(name);
-        final Phi mtd = new PhMethod(new PhConst(dummy), name);
-        for (int idx = 0; idx < 10; ++idx) {
-            MatcherAssert.assertThat(
-                new Dataized(mtd).take(Long.class),
-                Matchers.is(1L)
-            );
-        }
+    void doesNotRecalculateAfterCopying() {
+        final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
         MatcherAssert.assertThat(
-            dummy.count,
-            Matchers.equalTo(1)
+            "Const object should not be recalculated after copying",
+            new Dataized(rnd).take(Long.class),
+            Matchers.equalTo(
+                new Dataized(rnd.copy()).take(Long.class)
+            )
         );
-    }
-
-    @Test
-    void keepsDecorateeConst() {
-        final Boom boom = new Boom();
-        final Phi cnst = new PhConst(boom);
-        for (int idx = 0; idx < 10; ++idx) {
-            final Phi phi = cnst.attr("φ").get().copy();
-            phi.attr("x").put(new Data.ToPhi(1L));
-            new Dataized(phi).take();
-        }
-        MatcherAssert.assertThat(boom.count, Matchers.equalTo(1));
     }
 
     @Test
@@ -170,7 +142,7 @@ final class PhConstTest {
 
     @Test
     void dataizesOnlyOnceViaEnvelopes() {
-        final Dummy dummy = new Dummy("x");
+        final Dummy dummy = new PhConstTest.Dummy("x");
         final Phi phi = new PhConst(
             new PhWith(
                 new Envelope(Phi.Φ),
@@ -195,7 +167,7 @@ final class PhConstTest {
 
     @Test
     void dataizesOnlyOnceViaMethods() {
-        final Dummy dummy = new Dummy("x");
+        final Dummy dummy = new PhConstTest.Dummy("x");
         final Phi phi = new PhConst(
             new PhWith(
                 new Envelope(Phi.Φ),
@@ -218,6 +190,56 @@ final class PhConstTest {
         );
     }
 
+    @Test
+    void usesStringRepresentationOfWrapped() {
+        final Phi phi = new PhConstTest.Dummy("some");
+        MatcherAssert.assertThat(
+            "Const object should use string representation of wrapped object",
+            new PhConst(phi).toString(),
+            Matchers.equalTo(String.format("!%s", phi))
+        );
+    }
+
+    @Test
+    void usesTermRepresentationOfWrapped() {
+        final Phi phi = new PhConstTest.Dummy("some");
+        MatcherAssert.assertThat(
+            "Const object should use term representation of wrapped object",
+            new PhConst(phi).φTerm(),
+            Matchers.equalTo(String.format("%s!", phi.φTerm()))
+        );
+    }
+
+    @Test
+    void usesLocatorOfWrapped() {
+        final Phi phi = new PhConstTest.Dummy("some");
+        MatcherAssert.assertThat(
+            "Const object should use locator of wrapped object",
+            new PhConst(phi).locator(),
+            Matchers.equalTo(phi.locator())
+        );
+    }
+
+    @Test
+    void usesFormOfWrapped() {
+        final Phi phi = new PhConstTest.Dummy("some");
+        MatcherAssert.assertThat(
+            "Const object should use form of wrapped object",
+            new PhConst(phi).forma(),
+            Matchers.equalTo(phi.forma())
+        );
+    }
+
+    @Test
+    void equalsToWrapped() {
+        final Phi phi = new PhConstTest.Dummy("some");
+        MatcherAssert.assertThat(
+            "Const object should use 'equals' of wrapped object",
+            new PhConst(phi),
+            Matchers.equalTo(phi)
+        );
+    }
+
     /**
      * Rnd.
      * @since 1.0
@@ -233,7 +255,7 @@ final class PhConstTest {
                 "φ",
                 new AtComposite(
                     this,
-                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                    self -> new Data.ToPhi(new SecureRandom().nextDouble())
                 )
             );
         }
@@ -265,31 +287,7 @@ final class PhConstTest {
                     }
                 )
             );
-            this.add(name, new AtComposite(this, PhConstTest.Kid::new));
-        }
-    }
-
-    /**
-     * Kid Phi.
-     * @since 1.0
-     */
-    private static class Kid extends PhDefault {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Kid(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add(
-                "φ",
-                new AtComposite(
-                    this,
-                    self -> new Data.ToPhi(
-                        new Dataized(self.attr("ρ").get()).take(Long.class)
-                    )
-                )
-            );
+            this.add(name, new AtComposite(this, rho -> this.attr(Attr.PHI).get()));
         }
     }
 
@@ -305,50 +303,7 @@ final class PhConstTest {
         Envelope(final Phi sigma) {
             super(sigma);
             this.add("x", new AtFree());
-            this.add("φ", new AtOnce(new AtComposite(this, rho -> rho.attr("x").get())));
-        }
-    }
-
-    /**
-     * Boom Phi.
-     * @since 1.0
-     */
-    private static class Boom extends PhDefault {
-        /**
-         * Count.
-         */
-        private int count;
-
-        /**
-         * Ctor.
-         */
-        Boom() {
-            this.add(
-                "φ",
-                new AtComposite(
-                    this,
-                    self -> {
-                        ++this.count;
-                        return new Sub(self);
-                    }
-                )
-            );
-        }
-    }
-
-    /**
-     * Sub phi.
-     * @since 1.0
-     */
-    private static class Sub extends PhDefault {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Sub(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
+            this.add("φ", new AtComposite(this, rho -> rho.attr("x").get()));
         }
     }
 }

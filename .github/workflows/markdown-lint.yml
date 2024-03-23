@@ -1,0 +1,19 @@
+---
+name: markdown-lint
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
+concurrency:
+  group: markdown-lint-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@cd7d8d697e10461458bc61a30d094dc601a8b017
+      - uses: articulate/actions-markdownlint@v1

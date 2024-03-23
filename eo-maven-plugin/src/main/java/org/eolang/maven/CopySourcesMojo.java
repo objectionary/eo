@@ -78,7 +78,7 @@ public final class CopySourcesMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "deployHash",
+        property = "eo.deployHash",
         required = true
     )
     private String deployHash;

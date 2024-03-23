@@ -32,6 +32,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cactoos.Text;
 import org.cactoos.io.InputStreamOf;
+import org.xembly.Directive;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -51,21 +52,32 @@ public final class PhiSyntax implements Syntax {
     private final Text input;
 
     /**
+     * Extra directives to append to parsed phi.
+     */
+    private final Iterable<Directive> extra;
+
+    /**
      * Ctor for the tests.
      * @param input Input
      */
     PhiSyntax(final String input) {
-        this("test", () -> input);
+        this("test", () -> input, new Directives());
     }
 
     /**
      * Ctor.
      * @param nme Name of the program
      * @param inpt Input
+     * @param extra Extra directives to append
      */
-    public PhiSyntax(final String nme, final Text inpt) {
+    public PhiSyntax(
+        final String nme,
+        final Text inpt,
+        final Iterable<Directive> extra
+    ) {
         this.name = nme;
         this.input = inpt;
+        this.extra = extra;
     }
 
     @Override
@@ -86,7 +98,7 @@ public final class PhiSyntax implements Syntax {
         new ParseTreeWalker().walk(xel, parser.program());
         final XML dom = new XMLDocument(
             new Xembler(
-                new Directives(xel).append(spy)
+                new Directives(xel).append(spy).append(this.extra)
             ).domQuietly()
         );
         new Schema(dom).check();

@@ -42,16 +42,16 @@
 # Test.
 [] > avoid-infinite-loop
   cage > x
-    TRUE.if
+    if
   x' > copy
   eq. > @
     seq
       *
         x.write
-          TRUE.if 1 0
+          if TRUE 1 0
         copy.<
         x.write
-          TRUE.if copy 0
+          if TRUE copy 0
         x
     1
 
@@ -72,7 +72,15 @@
     42
 
 # Test.
-[] > dataizes-encaged-object-lazily-first
+# The test seems not obvious, but it illustrates `cage` side effects well.
+# Here when `sum.write (x.plus 1)` is dataized `sum` needs to check if given
+# object has the valid form - `int.plus`. But `x.plus` does not have form at
+# the beginning because attribute `plus` in not taken from `x` yet.
+# So to get forma this `plus` is taken from `x`. As the result we get object
+# `42.plus` which means `42.plus.^` is `42` and it won't be changed.
+# That's why `x.write 7` rewrites value of `x` but does not affect `42.plus` and
+# does not affect `sum`.
+[] > dataizes-encaged-object-not-lazily-first
   cage 0 > x
   cage 0.plus > sum
   eq. > @
@@ -83,7 +91,7 @@
           x.plus 1
         x.write 7
         sum
-    8
+    43
 
 # Test.
 [] > dataizes-encaged-object-lazily-second
@@ -100,6 +108,8 @@
     8
 
 # Test.
+# The test seems not obvious, but you may see detailed explanation in
+# `dataizes-encaged-object-not-lazily-first` test.
 [] > dataizes-encaged-object-lazily-third
   cage 0 > x
   cage 0 > y
@@ -114,7 +124,7 @@
         y.write 13
         x.write 4
         sum
-    17
+    55
 
 # Test.
 [] > stores-abstract-object-into-cage
@@ -173,7 +183,7 @@
   [value] > pyint
     # Add.
     [y] > add
-      pyint (value.plus y.value) > @
+      pyint (^.value.plus y.value) > @
   cage pyint > x
   cage > tmp
     x.add
@@ -184,6 +194,8 @@
           pyint 0
         tmp.write
           x.add (pyint 1)
+        QQ.io.stdout
+          tmp.value
         tmp.value
     1
 
@@ -200,3 +212,22 @@
           nop
         cge.eq 10
     TRUE
+
+# Check that cage stack leads to error. Just prints the error
+# message if passes.
+[] > catches-stack-overflow
+  cage > cge
+    0.plus
+  try > @
+    []
+      seq > @
+        *
+          cge.write
+            0.plus cge
+          cge
+          FALSE
+    [stack-overflow-message]
+      QQ.io.stdout > @
+        stack-overflow-message
+    []
+      FALSE > @

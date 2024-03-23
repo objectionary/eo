@@ -1,0 +1,69 @@
+eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > iterates-over-simple-counter
+    memory 0 > x
+    and. > @
+      eq.
+        x.write 5
+        5
+      eq.
+        while.
+          x.as-int.lt 10
+          [i]
+            x.write > @
+              x.as-int.plus 1
+        11
+phi: |
+  {
+    ⟦
+      iterates-over-simple-counter ↦ ⟦
+        x ↦ Φ.org.eolang.memory(
+          α0 ↦ Φ.org.eolang.int(
+            α0 ↦ Φ.org.eolang.bytes(
+              Δ ⤍ 00-00-00-00-00-00-00-00
+            )
+          )
+        ),
+        φ ↦ ξ.x.write(
+          α0 ↦ Φ.org.eolang.int(
+            α0 ↦ Φ.org.eolang.bytes(
+              Δ ⤍ 00-00-00-00-00-00-00-05
+            )
+          )
+        ).eq(
+          α0 ↦ Φ.org.eolang.int(
+            α0 ↦ Φ.org.eolang.bytes(
+              Δ ⤍ 00-00-00-00-00-00-00-05
+            )
+          )
+        ).and(
+          α0 ↦ ξ.x.as-int.lt(
+            α0 ↦ Φ.org.eolang.int(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 00-00-00-00-00-00-00-0A
+              )
+            )
+          ).while(
+            α0 ↦ ⟦
+              i ↦ ∅,
+              φ ↦ ξ.σ.x.write(
+                α0 ↦ ξ.σ.x.as-int.plus(
+                  α0 ↦ Φ.org.eolang.int(
+                    α0 ↦ Φ.org.eolang.bytes(
+                      Δ ⤍ 00-00-00-00-00-00-00-01
+                    )
+                  )
+                )
+              )
+            ⟧
+          ).eq(
+            α0 ↦ Φ.org.eolang.int(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 00-00-00-00-00-00-00-0B
+              )
+            )
+          )
+        )
+      ⟧
+    ⟧
+  }

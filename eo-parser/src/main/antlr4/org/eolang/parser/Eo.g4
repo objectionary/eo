@@ -288,14 +288,18 @@ vapplicationArgHapplicationUnbound
     ;
 
 // Vertical anonym object as argument of vertical application
-// todo - replace with formation?
 vapplicationArgVanonymUnbound
-    : commentMandatory formation
-    | formationNameless
+    : formationNamedOrNameless
     ;
 
 formationNameless
     : attributes innersOrEol
+    ;
+
+// Formation with or without name
+formationNamedOrNameless
+    : commentMandatory formation
+    | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
@@ -420,22 +424,15 @@ vmethodOptional
 // So in order to avoid it this block was described in more detail
 // Head of vertical method can be:
 // 1. vertical method
-// 2. horizontal method
-// 3. vertical application
-// 4. horizontal application. The same logic as with a vertical application
-// 5. just an object reference
+// 2. vertical application
+// 3. just an object reference
+// 4. vertical formation
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | vmethodHeadCurrent EOL
-    ;
-
-// Head of vertical method that ends on the current line
-vmethodHeadCurrent
-    : vmethodHeadHapplication
-    | vmethodHeadHmethodExtended
-    | justNamed
+    | justNamed EOL
+    | formationNamedOrNameless
     ;
 
 methodTailOptional
@@ -448,20 +445,11 @@ vmethodHeadApplicationTail
     | happlicationTail oname? EOL
     ;
 
-vmethodHeadHmethodExtended
-    : hmethodOptional oname?
-    ;
-
 // Vertical application as head of vertical method
 // Ends on the next line
 vmethodHeadVapplication
     : (applicable | hmethodOptional | versioned) oname? vapplicationArgs
     | reversed oname? vapplicationArgsReversed
-    ;
-
-vmethodHeadHapplication
-    : (applicable | hmethodExtended) happlicationTail oname?
-    | happlicationReversed oname?
     ;
 
 // Tail of method

@@ -22,5 +22,20 @@ tests:
   - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.eolang' and @method]
   - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.bytes' and @method and @as='0']
   - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.bytes' and @method and @as='0']/text()
-phi:
-  "{xyz ↦ Φ.org.eolang.x(attr ↦ Φ.org.eolang.y, abs ↦ ⟦z ↦ ∅, φ ↦ Φ.org.eolang.w⟧, five ↦ Φ.org.eolang.int(α0 ↦ Φ.org.eolang.bytes(Δ ⤍ 00-00-00-00-00-00-00-05)))}"
+phi: |
+  {
+    ⟦
+      xyz ↦ Φ.org.eolang.x(
+        attr ↦ Φ.org.eolang.y,
+        abs ↦ ⟦
+          z ↦ ∅,
+          φ ↦ Φ.org.eolang.w
+        ⟧,
+        five ↦ Φ.org.eolang.int(
+          α0 ↦ Φ.org.eolang.bytes(
+            Δ ⤍ 00-00-00-00-00-00-00-05
+          )
+        )
+      )
+    ⟧
+  }

@@ -5,18 +5,23 @@ WS  : [ \t\r\n]+ -> skip
     ;
 
 program
-    : LCB bindings RCB
+    : HOME ARROW object
+    | LCB object RCB
     ;
 
 object
-    : formation
-    | application
-    | dispatch
+    : formation applicationsOrDispatches
+    | scoped (dispatch applicationsOrDispatches)?
     | termination
     ;
 
 formation
     : LSB bindings RSB
+    ;
+
+scoped
+    : XI
+    | HOME
     ;
 
 bindings
@@ -39,7 +44,7 @@ attribute
     : PHI
     | RHO
     | SIGMA
-    | VTX
+    | VERTEX
     | LABEL
     | alphaAttr
     ;
@@ -53,7 +58,7 @@ emptyBinding
     ;
 
 deltaBidning
-    : DELTA DASHED_ARROW BYTES
+    : DELTA DASHED_ARROW (BYTES | EMPTY)
     ;
 
 lambdaBidning
@@ -65,30 +70,14 @@ FUNCTION
     ;
 
 application
-    : (formation | dispatch | termination) bnds
+    : LB bindings RB
     ;
 
-bnds: (LB bindings RB)+
+dispatch: DOT attribute
     ;
 
-dispatch
-    : (formation | termination) bnds? attr+ disp
-    | HOME attr+ disp
-    | XI attr+ disp
-    ;
-
-disp:
-    | dispBnds attr+ disp
-    ;
-
-// The rule was separately because it's used as
-// marker where it's needed to enter the <o> object
-// in order to make application right
-dispBnds
-    : bnds
-    ;
-
-attr: DOT attribute
+applicationsOrDispatches
+    : (application | dispatch)*
     ;
 
 termination
@@ -131,7 +120,8 @@ RHO : 'ρ'
 SIGMA
     : 'σ'
     ;
-VTX : 'ν'
+VERTEX
+    : 'ν'
     ;
 DELTA
     : 'Δ'

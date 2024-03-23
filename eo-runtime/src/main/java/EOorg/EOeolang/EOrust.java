@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -190,7 +189,7 @@ public final class EOrust extends PhDefault implements Atom {
             if (result.getClass() != ConcurrentHashMap.class) {
                 throw new ClassCastException(
                     String.format(
-                        "Object inside %s has wrong class %s",
+                        "Object inside %s has wrong class %s, a ConcurrentHashMap was expected",
                         src,
                         result.getClass()
                     )
@@ -200,7 +199,7 @@ public final class EOrust extends PhDefault implements Atom {
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
-                    "File %s contains invalid data",
+                    "File %s contains invalid data, a ConcurrentHashMap objects was expected",
                     src
                 ),
                 exc

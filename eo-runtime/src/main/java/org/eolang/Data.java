@@ -24,9 +24,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EObool;
-import EOorg.EOeolang.EObytes;
-import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
@@ -74,30 +71,31 @@ public interface Data {
             final Phi object;
             byte[] bytes;
             final boolean delta;
+            final Phi eolang = Phi.Φ.attr("org").get().attr("eolang").get();
             if (obj instanceof Boolean) {
-                object = new EObool(Phi.Φ);
+                object = eolang.attr("bool").get().copy();
                 delta = false;
                 if (obj.equals(true)) {
-                    bytes = new byte[]{0x01};
+                    bytes = new byte[] {0x01};
                 } else {
-                    bytes = new byte[]{0x00};
+                    bytes = new byte[] {0x00};
                 }
             } else if (obj instanceof byte[]) {
-                object = new EObytes(Phi.Φ);
+                object = eolang.attr("bytes").get().copy();
                 delta = true;
                 bytes = (byte[]) obj;
             } else if (obj instanceof Long) {
-                object = new EOint(Phi.Φ);
+                object = eolang.attr("int").get().copy();
                 delta = false;
                 bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
-                object = new EOstring(Phi.Φ);
+                object = eolang.attr("string").get().copy();
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                object = new EOfloat(Phi.Φ);
+                object = eolang.attr("float").get().copy();
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
             } else {
@@ -112,7 +110,7 @@ public interface Data {
             if (delta) {
                 phi = new PhData(object, bytes);
             } else {
-                object.attr(0).put(new PhData(new EObytes(Phi.Φ), bytes));
+                object.attr(0).put(new PhData(eolang.attr("bytes").get().copy(), bytes));
                 phi = object;
             }
             return phi;

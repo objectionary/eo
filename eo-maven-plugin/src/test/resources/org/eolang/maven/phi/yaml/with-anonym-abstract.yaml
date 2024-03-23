@@ -1,0 +1,17 @@
+eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > test
+    ([] (^ > x)).plus > s
+      int
+phi: |
+  {
+    ⟦
+      test ↦ ⟦
+        s ↦ ⟦
+          x ↦ ξ.ρ
+        ⟧.plus(
+          α0 ↦ Φ.org.eolang.int
+        )
+      ⟧
+    ⟧
+  }

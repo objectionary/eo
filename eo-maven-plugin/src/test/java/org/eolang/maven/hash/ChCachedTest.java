@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.28.11
  */
-class ChCachedTest {
+final class ChCachedTest {
 
     @Test
     void cachesHashAndInvokesDelegateOnlyOnce() {

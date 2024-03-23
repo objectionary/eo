@@ -36,7 +36,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Tests for {@link OyFallbackSwap}.
  * @since 1.0
  */
-class OyFallbackSwapTest {
+final class OyFallbackSwapTest {
     @Test
     void getsWithFallbackNoSwapOy() throws Exception {
         MatcherAssert.assertThat(

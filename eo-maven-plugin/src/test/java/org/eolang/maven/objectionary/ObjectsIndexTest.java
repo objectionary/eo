@@ -37,7 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.29
  */
-class ObjectsIndexTest {
+final class ObjectsIndexTest {
 
     @Test
     void contains() throws Exception {

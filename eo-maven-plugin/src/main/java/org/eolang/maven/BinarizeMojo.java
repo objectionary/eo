@@ -39,8 +39,8 @@ import org.eolang.maven.rust.Names;
 /**
  * Compile binaries.
  *
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @Mojo(
     name = "binarize",

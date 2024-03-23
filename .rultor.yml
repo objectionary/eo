@@ -1,7 +1,9 @@
 architect:
   - yegor256
+ec2:
+  type: t2.large
 docker:
-  image: yegor256/rultor-image:1.22.0
+  image: yegor256/rultor-image:1.23.1
 assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
@@ -17,7 +19,7 @@ install: |
   sudo tlmgr option repository ctan
   sudo tlmgr --verify-repo=none update --self
   sudo tlmgr --verify-repo=none install $(cut -d' ' -f2 paper/DEPENDS.txt | uniq)
-  sudo tlmgr --verify-repo=none update $(cut -d' ' -f2 paper/DEPENDS.txt | uniq)
+  sudo tlmgr --verify-repo=none --no-auto-remove update $(cut -d' ' -f2 paper/DEPENDS.txt | uniq) || echo 'NO UPDATE'
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
@@ -29,8 +31,8 @@ release:
 
     mvn versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     git commit -am "${tag}"
-    mvn clean install -Dinvoker.skip
-    mvn clean deploy -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean install -DskipTests -Dinvoker.skip
+    mvn clean deploy -DskipTests -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
 
     mkdir /tmp/objectionary
     cp -R eo-runtime/src/main/eo /tmp/objectionary/objects

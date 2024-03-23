@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xmir-to-eo" version="2.0">
   <!--
-  This one maps XMIR to EO original syntax in strait notation.
+  This one maps XMIR to EO original syntax in straight notation.
   It's used in Xmir.java class.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -124,8 +124,10 @@ SOFTWARE.
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[not(@data) and not(@base)]" mode="head">
     <xsl:param name="indent"/>
-    <xsl:value-of select="$comment"/>
-    <xsl:value-of select="$indent"/>
+    <xsl:if test="@name">
+      <xsl:value-of select="$comment"/>
+      <xsl:value-of select="$indent"/>
+    </xsl:if>
     <xsl:text>[</xsl:text>
     <xsl:for-each select="o[eo:attr(.)]">
       <xsl:if test="position()&gt;1">
@@ -171,6 +173,10 @@ SOFTWARE.
         <xsl:choose>
           <xsl:when test="empty(text())">
             <xsl:text>--</xsl:text>
+          </xsl:when>
+          <xsl:when test="string-length(text())=2">
+            <xsl:value-of select="text()"/>
+            <xsl:text>-</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="replace(text(), ' ', '-')"/>
