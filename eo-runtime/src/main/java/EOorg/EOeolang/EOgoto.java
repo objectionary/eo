@@ -65,7 +65,7 @@ public final class EOgoto extends PhDefault implements Atom {
         while (true) {
             try {
                 ret = body;
-                new Dataized(body).data();
+                new Dataized(body).take();
                 break;
             } catch (final EOgoto.BackwardException ex) {
                 if (!ex.sigma.attr("σ").get().equals(this)) {

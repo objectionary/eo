@@ -62,7 +62,7 @@ final class EOerrorTest {
                     "message",
                     new Data.ToPhi("intentional error")
                 )
-            ).data()
+            ).take()
         );
     }
 
@@ -71,7 +71,7 @@ final class EOerrorTest {
     void getsReadableError(final Object cnst) {
         ExAbstract error = null;
         try {
-            new Dataized(new MyError(cnst)).data();
+            new Dataized(new MyError(cnst)).take();
         } catch (final ExAbstract exc) {
             error = exc;
         }

@@ -67,7 +67,7 @@ public final class EOseq extends PhDefault implements Atom {
                     steps.attr("at").get().copy(),
                     0, new Data.ToPhi(idx)
                 )
-            ).data();
+            ).take();
         }
         final Phi ret;
         if (length > 0) {

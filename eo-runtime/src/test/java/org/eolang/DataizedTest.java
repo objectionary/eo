@@ -54,7 +54,7 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        new Dataized(new Data.ToPhi(1L), log).data();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
@@ -79,10 +79,10 @@ final class DataizedTest {
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Dataized(wrong).data()
+                () -> new Dataized(wrong).take()
             )
         );
-        new Dataized(new Data.ToPhi(1L), log).data();
+        new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
@@ -107,7 +107,7 @@ final class DataizedTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi, log).data();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {
@@ -137,7 +137,7 @@ final class DataizedTest {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
                 final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi, log).data();
+                new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
                 } else {

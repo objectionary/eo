@@ -64,7 +64,7 @@ public final class EObool$EOwhile extends PhDefault implements Atom {
             if (!new Param(this).strong(Boolean.class)) {
                 break;
             }
-            new Dataized(last).data();
+            new Dataized(last).take();
             last = this.attr("f").get().copy();
             last.attr(0).put(new Data.ToPhi(count));
             ++count;

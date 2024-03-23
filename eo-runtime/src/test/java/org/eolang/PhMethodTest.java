@@ -61,7 +61,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
-            new Dataized(phi).data();
+            new Dataized(phi).take();
         }
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
@@ -72,7 +72,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
-            new Dataized(phi).data();
+            new Dataized(phi).take();
         }
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
@@ -81,7 +81,7 @@ final class PhMethodTest {
     void calculatesPhiOnce() {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
-        new Dataized(phi).data();
+        new Dataized(phi).take();
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
     }
 
@@ -92,7 +92,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "neg");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
-            new Dataized(phi).data();
+            new Dataized(phi).take();
         }
         MatcherAssert.assertThat(dummy.count, Matchers.equalTo(total));
     }

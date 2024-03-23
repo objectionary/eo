@@ -556,9 +556,6 @@ SOFTWARE.
     <xsl:text> = new PhData(</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>, </xsl:text>
-    <!--    <xsl:text> = new PhWith(</xsl:text>-->
-    <!--    <xsl:value-of select="$name"/>-->
-    <!--    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>-->
     <xsl:value-of select="text()"/>
     <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

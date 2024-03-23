@@ -153,7 +153,7 @@ final class UniverseDefaultTest {
         final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         MatcherAssert.assertThat(
-            new Dataized(indexed.get(copy)).data(),
+            new Dataized(indexed.get(copy)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
             )
@@ -172,7 +172,7 @@ final class UniverseDefaultTest {
             dummy.hashCode(), copy, UniverseDefaultTest.ATT
         );
         MatcherAssert.assertThat(
-            new Dataized(dummy.attr(UniverseDefaultTest.ATT).get()).data(),
+            new Dataized(dummy.attr(UniverseDefaultTest.ATT).get()).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
             )

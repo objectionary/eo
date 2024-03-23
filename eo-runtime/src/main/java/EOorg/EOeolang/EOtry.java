@@ -60,13 +60,13 @@ public final class EOtry extends PhDefault implements Atom {
     public Phi lambda() {
         Phi ret = this.attr("main").get();
         try {
-            new Dataized(ret).data();
+            new Dataized(ret).take();
         } catch (final EOerror.ExError ex) {
             final Phi ctch = this.attr("catch").get().copy();
             ctch.attr(0).put(ex.enclosure());
             ret = ctch;
         } finally {
-            new Dataized(this.attr("finally").get()).data();
+            new Dataized(this.attr("finally").get()).take();
         }
         return ret;
     }

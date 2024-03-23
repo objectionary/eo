@@ -88,7 +88,7 @@ final class EOtupleEOatTest {
     void checksOutOfBounds() {
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(this.get(-3L)).data()
+            () -> new Dataized(this.get(-3L)).take()
         );
     }
 

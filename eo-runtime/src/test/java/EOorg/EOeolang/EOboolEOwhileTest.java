@@ -78,7 +78,7 @@ final class EOboolEOwhileTest {
                 0,
                 new PhFake(() -> new Data.ToPhi(body.incrementAndGet()))
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             body.get(), Matchers.equalTo(1L)
         );
@@ -104,7 +104,7 @@ final class EOboolEOwhileTest {
                 0,
                 new PhFake(() -> new Data.ToPhi(body.incrementAndGet()))
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             body.get(), Matchers.equalTo(total)
         );
@@ -119,14 +119,14 @@ final class EOboolEOwhileTest {
                 new PhCopy(new PhMethod(toggle, "write")),
                 0, new Data.ToPhi(true)
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
                     toggle.attr("as-bool").get().attr("while").get().copy(),
                     0, new Kid(Phi.Φ, toggle)
                 )
-            ).data(),
+            ).take(),
             Matchers.notNullValue()
         );
     }
@@ -141,7 +141,7 @@ final class EOboolEOwhileTest {
                 ),
                 0, new Data.ToPhi(true)
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
@@ -154,7 +154,7 @@ final class EOboolEOwhileTest {
                     ),
                     0, new Kid(Phi.Φ, toggle)
                 )
-            ).data(),
+            ).take(),
             Matchers.notNullValue()
         );
     }
@@ -212,7 +212,7 @@ final class EOboolEOwhileTest {
                                 0,
                                 new Data.ToPhi(false)
                             )
-                        ).data();
+                        ).take();
                         return new Data.ToPhi(1L);
                     }
                 )

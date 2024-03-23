@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * @since 0.1
  */
 @Versionized
-public final class Dataized implements Data {
+public final class Dataized {
 
     /**
      * Dataization level.
@@ -84,8 +84,7 @@ public final class Dataized implements Data {
         this.logger = log;
     }
 
-    @Override
-    public byte[] data() {
+    public byte[] take() {
         return this.phi.data();
     }
 
@@ -96,7 +95,7 @@ public final class Dataized implements Data {
      * @return The data
      */
     public <T> T take(final Class<T> type) {
-        final byte[] weak = this.data();
+        final byte[] weak = this.take();
         final Object strong;
         if (type.equals(Long.class)) {
             strong = new BytesOf(weak).asNumber(Long.class);

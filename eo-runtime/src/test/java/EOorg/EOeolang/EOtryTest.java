@@ -141,7 +141,7 @@ public final class EOtryTest {
                 new AtComposite(
                     this,
                     self -> new Data.ToPhi(
-                        new Dataized(new Data.ToPhi(42L)).data()
+                        new Dataized(new Data.ToPhi(42L)).take()
                     )
                 )
             );

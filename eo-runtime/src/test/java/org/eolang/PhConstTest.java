@@ -180,8 +180,8 @@ final class PhConstTest {
                 )
             )
         );
-        new Dataized(phi).data();
-        new Dataized(phi).data();
+        new Dataized(phi).take();
+        new Dataized(phi).take();
         MatcherAssert.assertThat(
             dummy.count,
             Matchers.equalTo(1)

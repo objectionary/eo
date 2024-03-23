@@ -120,7 +120,7 @@ public final class PhConst implements Phi {
                 new Data.ToPhi(
                     new Dataized(
                         this.wrapped
-                    ).data()
+                    ).take()
                 )
             );
         }

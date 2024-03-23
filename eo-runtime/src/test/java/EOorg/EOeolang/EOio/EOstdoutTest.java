@@ -106,7 +106,7 @@ public final class EOstdoutTest {
                     new Data.ToPhi(str)
                 )
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
@@ -132,7 +132,7 @@ public final class EOstdoutTest {
                     new Data.ToPhi(str)
                 )
             )
-        ).data();
+        ).take();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
@@ -179,7 +179,7 @@ public final class EOstdoutTest {
                                     )
                                 )
                             )
-                        ).data()
+                        ).take()
                     )
                 )
             );
