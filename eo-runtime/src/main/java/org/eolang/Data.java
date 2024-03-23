@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOint;
-import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -40,20 +38,14 @@ public interface Data {
      * Take the data.
      * @return The data
      */
-    byte[] take();
+    byte[] data();
 
     /**
      * Makes a {@link Phi} out of a Java object, like {@link String} or {@link Integer}.
      *
-     * <p>This is more convenient than making {@link EOstring} and then
-     * injecting "Δ" into it. This class is used in Java tests mostly
-     * for the sake of brevity. In auto-generated Java code we use
-     * {@link EOint}/{@link EOstring}
-     * and then inject "Δ" with {@link Data.Value} into it.
-     *
      * @since 0.1
      */
-    final class ToPhi extends PhWrap {
+    final class ToPhi extends PhEnvelope {
         /**
          * Ctor.
          * @param obj Data
@@ -87,7 +79,7 @@ public interface Data {
             } else if (obj instanceof Long) {
                 object = eolang.attr("int").get().copy();
                 delta = false;
-                bytes = new BytesOf((Long) obj).take();
+                bytes = new BytesOf((Long) obj).data();
             } else if (obj instanceof String) {
                 object = eolang.attr("string").get().copy();
                 delta = false;
@@ -97,7 +89,7 @@ public interface Data {
             } else if (obj instanceof Double) {
                 object = eolang.attr("float").get().copy();
                 delta = false;
-                bytes = new BytesOf((Double) obj).take();
+                bytes = new BytesOf((Double) obj).data();
             } else {
                 throw new IllegalArgumentException(
                     String.format(

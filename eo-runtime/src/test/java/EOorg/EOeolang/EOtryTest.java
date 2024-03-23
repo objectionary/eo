@@ -33,7 +33,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -142,7 +141,7 @@ public final class EOtryTest {
                 new AtComposite(
                     this,
                     self -> new Data.ToPhi(
-                        new Dataized(new Data.ToPhi(42L)).take()
+                        new Dataized(new Data.ToPhi(42L)).data()
                     )
                 )
             );

@@ -25,8 +25,6 @@
 package org.eolang;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -87,8 +85,8 @@ public final class Dataized implements Data {
     }
 
     @Override
-    public byte[] take() {
-        return this.phi.take();
+    public byte[] data() {
+        return this.phi.data();
     }
 
     /**
@@ -98,7 +96,7 @@ public final class Dataized implements Data {
      * @return The data
      */
     public <T> T take(final Class<T> type) {
-        final byte[] weak = this.take();
+        final byte[] weak = this.data();
         final Object strong;
         if (type.equals(Long.class)) {
             strong = new BytesOf(weak).asNumber(Long.class);

@@ -341,7 +341,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
-            new Dataized(phi).take();
+            new Dataized(phi).data();
         }
         MatcherAssert.assertThat(
             new Dataized(new PhMethod(phi, "count")).take(Long.class),

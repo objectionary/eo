@@ -31,7 +31,6 @@ import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhConst;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
@@ -68,7 +67,7 @@ public final class EOseq extends PhDefault implements Atom {
                     steps.attr("at").get().copy(),
                     0, new Data.ToPhi(idx)
                 )
-            ).take();
+            ).data();
         }
         final Phi ret;
         if (length > 0) {

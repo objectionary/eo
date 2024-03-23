@@ -90,7 +90,7 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes not() {
-        final byte[] copy = this.take();
+        final byte[] copy = this.data();
         for (int index = 0; index < copy.length; index += 1) {
             copy[index] = (byte) ~copy[index];
         }
@@ -99,8 +99,8 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes and(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
+        final byte[] first = this.data();
+        final byte[] second = other.data();
         for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
             first[index] = (byte) (first[index] & second[index]);
         }
@@ -109,8 +109,8 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes or(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
+        final byte[] first = this.data();
+        final byte[] second = other.data();
         for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
             first[index] = (byte) (first[index] | second[index]);
         }
@@ -119,8 +119,8 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes xor(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
+        final byte[] first = this.data();
+        final byte[] second = other.data();
         for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
             first[index] = (byte) (first[index] ^ second[index]);
         }
@@ -131,7 +131,7 @@ public final class BytesOf implements Bytes {
     public Bytes shift(final int bits) {
         // @checkstyle MethodBodyCommentsCheck (3 lines)
         // @checkstyle NestedIfDepthCheck (40 lines)
-        final byte[] bytes = this.take();
+        final byte[] bytes = this.data();
         final int mod = Math.abs(bits) % Byte.SIZE;
         final int offset = Math.abs(bits) / Byte.SIZE;
         if (bits < 0) {
@@ -171,8 +171,8 @@ public final class BytesOf implements Bytes {
         if (bits < 0) {
             throw new UnsupportedOperationException("right sshift is NYI");
         }
-        final byte[] bytes = this.shift(bits).take();
-        if (this.take()[0] < 0) {
+        final byte[] bytes = this.shift(bits).data();
+        if (this.data()[0] < 0) {
             for (int index = 0; index < bytes.length; index += 1) {
                 final int zeros = BytesOf.numberOfLeadingZeros(
                     bytes[index]
@@ -188,7 +188,7 @@ public final class BytesOf implements Bytes {
 
     @Override
     public <T extends Number> T asNumber(final Class<T> type) {
-        final byte[] ret = this.take();
+        final byte[] ret = this.data();
         final Object res;
         final ByteBuffer buf = ByteBuffer.wrap(ret);
         if (Long.class.equals(type)
@@ -215,7 +215,7 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
-    public byte[] take() {
+    public byte[] data() {
         return Arrays.copyOf(this.data, this.data.length);
     }
 
@@ -230,7 +230,7 @@ public final class BytesOf implements Bytes {
         if (this == other) {
             result = true;
         } else if (other instanceof Bytes) {
-            result = Arrays.equals(this.data, ((Bytes) other).take());
+            result = Arrays.equals(this.data, ((Bytes) other).data());
         } else {
             result = false;
         }

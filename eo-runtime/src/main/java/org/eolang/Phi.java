@@ -94,8 +94,8 @@ public interface Phi extends Term, Data {
         }
 
         @Override
-        public byte[] take() {
-            return this.pkg.take();
+        public byte[] data() {
+            return this.pkg.data();
         }
     };
 

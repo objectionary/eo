@@ -129,7 +129,7 @@ public final class UniverseDefault implements Universe {
         return new Param(
             this.get(vertex),
             "Δ"
-        ).asBytes().take();
+        ).asBytes().data();
     }
 
     /**

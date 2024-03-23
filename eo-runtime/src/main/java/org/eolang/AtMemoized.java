@@ -85,7 +85,7 @@ public final class AtMemoized implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        final byte[] bytes = new Dataized(phi).take();
+        final byte[] bytes = new Dataized(phi).data();
         if (this.length == null) {
             this.length = bytes.length;
         } else if (this.length < bytes.length) {

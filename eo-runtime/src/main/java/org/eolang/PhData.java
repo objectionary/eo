@@ -41,7 +41,7 @@ public class PhData implements Phi {
 
     /**
      * Ctor.
-     * @param phi   Original phi
+     * @param phi Original phi
      * @param bytes Bytes
      */
     public PhData(final Phi phi, final byte[] bytes) {
@@ -50,7 +50,7 @@ public class PhData implements Phi {
     }
 
     @Override
-    public byte[] take() {
+    public byte[] data() {
         return this.data;
     }
 
@@ -61,12 +61,12 @@ public class PhData implements Phi {
 
     @Override
     public Attr attr(final int pos) {
-        return new AtData(this, this.origin.attr(pos));
+        return new AtData(this.origin.attr(pos), this.origin, this);
     }
 
     @Override
     public Attr attr(final String name) {
-        return new AtData(this, this.origin.attr(name));
+        return new AtData(this.origin.attr(name), this.origin, this);
     }
 
     @Override

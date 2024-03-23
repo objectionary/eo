@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtFree;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;
@@ -65,7 +64,7 @@ public final class EObool$EOwhile extends PhDefault implements Atom {
             if (!new Param(this).strong(Boolean.class)) {
                 break;
             }
-            new Dataized(last).take();
+            new Dataized(last).data();
             last = this.attr("f").get().copy();
             last.attr(0).put(new Data.ToPhi(count));
             ++count;

@@ -82,5 +82,4 @@ public interface Attr extends Term {
      * @param phi The object to put
      */
     void put(Phi phi);
-
 }

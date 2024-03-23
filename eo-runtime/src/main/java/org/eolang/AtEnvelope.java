@@ -67,9 +67,4 @@ public abstract class AtEnvelope implements Attr {
     public String toString() {
         return this.origin.toString();
     }
-
-    @Override
-    public byte[] take() {
-        return this.origin.take();
-    }
 }

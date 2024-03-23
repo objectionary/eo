@@ -59,7 +59,7 @@ public final class EObytes$EOnot extends PhDefault implements Atom {
             new Param(this)
                 .asBytes()
                 .not()
-                .take()
+                .data()
         );
     }
 }

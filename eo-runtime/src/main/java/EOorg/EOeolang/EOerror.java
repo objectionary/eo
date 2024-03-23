@@ -134,7 +134,7 @@ public final class EOerror extends PhDefault implements Atom {
                 result = "null Phi";
             } else {
                 try {
-                    final byte[] raw = new Dataized(enclosure).take();
+                    final byte[] raw = new Dataized(enclosure).data();
                     result = String.format(
                         "%s(Δ = %s)",
                         enclosure,

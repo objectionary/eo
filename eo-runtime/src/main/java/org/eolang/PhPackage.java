@@ -149,7 +149,7 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public byte[] take() {
+    public byte[] data() {
         throw new ExFailure(
             String.format("Can't #take() data from package object '%s'", this.pkg)
         );

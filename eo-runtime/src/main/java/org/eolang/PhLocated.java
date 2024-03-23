@@ -129,7 +129,7 @@ public final class PhLocated implements Phi {
     }
 
     @Override
-    public byte[] take() {
-        return this.origin.take();
+    public byte[] data() {
+        return this.origin.data();
     }
 }

@@ -120,7 +120,7 @@ public final class PhConst implements Phi {
                 new Data.ToPhi(
                     new Dataized(
                         this.wrapped
-                    ).take()
+                    ).data()
                 )
             );
         }
@@ -128,7 +128,7 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public byte[] take() {
-        return this.origin.take();
+    public byte[] data() {
+        return this.primitive().data();
     }
 }

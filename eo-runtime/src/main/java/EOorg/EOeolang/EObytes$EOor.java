@@ -61,7 +61,7 @@ public final class EObytes$EOor extends PhDefault implements Atom {
         return new Data.ToPhi(
             new Param(this).asBytes().or(
                 new Param(this, "b").asBytes()
-            ).take()
+            ).data()
         );
     }
 }

@@ -94,11 +94,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     private Map<String, Attr> attrs;
 
     /**
-     * Cached \phi.
-     */
-    private CachedPhi cached = new CachedPhi();
-
-    /**
      * Ctor.
      */
     public PhDefault() {
@@ -187,7 +182,6 @@ public abstract class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
             copy.form = this.form;
-            copy.cached = new CachedPhi();
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), new AtSetRho(ent.getValue().copy(copy), copy, ent.getKey()));
@@ -240,25 +234,22 @@ public abstract class PhDefault implements Phi, Cloneable {
         Attr attr;
         if (name.equals(Attr.VERTEX)) {
             attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
-        } else {
+        } else if (this.attrs.containsKey(name)) {
             attr = this.attrs.get(name);
-        }
-        if (attr == null) {
-            if (this instanceof Atom) {
-                attr = new AtomSafe((Atom) this).lambda().attr(name);
-            } else if (this.attrs.containsKey(Attr.PHI)) {
-                attr = this.attr(Attr.PHI).get().attr(name);
-            } else {
-                attr = new AtAbsent(
-                    name,
-                    String.format(
-                        " among other %d attrs (%s) and %s is absent",
-                        this.attrs.size(),
-                        String.join(", ", this.attrs.keySet()),
-                        Attr.PHI
-                    )
-                );
-            }
+        } else if (this instanceof Atom) {
+            attr = new AtomSafe((Atom) this).lambda().attr(name);
+        } else if (this.attrs.containsKey(Attr.PHI)) {
+            attr = this.attr(Attr.PHI).get().attr(name);
+        } else {
+            attr = new AtAbsent(
+                name,
+                String.format(
+                    " among other %d attrs (%s) and %s is absent",
+                    this.attrs.size(),
+                    String.join(", ", this.attrs.keySet()),
+                    Attr.PHI
+                )
+            );
         }
         attr = new AtSafe(this.named(attr, name));
         PhDefault.debug(
@@ -285,12 +276,12 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public byte[] take() {
+    public byte[] data() {
         final byte[] data;
         if (this instanceof Atom) {
-            data = new AtomSafe((Atom) this).lambda().take();
+            data = new AtomSafe((Atom) this).lambda().data();
         } else if (this.attrs.containsKey(Attr.PHI)) {
-            data = this.attr(Attr.PHI).get().take();
+            data = this.attr(Attr.PHI).get().data();
         } else {
             throw new ExFailure(
                 "There's no data in the object, can't take it"

@@ -44,7 +44,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -111,13 +110,13 @@ final class EOcageTest {
                 cage.attr("write").get().copy(),
                 0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
             )
-        ).take();
+        ).data();
         new Dataized(
             new PhWith(
                 cage.attr("write").get().copy(),
                 0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, cage.copy())
             )
-        ).take();
+        ).data();
         MatcherAssert.assertThat(
             new Dataized(
                 cage.attr("x").get().attr("x").get()
@@ -163,7 +162,7 @@ final class EOcageTest {
                 second.attr("write").get(),
                 "x", new Data.ToPhi(2L)
             )
-        ).take();
+        ).data();
         MatcherAssert.assertThat(
             new Dataized(first).take(Long.class),
             Matchers.equalTo(1L)
@@ -225,7 +224,7 @@ final class EOcageTest {
     private static void writeTo(final Phi cage, final Phi obj) {
         final Phi write = cage.attr("write").get().copy();
         write.attr(0).put(obj);
-        new Dataized(write).take();
+        new Dataized(write).data();
     }
 
     /**
@@ -259,7 +258,7 @@ final class EOcageTest {
             writeTo(cage, cage);
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new Dataized(cage).take(),
+                () -> new Dataized(cage).data(),
                 "We expect the exception to be thrown since we have recursion here"
             );
         }
@@ -272,7 +271,7 @@ final class EOcageTest {
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
             Assertions.assertDoesNotThrow(
-                () -> new Dataized(cage).take(),
+                () -> new Dataized(cage).data(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
                     PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
@@ -293,7 +292,7 @@ final class EOcageTest {
                 new RecursiveDummy(MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
-                () -> new Dataized(cage).take(),
+                () -> new Dataized(cage).data(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
                     PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
@@ -312,7 +311,7 @@ final class EOcageTest {
             );
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new Dataized(cage).take(),
+                () -> new Dataized(cage).data(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
                     PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,

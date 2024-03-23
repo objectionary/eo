@@ -28,7 +28,7 @@ package org.eolang;
  * Wrapper for {@link Phi}.
  * @since 0.36.0
  */
-abstract public class PhWrap implements Phi {
+abstract public class PhEnvelope implements Phi {
     /**
      * Original phi.
      */
@@ -38,13 +38,13 @@ abstract public class PhWrap implements Phi {
      * Ctor.
      * @param phi Original phi
      */
-    public PhWrap(final Phi phi) {
+    public PhEnvelope(final Phi phi) {
         this.origin = phi;
     }
 
     @Override
-    public byte[] take() {
-        return this.origin.take();
+    public byte[] data() {
+        return this.origin.data();
     }
 
     @Override

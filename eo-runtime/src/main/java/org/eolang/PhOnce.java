@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
- * An object wrapping another one.
+ * An object wrapping another one via caching lambda.
  *
  * @since 0.1
  */
@@ -127,7 +127,7 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public byte[] take() {
-        return this.object.get().take();
+    public byte[] data() {
+        return this.object.get().data();
     }
 }

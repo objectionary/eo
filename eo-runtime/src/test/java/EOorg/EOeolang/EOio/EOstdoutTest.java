@@ -28,7 +28,6 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOseq;
-import EOorg.EOeolang.EOtuple;
 import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -107,7 +106,7 @@ public final class EOstdoutTest {
                     new Data.ToPhi(str)
                 )
             )
-        ).take();
+        ).data();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
@@ -133,7 +132,7 @@ public final class EOstdoutTest {
                     new Data.ToPhi(str)
                 )
             )
-        ).take();
+        ).data();
         MatcherAssert.assertThat(
             stream.toString(),
             Matchers.equalTo(str)
@@ -180,7 +179,7 @@ public final class EOstdoutTest {
                                     )
                                 )
                             )
-                        ).take()
+                        ).data()
                     )
                 )
             );
