@@ -42,7 +42,6 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -50,9 +49,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test case for {@link EOstdout}.
  * @since 0.1
- * @todo #2931:30min Enable the test {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
- *  The test was disabled after new rho logic was introduced and {@link org.eolang.PhConst} stopped
- *  working properly. Need to enable the test when it's possible.
  */
 public final class EOstdoutTest {
     @Test
@@ -116,7 +112,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    @Disabled
     public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
