@@ -46,7 +46,7 @@ import org.junit.jupiter.params.provider.ValueSource;
  * @since 0.22
  */
 final class HmBaseTest {
-    
+
     /**
      * Empty message for JUnit Assertions.
      */

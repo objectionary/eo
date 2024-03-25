@@ -123,9 +123,9 @@ final class OptimizationTask {
     private Path make(final XML xml, final Path file) throws IOException {
         final String name = new XMLDocument(file).xpath("/program/@name").get(0);
         final Place place = new Place(name);
-        final Path dir = this.paths.get(OptimizationFolder.TARGET.key());
+        final Path dir = this.paths.get(OptimizationFolder.TARGET.getKey());
         final Path target = place.make(
-            dir.resolve(this.dirs.get(OptimizationFolder.TARGET.key())), TranspileMojo.EXT
+            dir.resolve(this.dirs.get(OptimizationFolder.TARGET.getKey())), TranspileMojo.EXT
         );
         new HmBase(dir).save(
             xml.toString(),
@@ -153,8 +153,8 @@ final class OptimizationTask {
             res = new OptCached(
                 common,
                 this.paths.get(
-                    OptimizationFolder.CACHE.key()
-                ).resolve(this.dirs.get(OptimizationFolder.CACHE.key())).resolve(tojo.hash()),
+                    OptimizationFolder.CACHE.getKey()
+                ).resolve(this.dirs.get(OptimizationFolder.CACHE.getKey())).resolve(tojo.hash()),
                 this.source.apply(tojo)
             );
         } else {

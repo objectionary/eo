@@ -72,6 +72,7 @@ public final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public Walk includes(final Collection<String> globs) {
         return new Walk(
             this.home,
@@ -90,6 +91,7 @@ public final class Walk extends ListEnvelope<Path> {
      * @param globs List of them
      * @return New Walk
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public Walk excludes(final Collection<String> globs) {
         return new Walk(
             this.home,

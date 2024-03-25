@@ -46,14 +46,14 @@ import org.junit.jupiter.api.io.TempDir;
 final class BinarizeMojoTest {
 
     /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String EMPTY_MSG = "EMPTY MESSAGE";
-
-    /**
      * Sources for the tests.
      */
     public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
+
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
 
     /**
      * BinarizeMojo can binarize without errors.

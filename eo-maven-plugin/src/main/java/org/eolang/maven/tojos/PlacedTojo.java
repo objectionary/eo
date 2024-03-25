@@ -50,7 +50,7 @@ public final class PlacedTojo {
      * @return The id.
      */
     public String identifier() {
-        return this.origin.get(PlacedTojos.Attribute.ID.key());
+        return this.origin.get(PlacedTojos.Attribute.ID.getKey());
     }
 
     /**
@@ -58,7 +58,7 @@ public final class PlacedTojo {
      * @return The dependency.
      */
     public String dependency() {
-        return this.origin.get(PlacedTojos.Attribute.DEPENDENCY.key());
+        return this.origin.get(PlacedTojos.Attribute.DEPENDENCY.getKey());
     }
 
     /**
@@ -66,7 +66,7 @@ public final class PlacedTojo {
      * @return The related file path.
      */
     public String related() {
-        return this.origin.get(PlacedTojos.Attribute.RELATED.key());
+        return this.origin.get(PlacedTojos.Attribute.RELATED.getKey());
     }
 
     /**
@@ -75,14 +75,14 @@ public final class PlacedTojo {
      * @return True if the hash is the same.
      */
     public boolean sameHash(final String hash) {
-        return this.origin.get(PlacedTojos.Attribute.HASH.key()).equals(hash);
+        return this.origin.get(PlacedTojos.Attribute.HASH.getKey()).equals(hash);
     }
 
     /**
      * Mark the tojo as unplaced.
      */
     public void unplace() {
-        this.origin.set(PlacedTojos.Attribute.UNPLACED.key(), "true");
+        this.origin.set(PlacedTojos.Attribute.UNPLACED.getKey(), "true");
     }
 
     /**
@@ -90,7 +90,7 @@ public final class PlacedTojo {
      * @return True if the tojo is a class.
      */
     public boolean isClass() {
-        return "class".equals(this.origin.get(PlacedTojos.Attribute.KIND.key()));
+        return "class".equals(this.origin.get(PlacedTojos.Attribute.KIND.getKey()));
     }
 
     /**
@@ -98,7 +98,7 @@ public final class PlacedTojo {
      * @return True if the tojo is a jar.
      */
     public boolean isJar() {
-        return "jar".equals(this.origin.get(PlacedTojos.Attribute.KIND.key()));
+        return "jar".equals(this.origin.get(PlacedTojos.Attribute.KIND.getKey()));
     }
 
     /**
@@ -114,7 +114,7 @@ public final class PlacedTojo {
      * @return True if the tojo is unplaced.
      */
     public boolean unplaced() {
-        return this.origin.exists(PlacedTojos.Attribute.UNPLACED.key())
-            && "true".equals(this.origin.get(PlacedTojos.Attribute.UNPLACED.key()));
+        return this.origin.exists(PlacedTojos.Attribute.UNPLACED.getKey())
+            && "true".equals(this.origin.get(PlacedTojos.Attribute.UNPLACED.getKey()));
     }
 }

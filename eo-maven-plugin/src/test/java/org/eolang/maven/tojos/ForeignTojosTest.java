@@ -44,6 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.29.5
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class ForeignTojosTest {
 
     /**

@@ -259,6 +259,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -383,35 +384,36 @@ abstract class SafeMojo extends AbstractMojo {
      */
     private void exitError(final String msg, final Throwable exp)
         throws MojoFailureException {
+        if (!this.unrollExitError) {
+            return;
+        }
         final MojoFailureException out = new MojoFailureException(msg, exp);
-        if (this.unrollExitError) {
-            final List<String> causes = SafeMojo.causes(exp);
-            for (int pos = 0; pos < causes.size(); ++pos) {
-                final String cause = causes.get(pos);
-                if (cause == null) {
-                    causes.remove(pos);
+        final List<String> causes = SafeMojo.causes(exp);
+        for (int pos = 0; pos < causes.size(); ++pos) {
+            final String cause = causes.get(pos);
+            if (cause == null) {
+                causes.remove(pos);
+                break;
+            }
+        }
+        int idx = 0;
+        while (true) {
+            if (idx >= causes.size()) {
+                break;
+            }
+            final String cause = causes.get(idx);
+            for (int later = idx + 1; later < causes.size(); ++later) {
+                final String another = causes.get(later);
+                if (another != null && cause.contains(another)) {
+                    causes.remove(idx);
+                    idx -= 1;
                     break;
                 }
             }
-            int idx = 0;
-            while (true) {
-                if (idx >= causes.size()) {
-                    break;
-                }
-                final String cause = causes.get(idx);
-                for (int later = idx + 1; later < causes.size(); ++later) {
-                    final String another = causes.get(later);
-                    if (another != null && cause.contains(another)) {
-                        causes.remove(idx);
-                        idx -= 1;
-                        break;
-                    }
-                }
-                idx += 1;
-            }
-            for (final String cause : new LinkedHashSet<>(causes)) {
-                Logger.error(this, cause);
-            }
+            idx += 1;
+        }
+        for (final String cause : new LinkedHashSet<>(causes)) {
+            Logger.error(this, cause);
         }
         throw out;
     }

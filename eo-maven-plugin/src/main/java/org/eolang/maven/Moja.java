@@ -85,6 +85,7 @@ public final class Moja<T extends AbstractMojo> {
      * @param mojo Another mojo
      * @return Itself
      */
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     public Moja<T> copy(final Object mojo) {
         final Collection<String> mine = new ListOf<>(
             new Mapped<>(
@@ -157,6 +158,7 @@ public final class Moja<T extends AbstractMojo> {
      *  can't be set to the Mojo, we can't just remove Logger.warn. On the other hand, we will
      *  see warnings all the time during unit testing, which can be an insignificant problem.
      */
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private void initField(
         final Class<?> clazz,
         final AbstractMojo mojo,

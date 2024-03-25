@@ -75,12 +75,12 @@ public final class VerifyMojo extends SafeMojo {
             this.optimization(),
             new OptimizationTask(
                 new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
                 ),
                 new MapOf<String, String>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), "6-verify"),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), "verified")
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), "6-verify"),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), "verified")
                 ),
                 ForeignTojo::withVerified,
                 ForeignTojo::shaken
