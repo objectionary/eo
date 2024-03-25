@@ -33,14 +33,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link DcsWithRuntime}.
  *
  * @since 0.28.11
- * @todo #2297:60min Add message to all JUnit assertions and remove corresponding
- *  {@code @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")} annotation.
  */
 final class DcsWithRuntimeTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void addsHardcodedVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
             new DcsWithRuntime(
@@ -53,7 +50,6 @@ final class DcsWithRuntimeTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
     void addsRemoteVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
             new DcsWithRuntime(
