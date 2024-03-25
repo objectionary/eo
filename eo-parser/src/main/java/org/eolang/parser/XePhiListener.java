@@ -53,7 +53,8 @@ import org.xembly.Directives;
     "PMD.TooManyMethods",
     "PMD.AvoidDuplicateLiterals",
     "PMD.ExcessivePublicCount",
-    "PMD.ExcessiveClassLength"
+    "PMD.ExcessiveClassLength",
+    "PMD.GodClass"
 })
 public final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
@@ -324,7 +325,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .start()
             .prop("data", "bytes")
             .prop("base", "org.eolang.bytes");
-        if (!ctx.BYTES().getText().equals("--")) {
+        if (!"--".equals(ctx.BYTES().getText())) {
             this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
         }
         this.objects().leave();
@@ -337,7 +338,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
-        if (!ctx.FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE)) {
+        if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
             this.objects().prop("atom");
         }
     }

@@ -289,7 +289,7 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
-    void checksTypoPacks(final String yml) throws IOException, NumberFormatException {
+    void checksTypoPacks(final String yml) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         Assumptions.assumeTrue(map.get("skip") == null);

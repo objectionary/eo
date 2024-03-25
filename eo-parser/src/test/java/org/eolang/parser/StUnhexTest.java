@@ -39,7 +39,7 @@ final class StUnhexTest {
      * Empty message for JUnit Assertions.
      */
     private static final String EMPTY_MSG = "EMPTY MESSAGE";
-    
+
     @Test
     void convertsIntFromHexToEo() {
         MatcherAssert.assertThat(
