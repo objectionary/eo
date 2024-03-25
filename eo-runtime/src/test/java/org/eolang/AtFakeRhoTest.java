@@ -60,7 +60,7 @@ public class AtFakeRhoTest {
         Assertions.assertThrows(
             ExUnset.class,
             new AtFakeRho(
-                parent.attr("child").get().attr(Attr.RHO),
+                parent.attr(Attr.RHO),
                 parent,
                 new PhFake(() -> new Data.ToPhi(10L))
             )::get,
@@ -70,7 +70,7 @@ public class AtFakeRhoTest {
 
     @Test
     void fakesRhoIfGivenParentIsEqualToRealRho() {
-        final Phi parent = new Parent().copy();
+        final Phi parent = new Parent();
         MatcherAssert.assertThat(
             "Rho should be faked if given parent is equal to real rho",
             new Dataized(

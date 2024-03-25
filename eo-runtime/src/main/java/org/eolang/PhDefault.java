@@ -113,7 +113,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
         this.add(Attr.SIGMA, new AtFixed(sigma));
-        this.add(Attr.VERTEX, new AtFormed(() -> new Data.ToPhi((long) this.hashCode())));
+        this.add(Attr.VERTEX, new AtComposite(this, rho -> new Data.ToPhi((long) rho.hashCode())));
     }
 
     @Override
@@ -183,11 +183,11 @@ public abstract class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
             copy.form = this.form;
-//            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-//            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-//                map.put(ent.getKey(), ent.getValue().copy(copy));
-//            }
-//            copy.attrs = map;
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                map.put(ent.getKey(), ent.getValue().copy(copy));
+            }
+            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -237,7 +237,11 @@ public abstract class PhDefault implements Phi, Cloneable {
         if (this.attrs.containsKey(name)) {
             attr = new AtSetRho(this.attrs.get(name), rho, name);
         } else if (this instanceof Atom) {
-            attr = new AtomSafe((Atom) this).lambda().attr(name, rho);
+            attr = new AtSetRho(
+                new AtSimple(new AtomSafe((Atom) this).lambda()),
+                rho,
+                Attr.LAMBDA
+            ).get().attr(name, rho);
         } else if (this.attrs.containsKey(Attr.PHI)) {
             attr = this.attr(Attr.PHI, rho).get().attr(name, rho);
         } else {

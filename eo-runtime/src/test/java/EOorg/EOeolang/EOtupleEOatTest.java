@@ -101,7 +101,7 @@ final class EOtupleEOatTest {
         copy.attr(0).put(empty);
         copy.attr(1).put(new Data.ToPhi(10L));
         final Phi phi = new PhWith(
-            new Parenting(Phi.Φ).copy(),
+            new Parenting(Phi.Φ),
             "args", copy
         );
         MatcherAssert.assertThat(

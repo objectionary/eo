@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import jdk.javadoc.internal.doclets.toolkit.taglets.BaseTaglet;
-
 /**
  * A named object.
  *

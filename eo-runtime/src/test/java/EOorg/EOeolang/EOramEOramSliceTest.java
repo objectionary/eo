@@ -66,7 +66,7 @@ final class EOramEOramSliceTest {
         final int len,
         final String result
     ) throws IOException {
-        final Phi ram = new EOram(Phi.Φ).copy();
+        final Phi ram = new EOram(Phi.Φ);
         ram.attr(0).put(new Data.ToPhi(total));
         Ram.INSTANCE.write(ram, wrt, data.getBytes(StandardCharsets.UTF_8));
         final Phi slice = ram.attr("slice").get().copy();

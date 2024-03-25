@@ -81,12 +81,11 @@ final class PhDefaultTest {
     }
 
     @Test
-    void hasFormedChildWithoutRhoWhenFormed() {
+    void setsRhoAfterDispatch() {
         final Phi kid = new PhDefaultTest.Int().attr("plus").get();
-        Assertions.assertThrows(
-            ExUnset.class,
+        Assertions.assertDoesNotThrow(
             () -> kid.attr(Attr.RHO).get(),
-            String.format("Kid of just formed object should not have %s attribute", Attr.RHO)
+            String.format("Kid of should have %s attribute after dispatch", Attr.RHO)
         );
     }
 

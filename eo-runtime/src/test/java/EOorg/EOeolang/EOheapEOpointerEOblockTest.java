@@ -50,7 +50,7 @@ final class EOheapEOpointerEOblockTest {
 
     @Test
     void writesBytesIntoHeap() {
-        final Phi heap = new PhWith(new EOheap(Phi.Φ).copy(), 0, new Data.ToPhi(100L));
+        final Phi heap = new PhWith(new EOheap(Phi.Φ), 0, new Data.ToPhi(100L));
         final Phi pointer = new PhWith(
             new PhMethod(heap, "pointer"),
             0, new Data.ToPhi(10L)

@@ -57,7 +57,7 @@ final class EOstringEOsliceTest {
             new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            new Dataized(phi.copy()).take(String.class),
+            new Dataized(phi).take(String.class),
             Matchers.equalTo("ㄤ")
         );
     }

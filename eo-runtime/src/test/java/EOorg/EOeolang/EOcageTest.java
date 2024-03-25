@@ -58,7 +58,7 @@ final class EOcageTest {
 
     @Test
     void writesAndReads() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
@@ -68,7 +68,7 @@ final class EOcageTest {
 
     @Test
     void checksThatEmptyCageHasIdentity() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         MatcherAssert.assertThat(
             new Dataized(cage.attr("ν").get()).take(Long.class),
             Matchers.greaterThan(0L)
@@ -77,11 +77,11 @@ final class EOcageTest {
 
     @Test
     void writesItselfToItself() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
             cage,
             new PhWith(
-                new EOcage(Phi.Φ).copy(), 0, new Data.ToPhi(1L)
+                new EOcage(Phi.Φ), 0, new Data.ToPhi(1L)
             )
         );
         final Phi first = cage.copy();
@@ -105,7 +105,7 @@ final class EOcageTest {
     //       c.x.x.eq 1
     @Test
     void writesDummyToItself() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         new Dataized(
             new PhWith(
                 cage.attr("write").get().copy(),
@@ -128,7 +128,7 @@ final class EOcageTest {
 
     @Test
     void overwritesCagedObject() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(
             cage,
             new PhWith(
@@ -155,7 +155,7 @@ final class EOcageTest {
 
     @Test
     void makesTrueCopy() {
-        final Phi first = new EOcage(Phi.Φ).copy();
+        final Phi first = new EOcage(Phi.Φ);
         first.attr(0).put(new Data.ToPhi(1L));
         final Phi second = first.copy();
         new Dataized(
@@ -172,7 +172,7 @@ final class EOcageTest {
 
     @Test
     void writesAndRewritesPrimitive() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
@@ -187,7 +187,7 @@ final class EOcageTest {
 
     @Test
     void doesNotWritePrimitivesFormedDifferently() {
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, new Data.ToPhi(1L));
         Assertions.assertThrows(
             EOerror.ExError.class,
@@ -203,7 +203,7 @@ final class EOcageTest {
             "x",
             new Data.ToPhi(5L)
         );
-        final Phi cage = new EOcage(Phi.Φ).copy();
+        final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(cage, five);
         Assertions.assertThrows(
             EOerror.ExError.class,
@@ -216,7 +216,7 @@ final class EOcageTest {
         final Phi dummy = new Dummy(Phi.Φ);
         Assertions.assertDoesNotThrow(
             () -> EOcageTest.writeTo(
-                new PhWith(new EOcage(Phi.Φ).copy(), 0, dummy),
+                new PhWith(new EOcage(Phi.Φ), 0, dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             )
         );
@@ -255,7 +255,7 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfRecursion() {
-            final Phi cage = new EOcage(Phi.Φ).copy();
+            final Phi cage = new EOcage(Phi.Φ);
             writeTo(cage, cage);
             Assertions.assertThrows(
                 ExAbstract.class,
@@ -266,7 +266,7 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
-            final Phi cage = new EOcage(Phi.Φ).copy();
+            final Phi cage = new EOcage(Phi.Φ);
             EOcageTest.writeTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
@@ -287,7 +287,7 @@ final class EOcageTest {
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
-            final Phi cage = new EOcage(Phi.Φ).copy();
+            final Phi cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
                 new RecursiveDummy(MAX_DEPTH, cage)
@@ -305,7 +305,7 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfBigDepth() {
-            final Phi cage = new EOcage(Phi.Φ).copy();
+            final Phi cage = new EOcage(Phi.Φ);
             writeTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)

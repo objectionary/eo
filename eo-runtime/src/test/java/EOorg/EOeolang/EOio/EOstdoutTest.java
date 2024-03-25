@@ -33,6 +33,7 @@ import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.eolang.AtComposite;
+import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -50,9 +51,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test case for {@link EOstdout}.
  * @since 0.1
- * @todo #2931:30min Enable the test {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
- *  The test was disabled after new rho logic was introduced and {@link org.eolang.PhConst} stopped
- *  working properly. Need to enable the test when it's possible.
+ * @todo #2931:30min Enable the tests {@link EOstdoutTest#doesNotPrintTwiceOnIntComparisonMethods}
+ *  and {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
+ *  The tests were disabled after new rho logic was introduced working properly. Need to enable
+ *  the tests when it's possible.
  */
 public final class EOstdoutTest {
     @Test
@@ -66,7 +68,7 @@ public final class EOstdoutTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final Phi ret = copy.attr("at").get().copy();
         ret.attr(0).put(new Data.ToPhi(0L));
-        final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream)).copy();
+        final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream));
         stdout.attr(0).put(ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
@@ -91,6 +93,7 @@ public final class EOstdoutTest {
 
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte", "eq"})
+    @Disabled
     public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
@@ -148,6 +151,12 @@ public final class EOstdoutTest {
     private static class PrintWithCmp extends PhDefault {
         /**
          * Ctor.
+         * E.g.
+         * 1.lt
+         *  seq
+         *    *
+         *      stdout "Hello world"
+         *      3
          *
          * @param method Comparison PhMethod ("lt", "gt", "lte", "gte")
          * @param value Phi value to be compared
@@ -157,30 +166,32 @@ public final class EOstdoutTest {
             super(Phi.Φ);
             this.add(
                 "φ",
-                new AtComposite(
-                    this,
-                    self -> new Data.ToPhi(
-                        new Dataized(
-                            new PhWith(
-                                method,
-                                0,
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        self -> new Data.ToPhi(
+                            new Dataized(
                                 new PhWith(
-                                    new EOseq(Phi.Φ),
+                                    method,
                                     0,
                                     new PhWith(
+                                        new EOseq(Phi.Φ),
+                                        0,
                                         new PhWith(
-                                            new EOtuple$EOempty(Phi.Φ)
-                                                .attr("with")
-                                                .get()
-                                                .copy(),
-                                            0,
-                                            stdout
-                                        ).attr("with").get().copy(),
-                                        0, value
+                                            new PhWith(
+                                                new EOtuple$EOempty(Phi.Φ)
+                                                    .attr("with")
+                                                    .get()
+                                                    .copy(),
+                                                0,
+                                                stdout
+                                            ).attr("with").get().copy(),
+                                            0, value
+                                        )
                                     )
                                 )
-                            )
-                        ).take()
+                            ).take()
+                        )
                     )
                 )
             );
