@@ -86,17 +86,12 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private final List<String> order;
+    private final Map<Integer, String> order;
 
     /**
      * Attributes.
      */
     private Map<String, Attr> attrs;
-
-    /**
-     * Cached \phi.
-     */
-    private CachedPhi cached = new CachedPhi();
 
     /**
      * Ctor.
@@ -115,9 +110,10 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.vertex = PhDefault.VTX.next();
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
-        this.order = new ArrayList<>(0);
+        this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
         this.add(Attr.SIGMA, new AtFixed(sigma));
+        this.add(Attr.VERTEX, new AtFormed(() -> new Data.ToPhi((long) this.hashCode())));
     }
 
     @Override
@@ -187,12 +183,11 @@ public abstract class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
             copy.form = this.form;
-            copy.cached = new CachedPhi();
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                map.put(ent.getKey(), new AtSetRho(ent.getValue().copy(copy), copy, ent.getKey()));
-            }
-            copy.attrs = map;
+//            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+//            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+//                map.put(ent.getKey(), ent.getValue().copy(copy));
+//            }
+//            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -217,48 +212,45 @@ public abstract class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        Attr attr = this.attr(this.order.get(0));
-        for (int idx = 0; idx <= pos; ++idx) {
-            if (idx >= this.order.size()) {
-                throw new ExFailure(
-                    String.format(
-                        "%s has just %d attribute(s), can't read the %d-th one",
-                        this,
-                        this.order.size(),
-                        pos
-                    )
-                );
-            }
-            attr = this.attr(this.order.get(idx));
+        if (!this.order.containsKey(pos)) {
+            throw new ExFailure(
+                String.format(
+                    "%s has just %d attribute(s), can't read the %d-th one",
+                    this,
+                    this.order.size(),
+                    pos
+                )
+            );
         }
-        return attr;
+        return this.attr(this.order.get(pos));
     }
 
     @Override
     public final Attr attr(final String name) {
+        return this.attr(name, this);
+    }
+
+    @Override
+    public Attr attr(final String name, final Phi rho) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
-        if (name.equals(Attr.VERTEX)) {
-            attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
+        if (this.attrs.containsKey(name)) {
+            attr = new AtSetRho(this.attrs.get(name), rho, name);
+        } else if (this instanceof Atom) {
+            attr = new AtomSafe((Atom) this).lambda().attr(name, rho);
+        } else if (this.attrs.containsKey(Attr.PHI)) {
+            attr = this.attr(Attr.PHI, rho).get().attr(name, rho);
         } else {
-            attr = this.attrs.get(name);
-        }
-        if (attr == null) {
-            if (this instanceof Atom) {
-                attr = new AtomSafe((Atom) this).lambda().attr(name);
-            } else if (this.attrs.containsKey(Attr.PHI)) {
-                attr = this.attr(Attr.PHI).get().attr(name);
-            } else {
-                attr = new AtAbsent(
-                    name,
-                    String.format(
-                        " among other %d attrs (%s) and %s is absent",
-                        this.attrs.size(),
-                        String.join(", ", this.attrs.keySet()),
-                        Attr.PHI
-                    )
-                );
-            }
+            attr = new AtAbsent(
+                name,
+                String.format(
+                    " among other %d attrs (%s), %s and %s are also absent",
+                    this.attrs.size(),
+                    String.join(", ", this.attrs.keySet()),
+                    Attr.PHI,
+                    Attr.LAMBDA
+                )
+            );
         }
         attr = new AtSafe(this.named(attr, name));
         PhDefault.debug(
@@ -305,7 +297,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      */
     protected final void add(final String name, final Attr attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.add(name);
+            this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, attr);
     }

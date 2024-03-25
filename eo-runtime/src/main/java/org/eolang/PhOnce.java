@@ -77,7 +77,7 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public final Phi copy() {
+    public Phi copy() {
         return this.object.take().copy();
     }
 
@@ -89,6 +89,11 @@ class PhOnce implements Phi {
     @Override
     public final Attr attr(final String name) {
         return this.object.take().attr(name);
+    }
+
+    @Override
+    public Attr attr(final String name, final Phi rho) {
+        return this.object.take().attr(name, rho);
     }
 
     @Override

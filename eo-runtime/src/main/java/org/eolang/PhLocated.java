@@ -119,6 +119,11 @@ public final class PhLocated implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        return new AtLocated(this.origin.attr(name, rho), this.line, this.position);
+    }
+
+    @Override
     public String locator() {
         return String.format("%s:%d:%d", this.location, this.line, this.position);
     }

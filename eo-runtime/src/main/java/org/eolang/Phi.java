@@ -85,6 +85,11 @@ public interface Phi extends Term {
         }
 
         @Override
+        public Attr attr(final String name, final Phi rho) {
+            return this.pkg.attr(name, rho);
+        }
+
+        @Override
         public String locator() {
             return "?:?";
         }
@@ -117,6 +122,16 @@ public interface Phi extends Term {
      * @return The attr
      */
     Attr attr(String name);
+
+    /**
+     * Get attribute and set \rho to it.
+     * This method should be used ONLY inside {@link PhDefault}.
+     *
+     * @param name The name of the attribute
+     * @param rho Rho to be set to the attribute
+     * @return The attribute
+     */
+    Attr attr(String name, Phi rho);
 
     /**
      * Get code locator of the phi.

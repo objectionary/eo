@@ -107,6 +107,11 @@ final class PhFakeRho implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        return this.origin.attr(name, rho);
+    }
+
+    @Override
     public String locator() {
         return this.origin.locator();
     }

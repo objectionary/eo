@@ -60,8 +60,7 @@ final class AtNamed implements Attr {
      * @param attr Attribute
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    AtNamed(final String nme, final String onme,
-        final Phi src, final Attr attr) {
+    AtNamed(final String nme, final String onme, final Phi src, final Attr attr) {
         this.name = nme;
         this.oname = onme;
         this.phi = src;

@@ -45,5 +45,4 @@ public final class PhMethod extends PhOnce {
             () -> String.format("%s.%s", phi.φTerm(), mtd)
         );
     }
-
 }

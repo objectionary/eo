@@ -102,6 +102,11 @@ public final class PhConst implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        return this.primitive().attr(name, rho);
+    }
+
+    @Override
     public String locator() {
         return this.wrapped.locator();
     }

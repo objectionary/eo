@@ -128,6 +128,13 @@ public final class PhTracedEnclosure implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        return new PhTracedEnclosure.TracingWhileGetting(
+            () -> this.enclosure.attr(name, rho)
+        ).get();
+    }
+
+    @Override
     public int hashCode() {
         return this.enclosure.hashCode();
     }

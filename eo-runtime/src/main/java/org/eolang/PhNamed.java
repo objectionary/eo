@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import jdk.javadoc.internal.doclets.toolkit.taglets.BaseTaglet;
+
 /**
  * A named object.
  *
@@ -86,6 +88,11 @@ final class PhNamed implements Phi {
     @Override
     public Attr attr(final String attr) {
         return new AtNamed(this.name, this.name, this, this.origin.attr(attr));
+    }
+
+    @Override
+    public Attr attr(final String name, final Phi rho) {
+        return new AtNamed(this.name, this.name, this, this.origin.attr(name, rho));
     }
 
     @Override

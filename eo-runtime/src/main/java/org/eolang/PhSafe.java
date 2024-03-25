@@ -96,6 +96,17 @@ public final class PhSafe implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        try {
+            return this.origin.attr(name, rho);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+    }
+
+    @Override
     public String locator() {
         return this.origin.locator();
     }

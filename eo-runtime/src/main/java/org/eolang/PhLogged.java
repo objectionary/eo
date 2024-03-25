@@ -85,6 +85,17 @@ public final class PhLogged implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
+        final Attr ret = new AtLogged(
+            this.origin.attr(name, rho),
+            String.format("%d#%s", this.hashCode(), name)
+        );
+        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
+        return ret;
+    }
+
+    @Override
     public String locator() {
         return this.origin.locator();
     }

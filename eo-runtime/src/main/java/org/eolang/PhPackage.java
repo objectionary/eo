@@ -68,6 +68,13 @@ final class PhPackage implements Phi {
     }
 
     @Override
+    public Attr attr(final String name, final Phi rho) {
+        throw new ExFailure(
+            String.format("Can't #attr(%s, %s) from package object '%s'", name, rho, this.pkg)
+        );
+    }
+
+    @Override
     public String locator() {
         return "?:?";
     }
@@ -75,7 +82,7 @@ final class PhPackage implements Phi {
     @Override
     public String forma() {
         throw new ExFailure(
-            String.format("Can't #type() from package object '%s'", this.pkg)
+            String.format("Can't #form() from package object '%s'", this.pkg)
         );
     }
 
