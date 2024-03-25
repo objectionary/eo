@@ -39,6 +39,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 final class ObjectsIndexTest {
 
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
+
     @Test
     void contains() throws Exception {
         final AtomicInteger calls = new AtomicInteger(0);
@@ -52,18 +57,22 @@ final class ObjectsIndexTest {
             )
         );
         MatcherAssert.assertThat(
+            ObjectsIndexTest.EMPTY_MSG,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            ObjectsIndexTest.EMPTY_MSG,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            ObjectsIndexTest.EMPTY_MSG,
             index.contains("unknown"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
+            ObjectsIndexTest.EMPTY_MSG,
             calls.get(),
             Matchers.is(1)
         );
@@ -73,6 +82,7 @@ final class ObjectsIndexTest {
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
+            ObjectsIndexTest.EMPTY_MSG,
             new ObjectsIndex().contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

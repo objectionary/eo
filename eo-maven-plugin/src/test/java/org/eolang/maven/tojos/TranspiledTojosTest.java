@@ -52,6 +52,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class TranspiledTojosTest {
 
     /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
+
+    /**
      * Transpiled files.
      */
     private List<Path> transpiled;
@@ -94,6 +99,7 @@ final class TranspiledTojosTest {
     void adds() {
         this.tojos.add(this.transpiled.get(0), Paths.get("first.optimized.xmir"));
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.original.select(all -> true),
             Matchers.hasSize(1)
         );
@@ -107,18 +113,22 @@ final class TranspiledTojosTest {
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.tojos.remove(first),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.tojos.remove(second),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(1)
         );
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.original.select(all -> true),
             Matchers.hasSize(3)
         );
@@ -127,14 +137,17 @@ final class TranspiledTojosTest {
     @Test
     void removesAbsent() {
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.tojos.remove(Paths.get("absent.xmir")),
             Matchers.equalTo(0L)
         );
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(3)
         );
         MatcherAssert.assertThat(
+            TranspiledTojosTest.EMPTY_MSG,
             this.original.select(all -> true),
             Matchers.hasSize(0)
         );

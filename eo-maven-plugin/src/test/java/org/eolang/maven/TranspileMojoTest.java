@@ -76,6 +76,7 @@ final class TranspileMojoTest {
     @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
     void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -91,11 +92,13 @@ final class TranspileMojoTest {
         final Path java = res.get(this.compiled);
         final long before = java.toFile().lastModified();
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             Matchers.is(true)
         );
         maven.execute(TranspileMojo.class);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             java.toFile().lastModified(),
             Matchers.greaterThan(before)
         );
@@ -112,15 +115,39 @@ final class TranspileMojoTest {
         final Path xmir = res.get(
             String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
         );
-        MatcherAssert.assertThat(java.toFile(), FileMatchers.anExistingFile());
-        MatcherAssert.assertThat(xmir.toFile(), FileMatchers.anExistingFile());
-        MatcherAssert.assertThat(java.toFile().setLastModified(0L), Matchers.is(true));
-        MatcherAssert.assertThat(xmir.toFile().setLastModified(0L), Matchers.is(true));
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            java.toFile(),
+            FileMatchers.anExistingFile()
+        );
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            xmir.toFile(),
+            FileMatchers.anExistingFile()
+        );
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            java.toFile().setLastModified(0L),
+            Matchers.is(true)
+        );
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            xmir.toFile().setLastModified(0L),
+            Matchers.is(true)
+        );
         final long before = java.toFile().lastModified();
         maven.execute(TranspileMojo.class);
         final long after = java.toFile().lastModified();
-        MatcherAssert.assertThat(after, Matchers.greaterThan(0L));
-        MatcherAssert.assertThat(before, Matchers.not(Matchers.equalTo(after)));
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            after,
+            Matchers.greaterThan(0L)
+        );
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            before,
+            Matchers.not(Matchers.equalTo(after))
+        );
     }
 
     @Test
@@ -130,10 +157,22 @@ final class TranspileMojoTest {
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile())
             .result().get(this.compiled);
-        MatcherAssert.assertThat(java.toFile(), FileMatchers.anExistingFile());
-        MatcherAssert.assertThat(java.toFile().setLastModified(0L), Matchers.is(true));
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            java.toFile(),
+            FileMatchers.anExistingFile()
+        );
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            java.toFile().setLastModified(0L),
+            Matchers.is(true)
+        );
         maven.execute(TranspileMojo.class);
-        MatcherAssert.assertThat(java.toFile().lastModified(), Matchers.is(0L));
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            java.toFile().lastModified(),
+            Matchers.is(0L)
+        );
     }
 
     @Test
@@ -145,9 +184,11 @@ final class TranspileMojoTest {
             .result();
         final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             res, Matchers.hasKey(java)
         );
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(res.get(java)).asString(),
             Matchers.containsString("class EOtuple")
         );
@@ -162,6 +203,7 @@ final class TranspileMojoTest {
         }
         maven.execute(new FakeMaven.Transpile()).result();
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             Files.list(maven.generatedPath()
                 .resolve("EOorg")
                 .resolve("EOeolang")
@@ -191,6 +233,7 @@ final class TranspileMojoTest {
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             maven.foreign().size(),
             Matchers.equalTo(2)
         );
@@ -216,6 +259,7 @@ final class TranspileMojoTest {
             .withHelloWorld()
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             maven.targetPath().resolve(binary).toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );

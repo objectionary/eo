@@ -46,6 +46,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class BinarizeMojoTest {
 
     /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
+
+    /**
      * Sources for the tests.
      */
     public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
@@ -98,12 +103,14 @@ final class BinarizeMojoTest {
             .execute(new FakeMaven.Binarize())
             .result();
         MatcherAssert.assertThat(
+            BinarizeMojoTest.EMPTY_MSG,
             res,
             Matchers.hasValue(
                 cache.resolve("Lib")
             )
         );
         MatcherAssert.assertThat(
+            BinarizeMojoTest.EMPTY_MSG,
             res,
             Matchers.not(
                 Matchers.hasValue(
@@ -137,6 +144,7 @@ final class BinarizeMojoTest {
         finish = System.currentTimeMillis();
         final long second = finish - start;
         MatcherAssert.assertThat(
+            BinarizeMojoTest.EMPTY_MSG,
             second,
             Matchers.lessThan(first)
         );
@@ -160,8 +168,13 @@ final class BinarizeMojoTest {
         final long first = executable.lastModified();
         maven.execute(new FakeMaven.Binarize());
         final long second = executable.lastModified();
-        MatcherAssert.assertThat(first, Matchers.not(0L));
         MatcherAssert.assertThat(
+            BinarizeMojoTest.EMPTY_MSG,
+            first,
+            Matchers.not(0L)
+        );
+        MatcherAssert.assertThat(
+            BinarizeMojoTest.EMPTY_MSG,
             second,
             Matchers.equalTo(first)
         );

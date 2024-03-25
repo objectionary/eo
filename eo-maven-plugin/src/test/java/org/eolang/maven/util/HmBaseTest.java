@@ -46,6 +46,11 @@ import org.junit.jupiter.params.provider.ValueSource;
  * @since 0.22
  */
 final class HmBaseTest {
+    
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
@@ -54,6 +59,7 @@ final class HmBaseTest {
         final String content = new UncheckedText(new Randomized(size)).asString();
         new HmBase(temp).save(content, resolve);
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new UncheckedText(new TextOf(temp.resolve(resolve))).asString(),
             Matchers.is(content)
         );
@@ -64,6 +70,7 @@ final class HmBaseTest {
         final Path path = Paths.get("file.txt");
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new HmBase(temp).exists(path),
             Matchers.is(true)
         );
@@ -75,6 +82,7 @@ final class HmBaseTest {
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new HmBase(temp.resolve("dir")).exists(Paths.get("subdir/file.txt")),
             Matchers.is(true)
         );
@@ -88,6 +96,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -101,6 +110,7 @@ final class HmBaseTest {
         final Path directory = temp.resolve("directory");
         new HmBase(directory).save("any content", Paths.get(decoded));
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new HmBase(directory).exists(Paths.get(filename)),
             Matchers.is(true)
         );
@@ -113,6 +123,7 @@ final class HmBaseTest {
         final Path subfolder = Paths.get("subfolder", "foo.txt");
         home.save(content, subfolder);
         MatcherAssert.assertThat(
+            HmBaseTest.EMPTY_MSG,
             new TextOf(home.load(subfolder)),
             Matchers.equalTo(new TextOf(content))
         );

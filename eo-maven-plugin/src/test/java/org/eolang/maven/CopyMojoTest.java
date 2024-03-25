@@ -57,10 +57,12 @@ final class CopyMojoTest {
             .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(new HmBase(classes).load(classes.relativize(out))).asString(),
             Matchers.allOf(
                 Matchers.containsString("+rt foo:"),
@@ -88,6 +90,7 @@ final class CopyMojoTest {
             .execute(CopyMojo.class);
         final Path out = classes.resolve("EO-SOURCES/foo/main.eo");
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new HmBase(classes).exists(classes.relativize(out)),
             Matchers.is(false)
         );

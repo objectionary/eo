@@ -44,6 +44,7 @@ final class PrimeModuleTest {
         final String name = "name";
         new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(
                 temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),

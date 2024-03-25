@@ -66,6 +66,7 @@ final class JavaFilesTest {
             Paths.get("sum.xmir")
         );
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(
                 new InputOf(
                     new JavaFiles(
@@ -85,6 +86,7 @@ final class JavaFilesTest {
             Paths.get("sum.xmir")
         );
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new JavaFiles(
                 temp.resolve("xml").resolve("sum.xmir"),
                 temp.resolve("java")

@@ -45,6 +45,7 @@ final class OyCachingTest {
     void putsObjectToLocalCache(@TempDir final Path path) throws Exception {
         final String content = "[] > main\n";
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(
                 new OyCaching(
                     "master",
@@ -68,6 +69,7 @@ final class OyCachingTest {
             Paths.get("pulled/master/org/example/main.eo")
         );
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new OyCaching(
                 "master",
                 path,

@@ -71,6 +71,7 @@ final class SodgMojoTest {
         }
         final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             ".foo .foo",
             new SodgMojoTest.ExistsIn(graph)
         );
@@ -80,6 +81,7 @@ final class SodgMojoTest {
     @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
     void transformsThroughSheets(final String yaml) {
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -109,6 +111,7 @@ final class SodgMojoTest {
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
+                    "EMPTY MESSAGE",
                     loc,
                     new SodgMojoTest.ExistsIn(graph)
                 )

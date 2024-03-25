@@ -39,6 +39,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class FtCachedTest {
 
     /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
+
+    /**
      * Default content.
      */
     private static final Scalar<String> CONTENT = () -> "content";
@@ -64,10 +69,12 @@ final class FtCachedTest {
         final String program = "org.eolang.txt.format";
         cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
+            FtCachedTest.EMPTY_MSG,
             cached.load(program, FtCachedTest.EXTENSION),
             Matchers.equalTo(FtCachedTest.CONTENT.value())
         );
         MatcherAssert.assertThat(
+            FtCachedTest.EMPTY_MSG,
             temp.resolve(FtCachedTest.CACHE).toFile(),
             FileMatchers.anExistingDirectory()
         );
@@ -79,10 +86,12 @@ final class FtCachedTest {
         final String program = "org.eolang.txt.regex";
         cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
+            FtCachedTest.EMPTY_MSG,
             cached.load(program, FtCachedTest.EXTENSION),
             Matchers.equalTo(FtCachedTest.CONTENT.value())
         );
         MatcherAssert.assertThat(
+            FtCachedTest.EMPTY_MSG,
             temp.resolve(FtCachedTest.CACHE).toFile(),
             Matchers.not(FileMatchers.anExistingFileOrDirectory())
         );
@@ -93,6 +102,7 @@ final class FtCachedTest {
         final Footprint footprint = FtCachedTest.footprint("0.22.1", temp);
         footprint.save("prog", FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
+            FtCachedTest.EMPTY_MSG,
             footprint.list(FtCachedTest.EXTENSION),
             Matchers.hasItem(temp.resolve(FtCachedTest.TARGET).resolve("prog.xmir"))
         );

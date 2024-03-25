@@ -56,6 +56,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.found";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -67,6 +68,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.ram";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -92,6 +94,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.get";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new TextOf(objectionary.get(object)),
             Matchers.equalTo(new TextOf(new InputOf(OyFilesystemTest.OBJECT_CONTENT)))
         );

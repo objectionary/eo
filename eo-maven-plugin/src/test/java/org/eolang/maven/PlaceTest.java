@@ -39,6 +39,7 @@ final class PlaceTest {
     @Test
     void makesPath() {
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new Place("hello.foo.bar")
                 .make(Paths.get("/tmp/test"), TranspileMojo.EXT)
                 .toString()
@@ -50,6 +51,7 @@ final class PlaceTest {
     @Test
     void makesSimplePath() {
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new Place("hey")
                 .make(Paths.get("/tmp"), "xml")
                 .toString()

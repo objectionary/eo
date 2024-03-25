@@ -47,6 +47,7 @@ final class UnplaceTest {
         final String name
     ) {
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             new Unplace(Paths.get(base)).make(
                 Paths.get(source)
             ),

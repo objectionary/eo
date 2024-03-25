@@ -39,6 +39,11 @@ import org.junit.jupiter.api.Test;
  * @since 1.0
  */
 final class OyFallbackTest {
+    
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "EMPTY MESSAGE";
 
     /**
      * Primary objectionary.
@@ -63,14 +68,17 @@ final class OyFallbackTest {
     @Test
     void getsObjectWhenPrimaryContains() throws Exception {
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             new TextOf(this.fallback.get("org.example.main")).asString(),
             Matchers.equalTo(this.primary.source)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.primary.invocations.get(),
             Matchers.equalTo(1)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.secondary.invocations.get(),
             Matchers.equalTo(0)
         );
@@ -79,14 +87,17 @@ final class OyFallbackTest {
     @Test
     void getsObjectWhenPrimaryNotContains() throws Exception {
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             new TextOf(this.fallback.get("org.example.secondary")).asString(),
             Matchers.equalTo(this.secondary.source)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.primary.invocations.get(),
             Matchers.equalTo(1)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.secondary.invocations.get(),
             Matchers.equalTo(1)
         );
@@ -95,18 +106,22 @@ final class OyFallbackTest {
     @Test
     void containsObject() throws IOException {
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.fallback.contains("org.example.main"),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.fallback.contains("org.example.absent"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.primary.invocations.get(),
             Matchers.equalTo(2)
         );
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.secondary.invocations.get(),
             Matchers.equalTo(1)
         );
@@ -115,6 +130,7 @@ final class OyFallbackTest {
     @Test
     void convertsToString() {
         MatcherAssert.assertThat(
+            OyFallbackTest.EMPTY_MSG,
             this.fallback.toString(),
             Matchers.equalTo(String.format("[%s]+[fallback to %s]", this.primary, this.secondary))
         );

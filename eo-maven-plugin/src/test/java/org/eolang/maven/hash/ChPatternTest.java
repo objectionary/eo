@@ -62,6 +62,10 @@ class ChPatternTest {
         final String tag,
         final String expected
     ) {
-        MatcherAssert.assertThat(new ChPattern(pattern, tag).value(), Matchers.equalTo(expected));
+        MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
+            new ChPattern(pattern, tag).value(),
+            Matchers.equalTo(expected)
+        );
     }
 }

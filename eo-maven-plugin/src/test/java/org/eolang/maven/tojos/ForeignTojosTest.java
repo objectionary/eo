@@ -68,6 +68,7 @@ final class ForeignTojosTest {
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             this.tojos.contains(name),
             Matchers.is(true)
         );
@@ -82,6 +83,7 @@ final class ForeignTojosTest {
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(
+            "EMPTY MESSAGE",
             this.tojos.contains(considered),
             Matchers.is(false)
         );
