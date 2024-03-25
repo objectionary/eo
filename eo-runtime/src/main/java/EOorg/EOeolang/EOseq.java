@@ -40,8 +40,8 @@ import org.eolang.XmirObject;
 
 /**
  * SEQ.
- * @checkstyle TypeNameCheck (5 lines)
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "seq")

@@ -288,11 +288,11 @@ public interface Data<T> {
                     if (next >= '0' && next <= '7') {
                         String code = String.valueOf(next);
                         ++idx;
-                        if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                        if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                             && str.charAt(idx + 1) <= '7') {
                             code += str.charAt(idx + 1);
                             ++idx;
-                            if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                            if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                                 && str.charAt(idx + 1) <= '7') {
                                 code += str.charAt(idx + 1);
                                 ++idx;
