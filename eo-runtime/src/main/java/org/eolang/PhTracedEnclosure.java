@@ -137,6 +137,11 @@ public final class PhTracedEnclosure implements Phi {
         return obj instanceof Phi && this.hashCode() == obj.hashCode();
     }
 
+    @Override
+    public byte[] data() {
+        return this.enclosure.data();
+    }
+
     /**
      * Supplier that traces the cage while gets.
      * NOT thread-safe.

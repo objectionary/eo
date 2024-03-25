@@ -25,63 +25,48 @@
 package org.eolang;
 
 /**
- * An object that reports all manipulations with it to the log (very useful
- * for debugging purposes).
- *
- * <p>This class is thread-safe.</p>
- *
- * @since 0.24
+ * Phi with encapsulated data as bytes.
+ * @since 0.36.0
  */
-@Versionized
-public final class PhLogged implements Phi {
-
+public class PhData implements Phi {
     /**
-     * The origin being turned into a const.
+     * Original phi.
      */
     private final Phi origin;
 
     /**
-     * Ctor.
-     *
-     * @param phi The origin
+     * Data.
      */
-    public PhLogged(final Phi phi) {
+    private final byte[] data;
+
+    /**
+     * Ctor.
+     * @param phi Original phi
+     * @param bytes Bytes
+     */
+    public PhData(final Phi phi, final byte[] bytes) {
         this.origin = phi;
+        this.data = bytes;
     }
 
     @Override
-    public String φTerm() {
-        return this.origin.φTerm();
+    public byte[] data() {
+        return this.data;
     }
 
     @Override
     public Phi copy() {
-        System.out.printf("%d.copy()...\n", this.hashCode());
-        final Phi ret = this.origin.copy();
-        System.out.printf("%d.copy()! -> %d\n", this.hashCode(), ret.hashCode());
-        return ret;
+        return new PhData(this.origin.copy(), this.data);
     }
 
     @Override
     public Attr attr(final int pos) {
-        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
-        final Attr ret = new AtLogged(
-            this.origin.attr(pos),
-            String.format("%d#%d", this.hashCode(), pos)
-        );
-        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
-        return ret;
+        return new AtData(this.origin.attr(pos), this.origin, this);
     }
 
     @Override
     public Attr attr(final String name) {
-        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-        final Attr ret = new AtLogged(
-            this.origin.attr(name),
-            String.format("%d#%s", this.hashCode(), name)
-        );
-        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
-        return ret;
+        return new AtData(this.origin.attr(name), this.origin, this);
     }
 
     @Override
@@ -95,22 +80,23 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
     public String toString() {
-        return this.origin.toString();
+        final StringBuilder out = new StringBuilder(0);
+        out.append(this.origin.toString()).append("=");
+        for (final byte bte : this.data) {
+            if (out.length() > 0) {
+                out.append('-');
+            }
+            out.append(String.format("%02X", bte));
+        }
+        if (out.length() == 0) {
+            out.append('-');
+        }
+        return out.toString();
     }
 
     @Override
-    public byte[] data() {
-        return this.origin.data();
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

@@ -55,7 +55,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
-
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
     void checksPacks(final String pack) throws IOException {

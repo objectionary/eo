@@ -62,7 +62,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
                 .asBytes()
                 .shift(
                     new Param(this, "x").strong(Long.class).intValue()
-                ).take()
+                ).data()
         );
     }
 }

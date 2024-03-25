@@ -37,7 +37,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Versionized
 public final class PhConst implements Phi {
-
     /**
      * The object being wrapped by const decorator.
      */
@@ -126,5 +125,10 @@ public final class PhConst implements Phi {
             );
         }
         return this.bytes.get();
+    }
+
+    @Override
+    public byte[] data() {
+        return this.primitive().data();
     }
 }

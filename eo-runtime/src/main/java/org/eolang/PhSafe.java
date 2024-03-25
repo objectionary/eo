@@ -105,4 +105,8 @@ public final class PhSafe implements Phi {
         return this.origin.forma();
     }
 
+    @Override
+    public byte[] data() {
+        return this.origin.data();
+    }
 }

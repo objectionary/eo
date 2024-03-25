@@ -77,7 +77,7 @@ public final class VerboseBytesAsStringTest {
                 )
             );
         }
-        return ret.take();
+        return ret.data();
     }
 
     /**

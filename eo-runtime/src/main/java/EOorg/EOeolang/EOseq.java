@@ -31,7 +31,6 @@ import org.eolang.AtFree;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhConst;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;

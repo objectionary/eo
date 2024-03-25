@@ -36,8 +36,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term {
-
+public interface Phi extends Term, Data {
     /**
      * The global scope object, which owns all other objects.
      *
@@ -92,6 +91,11 @@ public interface Phi extends Term {
         @Override
         public String forma() {
             return this.pkg.forma();
+        }
+
+        @Override
+        public byte[] data() {
+            return this.pkg.data();
         }
     };
 

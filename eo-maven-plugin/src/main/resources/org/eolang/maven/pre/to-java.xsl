@@ -553,11 +553,11 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhData(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, </xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->

@@ -28,7 +28,6 @@
 package EOorg.EOeolang.EOio;
 
 import EOorg.EOeolang.EOseq;
-import EOorg.EOeolang.EOtuple;
 import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

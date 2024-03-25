@@ -29,7 +29,6 @@ package EOorg.EOeolang;
 
 import org.eolang.AtFree;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Param;

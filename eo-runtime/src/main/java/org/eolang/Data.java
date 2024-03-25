@@ -24,200 +24,48 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EObool;
-import EOorg.EOeolang.EObytes;
-import EOorg.EOeolang.EOfloat;
-import EOorg.EOeolang.EOint;
-import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 /**
  * A data container.
  *
- * @param <T> Data type.
  * @since 0.1
  */
 @Versionized
-public interface Data<T> {
+public interface Data {
 
     /**
      * Take the data.
      * @return The data
      */
-    T take();
-
-    /**
-     * Data being returned only once, from encapsulated object.
-     *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Once<T> implements Data<T> {
-
-        /**
-         * Data.
-         */
-        private final Data<T> src;
-
-        /**
-         * Reference.
-         */
-        private final AtomicReference<T> ref;
-
-        /**
-         * Blank supplier.
-         */
-        private final Supplier<String> blank;
-
-        /**
-         * Ctor.
-         * @param data Data to return
-         * @param txt Missing data text
-         */
-        public Once(final Data<T> data, final Supplier<String> txt) {
-            this.src = data;
-            this.ref = new AtomicReference<>();
-            this.blank = txt;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.take().hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            return this.take().equals(((Once<?>) obj).take());
-        }
-
-        @Override
-        public String toString() {
-            final T data = this.ref.get();
-            String txt = this.blank.get();
-            if (txt.isEmpty()) {
-                txt = this.take().toString();
-            } else if (data != null) {
-                txt = data.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            synchronized (this.ref) {
-                return this.ref.updateAndGet(
-                    t -> {
-                        final T result;
-                        if (t == null) {
-                            result = Once.this.src.take();
-                        } else {
-                            result = t;
-                        }
-                        return result;
-                    }
-                );
-            }
-        }
-    }
+    byte[] data();
 
     /**
      * Makes a {@link Phi} out of a Java object, like {@link String} or {@link Integer}.
      *
-     * <p>This is more convenient than making {@link EOstring} and then
-     * injecting "Δ" into it. This class is used in Java tests mostly
-     * for the sake of brevity. In auto-generated Java code we use
-     * {@link EOint}/{@link EOstring}
-     * and then inject "Δ" with {@link Data.Value} into it.
-     *
      * @since 0.1
      */
-    final class ToPhi implements Phi {
-
-        /**
-         * Data.
-         */
-        private final Phi value;
-
-        /**
-         * Phi object.
-         */
-        private final Phi object;
-
+    final class ToPhi extends PhEnvelope {
         /**
          * Ctor.
          * @param obj Data
          */
         public ToPhi(final Object obj) {
-            this.value = new Data.Value<>(obj);
-            this.object = Data.ToPhi.toPhi(obj, this.value);
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            return this.object.equals(obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.object.hashCode();
-        }
-
-        @Override
-        public Phi copy() {
-            return this.object.copy();
-        }
-
-        @Override
-        public Attr attr(final int pos) {
-            return this.object.attr(pos);
-        }
-
-        @Override
-        public Attr attr(final String name) {
-            return this.object.attr(name);
-        }
-
-        @Override
-        public String locator() {
-            return this.object.locator();
-        }
-
-        @Override
-        public String forma() {
-            return this.object.forma();
-        }
-
-        @Override
-        public String φTerm() {
-            return this.object.φTerm();
-        }
-
-        @Override
-        public String toString() {
-            return String.format("D=%s", this.value.toString());
+            super(Data.ToPhi.toPhi(obj));
         }
 
         /**
          * Convert to Phi object.
          * @param obj Object to convert
-         * @param value Data value
          * @return Constructed Phi
          */
-        private static Phi toPhi(final Object obj, final Phi value) {
-            final Phi phi;
-            byte[] bytes = new byte[0];
+        private static Phi toPhi(final Object obj) {
+            final Phi object;
+            byte[] bytes;
             final boolean delta;
             final Phi eolang = Phi.Φ.attr("org").get().attr("eolang").get();
             if (obj instanceof Boolean) {
-                phi = eolang.attr("bool").get().copy();
+                object = eolang.attr("bool").get().copy();
                 delta = false;
                 if (obj.equals(true)) {
                     bytes = new byte[] {0x01};
@@ -225,22 +73,23 @@ public interface Data<T> {
                     bytes = new byte[] {0x00};
                 }
             } else if (obj instanceof byte[]) {
-                phi = eolang.attr("bytes").get().copy();
+                object = eolang.attr("bytes").get().copy();
                 delta = true;
+                bytes = (byte[]) obj;
             } else if (obj instanceof Long) {
-                phi = eolang.attr("int").get().copy();
+                object = eolang.attr("int").get().copy();
                 delta = false;
-                bytes = new BytesOf((Long) obj).take();
+                bytes = new BytesOf((Long) obj).data();
             } else if (obj instanceof String) {
-                phi = eolang.attr("string").get().copy();
+                object = eolang.attr("string").get().copy();
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                phi = eolang.attr("float").get().copy();
+                object = eolang.attr("float").get().copy();
                 delta = false;
-                bytes = new BytesOf((Double) obj).take();
+                bytes = new BytesOf((Double) obj).data();
             } else {
                 throw new IllegalArgumentException(
                     String.format(
@@ -249,12 +98,12 @@ public interface Data<T> {
                     )
                 );
             }
+            final Phi phi;
             if (delta) {
-                phi.attr(Attr.DELTA).put(value);
+                phi = new PhData(object, bytes);
             } else {
-                final Phi bts = eolang.attr("bytes").get().copy();
-                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
-                phi.attr(0).put(bts);
+                object.attr(0).put(new PhData(eolang.attr("bytes").get().copy(), bytes));
+                phi = object;
             }
             return phi;
         }
@@ -357,93 +206,4 @@ public interface Data<T> {
             return unescaped.toString();
         }
     }
-
-    /**
-     * A single value as {@code Phi}.
-     *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Value<T> extends PhDefault implements Data<T> {
-
-        /**
-         * Value.
-         */
-        private final T val;
-
-        /**
-         * Ctor.
-         * @param value Value
-         */
-        public Value(final T value) {
-            super(Phi.Φ);
-            this.val = value;
-            this.vertex = PhDefault.VTX.best(value);
-        }
-
-        @Override
-        public String φTerm() {
-            final String txt;
-            if (this.val instanceof Term) {
-                txt = Term.class.cast(this.val).φTerm();
-            } else if (this.val instanceof Phi[]) {
-                final StringBuilder out = new StringBuilder(0);
-                final Phi[] items = Phi[].class.cast(this.val);
-                for (int idx = 0; idx < items.length; ++idx) {
-                    if (out.length() > 0) {
-                        out.append(",\n");
-                    }
-                    out.append('ι').append(idx).append(" ↦ ");
-                    if (items[idx] == null) {
-                        out.append('Ø');
-                    } else {
-                        out.append(items[idx].φTerm());
-                    }
-                }
-                txt = String.format("⟦\n\t%s\n⟧", out.toString());
-            } else {
-                txt = this.toString()
-                    .replace("⟦", "\\uE29FA6")
-                    .replace("⟧", "\\uE29FA7")
-                    .replace(", ", "\\u2C ");
-            }
-            return txt;
-        }
-
-        @Override
-        public String toString() {
-            final String txt;
-            if (this.val instanceof String) {
-                txt = String.format(
-                    "\"%s\"",
-                    this.val.toString()
-                        .replace("\n", "\\n")
-                        .replace("\r", "\\r")
-                );
-            } else if (this.val instanceof byte[]) {
-                final StringBuilder out = new StringBuilder(0);
-                for (final byte data : (byte[]) this.val) {
-                    if (out.length() > 0) {
-                        out.append('-');
-                    }
-                    out.append(String.format("%02X", data));
-                }
-                if (out.length() == 0) {
-                    out.append('-');
-                }
-                txt = out.toString();
-            } else if (this.val.getClass().isArray()) {
-                txt = String.format("array[%d]", ((Object[]) this.val).length);
-            } else {
-                txt = this.val.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            return this.val;
-        }
-    }
-
 }

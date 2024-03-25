@@ -21,37 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
 /**
- * This attribute encapsulates \phi and resets its owner
- * when it's being put().
- *
- * This class is thread-safe.
- *
- * @since 0.22
+ * Wrapper for {@link Phi}.
+ * @since 0.36.0
  */
-@Versionized
-final class AtPhiSensitive implements Attr {
-
+abstract public class PhEnvelope implements Phi {
     /**
-     * The \phi attribute.
+     * Original phi.
      */
-    private final Attr origin;
-
-    /**
-     * The cache.
-     */
-    private final CachedPhi cached;
+    private final Phi origin;
 
     /**
      * Ctor.
-     * @param aphi The \origin object
-     * @param cache The owner of \origin
+     * @param phi Original phi
      */
-    AtPhiSensitive(final Attr aphi, final CachedPhi cache) {
-        this.origin = aphi;
-        this.cached = cache;
+    public PhEnvelope(final Phi phi) {
+        this.origin = phi;
+    }
+
+    @Override
+    public byte[] data() {
+        return this.origin.data();
+    }
+
+    @Override
+    public Phi copy() {
+        return this.origin.copy();
+    }
+
+    @Override
+    public Attr attr(final int pos) {
+        return this.origin.attr(pos);
+    }
+
+    @Override
+    public Attr attr(final String name) {
+        return this.origin.attr(name);
+    }
+
+    @Override
+    public String locator() {
+        return this.origin.locator();
+    }
+
+    @Override
+    public String forma() {
+        return this.origin.forma();
     }
 
     @Override
@@ -60,25 +78,11 @@ final class AtPhiSensitive implements Attr {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+    @Override
     public String φTerm() {
         return this.origin.φTerm();
-    }
-
-    @Override
-    public Attr copy(final Phi obj) {
-        return new AtPhiSensitive(this.origin.copy(obj), this.cached);
-    }
-
-    @Override
-    public Phi get() {
-        return this.origin.get();
-    }
-
-    @Override
-    public void put(final Phi obj) {
-        synchronized (this.origin) {
-            this.origin.put(obj);
-            this.cached.reset();
-        }
     }
 }

@@ -46,7 +46,7 @@ final class UniverseDefaultTest {
     /**
      * Data byte array.
      */
-    private static final byte[] DATA = new BytesOf(123456789L).take();
+    private static final byte[] DATA = new BytesOf(123456789L).data();
 
     @Test
     void findsSimpleAtt() {
@@ -112,7 +112,7 @@ final class UniverseDefaultTest {
         );
         MatcherAssert.assertThat(
             universe.dataize(vertex),
-            Matchers.equalTo(new BytesOf(1L).take())
+            Matchers.equalTo(new BytesOf(1L).data())
         );
     }
 

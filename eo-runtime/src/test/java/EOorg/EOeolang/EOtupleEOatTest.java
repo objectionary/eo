@@ -28,7 +28,6 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFormed;
 import org.eolang.AtFree;
 import org.eolang.AtOnce;
 import org.eolang.AtSimple;

@@ -27,10 +27,13 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Arrays;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,9 +42,8 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOstring$EOeq}.
  * {@link EOorg.EOeolang.EOio.EOstdin} is the generated class. This is the reason
  * why we disable jtcop check.
- *
- * @since 0.17
  * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.17
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOstringTest {
