@@ -11,7 +11,7 @@ eo: |
   [args] > fibo
     # This is the default 64+ symbols comment in front of named abstract object.
     [n] > f
-      if. > @
+      if > @
         n.lt 2
         n
         plus.

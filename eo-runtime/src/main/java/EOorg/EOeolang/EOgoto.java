@@ -60,7 +60,6 @@ public final class EOgoto extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi body = this.attr("f").get().copy();
-        body.attr("ρ").put(this);
         body.attr(0).put(new EOgoto.Token(this));
         Phi ret;
         while (true) {

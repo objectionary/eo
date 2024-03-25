@@ -21,51 +21,64 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link AtConst}.
- *
- * @since 0.29.0
+ * Test cases for {@link PhFakeRho}.
+ * @since 0.36.0
  */
-class AtConstTest {
-
+public class PhFakeRhoTest {
     @Test
-    void convertsToString() {
+    void makesNewCopy() {
+        final Phi fake = new PhFakeRho(Phi.Φ, Phi.Φ, Phi.Φ);
         MatcherAssert.assertThat(
-            new AtConst(new AtSimple(), Phi.Φ).toString(),
-            Matchers.equalTo("ΦS!")
+            "PhFakeRho::copy() should create new object",
+            fake.copy(),
+            Matchers.not(
+                Matchers.equalTo(fake)
+            )
         );
     }
 
     @Test
-    void convertsToTerm() {
+    void retrievesRegularAttributeFromOrigin() {
+        final Phi data = new Data.ToPhi(10L);
+        final Phi fake = new PhFake(() -> data);
+        final Phi phi = new PhFakeRho(fake, Phi.Φ, Phi.Φ);
         MatcherAssert.assertThat(
-            new AtConst(new AtSimple(), Phi.Φ).φTerm(),
-            Matchers.equalTo("Φ!")
+            "PhFakeRho should return attribute from origin",
+            phi.attr(Attr.PHI).get(),
+            Matchers.equalTo(fake.attr(Attr.PHI).get())
         );
     }
 
     @Test
-    void copies() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new AtConst(new AtSimple(), Phi.Φ).copy(Phi.Φ)
+    void wrapsRhoAttributeWithAtFakeRho() {
+        MatcherAssert.assertThat(
+            "PhFakeRho should wrap \\rho attribute with AtFakeRho",
+            new PhFakeRho(
+                new PhFake(() -> new Data.ToPhi(10L)),
+                Phi.Φ,
+                Phi.Φ
+            ).attr(Attr.RHO),
+            Matchers.instanceOf(AtFakeRho.class)
         );
     }
 
     @Test
-    void puts() {
-        final AtSimple simple = new AtSimple();
-        new AtConst(simple, Phi.Φ).put(Phi.Φ);
+    void fakesResultRhoAttribute() {
+        final Phi ten = new Data.ToPhi(10L);
+        final Phi plus = ten.attr("plus").get();
+        final Phi str = new Data.ToPhi("Hello");
         MatcherAssert.assertThat(
-            Phi.Φ,
-            Matchers.equalTo(simple.get())
+            "Rho attribute of 10.plus should be faked to 'Hello'",
+            new PhFakeRho(plus, ten, str).attr(Attr.RHO).get(),
+            Matchers.equalTo(str)
         );
     }
 }

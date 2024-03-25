@@ -84,12 +84,6 @@ final class PhPackageTest {
             actual,
             Matchers.instanceOf(expected)
         );
-        if (!(actual instanceof PhPackage)) {
-            MatcherAssert.assertThat(
-                actual.attr("ρ").get(),
-                Matchers.equalTo(parent)
-            );
-        }
     }
 
     @Test

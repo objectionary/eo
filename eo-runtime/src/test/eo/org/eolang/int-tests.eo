@@ -177,6 +177,18 @@
         42
     TRUE
 
+# Test
+[] > one-plus-one
+  eq. > @
+    1.plus 1
+    2
+
+# Test
+[] > one-minus-one
+  eq. > @
+    1.minus 1
+    0
+
 # Test.
 [] > compares-two-different-types
   eq. > @
@@ -187,7 +199,7 @@
 [] > calculates-fibonacci-number-with-recursion
   # Fibonacci.
   [n] > fibo
-    if. > @
+    if > @
       n.lt 3
       1
       plus.
@@ -205,21 +217,21 @@
 
   # Fibonacci.
   [n] > fibonacci
-    if. > @
+    if > @
       n.lt 3
       small n
       rec n 1 1
 
     # Small.
     [n] > small
-      if. > @
+      if > @
         n.eq 2
         1
         n
 
     # Recursive.
     [n minus1 minus2] > rec
-      if. > @
+      if > @
         n.eq 3
         minus1.plus minus2
         rec (n.minus 1) (minus1.plus minus2) minus1

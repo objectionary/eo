@@ -25,73 +25,67 @@
 package org.eolang;
 
 /**
- * An object that ignores all moves.
- *
- * @since 0.23
+ * Fake \rho attribute.
+ * 1. If retrieved \rho object is absent - the exception is thrown, see {@link AtRho}.
+ * 2. If retrieved \rho object is equal to given "parent" object - it is replaced with given
+ * "rho" object
+ * 3. Otherwise, the retrieved \rho object is returned.
+ * @since 0.36.0
  */
-@Versionized
-final class PhImmovable implements Phi {
+final class AtFakeRho implements Attr {
+    /**
+     * Original rho attribute.
+     */
+    private final Attr origin;
 
     /**
-     * The original.
+     * Possible current rho.
      */
-    private final Phi origin;
+    private final Phi current;
+
+    /**
+     * Possible alternate rho.
+     */
+    private final Phi alternate;
 
     /**
      * Ctor.
-     *
-     * @param phi The object
+     * @param attr Original \rho attribute
+     * @param parent Possible current \rho
+     * @param rho Possible alternate \rho
      */
-    PhImmovable(final Phi phi) {
-        this.origin = phi;
+    AtFakeRho(final Attr attr, final Phi parent, final Phi rho) {
+        this.origin = attr;
+        this.current = parent;
+        this.alternate = rho;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
+    public Attr copy(final Phi self) {
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
-    public int hashCode() {
-        return this.origin.hashCode();
+    public Phi get() {
+        final Phi ret;
+        final Phi rho = this.origin.get();
+        if (rho.equals(this.current)) {
+            ret = this.alternate;
+        } else {
+            ret = rho;
+        }
+        return ret;
     }
 
     @Override
-    public String toString() {
-        return this.origin.toString();
+    public void put(final Phi phi) {
+        this.origin.put(phi);
     }
 
     @Override
     public String φTerm() {
         return this.origin.φTerm();
-    }
-
-    @Override
-    public Phi copy() {
-        return new PhImmovable(this.origin.copy());
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        return this.origin.attr(pos);
-    }
-
-    @Override
-    public Attr attr(final String attr) {
-        Attr val = this.origin.attr(attr);
-        if ("ρ".equals(attr)) {
-            val = new AtFixed(val);
-        }
-        return val;
-    }
-
-    @Override
-    public String locator() {
-        return this.origin.locator();
-    }
-
-    @Override
-    public String forma() {
-        return this.origin.forma();
     }
 }

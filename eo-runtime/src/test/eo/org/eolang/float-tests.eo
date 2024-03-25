@@ -324,35 +324,31 @@
 
 # Test.
 [] > float-times-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.times not-a-number
-    not-a-number.as-bytes
+      35.2.times nan
+    nan.as-bytes
 
 # Test.
 [] > float-plus-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.plus not-a-number
-    not-a-number.as-bytes
+      35.2.plus nan
+    nan.as-bytes
 
 # Test.
 [] > float-minus-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.minus not-a-number
-    not-a-number.as-bytes
+      35.2.minus nan
+    nan.as-bytes
 
 # Test.
 [] > float-div-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.div not-a-number
-    not-a-number.as-bytes
+      35.2.div nan
+    nan.as-bytes
 
 # Test.
 [] > float-not-gt-nan

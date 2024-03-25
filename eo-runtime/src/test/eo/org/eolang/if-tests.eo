@@ -20,38 +20,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.tupled-stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
-+package org.eolang.io
++package org.eolang
 +version 0.0.0
 
-# Single tupled stdout.
-[] > tupled-stdout-single
-  tupled-stdout > @
-    *
-      "Hello, world! Single tupled.\n"
-
-# Tupled stdout with several objects.
-[] > tupled-stdout-several
-  tupled-stdout > @
-    *
-      "Hello"
-      ", "
-      "world"
-      "! "
-      "Several "
-      "tupled.\n"
+# Test.
+[] > forks-on-true-condition
+  eq. > @
+    if
+      5.eq 5
+      123
+      42
+    123
 
 # Test.
-[] > tupled-stdout-empty
+[] > forks-on-false-condition
   eq. > @
-    try
-      []
-        tupled-stdout > @
-          *
-      [e]
-        e > @
-      nop
-    "tuple of arguments must contain at least one element"
+    if
+      5.eq 8
+      123
+      42
+    42

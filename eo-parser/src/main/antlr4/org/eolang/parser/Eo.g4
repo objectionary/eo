@@ -288,14 +288,18 @@ vapplicationArgHapplicationUnbound
     ;
 
 // Vertical anonym object as argument of vertical application
-// todo - replace with formation?
 vapplicationArgVanonymUnbound
-    : commentMandatory formation
-    | formationNameless
+    : formationNamedOrNameless
     ;
 
 formationNameless
     : attributes innersOrEol
+    ;
+
+// Formation with or without name
+formationNamedOrNameless
+    : commentMandatory formation
+    | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
@@ -422,11 +426,13 @@ vmethodOptional
 // 1. vertical method
 // 2. vertical application
 // 3. just an object reference
+// 4. vertical formation
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
     | justNamed EOL
+    | formationNamedOrNameless
     ;
 
 methodTailOptional

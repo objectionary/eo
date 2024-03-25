@@ -738,6 +738,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationArgVanonymBound(
         final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
