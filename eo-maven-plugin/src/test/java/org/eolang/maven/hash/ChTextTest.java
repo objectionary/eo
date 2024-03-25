@@ -85,7 +85,7 @@ final class ChTextTest {
         final String tag
     ) {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new ChText(ChTextTest.file, tag).value(),
             Matchers.equalTo(hash)
         );
@@ -94,7 +94,7 @@ final class ChTextTest {
     @Test
     void readsCorrectHashByTagFromSimpleString() {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"

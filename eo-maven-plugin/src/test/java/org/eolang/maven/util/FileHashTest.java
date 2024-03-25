@@ -42,7 +42,7 @@ final class FileHashTest {
         final Path path = temp.resolve("1.txt");
         new HmBase(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new FileHash(path).toString(),
             Matchers.startsWith("[-26, 1, -29, 113, ")
         );
@@ -52,7 +52,7 @@ final class FileHashTest {
     void readsFromAbsentFile(@TempDir final Path temp) {
         final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new FileHash(path).toString(),
             Matchers.equalTo("")
         );

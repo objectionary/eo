@@ -40,7 +40,7 @@ final class DcsWithRuntimeTest {
     @ExtendWith(WeAreOnline.class)
     void addsHardcodedVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new DcsWithRuntime(
                 new DcsFake(5),
                 DcsFake.runtimeDep()
@@ -53,7 +53,7 @@ final class DcsWithRuntimeTest {
     @ExtendWith(WeAreOnline.class)
     void addsRemoteVersionOfRuntimeDependency() {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new DcsWithRuntime(
                 new DcsFake(2)
             ),

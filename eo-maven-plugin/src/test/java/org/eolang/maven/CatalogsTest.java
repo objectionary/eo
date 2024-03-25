@@ -54,7 +54,7 @@ final class CatalogsTest {
     void readsFromTojosConcurrently(@TempDir final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new SumOf(
                 new Threads<>(
                     CatalogsTest.CORES,

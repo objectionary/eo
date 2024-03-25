@@ -56,7 +56,7 @@ class CacheVersionTest {
         final boolean expected
     ) {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new CacheVersion(version, hash).cacheable(),
             Matchers.is(expected)
         );
@@ -82,7 +82,7 @@ class CacheVersionTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new CacheVersion(version, hash).path(),
             Matchers.equalTo(Paths.get(expected.replace("|", File.separator)))
         );

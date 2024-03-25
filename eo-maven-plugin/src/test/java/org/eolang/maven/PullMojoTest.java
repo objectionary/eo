@@ -80,7 +80,7 @@ final class PullMojoTest {
         maven.with("skip", false)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
@@ -110,7 +110,7 @@ final class PullMojoTest {
             )
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(true)
         );
@@ -133,7 +133,7 @@ final class PullMojoTest {
             )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("mmmmmmm")
         );
@@ -157,7 +157,7 @@ final class PullMojoTest {
             )
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new LinkedList<>(new MnCsv(maven.foreignPath()).read()).getFirst().get("hash"),
             Matchers.equalTo("abcdefg")
         );
@@ -173,7 +173,7 @@ final class PullMojoTest {
         maven.with("skip", true)
             .execute(PullMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
             Matchers.is(false)
         );

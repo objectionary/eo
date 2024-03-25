@@ -48,7 +48,7 @@ final class SafeMojoTest {
                 .execute(new FakeMaven.Parse())
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             String.join("\n", out.captured()),
             Matchers.containsString("Failed to parse")
         );

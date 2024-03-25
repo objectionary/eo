@@ -59,7 +59,7 @@ final class ParseMojoTest {
     void parsesSuccessfully(@TempDir final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             maven.withHelloWorld()
                 .execute(new FakeMaven.Parse())
                 .result(),
@@ -68,7 +68,7 @@ final class ParseMojoTest {
             )
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             maven.foreign().getById("foo.x.main").exists("xmir"),
             Matchers.is(true)
         );
@@ -121,7 +121,7 @@ final class ParseMojoTest {
     @Test
     void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new FakeMaven(temp)
                 .withProgram("something < is wrong here")
                 .execute(new FakeMaven.Parse())
@@ -168,7 +168,7 @@ final class ParseMojoTest {
         final Map<String, Path> res = maven.execute(new FakeMaven.Parse()).result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
-                "EMPTY MESSAGE",
+                "TO ADD ASSERTION MESSAGE",
                 res,
                 Matchers.hasKey(
                     String.format(

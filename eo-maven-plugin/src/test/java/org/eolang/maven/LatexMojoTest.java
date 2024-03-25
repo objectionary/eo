@@ -46,7 +46,7 @@ final class LatexMojoTest {
     @Test
     void generatesTexFile(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new FakeMaven(temp)
                 .withHelloWorld()
                 .execute(new FakeMaven.Latex())
@@ -64,7 +64,7 @@ final class LatexMojoTest {
     @Test
     void checksLastName() {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
         );

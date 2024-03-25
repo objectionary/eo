@@ -41,7 +41,7 @@ final class StXPathTest {
     @Test
     void modifiesSimpleNode() {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new Xsline(
                 new StEndless(
                     new StXPath(

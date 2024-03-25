@@ -45,7 +45,7 @@ final class ModuleTest {
         final Module module = new Module(content, name);
         module.save(new FtDefault(temp));
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(
                 temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),

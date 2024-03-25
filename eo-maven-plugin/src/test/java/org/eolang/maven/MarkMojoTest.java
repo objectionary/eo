@@ -52,7 +52,7 @@ final class MarkMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             maven.foreignTojos()
                 .all()
                 .iterator()
@@ -71,12 +71,12 @@ final class MarkMojoTest {
             .withVersion("*.*.*");
         maven.execute(MarkMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             foreign.all().iterator().next().version(),
             Matchers.equalTo(MarkMojoTest.VERSION)
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             foreign.size(),
             Matchers.equalTo(1)
         );

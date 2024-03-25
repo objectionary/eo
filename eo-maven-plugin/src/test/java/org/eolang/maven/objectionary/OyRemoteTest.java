@@ -46,7 +46,7 @@ final class OyRemoteTest {
     @Test
     void buildsCorrectUrl() throws Exception {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new OyRemote.UrlOy(
                 "https://raw/objectionary/home/%s/objects/%s.eo",
                 "abcde"
@@ -74,7 +74,7 @@ final class OyRemoteTest {
         final CommitHash hash = new ChRemote("master");
         final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             objectionary.contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

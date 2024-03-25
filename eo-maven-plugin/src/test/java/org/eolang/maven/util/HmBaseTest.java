@@ -50,7 +50,7 @@ final class HmBaseTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "EMPTY MESSAGE";
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest

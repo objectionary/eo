@@ -54,7 +54,7 @@ final class CleanMojoTest {
             .with("targetDir", dir.toFile())
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
         );
@@ -76,7 +76,7 @@ final class CleanMojoTest {
             .execute(AssembleMojo.class)
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             temp.resolve("target").toFile().exists(),
             Matchers.is(false)
         );

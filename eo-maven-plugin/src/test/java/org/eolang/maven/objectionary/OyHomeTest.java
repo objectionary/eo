@@ -47,7 +47,7 @@ final class OyHomeTest {
             Paths.get("pulled/master/org/example/main.eo")
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(
                 new OyHome("master", path)
                     .get("org.example.main")
@@ -64,7 +64,7 @@ final class OyHomeTest {
             Paths.get("pulled/master/org/example/main.eo")
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(
                 new OyHome("master", path)
                     .get("org.example.main")
@@ -72,7 +72,7 @@ final class OyHomeTest {
             Matchers.is(content)
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new OyHome("master", path)
                 .contains("org.example.main"),
             Matchers.is(true)

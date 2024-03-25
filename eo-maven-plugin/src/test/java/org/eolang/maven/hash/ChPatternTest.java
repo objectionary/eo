@@ -63,7 +63,7 @@ class ChPatternTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new ChPattern(pattern, tag).value(),
             Matchers.equalTo(expected)
         );

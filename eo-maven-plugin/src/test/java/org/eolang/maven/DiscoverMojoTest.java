@@ -89,12 +89,12 @@ final class DiscoverMojoTest {
         );
         final Map<String, String> first = json.removeFirst();
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             dependencies,
             Matchers.equalTo(json.size())
         );
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             String.valueOf(dependencies),
             Matchers.equalTo(first.get("discovered"))
         );

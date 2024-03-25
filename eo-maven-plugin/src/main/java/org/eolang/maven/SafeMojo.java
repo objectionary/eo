@@ -328,6 +328,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws ExecutionException If unexpected exception happened during execution
      * @throws TimeoutException If timeout limit reached
      */
+    @SuppressWarnings("PMD.CloseResource")
     private void execWithTimeout() throws ExecutionException, TimeoutException {
         final ExecutorService service = Executors.newSingleThreadExecutor();
         try {

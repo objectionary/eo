@@ -55,7 +55,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.randDep("test"))
@@ -68,7 +68,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 DcsFake::new
@@ -81,7 +81,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.runtimeDep())

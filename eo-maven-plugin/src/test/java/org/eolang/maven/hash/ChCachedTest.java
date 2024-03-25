@@ -46,13 +46,13 @@ final class ChCachedTest {
         );
         for (int idx = 0; idx < 10; ++idx) {
             MatcherAssert.assertThat(
-                "EMPTY MESSAGE",
+                "TO ADD ASSERTION MESSAGE",
                 cached.value(),
                 Matchers.equalTo("dummy")
             );
         }
         MatcherAssert.assertThat(
-            "EMPTY MESSAGE",
+            "TO ADD ASSERTION MESSAGE",
             invocations.get(),
             Matchers.equalTo(1)
         );
