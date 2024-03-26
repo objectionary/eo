@@ -182,12 +182,6 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
-            copy.form = this.form;
-            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -235,7 +229,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         Attr attr;
         if (this.attrs.containsKey(name)) {
-            attr = new AtSetRho(this.attrs.get(name), rho, name);
+            attr = new AtSetRho(this.attrs.get(name).copy(this), rho, name);
         } else if (this instanceof Atom) {
             attr = new AtSetRho(
                 new AtSimple(new AtomSafe((Atom) this).lambda()),
