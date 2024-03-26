@@ -1,0 +1,200 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang
++version 0.0.0
+
+# Test.
+[] > simple-bool-expression-via-memory-in-while
+  memory TRUE > condition
+  while > res
+    condition
+    [i] (condition.write FALSE > @)
+  res.as-bool.not > @
+
+# Test.
+[] > last-while-dataization-object
+  memory 0 > x
+  eq. > @
+    while > res
+      2.gt x
+      [i]
+        seq > @
+          *
+            x.write
+              x.as-int.plus 1
+            x.as-int
+    3
+
+# Test.
+[] > iterates-over-simple-counter
+  memory 0 > x
+  and. > @
+    eq.
+      x.write 5
+      5
+    eq.
+      while
+        10.gt x
+        [i]
+          x.write > @
+            x.as-int.plus 1
+      11
+
+# Test.
+[] > last-while-dataization-object-with-false-condition
+  memory 3 > x
+  eq. > @
+    while
+      1.gt x
+      [i]
+        x.write (x.as-int.plus 1) > @
+    FALSE
+
+# Test.
+[] > iterating-tuple-with-while-using-internal-iterator
+  * 1 1 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length.minus 1 > max
+  seq > @
+    *
+      if
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
+        while
+          max.gt iter
+          [i]
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      i
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
+
+# Test.
+[] > iterating-tuple-with-while-using-external-iterator
+  * 1 1 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length.minus 1 > max
+  seq > @
+    *
+      if
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
+        while
+          max.gt iter
+          [i]
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
+
+# Test.
+[] > while-with-body-in-condition
+  memory -1 > x
+  memory 0 > i
+  while > @
+    []
+      if > @
+        1.gt x
+        seq
+          *
+            x.write i.as-int
+            i.write (i.as-int.plus 1)
+            TRUE
+        FALSE
+    nop
+
+# Test.
+[] > iterating-tuple-with-while-without-body-multiple
+  * 1 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length > max
+  seq > @
+    *
+      while
+        []
+          if > @
+            max.gt iter
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length
+
+# Test.
+[] > iterating-tuple-with-while-without-body-single
+  * 1 > arr
+  memory 0 > iter
+  memory 0 > acc
+  arr.length > max
+  seq > @
+    *
+      while
+        []
+          if > @
+            max.gt iter
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length
