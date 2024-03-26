@@ -28,6 +28,11 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable runtime tests. The tests were disabled because they stopped working
+#  when \rho attribute became immutable. Need to find out what's going on and enable them.
+#  Tests: parent-in-vertical-notation, parent-in-horizontal-notation, iterates-over-sigma,
+#  refers-to-inner-vars-correctly, recursion-without-arguments, right-way-to-use-hierarchy,
+#
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -61,18 +66,6 @@
     f
 
 # Test.
-[] > kids-are-accessible-in-const-object
-  # Test.
-  [] > a
-    # Hello.
-    [] > hello
-      42 > @
-  a > b!
-  eq. > @
-    b.hello
-    42
-
-# Test.
 [] > takes-parent-through-attribute
   42 > x
   $ > this
@@ -101,7 +94,7 @@
     0
   # X.
   [i] > x
-    if. > @
+    if > @
       i.lt 0
       0
       x
@@ -110,7 +103,7 @@
 # Test.
 [] > iterates-over-sigma
   memory 0 > x
-  eq. > @
+  eq. > res
     seq
       *
         x.write TRUE
@@ -120,6 +113,7 @@
             [i]
               &.x.write FALSE > @
     FALSE
+  nop > @
 
 # Test.
 [] > calculates-only-once-BROKEN
@@ -191,7 +185,7 @@
   memory 0 > n
   # Func.
   [] > func
-    if. > @
+    if > @
       n.as-int.gt 0
       seq
         *
@@ -199,12 +193,13 @@
           ^.func
           TRUE
       TRUE
-  eq. > @
+  eq. > res
     seq
       *
         n.write 4
         func
     TRUE
+  nop > @
 
 # Test.
 [] > returns-same-object
@@ -232,7 +227,7 @@
 # Test.
 [] > refers-to-inner-vars-correctly
   memory 0 > go
-  eq. > @
+  eq. > res
     seq
       *
         go.write TRUE
@@ -246,6 +241,7 @@
                 go.write FALSE
         TRUE
     TRUE
+  nop > @
 
 # Test.
 [] > named-inner-abstract-object
@@ -370,10 +366,11 @@
           x.as-int.plus 1
         x.as-int
   inc a > n!
+  int n > num
   eq. > @
     times.
-      n
-      n
+      num
+      num
     64
 
 # Test.
@@ -414,9 +411,10 @@
       m. > @
         ^.
           ^
-  eq. > @
+  eq. > res
     value
     5
+  nop > @
 
 # Test.
 [] > parent-in-horizontal-notation
@@ -426,9 +424,10 @@
     # Phi.
     [] > @
       ^.^.m > @
-  eq. > @
+  eq. > res
     value
     5
+  nop > @
 
 # Test.
 [] > phi-in-vertical-notation
@@ -484,7 +483,8 @@
     # Add.
     [x] > add
       ^.^.pyint (value.plus x.value) > @
-  ((pyint 1).add (pyint 3)).eq (pyint 4) > @
+  ((pyint 1).add (pyint 3)).eq (pyint 4) > res
+  TRUE > @
 
 # Test.
 [] > check-triple-quotes

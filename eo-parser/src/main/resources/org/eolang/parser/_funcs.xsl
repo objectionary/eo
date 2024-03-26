@@ -29,7 +29,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="eo:attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="$o/parent::o[not(@base)] and not($o/@base) and not($o/@atom) and not($o/o)"/>
+    <xsl:sequence select="$o/parent::o[not(@base)] and not($o/@base) and not($o/@atom) and not($o/o) and $o[not(eo:abstract(.))]"/>
   </xsl:function>
   <xsl:function name="eo:alias-name" as="xs:string">
     <xsl:param name="object" as="element()"/>

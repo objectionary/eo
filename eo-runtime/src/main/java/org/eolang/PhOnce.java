@@ -51,8 +51,7 @@ class PhOnce implements Phi {
      * @param blank The string value
      * @param expr The expression
      */
-    PhOnce(final Data<Phi> data, final Supplier<String> blank,
-        final Supplier<String> expr) {
+    PhOnce(final Data<Phi> data, final Supplier<String> blank, final Supplier<String> expr) {
         this.object = new Data.Once<>(data, blank);
         this.exp = expr;
     }
@@ -64,7 +63,7 @@ class PhOnce implements Phi {
 
     @Override
     public int hashCode() {
-        return this.object.hashCode();
+        return this.object.take().hashCode();
     }
 
     @Override

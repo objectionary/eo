@@ -24,72 +24,107 @@
 
 package org.eolang;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A constant object.
- *
- * <p>This class is thread-safe.</p>
- *
+ * Object that eliminates duplication of data calculation.
+ * When this object is accessed for an attribute, it:
+ * 1. dataizes the encapsulated one
+ * 2. makes new instance of {@link EOorg.EOeolang.EObytes} with given data (bytes)
+ * 3. caches it
+ * 4. behaves as cached {@link EOorg.EOeolang.EObytes}
  * @since 0.16
  */
 @Versionized
-public final class PhConst extends PhDecorator {
+public final class PhConst implements Phi {
 
     /**
-     * Cached attributes.
+     * The object being wrapped by const decorator.
      */
-    private final Map<String, Attr> cached = new ConcurrentHashMap<>(0);
+    private final Phi wrapped;
+
+    /**
+     * Bytes retrieved from the wrapped object.
+     */
+    private final AtomicReference<Phi> bytes;
 
     /**
      * Ctor.
-     *
-     * @param phi The origin
+     * @param phi The origin wrapped phi
      */
     public PhConst(final Phi phi) {
-        super(phi);
+        this(phi, null);
+    }
+
+    /**
+     * Ctor for copying.
+     * @param phi The origin wrapped phi
+     * @param bts EObytes
+     */
+    private PhConst(final Phi phi, final Phi bts) {
+        this.wrapped = phi;
+        this.bytes = new AtomicReference<>(bts);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.wrapped.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.wrapped.hashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("!%s%s", this.cached.keySet(), this.origin);
+        return String.format("!%s", this.wrapped);
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s!", this.origin.φTerm());
+        return String.format("%s!", this.wrapped.φTerm());
     }
 
     @Override
     public Phi copy() {
-        return new PhConst(this.origin.copy());
+        return new PhConst(this.wrapped.copy(), this.bytes.get());
     }
 
     @Override
     public Attr attr(final int pos) {
-        return this.origin.attr(pos);
+        return this.primitive().attr(pos);
     }
 
     @Override
     public Attr attr(final String name) {
-        final Attr ret;
-        if (this.cached.containsKey(name)) {
-            ret = this.cached.get(name);
-        } else {
-            ret = new AtConst(this.origin.attr(name), this);
-            this.cached.put(name, ret);
-        }
-        return ret;
+        return this.primitive().attr(name);
     }
 
     @Override
     public String locator() {
-        return this.origin.locator();
+        return this.wrapped.locator();
     }
 
     @Override
     public String forma() {
-        return this.origin.forma();
+        return this.wrapped.forma();
+    }
+
+    /**
+     * Cached primitive object that was retrieved from dataization of wrapped one.
+     * @return EObytes object
+     */
+    private Phi primitive() {
+        if (this.bytes.get() == null) {
+            this.bytes.set(
+                new Data.ToPhi(
+                    new Dataized(
+                        this.wrapped
+                    ).take()
+                )
+            );
+        }
+        return this.bytes.get();
     }
 }

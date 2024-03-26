@@ -193,7 +193,7 @@ final class UniverseDefaultTest {
         DummyWithAt(final Phi sigma, final String att) {
             super(sigma);
             this.add("Δ", new AtComposite(sigma, self -> new Data.ToPhi(123L)));
-            this.add(att, new AtComposite(sigma, self -> new Data.ToPhi(1L)));
+            this.add(att, new AtOnce(new AtComposite(sigma, self -> new Data.ToPhi(1L))));
         }
 
         /**
@@ -217,7 +217,7 @@ final class UniverseDefaultTest {
          */
         DummyWithStructure(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ATT, new AtComposite(this, DummyWithAt::new));
+            this.add(UniverseDefaultTest.ATT, new AtOnce(new AtComposite(this, DummyWithAt::new)));
         }
     }
 

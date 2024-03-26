@@ -41,32 +41,34 @@
     0 > length
 
   # Obtain the length of the tuple.
-  [] > length!
-    ^.head.length.plus 1 > @
+  [] > length
+    ^.head.length.plus 1 > len!
+    int len > @
 
   # Take one element from the tuple, at the given position.
+  # @todo #2931:30min Return previous optimizations for the object.
+  #  The optimization was removed because it does not work with new rho logic.
+  #  Please check previous version of the object and try to implement it again.
+  #  Also we need to enable the tuple tests: at-without-checks-with-first-element,
+  #  at-without-checks-with-last-element
   [i] > at
     i > idx!
-    ^.length > len!
-    if. > index!
-      idx.lt 0
+    ^.length > len
+    if > index!
+      0.gt idx
       len.plus idx
       idx
-    if. > @
+    if > @
       or.
-        index.lt 0
-        index.gte len
+        0.gt index
+        len.lte index
       error "Given index is out of tuple bounds"
-      at-without-checks index
-
-    # Takes element from the tuple without index validation.
-    # Here `i` must be an object that can be comparable with `int` using `lt` attribute.
-    [i] > at-without-checks
-      i > idx!
-      if. > @
-        idx.lt head.length
-        ^.^.head.at.at-without-checks idx
-        ^.^.tail
+      if
+        gt.
+          len.plus -1
+          index
+        ^.head.at index
+        ^.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

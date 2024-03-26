@@ -38,7 +38,7 @@ final class PhNamedTest {
     void comparesTwoObjects() {
         MatcherAssert.assertThat(
             new PhNamed(new Data.ToPhi(1L), ""),
-            Matchers.equalTo(new PhNamed(new Data.ToPhi(1L), ""))
+            Matchers.not(Matchers.equalTo(new PhNamed(new Data.ToPhi(1L), "")))
         );
         MatcherAssert.assertThat(
             new PhNamed(new Data.ToPhi(1L), ""),

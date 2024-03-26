@@ -125,11 +125,11 @@ final class PhPackage implements Phi {
     private Optional<Phi> loadPhi(final String target) {
         Optional<Phi> res;
         try {
-            final Phi kid = (Phi) Class.forName(target)
-                .getConstructor(Phi.class)
-                .newInstance(Phi.Φ);
-            kid.attr("ρ").put(this);
-            res = Optional.of(kid);
+            res = Optional.of(
+                (Phi) Class.forName(target)
+                    .getConstructor(Phi.class)
+                    .newInstance(Phi.Φ)
+            );
         } catch (final ClassNotFoundException notfound) {
             res = Optional.empty();
         } catch (final NoSuchMethodException

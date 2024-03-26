@@ -42,12 +42,12 @@ import org.junit.jupiter.api.Test;
 public final class EOintTest {
 
     @Test
-    void hasEqualHashes() {
+    void hasDifferentHashes() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             left.hashCode(),
-            Matchers.equalTo(right.hashCode())
+            Matchers.not(Matchers.equalTo(right.hashCode()))
         );
     }
 
