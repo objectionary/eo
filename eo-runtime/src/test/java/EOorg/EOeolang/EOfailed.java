@@ -23,53 +23,22 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
 
 /**
- * WHILE.
+ * Wrong object that can't be used and instantiated.
+ * Used in {@link org.eolang.PhPackageTest#throwsExceptionIfCantInstantiateObject()}
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.29
  */
-@Versionized
-@XmirObject(oname = "bool.while")
-public final class EObool$EOwhile extends PhDefault implements Atom {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EObool$EOwhile(final Phi sigma) {
-        super(sigma);
-        this.add("f", new AtFree());
-    }
-
-    @Override
-    public Phi lambda() {
-        Phi last = new Data.ToPhi(false);
-        long count = 0L;
-        while (true) {
-            if (!new Param(this).strong(Boolean.class)) {
-                break;
-            }
-            new Dataized(last).take();
-            last = this.attr("f").get().copy();
-            last.attr(0).put(new Data.ToPhi(count));
-            ++count;
-        }
-        return last;
-    }
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "JTCOP.RuleInheritanceInTests"
+})
+final class EOfailed extends PhDefault {
 }

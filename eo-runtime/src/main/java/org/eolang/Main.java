@@ -179,8 +179,7 @@ public final class Main {
             Main.LOGGER.fine(String.format("Loading class %s...", path));
             app = ((Phi) Class.forName(path)
                 .getConstructor(Phi.class)
-                .newInstance(Phi.Φ))
-                .copy();
+                .newInstance(Phi.Φ));
         } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
                 String.format("Can not find '%s' object", opts.get(0))

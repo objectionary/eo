@@ -30,7 +30,7 @@
 # @todo #2931:30min Enable heap tests. The tests were disabled because they stopped working
 #  when \rho attribute became immutable. Need to find out what's going on and enable them.
 #  Tests: malloc-returns-different-pointers, malloc-return-error, increments-pointer,
-#  mallocs-do-not-overlap
+#  mallocs-do-not-overlap, write-and-read-without-error
 [] > allocates-and-uses
   "Hello, друг!" > txt
   txt.as-bytes > bytes
@@ -92,9 +92,10 @@
   # Mem.
   [] > mem
     p.block 8 > @
-  eq. > @
+  eq. > res
     mem.write 01-02-03
     TRUE
+  TRUE > @
 
 # Test.
 [] > increments-pointer

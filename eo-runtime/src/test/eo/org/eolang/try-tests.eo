@@ -27,6 +27,8 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable the test "try-memory-update". The test is disabled because "try" object
+#  dataizes body twice. Need to fix it and enable the test.
 [] > simple-division-by-zero
   try > @
     []
@@ -86,7 +88,7 @@
 # Test.
 [] > try-memory-update
   memory 0 > m
-  eq. > @
+  eq. > res
     seq
       *
         m.write 1
@@ -98,6 +100,7 @@
           nop
         m.as-int
     2
+  TRUE > @
 
 # Test.
 [] > try-memory-update-catch

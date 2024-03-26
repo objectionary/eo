@@ -25,10 +25,12 @@ package org.eolang;
 
 import EOorg.EOeolang.EOerror;
 import EOorg.EOeolang.EOio.EOstdout;
+import java.security.SecureRandom;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.naming.ldap.Rdn;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
@@ -38,7 +40,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhDefault}.
- *
  * @since 0.1
  */
 final class PhDefaultTest {
@@ -391,6 +392,71 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void rnds() {
+        Phi rnd = new PhWith(
+            new PhMethod(
+                new PhWith(
+                    new PhMethod(
+                        new Rnd(Phi.Φ), "plus"
+                    ),
+                    0, new Data.ToPhi(1.2)
+                ),
+                "plus"
+            ),
+            0, new Data.ToPhi(1.2)
+        );
+        System.out.println(new Dataized(rnd).take(Double.class));
+        System.out.println(new Dataized(rnd).take(Double.class));
+    }
+
+    @Test
+    void memories() {
+        Phi rnd = new PhMethod(
+            new PhMethod(
+                new Rnd(Phi.Φ),
+                "as-bytes"
+            ),
+            "as-float"
+        );
+        System.out.println(new Dataized(rnd).take(Double.class));
+        System.out.println(new Dataized(rnd).take(Double.class));
+    }
+
+    @Test
+    void bytes() {
+        Phi rnd = new PhMethod(
+            new Rnd(Phi.Φ),
+            "as-bytes"
+        );
+        System.out.println(new Dataized(rnd).take(Double.class));
+        System.out.println(new Dataized(rnd).take(Double.class));
+    }
+
+    /**
+     * Rnd.
+     * @since 1.0
+     */
+    private static class Rnd extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
+        Rnd(final Phi sigma) {
+            super(sigma);
+            this.add(
+                "φ",
+                new AtComposite(
+                    this,
+                    self -> {
+                        System.out.println("print");
+                        return new Data.ToPhi(new SecureRandom().nextDouble());
+                    }
+                )
+            );
+        }
+    }
+
     /**
      * Int.
      * @since 0.36.0
@@ -404,7 +470,7 @@ final class PhDefaultTest {
                 Attr.PHI,
                 new AtOnce(
                     new AtComposite(
-                    this,
+                        this,
                         rho -> rho.attr("void").get()
                     )
                 )
@@ -451,7 +517,7 @@ final class PhDefaultTest {
         /**
          * Ctor.
          * @param sigma Sigma
-         * @param data Data
+         * @param data  Data
          */
         Foo(final Phi sigma, final Object data) {
             super(sigma);
@@ -510,7 +576,7 @@ final class PhDefaultTest {
                 new AtFormed(
                     () -> {
                         ++this.count;
-                        return new Data.ToPhi(new byte[] {(byte) 0x01});
+                        return new Data.ToPhi(new byte[]{(byte) 0x01});
                     }
                 )
             );

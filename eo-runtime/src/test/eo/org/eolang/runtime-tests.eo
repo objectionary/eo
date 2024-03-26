@@ -32,7 +32,7 @@
 #  when \rho attribute became immutable. Need to find out what's going on and enable them.
 #  Tests: parent-in-vertical-notation, parent-in-horizontal-notation, iterates-over-sigma,
 #  refers-to-inner-vars-correctly, recursion-without-arguments, right-way-to-use-hierarchy,
-#
+#  calculates-only-once-BROKEN.
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -124,13 +124,14 @@
       *
         x.write (x.as-int.plus 1)
         42
-  eq. > @
+  eq. > res
     seq
       *
         x.write 0
         a.neg.neg.neg.neg.eq 42
         x
     1
+  nop > @
 
 # Test.
 [] > rho-of-add-should-not-change

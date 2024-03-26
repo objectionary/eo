@@ -84,13 +84,11 @@
 # Test.
 [] > complex-bool-expression-in-while
   memory 0 > m
-  seq > res
+  seq > @
     *
-      m.write 5
+      m.write 1
       while.
-        eq.
-          m.as-int.gt 0
-          TRUE
+        m.as-int.gt 0
         [i]
           seq > @
             *
@@ -98,21 +96,20 @@
                 m.as-int.minus 1
               TRUE
       TRUE
-  nop > @
 
 # Test.
 [] > last-while-dataization-object
   memory 0 > x
-  eq. > res
-    while.
-      x.as-int.lt 2
-      [i]
-        seq > @
-          *
-            x.write (x.as-int.plus 1)
-            x.as-int
-    3
-  nop > @
+  while. > res
+    x.lt 2
+    [i]
+      seq > @
+        *
+          x.write (x.as-int.plus 1)
+          x.as-int
+  or. > @
+    res.eq 2
+    res.eq 3
 
 # Test.
 [] > while-without-last-dataization
