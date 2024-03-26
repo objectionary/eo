@@ -25,19 +25,16 @@ package org.eolang.maven.util;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
-import org.cactoos.Text;
-import org.cactoos.io.InputOf;
 
 /**
  * Location for files that saves optionally.
  * @since 0.32.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmOptional implements Home {
+public final class HmOptional extends Home {
     /**
      * Original home.
      */
@@ -57,26 +54,6 @@ public final class HmOptional implements Home {
     public HmOptional(final Home home, final boolean rwte) {
         this.origin = home;
         this.rewrite = rwte;
-    }
-
-    @Override
-    public void save(final String str, final Path path) throws IOException {
-        this.save(new InputOf(str), path);
-    }
-
-    @Override
-    public void save(final Text txt, final Path path) throws IOException {
-        this.save(new InputOf(txt), path);
-    }
-
-    @Override
-    public void save(final InputStream stream, final Path path) throws IOException {
-        this.save(new InputOf(stream), path);
-    }
-
-    @Override
-    public void save(final byte[] bytes, final Path path) throws IOException {
-        this.save(new InputOf(bytes), path);
     }
 
     @Override

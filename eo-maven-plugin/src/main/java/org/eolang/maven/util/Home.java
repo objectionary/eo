@@ -29,12 +29,13 @@ import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 
 /**
  * Location for the files.
  * @since 0.32.0
  */
-public interface Home {
+public abstract class Home {
     /**
      * Saving string.
      *
@@ -42,7 +43,9 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(String str, Path path) throws IOException;
+    public void save(final String str, final Path path) throws IOException {
+        this.save(new InputOf(str), path);
+    }
 
     /**
      * Saving text.
@@ -51,7 +54,9 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(Text txt, Path path) throws IOException;
+    public void save(final Text txt, final Path path) throws IOException {
+        this.save(new InputOf(txt), path);
+    }
 
     /**
      * Saving stream.
@@ -60,7 +65,9 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(InputStream stream, Path path) throws IOException;
+    public void save(final InputStream stream, final Path path) throws IOException  {
+        this.save(new InputOf(stream), path);
+    }
 
     /**
      * Saving bytes.
@@ -69,7 +76,9 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(byte[] bytes, Path path) throws IOException;
+    public void save(final byte[] bytes, final Path path) throws IOException  {
+        this.save(new InputOf(bytes), path);
+    }
 
     /**
      * Saving input.
@@ -79,7 +88,7 @@ public interface Home {
      * @throws IOException If fails
      * @throws IllegalArgumentException If given path is absolute
      */
-    void save(Input input, Path path) throws IOException;
+    public abstract void save(Input input, Path path) throws IOException;
 
     /**
      * Check if exists.
@@ -88,7 +97,7 @@ public interface Home {
      * @return True if exists
      * @throws IllegalArgumentException If given path is absolute
      */
-    boolean exists(Path path);
+    public abstract boolean exists(Path path);
 
     /**
      * Load bytes from file by path.
@@ -99,7 +108,7 @@ public interface Home {
      *  if some exception happens during reading the file
      * @throws IllegalArgumentException If given path is absolute
      */
-    Bytes load(Path path) throws IOException;
+    public abstract Bytes load(Path path) throws IOException;
 
     /**
      * Absolute path to a file.
@@ -107,7 +116,7 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @return Absolute path
      */
-    Path absolute(Path path);
+    public abstract Path absolute(Path path);
 
     /**
      * Verifies that given path is relative and throws exception.
@@ -115,5 +124,5 @@ public interface Home {
      * @return Given path if it's relative
      * @throws IllegalArgumentException If given path is Absolute
      */
-    Path onlyRelative(Path path);
+    public abstract Path onlyRelative(Path path);
 }

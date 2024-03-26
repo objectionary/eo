@@ -26,14 +26,11 @@ package org.eolang.maven.util;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
-import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
@@ -45,7 +42,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmBase implements Home {
+public final class HmBase extends Home {
     /**
      * Current working directory.
      */
@@ -67,26 +64,6 @@ public final class HmBase implements Home {
      */
     public HmBase(final Path path) {
         this.cwd = path;
-    }
-
-    @Override
-    public void save(final String str, final Path path) throws IOException {
-        this.save(new InputOf(str), path);
-    }
-
-    @Override
-    public void save(final Text txt, final Path path) throws IOException {
-        this.save(new InputOf(txt), path);
-    }
-
-    @Override
-    public void save(final InputStream stream, final Path path) throws IOException {
-        this.save(new InputOf(stream), path);
-    }
-
-    @Override
-    public void save(final byte[] bytes, final Path path) throws IOException {
-        this.save(new InputOf(bytes), path);
     }
 
     @Override
