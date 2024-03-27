@@ -108,6 +108,19 @@ SOFTWARE.
       <xsl:value-of select="o[@data]/text()"/>
     </o>
   </xsl:template>
+  <xsl:template match="//o[@base='bytes' and @data and @ref]">
+    <o base="org.eolang.bytes">
+      <xsl:for-each select="@*[name()!='data' and name()!='base']">
+        <xsl:attribute name="{name()}">
+          <xsl:value-of select="."/>
+        </xsl:attribute>
+      </xsl:for-each>
+      <xsl:attribute name="data">
+        <xsl:text>bytes</xsl:text>
+      </xsl:attribute>
+      <xsl:value-of select="text()"/>
+    </o>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

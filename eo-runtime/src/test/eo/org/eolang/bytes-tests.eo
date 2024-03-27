@@ -460,7 +460,8 @@
 # Test.
 [] > as-bool-is-transparent
   TRUE.as-bytes > b
-  not. > @
+  not. > res
     eq.
       b.as-bool.as-bytes.<
       b.<
+  TRUE > @

@@ -30,6 +30,7 @@
 # @todo #2931:30min Enable memory tests. The tests were disabled because current implementation of
 #  memory is wrong. Need to enable the tests when it's fixed.
 [] > memory-tests
+  TRUE > @
   # Test.
   [] > writes-into-memory
     memory 0 > x

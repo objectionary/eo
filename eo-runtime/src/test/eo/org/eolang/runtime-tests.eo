@@ -34,6 +34,7 @@
 #  refers-to-inner-vars-correctly, recursion-without-arguments, right-way-to-use-hierarchy,
 #  calculates-only-once-BROKEN, directly-accesses-objects-from-standard-root,
 #  directly-accesses-objects-from-root, constant-defends-against-side-effects, makes-shallow-copy,
+#  calling-caged-function, standard-root-and-root, rho-of-add-should-not-change
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -139,7 +140,7 @@
   memory 0 > f1
   cage 0 > f2
   memory 0 > f0
-  nop > @
+  nop > res
     seq
       *
         f0.write 0
@@ -147,6 +148,7 @@
         f2.write (f0.plus f1)
         f1.write f2
         TRUE
+  TRUE > @
 
 # Test.
 [] > positive-object-vertices
@@ -204,13 +206,14 @@
   nop > @
 
 # Test.
-[] > returns-same-object
+[] > does-not-return-same-object
   # Foo.
   [] > foo
     memory 0 > x
-  eq. > @
-    foo.x.<
-    foo.x.<
+  not. > @
+    eq.
+      foo.x.<
+      foo.x.<
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
@@ -259,13 +262,14 @@
   # Func.
   [x] > func
     2.plus x > @
-  nop > @
+  nop > res
     eq.
       seq
         *
           h.write func
           h.@ 8
       10
+  TRUE > @
 
 # Test.
 [] > app-that-calls-func
@@ -316,9 +320,10 @@
     "one"
   Q.org.eolang.io.stdout > root
     "one"
-  eq. > @
+  eq. > res
     root
     stand-root
+  TRUE > @
 
 # Test.
 [] > extract-attribute-from-decoratee

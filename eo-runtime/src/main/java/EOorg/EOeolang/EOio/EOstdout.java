@@ -78,7 +78,7 @@ public final class EOstdout extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         this.out.print(
-            new Param(this, "text").strong(Long.class)
+            new Param(this, "text").strong(String.class)
         );
         return new Data.ToPhi(true);
     }

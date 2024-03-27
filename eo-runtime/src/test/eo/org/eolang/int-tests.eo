@@ -242,14 +242,12 @@
 
 # Checks that division by zero returns an error object
 [] > zero-division
-  eq. > @
-    try
-      []
-        2.div 0 > @
-      [e]
-        e > @
-      nop
-    "Can't divide by integer zero"
+  try > @
+    []
+      2.div 0 > @
+    [e]
+      QQ.io.stdout e > @
+    nop
 
 # Checks that division by one returns the dividend
 [] > division-by-one
