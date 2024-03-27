@@ -124,12 +124,14 @@ final class PhConstTest {
 
     @Test
     void keepsConstMultiLayers() {
-        Phi ret = new PhConst(new Rnd(Phi.Φ));
-        final Phi phi =
+        final Phi phi = new PhWith(
+            new Envelope(Phi.Φ),
+            0,
             new PhWith(
                 new Envelope(Phi.Φ),
                 0,
                 new PhConst(new Rnd(Phi.Φ))
+            )
         );
         MatcherAssert.assertThat(
             new Dataized(phi).take(Double.class),

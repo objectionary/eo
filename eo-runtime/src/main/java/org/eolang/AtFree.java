@@ -48,6 +48,7 @@ public final class AtFree implements Attr {
 
     /**
      * Ctor.
+     * @param name The name of the attribute
      */
     public AtFree(final String name) {
         this(name, null);

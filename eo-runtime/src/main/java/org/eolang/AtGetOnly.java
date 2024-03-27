@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * Attribute that only gets objects.
  * @since 0.36.0
  */
-public final class AtGetOnly implements Attr {
+final class AtGetOnly implements Attr {
 
     /**
      * Get object supplier.
@@ -46,7 +46,7 @@ public final class AtGetOnly implements Attr {
     }
 
     @Override
-    public Attr copy(Phi self) {
+    public Attr copy(final Phi self) {
         throw new IllegalStateException(
             "Should never happen"
         );
