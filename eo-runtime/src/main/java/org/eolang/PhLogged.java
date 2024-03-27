@@ -29,7 +29,6 @@ package org.eolang;
  * for debugging purposes).
  *
  * <p>This class is thread-safe.</p>
- *
  * @since 0.24
  */
 @Versionized
@@ -42,7 +41,6 @@ public final class PhLogged implements Phi {
 
     /**
      * Ctor.
-     *
      * @param phi The origin
      */
     public PhLogged(final Phi phi) {
@@ -63,62 +61,42 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Phi take(int pos) {
-        return null;
+    public Phi take(final int pos) {
+        System.out.printf("%d.take(\"%d\")...\n", this.hashCode(), pos);
+        final Phi ret = this.origin.take(pos);
+        System.out.printf("%d.take(\"%d\")!\n", this.hashCode(), pos);
+        return ret;
     }
 
     @Override
-    public Phi take(String name) {
-        return null;
+    public Phi take(final String name) {
+        System.out.printf("%d.take(\"%s\")...\n", this.hashCode(), name);
+        final Phi ret = this.origin.take(name);
+        System.out.printf("%d.take(\"%s\")!\n", this.hashCode(), name);
+        return ret;
     }
 
     @Override
-    public Phi take(String name, Phi rho) {
-        return null;
+    public Phi take(final String name, final Phi rho) {
+        System.out.printf("%d.take(\"%s\", %d)...\n", this.hashCode(), name, rho.hashCode());
+        final Phi ret = this.origin.take(name);
+        System.out.printf("%d.take(\"%s\", %d)!\n", this.hashCode(), name, rho.hashCode());
+        return ret;
     }
 
     @Override
-    public void put(int pos, Phi object) {
-
+    public void put(final int pos, final Phi object) {
+        System.out.printf("%d.put(%d, %d)...\n", this.hashCode(), pos, object.hashCode());
+        this.origin.put(pos, object);
+        System.out.printf("%d.put(%d, %d)!\n", this.hashCode(), pos, object.hashCode());
     }
 
     @Override
-    public void put(String name, Phi object) {
-
+    public void put(final String name, final Phi object) {
+        System.out.printf("%d.put(\"%s\", %d)...\n", this.hashCode(), name, object.hashCode());
+        this.origin.put(name, object);
+        System.out.printf("%d.put(\"%s\", %d)!\n", this.hashCode(), name, object.hashCode());
     }
-
-//    @Override
-//    public Attr attr(final int pos) {
-//        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
-//        final Attr ret = new AtLogged(
-//            this.origin.attr(pos),
-//            String.format("%d#%d", this.hashCode(), pos)
-//        );
-//        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
-//        return ret;
-//    }
-//
-//    @Override
-//    public Attr attr(final String name) {
-//        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-//        final Attr ret = new AtLogged(
-//            this.origin.attr(name),
-//            String.format("%d#%s", this.hashCode(), name)
-//        );
-//        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
-//        return ret;
-//    }
-//
-//    @Override
-//    public Attr attr(final String name, final Phi rho) {
-//        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-//        final Attr ret = new AtLogged(
-//            this.origin.attr(name, rho),
-//            String.format("%d#%s", this.hashCode(), name)
-//        );
-//        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
-//        return ret;
-//    }
 
     @Override
     public String locator() {
