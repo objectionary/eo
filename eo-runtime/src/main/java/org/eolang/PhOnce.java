@@ -82,18 +82,28 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public final Attr attr(final int pos) {
-        return this.object.take().attr(pos);
+    public Phi take(int pos) {
+        return this.object.take().take(pos);
     }
 
     @Override
-    public final Attr attr(final String name) {
-        return this.object.take().attr(name);
+    public Phi take(final String name) {
+        return this.object.take().take(name);
     }
 
     @Override
-    public Attr attr(final String name, final Phi rho) {
-        return this.object.take().attr(name, rho);
+    public Phi take(final String name, final Phi rho) {
+        return this.object.take().take(name, rho);
+    }
+
+    @Override
+    public void put(final int pos, final Phi object) {
+        this.object.take().put(pos, object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        this.object.take().put(name, object);
     }
 
     @Override

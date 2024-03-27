@@ -44,15 +44,15 @@ SOFTWARE.
     </xsl:for-each>
   </xsl:function>
   <!-- Fetch object by given name -->
-  <!-- org.eolang.int -> Phi.Ф.attr("org").get().attr("eolang").attr("int").get()  -->
+  <!-- org.eolang.int -> Phi.Ф.take("org").take("eolang").take("int")  -->
   <xsl:function name="eo:fetch">
     <xsl:param name="object"/>
     <xsl:variable name="parts" select="tokenize($object, '\.')"/>
     <xsl:text>Phi.Φ</xsl:text>
     <xsl:for-each select="$parts">
-      <xsl:text>.attr("</xsl:text>
+      <xsl:text>.take("</xsl:text>
       <xsl:value-of select="."/>
-      <xsl:text>").get()</xsl:text>
+      <xsl:text>")</xsl:text>
     </xsl:for-each>
   </xsl:function>
   <!-- Get clean escaped object name  -->
@@ -209,7 +209,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$type='org.eolang.bytes'">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree());</xsl:text>
+      <xsl:text>this.add("Δ", new AtFree("Δ"));</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
@@ -223,16 +223,22 @@ SOFTWARE.
   </xsl:template>
   <!-- Attribute -->
   <xsl:template match="attr">
+    <xsl:variable name="name" select="eo:attr-name(@name)"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name)"/>
+    <xsl:value-of select="$name"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="*"/>
+    <xsl:apply-templates select="*">
+      <xsl:with-param name="name" select="$name"/>
+    </xsl:apply-templates>
     <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Void attribute -->
   <xsl:template match="void">
-    <xsl:text>new AtFree()</xsl:text>
+    <xsl:param name="name"/>
+    <xsl:text>new AtFree("</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>")</xsl:text>
   </xsl:template>
   <!-- Formed attribute -->
   <xsl:template match="formed">

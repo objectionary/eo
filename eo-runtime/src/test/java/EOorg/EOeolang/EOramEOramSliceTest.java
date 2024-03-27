@@ -67,11 +67,11 @@ final class EOramEOramSliceTest {
         final String result
     ) throws IOException {
         final Phi ram = new EOram(Phi.Φ);
-        ram.attr(0).put(new Data.ToPhi(total));
+        ram.put(0, new Data.ToPhi(total));
         Ram.INSTANCE.write(ram, wrt, data.getBytes(StandardCharsets.UTF_8));
-        final Phi slice = ram.attr("slice").get().copy();
-        slice.attr("position").put(new Data.ToPhi((long) rdr));
-        slice.attr("size").put(new Data.ToPhi((long) len));
+        final Phi slice = ram.take("slice").copy();
+        slice.put("position", new Data.ToPhi((long) rdr));
+        slice.put("size", new Data.ToPhi((long) len));
         final byte[] bytes = new Dataized(slice).take(byte[].class);
         MatcherAssert.assertThat(
             new String(bytes, StandardCharsets.UTF_8),

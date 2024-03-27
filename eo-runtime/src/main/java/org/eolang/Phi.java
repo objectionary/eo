@@ -45,6 +45,9 @@ public interface Phi extends Term {
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
+        /**
+         * Default package.
+         */
         private final Phi pkg = new PhPackage("");
 
         @Override
@@ -73,20 +76,34 @@ public interface Phi extends Term {
         }
 
         @Override
-        public Attr attr(final int pos) {
+        public Phi take(final int pos) {
             throw new ExFailure(
-                String.format("Can't #attr(%d) in Φ", pos)
+                String.format("Can't #take(%d) from Φ", pos)
             );
         }
 
         @Override
-        public Attr attr(final String name) {
-            return this.pkg.attr(name);
+        public Phi take(final String name) {
+            return this.pkg.take(name);
         }
 
         @Override
-        public Attr attr(final String name, final Phi rho) {
-            return this.pkg.attr(name, rho);
+        public Phi take(final String name, final Phi rho) {
+            return this.pkg.take(name, rho);
+        }
+
+        @Override
+        public void put(final int pos, final Phi object) {
+            throw new IllegalStateException(
+                String.format("Can't #put(%d, %s) to Φ", pos, object)
+            );
+        }
+
+        @Override
+        public void put(final String name, final Phi object) {
+            throw new IllegalStateException(
+                String.format("Can't #put(%s, %s) to Φ", name, object)
+            );
         }
 
         @Override
@@ -108,30 +125,39 @@ public interface Phi extends Term {
     Phi copy();
 
     /**
-     * Get attribute by position.
-     *
-     * @param pos The position of the attribute
-     * @return The attr
+     * Take object by position of the attribute.
+     * @return The object
      */
-    Attr attr(int pos);
+    Phi take(int pos);
 
     /**
-     * Get attribute.
-     *
+     * Take object by name of the attribute.
      * @param name The name of the attribute
-     * @return The attr
+     * @return The object
      */
-    Attr attr(String name);
+    Phi take(String name);
 
     /**
-     * Get attribute and set \rho to it.
-     * This method should be used ONLY inside {@link PhDefault}.
-     *
+     * Get object by the name of the attribute and set \rho to it.
      * @param name The name of the attribute
-     * @param rho Rho to be set to the attribute
-     * @return The attribute
+     * @param rho The \rho object
+     * @return The object
      */
-    Attr attr(String name, Phi rho);
+    Phi take(String name, Phi rho);
+
+    /**
+     * Put object by position of the attribute.
+     * @param pos The position of the attribute.
+     * @param object The object to put
+     */
+    void put(int pos, Phi object);
+
+    /**
+     * Put object by name of the attribute.
+     * @param name The name of the attribute.
+     * @param object The object to put
+     */
+    void put(String name, Phi object);
 
     /**
      * Get code locator of the phi.

@@ -183,12 +183,12 @@ public final class EOtryTest {
          */
         public Catcher(final Phi sigma) {
             super(sigma);
-            this.add("ex", new AtFree());
+            this.add("ex", new AtFree("ex"));
             this.add(
                 "φ",
                 new AtComposite(
                     this,
-                    self -> self.attr("ex").get()
+                    self -> self.take("ex")
                 )
             );
         }

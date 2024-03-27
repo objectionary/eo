@@ -52,7 +52,7 @@ public final class EObytes$EOxor extends PhDefault implements Atom {
      */
     public EObytes$EOxor(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("b", new AtFree("b"));
     }
 
     @Override

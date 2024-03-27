@@ -24,44 +24,29 @@
 
 package org.eolang;
 
+import java.util.function.Supplier;
+
 /**
- * Fake \rho attribute.
- * 1. If retrieved \rho object is absent - the exception is thrown, see {@link AtRho}.
- * 2. If retrieved \rho object is equal to given "parent" object - it is replaced with given
- * "rho" object
- * 3. Otherwise, the retrieved \rho object is returned.
+ * Attribute that only gets objects.
  * @since 0.36.0
  */
-final class AtFakeRho implements Attr {
-    /**
-     * Original rho attribute.
-     */
-    private final Attr origin;
+public class AtGetOnly implements Attr {
 
     /**
-     * Possible current rho.
+     * Get object supplier.
      */
-    private final Phi current;
-
-    /**
-     * Possible alternate rho.
-     */
-    private final Phi alternate;
+    private final Supplier<Phi> function;
 
     /**
      * Ctor.
-     * @param attr Original \rho attribute
-     * @param parent Possible current \rho
-     * @param rho Possible alternate \rho
+     * @param func Get object function
      */
-    AtFakeRho(final Attr attr, final Phi parent, final Phi rho) {
-        this.origin = attr;
-        this.current = parent;
-        this.alternate = rho;
+    AtGetOnly(final Supplier<Phi> func) {
+        this.function = func;
     }
 
     @Override
-    public Attr copy(final Phi self) {
+    public Attr copy(Phi self) {
         throw new IllegalStateException(
             "Should never happen"
         );
@@ -69,23 +54,20 @@ final class AtFakeRho implements Attr {
 
     @Override
     public Phi get() {
-        final Phi ret;
-        final Phi rho = this.origin.get();
-        if (rho.equals(this.current)) {
-            ret = this.alternate;
-        } else {
-            ret = rho;
-        }
-        return ret;
+        return this.function.get();
     }
 
     @Override
     public void put(final Phi phi) {
-        this.origin.put(phi);
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 }

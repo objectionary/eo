@@ -81,8 +81,6 @@ final class AtNamed implements Attr {
     public Attr copy(final Phi self) {
         try {
             return new AtNamed(this.name, this.oname, this.phi, this.origin.copy(self));
-        } catch (final ExFlow ex) {
-            throw ex;
         } catch (final ExFailure ex) {
             throw new ExFailure(this.label(), ex);
         }
@@ -93,8 +91,6 @@ final class AtNamed implements Attr {
         Phi obj;
         try {
             obj = this.origin.get();
-        } catch (final ExFlow ex) {
-            throw ex;
         } catch (final ExUnset ex) {
             throw new ExUnset(this.label(), ex);
         } catch (final ExFailure ex) {
@@ -110,8 +106,6 @@ final class AtNamed implements Attr {
     public void put(final Phi src) {
         try {
             this.origin.put(src);
-        } catch (final ExFlow ex) {
-            throw ex;
         } catch (final ExReadOnly ex) {
             throw new ExReadOnly(this.label(), ex);
         } catch (final ExFailure ex) {

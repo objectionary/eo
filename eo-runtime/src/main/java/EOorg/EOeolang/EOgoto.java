@@ -27,8 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtAtom;
 import org.eolang.AtFree;
+import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Dataized;
@@ -54,13 +54,13 @@ public final class EOgoto extends PhDefault implements Atom {
      */
     public EOgoto(final Phi sigma) {
         super(sigma);
-        this.add("f", new AtFree());
+        this.add("f", new AtFree("f"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi body = this.attr("f").get().copy();
-        body.attr(0).put(new EOgoto.Token(this));
+        final Phi body = this.take("f").copy();
+        body.put(0, new EOgoto.Token(this));
         Phi ret;
         while (true) {
             try {
@@ -68,11 +68,11 @@ public final class EOgoto extends PhDefault implements Atom {
                 new Dataized(body).take();
                 break;
             } catch (final EOgoto.BackwardException ex) {
-                if (!ex.sigma.attr("σ").get().equals(this)) {
+                if (!ex.sigma.take(Attr.SIGMA).equals(this)) {
                     throw ex;
                 }
             } catch (final EOgoto.ForwardException ex) {
-                if (!ex.sigma.attr("σ").get().equals(this)) {
+                if (!ex.sigma.take(Attr.SIGMA).equals(this)) {
                     throw ex;
                 }
                 ret = ex.ret;
@@ -94,47 +94,8 @@ public final class EOgoto extends PhDefault implements Atom {
          */
         Token(final Phi sigma) {
             super(sigma);
-            this.add("backward", new EOgoto.Token.AtBackward(this));
-            this.add("forward", new EOgoto.Token.AtForward(this));
-        }
-
-        /**
-         * Goto.token.forward attribute.
-         * @since 0.33.0
-         */
-        private static final class AtForward extends AtAtom {
-
-            /**
-             * Ctor.
-             * @param token The {@link EOgoto.Token} object
-             */
-            AtForward(final Phi token) {
-                super(new EOgoto.Forward(token));
-            }
-
-            @Override
-            public Attr copy(final Phi self) {
-                return new AtForward(self);
-            }
-        }
-
-        /**
-         * Goto.token.backward attribute.
-         * @since 0.33.0
-         */
-        private static final class AtBackward extends AtAtom {
-            /**
-             * Ctor.
-             * @param token The {@link EOgoto.Token} object
-             */
-            AtBackward(final Phi token) {
-                super(new EOgoto.Backward(token));
-            }
-
-            @Override
-            public Attr copy(final Phi self) {
-                return new AtBackward(self);
-            }
+            this.add("forward", new AtSimple(new EOgoto.Forward(this)));
+            this.add("backward", new AtSimple(new EOgoto.Backward(this)));
         }
     }
 
@@ -155,7 +116,7 @@ public final class EOgoto extends PhDefault implements Atom {
         @Override
         public Phi lambda() {
             throw new EOgoto.BackwardException(
-                this.attr("σ").get()
+                this.take(Attr.SIGMA)
             );
         }
     }
@@ -172,14 +133,14 @@ public final class EOgoto extends PhDefault implements Atom {
          */
         Forward(final Phi sigma) {
             super(sigma);
-            this.add("ret", new AtFree());
+            this.add("ret", new AtFree("ret"));
         }
 
         @Override
         public Phi lambda() {
             throw new EOgoto.ForwardException(
-                this.attr("σ").get(),
-                this.attr("ret").get()
+                this.take(Attr.SIGMA),
+                this.take("ret")
             );
         }
     }

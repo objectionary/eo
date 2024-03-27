@@ -75,17 +75,17 @@ final class PhDefaultTest {
     void doesNotHaveRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertThrows(
-            ExUnset.class,
-            () -> phi.attr(Attr.RHO).get(),
+            EOerror.ExError.class,
+            () -> phi.take(Attr.RHO),
             String.format("Object should not have %s attribute when it's just formed", Attr.RHO)
         );
     }
 
     @Test
     void setsRhoAfterDispatch() {
-        final Phi kid = new PhDefaultTest.Int().attr("plus").get();
+        final Phi kid = new PhDefaultTest.Int().take("plus");
         Assertions.assertDoesNotThrow(
-            () -> kid.attr(Attr.RHO).get(),
+            () -> kid.take(Attr.RHO),
             String.format("Kid of should have %s attribute after dispatch", Attr.RHO)
         );
     }
@@ -94,8 +94,8 @@ final class PhDefaultTest {
     void doesNotHaveRhoAfterCopying() {
         final Phi phi = new PhDefaultTest.Int().copy();
         Assertions.assertThrows(
-            ExUnset.class,
-            () -> phi.attr(Attr.RHO).get(),
+            EOerror.ExError.class,
+            () -> phi.take(Attr.RHO),
             String.format("Object should not give %s attribute after copying", Attr.RHO)
         );
     }
@@ -103,8 +103,8 @@ final class PhDefaultTest {
     @Test
     void copiesKid() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.attr("plus").get();
-        final Phi second = phi.copy().attr("plus").get();
+        final Phi first = phi.take("plus");
+        final Phi second = phi.copy().take("plus");
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
             first,
@@ -115,11 +115,23 @@ final class PhDefaultTest {
     }
 
     @Test
+    void takesDifferentKidsEveryDispatch() {
+        final Phi phi = new PhDefaultTest.Int();
+        MatcherAssert.assertThat(
+            "Child attributes should be copied on every dispatch",
+            phi.take("plus"),
+            Matchers.not(
+                Matchers.equalTo(phi.take("plus"))
+            )
+        );
+    }
+
+    @Test
     void hasKidWithSetRhoAfterCopying() {
         final Phi phi = new PhDefaultTest.Int().copy();
-        final Phi plus = phi.attr("plus").get();
+        final Phi plus = phi.take("plus");
         Assertions.assertDoesNotThrow(
-            () -> plus.attr(Attr.RHO).get(),
+            () -> plus.take(Attr.RHO),
             String.format(
                 "Child object should get %s attribute after copying main object",
                 Attr.RHO
@@ -130,7 +142,7 @@ final class PhDefaultTest {
                 "%s attribute of copied child object should be equal to copied main object",
                 Attr.RHO
             ),
-            plus.attr(Attr.RHO).get(),
+            plus.take(Attr.RHO),
             Matchers.equalTo(phi)
         );
     }
@@ -142,48 +154,70 @@ final class PhDefaultTest {
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
-            first.attr("plus").get(),
+            first.take("plus"),
             Matchers.not(
-                Matchers.equalTo(second.attr("plus").get())
+                Matchers.equalTo(second.take("plus"))
             )
         );
     }
 
     @Test
-    void doesNotChangeRhoAfterDoubleCopying() {
+    void changesKidRhoAfterSelfCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi first = phi.copy();
-        final Phi second = first.copy();
+        final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            String.format("%s attribute should not be changed after double copying", Attr.RHO),
-            first.attr("plus").get().attr(Attr.RHO).get(),
-            Matchers.equalTo(second.attr("plus").get().attr(Attr.RHO).get())
+            String.format(
+                "%s attribute of original object kid should refer to original object", Attr.RHO
+            ),
+            phi.take("plus").take(Attr.RHO),
+            Matchers.not(Matchers.equalTo(copy.take("plus").take(Attr.RHO)))
         );
         MatcherAssert.assertThat(
             String.format(
-                "%s attribute of second copy kid should be equal to first copy",
+                "%s attribute of copied object kid should refer to copied object",
                 Attr.RHO
             ),
-            second.attr("plus").get().attr(Attr.RHO).get(),
-            Matchers.equalTo(first)
+            copy.take("plus").take(Attr.RHO),
+            Matchers.equalTo(copy)
         );
     }
 
     @Test
     void doesNotChangeRhoAfterDirectKidCopying() {
         final Phi phi = new PhDefaultTest.Int();
-        final Phi copy = phi.copy();
-        final Phi first = copy.attr("plus").get();
+        final Phi first = phi.take("plus");
         final Phi second = first.copy();
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of kid attribute should not be changed after direct copying",
                 Attr.RHO
             ),
-            first.attr(Attr.RHO).get(),
+            first.take(Attr.RHO),
             Matchers.equalTo(
-                second.attr(Attr.RHO).get()
+                second.take(Attr.RHO)
             )
+        );
+    }
+
+    @Test
+    void doesNotCopyRhoWhileDispatch() {
+        final Phi phi = new PhDefaultTest.Int();
+        final Phi plus = phi.take("plus");
+        MatcherAssert.assertThat(
+            String.format("%s attributes should not be copied while dispatch", Attr.RHO),
+            plus.take(Attr.RHO),
+            Matchers.equalTo(plus.take(Attr.RHO))
+        );
+    }
+
+    @Test
+    void doesNotCopySigmaWhileDispatch() {
+        final Phi phi = new PhDefaultTest.Int();
+        final Phi plus = phi.take("plus");
+        MatcherAssert.assertThat(
+            String.format("%s attributes should not be copied while dispatch", Attr.SIGMA),
+            plus.take(Attr.SIGMA),
+            Matchers.equalTo(plus.take(Attr.SIGMA))
         );
     }
 
@@ -192,8 +226,8 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         final Phi copy = phi.copy();
         Assertions.assertThrows(
-            ExUnset.class,
-            copy.attr("void")::get,
+            EOerror.ExError.class,
+            () -> copy.take("void"),
             "Unset void attribute should be copied with unset value"
         );
     }
@@ -201,13 +235,13 @@ final class PhDefaultTest {
     @Test
     void copiesSetVoidAttribute() {
         final Phi phi = new PhDefaultTest.Int();
-        phi.attr("void").put(new Data.ToPhi(10L));
+        phi.put("void", new Data.ToPhi(10L));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
-            phi.attr("void").get(),
+            phi.take("void"),
             Matchers.not(
-                Matchers.equalTo(copy.attr("void").get())
+                Matchers.equalTo(copy.take("void"))
             )
         );
     }
@@ -216,12 +250,12 @@ final class PhDefaultTest {
     void hasAccessToDependentOnContextAttribute() {
         final Phi phi = new PhDefaultTest.Int().copy();
         Assertions.assertThrows(
-            ExUnset.class,
-            () -> phi.attr(Attr.PHI).get()
+            EOerror.ExError.class,
+            () -> phi.take(Attr.PHI)
         );
-        phi.attr("void").put(new Data.ToPhi(10L));
+        phi.put("void", new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
-            () -> phi.attr(Attr.PHI).get()
+            () -> phi.take(Attr.PHI)
         );
     }
 
@@ -229,7 +263,7 @@ final class PhDefaultTest {
     void hasContextedChildWithSetRhoWhenFormed() {
         final Phi phi = new PhDefaultTest.Int();
         Assertions.assertDoesNotThrow(
-            () -> phi.attr("context").get().attr(Attr.RHO).get(),
+            () -> phi.take("context").take(Attr.RHO),
             String.format(
                 "Contexted attribute should already have %s attribute",
                 Attr.RHO
@@ -241,7 +275,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            new Dataized(phi.attr(Attr.VERTEX).get()).take(Long.class),
+            new Dataized(phi.take(Attr.VERTEX)).take(Long.class),
             Matchers.greaterThan(0L)
         );
     }
@@ -266,7 +300,7 @@ final class PhDefaultTest {
     void failsGracefullyOnMissingAttribute() {
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Data.ToPhi("Hey").attr("missing-attr").get()
+            () -> new Data.ToPhi("Hey").take("missing-attr")
         );
     }
 
@@ -274,7 +308,7 @@ final class PhDefaultTest {
     void copiesWithSetData() {
         final String data = "Hello";
         final Phi phi = new PhDefaultTest.Int();
-        phi.attr(0).put(new Data.ToPhi(data));
+        phi.put(0, new Data.ToPhi(data));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             new Dataized(copy).take(String.class),
@@ -286,10 +320,10 @@ final class PhDefaultTest {
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
         final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
-        phi.attr(0).put(num);
+        phi.put(0, num);
         Assertions.assertThrows(
             ExReadOnly.class,
-            () -> phi.attr(0).put(num)
+            () -> phi.put(0, num)
         );
     }
 
@@ -326,10 +360,10 @@ final class PhDefaultTest {
     @Test
     void refersToOriginalObjectAndDoesNotResetCache() {
         final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
-        phi.attr("plus").get();
+        phi.take("plus");
         final Phi copy = phi.copy();
-        copy.attr("plus").get();
-        phi.attr("plus").get();
+        copy.take("plus");
+        phi.take("plus");
         MatcherAssert.assertThat(
             PhDefaultTest.Dummy.count,
             Matchers.equalTo(1)
@@ -365,7 +399,7 @@ final class PhDefaultTest {
             Matchers.not(
                 Matchers.equalTo(
                     new PhWith(
-                        five.attr("plus").get().copy(),
+                        five.take("plus").copy(),
                         "x",
                         new Data.ToPhi(5L)
                     ).forma()
@@ -378,13 +412,13 @@ final class PhDefaultTest {
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
             new PhWith(
-                new Data.ToPhi(5L).attr("plus").get().copy(),
+                new Data.ToPhi(5L).take("plus").copy(),
                 "x",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhWith(
-                    new Data.ToPhi(6L).attr("plus").get().copy(),
+                    new Data.ToPhi(6L).take("plus").copy(),
                     "x",
                     new Data.ToPhi(6L)
                 ).forma()
@@ -412,23 +446,7 @@ final class PhDefaultTest {
 
     @Test
     void memories() {
-        Phi rnd = new PhMethod(
-            new PhMethod(
-                new Rnd(Phi.Φ),
-                "as-bytes"
-            ),
-            "as-float"
-        );
-        System.out.println(new Dataized(rnd).take(Double.class));
-        System.out.println(new Dataized(rnd).take(Double.class));
-    }
-
-    @Test
-    void bytes() {
-        Phi rnd = new PhMethod(
-            new Rnd(Phi.Φ),
-            "as-bytes"
-        );
+        Phi rnd = new Rnd(Phi.Φ).take("as-bytes").take("as-float");
         System.out.println(new Dataized(rnd).take(Double.class));
         System.out.println(new Dataized(rnd).take(Double.class));
     }
@@ -464,14 +482,14 @@ final class PhDefaultTest {
     private static class Int extends PhDefault {
         Int() {
             super(Phi.Φ);
-            this.add("void", new AtFree());
+            this.add("void", new AtFree("void"));
             this.add("plus", new AtSimple(new Plus(this)));
             this.add(
                 Attr.PHI,
                 new AtOnce(
                     new AtComposite(
                         this,
-                        rho -> rho.attr("void").get()
+                        rho -> rho.take("void")
                     )
                 )
             );
@@ -481,8 +499,8 @@ final class PhDefaultTest {
                     new AtComposite(
                         this,
                         rho -> {
-                            final Phi plus = new Data.ToPhi(5L).attr("plus").get().copy();
-                            plus.attr(0).put(new Data.ToPhi(6L));
+                            final Phi plus = new Data.ToPhi(5L).take("plus").copy();
+                            plus.put(0, new Data.ToPhi(6L));
                             return plus;
                         }
                     )
@@ -521,7 +539,7 @@ final class PhDefaultTest {
          */
         Foo(final Phi sigma, final Object data) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtFree("x"));
             this.add("kid", new AtSimple(new PhDefaultTest.Kid(this)));
             this.add("φ", new AtSimple(new Data.ToPhi(data)));
         }
@@ -595,7 +613,7 @@ final class PhDefaultTest {
          */
         Kid(final Phi sigma) {
             super(sigma);
-            this.add("z", new AtFree());
+            this.add("z", new AtFree("z"));
             this.add(Attr.PHI, new AtSimple(new EOstdout(Phi.Φ)));
         }
     }

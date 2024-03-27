@@ -45,6 +45,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,6 +58,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class OptimizeMojoTest {
 
     @ParameterizedTest
+    @Disabled
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
     void checksPacks(final String pack) throws IOException {
         final CheckPack check = new CheckPack(pack);

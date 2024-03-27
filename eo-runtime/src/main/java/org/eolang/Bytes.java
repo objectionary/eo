@@ -92,16 +92,4 @@ public interface Bytes extends Data<byte[]> {
      * @param <T> Numeric type.
      */
     <T extends Number> T asNumber(Class<T> type);
-
-    /**
-     * Convert Bytes to Phi.
-     * @param bytes Bytes.
-     * @return Phi object.
-     */
-    static Phi toPhi(final Bytes bytes) {
-        final Phi object = new EObytes(Phi.Φ);
-        object.attr("Δ").put(new Data.Value<>(bytes.take()));
-        return new PhConst(object);
-    }
-
 }

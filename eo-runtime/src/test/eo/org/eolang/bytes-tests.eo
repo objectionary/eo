@@ -436,7 +436,7 @@
 #  each value.
 [] > as-string-is-transparent
   68-65-6C-6C-6F > b
-  nop > @
+  not. > @
     eq.
       b.as-string.as-bytes.<
       b.<
@@ -444,7 +444,7 @@
 # Test.
 [] > as-int-is-transparent
   489.as-bytes > b
-  nop > @
+  not. > @
     eq.
       b.as-int.as-bytes.<
       b.<
@@ -452,7 +452,7 @@
 # Test.
 [] > as-float-is-transparent
   33.0.as-bytes > b
-  nop > @
+  not. > @
     eq.
       b.as-float.as-bytes.<
       b.<
@@ -460,7 +460,7 @@
 # Test.
 [] > as-bool-is-transparent
   TRUE.as-bytes > b
-  nop > @
+  not. > @
     eq.
       b.as-bool.as-bytes.<
       b.<

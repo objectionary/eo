@@ -50,9 +50,9 @@ public final class EOif extends PhDefault implements Atom {
      */
     public EOif(final Phi sigma) {
         super(sigma);
-        this.add("condition", new AtFree());
-        this.add("left", new AtFree());
-        this.add("right", new AtFree());
+        this.add("condition", new AtFree("condition"));
+        this.add("left", new AtFree("left"));
+        this.add("right", new AtFree("right"));
     }
 
     @Override
@@ -60,9 +60,9 @@ public final class EOif extends PhDefault implements Atom {
         final boolean term = new Param(this, "condition").strong(Boolean.class);
         final Phi out;
         if (term) {
-            out = this.attr("left").get();
+            out = this.take("left");
         } else {
-            out = this.attr("right").get();
+            out = this.take("right");
         }
         return out;
     }

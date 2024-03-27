@@ -95,7 +95,7 @@ public enum Ram {
      * @return Storage file
      */
     private RandomAccessFile init(final Phi phi) {
-        final long size = new Dataized(phi.attr("size").get()).take(Long.class);
+        final long size = new Dataized(phi.take("size")).take(Long.class);
         return this.addresses.computeIfAbsent(
             phi,
             o -> {

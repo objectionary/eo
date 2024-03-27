@@ -49,7 +49,7 @@ final class EOstringEOsliceTest {
         final Phi str = new Data.ToPhi("строка ㄤㄠ");
         final Phi phi = new PhWith(
             new PhWith(
-                str.attr("slice").get().copy(),
+                str.take("slice").copy(),
                 "start",
                 new Data.ToPhi(7L)
             ),

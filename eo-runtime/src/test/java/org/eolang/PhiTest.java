@@ -45,7 +45,7 @@ final class PhiTest {
                                 new PhMethod(
                                     new PhMethod(
                                         new PhMethod(
-                                            Phi.Φ.attr("org").get(),
+                                            Phi.Φ.take("org"),
                                             "eolang"
                                         ),
                                         "io"
@@ -71,7 +71,7 @@ final class PhiTest {
                 new PhCopy(
                     new PhMethod(
                         new PhWith(
-                            new PhCopy(Phi.Φ.attr("org.eolang.io.stdout").get()),
+                            new PhCopy(Phi.Φ.take("org.eolang.io.stdout")),
                             0, new Data.ToPhi("Hello, world")
                         ),
                         "text"
@@ -86,8 +86,7 @@ final class PhiTest {
     void takesDirectly() {
         MatcherAssert.assertThat(
             new Dataized(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("nan")
-                    .get().attr("gt").get()
+                Phi.Φ.take("org").take("eolang").take("nan").take("gt")
             ).take(Boolean.class),
             Matchers.equalTo(false)
         );

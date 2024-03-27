@@ -28,7 +28,9 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eolang.Attr;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 
@@ -70,11 +72,11 @@ final class Heaps {
      * @return Bytes comprising data
      */
     public byte[] data(final Phi pointer) {
-        final Phi heap = pointer.attr("ρ").get();
+        final Phi heap = pointer.take(Attr.RHO);
         return this.all.computeIfAbsent(
             heap,
             key -> {
-                final long size = new Dataized(heap.attr("size").get()).take(Long.class);
+                final long size = new Param(heap, "size").strong(Long.class);
                 if (size > (long) Integer.MAX_VALUE) {
                     throw new IllegalArgumentException(
                         String.format(

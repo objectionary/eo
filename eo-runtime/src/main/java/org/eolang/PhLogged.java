@@ -63,37 +63,62 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Attr attr(final int pos) {
-        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
-        final Attr ret = new AtLogged(
-            this.origin.attr(pos),
-            String.format("%d#%d", this.hashCode(), pos)
-        );
-        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
-        return ret;
+    public Phi take(int pos) {
+        return null;
     }
 
     @Override
-    public Attr attr(final String name) {
-        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-        final Attr ret = new AtLogged(
-            this.origin.attr(name),
-            String.format("%d#%s", this.hashCode(), name)
-        );
-        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
-        return ret;
+    public Phi take(String name) {
+        return null;
     }
 
     @Override
-    public Attr attr(final String name, final Phi rho) {
-        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-        final Attr ret = new AtLogged(
-            this.origin.attr(name, rho),
-            String.format("%d#%s", this.hashCode(), name)
-        );
-        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
-        return ret;
+    public Phi take(String name, Phi rho) {
+        return null;
     }
+
+    @Override
+    public void put(int pos, Phi object) {
+
+    }
+
+    @Override
+    public void put(String name, Phi object) {
+
+    }
+
+//    @Override
+//    public Attr attr(final int pos) {
+//        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
+//        final Attr ret = new AtLogged(
+//            this.origin.attr(pos),
+//            String.format("%d#%d", this.hashCode(), pos)
+//        );
+//        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
+//        return ret;
+//    }
+//
+//    @Override
+//    public Attr attr(final String name) {
+//        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
+//        final Attr ret = new AtLogged(
+//            this.origin.attr(name),
+//            String.format("%d#%s", this.hashCode(), name)
+//        );
+//        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
+//        return ret;
+//    }
+//
+//    @Override
+//    public Attr attr(final String name, final Phi rho) {
+//        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
+//        final Attr ret = new AtLogged(
+//            this.origin.attr(name, rho),
+//            String.format("%d#%s", this.hashCode(), name)
+//        );
+//        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
+//        return ret;
+//    }
 
     @Override
     public String locator() {

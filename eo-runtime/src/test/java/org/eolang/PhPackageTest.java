@@ -58,9 +58,9 @@ final class PhPackageTest {
     @Test
     void takesPackage() {
         MatcherAssert.assertThat(
-            Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get(),
+            Phi.Φ.take("org").take("eolang").take("seq"),
             Matchers.equalTo(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get()
+                Phi.Φ.take("org").take("eolang").take("seq")
             )
         );
     }
@@ -68,9 +68,9 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            Phi.Φ.attr("org").get()
-                .attr("eolang").get()
-                .attr("bytes$eq").get().copy(),
+            Phi.Φ.take("org")
+                .take("eolang")
+                .take("bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }
@@ -79,7 +79,7 @@ final class PhPackageTest {
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
-        final Phi actual = parent.attr(attribute).get();
+        final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
             actual,
             Matchers.instanceOf(expected)
@@ -90,7 +90,7 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr("failed").get()
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed")
         );
     }
 
@@ -106,7 +106,7 @@ final class PhPackageTest {
     void doesNotGetAttributeByPosition() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(0)
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take(0)
         );
     }
 
@@ -153,7 +153,7 @@ final class PhPackageTest {
             () -> (Runnable) () -> {
                 try {
                     latch.await();
-                    basket.add(System.identityHashCode(pckg.attr("goto").get()));
+                    basket.add(System.identityHashCode(pckg.take("goto")));
                 } catch (final InterruptedException exception) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(

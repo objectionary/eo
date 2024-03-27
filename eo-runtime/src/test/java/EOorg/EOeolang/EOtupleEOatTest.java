@@ -57,12 +57,12 @@ final class EOtupleEOatTest {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
         final Phi tuple = new PhWith(
-            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
             0, str
         );
         final Phi idx = new Data.ToPhi(0L);
-        final Phi get = tuple.attr("at").get().copy();
-        get.attr(0).put(idx);
+        final Phi get = tuple.take("at").copy();
+        get.put(0, idx);
         MatcherAssert.assertThat(
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
@@ -96,10 +96,10 @@ final class EOtupleEOatTest {
     @Test
     void returnsGivenArgument() {
         final Phi tuple = new EOtuple(Phi.Φ);
-        final Phi empty = tuple.attr("empty").get();
+        final Phi empty = tuple.take("empty");
         final Phi copy = tuple.copy();
-        copy.attr(0).put(empty);
-        copy.attr(1).put(new Data.ToPhi(10L));
+        copy.put(0, empty);
+        copy.put(1, new Data.ToPhi(10L));
         final Phi phi = new PhWith(
             new Parenting(Phi.Φ),
             "args", copy
@@ -115,14 +115,14 @@ final class EOtupleEOatTest {
         final String second = "second";
         final Phi tuple = new PhWith(
             new PhWith(
-                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                new EOtuple$EOempty(Phi.Φ).take("with").copy(),
                 0, new Data.ToPhi(first)
-            ).attr("with").get().copy(),
+            ).take("with").copy(),
             0, new Data.ToPhi(second)
         );
         final Phi idx = new Data.ToPhi(index);
-        final Phi get = tuple.attr("at").get().copy();
-        get.attr(0).put(idx);
+        final Phi get = tuple.take("at").copy();
+        get.put(0, idx);
         return get;
     }
 
@@ -133,7 +133,7 @@ final class EOtupleEOatTest {
     private static class Parenting extends PhDefault {
         Parenting(final Phi sigma) {
             super(sigma);
-            this.add("args", new AtFree());
+            this.add("args", new AtFree("args"));
             this.add("take", new AtSimple(new Take(this)));
             this.add(
                 Attr.PHI,
@@ -156,11 +156,11 @@ final class EOtupleEOatTest {
                 new AtComposite(
                     this,
                     rho -> {
-                        final Phi ret = rho.attr(Attr.RHO).get()
-                            .attr("args").get()
-                            .attr("at").get()
+                        final Phi ret = rho.take(Attr.RHO)
+                            .take("args")
+                            .take("at")
                             .copy();
-                        ret.attr(0).put(new Data.ToPhi(0L));
+                        ret.put(0, new Data.ToPhi(0L));
                         return ret;
                     }
                 )

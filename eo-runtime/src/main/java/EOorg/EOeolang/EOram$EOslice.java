@@ -49,17 +49,16 @@ public final class EOram$EOslice extends PhDefault implements Atom {
      */
     public EOram$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtFree());
-        this.add("size", new AtFree());
+        this.add("position", new AtFree("position"));
+        this.add("size", new AtFree("size"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi rho = this.attr(Attr.RHO).get();
-        Phi slice = rho.attr("ram-slice").get();
-        slice = slice.copy();
-        slice.attr("position").put(this.attr("position").get().copy());
-        slice.attr("size").put(this.attr("size").get().copy());
+        final Phi rho = this.take(Attr.RHO);
+        final Phi slice = rho.take("ram-slice").copy();
+        slice.put("position", this.take("position"));
+        slice.put("size", this.take("size"));
         return slice;
     }
 }

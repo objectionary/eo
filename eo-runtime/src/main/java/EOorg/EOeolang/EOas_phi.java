@@ -51,13 +51,11 @@ public final class EOas_phi extends PhDefault implements Atom {
      */
     public EOas_phi(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtFree("x"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi obj = this.attr("x").get();
-        obj.attr("ν").get();
-        return new Data.ToPhi(obj.φTerm());
+        return new Data.ToPhi(this.take("x").φTerm());
     }
 }

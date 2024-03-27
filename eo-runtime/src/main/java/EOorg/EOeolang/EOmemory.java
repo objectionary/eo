@@ -59,7 +59,7 @@ public final class EOmemory extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return this.attr("enclosure").get();
+        return this.take("enclosure");
     }
 
     /**
@@ -74,14 +74,14 @@ public final class EOmemory extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtFree("x"));
         }
 
         @Override
         public Phi lambda() {
-            final Attr enclosure = this.attr(Attr.RHO).get().attr("enclosure");
-            enclosure.put(this.attr("x").get());
-            return enclosure.get();
+            final Phi rho = this.take(Attr.RHO);
+            rho.put("enclosure", this.take("x"));
+            return rho.take("enclosure");
         }
     }
 }

@@ -24,27 +24,29 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOgoto;
-
 /**
- * Control flow exception (see {@link EOgoto}
- * for a good example of its usage).
- *
- * @since 0.21
+ * Attribute that copies result object depends on the name of the attribute.
+ * @since 0.36.0
  */
-@Versionized
-public final class ExFlow extends ExAbstract {
-
-    /**
-     * Serialization identifier.
-     */
-    private static final long serialVersionUID = 597746420437007615L;
-
+public class AtCopied extends AtEnvelope {
     /**
      * Ctor.
+     * @param attr Original attribute
+     * @param name Name of the object
      */
-    public ExFlow() {
-        super(null);
+    AtCopied(final Attr attr, final String name) {
+        super(
+            new AtGetOnly(
+                () -> {
+                    final Phi ret;
+                    if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
+                        ret = attr.get().copy();
+                    } else {
+                        return attr.get();
+                    }
+                    return ret;
+                }
+            )
+        );
     }
-
 }

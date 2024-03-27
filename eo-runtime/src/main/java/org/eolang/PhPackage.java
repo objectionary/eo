@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A package object, coming from {@link Phi}.
+ * A package object, coming from {@link Phi#Φ}.
  *
  * @since 0.22
  */
@@ -58,23 +58,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Attr attr(final String name) {
-        final String obj = this.eoPackage(name);
-        final String key = new JavaPath(obj).toString();
-        if (!this.objects.get().containsKey(key)) {
-            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
-        }
-        return new AtSimple(this.objects.get().get(key));
-    }
-
-    @Override
-    public Attr attr(final String name, final Phi rho) {
-        throw new ExFailure(
-            String.format("Can't #attr(%s, %s) from package object '%s'", name, rho, this.pkg)
-        );
-    }
-
-    @Override
     public String locator() {
         return "?:?";
     }
@@ -97,16 +80,47 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Attr attr(final int pos) {
+    public Phi copy() {
         throw new ExFailure(
-            String.format("Can't #attr(%d) from package object '%s'", pos, this.pkg)
+            String.format("Can't #copy() package object '%s'", this.pkg)
         );
     }
 
     @Override
-    public Phi copy() {
+    public Phi take(final int pos) {
         throw new ExFailure(
-            String.format("Can't #copy() package object '%s'", this.pkg)
+            String.format("Can't #take(%d) package object '%s'", pos, this.pkg)
+        );
+    }
+
+    @Override
+    public Phi take(final String name) {
+        final String obj = this.eoPackage(name);
+        final String key = new JavaPath(obj).toString();
+        if (!this.objects.get().containsKey(key)) {
+            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
+        }
+        return this.objects.get().get(key);
+    }
+
+    @Override
+    public Phi take(final String name, final Phi rho) {
+        throw new ExFailure(
+            String.format("Can't #take(%s, %s) from package object '%s'", name, rho, this.pkg)
+        );
+    }
+
+    @Override
+    public void put(final int pos, final Phi object) {
+        throw new IllegalStateException(
+            String.format("Can't #put(%d, %s) to package object '%s'", pos, object, this.pkg)
+        );
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        throw new IllegalStateException(
+            String.format("Can't #put(%s, %s) to package object '%s'", name, object, this.pkg)
         );
     }
 

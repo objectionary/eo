@@ -46,7 +46,7 @@ final class EOstringEOasBytesTest {
     @Test
     void convertsStringToBytes() {
         final Phi str = new Data.ToPhi("Hello, друг!");
-        final Phi phi = str.attr("as-bytes").get();
+        final Phi phi = str.take("as-bytes");
         MatcherAssert.assertThat(
             new Dataized(phi).take(byte[].class).length,
             Matchers.equalTo(16)

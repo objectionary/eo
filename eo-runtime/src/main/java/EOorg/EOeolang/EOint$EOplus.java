@@ -52,7 +52,7 @@ public final class EOint$EOplus extends PhDefault implements Atom {
      */
     public EOint$EOplus(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtFree("x"));
     }
 
     @Override

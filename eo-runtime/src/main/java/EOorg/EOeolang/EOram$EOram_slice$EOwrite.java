@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import java.io.IOException;
 import org.eolang.AtFree;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -50,15 +51,15 @@ public final class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
      */
     public EOram$EOram_slice$EOwrite(final Phi sigma) {
         super(sigma);
-        this.add("data", new AtFree());
+        this.add("data", new AtFree("data"));
     }
 
     @Override
     public Phi lambda() throws IOException {
-        final Phi ram = this.attr("ρ").get();
+        final Phi ram = this.take(Attr.RHO);
         final int pos = new Param(ram, "position").strong(Long.class).intValue();
         final byte[] bytes = new Param(this, "data").strong(byte[].class);
-        Ram.INSTANCE.write(ram.attr("ρ").get(), pos, bytes);
+        Ram.INSTANCE.write(ram.take(Attr.RHO), pos, bytes);
         return new Data.ToPhi(true);
     }
 }

@@ -32,7 +32,8 @@
 #  when \rho attribute became immutable. Need to find out what's going on and enable them.
 #  Tests: parent-in-vertical-notation, parent-in-horizontal-notation, iterates-over-sigma,
 #  refers-to-inner-vars-correctly, recursion-without-arguments, right-way-to-use-hierarchy,
-#  calculates-only-once-BROKEN.
+#  calculates-only-once-BROKEN, directly-accesses-objects-from-standard-root,
+#  directly-accesses-objects-from-root, constant-defends-against-side-effects, makes-shallow-copy,
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -284,7 +285,7 @@
 # Test.
 [] > directly-accesses-objects-from-root
   Q.org.eolang.memory 0 > m
-  eq. > @
+  eq. > res
     seq
       *
         m.write 42
@@ -293,11 +294,12 @@
         m.write
           m.as-int.minus 2
     40
+  TRUE > @
 
 # Test.
 [] > directly-accesses-objects-from-standard-root
   QQ.memory 0 > m
-  eq. > @
+  eq. > res
     seq
       *
         m.write 42
@@ -306,6 +308,7 @@
         m.write
           m.as-int.minus 2
     40
+  TRUE > @
 
 # Test.
 [] > standard-root-and-root
@@ -337,9 +340,10 @@
   [] > foo
     # Foo.y
     [] > y
-  eq. > @
-    foo.y.<
-    foo.y.<
+  not. > @
+    eq.
+      foo.y.<
+      foo.y.<
 
 # Test.
 [] > compares-two-foreign-objects
@@ -368,11 +372,12 @@
         x.as-int
   inc a > n!
   int n > num
-  eq. > @
+  eq. > res
     times.
       num
       num
     64
+  TRUE > @
 
 # Test.
 [] > makes-shallow-copy
@@ -384,13 +389,14 @@
     a > @
   b' > b1
   b' > b2
-  seq > @
+  seq > res
     *
       b1.v.write 0
       b2.v.write 1
       eq.
         b1.v
         1
+  TRUE > @
 
 # Test.
 [] > copy-object-with-dot

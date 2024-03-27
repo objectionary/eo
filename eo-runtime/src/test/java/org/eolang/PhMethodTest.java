@@ -38,8 +38,8 @@ final class PhMethodTest {
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            num.attr("plus").get(),
-            Matchers.equalTo(num.attr("plus").get())
+            num.take("plus"),
+            Matchers.not(Matchers.equalTo(num.take("plus")))
         );
     }
 

@@ -59,17 +59,15 @@ import org.junit.jupiter.params.provider.CsvSource;
 public final class EOstdoutTest {
     @Test
     public void printsFromTuple() {
-        final Phi tuple = Phi.Φ.attr("org").get()
-            .attr("eolang").get()
-            .attr("tuple").get();
+        final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
         final Phi copy = tuple.copy();
-        copy.attr(0).put(tuple.attr("empty").get());
-        copy.attr(1).put(new Data.ToPhi("Hello"));
+        copy.put(0, tuple.take("empty"));
+        copy.put(1, new Data.ToPhi("Hello"));
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final Phi ret = copy.attr("at").get().copy();
-        ret.attr(0).put(new Data.ToPhi(0L));
+        final Phi ret = copy.take("at").copy();
+        ret.put(0, new Data.ToPhi(0L));
         final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream));
-        stdout.attr(0).put(ret);
+        stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
             stream.toString(),
@@ -180,12 +178,11 @@ public final class EOstdoutTest {
                                         new PhWith(
                                             new PhWith(
                                                 new EOtuple$EOempty(Phi.Φ)
-                                                    .attr("with")
-                                                    .get()
+                                                    .take("with")
                                                     .copy(),
                                                 0,
                                                 stdout
-                                            ).attr("with").get().copy(),
+                                            ).take("with").copy(),
                                             0, value
                                         )
                                     )

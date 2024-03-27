@@ -52,7 +52,7 @@ public final class EOfloat$EOtimes extends PhDefault implements Atom {
      */
     public EOfloat$EOtimes(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
+        this.add("x", new AtFree("x"));
     }
 
     @Override

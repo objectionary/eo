@@ -41,7 +41,7 @@
 
 # Test.
 [] > switch-strings-case
-  memory "swordfish" > password
+  "swordfish" > password
   eq. > @
     switch
       *

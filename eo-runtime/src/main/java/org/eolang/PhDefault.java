@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -81,7 +82,7 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Forma of it.
      */
-    private String form;
+    private final String form;
 
     /**
      * Order of their names.
@@ -113,7 +114,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
         this.add(Attr.SIGMA, new AtFixed(sigma));
-        this.add(Attr.VERTEX, new AtComposite(this, rho -> new Data.ToPhi((long) rho.hashCode())));
+        this.add(Attr.VERTEX, new AtOnce(
+            new AtComposite(this, rho -> new Data.ToPhi((long) rho.hashCode())))
+        );
     }
 
     @Override
@@ -167,11 +170,11 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.getClass().getCanonicalName(),
             this.vertex
         );
-        if (this.attrs.containsKey("Δ")) {
+        if (this.attrs.containsKey(Attr.DELTA)) {
             result = String.format(
                 "%s=%s",
                 result,
-                this.attrs.get("Δ").toString()
+                this.attrs.get(Attr.DELTA).toString()
             );
         }
         return result;
@@ -182,6 +185,11 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
+            final Map<String, Attr> map = new HashMap<>(this.attrs.size());
+            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
+                map.put(ent.getKey(), ent.getValue().copy(copy));
+            }
+            copy.attrs = map;
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new IllegalStateException(ex);
@@ -189,79 +197,91 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final int pos) {
-        if (0 > pos) {
-            throw new ExFailure(
-                String.format(
-                    "Attribute position can't be negative (%d)",
-                    pos
-                )
-            );
-        }
-        if (this.order.isEmpty()) {
-            throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
-            );
-        }
-        if (!this.order.containsKey(pos)) {
-            throw new ExFailure(
-                String.format(
-                    "%s has just %d attribute(s), can't read the %d-th one",
-                    this,
-                    this.order.size(),
-                    pos
-                )
-            );
-        }
-        return this.attr(this.order.get(pos));
+    public void put(final int pos, final Phi object) {
+        this.put(this.attr(pos), object);
     }
 
     @Override
-    public final Attr attr(final String name) {
-        return this.attr(name, this);
+    public void put(final String name, final Phi object) {
+        if (!this.attrs.containsKey(name)) {
+            throw new ExUnset(
+                String.format(
+                    "Can't #put(%s, %s) to %s, because %s is absent",
+                    name, object, this, name
+                )
+            );
+        }
+        new AtSafe(this.named(this.attrs.get(name), name)).put(object);
     }
 
     @Override
-    public Attr attr(final String name, final Phi rho) {
+    public Phi take(final int pos) {
+        return this.take(this.attr(pos));
+    }
+
+    @Override
+    public Phi take(final String name) {
+        return this.take(name, this);
+    }
+
+    @Override
+    public Phi take(final String name, final Phi rho) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
-        Attr attr;
+        final Phi object;
         if (this.attrs.containsKey(name)) {
-            attr = new AtSetRho(this.attrs.get(name).copy(this), rho, name);
+            object = new AtSafe(
+                this.named(
+                    new AtSetRho(
+                        new AtCopied(
+                            this.attrs.get(name), name),
+                        rho,
+                        name
+                    ),
+                    name
+                )
+            ).get();
         } else if (this instanceof Atom) {
-            attr = new AtSetRho(
-                new AtSimple(new AtomSafe((Atom) this).lambda()),
+            object = new AtSetRho(
+                new AtSafe(
+                    this.named(
+                        new AtFormed(() -> new AtomSafe((Atom) this).lambda()),
+                        Attr.LAMBDA
+                    )
+                ),
                 rho,
                 Attr.LAMBDA
-            ).get().attr(name, rho);
+            ).get().take(name, rho);
         } else if (this.attrs.containsKey(Attr.PHI)) {
-            attr = this.attr(Attr.PHI, rho).get().attr(name, rho);
+            object = this.take(Attr.PHI, rho).take(name, rho);
         } else {
-            attr = new AtAbsent(
-                name,
-                String.format(
-                    " among other %d attrs (%s), %s and %s are also absent",
-                    this.attrs.size(),
-                    String.join(", ", this.attrs.keySet()),
-                    Attr.PHI,
-                    Attr.LAMBDA
+            object = new AtSafe(
+                this.named(
+                    new AtAbsent(
+                        name,
+                        String.format(
+                            "Can't #take(), attribute \"%s\" is absent among other %d attrs (%s), %s and %s are also absent",
+                            name,
+                            this.attrs.size(),
+                            String.join(", ", this.attrs.keySet()),
+                            Attr.PHI,
+                            Attr.LAMBDA
+                        )
+                    ),
+                    name
                 )
-            );
+            ).get();
         }
-        attr = new AtSafe(this.named(attr, name));
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",
                 PhDefault.padding(),
                 name,
                 this,
-                attr
+                object
             )
         );
         PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
-        return attr;
+        return object;
     }
 
     @Override
@@ -298,6 +318,41 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, attr);
+    }
+
+    /**
+     * Get attribute name by position.
+     * @param pos Position of the attribute
+     * @return Attribute name
+     */
+    private String attr(final int pos) {
+        if (0 > pos) {
+            throw new ExFailure(
+                String.format(
+                    "Attribute position can't be negative (%d)",
+                    pos
+                )
+            );
+        }
+        if (this.order.isEmpty()) {
+            throw new ExFailure(
+                String.format(
+                    "There are no attributes here, can't read the %d-th one",
+                    pos
+                )
+            );
+        }
+        if (!this.order.containsKey(pos)) {
+            throw new ExFailure(
+                String.format(
+                    "%s has just %d attribute(s), can't read the %d-th one",
+                    this,
+                    this.order.size(),
+                    pos
+                )
+            );
+        }
+        return this.order.get(pos);
     }
 
     /**

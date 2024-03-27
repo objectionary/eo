@@ -41,7 +41,7 @@ final class AtNamedTest {
         final Phi phi = new AtNamedTest.Dummy();
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> phi.attr("x").get().attr("anything").get()
+            () -> phi.take("x").take("anything")
         );
         MatcherAssert.assertThat(
             new Dataized(error.enclosure()).take(String.class),
@@ -76,5 +76,4 @@ final class AtNamedTest {
             );
         }
     }
-
 }

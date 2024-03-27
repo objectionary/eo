@@ -38,11 +38,10 @@ final class DataTest {
 
     @Test
     void makesString() {
+        final Phi delta = new Data.ToPhi("Hello,\nдруг!").take(Attr.DELTA);
         MatcherAssert.assertThat(
             new String(
-                (byte[]) ((Data.Value<?>) new Data.ToPhi("Hello,\nдруг!")
-                    .attr("Δ").get()
-                ).take(),
+                (byte[]) ((Data.Value<?>) delta).take(),
                 StandardCharsets.UTF_8
             ),
             Matchers.hasToString("Hello,\nдруг!")
@@ -61,7 +60,7 @@ final class DataTest {
     void printsEmptyByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[0]).toString(),
-            Matchers.containsString("=-")
+            Matchers.containsString(":-")
         );
     }
 
@@ -90,7 +89,7 @@ final class DataTest {
     @Test
     void getsVertex() {
         MatcherAssert.assertThat(
-            new Dataized(new Data.ToPhi(1L).attr("ν").get()).take(Long.class),
+            new Dataized(new Data.ToPhi(1L).take(Attr.VERTEX)).take(Long.class),
             Matchers.greaterThan(0L)
         );
     }
@@ -98,10 +97,10 @@ final class DataTest {
     @Test
     void comparesVertex() {
         MatcherAssert.assertThat(
-            new Dataized(new Data.ToPhi(42L).attr(Attr.VERTEX).get()).take(Long.class),
+            new Dataized(new Data.ToPhi(42L).take(Attr.VERTEX)).take(Long.class),
             Matchers.not(
                 Matchers.equalTo(
-                    new Dataized(new Data.ToPhi(42L).attr(Attr.VERTEX).get()).take(Long.class)
+                    new Dataized(new Data.ToPhi(42L).take(Attr.VERTEX)).take(Long.class)
                 )
             )
         );
@@ -204,5 +203,4 @@ final class DataTest {
             )
         );
     }
-
 }

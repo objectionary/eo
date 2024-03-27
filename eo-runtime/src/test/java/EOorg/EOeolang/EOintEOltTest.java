@@ -49,8 +49,8 @@ final class EOintEOltTest {
     void comparesWithAnotherNumber() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(0L);
-        final Phi less = left.attr("lt").get();
-        less.attr(0).put(right);
+        final Phi less = left.take("lt");
+        less.put(0, right);
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),
             Matchers.equalTo(false)

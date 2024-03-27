@@ -51,22 +51,22 @@ public final class EOtry extends PhDefault implements Atom {
      */
     public EOtry(final Phi sigma) {
         super(sigma);
-        this.add("main", new AtFree());
-        this.add("catch", new AtFree());
-        this.add("finally", new AtFree());
+        this.add("main", new AtFree("main"));
+        this.add("catch", new AtFree("catch"));
+        this.add("finally", new AtFree("finally"));
     }
 
     @Override
     public Phi lambda() {
-        Phi ret = this.attr("main").get();
+        Phi ret = this.take("main");
         try {
             new Dataized(ret).take();
         } catch (final EOerror.ExError ex) {
-            final Phi ctch = this.attr("catch").get().copy();
-            ctch.attr(0).put(ex.enclosure());
+            final Phi ctch = this.take("catch").copy();
+            ctch.put(0, ex.enclosure());
             ret = ctch;
         } finally {
-            new Dataized(this.attr("finally").get()).take();
+            new Dataized(this.take("finally")).take();
         }
         return ret;
     }

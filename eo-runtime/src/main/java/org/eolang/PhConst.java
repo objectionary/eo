@@ -88,22 +88,32 @@ public final class PhConst implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhConst(this.wrapped.copy(), this.bytes.get());
+        return new PhConst(this.wrapped.copy(), this.primitive());
     }
 
     @Override
-    public Attr attr(final int pos) {
-        return this.primitive().attr(pos);
+    public Phi take(final int pos) {
+        return this.primitive().take(pos);
     }
 
     @Override
-    public Attr attr(final String name) {
-        return this.primitive().attr(name);
+    public Phi take(final String name) {
+        return this.primitive().take(name);
     }
 
     @Override
-    public Attr attr(final String name, final Phi rho) {
-        return this.primitive().attr(name, rho);
+    public Phi take(final String name, final Phi rho) {
+        return this.primitive().take(name, rho);
+    }
+
+    @Override
+    public void put(final int pos, final Phi object) {
+        this.primitive().put(pos, object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        this.primitive().put(name, object);
     }
 
     @Override
@@ -121,14 +131,14 @@ public final class PhConst implements Phi {
      * @return EObytes object
      */
     private Phi primitive() {
-        if (this.bytes.get() == null) {
-            this.bytes.set(
-                new Data.ToPhi(
-                    new Dataized(
-                        this.wrapped
-                    ).take()
-                )
-            );
+        synchronized (this.bytes) {
+            if (this.bytes.get() == null) {
+                this.bytes.set(
+                    new Data.ToPhi(
+                        new Dataized(this.wrapped).take()
+                    )
+                );
+            }
         }
         return this.bytes.get();
     }

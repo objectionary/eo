@@ -87,14 +87,14 @@ final class EOheapEOpointerEOblockTest {
          */
         Inverse(final Phi sigma) {
             super(sigma);
-            this.add("b", new AtFree());
+            this.add("b", new AtFree("b"));
             this.add(
                 "φ",
                 new AtComposite(
                     this,
                     self -> new Data.ToPhi(
                         new String(
-                            new Dataized(self.attr("b").get()).take(byte[].class),
+                            new Dataized(self.take("b")).take(byte[].class),
                             StandardCharsets.UTF_8
                         )
                     )

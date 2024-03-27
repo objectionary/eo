@@ -114,7 +114,7 @@ final class EOerrorTest {
                         this,
                         rho -> new PhWith(
                             new PhCopy(
-                                Phi.Φ.attr("org").get().attr("eolang").get().attr("error").get()
+                                Phi.Φ.take("org").take("eolang").take("error")
                             ),
                             "message",
                             new Data.ToPhi(data)

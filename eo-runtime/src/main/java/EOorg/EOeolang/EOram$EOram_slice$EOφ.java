@@ -55,12 +55,12 @@ public final class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
     public Phi lambda() throws Exception {
         return new Data.ToPhi(
             Ram.INSTANCE.read(
-                this.attr(Attr.RHO).get().attr(Attr.RHO).get(),
+                this.take(Attr.RHO).take(Attr.RHO),
                 new Param(
-                    this.attr(Attr.RHO).get(), "position"
+                    this.take(Attr.RHO), "position"
                 ).strong(Long.class).intValue(),
                 new Param(
-                    this.attr(Attr.RHO).get(), "size"
+                    this.take(Attr.RHO), "size"
                 ).strong(Long.class).intValue()
             )
         );

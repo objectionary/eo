@@ -27,8 +27,9 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable the test "try-memory-update". The test is disabled because "try" object
-#  dataizes body twice. Need to fix it and enable the test.
+# @todo #2931:30min Enable the test "try-memory-update". The test is disabled because 1) "try"
+#  object dataizes body twice 2) implementation of "memory" is wrong. Need to fix it and enable
+#  the test.
 [] > simple-division-by-zero
   try > @
     []

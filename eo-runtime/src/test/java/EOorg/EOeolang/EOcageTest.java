@@ -30,6 +30,7 @@ package EOorg.EOeolang;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtFree;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -70,7 +71,7 @@ final class EOcageTest {
     void checksThatEmptyCageHasIdentity() {
         final Phi cage = new EOcage(Phi.Φ);
         MatcherAssert.assertThat(
-            new Dataized(cage.attr("ν").get()).take(Long.class),
+            new Dataized(cage.take(Attr.VERTEX)).take(Long.class),
             Matchers.greaterThan(0L)
         );
     }
@@ -108,19 +109,19 @@ final class EOcageTest {
         final Phi cage = new EOcage(Phi.Φ);
         new Dataized(
             new PhWith(
-                cage.attr("write").get().copy(),
+                cage.take("write").copy(),
                 0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
             )
         ).take();
         new Dataized(
             new PhWith(
-                cage.attr("write").get().copy(),
+                cage.take("write").copy(),
                 0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, cage.copy())
             )
         ).take();
         MatcherAssert.assertThat(
             new Dataized(
-                cage.attr("x").get().attr("x").get()
+                cage.take("x").take("x")
             ).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -156,11 +157,11 @@ final class EOcageTest {
     @Test
     void makesTrueCopy() {
         final Phi first = new EOcage(Phi.Φ);
-        first.attr(0).put(new Data.ToPhi(1L));
+        first.put(0, new Data.ToPhi(1L));
         final Phi second = first.copy();
         new Dataized(
             new PhWith(
-                second.attr("write").get(),
+                second.take("write"),
                 "x", new Data.ToPhi(2L)
             )
         ).take();
@@ -199,7 +200,7 @@ final class EOcageTest {
     void doesNotWriteBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         final Phi ten = new PhWith(
-            five.attr("plus").get().copy(),
+            five.take("plus").copy(),
             "x",
             new Data.ToPhi(5L)
         );
@@ -223,8 +224,8 @@ final class EOcageTest {
     }
 
     private static void writeTo(final Phi cage, final Phi obj) {
-        final Phi write = cage.attr("write").get().copy();
-        write.attr(0).put(obj);
+        final Phi write = cage.take("write").copy();
+        write.put(0, obj);
         new Dataized(write).take();
     }
 
@@ -381,7 +382,7 @@ final class EOcageTest {
          */
         Dummy(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtFree("x"));
         }
     }
 }

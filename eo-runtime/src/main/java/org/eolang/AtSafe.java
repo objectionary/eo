@@ -54,17 +54,23 @@ public final class AtSafe implements Attr {
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtSafe(this.origin.copy(self));
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
@@ -85,6 +91,12 @@ public final class AtSafe implements Attr {
 
     @Override
     public void put(final Phi phi) {
-        this.origin.put(phi);
+        try {
+            this.origin.put(phi);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
 }

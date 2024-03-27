@@ -53,8 +53,8 @@ public final class EOstring$EOslice extends PhDefault implements Atom {
      */
     public EOstring$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("start", new AtFree());
-        this.add("len", new AtFree());
+        this.add("start", new AtFree("start"));
+        this.add("len", new AtFree("len"));
     }
 
     @Override

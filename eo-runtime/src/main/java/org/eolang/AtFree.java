@@ -37,6 +37,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @Versionized
 public final class AtFree implements Attr {
     /**
+     * Name of the attribute.
+     */
+    private final String name;
+
+    /**
      * Object that attribute keeps.
      */
     private final AtomicReference<Phi> object;
@@ -44,15 +49,16 @@ public final class AtFree implements Attr {
     /**
      * Ctor.
      */
-    public AtFree() {
-        this(null);
+    public AtFree(final String name) {
+        this(name, null);
     }
 
     /**
      * Ctor for copying.
      * @param phi Object
      */
-    private AtFree(final Phi phi) {
+    private AtFree(final String name, final Phi phi) {
+        this.name = name;
         this.object = new AtomicReference<>(phi);
     }
 
@@ -60,7 +66,7 @@ public final class AtFree implements Attr {
     public String toString() {
         final String term;
         if (this.object.get() == null) {
-            term = "Ø";
+            term = String.format("%s -> Ø", this.name);
         } else {
             term = String.format("%sV", this.object.get().toString());
         }
@@ -71,7 +77,7 @@ public final class AtFree implements Attr {
     public String φTerm() {
         final String term;
         if (this.object.get() == null) {
-            term = "Ø";
+            term = String.format("%s -> Ø", this.name);
         } else {
             term = this.object.get().φTerm();
         }
@@ -87,7 +93,7 @@ public final class AtFree implements Attr {
         } else {
             copy = obj.copy();
         }
-        return new AtFree(copy);
+        return new AtFree(this.name, copy);
     }
 
     @Override
@@ -95,7 +101,9 @@ public final class AtFree implements Attr {
         final Phi phi = this.object.get();
         if (phi == null) {
             throw new ExUnset(
-                "The attribute is not initialized, can't read"
+                String.format(
+                    "The attribute '%s' is not initialized, can't read", this.name
+                )
             );
         }
         return phi;

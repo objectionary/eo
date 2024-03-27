@@ -89,7 +89,7 @@ public final class Param {
      */
     private Dataized dataized() {
         return new Dataized(
-            this.rho.attr(this.attr).get()
+            this.rho.take(this.attr)
         );
     }
 }

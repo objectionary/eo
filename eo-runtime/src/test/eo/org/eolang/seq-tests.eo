@@ -27,9 +27,10 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable the tests. The tests are disabled because most probably "EOseq" dataizes
-#  its "body" many times while executing "lambda()" function in PhDefault.java. Need to find out
-#  what's going on and enable the tests.
+# @todo #2931:30min Enable the tests. The tests are disabled because 1) most probably "EOseq"
+#  dataizes its "body" many times while executing "lambda()" function in PhDefault.java,
+#  2) implementation of "memory" is wrong at the moment. Need to find out what's going on and
+#  enable the tests.
 [] > seq-tests
   TRUE > @
   # Test.

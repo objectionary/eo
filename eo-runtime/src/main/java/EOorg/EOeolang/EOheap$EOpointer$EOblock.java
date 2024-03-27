@@ -28,7 +28,6 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtAtom;
 import org.eolang.AtFree;
 import org.eolang.AtSimple;
 import org.eolang.Atom;
@@ -57,22 +56,22 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
      */
     public EOheap$EOpointer$EOblock(final Phi sigma) {
         super(sigma);
-        this.add("len", new AtFree());
-        this.add("inverse", new AtFree());
+        this.add("len", new AtFree("len"));
+        this.add("inverse", new AtFree("inverse"));
         this.add("write", new AtSimple(new Write(this)));
     }
 
     @Override
     public Phi lambda() {
-        final Phi pointer = this.attr(Attr.RHO).get();
+        final Phi pointer = this.take(Attr.RHO);
         final int address = new Param(pointer, "address").strong(Long.class).intValue();
         final int len = new Param(this, "len").strong(Long.class).intValue();
         final byte[] chunk = Arrays.copyOfRange(
             Heaps.INSTANCE.get().data(pointer),
             address, address + len
         );
-        final Phi inverse = this.attr("inverse").get().copy();
-        inverse.attr(Attr.RHO).put(this);
+        final Phi inverse = this.take("inverse").copy();
+        inverse.put(Attr.RHO, this);
         return new PhWith(inverse, 0, new Data.ToPhi(chunk));
     }
 
@@ -88,13 +87,13 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtFree("x"));
         }
 
         @Override
         public Phi lambda() {
-            final Phi block = this.attr(Attr.RHO).get();
-            final Phi pointer = block.attr(Attr.RHO).get();
+            final Phi block = this.take(Attr.RHO);
+            final Phi pointer = block.take(Attr.RHO);
             final int address = new Param(pointer, "address").strong(Long.class).intValue();
             final byte[] source = new Param(this, "x").strong(byte[].class);
             final byte[] data = Heaps.INSTANCE.get().data(pointer);

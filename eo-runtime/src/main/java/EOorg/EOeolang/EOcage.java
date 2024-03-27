@@ -27,15 +27,12 @@
  */
 package EOorg.EOeolang;
 
-import java.util.Locale;
-import org.eolang.AtAtom;
 import org.eolang.AtCage;
 import org.eolang.AtFree;
 import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhTracedEnclosure;
 import org.eolang.Phi;
@@ -66,7 +63,7 @@ public final class EOcage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return new PhTracedEnclosure(this.attr("enclosure").get(), this);
+        return new PhTracedEnclosure(this.take("enclosure"), this);
     }
 
     /**
@@ -81,14 +78,12 @@ public final class EOcage extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
+            this.add("x", new AtFree("x"));
         }
 
         @Override
         public Phi lambda() {
-            this.attr(Attr.RHO).get().attr("enclosure").put(
-                this.attr("x").get()
-            );
+            this.take(Attr.RHO).put("enclosure", this.take("x"));
             return new Data.ToPhi(true);
         }
     }

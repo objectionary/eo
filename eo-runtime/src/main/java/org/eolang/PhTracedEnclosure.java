@@ -99,6 +99,37 @@ public final class PhTracedEnclosure implements Phi {
     }
 
     @Override
+    public Phi take(final int pos) {
+        return new PhTracedEnclosure.TracingWhileGetting(
+            () -> this.enclosure.take(pos)
+        ).get();
+    }
+
+    @Override
+    public Phi take(final String name) {
+        return new PhTracedEnclosure.TracingWhileGetting(
+            () -> this.enclosure.take(name)
+        ).get();
+    }
+
+    @Override
+    public Phi take(final String name, final Phi rho) {
+        return new PhTracedEnclosure.TracingWhileGetting(
+            () -> this.enclosure.take(name, rho)
+        ).get();
+    }
+
+    @Override
+    public void put(final int pos, final Phi object) {
+        this.enclosure.put(pos, object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        this.enclosure.put(name, object);
+    }
+
+    @Override
     public String locator() {
         return this.enclosure.locator();
     }
@@ -111,27 +142,6 @@ public final class PhTracedEnclosure implements Phi {
     @Override
     public String φTerm() {
         return this.enclosure.φTerm();
-    }
-
-    @Override
-    public Attr attr(final int pos) {
-        return new PhTracedEnclosure.TracingWhileGetting(
-            () -> this.enclosure.attr(pos)
-        ).get();
-    }
-
-    @Override
-    public Attr attr(final String name) {
-        return new PhTracedEnclosure.TracingWhileGetting(
-            () -> this.enclosure.attr(name)
-        ).get();
-    }
-
-    @Override
-    public Attr attr(final String name, final Phi rho) {
-        return new PhTracedEnclosure.TracingWhileGetting(
-            () -> this.enclosure.attr(name, rho)
-        ).get();
     }
 
     @Override
@@ -149,25 +159,25 @@ public final class PhTracedEnclosure implements Phi {
      * NOT thread-safe.
      * @since 0.36
      */
-    private final class TracingWhileGetting implements Supplier<Attr> {
+    private final class TracingWhileGetting implements Supplier<Phi> {
 
         /**
-         * Supplies the {@link Attr}.
+         * Supplies the {@link Phi}.
          */
-        private final Supplier<Attr> attr;
+        private final Supplier<Phi> attr;
 
         /**
          * Ctor.
-         * @param attr Supplier of the {@link Attr}.
+         * @param attr Supplier of the {@link Phi}.
          */
-        private TracingWhileGetting(final Supplier<Attr> attr) {
+        private TracingWhileGetting(final Supplier<Phi> attr) {
             this.attr = attr;
         }
 
         @Override
-        public Attr get() {
+        public Phi get() {
             final Integer incremented = this.incrementCageCounter();
-            final Attr ret = this.attr.get();
+            final Phi ret = this.attr.get();
             this.decrementCageCounter(incremented);
             return ret;
         }

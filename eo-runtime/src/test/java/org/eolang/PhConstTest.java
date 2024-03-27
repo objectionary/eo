@@ -23,12 +23,11 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.security.SecureRandom;
-import net.sf.saxon.expr.parser.Loc;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -53,7 +52,7 @@ final class PhConstTest {
     void behavesAsBytes() {
         MatcherAssert.assertThat(
             "Const object should have 'as-int' attribute which is from 'bytes' object",
-            new Dataized(new PhConst(new Data.ToPhi(42L)).attr("as-int").get()).take(Long.class),
+            new Dataized(new PhConst(new Data.ToPhi(42L)).take("as-int")).take(Long.class),
             Matchers.equalTo(42L)
         );
     }
@@ -78,8 +77,8 @@ final class PhConstTest {
     void doesNotHaveAttributesOfDecoratedPhi() {
         final Phi phi = new PhConst(new PhConstTest.Dummy("attr"));
         Assertions.assertThrows(
-            ExUnset.class,
-            () -> phi.attr("attr").get(),
+            EOerror.ExError.class,
+            () -> phi.take("attr"),
             "Const object should behave as bytes, not as decorated object"
         );
     }
@@ -103,8 +102,8 @@ final class PhConstTest {
     @Test
     void dataizesRandomToConst() {
         final Phi rnd = new PhConst(new PhConstTest.Rnd(Phi.Φ));
-        final Phi eql = rnd.attr("eq").get().copy();
-        eql.attr(0).put(rnd);
+        final Phi eql = rnd.take("eq").copy();
+        eql.put(0, rnd);
         MatcherAssert.assertThat(
             new Dataized(eql).take(Boolean.class),
             Matchers.equalTo(true)
@@ -125,14 +124,12 @@ final class PhConstTest {
 
     @Test
     void keepsConstMultiLayers() {
-        final Phi phi = new PhWith(
-            new Envelope(Phi.Φ),
-            0,
+        Phi ret = new PhConst(new Rnd(Phi.Φ));
+        final Phi phi =
             new PhWith(
                 new Envelope(Phi.Φ),
                 0,
                 new PhConst(new Rnd(Phi.Φ))
-            )
         );
         MatcherAssert.assertThat(
             new Dataized(phi).take(Double.class),
@@ -157,7 +154,7 @@ final class PhConstTest {
                 )
             )
         );
-        phi.attr("eq").get();
+        phi.take("eq");
         new Dataized(phi).take(Long.class);
         MatcherAssert.assertThat(
             dummy.count,
@@ -287,7 +284,7 @@ final class PhConstTest {
                     }
                 )
             );
-            this.add(name, new AtComposite(this, rho -> this.attr(Attr.PHI).get()));
+            this.add(name, new AtComposite(this, rho -> this.take(Attr.PHI)));
         }
     }
 
@@ -302,8 +299,8 @@ final class PhConstTest {
          */
         Envelope(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree());
-            this.add("φ", new AtComposite(this, rho -> rho.attr("x").get()));
+            this.add("x", new AtFree("x"));
+            this.add("φ", new AtComposite(this, rho -> rho.take("x")));
         }
     }
 }

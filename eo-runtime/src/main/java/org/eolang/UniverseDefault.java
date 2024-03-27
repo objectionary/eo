@@ -96,7 +96,7 @@ public final class UniverseDefault implements Universe {
         atts[0] = "";
         for (final String att: atts) {
             if (!"".equals(att)) {
-                accum = accum.attr(att).get();
+                accum = accum.take(att);
             }
         }
         this.indexed.putIfAbsent(accum.hashCode(), accum);
@@ -105,16 +105,12 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void put(final int vertex, final byte[] bytes) {
-        this.get(vertex).attr("Δ").put(
-            new Data.Value<>(bytes)
-        );
+        this.get(vertex).put(Attr.DELTA, new Data.Value<>(bytes));
     }
 
     @Override
     public void bind(final int parent, final int child, final String att) {
-        this.get(parent)
-            .attr(att)
-            .put(this.get(child));
+        this.get(parent).put(att, this.get(child));
     }
 
     @Override

@@ -53,27 +53,27 @@ public final class EOseq extends PhDefault implements Atom {
      */
     public EOseq(final Phi sigma) {
         super(sigma);
-        this.add("steps", new AtFree());
+        this.add("steps", new AtFree("steps"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi steps = this.attr("steps").get();
+        final Phi steps = this.take("steps");
         final Long length = new Dataized(
-            steps.attr("length").get()
+            steps.take("length")
         ).take(Long.class);
         for (long idx = 0; idx < length - 1; ++idx) {
             new Dataized(
                 new PhWith(
-                    steps.attr("at").get().copy(),
+                    steps.take("at").copy(),
                     0, new Data.ToPhi(idx)
                 )
             ).take();
         }
         final Phi ret;
         if (length > 0) {
-            final Phi last = steps.attr("at").get().copy();
-            last.attr(0).put(new Data.ToPhi(length - 1));
+            final Phi last = steps.take("at").copy();
+            last.put(0, new Data.ToPhi(length - 1));
             ret = last;
         } else {
             ret = new Data.ToPhi(false);

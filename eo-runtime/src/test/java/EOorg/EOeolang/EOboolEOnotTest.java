@@ -48,7 +48,7 @@ final class EOboolEOnotTest {
     @Test
     void inversesValue() {
         final Phi left = new Data.ToPhi(true);
-        final Phi not = left.attr("not").get();
+        final Phi not = left.take("not");
         MatcherAssert.assertThat(
             new Dataized(not).take(Boolean.class),
             Matchers.equalTo(false)

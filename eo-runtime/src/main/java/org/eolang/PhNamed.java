@@ -79,18 +79,28 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public Attr attr(final int pos) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(pos));
+    public Phi take(final int pos) {
+        return this.origin.take(pos);
     }
 
     @Override
-    public Attr attr(final String attr) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(attr));
+    public Phi take(final String name) {
+        return this.origin.take(name);
     }
 
     @Override
-    public Attr attr(final String name, final Phi rho) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(name, rho));
+    public Phi take(final String name, final Phi rho) {
+        return this.origin.take(name, rho);
+    }
+
+    @Override
+    public void put(final int pos, final Phi object) {
+        this.origin.put(pos, object);
+    }
+
+    @Override
+    public void put(final String name, final Phi object) {
+        this.origin.put(name, object);
     }
 
     @Override

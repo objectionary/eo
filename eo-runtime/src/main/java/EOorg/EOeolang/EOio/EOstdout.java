@@ -72,13 +72,13 @@ public final class EOstdout extends PhDefault implements Atom {
     EOstdout(final Phi sigma, final PrintStream out) {
         super(sigma);
         this.out = out;
-        this.add("text", new AtFree());
+        this.add("text", new AtFree("text"));
     }
 
     @Override
     public Phi lambda() {
         this.out.print(
-            new Param(this, "text").strong(String.class)
+            new Param(this, "text").strong(Long.class)
         );
         return new Data.ToPhi(true);
     }

@@ -132,15 +132,15 @@ public final class EOrust extends PhDefault implements Atom {
      */
     public EOrust(final Phi sigma) {
         super(sigma);
-        this.add("code", new AtFree());
-        this.add("portal", new AtFree());
-        this.add("params", new AtFree());
+        this.add("code", new AtFree("code"));
+        this.add("portal", new AtFree("portal"));
+        this.add("params", new AtFree("params"));
     }
 
     @Override
     public Phi lambda() throws Exception {
         final String name = NAMES.get(
-            this.attr("code").get().locator().split(":")[0]
+            this.take("code").locator().split(":")[0]
         );
         final Method method = Class.forName(
             String.format(
@@ -156,7 +156,7 @@ public final class EOrust extends PhDefault implements Atom {
                 byte[].class
             );
         }
-        final Phi portal = this.attr("portal").get();
+        final Phi portal = this.take("portal");
         return this.translate(
             (byte[]) method.invoke(
                 null,
@@ -167,7 +167,7 @@ public final class EOrust extends PhDefault implements Atom {
                     this.error
                 )
             ),
-            this.attr("code").get().locator()
+            this.take("code").locator()
         );
     }
 

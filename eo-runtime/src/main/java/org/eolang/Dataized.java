@@ -96,11 +96,12 @@ public final class Dataized {
         try {
             Phi src = this.phi;
             if (!(src instanceof Data)) {
-                src = src.attr("Δ").get();
+                src = src.take(Attr.DELTA);
                 if (!(src instanceof Data)) {
                     throw new IllegalStateException(
                         String.format(
-                            "The attribute Δ of %s has %s instead of %s",
+                            "The attribute %s of %s has %s instead of %s",
+                            Attr.DELTA,
                             this.phi.getClass().getCanonicalName(),
                             src.getClass().getCanonicalName(),
                             Data.class.getCanonicalName()
@@ -108,7 +109,7 @@ public final class Dataized {
                     );
                 }
             }
-            final Object data = Data.class.cast(src).take();
+            final Object data = ((Data<?>) src).take();
             if (!(data instanceof byte[])) {
                 throw new ExFailure(
                     "data of %s must be %s, but was %s",

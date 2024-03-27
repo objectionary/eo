@@ -80,8 +80,8 @@ final class PhWithTest {
             new PhWith(
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
-            ).copy().toString(),
-            Matchers.matchesPattern(".*int\\.plus≡.*EOorg\\.EOeolang\\.EOint\\$EOplusν.*")
+            ).toString(),
+            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=D.*")
         );
     }
 
@@ -92,7 +92,7 @@ final class PhWithTest {
         final Phi ref = new PhWith(new DummyWithAtFree(attr, Phi.Φ), 0, new Data.ToPhi(data));
         final Func<Phi, Boolean> actual = phi -> {
             MatcherAssert.assertThat(
-                new Dataized(phi.attr(attr).get()).take(String.class),
+                new Dataized(phi.take(attr)).take(String.class),
                 Matchers.is(data)
             );
             return true;
@@ -130,7 +130,7 @@ final class PhWithTest {
          */
         DummyWithAtFree(final String attr, final Phi sigma) {
             super(sigma);
-            this.add(attr, new AtFree());
+            this.add(attr, new AtFree(attr));
         }
     }
 

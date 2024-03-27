@@ -27,6 +27,7 @@
 +version 0.0.0
 
 # Storage of data in memory.
-# @todo #2211:30min We can implement memory in EO instead of Java and let it use
-#  ram object. Let's not forget to update the "Origins of Objects" paper.
+# @todo #2931:30min Current implementation of memory is wrong because it stores its data in
+#  its attribute. The right implementation would store the data in some global storage with access
+#  by some id. Need to implement it and enable all tests that use memory.
 [enclosure] > memory /bytes

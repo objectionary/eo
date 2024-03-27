@@ -176,18 +176,28 @@ public interface Data<T> {
         }
 
         @Override
-        public Attr attr(final int pos) {
-            return this.object.attr(pos);
+        public Phi take(final int pos) {
+            return this.object.take(pos);
         }
 
         @Override
-        public Attr attr(final String name) {
-            return this.object.attr(name);
+        public Phi take(final String name) {
+            return this.object.take(name);
         }
 
         @Override
-        public Attr attr(final String name, final Phi rho) {
-            return this.object.attr(name, rho);
+        public Phi take(final String name, final Phi rho) {
+            return this.object.take(name, rho);
+        }
+
+        @Override
+        public void put(final int pos, final Phi object) {
+            this.object.put(pos, object);
+        }
+
+        @Override
+        public void put(final String name, final Phi object) {
+            this.object.put(name, object);
         }
 
         @Override
@@ -207,7 +217,7 @@ public interface Data<T> {
 
         @Override
         public String toString() {
-            return String.format("D=%s", this.value.toString());
+            return String.format("D:%s", this.value.toString());
         }
 
         /**
@@ -220,9 +230,9 @@ public interface Data<T> {
             final Phi phi;
             byte[] bytes = new byte[0];
             final boolean delta;
-            final Phi eolang = Phi.Φ.attr("org").get().attr("eolang").get();
+            final Phi eolang = Phi.Φ.take("org").take("eolang");
             if (obj instanceof Boolean) {
-                phi = eolang.attr("bool").get().copy();
+                phi = eolang.take("bool").copy();
                 delta = false;
                 if (obj.equals(true)) {
                     bytes = new byte[] {0x01};
@@ -230,20 +240,20 @@ public interface Data<T> {
                     bytes = new byte[] {0x00};
                 }
             } else if (obj instanceof byte[]) {
-                phi = eolang.attr("bytes").get().copy();
+                phi = eolang.take("bytes").copy();
                 delta = true;
             } else if (obj instanceof Long) {
-                phi = eolang.attr("int").get().copy();
+                phi = eolang.take("int").copy();
                 delta = false;
                 bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
-                phi = eolang.attr("string").get().copy();
+                phi = eolang.take("string").copy();
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                phi = eolang.attr("float").get().copy();
+                phi = eolang.take("float").copy();
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
             } else {
@@ -255,11 +265,11 @@ public interface Data<T> {
                 );
             }
             if (delta) {
-                phi.attr(Attr.DELTA).put(value);
+                phi.put(Attr.DELTA, value);
             } else {
-                final Phi bts = eolang.attr("bytes").get().copy();
-                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
-                phi.attr(0).put(bts);
+                final Phi bts = eolang.take("bytes").copy();
+                bts.put(Attr.DELTA, new Data.Value<>(bytes));
+                phi.put(0, bts);
             }
             return phi;
         }
