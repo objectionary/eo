@@ -104,6 +104,15 @@ final class PhPackage implements Phi {
     }
 
     /**
+     * Clean up resources.
+     * This includes call of {@link ThreadLocal#remove()} method to prevent
+     * memory leaks.
+     */
+    public void cleanUp() {
+        objects.remove();
+    }
+
+    /**
      * Creates eo-package path by name.
      * @param name The name of an en object.
      * @return Eo-package path.
