@@ -53,6 +53,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test case for {@link OptimizeMojo}.
  * @since 0.1
+ * @todo #2931:30min Enable the test {@link OptimizeMojoTest#checksPacks(String)}. The test was
+ *  disabled because java generation (to-java.xsl) was changed. Need to change .yaml packs and
+ *  enable the test.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
