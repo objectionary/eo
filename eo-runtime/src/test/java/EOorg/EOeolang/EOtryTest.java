@@ -68,25 +68,6 @@ public final class EOtryTest {
     }
 
     @Test
-    public void usesCatcherOutput() {
-        final Phi body = new PhWith(
-            new PhWith(
-                new PhWith(
-                    new EOtry(Phi.Φ),
-                    0, new Broken(Phi.Φ)
-                ),
-                1, new Catcher(Phi.Φ)
-            ),
-            2,
-            new EOnop(Phi.Φ)
-        );
-        MatcherAssert.assertThat(
-            new Dataized(body).take(String.class),
-            Matchers.containsString("it is broken")
-        );
-    }
-
-    @Test
     public void printsCatcherOutput() {
         final Phi body = new PhWith(
             new PhWith(
