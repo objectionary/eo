@@ -427,8 +427,8 @@ final class PhDefaultTest {
     }
 
     @Test
-    void rnds() {
-        Phi rnd = new PhWith(
+    void calculatesRandomTwice() {
+        final Phi rnd = new PhWith(
             new PhMethod(
                 new PhWith(
                     new PhMethod(
@@ -440,15 +440,10 @@ final class PhDefaultTest {
             ),
             0, new Data.ToPhi(1.2)
         );
-        System.out.println(new Dataized(rnd).take(Double.class));
-        System.out.println(new Dataized(rnd).take(Double.class));
-    }
-
-    @Test
-    void memories() {
-        Phi rnd = new Rnd(Phi.Φ).take("as-bytes").take("as-float");
-        System.out.println(new Dataized(rnd).take(Double.class));
-        System.out.println(new Dataized(rnd).take(Double.class));
+        MatcherAssert.assertThat(
+            new Dataized(rnd).take(Double.class),
+            Matchers.not(Matchers.equalTo(new Dataized(rnd).take(Double.class)))
+        );
     }
 
     /**
@@ -480,6 +475,9 @@ final class PhDefaultTest {
      * @since 0.36.0
      */
     private static class Int extends PhDefault {
+        /**
+         * Ctor.
+         */
         Int() {
             super(Phi.Φ);
             this.add("void", new AtFree("void"));
@@ -514,6 +512,10 @@ final class PhDefaultTest {
      * @since 0.36.0
      */
     private static class Plus extends PhDefault {
+        /**
+         * Ctor.
+         * @param sigma Sigma
+         */
         Plus(final Phi sigma) {
             super(sigma);
         }
@@ -535,7 +537,7 @@ final class PhDefaultTest {
         /**
          * Ctor.
          * @param sigma Sigma
-         * @param data  Data
+         * @param data Data
          */
         Foo(final Phi sigma, final Object data) {
             super(sigma);

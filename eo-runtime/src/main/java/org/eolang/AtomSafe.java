@@ -48,6 +48,7 @@ public final class AtomSafe implements Atom {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
+            // @checkstyle IllegalCatchCheck (3 line)
         } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format(

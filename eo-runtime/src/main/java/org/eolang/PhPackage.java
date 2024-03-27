@@ -30,8 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A package object, coming from {@link Phi#Φ}.
- *
+ * A package object, coming from {@link Phi}.
  * @since 0.22
  */
 @Versionized

@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * Attribute that only gets objects.
  * @since 0.36.0
  */
-public class AtGetOnly implements Attr {
+public final class AtGetOnly implements Attr {
 
     /**
      * Get object supplier.

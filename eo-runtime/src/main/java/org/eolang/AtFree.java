@@ -55,6 +55,7 @@ public final class AtFree implements Attr {
 
     /**
      * Ctor for copying.
+     * @param name Name of the attribute
      * @param phi Object
      */
     private AtFree(final String name, final Phi phi) {

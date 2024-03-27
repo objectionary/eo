@@ -28,7 +28,7 @@ package org.eolang;
  * Attribute that copies result object depends on the name of the attribute.
  * @since 0.36.0
  */
-public class AtCopied extends AtEnvelope {
+final class AtCopied extends AtEnvelope {
     /**
      * Ctor.
      * @param attr Original attribute
@@ -42,7 +42,7 @@ public class AtCopied extends AtEnvelope {
                     if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
                         ret = attr.get().copy();
                     } else {
-                        return attr.get();
+                        ret = attr.get();
                     }
                     return ret;
                 }

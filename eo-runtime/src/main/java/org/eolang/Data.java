@@ -191,13 +191,13 @@ public interface Data<T> {
         }
 
         @Override
-        public void put(final int pos, final Phi object) {
-            this.object.put(pos, object);
+        public void put(final int pos, final Phi obj) {
+            this.object.put(pos, obj);
         }
 
         @Override
-        public void put(final String name, final Phi object) {
-            this.object.put(name, object);
+        public void put(final String name, final Phi obj) {
+            this.object.put(name, obj);
         }
 
         @Override

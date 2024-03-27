@@ -126,6 +126,7 @@ public interface Phi extends Term {
 
     /**
      * Take object by position of the attribute.
+     * @param pos The position of the attribute
      * @return The object
      */
     Phi take(int pos);

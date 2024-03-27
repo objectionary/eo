@@ -114,8 +114,14 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
         this.add(Attr.SIGMA, new AtFixed(sigma));
-        this.add(Attr.VERTEX, new AtOnce(
-            new AtComposite(this, rho -> new Data.ToPhi((long) rho.hashCode())))
+        this.add(
+            Attr.VERTEX,
+            new AtOnce(
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi((long) rho.hashCode())
+                )
+            )
         );
     }
 
@@ -232,8 +238,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             object = new AtSafe(
                 this.named(
                     new AtSetRho(
-                        new AtCopied(
-                            this.attrs.get(name), name),
+                        new AtCopied(this.attrs.get(name), name),
                         rho,
                         name
                     ),
