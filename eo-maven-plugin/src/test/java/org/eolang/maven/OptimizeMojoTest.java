@@ -45,7 +45,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,15 +52,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test case for {@link OptimizeMojo}.
  * @since 0.1
- * @todo #2931:30min Enable the test {@link OptimizeMojoTest#checksPacks(String)}. The test was
- *  disabled because java generation (to-java.xsl) was changed. Need to change .yaml packs and
- *  enable the test.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class OptimizeMojoTest {
 
     @ParameterizedTest
-    @Disabled
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
     void checksPacks(final String pack) throws IOException {
         final CheckPack check = new CheckPack(pack);
