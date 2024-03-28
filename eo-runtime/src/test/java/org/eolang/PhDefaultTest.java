@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.naming.ldap.Rdn;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
@@ -480,7 +479,7 @@ final class PhDefaultTest {
          */
         Int() {
             super(Phi.Φ);
-            this.add("void", new AtFree("void"));
+            this.add("void", new AtVoid("void"));
             this.add("plus", new AtSimple(new Plus(this)));
             this.add(
                 Attr.PHI,
@@ -541,7 +540,7 @@ final class PhDefaultTest {
          */
         Foo(final Phi sigma, final Object data) {
             super(sigma);
-            this.add("x", new AtFree("x"));
+            this.add("x", new AtVoid("x"));
             this.add("kid", new AtSimple(new PhDefaultTest.Kid(this)));
             this.add("φ", new AtSimple(new Data.ToPhi(data)));
         }
@@ -615,7 +614,7 @@ final class PhDefaultTest {
          */
         Kid(final Phi sigma) {
             super(sigma);
-            this.add("z", new AtFree("z"));
+            this.add("z", new AtVoid("z"));
             this.add(Attr.PHI, new AtSimple(new EOstdout(Phi.Φ)));
         }
     }

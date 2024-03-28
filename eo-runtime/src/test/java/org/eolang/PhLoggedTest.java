@@ -96,7 +96,7 @@ class PhLoggedTest {
          */
         private Dummy(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree("x"));
+            this.add("x", new AtVoid("x"));
         }
     }
 }

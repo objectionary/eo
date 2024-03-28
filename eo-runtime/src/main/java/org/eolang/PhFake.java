@@ -43,7 +43,7 @@ public final class PhFake extends PhDefault {
      */
     public PhFake(final Supplier<Phi> sup) {
         super(Phi.Φ);
-        this.add("args", new AtFree("args"));
+        this.add("args", new AtVoid("args"));
         this.add("φ", new AtComposite(this, rho -> sup.get()));
     }
 }

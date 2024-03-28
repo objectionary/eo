@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
@@ -132,9 +132,9 @@ public final class EOrust extends PhDefault implements Atom {
      */
     public EOrust(final Phi sigma) {
         super(sigma);
-        this.add("code", new AtFree("code"));
-        this.add("portal", new AtFree("portal"));
-        this.add("params", new AtFree("params"));
+        this.add("code", new AtVoid("code"));
+        this.add("portal", new AtVoid("portal"));
+        this.add("params", new AtVoid("params"));
     }
 
     @Override

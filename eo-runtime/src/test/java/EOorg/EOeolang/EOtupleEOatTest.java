@@ -28,10 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFormed;
-import org.eolang.AtFree;
 import org.eolang.AtOnce;
 import org.eolang.AtSimple;
+import org.eolang.AtVoid;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -133,7 +132,7 @@ final class EOtupleEOatTest {
     private static class Parenting extends PhDefault {
         Parenting(final Phi sigma) {
             super(sigma);
-            this.add("args", new AtFree("args"));
+            this.add("args", new AtVoid("args"));
             this.add("take", new AtSimple(new Take(this)));
             this.add(
                 Attr.PHI,

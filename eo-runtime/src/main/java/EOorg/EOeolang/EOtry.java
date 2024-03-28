@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -51,9 +51,9 @@ public final class EOtry extends PhDefault implements Atom {
      */
     public EOtry(final Phi sigma) {
         super(sigma);
-        this.add("main", new AtFree("main"));
-        this.add("catch", new AtFree("catch"));
-        this.add("finally", new AtFree("finally"));
+        this.add("main", new AtVoid("main"));
+        this.add("catch", new AtVoid("catch"));
+        this.add("finally", new AtVoid("finally"));
     }
 
     @Override

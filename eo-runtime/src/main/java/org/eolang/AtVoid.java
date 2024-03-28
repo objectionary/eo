@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 0.1
  */
 @Versionized
-public final class AtFree implements Attr {
+public final class AtVoid implements Attr {
     /**
      * Name of the attribute.
      */
@@ -50,7 +50,7 @@ public final class AtFree implements Attr {
      * Ctor.
      * @param name The name of the attribute
      */
-    public AtFree(final String name) {
+    public AtVoid(final String name) {
         this(name, null);
     }
 
@@ -59,7 +59,7 @@ public final class AtFree implements Attr {
      * @param name Name of the attribute
      * @param phi Object
      */
-    private AtFree(final String name, final Phi phi) {
+    private AtVoid(final String name, final Phi phi) {
         this.name = name;
         this.object = new AtomicReference<>(phi);
     }
@@ -95,7 +95,7 @@ public final class AtFree implements Attr {
         } else {
             copy = obj.copy();
         }
-        return new AtFree(this.name, copy);
+        return new AtVoid(this.name, copy);
     }
 
     @Override

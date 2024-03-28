@@ -28,8 +28,8 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtFree;
 import org.eolang.AtSimple;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -56,8 +56,8 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
      */
     public EOheap$EOpointer$EOblock(final Phi sigma) {
         super(sigma);
-        this.add("len", new AtFree("len"));
-        this.add("inverse", new AtFree("inverse"));
+        this.add("len", new AtVoid("len"));
+        this.add("inverse", new AtVoid("inverse"));
         this.add("write", new AtSimple(new Write(this)));
     }
 
@@ -87,7 +87,7 @@ public final class EOheap$EOpointer$EOblock extends PhDefault implements Atom {
          */
         Write(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree("x"));
+            this.add("x", new AtVoid("x"));
         }
 
         @Override

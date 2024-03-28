@@ -27,7 +27,6 @@
 +version 0.0.0
 
 # Storage of data in memory.
-# @todo #2931:30min Current implementation of memory is wrong because it stores its data in
-#  its attribute. The right implementation would store the data in some global storage with access
-#  by some id. Need to implement it and enable all tests that use memory.
-[enclosure] > memory /bytes
+[] > memory
+  # Allocate data in memory segment.
+  [data] > alloc /?

@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -50,9 +50,9 @@ public final class EOif extends PhDefault implements Atom {
      */
     public EOif(final Phi sigma) {
         super(sigma);
-        this.add("condition", new AtFree("condition"));
-        this.add("left", new AtFree("left"));
-        this.add("right", new AtFree("right"));
+        this.add("condition", new AtVoid("condition"));
+        this.add("left", new AtVoid("left"));
+        this.add("right", new AtVoid("right"));
     }
 
     @Override

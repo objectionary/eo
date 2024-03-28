@@ -209,7 +209,7 @@ SOFTWARE.
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:if test="$type='org.eolang.bytes'">
       <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree("Δ"));</xsl:text>
+      <xsl:text>this.add("Δ", new AtVoid("Δ"));</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
@@ -236,7 +236,7 @@ SOFTWARE.
   <!-- Void attribute -->
   <xsl:template match="void">
     <xsl:param name="name"/>
-    <xsl:text>new AtFree("</xsl:text>
+    <xsl:text>new AtVoid("</xsl:text>
     <xsl:value-of select="$name"/>
     <xsl:text>")</xsl:text>
   </xsl:template>

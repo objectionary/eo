@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.PhDefault;
@@ -49,8 +49,8 @@ public final class EOram$EOslice extends PhDefault implements Atom {
      */
     public EOram$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtFree("position"));
-        this.add("size", new AtFree("size"));
+        this.add("position", new AtVoid("position"));
+        this.add("size", new AtVoid("size"));
     }
 
     @Override

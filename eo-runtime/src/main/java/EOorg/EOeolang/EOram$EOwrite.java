@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import java.io.IOException;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -53,8 +53,8 @@ public final class EOram$EOwrite extends PhDefault implements Atom {
      */
     public EOram$EOwrite(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtFree("position"));
-        this.add("data", new AtFree("data"));
+        this.add("position", new AtVoid("position"));
+        this.add("data", new AtVoid("data"));
     }
 
     @Override

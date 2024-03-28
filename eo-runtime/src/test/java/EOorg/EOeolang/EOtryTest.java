@@ -28,12 +28,11 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
-import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -183,7 +182,7 @@ public final class EOtryTest {
          */
         public Catcher(final Phi sigma) {
             super(sigma);
-            this.add("ex", new AtFree("ex"));
+            this.add("ex", new AtVoid("ex"));
             this.add(
                 "φ",
                 new AtComposite(

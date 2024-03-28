@@ -31,14 +31,14 @@ package org.eolang;
  * reset because {@link AtRho} ignores all puts except first.
  * @since 0.36.0
  */
-public final class AtSetRho extends AtEnvelope {
+final class AtSetRho extends AtEnvelope {
     /**
      * Ctor.
      * @param attr Origin attribute
      * @param rho Rho that will be set
      * @param name Name of the attribute
      */
-    public AtSetRho(final Attr attr, final Phi rho, final String name) {
+    AtSetRho(final Attr attr, final Phi rho, final String name) {
         super(
             new AtGetOnly(
                 () -> {

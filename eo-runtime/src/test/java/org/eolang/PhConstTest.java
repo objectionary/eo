@@ -301,7 +301,7 @@ final class PhConstTest {
          */
         Envelope(final Phi sigma) {
             super(sigma);
-            this.add("x", new AtFree("x"));
+            this.add("x", new AtVoid("x"));
             this.add("φ", new AtComposite(this, rho -> rho.take("x")));
         }
     }

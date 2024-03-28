@@ -27,7 +27,7 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -59,7 +59,7 @@ public final class EOerror extends PhDefault implements Atom {
      */
     public EOerror(final Phi sigma) {
         super(sigma);
-        this.add("message", new AtFree("message"));
+        this.add("message", new AtVoid("message"));
     }
 
     /**

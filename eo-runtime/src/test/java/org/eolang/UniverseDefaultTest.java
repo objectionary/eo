@@ -236,7 +236,7 @@ final class UniverseDefaultTest {
          */
         DummyAbstract(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ATT, new AtFree(UniverseDefaultTest.ATT));
+            this.add(UniverseDefaultTest.ATT, new AtVoid(UniverseDefaultTest.ATT));
         }
     }
 }

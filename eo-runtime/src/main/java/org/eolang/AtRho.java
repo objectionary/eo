@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  * @since 0.36.0
  */
-public final class AtRho implements Attr {
+final class AtRho implements Attr {
     /**
      * Rho.
      */
@@ -53,7 +53,7 @@ public final class AtRho implements Attr {
     /**
      * Ctor.
      */
-    public AtRho() {
+    AtRho() {
         this(null);
     }
 

@@ -209,7 +209,7 @@
 [] > does-not-return-same-object
   # Foo.
   [] > foo
-    memory 0 > x
+    "Hello, world" > x
   not. > @
     eq.
       foo.x.<

@@ -37,7 +37,7 @@ import EOorg.EOeolang.EOerror;
  * @since 0.26
  */
 @Versionized
-public final class AtSafe implements Attr {
+final class AtSafe implements Attr {
 
     /**
      * Origin attribute.
@@ -48,7 +48,7 @@ public final class AtSafe implements Attr {
      * Ctor.
      * @param attr Origin attribute
      */
-    public AtSafe(final Attr attr) {
+    AtSafe(final Attr attr) {
         this.origin = attr;
     }
 
