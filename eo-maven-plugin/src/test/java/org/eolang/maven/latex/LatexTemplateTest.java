@@ -40,6 +40,7 @@ final class LatexTemplateTest {
     @Test
     void generatesFullTemplate() {
         MatcherAssert.assertThat(
+            "LatexTemplate.asString() gives incorrect template",
             new LatexTemplate(
                 "+package f\n[args] > main\n  stdout \"Hello!\""
             ).asString(),

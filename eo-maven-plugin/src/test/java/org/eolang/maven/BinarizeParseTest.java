@@ -47,6 +47,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 @Execution(ExecutionMode.CONCURRENT)
 final class BinarizeParseTest {
 
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
         final Map<String, Path> res = execParse(
@@ -62,9 +67,11 @@ final class BinarizeParseTest {
             function
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
@@ -77,6 +84,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(
                 res.get(
                     String.format(
@@ -104,12 +112,15 @@ final class BinarizeParseTest {
             Names.PREFIX
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(one)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(two)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
@@ -119,6 +130,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
@@ -133,6 +145,7 @@ final class BinarizeParseTest {
     @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -156,15 +169,19 @@ final class BinarizeParseTest {
             dir
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(cargo)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(lib)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             res, Matchers.hasKey(module)
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(res.get(cargo)).asString(),
             Matchers.stringContainsInOrder(
                 "[lib]",
@@ -174,6 +191,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
+            BinarizeParseTest.EMPTY_MSG,
             new TextOf(res.get(cargo)).asString(),
             Matchers.stringContainsInOrder(
                 "[dependencies]",

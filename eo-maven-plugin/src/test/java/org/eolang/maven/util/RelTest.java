@@ -53,6 +53,7 @@ final class RelTest {
         @TempDir final Path temp
     ) {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Rel(temp, temp.resolve(file)).toString(),
             Matchers.is(Paths.get(expected).toString())
         );
@@ -61,6 +62,7 @@ final class RelTest {
     @Test
     void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Rel(
                 Paths.get("/a/b/c"),
                 Paths.get("/d/e/f")

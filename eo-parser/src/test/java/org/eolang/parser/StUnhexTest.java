@@ -35,10 +35,15 @@ import org.junit.jupiter.api.Test;
  * @since 0.29.0
  */
 final class StUnhexTest {
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void convertsIntFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>01 02 E4 F3 04 67 32 E1</o></o></p>"
@@ -51,6 +56,7 @@ final class StUnhexTest {
     @Test
     void convertsMaxIntFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>FF FF FF FF FF FF FF FF</o></o></p>"
@@ -63,6 +69,7 @@ final class StUnhexTest {
     @Test
     void convertsStringFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     String.join(
@@ -82,6 +89,7 @@ final class StUnhexTest {
     @Test
     void convertsEmptyStringFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     "<p><o base='string'><o base='bytes' data='bytes'/></o></p>"
@@ -96,6 +104,7 @@ final class StUnhexTest {
     @Test
     void convertsFloatFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     "<p><o base='float'><o base='org.eolang.bytes' data='bytes'>41 42 43 67 AE CD 3E FD</o></o></p>"
@@ -110,6 +119,7 @@ final class StUnhexTest {
     @Test
     void convertsTrueFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     String.join(
@@ -129,6 +139,7 @@ final class StUnhexTest {
     @Test
     void convertsFalseFromHexToEo() {
         MatcherAssert.assertThat(
+            StUnhexTest.EMPTY_MSG,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     "<p><o base='bool'><o base='org.eolang.bytes' data='bytes'>00</o></o></p>"

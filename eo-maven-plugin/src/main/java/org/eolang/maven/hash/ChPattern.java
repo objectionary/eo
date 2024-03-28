@@ -162,7 +162,7 @@ public final class ChPattern implements CommitHash {
          */
         private int numberOfConstants() {
             return (int) Stream.of(this.template.split("\\."))
-                .filter(s -> !s.equals("*")).count();
+                .filter(s -> !"*".equals(s)).count();
         }
 
         /**
@@ -173,7 +173,7 @@ public final class ChPattern implements CommitHash {
         private String regex() {
             final List<String> keys = new LinkedList<>();
             for (final String key : this.template.split("\\.")) {
-                if (key.equals("*")) {
+                if ("*".equals(key)) {
                     keys.add("\\w+");
                 } else {
                     keys.add(key);

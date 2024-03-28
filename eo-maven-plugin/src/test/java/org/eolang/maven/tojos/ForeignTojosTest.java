@@ -44,6 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.29.5
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class ForeignTojosTest {
 
     /**
@@ -68,6 +69,7 @@ final class ForeignTojosTest {
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             this.tojos.contains(name),
             Matchers.is(true)
         );
@@ -82,6 +84,7 @@ final class ForeignTojosTest {
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             this.tojos.contains(considered),
             Matchers.is(false)
         );

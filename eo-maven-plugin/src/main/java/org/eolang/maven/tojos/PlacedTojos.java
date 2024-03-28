@@ -153,11 +153,11 @@ public final class PlacedTojos implements Closeable {
     ) {
         return new PlacedTojo(
             this.all.value().add(target.toString())
-                .set(Attribute.KIND.key(), "class")
-                .set(Attribute.HASH.key(), new FileHash(target))
-                .set(Attribute.RELATED.key(), related)
-                .set(Attribute.DEPENDENCY.key(), dep)
-                .set(Attribute.UNPLACED.key(), "false")
+                .set(Attribute.KIND.getKey(), "class")
+                .set(Attribute.HASH.getKey(), new FileHash(target))
+                .set(Attribute.RELATED.getKey(), related)
+                .set(Attribute.DEPENDENCY.getKey(), dep)
+                .set(Attribute.UNPLACED.getKey(), "false")
         );
     }
 
@@ -167,9 +167,9 @@ public final class PlacedTojos implements Closeable {
      */
     public void placeJar(final String name) {
         this.all.value().add(name)
-            .set(Attribute.KIND.key(), "jar")
-            .set(Attribute.DEPENDENCY.key(), String.format("%s.jar", name))
-            .set(Attribute.UNPLACED.key(), "false");
+            .set(Attribute.KIND.getKey(), "jar")
+            .set(Attribute.DEPENDENCY.getKey(), String.format("%s.jar", name))
+            .set(Attribute.UNPLACED.getKey(), "false");
     }
 
     /**
@@ -241,7 +241,7 @@ public final class PlacedTojos implements Closeable {
          * Get attribute key.
          * @return Key.
          */
-        String key() {
+        String getKey() {
             return this.key;
         }
     }
