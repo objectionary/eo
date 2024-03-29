@@ -33,8 +33,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.PhWrite;
@@ -42,116 +40,115 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Memory.alloc object.
+ * Cage.alloc object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "memory.alloc")
-public final class EOmemory$EOalloc extends PhDefault implements Atom {
+@XmirObject(oname = "cage.alloc")
+public final class EOcage$EOalloc extends PhDefault implements Atom {
     /**
      * Locator calculator.
      */
     private static final AtomicLong LOCATOR = new AtomicLong(0L);
 
     /**
-     * Memory.
+     * Objects storage.
      */
-    private static final ConcurrentHashMap<Long, Phi> MEMORY = new ConcurrentHashMap<>(0);
+    private static final ConcurrentHashMap<Long, Phi> OBJECTS = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOmemory$EOalloc(final Phi sigma) {
+    EOcage$EOalloc(final Phi sigma) {
         super(sigma);
-        this.add("data", new EOmemory$EOalloc.AtMalloc());
-        this.add("write", new AtSimple(new PhWrite(this, "data")));
+        this.add("object", new EOcage$EOalloc.AtEncaged());
+        this.add("write", new AtSimple(new PhWrite(this, "object")));
     }
 
     @Override
     public Phi lambda() throws Exception {
-        return this.take("data");
+        return this.take("object");
     }
 
     /**
-     * Attribute that allocates data in memory.
+     * Attribute that stores object.
      * @since 0.36.0
      */
-    private static class AtMalloc implements Attr {
+    private static class AtEncaged implements Attr {
         /**
          * The term to show when empty.
          */
         public static final String EMPTY_TERM = "Ø";
 
         /**
-         * Object in memory.
+         * Object in storage.
          */
         private Long locator;
 
         /**
-         * Allocated bytes length.
+         * Form of the stored object.
          */
-        private Integer length;
+        private String forma;
 
         /**
          * Ctor.
          */
-        AtMalloc() {
+        AtEncaged() {
             this(null, null);
         }
 
         /**
          * Ctor for copying.
          * @param locator Locator of object in memory
-         * @param length  Allocated bytes length
+         * @param form The form of the object
          */
-        AtMalloc(final Long locator, final Integer length) {
+        AtEncaged(final Long locator, final String form) {
             this.locator = locator;
-            this.length = length;
+            this.forma = form;
         }
 
         @Override
         public Attr copy(final Phi self) {
-            return new EOmemory$EOalloc.AtMalloc(this.locator, this.length);
+            return new EOcage$EOalloc.AtEncaged(this.locator, this.forma);
         }
 
         @Override
         public Phi get() {
-            if (this.locator == null || !EOmemory$EOalloc.MEMORY.containsKey(this.locator)) {
+            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
                 throw new ExFailure(
-                    "Current memory segment is empty, can't read it"
+                    "There's no object in storage, can't read"
                 );
             }
-            return EOmemory$EOalloc.MEMORY.get(this.locator);
+            return EOcage$EOalloc.OBJECTS.get(this.locator);
         }
 
         @Override
         public void put(final Phi phi) {
-            final byte[] bytes = new Dataized(phi).take();
-            if (this.length == null) {
-                this.length = bytes.length;
-            } else if (this.length < bytes.length) {
+            if (this.forma == null) {
+                this.forma = phi.forma();
+            } else if (!this.forma.equals(phi.forma())) {
                 throw new ExFailure(
-                    "Can't write to memory %d bytes because %d were already allocated",
-                    bytes.length,
-                    this.length
+                    "Can't write an object formed by %s because object formed by %s was saved before",
+                    phi.forma(),
+                    this.forma
                 );
             }
             if (this.locator == null) {
-                synchronized (EOmemory$EOalloc.LOCATOR) {
-                    this.locator = EOmemory$EOalloc.LOCATOR.incrementAndGet();
+                synchronized (EOcage$EOalloc.LOCATOR) {
+                    this.locator = EOcage$EOalloc.LOCATOR.incrementAndGet();
                 }
             }
-            EOmemory$EOalloc.MEMORY.put(this.locator, new Data.ToPhi(bytes));
+            EOcage$EOalloc.OBJECTS.put(this.locator, phi);
         }
 
         @Override
         public String φTerm() {
             final String txt;
-            if (this.locator == null || !EOmemory$EOalloc.MEMORY.containsKey(this.locator)) {
-                txt = EOmemory$EOalloc.AtMalloc.EMPTY_TERM;
+            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
+                txt = AtEncaged.EMPTY_TERM;
             } else {
-                txt = EOmemory$EOalloc.MEMORY.get(this.locator).φTerm();
+                txt = EOcage$EOalloc.OBJECTS.get(this.locator).φTerm();
             }
             return txt;
         }
@@ -159,10 +156,10 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
         @Override
         public String toString() {
             final String txt;
-            if (this.locator == null || !EOmemory$EOalloc.MEMORY.containsKey(this.locator)) {
-                txt = EOmemory$EOalloc.AtMalloc.EMPTY_TERM;
+            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
+                txt = AtEncaged.EMPTY_TERM;
             } else {
-                txt = EOmemory$EOalloc.MEMORY.get(this.locator).toString();
+                txt = EOcage$EOalloc.OBJECTS.get(this.locator).toString();
             }
             return txt;
         }
