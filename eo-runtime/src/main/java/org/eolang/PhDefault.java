@@ -232,10 +232,6 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name, final Phi rho) {
-        if (this.form.equals(EOseq.class.getName())) {
-            System.out.println(this);
-            System.out.println(name);
-        }
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
