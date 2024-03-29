@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOseq;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
