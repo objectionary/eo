@@ -91,7 +91,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte", "eq"})
-    @Disabled
     public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
@@ -117,7 +116,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    @Disabled
     public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
