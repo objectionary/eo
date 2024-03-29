@@ -43,9 +43,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOmemory}.
  *
  * @since 0.1
- * @todo #2931:30min Decide what to do with test {@link EOmemoryTest#comparesOnFly}.
- *  The test was disabled because it does not pass after new rho logic was introduced.
- *  We need either to delete the test, or resolve it somehow
  */
 public final class EOmemoryTest {
 
