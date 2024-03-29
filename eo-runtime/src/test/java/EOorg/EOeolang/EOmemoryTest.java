@@ -43,9 +43,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOmemory}.
  *
  * @since 0.1
- * @todo #2931:30min Decide what to do with test {@link EOmemoryTest#comparesOnFly}.
- *  The test was disabled because it does not pass after new rho logic was introduced.
- *  We need either to delete the test, or resolve it somehow
  */
 public final class EOmemoryTest {
 
@@ -60,6 +57,23 @@ public final class EOmemoryTest {
         MatcherAssert.assertThat(
             new Dataized(alloc.take("as-int")).take(Long.class),
             Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    void comparesWithInt() {
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(alloc.take("write").copy(), 0, new Data.ToPhi(3L)),
+                        "eq"
+                    ),
+                    0, new Data.ToPhi(3L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
         );
     }
 

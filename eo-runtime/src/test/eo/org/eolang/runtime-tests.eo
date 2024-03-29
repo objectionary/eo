@@ -30,11 +30,8 @@
 # Test.
 # @todo #2931:30min Enable runtime tests. The tests were disabled because they stopped working
 #  when \rho attribute became immutable. Need to find out what's going on and enable them.
-#  Tests: parent-in-vertical-notation, parent-in-horizontal-notation, iterates-over-sigma,
-#  refers-to-inner-vars-correctly, recursion-without-arguments, right-way-to-use-hierarchy,
-#  calculates-only-once-BROKEN, directly-accesses-objects-from-standard-root,
-#  directly-accesses-objects-from-root, constant-defends-against-side-effects, makes-shallow-copy,
-#  calling-caged-function, standard-root-and-root, rho-of-add-should-not-change
+#  Tests: refers-to-inner-vars-correctly, makes-shallow-copy, calling-caged-function,
+#  rho-of-add-should-not-change
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -103,37 +100,21 @@
         i.minus 1
 
 # Test.
-[] > iterates-over-sigma
-  memory 0 > x
-  eq. > res
-    seq
-      *
-        x.write TRUE
-        eq.
-          TRUE
-          x.as-bool.while
-            [i]
-              &.x.write FALSE > @
-    FALSE
-  nop > @
-
-# Test.
-[] > calculates-only-once-BROKEN
-  memory 0 > x
+[] > calculates-only-once
+  memory.alloc 0 > x
   # A.
   [] > a
     seq > @
       *
         x.write (x.as-int.plus 1)
         42
-  eq. > res
+  eq. > @
     seq
       *
         x.write 0
         a.neg.neg.neg.neg.eq 42
         x
     1
-  nop > @
 
 # Test.
 [] > rho-of-add-should-not-change
@@ -186,7 +167,7 @@
 
 # Test.
 [] > recursion-without-arguments
-  memory 0 > n
+  memory.alloc 0 > n
   # Func.
   [] > func
     if > @
@@ -195,15 +176,13 @@
         *
           n.write (n.as-int.minus 1)
           ^.func
-          TRUE
-      TRUE
-  eq. > res
+      n
+  eq. > @
     seq
       *
         n.write 4
         func
-    TRUE
-  nop > @
+    0
 
 # Test.
 [] > does-not-return-same-object
@@ -288,9 +267,9 @@
 
 # Test.
 [] > directly-accesses-objects-from-root
-  Q.org.eolang.memory 0 > m
-  eq. > res
-    seq
+  Q.org.eolang.memory.alloc 0 > m
+  eq. > @
+    seq > written!
       *
         m.write 42
         Q.org.eolang.io.stdout
@@ -298,13 +277,12 @@
         m.write
           m.as-int.minus 2
     40
-  TRUE > @
 
 # Test.
 [] > directly-accesses-objects-from-standard-root
-  QQ.memory 0 > m
-  eq. > res
-    seq
+  QQ.memory.alloc 0 > m
+  eq. > @
+    seq > written!
       *
         m.write 42
         QQ.io.stdout
@@ -312,18 +290,16 @@
         m.write
           m.as-int.minus 2
     40
-  TRUE > @
 
 # Test.
 [] > standard-root-and-root
-  QQ.io.stdout > stand-root
+  QQ.io.stdout > stand-root!
     "one"
-  Q.org.eolang.io.stdout > root
+  Q.org.eolang.io.stdout > root!
     "one"
-  eq. > res
+  eq. > @
     root
     stand-root
-  TRUE > @
 
 # Test.
 [] > extract-attribute-from-decoratee
@@ -367,7 +343,7 @@
 
 # Test.
 [] > constant-defends-against-side-effects
-  memory 7 > a
+  memory.alloc 7 > a
   # Increment.
   [x] > inc
     seq > @
@@ -375,14 +351,13 @@
         x.write
           x.as-int.plus 1
         x.as-int
-  inc a > n!
-  int n > num
-  eq. > res
+  int > num
+    inc a > n!
+  eq. > @
     times.
       num
       num
     64
-  TRUE > @
 
 # Test.
 [] > makes-shallow-copy
@@ -415,7 +390,7 @@
 
 # Test.
 [] > parent-in-vertical-notation
-  memory 5 > m
+  memory.alloc 5 > m
   # Value.
   [] > value
     # Phi.
@@ -423,23 +398,21 @@
       m. > @
         ^.
           ^
-  eq. > res
+  eq. > @
     value
     5
-  nop > @
 
 # Test.
 [] > parent-in-horizontal-notation
-  memory 5 > m
+  memory.alloc 5 > m
   # Value.
   [] > value
     # Phi.
     [] > @
       ^.^.m > @
-  eq. > res
+  eq. > @
     value
     5
-  nop > @
 
 # Test.
 [] > phi-in-vertical-notation
@@ -465,24 +438,6 @@
     100
 
 # Test.
-[] > moves-copy-to-new-parent
-  eq. > @
-    # App.
-    [] > app
-      # App.phi.
-      [] > @
-        42 > x
-        foo > @
-          $:^
-          24:h
-      # Foo.
-      [h] > foo
-        plus. > @
-          h
-          ^.x
-    66
-
-# Test.
 [] > right-way-to-use-hierarchy
   # Bool mock
   [value] > pybool
@@ -491,12 +446,11 @@
   [value] > pyint
     # Equal.
     [x] > eq
-      pybool (value.eq x.value) > @
+      pybool (^.value.eq x.value) > @
     # Add.
     [x] > add
-      ^.^.pyint (value.plus x.value) > @
-  ((pyint 1).add (pyint 3)).eq (pyint 4) > res
-  TRUE > @
+      ^.^.pyint (^.value.plus x.value) > @
+  ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
 # Test.
 [] > check-triple-quotes

@@ -520,7 +520,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO | INT)
+as  : COLON (NAME | INT)
     ;
 
 // Data
