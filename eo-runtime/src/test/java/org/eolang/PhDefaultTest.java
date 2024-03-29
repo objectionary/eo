@@ -461,7 +461,6 @@ final class PhDefaultTest {
                 new AtComposite(
                     this,
                     self -> {
-                        System.out.println("print");
                         return new Data.ToPhi(new SecureRandom().nextDouble());
                     }
                 )

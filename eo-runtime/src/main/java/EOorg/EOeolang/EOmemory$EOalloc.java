@@ -112,7 +112,7 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
 
         @Override
         public Attr copy(final Phi self) {
-            return new AtMalloc(this.locator, this.length);
+            return new EOmemory$EOalloc.AtMalloc(this.locator, this.length);
         }
 
         @Override

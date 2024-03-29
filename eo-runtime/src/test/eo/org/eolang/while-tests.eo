@@ -27,179 +27,182 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable while tests. The tests were disabled because they all use "memory" object
-#  that has wrong implementation at the moment. Need to enable the tests when "memory" is ready.
-[] > while-tests
-  TRUE > @
-  # Test.
-  [] > simple-bool-expression-via-memory-in-while
-    memory TRUE > condition
-    while > res
-      condition
-      [i] (condition.write FALSE > @)
-    res.as-bool.not > @
+[] > simple-while-with-false-first
+  while > res
+    FALSE
+    [i] (TRUE > @)
+  (bool res).not > @
 
-  # Test.
-  [] > last-while-dataization-object
-    memory 0 > x
-    eq. > @
-      while > res
-        2.gt x
+# Test.
+[] > simple-bool-expression-via-memory-in-while
+  memory.alloc TRUE > condition
+  while > res!
+    condition
+    [i] (condition.write FALSE > @)
+  (bool res).not > @
+
+# Test.
+[] > last-while-dataization-object
+  memory.alloc 0 > x
+  eq. > @
+    3
+    while > res!
+      2.gt x
+      [i]
+        x.write > @
+          x.as-int.plus 1
+
+# Test.
+[] > iterates-over-simple-counter
+  memory.alloc 0 > x
+  and. > @
+    eq.
+      x.write 5
+      5
+    eq.
+      while > iterated!
+        10.gt x
         [i]
-          seq > @
-            *
-              x.write
-                x.as-int.plus 1
-              x.as-int
-      3
+          x.write > @
+            x.as-int.plus 1
+      11
 
-  # Test.
-  [] > iterates-over-simple-counter
-    memory 0 > x
-    and. > @
-      eq.
-        x.write 5
-        5
-      eq.
+# Test.
+[] > last-while-dataization-object-with-false-condition
+  memory.alloc 3 > x
+  eq. > @
+    while > iter!
+      1.gt x
+      [i] (x.write (x.as-int.plus 1) > @)
+    FALSE
+
+# Test.
+[] > iterating-tuple-with-while-using-internal-iterator
+  * 1 1 1 1 > arr
+  memory.alloc 0 > iter
+  memory.alloc 0 > acc
+  arr.length.plus -1 > max
+  seq > @
+    *
+      if
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
         while
-          10.gt x
+          max.gt iter
           [i]
-            x.write > @
-              x.as-int.plus 1
-        11
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      i
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
 
-  # Test.
-  [] > last-while-dataization-object-with-false-condition
-    memory 3 > x
-    eq. > @
+# Test.
+[] > iterating-tuple-with-while-using-external-iterator
+  * 1 1 1 1 > arr
+  memory.alloc 0 > iter
+  memory.alloc 0 > acc
+  arr.length.minus 1 > max
+  seq > @
+    *
+      if
+        max.eq 0
+        acc.write
+          acc.as-int.plus
+            arr.at 0
+        while
+          max.gt iter
+          [i]
+            seq > @
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+      eq.
+        acc.as-int
+        arr.length
+
+# Test.
+[] > while-with-body-in-condition
+  memory.alloc -1 > x
+  memory.alloc 0 > i
+  seq > @
+    *
       while
-        1.gt x
-        [i]
-          x.write (x.as-int.plus 1) > @
-      FALSE
+        []
+          if > @
+            1.gt x
+            seq
+              *
+                x.write i.as-int
+                i.write (i.as-int.plus 1)
+                TRUE
+            FALSE
+        nop
+      and.
+        x.eq 1
+        i.eq 2
 
-  # Test.
-  [] > iterating-tuple-with-while-using-internal-iterator
-    * 1 1 1 1 > arr
-    memory 0 > iter
-    memory 0 > acc
-    arr.length.minus 1 > max
-    seq > @
-      *
-        if
-          max.eq 0
-          acc.write
-            acc.as-int.plus
-              arr.at 0
-          while
+# Test.
+[] > iterating-tuple-with-while-without-body-multiple
+  * 1 1 1 > arr
+  memory.alloc 0 > iter
+  memory.alloc 0 > acc
+  arr.length > max
+  seq > @
+    *
+      while
+        []
+          if > @
             max.gt iter
-            [i]
-              seq > @
-                *
-                  acc.write
-                    acc.as-int.plus
-                      arr.at
-                        i
-                  iter.write
-                    iter.as-int.plus 1
-        eq.
-          acc.as-int
-          arr.length
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length
 
-  # Test.
-  [] > iterating-tuple-with-while-using-external-iterator
-    * 1 1 1 1 > arr
-    memory 0 > iter
-    memory 0 > acc
-    arr.length.minus 1 > max
-    seq > @
-      *
-        if
-          max.eq 0
-          acc.write
-            acc.as-int.plus
-              arr.at 0
-          while
+# Test.
+[] > iterating-tuple-with-while-without-body-single
+  * 1 > arr
+  memory.alloc 0 > iter
+  memory.alloc 0 > acc
+  arr.length > max
+  seq > @
+    *
+      while
+        []
+          if > @
             max.gt iter
-            [i]
-              seq > @
-                *
-                  acc.write
-                    acc.as-int.plus
-                      arr.at
-                        iter.as-int
-                  iter.write
-                    iter.as-int.plus 1
-        eq.
-          acc.as-int
-          arr.length
-
-  # Test.
-  [] > while-with-body-in-condition
-    memory -1 > x
-    memory 0 > i
-    while > @
-      []
-        if > @
-          1.gt x
-          seq
-            *
-              x.write i.as-int
-              i.write (i.as-int.plus 1)
-              TRUE
-          FALSE
-      nop
-
-  # Test.
-  [] > iterating-tuple-with-while-without-body-multiple
-    * 1 1 > arr
-    memory 0 > iter
-    memory 0 > acc
-    arr.length > max
-    seq > @
-      *
-        while
-          []
-            if > @
-              max.gt iter
-              seq
-                *
-                  acc.write
-                    acc.as-int.plus
-                      arr.at
-                        iter.as-int
-                  iter.write
-                    iter.as-int.plus 1
-                  TRUE
-              FALSE
-          nop
-        eq.
-          acc.as-int
-          arr.length
-
-  # Test.
-  [] > iterating-tuple-with-while-without-body-single
-    * 1 > arr
-    memory 0 > iter
-    memory 0 > acc
-    arr.length > max
-    seq > @
-      *
-        while
-          []
-            if > @
-              max.gt iter
-              seq
-                *
-                  acc.write
-                    acc.as-int.plus
-                      arr.at
-                        iter.as-int
-                  iter.write
-                    iter.as-int.plus 1
-                  TRUE
-              FALSE
-          nop
-        eq.
-          acc.as-int
-          arr.length
+            seq
+              *
+                acc.write
+                  acc.as-int.plus
+                    arr.at
+                      iter.as-int
+                iter.write
+                  iter.as-int.plus 1
+                TRUE
+            FALSE
+        nop
+      eq.
+        acc.as-int
+        arr.length

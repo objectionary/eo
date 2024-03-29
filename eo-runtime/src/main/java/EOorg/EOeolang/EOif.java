@@ -57,9 +57,8 @@ public final class EOif extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final boolean term = new Param(this, "condition").strong(Boolean.class);
         final Phi out;
-        if (term) {
+        if (new Param(this, "condition").strong(Boolean.class)) {
             out = this.take("left");
         } else {
             out = this.take("right");

@@ -64,6 +64,23 @@ public final class EOmemoryTest {
     }
 
     @Test
+    void comparesWithInt() {
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(alloc.take("write").copy(), 0, new Data.ToPhi(3L)),
+                        "eq"
+                    ),
+                    0, new Data.ToPhi(3L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void hasTheSameDataAfterCopy() {
         final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(2L));
         MatcherAssert.assertThat(

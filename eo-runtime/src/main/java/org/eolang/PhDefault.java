@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
+import EOorg.EOeolang.EOwhile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
