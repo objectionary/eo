@@ -220,11 +220,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.take(this.attr(pos));
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.take(name, this);
     }
@@ -286,6 +281,11 @@ public abstract class PhDefault implements Phi, Cloneable {
         );
         PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
         return object;
+    }
+
+    @Override
+    public byte[] delta() {
+        return new byte[0];
     }
 
     @Override

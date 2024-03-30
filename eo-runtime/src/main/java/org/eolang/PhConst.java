@@ -92,11 +92,6 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.primitive().take(pos);
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.primitive().take(name);
     }
@@ -126,6 +121,11 @@ public final class PhConst implements Phi {
         return this.wrapped.forma();
     }
 
+    @Override
+    public byte[] delta() {
+        return this.primitive().delta();
+    }
+
     /**
      * Cached primitive object that was retrieved from dataization of wrapped one.
      * @return EObytes object
@@ -142,4 +142,5 @@ public final class PhConst implements Phi {
         }
         return this.bytes.get();
     }
+
 }

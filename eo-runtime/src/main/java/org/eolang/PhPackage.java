@@ -86,13 +86,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        throw new ExFailure(
-            String.format("Can't #take(%d) package object '%s'", pos, this.pkg)
-        );
-    }
-
-    @Override
     public Phi take(final String name) {
         final String obj = this.eoPackage(name);
         final String key = new JavaPath(obj).toString();
@@ -166,5 +159,12 @@ final class PhPackage implements Phi {
             );
         }
         return res;
+    }
+
+    @Override
+    public byte[] delta() {
+        throw new IllegalStateException(
+            String.format("Can't #data() from package object '%s'", this.pkg)
+        );
     }
 }

@@ -24,97 +24,70 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
-
 /**
- * It catches {@link ExFailure} and
- * throws {@link EOerror.ExError}.
- *
- * @since 0.26
+ * Object which \rho is faked.
+ * @since 0.36.0
  */
-@Versionized
-public final class PhSafe implements Phi {
-
+class PhFakeRho implements Phi {
     /**
-     * The original.
+     * Original object.
      */
     private final Phi origin;
 
     /**
-     * Ctor.
-     * @param phi The object
+     * Possible parent of object.
      */
-    public PhSafe(final Phi phi) {
+    private final Phi parent;
+
+    /**
+     * Rho that original one should be replaced with.
+     */
+    private final Phi rho;
+
+    /**
+     * Ctor.
+     * @param phi Original object
+     * @param parent Possible parent
+     * @param rho Rho that original one should be replaced with
+     */
+    PhFakeRho(final Phi phi, final Phi parent, final Phi rho) {
         this.origin = phi;
+        this.parent = parent;
+        this.rho = rho;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
+    public byte[] delta() {
+        return this.origin.delta();
     }
 
     @Override
     public Phi copy() {
-        return new PhSafe(this.origin.copy());
+        return new PhFakeRho(this.origin.copy(), this.parent, this.rho);
     }
 
     @Override
     public Phi take(final String name) {
-        try {
-            return this.origin.take(name);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
+        return this.take(name, this);
     }
 
     @Override
     public Phi take(final String name, final Phi rho) {
-        try {
-            return this.origin.take(name, rho);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
+        Phi object = this.origin.take(name, rho);
+        if (name.equals(Attr.RHO) && this.parent.equals(object)) {
+            object = this.rho;
         }
+        return object;
     }
 
     @Override
     public void put(final int pos, final Phi object) {
-        try {
-            this.origin.put(pos, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
+        this.origin.put(pos, object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        try {
-            this.origin.put(name, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
+        this.origin.put(name, object);
     }
 
     @Override
@@ -128,7 +101,7 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public byte[] delta() {
-        return this.origin.delta();
+    public String φTerm() {
+        return this.origin.φTerm();
     }
 }

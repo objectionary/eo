@@ -99,13 +99,6 @@ public final class PhTracedEnclosure implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return new PhTracedEnclosure.TracingWhileGetting(
-            () -> this.enclosure.take(pos)
-        ).get();
-    }
-
-    @Override
     public Phi take(final String name) {
         return new PhTracedEnclosure.TracingWhileGetting(
             () -> this.enclosure.take(name)
@@ -152,6 +145,11 @@ public final class PhTracedEnclosure implements Phi {
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof Phi && this.hashCode() == obj.hashCode();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.enclosure.delta();
     }
 
     /**

@@ -207,10 +207,6 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$type='org.eolang.bytes'">
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtVoid("Δ"));</xsl:text>
-    </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -559,11 +555,11 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhData(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, </xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->

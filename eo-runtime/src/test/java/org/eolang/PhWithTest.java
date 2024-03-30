@@ -112,7 +112,7 @@ final class PhWithTest {
         MatcherAssert.assertThat(
             dummy.forma(),
             Matchers.equalTo(
-                new PhWith(dummy, "x", new Data.Value<>(5L)).forma()
+                new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()
             )
         );
     }

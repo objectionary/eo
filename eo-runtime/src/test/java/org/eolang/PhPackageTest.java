@@ -103,14 +103,6 @@ final class PhPackageTest {
     }
 
     @Test
-    void doesNotGetAttributeByPosition() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take(0)
-        );
-    }
-
-    @Test
     void doesNotGetForma() {
         Assertions.assertThrows(
             ExFailure.class,

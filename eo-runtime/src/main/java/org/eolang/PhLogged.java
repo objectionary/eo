@@ -61,14 +61,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        System.out.printf("%d.take(\"%d\")...\n", this.hashCode(), pos);
-        final Phi ret = this.origin.take(pos);
-        System.out.printf("%d.take(\"%d\")!\n", this.hashCode(), pos);
-        return ret;
-    }
-
-    @Override
     public Phi take(final String name) {
         System.out.printf("%d.take(\"%s\")...\n", this.hashCode(), name);
         final Phi ret = this.origin.take(name);
@@ -123,4 +115,11 @@ public final class PhLogged implements Phi {
         return this.origin.toString();
     }
 
+    @Override
+    public byte[] delta() {
+        System.out.printf("%d.delta()...\n", this.hashCode());
+        final byte[] data = this.origin.delta();
+        System.out.printf("%d.delta()!\n", this.hashCode());
+        return data;
+    }
 }
