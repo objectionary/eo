@@ -70,7 +70,7 @@
   [x] > lt
     0.0.gt > @
       ^.minus
-        int
+        float
           x > value!
 
   # Tests that $ ≤ x.
