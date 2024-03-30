@@ -57,7 +57,6 @@ public final class EOfloat$EOgt extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-
         return new Data.ToPhi(
             new Param(this).strong(Double.class)
                 > new Param(this, "x").strong(Double.class)
