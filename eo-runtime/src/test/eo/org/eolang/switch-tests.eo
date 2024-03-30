@@ -74,16 +74,14 @@
 
 # Test.
 [] > switch-with-all-false-cases
-  eq. > @
-    TRUE
-    switch
+  switch > @
+    *
       *
-        *
-          FALSE
-          "FALSE1"
-        *
-          FALSE
-          "FALSE2"
+        FALSE
+        "FALSE1"
+      *
+        FALSE
+        "FALSE2"
 
 # Test.
 [] > switch-case-with-error
