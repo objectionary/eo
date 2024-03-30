@@ -25,7 +25,7 @@
 package org.eolang;
 
 /**
- * Object with data
+ * Object with data.
  * @since 0.36.0
  */
 public final class PhData implements Phi {
@@ -42,7 +42,7 @@ public final class PhData implements Phi {
 
     /**
      * Ctor.
-     * @param obj  Original object
+     * @param obj Original object
      * @param data Data
      */
     public PhData(final Phi obj, final byte[] data) {
@@ -57,7 +57,7 @@ public final class PhData implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return new PhFakeRho(this.object.take(name), this.object, this);
+        return this.take(name, this);
     }
 
     @Override
@@ -66,13 +66,13 @@ public final class PhData implements Phi {
     }
 
     @Override
-    public void put(int pos, Phi object) {
-        this.object.put(pos, object);
+    public void put(final int pos, final Phi obj) {
+        this.object.put(pos, obj);
     }
 
     @Override
-    public void put(final String name, final Phi object) {
-        this.object.put(name, object);
+    public void put(final String name, final Phi obj) {
+        this.object.put(name, obj);
     }
 
     @Override
@@ -87,10 +87,15 @@ public final class PhData implements Phi {
 
     @Override
     public String φTerm() {
-        return this.toString()
-            .replace("⟦", "\\uE29FA6")
-            .replace("⟧", "\\uE29FA7")
-            .replace(", ", "\\u2C ");
+        return this.object.φTerm()
+            .replaceFirst(
+                "⟦\n",
+                String.format(
+                    "⟦\n\t%s ↦ %s,\n",
+                    Attr.DELTA,
+                    this.bytes()
+                )
+            );
     }
 
     @Override
@@ -100,16 +105,27 @@ public final class PhData implements Phi {
 
     @Override
     public String toString() {
+        return String.format(
+            "%s=%s",
+            this.object.toString(),
+            this.bytes()
+        );
+    }
+
+    /**
+     * Converts byte array to string.
+     * @return Byte array as string
+     */
+    public String bytes() {
         final StringBuilder out = new StringBuilder(0);
-        out.append(this.object.toString()).append("=");
         for (final byte bte : this.data) {
             if (out.length() > 0) {
                 out.append('-');
             }
             out.append(String.format("%02X", bte));
         }
-        if (out.length() == 0) {
-            out.append('-');
+        if (this.data.length == 0) {
+            out.append("--");
         }
         return out.toString();
     }

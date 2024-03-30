@@ -81,7 +81,7 @@ final class PhWithTest {
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).toString(),
-            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=D.*")
+            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOint.*")
         );
     }
 

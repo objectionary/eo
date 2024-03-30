@@ -132,7 +132,7 @@ final class UniverseDefaultTest {
     @Test
     void copies() {
         final Universe universe = new UniverseDefault(
-            new DummyWithAt(Phi.Φ)
+            new Data.ToPhi(123L)
         );
         final int origin = universe.find("$");
         final int copy = universe.copy(origin);
@@ -195,7 +195,6 @@ final class UniverseDefaultTest {
          */
         DummyWithAt(final Phi sigma, final String att) {
             super(sigma);
-            this.add("Δ", new AtComposite(sigma, self -> new Data.ToPhi(123L)));
             this.add(att, new AtOnce(new AtComposite(sigma, self -> new Data.ToPhi(1L))));
         }
 

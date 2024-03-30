@@ -142,5 +142,4 @@ public final class PhConst implements Phi {
         }
         return this.bytes.get();
     }
-
 }

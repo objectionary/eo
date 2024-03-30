@@ -98,16 +98,16 @@ public final class Dataized {
             if (this.logger.isLoggable(Level.FINE)
                 && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
             ) {
-//                this.logger.log(
-//                    Level.FINE,
-//                    String.format(
-//                        "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
-//                        String.join("", Collections.nCopies(before, "·")),
-//                        this.phi.locator(),
-//                        this.phi.toString().replaceAll("[\n\t]", ""),
-//                        new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
-//                    )
-//                );
+                this.logger.log(
+                    Level.FINE,
+                    String.format(
+                        "%s\uD835\uDD3B( <%s>%s ) ➜ %s",
+                        String.join("", Collections.nCopies(before, "·")),
+                        this.phi.locator(),
+                        this.phi.toString().replaceAll("[\n\t]", ""),
+                        new PhData(Phi.Φ, data).bytes().replaceAll("[\n\t]", "")
+                    )
+                );
             }
             return data;
         } finally {

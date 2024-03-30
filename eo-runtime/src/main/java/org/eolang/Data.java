@@ -46,7 +46,7 @@ public interface Data {
      * Makes a {@link Phi} out of a primitive Java object, like {@link String} or {@link Integer}.
      *
      * <p>This is more convenient than making {@link EOstring}, then making
-     * {@link EObytes}, fill it up with data and then injecting bytes to string.
+     * {@link EOorg.EOeolang.EObytes}, fill it up with data and then injecting bytes to string.
      * This class is used in Java tests mostly for the sake of brevity.
      * In auto-generated Java code we use
      * {@link EOint}/{@link EOstring} and then wrap it with {@link PhData}.
@@ -134,7 +134,7 @@ public interface Data {
          */
         private static Phi toPhi(final Object obj) {
             final Phi phi;
-            byte[] bytes;
+            final byte[] bytes;
             final boolean delta;
             final Phi eolang = Phi.Φ.take("org").take("eolang");
             if (obj instanceof Boolean) {

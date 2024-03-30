@@ -116,6 +116,13 @@ final class PhPackage implements Phi {
         );
     }
 
+    @Override
+    public byte[] delta() {
+        throw new IllegalStateException(
+            String.format("Can't #data() from package object '%s'", this.pkg)
+        );
+    }
+
     /**
      * Creates eo-package path by name.
      * @param name The name of an en object.
@@ -159,12 +166,5 @@ final class PhPackage implements Phi {
             );
         }
         return res;
-    }
-
-    @Override
-    public byte[] delta() {
-        throw new IllegalStateException(
-            String.format("Can't #data() from package object '%s'", this.pkg)
-        );
     }
 }

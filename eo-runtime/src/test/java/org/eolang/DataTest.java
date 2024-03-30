@@ -47,7 +47,7 @@ final class DataTest {
     void printsEmptyByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[0]).toString(),
-            Matchers.containsString(":-")
+            Matchers.containsString("--")
         );
     }
 

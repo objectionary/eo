@@ -31,6 +31,10 @@ package org.eolang;
  */
 @Versionized
 public interface Term {
+    /**
+     * Empty term.
+     */
+    String EMPTY = "Ø";
 
     /**
      * To φ-calculus term, as text.

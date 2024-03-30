@@ -89,6 +89,12 @@ final class AtRho implements Attr {
 
     @Override
     public String φTerm() {
-        return null;
+        final String term;
+        if (this.rho.get() == null) {
+            term = Term.EMPTY;
+        } else {
+            term = this.rho.get().φTerm();
+        }
+        return term;
     }
 }
