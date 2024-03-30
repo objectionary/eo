@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -37,82 +38,105 @@ class PhOnce implements Phi {
     /**
      * The object fetched.
      */
-    private final Data<Phi> object;
+    private final Supplier<Phi> object;
 
     /**
-     * The expression provider.
+     * As string representation.
      */
-    private final Supplier<String> exp;
+    private final Supplier<String> string;
+
+    /**
+     * As φ term representation.
+     */
+    private final Supplier<String> term;
+
+    /**
+     * Reference.
+     */
+    private final AtomicReference<Phi> ref;
 
     /**
      * Ctor.
      *
-     * @param data The object
-     * @param blank The string value
-     * @param expr The expression
+     * @param obj The object
+     * @param str The "as string" value
+     * @param trm The "as φ term" value
      */
-    PhOnce(final Data<Phi> data, final Supplier<String> blank, final Supplier<String> expr) {
-        this.object = new Data.Once<>(data, blank);
-        this.exp = expr;
+    PhOnce(final Supplier<Phi> obj, final Supplier<String> str, final Supplier<String> trm) {
+        this.ref = new AtomicReference<>(null);
+        this.object = () -> {
+            synchronized (this.ref) {
+                if (this.ref.get() == null) {
+                    this.ref.set(obj.get());
+                }
+                return this.ref.get();
+            }
+        };
+        this.string = str;
+        this.term = trm;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return this.object.take().equals(obj);
+        return this.object.get().equals(obj);
     }
 
     @Override
     public int hashCode() {
-        return this.object.take().hashCode();
+        return this.object.get().hashCode();
     }
 
     @Override
     public final String toString() {
-        return this.object.toString();
+        return this.string.get();
     }
 
     @Override
     public final String φTerm() {
-        return this.exp.get();
+        return this.term.get();
     }
 
     @Override
     public Phi copy() {
-        return this.object.take().copy();
+        return new PhOnce(
+            () -> this.object.get().copy(),
+            () -> String.format("%s'", this.string),
+            this.term
+        );
     }
 
     @Override
     public Phi take(final int pos) {
-        return this.object.take().take(pos);
+        return this.object.get().take(pos);
     }
 
     @Override
     public Phi take(final String name) {
-        return this.object.take().take(name);
+        return this.object.get().take(name);
     }
 
     @Override
     public Phi take(final String name, final Phi rho) {
-        return this.object.take().take(name, rho);
+        return this.object.get().take(name, rho);
     }
 
     @Override
     public void put(final int pos, final Phi obj) {
-        this.object.take().put(pos, obj);
+        this.object.get().put(pos, obj);
     }
 
     @Override
     public void put(final String name, final Phi obj) {
-        this.object.take().put(name, obj);
+        this.object.get().put(name, obj);
     }
 
     @Override
     public String locator() {
-        return this.object.take().locator();
+        return this.object.get().locator();
     }
 
     @Override
     public String forma() {
-        return this.object.take().forma();
+        return this.object.get().forma();
     }
 }
