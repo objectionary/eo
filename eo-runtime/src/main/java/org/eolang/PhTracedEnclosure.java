@@ -100,14 +100,14 @@ public final class PhTracedEnclosure implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return new PhTracedEnclosure.TracingWhileGetting(
+        return new PhTracedEnclosure.TracingWhileGetting<>(
             () -> this.enclosure.take(name)
         ).get();
     }
 
     @Override
     public Phi take(final String name, final Phi rho) {
-        return new PhTracedEnclosure.TracingWhileGetting(
+        return new PhTracedEnclosure.TracingWhileGetting<>(
             () -> this.enclosure.take(name, rho)
         ).get();
     }
@@ -149,7 +149,7 @@ public final class PhTracedEnclosure implements Phi {
 
     @Override
     public byte[] delta() {
-        return this.enclosure.delta();
+        return new TracingWhileGetting<>(this.enclosure::delta).get();
     }
 
     /**
@@ -157,25 +157,25 @@ public final class PhTracedEnclosure implements Phi {
      * NOT thread-safe.
      * @since 0.36
      */
-    private final class TracingWhileGetting implements Supplier<Phi> {
+    private final class TracingWhileGetting<T> implements Supplier<T> {
 
         /**
          * Supplies the {@link Phi}.
          */
-        private final Supplier<Phi> attr;
+        private final Supplier<T> attr;
 
         /**
          * Ctor.
          * @param attr Supplier of the {@link Phi}.
          */
-        private TracingWhileGetting(final Supplier<Phi> attr) {
+        private TracingWhileGetting(final Supplier<T> attr) {
             this.attr = attr;
         }
 
         @Override
-        public Phi get() {
+        public T get() {
             final Integer incremented = this.incrementCageCounter();
-            final Phi ret = this.attr.get();
+            final T ret = this.attr.get();
             this.decrementCageCounter(incremented);
             return ret;
         }
