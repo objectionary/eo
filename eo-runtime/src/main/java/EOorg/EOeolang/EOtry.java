@@ -79,11 +79,14 @@ public final class EOtry extends PhDefault implements Atom {
         private final Phi ctch;
 
         /**
-         * Finally object
+         * Finally object.
          */
         private final Phi last;
 
-        private final Consumer<Consumer<Phi>> put;
+        /**
+         * Put function.
+         */
+        private final Consumer<Consumer<Phi>> func;
 
         /**
          * Ctor.
@@ -95,7 +98,7 @@ public final class EOtry extends PhDefault implements Atom {
             this.body = body;
             this.ctch = ctch;
             this.last = last;
-            this.put = new TryExecute(body, ctch);
+            this.func = new TryExecute(body, ctch);
         }
 
         @Override
@@ -126,12 +129,12 @@ public final class EOtry extends PhDefault implements Atom {
 
         @Override
         public void put(final int pos, final Phi object) {
-            this.put.accept(phi -> phi.put(pos, object));
+            this.func.accept(phi -> phi.put(pos, object));
         }
 
         @Override
         public void put(final String name, final Phi object) {
-            this.put.accept(phi -> phi.put(name, object));
+            this.func.accept(phi -> phi.put(name, object));
         }
 
         @Override
@@ -182,7 +185,7 @@ public final class EOtry extends PhDefault implements Atom {
         }
 
         @Override
-        public void accept(Consumer<Phi> func) {
+        public void accept(final Consumer<Phi> func) {
             try {
                 func.accept(this.body);
             } catch (final EOerror.ExError ex) {
@@ -194,8 +197,9 @@ public final class EOtry extends PhDefault implements Atom {
     }
 
     /**
-     * Tries to return value from given function and catches {@link EOorg.EOeolang.EOerror.ExError}
+     * Tries to return value from given function and catches {@link EOorg.EOeolang.EOerror.ExError}.
      * @param <T> Type of return value.
+     * @since 0.36.0
      */
     private static class TryReturn<T> implements Function<Function<Phi, T>, T> {
         /**
@@ -209,7 +213,7 @@ public final class EOtry extends PhDefault implements Atom {
         private final Phi ctch;
 
         /**
-         * Finally object
+         * Finally object.
          */
         private final Phi last;
 
@@ -226,7 +230,7 @@ public final class EOtry extends PhDefault implements Atom {
         }
 
         @Override
-        public T apply(Function<Phi, T> func) {
+        public T apply(final Function<Phi, T> func) {
             T result;
             try {
                 result = func.apply(this.body);

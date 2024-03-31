@@ -147,7 +147,7 @@ public final class EOtryTest {
         /**
          * Counter.
          */
-        public int count = 0;
+        private int count;
 
         /**
          * Ctor.
@@ -159,7 +159,7 @@ public final class EOtryTest {
                 new AtComposite(
                     this,
                     rho -> {
-                        this.count++;
+                        ++this.count;
                         return new Data.ToPhi(1L);
                     }
                 )
