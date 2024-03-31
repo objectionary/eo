@@ -105,7 +105,7 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void put(final int vertex, final byte[] bytes) {
-        this.get(vertex).put(Attr.DELTA, new Data.Value<>(bytes));
+        this.indexed.put(vertex, new PhData(this.get(vertex), bytes));
     }
 
     @Override
@@ -122,10 +122,7 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public byte[] dataize(final int vertex) {
-        return new Param(
-            this.get(vertex),
-            "Δ"
-        ).asBytes().take();
+        return this.get(vertex).delta();
     }
 
     /**

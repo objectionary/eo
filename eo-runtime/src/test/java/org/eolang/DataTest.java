@@ -35,19 +35,6 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 final class DataTest {
-
-    @Test
-    void makesString() {
-        final Phi delta = new Data.ToPhi("Hello,\nдруг!").take(Attr.DELTA);
-        MatcherAssert.assertThat(
-            new String(
-                (byte[]) ((Data.Value<?>) delta).take(),
-                StandardCharsets.UTF_8
-            ),
-            Matchers.hasToString("Hello,\nдруг!")
-        );
-    }
-
     @Test
     void printsByteArray() {
         MatcherAssert.assertThat(
@@ -60,7 +47,7 @@ final class DataTest {
     void printsEmptyByteArray() {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[0]).toString(),
-            Matchers.containsString(":-")
+            Matchers.containsString("--")
         );
     }
 
@@ -123,84 +110,6 @@ final class DataTest {
         MatcherAssert.assertThat(
             new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f}),
             Matchers.not(Matchers.equalTo(new Data.ToPhi(new byte[] {(byte) 0x00, (byte) 0x1f})))
-        );
-    }
-
-    @Test
-    void comparesTwoSimpleValues() {
-        MatcherAssert.assertThat(
-            new Data.Value<>(1L),
-            Matchers.equalTo(new Data.Value<>(1L))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(1L),
-            Matchers.not(Matchers.equalTo(new Data.Value<>(5L)))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>("Hello!"),
-            Matchers.equalTo(new Data.Value<>("Hello!"))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>("Hello 1"),
-            Matchers.not(Matchers.equalTo(new Data.Value<>("Hello 2")))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(3.14d),
-            Matchers.equalTo(new Data.Value<>(3.14d))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(3.14d),
-            Matchers.not(Matchers.equalTo(new Data.Value<>(1.0d)))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>("\n"),
-            Matchers.equalTo(new Data.Value<>("\n"))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>("\t"),
-            Matchers.not(Matchers.equalTo(new Data.Value<>("a")))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(Pattern.compile("abc")),
-            Matchers.equalTo(new Data.Value<>(Pattern.compile("abc")))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(Pattern.compile("cc")),
-            Matchers.not(Matchers.equalTo(new Data.Value<>(Pattern.compile("zz"))))
-        );
-    }
-
-    @Test
-    void comparesTwoByteArrays() {
-        MatcherAssert.assertThat(
-            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}))
-        );
-        MatcherAssert.assertThat(
-            new Data.Value<>(new byte[] {(byte) 0x00, (byte) 0x1f}),
-            Matchers.not(Matchers.equalTo(new Data.Value<>(new byte[] {(byte) 0xf0})))
-        );
-    }
-
-    @Test
-    void comparesTwoPhiArrays() {
-        MatcherAssert.assertThat(
-            new Data.Value<>(
-                new Phi[] {
-                    new Data.ToPhi("foo"),
-                    new Data.ToPhi(1L),
-                }
-            ),
-            Matchers.not(
-                Matchers.equalTo(
-                    new Data.Value<>(
-                        new Phi[] {
-                            new Data.ToPhi("foo"),
-                            new Data.ToPhi(1L),
-                        }
-                    )
-                )
-            )
         );
     }
 }

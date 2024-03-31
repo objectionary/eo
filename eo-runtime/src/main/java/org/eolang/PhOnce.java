@@ -106,11 +106,6 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.object.get().take(pos);
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.object.get().take(name);
     }
@@ -138,5 +133,10 @@ class PhOnce implements Phi {
     @Override
     public String forma() {
         return this.object.get().forma();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.object.get().delta();
     }
 }
