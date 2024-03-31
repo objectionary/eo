@@ -27,9 +27,6 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable the test calculates-fibonacci-number-with-recursion. The test was
-#  disabled because for some reason it executes endlessly. Need to find what's wrong and enable the
-#  test.
 [] > int-less-true
   lt. > @
     10
@@ -206,10 +203,9 @@
       plus.
         fibo (n.minus 1)
         fibo (n.minus 2)
-  eq. > res
+  eq. > @
     fibo 4
     3
-  TRUE > @
 
 # Test.
 [] > calculates-fibonacci-number-with-tail
