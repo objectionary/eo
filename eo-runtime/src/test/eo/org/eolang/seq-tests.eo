@@ -27,53 +27,105 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable the tests. The tests are disabled because 1) most probably "EOseq"
-#  dataizes its "body" many times while executing "lambda()" function in PhDefault.java,
-#  2) implementation of "memory" is wrong at the moment. Need to find out what's going on and
-#  enable the tests.
-[] > seq-tests
-  TRUE > @
-  # Test.
-  [] > seq-single-dataization-float-less-than-test
-    memory 0.0 > counter
-    lt. > @
-      seq
+# The test may look counter intuitively but this is what's going on here:
+# every time when we try to `#take()` attribute from `seq` it goes to its `#lambda()`
+# and tries to `#take()` the attribute from returned object.
+# This happens 4 times: `seq.lt` here, `seq.minus` inside `float.lt`,
+# `seq.plus` inside `float.minus`, `plus.^` inside `float.plus`. It works like that because
+# when we #take() `lt` for the first time, its `^` set to `seq`. So when `^.minus` inside `float.lt`
+# is called - it's the same as `seq.minus`. And so on with all other left attributes.
+# If you don't want to go to `#lambda()` of `seq` every time when you `#take()` the attribute from
+# it - just cache it with `!` and wrap with `float`:
+# ```
+# float > num
+#   seq (* ...) > cached!
+# ```
+# The same story with all other tests in this file. The only difference is in the amount of
+# attribute retrievals.
+[] > seq-four-dataizations-float-less
+  memory.alloc 0.0 > counter
+  lt. > @
+    seq
+      *
+        counter.write
+          counter.as-float.plus 1.0
+        counter.as-float
+    5.0
+
+# Test.
+[] > cached-seq-single-dataization-float-less
+  memory.alloc 0.0 > counter
+  lt. > @
+    float
+      seq > cached!
         *
-          counter.write
-            counter.as-float.plus 1.0
+          counter.write (counter.as-float.plus 1.0)
           counter.as-float
-      2.0
+    1.1
 
-  # Test.
-  [] > seq-single-dataization-float-greater-than-test
-    memory 0.0 > counter
-    not. > @
-      gt.
-        seq
-          *
-            counter.write
-              counter.as-float.plus 1.0
-            counter.as-float
-        1.1
+# Test.
+[] > seq-two-dataizations-float-greater
+  memory.alloc 0.0 > counter
+  gt. > @
+    seq
+      *
+        counter.write
+          counter.as-float.plus 1.0
+        counter.as-float
+    1.9
 
-  # Test.
-  [] > seq-single-dataization-int-less-than-test
-    memory 0 > counter
-    lt. > @
-      seq
+# Test.
+[] > cached-seq-single-dataization-float-greater
+  memory.alloc 0.0 > counter
+  gt. > @
+    float
+      seq > cached!
+        *
+          counter.write (counter.as-float.plus 1.0)
+          counter.as-float
+    0.9
+
+# Test.
+[] > seq-four-dataizations-int-less
+  memory.alloc 0 > counter
+  lt. > @
+    seq
+      *
+        counter.write
+          counter.as-int.plus 1
+        counter.as-int
+    5
+
+# Test.
+[] > cached-seq-single-dataization-int-less
+  memory.alloc 0 > counter
+  lt. > @
+    int
+      seq > cached!
+        *
+          counter.write (counter.as-int.plus 1)
+          counter.as-int
+    2
+
+# Test.
+[] > seq-four-dataizations-int-less-or-equal
+  memory.alloc 0 > counter
+  lte. > @
+    seq
+      *
+        counter.write
+          counter.as-int.plus 1
+        counter.as-int
+    4
+
+# Test.
+[] > cached-seq-single-dataization-int-less-or-equal
+  memory.alloc 0 > counter
+  lte. > @
+    int
+      seq > cached!
         *
           counter.write
             counter.as-int.plus 1
           counter.as-int
-      2
-
-  # Test.
-  [] > seq-single-dataization-int-greater-than-test
-    memory 0 > counter
-    lte. > @
-      seq
-        *
-          counter.write
-            counter.as-int.plus 1
-          counter.as-int
-      1
+    1
