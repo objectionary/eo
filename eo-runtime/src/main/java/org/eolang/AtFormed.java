@@ -24,7 +24,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
