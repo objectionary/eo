@@ -51,10 +51,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test case for {@link EOstdout}.
  * @since 0.1
- * @todo #2931:30min Enable the tests {@link EOstdoutTest#doesNotPrintTwiceOnIntComparisonMethods}
- *  and {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
- *  The tests were disabled after new rho logic was introduced working properly. Need to enable
- *  the tests when it's possible.
  */
 public final class EOstdoutTest {
     @Test
@@ -91,7 +87,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest
     @CsvSource({"lt", "gt", "lte", "gte", "eq"})
-    @Disabled
     public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
@@ -117,7 +112,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    @Disabled
     public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";

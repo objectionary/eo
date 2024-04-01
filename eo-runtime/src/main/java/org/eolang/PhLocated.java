@@ -109,11 +109,6 @@ public final class PhLocated implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.origin.take(pos);
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.origin.take(name);
     }
@@ -141,5 +136,10 @@ public final class PhLocated implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.origin.delta();
     }
 }

@@ -74,17 +74,6 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        try {
-            return this.origin.take(pos);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
-    }
-
-    @Override
     public Phi take(final String name) {
         try {
             return this.origin.take(name);
@@ -136,5 +125,10 @@ public final class PhSafe implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.origin.delta();
     }
 }

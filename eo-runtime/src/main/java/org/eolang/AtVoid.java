@@ -68,7 +68,7 @@ public final class AtVoid implements Attr {
     public String toString() {
         final String term;
         if (this.object.get() == null) {
-            term = String.format("%s -> Ø", this.name);
+            term = Term.EMPTY;
         } else {
             term = String.format("%sV", this.object.get().toString());
         }
@@ -79,7 +79,7 @@ public final class AtVoid implements Attr {
     public String φTerm() {
         final String term;
         if (this.object.get() == null) {
-            term = String.format("%s -> Ø", this.name);
+            term = Term.EMPTY;
         } else {
             term = this.object.get().φTerm();
         }

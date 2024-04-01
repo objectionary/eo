@@ -81,7 +81,7 @@ final class PhWithTest {
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).toString(),
-            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=D.*")
+            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOint.*")
         );
     }
 
@@ -112,7 +112,7 @@ final class PhWithTest {
         MatcherAssert.assertThat(
             dummy.forma(),
             Matchers.equalTo(
-                new PhWith(dummy, "x", new Data.Value<>(5L)).forma()
+                new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()
             )
         );
     }

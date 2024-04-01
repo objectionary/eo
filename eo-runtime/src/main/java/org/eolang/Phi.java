@@ -36,7 +36,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term {
+public interface Phi extends Term, Data {
 
     /**
      * The global scope object, which owns all other objects.
@@ -76,13 +76,6 @@ public interface Phi extends Term {
         }
 
         @Override
-        public Phi take(final int pos) {
-            throw new ExFailure(
-                String.format("Can't #take(%d) from Φ", pos)
-            );
-        }
-
-        @Override
         public Phi take(final String name) {
             return this.pkg.take(name);
         }
@@ -115,6 +108,13 @@ public interface Phi extends Term {
         public String forma() {
             return this.pkg.forma();
         }
+
+        @Override
+        public byte[] delta() {
+            throw new IllegalStateException(
+                "Can't #data() from Ф"
+            );
+        }
     };
 
     /**
@@ -123,13 +123,6 @@ public interface Phi extends Term {
      * @return A copy
      */
     Phi copy();
-
-    /**
-     * Take object by position of the attribute.
-     * @param pos The position of the attribute
-     * @return The object
-     */
-    Phi take(int pos);
 
     /**
      * Take object by name of the attribute.

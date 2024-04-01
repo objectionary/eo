@@ -1,0 +1,22 @@
+xsls:
+  - /org/eolang/parser/add-default-package.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //java[contains(text(), '  @Test')]
+  - //java[contains(text(), '  public void works() throws java.lang.Exception {')]
+  - //java[contains(text(), '    Boolean obj = new Dataized(new EOcompares_two_bools()).take(Boolean.class);')]
+  - //java[contains(text(), '    Assertions.assertTrue(obj);')]
+  - //java[contains(text(), '  }')]
+eo: |
+  +tests
+  +version 0.0.0
+
+  # Test.
+  [] > compares-two-bools
+  eq. > @
+    TRUE
+    TRUE

@@ -27,9 +27,6 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable the test switch-with-all-false-cases. For some reason it fails with
-#  "Given index is out of tuple bounds". It seems comparison inside "switch" does not work properly
-#  Need to find out what's going on and enable the test.
 [] > switch-simple-case
   eq. > @
     switch
@@ -77,17 +74,14 @@
 
 # Test.
 [] > switch-with-all-false-cases
-  eq. > res
-    switch
+  switch > @
+    *
       *
-        *
-          FALSE
-          "FALSE1"
-        *
-          FALSE
-          "FALSE2"
-    TRUE
-  TRUE > @
+        FALSE
+        "FALSE1"
+      *
+        FALSE
+        "FALSE2"
 
 # Test.
 [] > switch-case-with-error

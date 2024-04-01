@@ -71,7 +71,7 @@ public final class AtOnce implements Attr {
         final String txt;
         final Phi phi = this.cached.get();
         if (phi == null) {
-            txt = "λ";
+            txt = "Lazy";
         } else {
             txt = phi.φTerm();
         }

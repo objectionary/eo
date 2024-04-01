@@ -92,11 +92,6 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.primitive().take(pos);
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.primitive().take(name);
     }
@@ -124,6 +119,11 @@ public final class PhConst implements Phi {
     @Override
     public String forma() {
         return this.wrapped.forma();
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.primitive().delta();
     }
 
     /**

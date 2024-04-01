@@ -22,41 +22,44 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
+package org.eolang;
 
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhWith;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOas_phi}.
- *
- * @since 0.22
- * @checkstyle TypeNameCheck (4 lines)
+ * Test case for {@link PhData}.
+ * @since 0.36.0
  */
-final class EOas_phiTest {
+public class PhDataTest {
 
     @Test
-    void printsAndReturns() {
+    void injectsDeltaIntoTerm() {
         MatcherAssert.assertThat(
-            new Dataized(
-                new PhWith(
-                    new EOas_phi(Phi.Φ),
-                    0, new Data.ToPhi(1L)
-                )
-            ).take(String.class),
-            Matchers.allOf(
-                Matchers.containsString("·int⟦"),
-                Matchers.containsString("·bytes⟦")
-            )
+            new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
+            Matchers.containsString("Δ ↦ 01-02-03,")
         );
     }
 
+    @Test
+    void returnsData() {
+        final byte[] data = new byte[] {0x2A, 0x3B};
+        MatcherAssert.assertThat(
+            new Data.ToPhi(data).delta(),
+            Matchers.equalTo(data)
+        );
+    }
+
+    @Test
+    void usesSelfAsRhoOfChildAttribute() {
+        final Phi bytes = new PhData(
+            Phi.Φ.take("org.eolang.bytes").copy(),
+            new byte[] {0x01}
+        );
+        MatcherAssert.assertThat(
+            bytes.take("as-int").take(Attr.RHO),
+            Matchers.equalTo(bytes)
+        );
+    }
 }

@@ -207,10 +207,6 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
     <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$type='org.eolang.bytes'">
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtVoid("Δ"));</xsl:text>
-    </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -559,11 +555,11 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhData(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, </xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->
@@ -597,19 +593,11 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Object obj = new Dataized(new </xsl:text>
+    <xsl:text>Boolean obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>()).take(Boolean.class);</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>if (obj instanceof String) {</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>  Assertions.fail(obj.toString());</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>} else {</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>  Assertions.assertTrue((Boolean) obj);</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>}</xsl:text>
+    <xsl:text>Assertions.assertTrue(obj);</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">

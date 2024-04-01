@@ -36,12 +36,6 @@ import EOorg.EOeolang.EOcage;
  */
 @Versionized
 public final class AtCage implements Attr {
-
-    /**
-     * The term to show when empty.
-     */
-    private static final String EMPTY_TERM = "Ø";
-
     /**
      * The object.
      */
@@ -93,7 +87,7 @@ public final class AtCage implements Attr {
     public String φTerm() {
         final String txt;
         if (this.object == null) {
-            txt = AtCage.EMPTY_TERM;
+            txt = Term.EMPTY;
         } else {
             txt = this.object.φTerm();
         }

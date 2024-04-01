@@ -35,7 +35,7 @@ import EOorg.EOeolang.EObytes;
  * @since 1.0
  */
 @Versionized
-public interface Bytes extends Data<byte[]> {
+public interface Bytes {
     /**
      * NOT operation.
      * @return Bytes.
@@ -92,4 +92,10 @@ public interface Bytes extends Data<byte[]> {
      * @param <T> Numeric type.
      */
     <T extends Number> T asNumber(Class<T> type);
+
+    /**
+     * Get bytes itself.
+     * @return Bytes.
+     */
+    byte[] take();
 }

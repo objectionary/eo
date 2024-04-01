@@ -27,10 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -61,11 +59,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Attribute name matcher.
      */
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
-
-    /**
-     * Terms being processed now.
-     */
-    private static final ThreadLocal<Set<Integer>> TERMS = new ThreadLocal<>();
 
     /**
      * Attributes nesting level.
@@ -136,34 +129,28 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (null == PhDefault.TERMS.get()) {
-            PhDefault.TERMS.set(new HashSet<>());
+        final List<String> list = new ArrayList<>(this.attrs.size());
+        final String format = "%s ↦ %s";
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
+            e -> !Arrays.asList(Attr.RHO, Attr.SIGMA, Attr.VERTEX).contains(e.getKey())
+        ).collect(Collectors.toList())) {
+            final String attr = String.format(
+                format,
+                ent.getKey(),
+                ent.getValue().φTerm()
+            );
+            list.add(attr);
         }
-        String txt;
-        if (PhDefault.TERMS.get().contains(this.vertex)) {
-            txt = String.format("ν%d", this.vertex);
-        } else {
-            PhDefault.TERMS.get().add(this.vertex);
-            final List<String> list = new ArrayList<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-                e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
-            ).collect(Collectors.toList())) {
-                final String attr = String.format(
-                    "%s ↦ %s",
-                    ent.getKey(),
-                    ent.getValue().φTerm()
-                );
-                list.add(attr);
-            }
-            PhDefault.TERMS.get().remove(this.vertex);
-            Collections.sort(list);
-            txt = this.oname();
-            if (!list.isEmpty()) {
-                txt = String.format(
-                    "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
-                    new Indented(String.join(",\n", list))
-                );
-            }
+        if (this instanceof Atom) {
+            list.add(String.format(format, Attr.LAMBDA, "Lambda"));
+        }
+        Collections.sort(list);
+        String txt = this.oname();
+        if (!list.isEmpty()) {
+            txt = String.format(
+                "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
+                new Indented(String.join(",\n", list))
+            );
         }
         return txt;
     }
@@ -220,11 +207,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public Phi take(final int pos) {
-        return this.take(this.attr(pos));
-    }
-
-    @Override
     public Phi take(final String name) {
         return this.take(name, this);
     }
@@ -244,17 +226,19 @@ public abstract class PhDefault implements Phi, Cloneable {
                     name
                 )
             ).get();
-        } else if (this instanceof Atom) {
-            object = new AtSetRho(
-                new AtSafe(
-                    this.named(
+        } else if (name.equals(Attr.LAMBDA)) {
+            object = new AtSafe(
+                this.named(
+                    new AtSetRho(
                         new AtFormed(() -> new AtomSafe((Atom) this).lambda()),
-                        Attr.LAMBDA
-                    )
-                ),
-                rho,
-                Attr.LAMBDA
-            ).get().take(name, rho);
+                        rho,
+                        name
+                    ),
+                    name
+                )
+            ).get();
+        } else if (this instanceof Atom) {
+            object = this.take(Attr.LAMBDA, rho).take(name, rho);
         } else if (this.attrs.containsKey(Attr.PHI)) {
             object = this.take(Attr.PHI, rho).take(name, rho);
         } else {
@@ -289,6 +273,21 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
+    public byte[] delta() {
+        final byte[] data;
+        if (this instanceof Atom) {
+            data = this.take(Attr.LAMBDA).delta();
+        } else if (this.attrs.containsKey(Attr.PHI)) {
+            data = this.take(Attr.PHI).delta();
+        } else {
+            throw new ExFailure(
+                "There's no data in the object, can't take it"
+            );
+        }
+        return data;
+    }
+
+    @Override
     public String locator() {
         return "?";
     }
@@ -304,7 +303,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * memory leaks.
      */
     public static void cleanUp() {
-        PhDefault.TERMS.remove();
         PhDefault.NESTING.remove();
     }
 

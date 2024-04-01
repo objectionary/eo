@@ -39,6 +39,7 @@ import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.PhWrite;
 import org.eolang.Phi;
+import org.eolang.Term;
 import org.eolang.XmirObject;
 
 /**
@@ -78,11 +79,6 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
      * @since 0.36.0
      */
     private static class AtMalloc implements Attr {
-        /**
-         * The term to show when empty.
-         */
-        public static final String EMPTY_TERM = "Ø";
-
         /**
          * Object in memory.
          */
@@ -149,7 +145,7 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
         public String φTerm() {
             final String txt;
             if (this.locator == null || !EOmemory$EOalloc.MEMORY.containsKey(this.locator)) {
-                txt = EOmemory$EOalloc.AtMalloc.EMPTY_TERM;
+                txt = Term.EMPTY;
             } else {
                 txt = EOmemory$EOalloc.MEMORY.get(this.locator).φTerm();
             }
@@ -160,7 +156,7 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
         public String toString() {
             final String txt;
             if (this.locator == null || !EOmemory$EOalloc.MEMORY.containsKey(this.locator)) {
-                txt = EOmemory$EOalloc.AtMalloc.EMPTY_TERM;
+                txt = Term.EMPTY;
             } else {
                 txt = EOmemory$EOalloc.MEMORY.get(this.locator).toString();
             }

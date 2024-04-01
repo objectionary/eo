@@ -29,6 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
 import org.eolang.AtVoid;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
@@ -124,17 +125,59 @@ public final class EOtryTest {
         );
     }
 
+    @Test
+    public void doesNotDataizeBodyTwice() {
+        final Phi trier = new EOtry(Phi.Φ);
+        final MainWithCounter main = new MainWithCounter();
+        trier.put(0, main);
+        trier.put(1, new Catcher(Phi.Φ));
+        trier.put(2, new EOnop(Phi.Φ));
+        new Dataized(trier).take();
+        MatcherAssert.assertThat(
+            main.count,
+            Matchers.equalTo(1)
+        );
+    }
+
+    /**
+     * Body object with counter.
+     * @since 0.36.0
+     */
+    private static class MainWithCounter extends PhDefault {
+        /**
+         * Counter.
+         */
+        private int count;
+
+        /**
+         * Ctor.
+         */
+        MainWithCounter() {
+            super(Phi.Φ);
+            this.add(
+                Attr.PHI,
+                new AtComposite(
+                    this,
+                    rho -> {
+                        ++this.count;
+                        return new Data.ToPhi(1L);
+                    }
+                )
+            );
+        }
+    }
+
     /**
      * Main.
      * @since 1.0
      */
-    public static class Main extends PhDefault {
+    private static class Main extends PhDefault {
 
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Main(final Phi sigma) {
+        Main(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -152,12 +195,12 @@ public final class EOtryTest {
      * Broken.
      * @since 1.0
      */
-    public static class Broken extends PhDefault {
+    private static class Broken extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma.
          */
-        public Broken(final Phi sigma) {
+        Broken(final Phi sigma) {
             super(sigma);
             this.add(
                 "φ",
@@ -175,12 +218,12 @@ public final class EOtryTest {
      * Catcher.
      * @since 1.0
      */
-    public static class Catcher extends PhDefault {
+    private static class Catcher extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma
          */
-        public Catcher(final Phi sigma) {
+        Catcher(final Phi sigma) {
             super(sigma);
             this.add("ex", new AtVoid("ex"));
             this.add(
