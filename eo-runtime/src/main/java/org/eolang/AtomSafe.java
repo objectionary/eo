@@ -23,8 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
-
 /**
  * Atom that catches exceptions.
  * @since 0.36.0
