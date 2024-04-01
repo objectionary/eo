@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -69,6 +70,8 @@ public final class AtFormed implements Attr {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
+        } catch (final ExAbstract ex) {
+            throw ex;
             // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;

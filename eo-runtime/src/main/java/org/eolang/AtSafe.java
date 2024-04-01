@@ -75,18 +75,13 @@ final class AtSafe implements Attr {
 
     @Override
     public Phi get() {
-        Phi phi;
         try {
-            phi = this.origin.get();
+            return new PhSafe(this.origin.get());
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
             );
         }
-        if (!(phi instanceof Data)) {
-            phi = new PhSafe(phi);
-        }
-        return phi;
     }
 
     @Override

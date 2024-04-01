@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+
 /**
  * Atom that catches exceptions.
  * @since 0.36.0
@@ -48,7 +50,11 @@ public final class AtomSafe implements Atom {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
+        } catch (final ExAbstract ex) {
+            throw ex;
             // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format(

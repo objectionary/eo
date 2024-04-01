@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+
 /**
  * Attribute that constructs object lazily.
  * The attribute depends on context (argument of lambda expression).
@@ -75,6 +77,8 @@ public final class AtComposite implements Attr {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new ExInterrupted();
+        } catch (final ExAbstract ex) {
+            throw ex;
             // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
