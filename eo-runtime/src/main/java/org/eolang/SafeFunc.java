@@ -69,5 +69,4 @@ class SafeFunc<T> implements Supplier<T> {
             );
         }
     }
-
 }
