@@ -24,8 +24,8 @@
 
 package org.eolang;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
  * Attribute that constructs object lazily.
@@ -43,15 +43,17 @@ public final class AtFormed implements Attr {
     /**
      * Callback to retrieve object.
      */
-    private final Callable<Phi> callback;
+    private final Supplier<Phi> callback;
 
     /**
      * Ctor.
      * @param func Callback to retrieve object.
      */
-    public AtFormed(final Callable<Phi> func) {
-        this.callback = func;
+    public AtFormed(final Supplier<Phi> func) {
         this.object = new AtomicReference<>(null);
+        this.callback = new SafeFunc<>(
+            () -> this.object.updateAndGet(prev -> func.get())
+        );
     }
 
     @Override
@@ -61,29 +63,10 @@ public final class AtFormed implements Attr {
 
     @Override
     public Phi get() {
-        try {
-            if (this.object.get() == null) {
-                this.object.set(this.callback.call());
-            }
-            return this.object.get();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-        } catch (final ExAbstract ex) {
-            throw ex;
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
-            throw new ExFailure(
-                String.format(
-                    "Unexpected error '%s' of type %s",
-                    ex.getMessage(),
-                    ex.getClass().getSimpleName()
-                ),
-                ex
-            );
+        if (this.object.get() == null) {
+            this.callback.get();
         }
+        return this.object.get();
     }
 
     @Override

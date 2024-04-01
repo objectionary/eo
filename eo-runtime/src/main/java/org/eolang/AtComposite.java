@@ -24,7 +24,7 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
+import java.util.function.Supplier;
 
 /**
  * Attribute that constructs object lazily.
@@ -34,11 +34,10 @@ import EOorg.EOeolang.EOerror;
  */
 @Versionized
 public final class AtComposite implements Attr {
-
     /**
-     * The \rho to send to the expression.
+     * Function that returns object.
      */
-    private final Phi rho;
+    private final Supplier<Phi> func;
 
     /**
      * The expression itself.
@@ -51,8 +50,10 @@ public final class AtComposite implements Attr {
      * @param exp The expression
      */
     public AtComposite(final Phi obj, final Expr exp) {
-        this.rho = obj;
         this.expr = exp;
+        this.func = new SafeFunc<>(
+            () -> this.expr.get(obj)
+        );
     }
 
     @Override
@@ -72,26 +73,7 @@ public final class AtComposite implements Attr {
 
     @Override
     public Phi get() {
-        try {
-            return this.expr.get(this.rho);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-        } catch (final ExAbstract ex) {
-            throw ex;
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
-            throw new ExFailure(
-                String.format(
-                    "Unexpected error '%s' of type %s",
-                    ex.getMessage(),
-                    ex.getClass().getSimpleName()
-                ),
-                ex
-            );
-        }
+        return this.func.get();
     }
 
     @Override
