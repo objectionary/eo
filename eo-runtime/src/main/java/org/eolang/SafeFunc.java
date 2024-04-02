@@ -21,30 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package org.eolang;
 
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 /**
- * Atom that catches exceptions.
+ * Function that catches all kind of exceptions in one place.
+ * @param <T> Type of return value.
  * @since 0.36.0
  */
-public final class AtomSafe implements Atom {
+class SafeFunc<T> implements Supplier<T> {
     /**
-     * Function that returns object.
+     * Original supplier.
      */
-    private final Supplier<Phi> func;
+    private final Callable<T> origin;
 
     /**
      * Ctor.
-     * @param atom Original atom.
+     * @param func Original function
      */
-    public AtomSafe(final Atom atom) {
-        this.func = new SafeFunc<>(atom::lambda);
+    SafeFunc(final Callable<T> func) {
+        this.origin = func;
     }
 
     @Override
-    public Phi lambda() {
-        return this.func.get();
+    public T get() {
+        try {
+            return this.origin.call();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted();
+        } catch (final ExAbstract ex) {
+            throw ex;
+            // @checkstyle IllegalCatchCheck (3 line)
+        } catch (final RuntimeException ex) {
+            throw ex;
+        } catch (final Throwable ex) {
+            throw new ExFailure(
+                String.format(
+                    "Unexpected error '%s' of type %s",
+                    ex.getMessage(),
+                    ex.getClass().getSimpleName()
+                ),
+                ex
+            );
+        }
     }
 }

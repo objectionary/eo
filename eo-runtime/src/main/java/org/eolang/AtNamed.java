@@ -88,18 +88,13 @@ final class AtNamed implements Attr {
 
     @Override
     public Phi get() {
-        Phi obj;
         try {
-            obj = this.origin.get();
+            return new PhNamed(this.origin.get(), this.oname);
         } catch (final ExUnset ex) {
             throw new ExUnset(this.label(), ex);
         } catch (final ExFailure ex) {
             throw new ExFailure(this.label(), ex);
         }
-        if (!(obj instanceof Data)) {
-            obj = new PhNamed(obj, this.oname);
-        }
-        return obj;
     }
 
     @Override
@@ -120,5 +115,4 @@ final class AtNamed implements Attr {
     private String label() {
         return String.format("Error at \"%s\" attribute", this.name);
     }
-
 }
