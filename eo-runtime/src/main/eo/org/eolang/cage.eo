@@ -30,4 +30,5 @@
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
 [] > cage
-  [object] > alloc /?
+  # Make new `cage` for an object.
+  [object] > new /?

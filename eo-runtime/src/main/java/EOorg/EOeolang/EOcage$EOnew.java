@@ -29,14 +29,17 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
+import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedLocator;
 import org.eolang.PhWrite;
 import org.eolang.Phi;
+import org.eolang.Term;
 import org.eolang.XmirObject;
 
 /**
@@ -44,26 +47,32 @@ import org.eolang.XmirObject;
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "cage.alloc")
-public final class EOcage$EOalloc extends PhDefault implements Atom {
+@XmirObject(oname = "cage.new")
+public final class EOcage$EOnew extends PhDefault implements Atom {
     /**
      * Locator calculator.
      */
-    private static final AtomicLong LOCATOR = new AtomicLong(0L);
+    private static final AtomicInteger LOCATOR = new AtomicInteger(0);
 
     /**
-     * Objects storage.
+     * Cage for objects.
      */
-    private static final ConcurrentHashMap<Long, Phi> OBJECTS = new ConcurrentHashMap<>(0);
+    private static final ConcurrentHashMap<Integer, Phi> CAGES = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOcage$EOalloc(final Phi sigma) {
+    EOcage$EOnew(final Phi sigma) {
         super(sigma);
-        this.add("object", new EOcage$EOalloc.AtEncaged());
-        this.add("write", new AtSimple(new PhWrite(this, "object")));
+        this.add("object", new EOcage$EOnew.AtEncaged());
+        this.add("encage", new AtSimple(
+            new PhWrite(
+                this,
+                "object",
+                rho -> new Data.ToPhi(true)
+            )
+        ));
     }
 
     @Override
@@ -77,14 +86,9 @@ public final class EOcage$EOalloc extends PhDefault implements Atom {
      */
     private static class AtEncaged implements Attr {
         /**
-         * The term to show when empty.
+         * Locator of encaged object.
          */
-        public static final String EMPTY_TERM = "Ø";
-
-        /**
-         * Object in storage.
-         */
-        private Long locator;
+        private Integer locator;
 
         /**
          * Form of the stored object.
@@ -103,24 +107,24 @@ public final class EOcage$EOalloc extends PhDefault implements Atom {
          * @param locator Locator of object in memory
          * @param form The form of the object
          */
-        AtEncaged(final Long locator, final String form) {
+        AtEncaged(final Integer locator, final String form) {
             this.locator = locator;
             this.forma = form;
         }
 
         @Override
         public Attr copy(final Phi self) {
-            return new EOcage$EOalloc.AtEncaged(this.locator, this.forma);
+            return new EOcage$EOnew.AtEncaged(this.locator, this.forma);
         }
 
         @Override
         public Phi get() {
-            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
+            if (this.locator == null || !EOcage$EOnew.CAGES.containsKey(this.locator)) {
                 throw new ExFailure(
                     "There's no object in storage, can't read"
                 );
             }
-            return EOcage$EOalloc.OBJECTS.get(this.locator);
+            return new PhTracedLocator(EOcage$EOnew.CAGES.get(this.locator), this.locator);
         }
 
         @Override
@@ -135,20 +139,20 @@ public final class EOcage$EOalloc extends PhDefault implements Atom {
                 );
             }
             if (this.locator == null) {
-                synchronized (EOcage$EOalloc.LOCATOR) {
-                    this.locator = EOcage$EOalloc.LOCATOR.incrementAndGet();
+                synchronized (EOcage$EOnew.LOCATOR) {
+                    this.locator = EOcage$EOnew.LOCATOR.incrementAndGet();
                 }
             }
-            EOcage$EOalloc.OBJECTS.put(this.locator, phi);
+            EOcage$EOnew.CAGES.put(this.locator, phi);
         }
 
         @Override
         public String φTerm() {
             final String txt;
-            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
-                txt = AtEncaged.EMPTY_TERM;
+            if (this.locator == null || !EOcage$EOnew.CAGES.containsKey(this.locator)) {
+                txt = Term.EMPTY;
             } else {
-                txt = EOcage$EOalloc.OBJECTS.get(this.locator).φTerm();
+                txt = EOcage$EOnew.CAGES.get(this.locator).φTerm();
             }
             return txt;
         }
@@ -156,10 +160,10 @@ public final class EOcage$EOalloc extends PhDefault implements Atom {
         @Override
         public String toString() {
             final String txt;
-            if (this.locator == null || !EOcage$EOalloc.OBJECTS.containsKey(this.locator)) {
-                txt = AtEncaged.EMPTY_TERM;
+            if (this.locator == null || !EOcage$EOnew.CAGES.containsKey(this.locator)) {
+                txt = Term.EMPTY;
             } else {
-                txt = EOcage$EOalloc.OBJECTS.get(this.locator).toString();
+                txt = EOcage$EOnew.CAGES.get(this.locator).toString();
             }
             return txt;
         }

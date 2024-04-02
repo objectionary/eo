@@ -28,9 +28,11 @@
 
 package org.eolang;
 
+import java.util.function.Function;
+
 /**
  * Object that writes other object to own \rho.
- * (see {@link EOorg.EOeolang.EOcage$EOalloc} and {@link EOorg.EOeolang.EOmemory$EOalloc}).
+ * (see {@link EOorg.EOeolang.EOcage$EOnew} and {@link EOorg.EOeolang.EOmemory$EOalloc}).
  * @since 0.36.0
  */
 public class PhWrite extends PhDefault implements Atom {
@@ -40,20 +42,30 @@ public class PhWrite extends PhDefault implements Atom {
     private final String attribute;
 
     /**
+     * Return value.
+     */
+    private final Function<Phi, Phi> value;
+
+    /**
      * Ctor.
      * @param sigma Sigma
      * @param attr Attribute name
      */
-    public PhWrite(final Phi sigma, final String attr) {
+    public PhWrite(
+        final Phi sigma,
+        final String attr,
+        final Function<Phi, Phi> ret
+    ) {
         super(sigma);
         this.attribute = attr;
         this.add(this.attribute, new AtVoid(this.attribute));
+        this.value = ret;
     }
 
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
         rho.put(this.attribute, this.take(this.attribute));
-        return rho.take(this.attribute);
+        return this.value.apply(rho);
     }
 }

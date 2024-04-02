@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Class to trace if the cage got into recursion during the dataization.
+ * Class to trace if the "cage.new" got into recursion during the dataization.
  * NOT thread-safe.
  * @since 0.36
  * @todo #2836:60min Make the class thread safe. It has private static
@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  *  Needs to synchronize this field.
  */
 @Versionized
-public final class PhTracedEnclosure implements Phi {
+public final class PhTracedLocator implements Phi {
 
     /**
      * Name of property that responsible for keeping max depth.
@@ -45,21 +45,20 @@ public final class PhTracedEnclosure implements Phi {
         MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
 
     /**
-     * Cages that are currently dataizing. If one cage is datazing, and
-     * it needs to be dataized inside current dataizing, the cage will be here.
+     * Cages that are currently being dataized. If one cage is being datazed, and
+     * it needs to be dataized inside current dataization, the locator of current object be here.
      */
-    private static final Map<Phi, Integer> DATAIZING_CAGES = new HashMap<>();
+    private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
 
     /**
-     * Enclosure.
+     * Encaged object itself.
      */
-    private final Phi enclosure;
+    private final Phi object;
 
     /**
-     * Vertex of cage where the {@link PhTracedEnclosure#enclosure}
-     * was retrieved.
+     * Locator of encaged object.
      */
-    private final Phi cage;
+    private final Integer locator;
 
     /**
      * Max depth of cage recursion.
@@ -68,78 +67,78 @@ public final class PhTracedEnclosure implements Phi {
 
     /**
      * Ctor.
-     * @param enclosure Enclosure.
-     * @param cage Vertex of source cage.
+     * @param object Encaged object
+     * @param locator Locator of encaged object
      */
-    public PhTracedEnclosure(final Phi enclosure, final Phi cage) {
+    public PhTracedLocator(final Phi object, final Integer locator) {
         this(
-            enclosure,
-            cage,
+            object,
+            locator,
             Integer.parseInt(
-                System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
+                System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
             )
         );
     }
 
     /**
      * The main constructor.
-     * @param enclosure Enclosure.
-     * @param cage Cage.
-     * @param depth Max depth of cage recursion.
+     * @param object Encaged object
+     * @param locator Locator of encaged object
+     * @param depth Max depth of cage recursion
      */
-    public PhTracedEnclosure(final Phi enclosure, final Phi cage, final int depth) {
-        this.enclosure = enclosure;
-        this.cage = cage;
+    public PhTracedLocator(final Phi object, final Integer locator, final int depth) {
+        this.object = object;
+        this.locator = locator;
         this.depth = depth;
     }
 
     @Override
     public Phi copy() {
-        return new PhTracedEnclosure(this.enclosure.copy(), this.cage);
+        return new PhTracedLocator(this.object.copy(), this.locator);
     }
 
     @Override
     public Phi take(final String name) {
-        return new PhTracedEnclosure.TracingWhileGetting<>(
-            () -> this.enclosure.take(name)
+        return new PhTracedLocator.TracingWhileGetting<>(
+            () -> this.object.take(name)
         ).get();
     }
 
     @Override
     public Phi take(final String name, final Phi rho) {
-        return new PhTracedEnclosure.TracingWhileGetting<>(
-            () -> this.enclosure.take(name, rho)
+        return new PhTracedLocator.TracingWhileGetting<>(
+            () -> this.object.take(name, rho)
         ).get();
     }
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.enclosure.put(pos, object);
+        this.object.put(pos, object);
     }
 
     @Override
     public void put(final String name, final Phi object) {
-        this.enclosure.put(name, object);
+        this.object.put(name, object);
     }
 
     @Override
     public String locator() {
-        return this.enclosure.locator();
+        return this.object.locator();
     }
 
     @Override
     public String forma() {
-        return this.enclosure.forma();
+        return this.object.forma();
     }
 
     @Override
     public String φTerm() {
-        return this.enclosure.φTerm();
+        return this.object.φTerm();
     }
 
     @Override
     public int hashCode() {
-        return this.enclosure.hashCode();
+        return this.object.hashCode();
     }
 
     @Override
@@ -149,7 +148,7 @@ public final class PhTracedEnclosure implements Phi {
 
     @Override
     public byte[] delta() {
-        return new TracingWhileGetting<>(this.enclosure::delta).get();
+        return new TracingWhileGetting<>(this.object::delta).get();
     }
 
     /**
@@ -182,18 +181,19 @@ public final class PhTracedEnclosure implements Phi {
         }
 
         /**
-         * Increments counter of cage in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * Increments counter of cage in the {@link PhTracedLocator#DATAIZING_CAGES}.
          * @return New value in the map.
          */
         private Integer incrementCageCounter() {
-            return PhTracedEnclosure.DATAIZING_CAGES.compute(
-                PhTracedEnclosure.this.cage, (key, counter) -> {
+            return PhTracedLocator.DATAIZING_CAGES.compute(
+                PhTracedLocator.this.locator, (key, counter) -> {
                     final int ret = this.incremented(counter);
-                    if (ret > PhTracedEnclosure.this.depth) {
+                    if (ret > PhTracedLocator.this.depth) {
                         throw new ExFailure(
-                            "The cage %s has reached the maximum nesting depth = %d",
-                            key.φTerm(),
-                            PhTracedEnclosure.this.depth
+                            "The cage %s with locator %d has reached the maximum nesting depth = %d",
+                            PhTracedLocator.this.object.φTerm(),
+                            PhTracedLocator.this.locator,
+                            PhTracedLocator.this.depth
                         );
                     }
                     return ret;
@@ -219,19 +219,19 @@ public final class PhTracedEnclosure implements Phi {
         }
 
         /**
-         * Decrements counter in the {@link PhTracedEnclosure#DATAIZING_CAGES}.
+         * Decrements counter in the {@link PhTracedLocator#DATAIZING_CAGES}.
          * @param incremented Current value of counter. This argument ensures
          *  temporal coupling with {@link TracingWhileGetting#incrementCageCounter} method.
          */
         private void decrementCageCounter(final int incremented) {
             final int decremented = incremented - 1;
             if (decremented == 0) {
-                PhTracedEnclosure.DATAIZING_CAGES.remove(
-                    PhTracedEnclosure.this.cage
+                PhTracedLocator.DATAIZING_CAGES.remove(
+                    PhTracedLocator.this.locator
                 );
             } else {
-                PhTracedEnclosure.DATAIZING_CAGES.put(
-                    PhTracedEnclosure.this.cage, decremented
+                PhTracedLocator.DATAIZING_CAGES.put(
+                    PhTracedLocator.this.locator, decremented
                 );
             }
         }

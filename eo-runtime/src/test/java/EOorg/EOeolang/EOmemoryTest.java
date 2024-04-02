@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOmemory}.
+ * Test case for {@link EOmemory} and {@link EOmemory$EOalloc}.
  *
  * @since 0.1
  */

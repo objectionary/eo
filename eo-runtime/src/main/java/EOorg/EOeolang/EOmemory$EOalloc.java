@@ -29,7 +29,7 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eolang.AtSimple;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -52,12 +52,12 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
     /**
      * Locator calculator.
      */
-    private static final AtomicLong LOCATOR = new AtomicLong(0L);
+    private static final AtomicInteger LOCATOR = new AtomicInteger(0);
 
     /**
      * Memory.
      */
-    private static final ConcurrentHashMap<Long, Phi> MEMORY = new ConcurrentHashMap<>(0);
+    private static final ConcurrentHashMap<Integer, Phi> MEMORY = new ConcurrentHashMap<>(0);
 
     /**
      * Ctor.
@@ -66,7 +66,13 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
     EOmemory$EOalloc(final Phi sigma) {
         super(sigma);
         this.add("data", new EOmemory$EOalloc.AtMalloc());
-        this.add("write", new AtSimple(new PhWrite(this, "data")));
+        this.add("write", new AtSimple(
+            new PhWrite(
+                this,
+                "data",
+                rho -> rho.take("data")
+            )
+        ));
     }
 
     @Override
@@ -80,9 +86,9 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
      */
     private static class AtMalloc implements Attr {
         /**
-         * Object in memory.
+         * Locator of object in memory.
          */
-        private Long locator;
+        private Integer locator;
 
         /**
          * Allocated bytes length.
@@ -101,7 +107,7 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
          * @param locator Locator of object in memory
          * @param length  Allocated bytes length
          */
-        AtMalloc(final Long locator, final Integer length) {
+        AtMalloc(final Integer locator, final Integer length) {
             this.locator = locator;
             this.length = length;
         }
