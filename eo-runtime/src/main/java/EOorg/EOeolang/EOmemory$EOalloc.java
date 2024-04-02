@@ -66,13 +66,16 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
     EOmemory$EOalloc(final Phi sigma) {
         super(sigma);
         this.add("data", new EOmemory$EOalloc.AtMalloc());
-        this.add("write", new AtSimple(
-            new PhWrite(
-                this,
-                "data",
-                rho -> rho.take("data")
+        this.add(
+            "write",
+            new AtSimple(
+                new PhWrite(
+                    this,
+                    "data",
+                    rho -> rho.take("data")
+                )
             )
-        ));
+        );
     }
 
     @Override
@@ -105,7 +108,7 @@ public final class EOmemory$EOalloc extends PhDefault implements Atom {
         /**
          * Ctor for copying.
          * @param locator Locator of object in memory
-         * @param length  Allocated bytes length
+         * @param length Allocated bytes length
          */
         AtMalloc(final Integer locator, final Integer length) {
             this.locator = locator;

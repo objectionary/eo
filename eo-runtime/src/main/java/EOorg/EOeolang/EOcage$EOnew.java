@@ -66,13 +66,16 @@ public final class EOcage$EOnew extends PhDefault implements Atom {
     EOcage$EOnew(final Phi sigma) {
         super(sigma);
         this.add("object", new EOcage$EOnew.AtEncaged());
-        this.add("encage", new AtSimple(
-            new PhWrite(
-                this,
-                "object",
-                rho -> new Data.ToPhi(true)
+        this.add(
+            "encage",
+            new AtSimple(
+                new PhWrite(
+                    this,
+                    "object",
+                    rho -> new Data.ToPhi(true)
+                )
             )
-        ));
+        );
     }
 
     @Override

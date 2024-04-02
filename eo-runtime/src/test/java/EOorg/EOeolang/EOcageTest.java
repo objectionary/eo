@@ -278,7 +278,7 @@ final class EOcageTest {
             final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
             EOcageTest.encageTo(
                 cage,
-                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH , cage)
+                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),

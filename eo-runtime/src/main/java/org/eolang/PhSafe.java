@@ -129,6 +129,12 @@ public final class PhSafe implements Phi {
 
     @Override
     public byte[] delta() {
-        return this.origin.delta();
+        try {
+            return this.origin.delta();
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
 }

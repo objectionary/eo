@@ -112,13 +112,13 @@ public final class PhTracedLocator implements Phi {
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
-        this.object.put(pos, object);
+    public void put(final int pos, final Phi obj) {
+        this.object.put(pos, obj);
     }
 
     @Override
-    public void put(final String name, final Phi object) {
-        this.object.put(name, object);
+    public void put(final String name, final Phi obj) {
+        this.object.put(name, obj);
     }
 
     @Override
@@ -191,7 +191,7 @@ public final class PhTracedLocator implements Phi {
                     if (ret > PhTracedLocator.this.depth) {
                         throw new ExFailure(
                             "The cage %s with locator %d has reached the maximum nesting depth = %d",
-                            PhTracedLocator.this.object.φTerm(),
+                            PhTracedLocator.this.object,
                             PhTracedLocator.this.locator,
                             PhTracedLocator.this.depth
                         );

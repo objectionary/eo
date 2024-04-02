@@ -35,7 +35,7 @@ import java.util.function.Function;
  * (see {@link EOorg.EOeolang.EOcage$EOnew} and {@link EOorg.EOeolang.EOmemory$EOalloc}).
  * @since 0.36.0
  */
-public class PhWrite extends PhDefault implements Atom {
+public final class PhWrite extends PhDefault implements Atom {
     /**
      * Attribute name.
      */
@@ -50,6 +50,7 @@ public class PhWrite extends PhDefault implements Atom {
      * Ctor.
      * @param sigma Sigma
      * @param attr Attribute name
+     * @param ret Return value function
      */
     public PhWrite(
         final Phi sigma,

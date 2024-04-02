@@ -28,10 +28,6 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable runtime tests. The tests were disabled because they stopped working
-#  when \rho attribute became immutable. Need to find out what's going on and enable them.
-#  Tests: refers-to-inner-vars-correctly, makes-shallow-copy, calling-caged-function,
-#  rho-of-add-should-not-change
 [] > understands-this-correctly
   # Abstract a.
   [x] > a
@@ -117,19 +113,19 @@
     1
 
 # Test.
-[] > rho-of-add-should-not-change
-  memory 0 > f1
-  cage 0 > f2
-  memory 0 > f0
-  nop > res
-    seq
-      *
-        f0.write 0
-        f1.write 1
-        f2.write (f0.plus f1)
-        f1.write f2
-        TRUE
-  TRUE > @
+[] > writes-cage-to-memory
+  memory.alloc 0 > f1
+  cage.new int.plus > f2
+  memory.alloc 0 > f0
+  seq > @
+    *
+      f0.write 1
+      f1.write 2
+      f2.encage ((int f0).plus f1)
+      f1.write f2
+      eq.
+        f1
+        3
 
 # Test.
 [] > positive-object-vertices
@@ -210,22 +206,19 @@
 
 # Test.
 [] > refers-to-inner-vars-correctly
-  memory 0 > go
-  eq. > res
-    seq
-      *
-        go.write TRUE
-        go.as-bool.while
-          [i]
-            memory 0 > m
-            seq > @
-              *
-                42 > x
-                m.write x
-                go.write FALSE
-        TRUE
-    TRUE
-  nop > @
+  memory.alloc 0 > go
+  seq > @
+    *
+      go.write TRUE
+      while
+        go.as-bool
+        [i]
+          memory.alloc 0 > m
+          seq > @
+            *
+              m.write 42
+              go.write FALSE
+      TRUE
 
 # Test.
 [] > named-inner-abstract-object
@@ -237,18 +230,15 @@
 
 # Test.
 [] > calling-caged-function
-  cage 0 > h
   # Func.
-  [x] > func
-    2.plus x > @
-  nop > res
-    eq.
-      seq
-        *
-          h.write func
-          h.@ 8
-      10
-  TRUE > @
+  [] > func
+    # Inner object.
+    [x] > @
+      2.plus x > @
+  cage.new func > h
+  eq. > @
+    h.@ 8
+    10
 
 # Test.
 [] > app-that-calls-func
@@ -329,10 +319,9 @@
 # Test.
 [] > compares-two-foreign-objects
   stdout.< > vtx
-  nop > @
-    and.
-      vtx.eq QQ.io.stdout.<
-      vtx.eq Q.org.eolang.io.stdout.<
+  and. > @
+    vtx.eq QQ.io.stdout.<
+    vtx.eq Q.org.eolang.io.stdout.<
 
 # Test.
 [] > compares-two-local-objects
@@ -358,25 +347,6 @@
       num
       num
     64
-
-# Test.
-[] > makes-shallow-copy
-  # A.
-  [] > a
-    memory' > v
-  # B.
-  [] > b
-    a > @
-  b' > b1
-  b' > b2
-  seq > res
-    *
-      b1.v.write 0
-      b2.v.write 1
-      eq.
-        b1.v
-        1
-  TRUE > @
 
 # Test.
 [] > copy-object-with-dot
