@@ -1,11 +1,12 @@
 ---
 name: AI Code Reviewer
-permissions:
-  contents: read
-  pull-requests: write
+permissions: write-all
 on:
   pull_request:
-    types: [ opened, reopened, synchronize ]
+    types:
+      - opened
+      - reopened
+      - synchronize
 jobs:
   test:
     runs-on: ubuntu-20.04
