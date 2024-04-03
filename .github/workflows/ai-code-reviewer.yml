@@ -1,6 +1,9 @@
 ---
 name: AI Code Reviewer
-permissions: write-all
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
 on:
   pull_request:
     types:
