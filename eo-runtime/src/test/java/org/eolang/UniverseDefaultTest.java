@@ -30,15 +30,11 @@ import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link UniverseDefault}.
  * @since 0.31
- * @todo #2931:30min Enable the tests. The tests were disabled because Universe can't find object.
- *  Most probably it's because {@link PhDefault#take(String, Phi)} method makes copy of object
- *  before returning. Need to find out what's going on and enable the tests
  */
 final class UniverseDefaultTest {
 
@@ -53,33 +49,33 @@ final class UniverseDefaultTest {
     private static final byte[] DATA = new BytesOf(123456789L).take();
 
     @Test
-    @Disabled
     void findsSimpleAtt() {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            universe.find("$.".concat(UniverseDefaultTest.ATT)),
+            universe.find(String.format("%s.%s.%s", "$", UniverseDefaultTest.ATT, Attr.RHO)),
             Matchers.equalTo(
-                phi.take(UniverseDefaultTest.ATT).hashCode()
+                phi.hashCode()
             )
         );
     }
 
     @Test
-    @Disabled
     void findsLongAtt() {
         final Phi phi = new DummyWithStructure(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
-                    "$.%s.%s",
+                    "$.%s.%s.%s.%s",
                     UniverseDefaultTest.ATT,
-                    UniverseDefaultTest.ATT
+                    UniverseDefaultTest.ATT,
+                    Attr.RHO,
+                    Attr.RHO
                     )
                 ),
             Matchers.equalTo(
-                phi.take(UniverseDefaultTest.ATT).take(UniverseDefaultTest.ATT).hashCode()
+                phi.hashCode()
             )
         );
     }
