@@ -27,204 +27,190 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable cage tests. The test were disabled because 1) most probably
-#  "EOseq" dataizes its lambda many times in PhDefault.attr method. 2) current implementation of
-#  cage is wrong. Need to enable the tests when it's possible.
-[] > cage-tests
-  TRUE > @
-  # Test.
-  [] > writes-into-cage
-    # Object with free attribute.
-    [z] > a
-    cage a > x
-    eq. > @
-      seq
-        *
-          x.write
-            a 7
-          x.z
-      7
+[] > encages-into-cage
+  # Object with free attribute.
+  [z] > a
+  cage.new a > x
+  eq. > @
+    seq > seven!
+      *
+        x.encage
+          a 7
+        x.z
+    7
 
-  # Test.
-  [] > avoid-infinite-loop
-    cage > x
-      if
-    x' > copy
-    eq. > @
-      seq
-        *
-          x.write
-            if TRUE 1 0
-          copy.<
-          x.write
-            if TRUE copy 0
-          x
-      1
+# Test.
+[] > does-not-avoid-infinite-loop
+  cage.new > x
+    if
+  x' > copy
+  try > @
+    seq
+      *
+        x.encage
+          if TRUE 1 0
+        copy.<
+        x.encage
+          if TRUE copy 0
+        x
+    [e]
+      QQ.io.stdout e > @
+    TRUE
 
-  # Test.
-  [] > cage-nested-objects
-    # Dummy object.
-    [x] > dummy
-      x > @
-    cage dummy > c
-    c' > copy
-    eq. > @
-      seq
-        *
-          c.write (dummy 42)
-          copy.<
-          c.write (dummy copy)
-          c.x.x
-      42
+# Test.
+[] > dataizes-encaged-object-not-lazily-first
+  cage.new 0 > x
+  cage.new int.plus > sum
+  eq. > @
+    seq > s!
+      *
+        x.encage 42
+        sum.encage
+          x.plus 1
+        x.encage 7
+        sum
+    8
 
-  # Test.
-  [] > dataizes-encaged-object-not-lazily-first
-    cage 0 > x
-    cage 0.plus > sum
-    eq. > @
-      seq
-        *
-          x.write 42
-          sum.write
-            x.plus 1
-          x.write 7
-          sum
-      8
+# Test.
+[] > dataizes-encaged-object-lazily-second
+  cage.new 0 > x
+  cage.new int.plus > sum
+  eq. > @
+    seq > s!
+      *
+        x.encage 42
+        sum.encage
+          1.plus x
+        x.encage 7
+        sum
+    8
 
-  # Test.
-  [] > dataizes-encaged-object-lazily-second
-    cage 0 > x
-    cage 0.plus > sum
-    eq. > @
-      seq
-        *
-          x.write 42
-          sum.write
-            1.plus x
-          x.write 7
-          sum
-      8
+# Test.
+[] > dataizes-encaged-object-lazily-third
+  cage.new 0 > x
+  cage.new 0 > y
+  cage.new int.plus > sum
+  eq. > @
+    seq > s!
+      *
+        x.encage 42
+        y.encage 7
+        sum.encage
+          x.plus y
+        y.encage 13
+        x.encage 4
+        sum
+    17
 
-  # Test.
-  [] > dataizes-encaged-object-lazily-third
-    cage 0 > x
-    cage 0 > y
-    cage 0.plus > sum
-    eq. > @
-      seq
-        *
-          x.write 42
-          y.write 7
-          sum.write
-            x.plus y
-          y.write 13
-          x.write 4
-          sum
-      17
+# Test.
+[] > stores-abstract-object-into-cage
+  eq. > @
+    seq
+      *
+        cage.new > c
+          []
+            112 > @
+        c.@
+    112
 
-  # Test.
-  [] > stores-abstract-object-into-cage
-    eq. > @
-      seq
-        *
-          cage > c
-            []
-              112 > @
-          c.@
-      112
-
-  # Test.
-  [] > multi-layer-volatility
-    memory 0 > ma
-    cage a > ca
-    # Layer A.
-    [] > a
-      # Layer A.phi.
+# Test.
+[] > multi-layer-volatility
+  memory.alloc 0 > ma
+  cage.new a > ca
+  # Layer A.
+  [] > a
+    # Layer A.phi.
+    [] > @
+      # Layer A.phi.phi.
       [] > @
-        # Layer A.phi.phi.
+        # Layer A.phi.phi.phi.
         [] > @
-          # Layer A.phi.phi.phi.
-          [] > @
-            seq > @
-              *
-                ma.write (ma.as-int.plus 1)
-                ma.as-int
-    memory 0 > mb
-    cage b > cb
-    # Layer B.
-    [] > b
-      # Layer B.phi.
+          seq > @
+            *
+              ma.write (ma.as-int.plus 1)
+              ma.as-int
+  memory.alloc 0 > mb
+  cage.new b > cb
+  # Layer B.
+  [] > b
+    # Layer B.phi.
+    [] > @
+      # Layer B.phi.phi.
       [] > @
-        # Layer B.phi.phi.
+        # Layer B.phi.phi.phi.
         [] > @
-          # Layer B.phi.phi.phi.
-          [] > @
-            seq > z
-              *
-                mb.write (mb.as-int.plus 1)
-                mb.as-int
-    eq. > res
-      seq
-        *
-          ca
-          ca.plus 40
-      seq
-        *
-          cb.z
-          cb.z.plus 40
-    TRUE > @
+          seq > z
+            *
+              mb.write (mb.as-int.plus 1)
+              mb.as-int
+  eq. > @
+    seq > s1!
+      *
+        ca
+        ca.plus 40
+    seq > s2!
+      *
+        cb.z
+        cb.z.plus 40
 
-  # Test.
-  [] > infinite-loop-check
-    # Recursive sum object.
-    [value] > pyint
-      # Add.
-      [y] > add
-        pyint (^.value.plus y.value) > @
-    cage pyint > x
-    cage > tmp
-      x.add
-    eq. > @
-      seq
-        *
-          x.write
-            pyint 0
-          tmp.write
-            x.add (pyint 1)
-          QQ.io.stdout
-            tmp.value
+# Test.
+[] > infinite-loop-check
+  # Recursive sum object.
+  [value] > pyint
+    # Add.
+    [y] > add
+      pyint (^.value.plus y.value) > @
+  cage.new pyint > x
+  cage.new > tmp
+    x.add
+  eq. > @
+    seq
+      *
+        x.encage
+          pyint 0
+        tmp.encage
+          x.add (pyint 1)
+        QQ.io.stdout
           tmp.value
-      1
+        tmp.value
+    1
 
-  # Test.
-  [] > catches-writing-objects-of-different-types
-    cage 5 > cge
-    eq. > @
-      seq
+# Test.
+[] > catches-encaging-objects-of-different-formas
+  cage.new 5 > cge
+  seq > @
+    *
+      try
+        cge.encage "Hello world"
+        [e]
+          cge.encage 10 > @
+        nop
+      cge.eq 10
+
+# Check that cage stack leads to error. Just prints the error
+# message if passes.
+[] > catches-stack-overflow
+  cage.new > cge
+    int.plus
+  try > @
+    []
+      seq > @
         *
-          try
-            cge.write "Hello world"
-            [e]
-              cge.write 10 > @
-            nop
-          cge.eq 10
-      TRUE
+          cge.write
+            0.plus cge
+          cge
+          FALSE
+    [stack-overflow-message]
+      QQ.io.stdout > @
+        stack-overflow-message
+    FALSE
 
-  # Check that cage stack leads to error. Just prints the error
-  # message if passes.
-  [] > catches-stack-overflow
-    cage > cge
-      0.plus
-    try > @
-      []
-        seq > @
-          *
-            cge.write
-              0.plus cge
-            cge
-            FALSE
-      [stack-overflow-message]
-        QQ.io.stdout > @
-          stack-overflow-message
-      []
-        FALSE > @
+# Test.
+[] > applies-after-retrieval
+  # Func.
+  [x] > func
+    2.plus x > @
+  cage.new func > c
+  eq. > @
+    c.it 5
+    7

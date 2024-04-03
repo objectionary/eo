@@ -37,7 +37,7 @@ import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
-import org.eolang.PhTracedEnclosure;
+import org.eolang.PhTracedLocator;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -45,22 +45,19 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test case for {@link EOcage}.
+ * Test cases for {@link EOcage} and {@link EOcage$EOnew}.
  * @since 0.19
  */
 final class EOcageTest {
-
     @Test
-    void writesAndReads() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
+    void encagesViaApplication() {
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
@@ -68,61 +65,27 @@ final class EOcageTest {
     }
 
     @Test
-    void writesItselfToItself() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(
-            cage,
-            new PhWith(
-                new EOcage(Phi.Φ), 0, new Data.ToPhi(1L)
-            )
-        );
-        final Phi first = cage.copy();
-        EOcageTest.writeTo(cage, first);
-        final Phi second = cage.copy();
-        EOcageTest.writeTo(cage, second);
+    void encagesAndFrees() {
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
+        EOcageTest.encageTo(cage, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
-            Matchers.equalTo(1L)
+            Matchers.equalTo(2L)
         );
     }
 
-    // [] > test
-    //   cage 0 > c
-    //   [x] > dummy
-    //     x > @
-    //   seq > @
-    //     *
-    //       c.write (dummy 1)
-    //       c.write (dummy c')
-    //       c.x.x.eq 1
     @Test
-    void writesDummyToItself() {
-        final Phi cage = new EOcage(Phi.Φ);
-        new Dataized(
-            new PhWith(
-                cage.take("write").copy(),
-                0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
-            )
-        ).take();
-        new Dataized(
-            new PhWith(
-                cage.take("write").copy(),
-                0, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, cage.copy())
-            )
-        ).take();
+    void checksThatEmptyCageHasIdentity() {
+        final Phi cage = Phi.Φ.take("org.eolang.cage");
         MatcherAssert.assertThat(
-            new Dataized(
-                cage.take("x").take("x")
-            ).take(Long.class),
-            Matchers.equalTo(1L)
+            new Dataized(cage.take(Attr.VERTEX)).take(Long.class),
+            Matchers.greaterThan(0L)
         );
     }
 
     @Test
     void overwritesCagedObject() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(
-            cage,
+        final Phi cage = EOcageTest.encaged(
             new PhWith(
                 new EOcageTest.Dummy(Phi.Φ),
                 0, new Data.ToPhi(1L)
@@ -132,7 +95,7 @@ final class EOcageTest {
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
-        EOcageTest.writeTo(
+        EOcageTest.encageTo(
             cage,
             new PhWith(
                 new EOcageTest.Dummy(Phi.Φ),
@@ -146,31 +109,24 @@ final class EOcageTest {
     }
 
     @Test
-    void makesTrueCopy() {
-        final Phi first = new EOcage(Phi.Φ);
-        first.put(0, new Data.ToPhi(1L));
+    void encagesObjectOnCopy() {
+        final Phi first = EOcageTest.encaged(new Data.ToPhi(1L));
         final Phi second = first.copy();
-        new Dataized(
-            new PhWith(
-                second.take("write"),
-                "x", new Data.ToPhi(2L)
-            )
-        ).take();
+        EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
             new Dataized(first).take(Long.class),
-            Matchers.equalTo(1L)
+            Matchers.equalTo(2L)
         );
     }
 
     @Test
     void writesAndRewritesPrimitive() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
-        EOcageTest.writeTo(cage, new Data.ToPhi(5L));
+        EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
@@ -179,11 +135,10 @@ final class EOcageTest {
 
     @Test
     void doesNotWritePrimitivesFormedDifferently() {
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(cage, new Data.ToPhi(1L));
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> EOcageTest.writeTo(cage, new Data.ToPhi("Hello world"))
+            () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world"))
         );
     }
 
@@ -195,11 +150,10 @@ final class EOcageTest {
             "x",
             new Data.ToPhi(5L)
         );
-        final Phi cage = new EOcage(Phi.Φ);
-        EOcageTest.writeTo(cage, five);
+        final Phi cage = EOcageTest.encaged(five);
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> EOcageTest.writeTo(cage, ten)
+            () -> EOcageTest.encageTo(cage, ten)
         );
     }
 
@@ -207,17 +161,34 @@ final class EOcageTest {
     void writesBoundedCopyOfTheSameBase() {
         final Phi dummy = new Dummy(Phi.Φ);
         Assertions.assertDoesNotThrow(
-            () -> EOcageTest.writeTo(
-                new PhWith(new EOcage(Phi.Φ), 0, dummy),
+            () -> EOcageTest.encageTo(
+                EOcageTest.encaged(dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             )
         );
     }
 
-    private static void writeTo(final Phi cage, final Phi obj) {
-        final Phi write = cage.take("write").copy();
+    /**
+     * Encage given object to given cage.
+     * @param cage Cage
+     * @param obj Object
+     */
+    private static void encageTo(final Phi cage, final Phi obj) {
+        final Phi write = cage.take("encage").copy();
         write.put(0, obj);
         new Dataized(write).take();
+    }
+
+    /**
+     * Encaged object.
+     * @param obj Object to put
+     * @return Cage.new object
+     */
+    private static Phi encaged(final Phi obj) {
+        final Phi cage = Phi.Φ.take("org.eolang.cage");
+        final Phi encaged = cage.take("new").copy();
+        encaged.put(0, obj);
+        return encaged;
     }
 
     /**
@@ -236,19 +207,44 @@ final class EOcageTest {
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
+                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
             );
         }
 
         @AfterEach
         void clearDepth() {
-            System.clearProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
+            System.clearProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
+        }
+
+        // [] > test
+        //   [x] > dummy
+        //     x > @
+        //   cage.new (dummy 1) > c
+        //   seq > @
+        //     *
+        //       c.write (dummy c')
+        //       c.x.x.x # fail
+        @Test
+        void rewritesItselfToItselfViaDummy() {
+            System.setProperty(
+                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
+            );
+            final Phi cage = EOcageTest.encaged(
+                new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
+            );
+            EOcageTest.encageTo(cage, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, cage.copy()));
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    cage.take("x").take("x").take("x")
+                ).take(Long.class)
+            );
         }
 
         @Test
         void throwsExceptionIfRecursion() {
-            final Phi cage = new EOcage(Phi.Φ);
-            writeTo(cage, cage);
+            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            EOcageTest.encageTo(cage, cage);
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(cage).take(),
@@ -258,8 +254,8 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
-            final Phi cage = new EOcage(Phi.Φ);
-            EOcageTest.writeTo(
+            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
             );
@@ -267,8 +263,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
-                    PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -279,17 +275,17 @@ final class EOcageTest {
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
-            final Phi cage = new EOcage(Phi.Φ);
-            writeTo(
+            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            EOcageTest.encageTo(
                 cage,
-                new RecursiveDummy(MAX_DEPTH, cage)
+                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH, cage)
             );
             Assertions.assertDoesNotThrow(
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
-                    PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -297,8 +293,8 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfBigDepth() {
-            final Phi cage = new EOcage(Phi.Φ);
-            writeTo(
+            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
             );
@@ -307,8 +303,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
-                    PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedEnclosure.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -340,9 +336,7 @@ final class EOcageTest {
              * @param depth Depth.
              * @param cage Cage.
              */
-            RecursiveDummy(
-                final int depth, final Phi cage
-            ) {
+            RecursiveDummy(final int depth, final Phi cage) {
                 this.depth = depth;
                 this.cage = cage;
                 this.counter = new AtomicReference<>(0);
@@ -366,7 +360,7 @@ final class EOcageTest {
      * Dummy Phi.
      * @since 1.0
      */
-    public static final class Dummy extends PhDefault {
+    private static final class Dummy extends PhDefault {
         /**
          * Ctor.
          * @param sigma Sigma

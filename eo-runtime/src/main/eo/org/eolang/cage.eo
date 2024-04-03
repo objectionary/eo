@@ -29,4 +29,7 @@
 # This object is doing exactly the same as "memory", but allows
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
-[enclosure] > cage /?
+[] > cage
+  # Make new `cage` for an object. After application this `new` object starts behave
+  # like `it` object.
+  [it] > new /?
