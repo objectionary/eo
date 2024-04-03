@@ -62,7 +62,7 @@ final class VerticesTest {
         final List<Scalar<Integer>> tasks = new ArrayList<>(threads);
         tasks.addAll(
             Stream.generate(() -> (Scalar<Integer>) vtx::next)
-                .limit(threads / 2)
+                .limit(threads)
                 .collect(Collectors.toList())
         );
         new Threads<>(threads, tasks).forEach(hashes::add);

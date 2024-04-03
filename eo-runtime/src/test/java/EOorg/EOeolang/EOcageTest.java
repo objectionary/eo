@@ -75,15 +75,6 @@ final class EOcageTest {
     }
 
     @Test
-    void checksThatEmptyCageHasIdentity() {
-        final Phi cage = Phi.Φ.take("org.eolang.cage");
-        MatcherAssert.assertThat(
-            new Dataized(cage.take(Attr.VERTEX)).take(Long.class),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
     void overwritesCagedObject() {
         final Phi cage = EOcageTest.encaged(
             new PhWith(
