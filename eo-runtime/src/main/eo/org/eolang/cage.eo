@@ -30,5 +30,6 @@
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
 [] > cage
-  # Make new `cage` for an object.
-  [object] > new /?
+  # Make new `cage` for an object. After application this `new` object starts behave
+  # like `it` object.
+  [it] > new /?

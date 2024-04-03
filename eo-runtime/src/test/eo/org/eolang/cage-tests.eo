@@ -204,3 +204,13 @@
       QQ.io.stdout > @
         stack-overflow-message
     FALSE
+
+# Test.
+[] > applies-after-retrieval
+  # Func.
+  [x] > func
+    2.plus x > @
+  cage.new func > c
+  eq. > @
+    c.it 5
+    7
