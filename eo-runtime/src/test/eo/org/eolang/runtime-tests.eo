@@ -132,40 +132,6 @@
   TRUE > @
 
 # Test.
-[] > positive-object-vertices
-  eq. > @
-    or.
-      or.
-        42.<.eq 42.<
-        "Hello".<.eq "Hello".<
-      45-1F-E7.<.eq 45-1F-E7.<
-    FALSE
-
-# Test.
-[] > take-vertex-as-vertical-attribute
-  not. > @
-    eq.
-      <.
-        42
-      42.<
-
-# Test.
-[] > negative-object-vertices
-  # A.
-  [x] > a
-  eq. > @
-    or.
-      or.
-        or.
-          or.
-            (2.plus 3).<.eq 5.<
-            42.<.eq 42.0.<
-          45-1F-E8.<.eq 45-1F-E8-83.<
-        (a 5).<.eq (a 5).<
-      (* 1 2 3).<.eq (* 1 2 3).<
-    FALSE
-
-# Test.
 [] > recursion-without-arguments
   memory.alloc 0 > n
   # Func.
@@ -183,16 +149,6 @@
         n.write 4
         func
     0
-
-# Test.
-[] > does-not-return-same-object
-  # Foo.
-  [] > foo
-    "Hello, world" > x
-  not. > @
-    eq.
-      foo.x.<
-      foo.x.<
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
@@ -314,32 +270,6 @@
   eq. > @
     a.foo
     43
-
-# Test.
-[] > takes-object-id-from-abstract-empty
-  # Foo.
-  [] > foo
-    # Foo.y
-    [] > y
-  not. > @
-    eq.
-      foo.y.<
-      foo.y.<
-
-# Test.
-[] > compares-two-foreign-objects
-  stdout.< > vtx
-  nop > @
-    and.
-      vtx.eq QQ.io.stdout.<
-      vtx.eq Q.org.eolang.io.stdout.<
-
-# Test.
-[] > compares-two-local-objects
-  not. > @
-    eq.
-      5.plus.<
-      5.plus.<
 
 # Test.
 [] > constant-defends-against-side-effects

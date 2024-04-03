@@ -74,20 +74,12 @@ final class DataTest {
     }
 
     @Test
-    void getsVertex() {
-        MatcherAssert.assertThat(
-            new Dataized(new Data.ToPhi(1L).take(Attr.VERTEX)).take(Long.class),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
     void comparesVertex() {
         MatcherAssert.assertThat(
-            new Dataized(new Data.ToPhi(42L).take(Attr.VERTEX)).take(Long.class),
+            new Data.ToPhi(42L).hashCode(),
             Matchers.not(
                 Matchers.equalTo(
-                    new Dataized(new Data.ToPhi(42L).take(Attr.VERTEX)).take(Long.class)
+                    new Data.ToPhi(42L).hashCode()
                 )
             )
         );

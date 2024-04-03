@@ -10,7 +10,6 @@ tests:
   - //o[@as='1']
   - //o[@as='0']
   - //o[@base='&']
-  - //o[@base='.<']
   - //o[@base='.five']
   - //objects[not(.//o[@name=''])]
   - //o[@atom and @name='atom' and count(o)=2 and o[@name='a']]
@@ -37,20 +36,20 @@ eo: |
   [x] > first
     x > @
     second > hello
-      $.plus.@ 5.< > i
+      $.plus.@ 5 > i
       third > x!
         $
-        <.
+        z.
           z
         f
           12:foo
-          ((t' r 8.54 "yes".< "\t").print 88 0x1f):hey
-          TRUE.<:vtx
+          ((t' r 8.54 "yes" "\t").print 88 0x1f):hey
+          TRUE:vtx
           false:fle > a!
             []
               Q.x.f.d Q Q
               QQ.y QQ
-              &.@.< > t
+              &.@ > t
               ^.@.hey > you
               Q
               QQ
@@ -91,7 +90,7 @@ eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > named
     one.two.three.four.five
-      t.<
+      t.o
     .two "hello!"
     .three > a1
     .four (a b c') > a2

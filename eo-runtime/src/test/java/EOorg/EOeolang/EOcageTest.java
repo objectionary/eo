@@ -68,15 +68,6 @@ final class EOcageTest {
     }
 
     @Test
-    void checksThatEmptyCageHasIdentity() {
-        final Phi cage = new EOcage(Phi.Φ);
-        MatcherAssert.assertThat(
-            new Dataized(cage.take(Attr.VERTEX)).take(Long.class),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
     void writesItselfToItself() {
         final Phi cage = new EOcage(Phi.Φ);
         EOcageTest.writeTo(

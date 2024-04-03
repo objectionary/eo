@@ -478,7 +478,6 @@ finisher
     | AT
     | RHO
     | SIGMA
-    | VERTEX
     ;
 
 // Finisher with optional COPY
@@ -559,9 +558,6 @@ COPY: '\''
     ;
 ARROW
     : '>'
-    ;
-VERTEX
-    : '<'
     ;
 SIGMA
     : '&'

@@ -93,21 +93,6 @@ eo: |
       3
 
   # Test.
-  [] > while-without-last-dataization
-    memory 0 > x
-    eq. > @
-      seq
-        *
-          while.
-            x.as-int.lt 2
-            [i]
-              x.write (x.as-int.plus 1) > @
-          .@
-          .<
-          x.as-int
-      2
-
-  # Test.
   [] > last-while-dataization-object-with-false-condition
     memory 3 > x
     eq. > @
@@ -516,49 +501,6 @@ phi: |
               α0 ↦ Φ.org.eolang.int(
                 α0 ↦ Φ.org.eolang.bytes(
                   Δ ⤍ 00-00-00-00-00-00-00-03
-                )
-              )
-            )
-          ⟧,
-          while-without-last-dataization ↦ ⟦
-            x ↦ Φ.org.eolang.memory(
-              α0 ↦ Φ.org.eolang.int(
-                α0 ↦ Φ.org.eolang.bytes(
-                  Δ ⤍ 00-00-00-00-00-00-00-00
-                )
-              )
-            ),
-            φ ↦ Φ.org.eolang.seq(
-              α0 ↦ Φ.org.eolang.tuple(
-                α0 ↦ Φ.org.eolang.tuple(
-                  α0 ↦ Φ.org.eolang.tuple.empty,
-                  α1 ↦ ξ.x.as-int.lt(
-                    α0 ↦ Φ.org.eolang.int(
-                      α0 ↦ Φ.org.eolang.bytes(
-                        Δ ⤍ 00-00-00-00-00-00-00-02
-                      )
-                    )
-                  ).while(
-                    α0 ↦ ⟦
-                      i ↦ ∅,
-                      φ ↦ ξ.σ.x.write(
-                        α0 ↦ ξ.σ.x.as-int.plus(
-                          α0 ↦ Φ.org.eolang.int(
-                            α0 ↦ Φ.org.eolang.bytes(
-                              Δ ⤍ 00-00-00-00-00-00-00-01
-                            )
-                          )
-                        )
-                      )
-                    ⟧
-                  ).φ.ν
-                ),
-                α1 ↦ ξ.x.as-int
-              )
-            ).eq(
-              α0 ↦ Φ.org.eolang.int(
-                α0 ↦ Φ.org.eolang.bytes(
-                  Δ ⤍ 00-00-00-00-00-00-00-02
                 )
               )
             )
