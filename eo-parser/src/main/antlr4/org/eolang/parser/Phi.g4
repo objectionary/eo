@@ -44,7 +44,6 @@ attribute
     : PHI
     | RHO
     | SIGMA
-    | VERTEX
     | LABEL
     | alphaAttr
     ;
@@ -119,9 +118,6 @@ RHO : 'ρ'
     ;
 SIGMA
     : 'σ'
-    ;
-VERTEX
-    : 'ν'
     ;
 DELTA
     : 'Δ'

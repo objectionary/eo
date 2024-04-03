@@ -4,8 +4,6 @@ eo: |
     ^.x > x
     y.& > h
     $.a > a
-    < > vtx
-    ^.< > self
     @.@ > phi
 phi: |
   {
@@ -14,8 +12,6 @@ phi: |
         x ↦ ξ.ρ.x,
         h ↦ Φ.org.eolang.y.σ,
         a ↦ ξ.a,
-        vtx ↦ ξ.ν,
-        self ↦ ξ.ρ.ν,
         phi ↦ ξ.φ.φ
       ⟧
     ⟧

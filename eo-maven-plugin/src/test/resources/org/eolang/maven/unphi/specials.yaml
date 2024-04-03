@@ -10,17 +10,11 @@ tests:
 
   - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.a' and @method and @name='a']
 
-  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.<' and @method and @name='vtx']
-
-  - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.^' and @method]/following-sibling::o[@base='.<' and @method and @name='self']
-
   - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.@' and @method]/following-sibling::o[@base='.@' and @method and @name='phi']
 eo: |
   [] > main
     ^.x > x
     y.& > h
     $.a > a
-    < > vtx
-    ^.< > self
     @.@ > phi
-phi: "{⟦main ↦ ⟦x ↦ ξ.ρ.x, h ↦ Φ.org.eolang.y.σ, a ↦ ξ.ρ.a, vtx ↦ ξ.ν, self ↦ ξ.ρ.ν, phi ↦ ξ.φ.φ⟧⟧}"
+phi: "{⟦main ↦ ⟦x ↦ ξ.ρ.x, h ↦ Φ.org.eolang.y.σ, a ↦ ξ.ρ.a, phi ↦ ξ.φ.φ⟧⟧}"

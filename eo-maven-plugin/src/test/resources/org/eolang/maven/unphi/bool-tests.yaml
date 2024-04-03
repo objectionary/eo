@@ -289,49 +289,6 @@ phi: |
               )
             )
           ⟧,
-          while-without-last-dataization ↦ ⟦
-            x ↦ Φ.org.eolang.memory(
-              α0 ↦ Φ.org.eolang.int(
-                α0 ↦ Φ.org.eolang.bytes(
-                  Δ ⤍ 00-00-00-00-00-00-00-00
-                )
-              )
-            ),
-            φ ↦ Φ.org.eolang.seq(
-              α0 ↦ Φ.org.eolang.tuple(
-                α0 ↦ Φ.org.eolang.tuple(
-                  α0 ↦ Φ.org.eolang.tuple.empty,
-                  α1 ↦ ξ.x.as-int.lt(
-                    α0 ↦ Φ.org.eolang.int(
-                      α0 ↦ Φ.org.eolang.bytes(
-                        Δ ⤍ 00-00-00-00-00-00-00-02
-                      )
-                    )
-                  ).while(
-                    α0 ↦ ⟦
-                      i ↦ ∅,
-                      φ ↦ ξ.σ.x.write(
-                        α0 ↦ ξ.σ.x.as-int.plus(
-                          α0 ↦ Φ.org.eolang.int(
-                            α0 ↦ Φ.org.eolang.bytes(
-                              Δ ⤍ 00-00-00-00-00-00-00-01
-                            )
-                          )
-                        )
-                      )
-                    ⟧
-                  ).φ.ν
-                ),
-                α1 ↦ ξ.x.as-int
-              )
-            ).eq(
-              α0 ↦ Φ.org.eolang.int(
-                α0 ↦ Φ.org.eolang.bytes(
-                  Δ ⤍ 00-00-00-00-00-00-00-02
-                )
-              )
-            )
-          ⟧,
           last-while-dataization-object-with-false-condition ↦ ⟦
             x ↦ Φ.org.eolang.memory(
               α0 ↦ Φ.org.eolang.int(

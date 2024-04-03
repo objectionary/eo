@@ -106,15 +106,6 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
         this.add(Attr.SIGMA, new AtFixed(sigma));
-        this.add(
-            Attr.VERTEX,
-            new AtOnce(
-                new AtComposite(
-                    this,
-                    rho -> new Data.ToPhi((long) rho.hashCode())
-                )
-            )
-        );
     }
 
     @Override
@@ -132,7 +123,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         final List<String> list = new ArrayList<>(this.attrs.size());
         final String format = "%s ↦ %s";
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> !Arrays.asList(Attr.RHO, Attr.SIGMA, Attr.VERTEX).contains(e.getKey())
+            e -> !Arrays.asList(Attr.RHO, Attr.SIGMA).contains(e.getKey())
         ).collect(Collectors.toList())) {
             final String attr = String.format(
                 format,

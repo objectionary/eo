@@ -25,7 +25,6 @@ package org.eolang;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -51,20 +50,9 @@ final class VerticesTest {
         );
     }
 
-    @Test
-    void makesSameNumber() {
-        final Vertices vtx = new Vertices();
-        vtx.next();
-        MatcherAssert.assertThat(
-            vtx.best(1L),
-            Matchers.equalTo(vtx.best(1L))
-        );
-    }
-
     /**
-     * Test that {@link Vertices#best(Object)} and {@link Vertices#next()}
-     * works correctly in multithreaded environment, i.e. produces non-repeatable
-     * values.
+     * Test that {@link Vertices#next()} works correctly in multithreaded environment, i.e. produces
+     * non-repeatable values.
      */
     @Test
     void performsVtxOperationsConcurrently() {
@@ -74,18 +62,10 @@ final class VerticesTest {
         final List<Scalar<Integer>> tasks = new ArrayList<>(threads);
         tasks.addAll(
             Stream.generate(() -> (Scalar<Integer>) vtx::next)
-                .limit(threads / 2)
+                .limit(threads)
                 .collect(Collectors.toList())
         );
-        tasks.addAll(
-            Stream.generate(() -> (Scalar<Integer>) () -> vtx.best(new Random().nextLong()))
-                .limit(threads / 2)
-                .collect(Collectors.toList())
-        );
-        new Threads<>(
-            threads,
-            tasks
-        ).forEach(hashes::add);
+        new Threads<>(threads, tasks).forEach(hashes::add);
         MatcherAssert.assertThat(
             hashes.size(),
             Matchers.equalTo(threads)

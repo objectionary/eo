@@ -51,9 +51,6 @@ SOFTWARE.
   <xsl:variable name="lambda">
     <select>λ</select>
   </xsl:variable>
-  <xsl:variable name="vertex">
-    <select>ν</select>
-  </xsl:variable>
   <xsl:variable name="arrow">
     <xsl:text> </xsl:text>
     <select>↦</select>
@@ -113,14 +110,6 @@ SOFTWARE.
       </xsl:when>
       <xsl:when test="$n='$'">
         <xsl:value-of select="$xi"/>
-      </xsl:when>
-      <xsl:when test="$n='&lt;'">
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
-        <xsl:value-of select="$vertex"/>
-      </xsl:when>
-      <xsl:when test="$n='.&lt;'">
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$vertex"/>
       </xsl:when>
       <xsl:when test="$n='Q'">
         <xsl:value-of select="$program"/>

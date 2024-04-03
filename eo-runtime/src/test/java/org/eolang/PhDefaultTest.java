@@ -274,8 +274,8 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            new Dataized(phi.take(Attr.VERTEX)).take(Long.class),
-            Matchers.greaterThan(0L)
+            phi.hashCode(),
+            Matchers.greaterThan(0)
         );
     }
 
