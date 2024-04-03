@@ -157,19 +157,11 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String toString() {
-        String result = String.format(
+        return String.format(
             "%sν%d",
             this.getClass().getCanonicalName(),
             this.vertex
         );
-        if (this.attrs.containsKey(Attr.DELTA)) {
-            result = String.format(
-                "%s=%s",
-                result,
-                this.attrs.get(Attr.DELTA).toString()
-            );
-        }
-        return result;
     }
 
     @Override

@@ -25,67 +25,48 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
 
-import org.eolang.AtCage;
-import org.eolang.AtSimple;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.PhDefault;
-import org.eolang.PhTracedEnclosure;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.Volatile;
-import org.eolang.XmirObject;
+package org.eolang;
+
+import java.util.function.Function;
 
 /**
- * CAGE.
- *
- * @since 0.17
- * @checkstyle TypeNameCheck (5 lines)
+ * Object that writes other object to own \rho.
+ * (see {@link EOorg.EOeolang.EOcage$EOnew} and {@link EOorg.EOeolang.EOmemory$EOalloc}).
+ * @since 0.36.0
  */
-@Versionized
-@Volatile
-@XmirObject(oname = "cage")
-public final class EOcage extends PhDefault implements Atom {
+public final class PhWrite extends PhDefault implements Atom {
+    /**
+     * Attribute name.
+     */
+    private final String attribute;
+
+    /**
+     * Return value.
+     */
+    private final Function<Phi, Phi> value;
 
     /**
      * Ctor.
      * @param sigma Sigma
+     * @param attr Attribute name
+     * @param ret Return value function
      */
-    public EOcage(final Phi sigma) {
+    public PhWrite(
+        final Phi sigma,
+        final String attr,
+        final Function<Phi, Phi> ret
+    ) {
         super(sigma);
-        this.add("enclosure", new AtCage());
-        this.add("write", new AtSimple(new Write(this)));
+        this.attribute = attr;
+        this.add(this.attribute, new AtVoid(this.attribute));
+        this.value = ret;
     }
 
     @Override
     public Phi lambda() {
-        return new PhTracedEnclosure(this.take("enclosure"), this);
+        final Phi rho = this.take(Attr.RHO);
+        rho.put(this.attribute, this.take(this.attribute));
+        return this.value.apply(rho);
     }
-
-    /**
-     * Cage write.
-     * @since 0.17
-     */
-    @XmirObject(oname = "cage.write")
-    private static final class Write extends PhDefault implements Atom {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Write(final Phi sigma) {
-            super(sigma);
-            this.add("x", new AtVoid("x"));
-        }
-
-        @Override
-        public Phi lambda() {
-            this.take(Attr.RHO).put("enclosure", this.take("x"));
-            return new Data.ToPhi(true);
-        }
-    }
-
 }
