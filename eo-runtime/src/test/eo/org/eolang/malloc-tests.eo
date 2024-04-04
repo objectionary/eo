@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,63 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
++tests
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Random-access memory (RAM).
-[size] > ram
-  # Write bytes from position.
-  [position data] > write /true
+# Test.
+[] > malloc-gives-id-to-pointer
+  (malloc 2).id.gt 0 > @
 
-  # Slice fixed size of bytes from position.
-  [position size] > slice /ram-slice
+#Test.
+[] > malloc-gives-id-to-pointer-after-copy
+  (malloc 2).pointer > p
+  p.id.gt 0 > @
 
-  # Slice fixed size of bytes from position.
-  [position size] > ram-slice
-    # Fixed sliced bytes from position.
-    [] > @ /bytes
+# Test.
+[] > malloc-allocates-right-size-block
+  (malloc 10).size.eq 10 > @
 
-    # Write bytes to memory from position, according to the ram.slice object.
-    [data] > write /bytes
+# Test.
+[] > malloc-pointer-writes-and-reads
+  (malloc 12).pointer > p
+  seq > @
+    *
+      p.write "Hello, Jeff!"
+      p.read.eq "Hello, Jeff!"
+
+# Test.
+[] > malloc-pointer-frees-successfully
+  (malloc 8).free > @
+
+# Test.
+[] > malloc-pointer-frees-after-writing
+  (malloc 8).pointer > p
+  seq > @
+    *
+      p.write 42
+      p.free
+      try
+        p.read
+        [e] (QQ.io.stdout e > @)
+        FALSE
+
+# Test.
+[] > malloc-pointer-cant-write-more-than-allocated
+  (malloc 1).pointer > p
+  try
+    seq
+      *
+        p.write 42
+        FALSE
+    [e] (QQ.io.stdout e > @)
+    FALSE
+
+# Test.
+[] > malloc-pointer-rewrites-successfully
+  (malloc 8).pointer > p
+  seq > @
+    *
+      p.write 42
+      p.write 94
+      p.read.eq 94

@@ -23,31 +23,46 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Heaps;
+import org.eolang.Param;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link Heaps}.
- *
- * @since 0.19
+ * Malloc.pointer.write object.
+ * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-public final class HeapsTest {
-
-    @Test
-    public void performsMallocAndFreeWork() {
-        final Phi heap = new EOheap(Phi.Φ);
-        final int pointer = Heaps.INSTANCE.get().malloc(heap, 100);
-        MatcherAssert.assertThat(
-            Heaps.INSTANCE.get().malloc(heap, 64),
-            Matchers.not(Matchers.equalTo(pointer))
-        );
-        Heaps.INSTANCE.get().free(heap, pointer);
+@Versionized
+@XmirObject(oname = "malloc.pointer.write")
+final class EOmalloc$EOpointer$EOwrite extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
+    EOmalloc$EOpointer$EOwrite(final Phi sigma) {
+        super(sigma);
+        this.add("data", new AtVoid("data"));
     }
 
+    @Override
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.get().write(
+            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
+            new Dataized(this.take("data")).take()
+        );
+        return new Data.ToPhi(true);
+    }
 }

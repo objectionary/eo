@@ -26,55 +26,21 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Emulation of random-access memory (RAM).
-[size] > heap
-  # Allocates a block in memory of "s" bytes,
-  # and returns a pointer to it.
-  # The "length" attribute of the pointer won't be bound.
-  [s] > malloc
-    memory 0 > next
-    plus. > new-next!
-      s
-      ^.malloc.next.as-int
-    if > @
-      gt.
-        new-next
-        size
-      error
-        "Allocation failed: bad alloc (not enough memory in the heap)"
-      seq
-        *
-          write.
-            ^.malloc.next
-            new-next
-          0.plus
-            ^.malloc.next.as-int
+# Dynamic memory allocation manager.
+[size] > malloc
+  # Allocates a block in memory of `size` bytes, and returns a pointer to it.
+  [] > @ /pointer
 
-  # Freed a block in memory, which is referred by the
-  # given pointer, which was earlier obtained with malloc().
-  # Returns TRUE if works. If the pointer provided wasn't
-  # previously allocated, the result will be [].
-  [p] > free
-    seq > @
-      *
-        p
-        TRUE
+  # Pointer to allocated block in memory.
+  # Here `id` is identifier of pointer, `size` is length of the block.
+  [id size] > pointer
+    $ > pointer
 
-  # Pointer inside the heap.
-  [address length] > pointer
-    address > @
+    # Read `bytes` from the block in memory by the pointer.
+    [] > read /bytes
 
-    # Increment this pointer by x steps forward.
-    [x] > add
-      &.^.pointer > @
-        address.plus
-          length.times x
-        length
+    # Write data to the block in memory by the pointer.
+    [data] > write /true
 
-    # Decrement this pointer by x steps backward.
-    [x] > sub
-      &.add > @
-        x.times -1
-
-    # One block in the heap.
-    [len inverse] > block /?
+    # Free the block in memory by the pointer.
+    [] > free /true

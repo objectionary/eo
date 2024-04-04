@@ -25,44 +25,43 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Ram;
-import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Read from memory.
- * @since 0.25
+ * Memory.φ object.
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
-public final class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "memory.@")
+public final class EOmemory$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOram_slice$EOφ(final Phi sigma) {
+    EOmemory$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
     public Phi lambda() throws Exception {
-        return new Data.ToPhi(
-            Ram.INSTANCE.read(
-                this.take(Attr.RHO).take(Attr.RHO),
-                new Param(
-                    this.take(Attr.RHO), "position"
-                ).strong(Long.class).intValue(),
-                new Param(
-                    this.take(Attr.RHO), "size"
-                ).strong(Long.class).intValue()
-            )
-        );
+        final byte[] bytes = new Dataized(this.take(Attr.RHO).take("data")).take();
+        final Phi malloc = Phi.Φ.take("org.eolang.malloc").copy();
+        malloc.put("size", new Data.ToPhi((long) bytes.length));
+        final Phi pointer = malloc.take(Attr.PHI).take(Attr.LAMBDA);
+        final Phi write = pointer.take("write").copy();
+        write.put("data", new Data.ToPhi(bytes));
+        new Dataized(write).take();
+        final Phi alloc = Phi.Φ.take("org.eolang.memory").take("alloc").copy();
+        alloc.put("pointer", pointer);
+        return alloc;
     }
 }

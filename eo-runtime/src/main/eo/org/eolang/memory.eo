@@ -27,6 +27,22 @@
 +version 0.0.0
 
 # Storage of data in memory.
-[] > memory
-  # Allocate data in memory segment.
-  [data] > alloc /?
+[data] > memory
+  # Allocate data in memory and return `alloc`
+  [] > @ /alloc
+
+  # Data allocated in memory.
+  [pointer] > alloc
+    $ > alloc
+    pointer.read > @
+
+    # Data written into memory.
+    [data] > write
+      seq > @
+        *
+          ^.pointer.write data
+          ^.pointer.read
+
+    # Free memory.
+    [] > free
+      ^.pointer.free > @

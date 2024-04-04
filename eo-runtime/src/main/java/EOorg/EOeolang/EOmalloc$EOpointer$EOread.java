@@ -25,43 +25,41 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
-import java.io.IOException;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Heaps;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Ram;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Write into memory.
- * @since 0.1
+ * Malloc.pointer.read object.
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "ram.write")
-public final class EOram$EOwrite extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.pointer.read")
+final class EOmalloc$EOpointer$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOwrite(final Phi sigma) {
+    EOmalloc$EOpointer$EOread(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtVoid("position"));
-        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() throws IOException {
-        final int pos = new Param(this, "position").strong(Long.class).intValue();
-        final byte[] bytes = new Param(this, "data").strong(byte[].class);
-        Ram.INSTANCE.write(this.take(Attr.RHO), pos, bytes);
-        return new Data.ToPhi(true);
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            Heaps.INSTANCE.get().read(
+                new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+            )
+        );
     }
 }
