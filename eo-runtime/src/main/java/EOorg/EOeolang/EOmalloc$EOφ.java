@@ -62,7 +62,6 @@ final class EOmalloc$EOφ extends PhDefault implements Atom {
         final Phi pointer = this.take(Attr.SIGMA).take("memory-block-pointer").copy();
         pointer.put("id", new Data.ToPhi((long) identifier));
         pointer.put("size", size);
-        System.out.println(new Data.ToPhi((long) identifier));
         return pointer;
     }
 }

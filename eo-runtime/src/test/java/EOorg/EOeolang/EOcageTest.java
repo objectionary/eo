@@ -27,10 +27,13 @@
  */
 package EOorg.EOeolang;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.number.SumOf;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
-import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExAbstract;
@@ -207,6 +210,30 @@ final class EOcageTest {
             System.clearProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
         }
 
+        @Test
+        void doesNotThrowIfDataizesConcurrently() {
+            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            EOcageTest.encageTo(
+                cage,
+                new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH, cage)
+            );
+            final int threads = 500;
+            MatcherAssert.assertThat(
+                new SumOf(
+                    new Threads<>(
+                        threads,
+                        Stream.generate(
+                            () -> (Scalar<Integer>) () -> {
+                                new Dataized(cage).take();
+                                return 1;
+                            }
+                        ).limit(threads).collect(Collectors.toList())
+                    )
+                ).intValue(),
+                Matchers.equalTo(threads)
+            );
+        }
+
         // [] > test
         //   [x] > dummy
         //     x > @
@@ -320,7 +347,7 @@ final class EOcageTest {
             /**
              * Counts how many times we already met the cage.
              */
-            private final AtomicReference<Integer> counter;
+            private final ThreadLocal<Integer> counter;
 
             /**
              * Ctor.
@@ -330,14 +357,14 @@ final class EOcageTest {
             RecursiveDummy(final int depth, final Phi cage) {
                 this.depth = depth;
                 this.cage = cage;
-                this.counter = new AtomicReference<>(0);
+                this.counter = ThreadLocal.withInitial(() -> 0);
             }
 
             @Override
             public Phi lambda() {
                 final Phi ret;
-                this.counter.getAndUpdate(val -> val + 1);
-                if (this.counter.get() == this.depth) {
+                this.counter.set(this.counter.get() + 1);
+                if (this.counter.get() >= this.depth) {
                     ret = new Data.ToPhi(0L);
                 } else {
                     ret = this.cage;
