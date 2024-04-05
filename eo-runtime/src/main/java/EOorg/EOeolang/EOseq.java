@@ -58,7 +58,7 @@ public final class EOseq extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi steps = this.take("steps");
-        final Phi[] items = EOseq.eoTupleAsJavaArray(steps);
+        final Phi[] items = EOseq.eoTupleAsArray(steps);
         for (int ind = 0; ind < items.length - 1; ++ind) {
             new Dataized(items[ind]).take();
         }
@@ -76,7 +76,7 @@ public final class EOseq extends PhDefault implements Atom {
      * @param args Eo tuple.
      * @return Java array.
      */
-    private static Phi[] eoTupleAsJavaArray(final Phi args) {
+    private static Phi[] eoTupleAsArray(final Phi args) {
         final int length = Math.toIntExact(
             new Dataized(
                 args.take("length")
