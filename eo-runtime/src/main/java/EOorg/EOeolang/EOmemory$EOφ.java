@@ -60,7 +60,7 @@ public final class EOmemory$EOφ extends PhDefault implements Atom {
         final Phi write = pointer.take("write").copy();
         write.put("data", new Data.ToPhi(bytes));
         new Dataized(write).take();
-        final Phi alloc = Phi.Φ.take("org.eolang.memory").take("alloc").copy();
+        final Phi alloc = this.take(Attr.SIGMA).take("allocated").copy();
         alloc.put("pointer", pointer);
         return alloc;
     }

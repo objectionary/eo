@@ -81,7 +81,7 @@
 
 # Test.
 [] > try-memory-update
-  memory.alloc 0 > m
+  (memory 0).alloc > m
   eq. > @
     seq
       *
@@ -97,7 +97,7 @@
 
 # Test.
 [] > try-memory-update-catch
-  memory.alloc 0 > m
+  (memory 0).alloc > m
   eq. > @
     seq
       *

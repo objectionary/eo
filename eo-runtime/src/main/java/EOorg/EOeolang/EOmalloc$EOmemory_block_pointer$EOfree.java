@@ -25,14 +25,11 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Heaps;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -41,27 +38,26 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.write object.
+ * Malloc.pointer.free object.
+ *
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.write")
-final class EOmalloc$EOpointer$EOwrite extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.pointer.free")
+public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOmalloc$EOpointer$EOwrite(final Phi sigma) {
+    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
         super(sigma);
-        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() throws Exception {
-        Heaps.INSTANCE.get().write(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
-            new Dataized(this.take("data")).take()
+    public Phi lambda() {
+        Heaps.INSTANCE.get().free(
+            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
         );
         return new Data.ToPhi(true);
     }

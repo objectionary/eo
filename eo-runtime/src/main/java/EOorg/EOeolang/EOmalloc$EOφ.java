@@ -28,7 +28,6 @@
 
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -53,18 +52,18 @@ final class EOmalloc$EOφ extends PhDefault implements Atom {
      */
     EOmalloc$EOφ(final Phi sigma) {
         super(sigma);
-        this.add("size", new AtVoid("size"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi size = this.take("size");
+        final Phi size = this.take(Attr.RHO).take("size");
         final int identifier = Heaps.INSTANCE.get().malloc(
             this, new Dataized(size).take(Long.class).intValue()
         );
-        final Phi pointer = this.take(Attr.RHO).take("pointer").copy();
+        final Phi pointer = this.take(Attr.SIGMA).take("memory-block-pointer").copy();
         pointer.put("id", new Data.ToPhi((long) identifier));
         pointer.put("size", size);
+        System.out.println(new Data.ToPhi((long) identifier));
         return pointer;
     }
 }

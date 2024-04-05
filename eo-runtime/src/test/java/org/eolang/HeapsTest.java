@@ -27,7 +27,6 @@
  */
 package org.eolang;
 
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +41,7 @@ public final class HeapsTest {
     /**
      * Heaps.
      */
-    final static Heaps HEAPS = Heaps.INSTANCE.get();
+    private static final Heaps HEAPS = Heaps.INSTANCE.get();
 
     @Test
     void allocatesMemory() {

@@ -28,7 +28,7 @@
 
 # Test.
 [] > const-does-not-do-recalculation
-  memory.alloc 0 > m
+  (memory 0).alloc > m
   # Func.
   [] > func
     ^.m.write (^.m.as-int.plus 1) > @
@@ -44,7 +44,7 @@
 [] > const-behaves-as-exclamationed
   # Func.
   [] > func
-    memory.alloc 0 > m
+    (memory 0).alloc > m
     seq > @
       *
         TRUE

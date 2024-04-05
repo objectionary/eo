@@ -65,7 +65,7 @@ final class OyFilesystemTest {
     @Test
     void containsObjectWithDefaultHome(@TempDir final Path home) throws IOException {
         final OyFilesystem objectionary = new OyFilesystem();
-        final String object = "org.eolang.ram";
+        final String object = "org.eolang.malloc";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
             "TO ADD ASSERTION MESSAGE",

@@ -57,12 +57,12 @@ public final class Heaps {
 
     /**
      * Allocate a block in memory.
-     * @param heap The heap
+     * @param phi Object
      * @param size How many bytes
      * @return The identifier of pointer to the block in memory
      */
-    public int malloc(final Phi heap, final int size) {
-        final int identifier = heap.hashCode();
+    public int malloc(final Phi phi, final int size) {
+        final int identifier = phi.hashCode();
         synchronized (this.blocks) {
             if (this.blocks.containsKey(identifier)) {
                 throw new ExFailure(

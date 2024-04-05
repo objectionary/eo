@@ -115,7 +115,7 @@
 
 # Test.
 [] > multi-layer-volatility
-  memory.alloc 0 > ma
+  (memory 0).alloc > ma
   cage.new a > ca
   # Layer A.
   [] > a
@@ -129,7 +129,7 @@
             *
               ma.write (ma.as-int.plus 1)
               ma.as-int
-  memory.alloc 0 > mb
+  (memory 0).alloc > mb
   cage.new b > cb
   # Layer B.
   [] > b

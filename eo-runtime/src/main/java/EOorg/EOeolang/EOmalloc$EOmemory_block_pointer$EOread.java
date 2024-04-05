@@ -25,6 +25,7 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
@@ -38,27 +39,27 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.free object.
- *
+ * Malloc.pointer.read object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.free")
-public final class EOmalloc$EOpointer$EOfree extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.pointer.read")
+final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOmalloc$EOpointer$EOfree(final Phi sigma) {
+    EOmalloc$EOmemory_block_pointer$EOread(final Phi sigma) {
         super(sigma);
     }
 
     @Override
-    public Phi lambda() {
-        Heaps.INSTANCE.get().free(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            Heaps.INSTANCE.get().read(
+                new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+            )
         );
-        return new Data.ToPhi(true);
     }
 }

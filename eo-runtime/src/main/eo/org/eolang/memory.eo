@@ -27,16 +27,31 @@
 +version 0.0.0
 
 # Storage of data in memory.
+# You can use it like this:
+# ```
+# [] > obj
+#   5 > @
+# (memory obj).alloc > m
+# seq > @
+#   *
+#     m.write 42 # write 8 bytes integer to memory
+#     m          # dataization leads to reading from memory
+#     m.@        # taking @ attribute also leads to reading from memory
+#     m.free     # clear memory
+# ```
+# Clearing the memory is optional and is up to programmer.
 [data] > memory
-  # Allocate data in memory and return `alloc`
-  [] > @ /alloc
+  @.alloc > alloc
+
+  # Allocate data in memory and return `allocated`.
+  [] > @ /allocated
 
   # Data allocated in memory.
-  [pointer] > alloc
+  [pointer] > allocated
     $ > alloc
     pointer.read > @
 
-    # Data written into memory.
+    # Write data into memory
     [data] > write
       seq > @
         *

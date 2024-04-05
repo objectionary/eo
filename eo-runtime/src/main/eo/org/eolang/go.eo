@@ -54,33 +54,30 @@
 # ```
 # Go to.
 [] > go
-  memory.alloc 0 > counter
+  (malloc 1).id > id!
 
   # To.
   [body] > to
-    seq > @
-      *
-        counter.write (counter.as-int.plus 1) > id!
-        try > iteration
-          body token
-          [e]
-            if > @
-              id.eq e.id
-              e.value
-              error e
-          TRUE
+    try > @
+      body token
+      [e]
+        if > @
+          &.^.id.eq e.id
+          e.value
+          error e
+      TRUE
 
     # Token.
     [] > token
       # Backward jump.
       error > backward
         []
-          &.^.iteration > value
-          &.^.id > id
+          &.^.@ > value
+          &.^.^.id > id
 
       # Forward jump.
       [res] > forward
         error > @
           []
             res > value
-            &.^.^.id > id
+            &.^.^.^.id > id

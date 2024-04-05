@@ -28,7 +28,7 @@
 
 # Test.
 [] > writes-into-memory
-  memory.alloc 0 > x
+  (memory 0).alloc > x
   eq. > @
     seq
       *
@@ -37,19 +37,20 @@
     10
 
 # Test.
-[] > double-writes
-  memory.alloc "1234567890123" > m
+[] > memory-double-writes
+  (memory "1234567890123").alloc > m
   eq. > @
+    42.as-bytes.concat
+      "orld!".as-bytes
     seq
       *
         m.write "Hello, world!"
         m.write 42
         m
-    42
 
 # Test.
 [] > rewrites-and-increments-itself
-  memory.alloc 0 > m
+  (memory 0).alloc > m
   eq. > @
     seq
       *
@@ -62,7 +63,7 @@
 [] > memory-in-outer-scope
   # Outer scope object.
   [] > a
-    memory.alloc 0 > x
+    (memory 0).alloc > x
   seq > @
     *
       a.x.write 1
@@ -73,8 +74,8 @@
 
 # Test.
 [] > writes-into-two-memory-objects
-  memory.alloc 0 > a
-  memory.alloc 0 > b
+  (memory 0).alloc > a
+  (memory 0).alloc > b
   and. > @
     seq
       *
@@ -85,8 +86,8 @@
 
 # Test.
 [] > writes-into-two-memory-objects-and-check-first
-  memory.alloc 0 > a
-  memory.alloc 0 > b
+  (memory 0).alloc > a
+  (memory 0).alloc > b
   eq. > @
     seq
       *
@@ -97,7 +98,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
-  memory.alloc FALSE > m
+  (memory FALSE).alloc > m
   try > @
     []
       m.write 86124867.88 > @
@@ -107,7 +108,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-string-error-overflow
-  memory.alloc "Hello" > m
+  (memory "Hello").alloc > m
   try > @
     []
       m.write "Much longer string!" > @
@@ -117,7 +118,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-int
-  memory.alloc 12248 > m
+  (memory 12248).alloc > m
   eq. > @
     try
       []
@@ -129,7 +130,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-float
-  memory.alloc 245.88 > m
+  (memory 245.88).alloc > m
   eq. > @
     try
       []
@@ -141,22 +142,33 @@
 
 # Test.
 [] > memory-is-strictly-typed-string
-  memory.alloc "Hello" > m
+  (memory "Hello").alloc > m
   eq. > @
     try
       []
-        m.write "Hell" > @
+        m.write "Prot" > @
       [e]
         e > @
       nop
-    "Hell"
+    "Proto"
 
 # Test.
 [] > memory-is-strictly-typed-bool
-  memory.alloc FALSE > m
+  (memory FALSE).alloc > m
   try > @
     []
       m.write TRUE > @
     [e]
       e > @
     nop
+
+# Test.
+[] > memory-is-cleared-successfully
+  (memory FALSE).alloc > m
+  seq > @
+    *
+      m.free
+      try
+        m
+        [e] (QQ.io.stdout e > @)
+        FALSE
