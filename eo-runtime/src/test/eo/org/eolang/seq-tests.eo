@@ -129,3 +129,32 @@
             counter.as-int.plus 1
           counter.as-int
     1
+
+# This test should have acceptable time to pass.
+[] > very-long-seq
+  eq. > @
+    TRUE
+    seq
+      *
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
