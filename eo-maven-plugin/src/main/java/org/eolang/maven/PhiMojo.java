@@ -174,6 +174,9 @@ public final class PhiMojo extends SafeMojo {
      */
     private static String translated(final Train<Shift> train, final XML xmir)
         throws ImpossibleToPhiTranslationException {
+        System.out.println(
+            new Xsline(train).pass(xmir)
+        );
         final XML translated = new Xsline(
             train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
         ).pass(xmir);
