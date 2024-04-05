@@ -105,7 +105,7 @@ public final class PhLocated implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhLocated(this.origin.copy(), this.line, this.position);
+        return new PhLocated(this.origin.copy(), this.line, this.position, this.location);
     }
 
     @Override
