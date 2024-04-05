@@ -33,7 +33,6 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -59,22 +58,20 @@ public final class EOseq extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi steps = this.take("steps");
-        final Phi[] items = toArray(steps);
+        final Phi[] items = eoTupleAsJavaArray(steps);
         for (int ind = 0; ind < items.length - 1; ++ind) {
             new Dataized(items[ind]).take();
         }
         final Phi ret;
         if (items.length > 0) {
-            final Phi last = steps.take("at").copy();
-            last.put(0, new Data.ToPhi((long) items.length - 1L));
-            ret = last;
+            ret = new PhMethod(steps, "tail");
         } else {
             ret = new Data.ToPhi(false);
         }
         return ret;
     }
 
-    private static Phi[] toArray(final Phi args) {
+    private static Phi[] eoTupleAsJavaArray(final Phi args) {
         final int length = Math.toIntExact(
             new Dataized(
                 args.take("length")
