@@ -33,7 +33,6 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Heaps;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -54,6 +53,7 @@ final class EOmalloc$EOmemory_block_pointer$EOwrite extends PhDefault implements
      */
     EOmalloc$EOmemory_block_pointer$EOwrite(final Phi sigma) {
         super(sigma);
+        this.add("offset", new AtVoid("offset"));
         this.add("data", new AtVoid("data"));
     }
 
@@ -61,6 +61,7 @@ final class EOmalloc$EOmemory_block_pointer$EOwrite extends PhDefault implements
     public Phi lambda() throws Exception {
         Heaps.INSTANCE.get().write(
             new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
+            new Param(this, "offset").strong(Long.class).intValue(),
             new Dataized(this.take("data")).take()
         );
         return new Data.ToPhi(true);

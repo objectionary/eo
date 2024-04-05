@@ -58,6 +58,7 @@ public final class EOmemory$EOφ extends PhDefault implements Atom {
         malloc.put("size", new Data.ToPhi((long) bytes.length));
         final Phi pointer = malloc.take(Attr.PHI).take(Attr.LAMBDA);
         final Phi write = pointer.take("write").copy();
+        write.put("offset", new Data.ToPhi(0L));
         write.put("data", new Data.ToPhi(bytes));
         new Dataized(write).take();
         final Phi alloc = this.take(Attr.SIGMA).take("allocated").copy();

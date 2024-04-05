@@ -55,7 +55,7 @@
     [data] > write
       seq > @
         *
-          ^.pointer.write data
+          ^.pointer.write 0 data
           ^.pointer.read
 
     # Free memory.

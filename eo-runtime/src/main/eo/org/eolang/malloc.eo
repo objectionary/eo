@@ -32,9 +32,9 @@
 # (malloc 8).pointer > p
 # seq
 #   *
-#     p.write 42 # write 8 bytes integer
-#     p.read     # read from memory, 42 will be returned
-#     p.free     # free allocated block
+#     p.write 0 42 # write 8 bytes integer with offset 0
+#     p.read       # read from memory, 42 will be returned
+#     p.free       # free allocated block
 # ```
 # Clearing the block is optional and is up to programmer.
 [size] > malloc
@@ -51,8 +51,8 @@
     # Read `bytes` from the block in memory by the pointer.
     [] > read /bytes
 
-    # Write data to the block in memory by the pointer.
-    [data] > write /true
+    # Write `data` from `offset` to the block in memory by the pointer.
+    [offset data] > write /true
 
     # Free the block in memory by the pointer.
     [] > free /true

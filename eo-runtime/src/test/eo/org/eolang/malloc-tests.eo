@@ -44,8 +44,17 @@
   (malloc 12).pointer > p
   seq > @
     *
-      p.write "Hello, Jeff!"
+      p.write 0 "Hello, Jeff!"
       p.read.eq "Hello, Jeff!"
+
+# Test.
+[] > malloc-pointer-concacts-strings-with-offset
+  (malloc 3).pointer > p
+  seq > @
+    *
+      p.write 0 "XXX"
+      p.write 1 "Y"
+      p.read.eq "XYX"
 
 # Test.
 [] > malloc-pointer-frees-successfully
@@ -56,7 +65,7 @@
   (malloc 8).pointer > p
   seq > @
     *
-      p.write 42
+      p.write 0 42
       p.free
       try
         p.read
@@ -69,7 +78,18 @@
   try > @
     seq
       *
-        p.write 42
+        p.write 0 42
+        FALSE
+    [e] (QQ.io.stdout e > @)
+    FALSE
+
+# Test.
+[] > malloc-pointer-cant-write-more-than-allocated-with-offset
+  (malloc 1).pointer > p
+  try > @
+    seq
+      *
+        p.write 1 TRUE
         FALSE
     [e] (QQ.io.stdout e > @)
     FALSE
@@ -79,6 +99,6 @@
   (malloc 8).pointer > p
   seq > @
     *
-      p.write 42
-      p.write 94
+      p.write 0 42
+      p.write 0 94
       p.read.eq 94

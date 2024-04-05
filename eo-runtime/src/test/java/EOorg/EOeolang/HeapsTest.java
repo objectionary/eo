@@ -25,8 +25,11 @@
 /*
  * @checkstyle PackageNameCheck (10 lines)
  */
-package org.eolang;
+package EOorg.EOeolang;
 
+import org.eolang.ExFailure;
+import org.eolang.PhFake;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -49,16 +52,18 @@ public final class HeapsTest {
         Assertions.assertDoesNotThrow(
             () -> HeapsTest.HEAPS.read(idx)
         );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test
     void failsOnDoubleAllocation() {
         final Phi phi = new PhFake();
-        HeapsTest.HEAPS.malloc(phi, 10);
+        final int idx = HeapsTest.HEAPS.malloc(phi, 10);
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.malloc(phi, 10)
         );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test
@@ -68,24 +73,26 @@ public final class HeapsTest {
             HeapsTest.HEAPS.read(idx),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test
     void writesAndReads() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
         final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
-        HeapsTest.HEAPS.write(idx, bytes);
+        HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
             HeapsTest.HEAPS.read(idx),
             Matchers.equalTo(bytes)
         );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test
     void failsOnWriteToEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.write(new PhFake().hashCode(), new byte[] {0x01})
+            () -> HeapsTest.HEAPS.write(new PhFake().hashCode(), 0, new byte[] {0x01})
         );
     }
 
@@ -103,19 +110,32 @@ public final class HeapsTest {
         final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.write(idx, bytes)
+            () -> HeapsTest.HEAPS.write(idx, 0, bytes)
         );
+        HeapsTest.HEAPS.free(idx);
+    }
+
+    @Test
+    void failsToWriteMoreThanAllocatedWithOffset() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 3);
+        final byte[] bytes = new byte[] {1, 2, 3};
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> HeapsTest.HEAPS.write(idx, 1, bytes)
+        );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test
     void concatsOnWriteLessThanAllocated() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
-        HeapsTest.HEAPS.write(idx, new byte[] {1, 1, 3, 4, 5});
-        HeapsTest.HEAPS.write(idx, new byte[] {2, 2});
+        HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
+        HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
             HeapsTest.HEAPS.read(idx),
-            Matchers.equalTo(new byte[] {2, 2, 3, 4, 5})
+            Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
+        HeapsTest.HEAPS.free(idx);
     }
 
     @Test

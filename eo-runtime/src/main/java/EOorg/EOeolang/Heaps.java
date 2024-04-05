@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package org.eolang;
+package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eolang.ExFailure;
+import org.eolang.Phi;
+import org.eolang.Versionized;
 
 /**
  * Dynamic memory.
@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 0.19
  */
 @Versionized
-public final class Heaps {
+final class Heaps {
 
     /**
      * Heaps.
@@ -61,7 +61,7 @@ public final class Heaps {
      * @param size How many bytes
      * @return The identifier of pointer to the block in memory
      */
-    public int malloc(final Phi phi, final int size) {
+    int malloc(final Phi phi, final int size) {
         final int identifier = phi.hashCode();
         synchronized (this.blocks) {
             if (this.blocks.containsKey(identifier)) {
@@ -82,7 +82,7 @@ public final class Heaps {
      * @param identifier Identifier of the pointer
      * @return Bytes from the block in memory
      */
-    public byte[] read(final int identifier) {
+    byte[] read(final int identifier) {
         synchronized (this.blocks) {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
@@ -99,9 +99,10 @@ public final class Heaps {
     /**
      * Write given data to the block in memory by given identifier.
      * @param identifier Identifier of the pointer
+     * @param offset Writing offset
      * @param data Data to write
      */
-    public void write(final int identifier, final byte[] data) {
+    void write(final int identifier, final int offset, final byte[] data) {
         synchronized (this.blocks) {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
@@ -111,26 +112,31 @@ public final class Heaps {
                     )
                 );
             }
-            final int length = this.blocks.get(identifier).length;
-            if (length < data.length) {
+            final byte[] current = this.blocks.get(identifier);
+            final int length = current.length;
+            if (length < offset + data.length) {
                 throw new ExFailure(
                     String.format(
-                        "Can't write bytes of %d length to the block with identifier %d, because only %d were allocated",
+                        "Can't write %d bytes with offset %d to the block with identifier %d, because only %d were allocated",
                         data.length,
+                        offset,
                         identifier,
                         length
                     )
                 );
             }
             final byte[] result = new byte[length];
-            System.arraycopy(data, 0, result, 0, data.length);
-            if (length > data.length) {
+            if (offset > 0) {
+                System.arraycopy(current, 0, result, 0, offset);
+            }
+            System.arraycopy(data, 0, result, offset, data.length);
+            if (length > offset + data.length) {
                 System.arraycopy(
-                    this.blocks.get(identifier),
-                    data.length,
+                    current,
+                    offset + data.length,
                     result,
-                    data.length,
-                    length - data.length
+                    offset + data.length,
+                    length - offset - data.length
                 );
             }
             this.blocks.put(identifier, result);
@@ -140,9 +146,8 @@ public final class Heaps {
     /**
      * Free it.
      * @param identifier Identifier of pointer
-     * @checkstyle NonStaticMethodCheck (5 lines)
      */
-    public void free(final int identifier) {
+    void free(final int identifier) {
         synchronized (this.blocks) {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
