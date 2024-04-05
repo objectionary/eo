@@ -60,8 +60,8 @@ public final class EOseq extends PhDefault implements Atom {
     public Phi lambda() {
         final Phi steps = this.take("steps");
         final Phi[] items = toArray(steps);
-        for (int i = 0; i < items.length - 1; i++) {
-            new Dataized(items[i]).take();
+        for (int ind = 0; ind < items.length - 1; ++ind) {
+            new Dataized(items[ind]).take();
         }
         final Phi ret;
         if (items.length > 0) {
@@ -82,8 +82,8 @@ public final class EOseq extends PhDefault implements Atom {
         );
         final Phi[] res = new Phi[length];
         Phi external = args;
-        for (int i = length - 1; i >= 0; i--) {
-            res[i] = new PhMethod(external, "tail");
+        for (int ind = length - 1; ind >= 0; --ind) {
+            res[ind] = new PhMethod(external, "tail");
             external = external.copy().take("head");
         }
         return res;
