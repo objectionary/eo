@@ -32,6 +32,7 @@ import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -58,25 +59,33 @@ public final class EOseq extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi steps = this.take("steps");
-        final Long length = new Dataized(
-            steps.take("length")
-        ).take(Long.class);
-        for (long idx = 0; idx < length - 1; ++idx) {
-            new Dataized(
-                new PhWith(
-                    steps.take("at").copy(),
-                    0, new Data.ToPhi(idx)
-                )
-            ).take();
+        final Phi[] items = toArray(steps);
+        for (int i = 0; i < items.length - 1; i++) {
+            new Dataized(items[i]).take();
         }
         final Phi ret;
-        if (length > 0) {
+        if (items.length > 0) {
             final Phi last = steps.take("at").copy();
-            last.put(0, new Data.ToPhi(length - 1));
+            last.put(0, new Data.ToPhi((long) items.length - 1L));
             ret = last;
         } else {
             ret = new Data.ToPhi(false);
         }
         return ret;
+    }
+
+    private static Phi[] toArray(final Phi args) {
+        final int length = Math.toIntExact(
+            new Dataized(
+                args.take("length")
+            ).take(Long.class)
+        );
+        final Phi[] res = new Phi[length];
+        Phi external = args;
+        for (int i = length - 1; i >= 0; i--) {
+            res[i] = new PhMethod(external, "tail");
+            external = external.copy().take("head");
+        }
+        return res;
     }
 }
