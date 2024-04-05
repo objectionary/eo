@@ -120,7 +120,9 @@ final class PhPackage implements Phi {
 
     @Override
     public void put(final String name, final Phi object) {
-        // Ignores it
+        throw new IllegalStateException(
+            String.format("Can't #put(%s, %s) to package object '%s'", name, object, this.pkg)
+        );
     }
 
     @Override
