@@ -47,8 +47,8 @@ public final class PhTracedLocator implements Phi {
      * Cages that are currently being dataized. If one cage is being datazed, and
      * it needs to be dataized inside current dataization, the locator of current object be here.
      */
-    private static final ThreadLocal<Map<Integer, Integer>>
-        DATAIZING_CAGES = ThreadLocal.withInitial(HashMap::new);
+    private static final ThreadLocal<Map<Integer, Integer>> DATAIZING_CAGES = ThreadLocal
+        .withInitial(HashMap::new);
 
     /**
      * Encaged object itself.
