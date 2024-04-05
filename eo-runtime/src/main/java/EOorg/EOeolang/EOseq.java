@@ -71,6 +71,11 @@ public final class EOseq extends PhDefault implements Atom {
         return ret;
     }
 
+    /**
+     * Converts eo tuple to java array.
+     * @param args Eo tuple.
+     * @return Java array.
+     */
     private static Phi[] eoTupleAsJavaArray(final Phi args) {
         final int length = Math.toIntExact(
             new Dataized(
