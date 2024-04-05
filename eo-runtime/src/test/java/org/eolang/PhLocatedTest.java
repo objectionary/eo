@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 class PhLocatedTest {
 
     @Test
-    void copySavesLocation() {
+    void savesLocationAfterCopying() {
         final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
         MatcherAssert.assertThat(
             located.copy().locator(),
