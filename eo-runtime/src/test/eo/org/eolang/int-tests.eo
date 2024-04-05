@@ -234,7 +234,7 @@
         minus1.plus minus2
         rec (n.minus 1) (minus1.plus minus2) minus1
 
-# Checks that division by zero returns an error object
+# Checks that division by zero returns an error object.
 [] > zero-division
   try > @
     []
@@ -243,7 +243,7 @@
       QQ.io.stdout e > @
     nop
 
-# Checks that division by one returns the dividend
+# Checks that division by one returns the dividend.
 [] > division-by-one
   -235 > dividend
   eq. > @

@@ -96,7 +96,7 @@
 
 # Test.
 [] > calculates-only-once
-  memory.alloc 0 > x
+  (memory 0).alloc > x
   # A.
   [] > a
     seq > @
@@ -113,9 +113,9 @@
 
 # Test.
 [] > writes-cage-to-memory
-  memory.alloc 0 > f1
+  (memory 0).alloc > f1
   cage.new int.plus > f2
-  memory.alloc 0 > f0
+  (memory 0).alloc > f0
   seq > @
     *
       f0.write 1
@@ -128,7 +128,7 @@
 
 # Test.
 [] > recursion-without-arguments
-  memory.alloc 0 > n
+  (memory 0).alloc > n
   # Func.
   [] > func
     if > @
@@ -161,14 +161,14 @@
 
 # Test.
 [] > refers-to-inner-vars-correctly
-  memory.alloc 0 > go
+  (memory 0).alloc > go
   seq > @
     *
       go.write TRUE
       while
         go.as-bool
         [i]
-          memory.alloc 0 > m
+          (memory 0).alloc > m
           seq > @
             *
               m.write 42
@@ -212,7 +212,7 @@
 
 # Test.
 [] > directly-accesses-objects-from-root
-  Q.org.eolang.memory.alloc 0 > m
+  (Q.org.eolang.memory 0).alloc > m
   eq. > @
     seq > written!
       *
@@ -225,7 +225,7 @@
 
 # Test.
 [] > directly-accesses-objects-from-standard-root
-  QQ.memory.alloc 0 > m
+  (QQ.memory 0).alloc > m
   eq. > @
     seq > written!
       *
@@ -262,7 +262,7 @@
 
 # Test.
 [] > constant-defends-against-side-effects
-  memory.alloc 7 > a
+  (memory 7).alloc > a
   # Increment.
   [x] > inc
     seq > @
@@ -290,7 +290,7 @@
 
 # Test.
 [] > parent-in-vertical-notation
-  memory.alloc 5 > m
+  (memory 5).alloc > m
   # Value.
   [] > value
     # Phi.
@@ -304,7 +304,7 @@
 
 # Test.
 [] > parent-in-horizontal-notation
-  memory.alloc 5 > m
+  (memory 5).alloc > m
   # Value.
   [] > value
     # Phi.

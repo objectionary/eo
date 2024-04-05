@@ -25,31 +25,45 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package org.eolang;
 
-import java.util.function.Supplier;
+package EOorg.EOeolang;
+
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Fake object, mostly for unit tests.
- *
- * @since 0.29
+ * Malloc.pointer.write object.
+ * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public final class PhFake extends PhDefault {
+@XmirObject(oname = "malloc.pointer.write")
+final class EOmalloc$EOmemory_block_pointer$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
+     * @param sigma Sigma
      */
-    public PhFake() {
-        this(() -> Phi.Φ);
+    EOmalloc$EOmemory_block_pointer$EOwrite(final Phi sigma) {
+        super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("data", new AtVoid("data"));
     }
 
-    /**
-     * Ctor.
-     * @param sup The function to return the real object
-     */
-    public PhFake(final Supplier<Phi> sup) {
-        super(Phi.Φ);
-        this.add("args", new AtVoid("args"));
-        this.add("φ", new AtComposite(this, rho -> sup.get()));
+    @Override
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.get().write(
+            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
+            new Param(this, "offset").strong(Long.class).intValue(),
+            new Dataized(this.take("data")).take()
+        );
+        return new Data.ToPhi(true);
     }
 }

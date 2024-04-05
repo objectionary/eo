@@ -28,7 +28,8 @@
 
 # Dataizes given `object`, makes new `bytes` from the data and behaves as given `bytes`.
 [object] > const
-  memory.alloc object > cached
+  (memory object).alloc > cached
+
   # Object for using the cached one.
   [] > make
     ^.cached > @

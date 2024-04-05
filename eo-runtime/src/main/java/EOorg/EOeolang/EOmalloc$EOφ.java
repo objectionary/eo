@@ -25,44 +25,44 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Ram;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Read from memory.
- * @since 0.25
+ * Malloc.φ object.
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public final class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.@")
+final class EOmalloc$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOram_slice$EOφ(final Phi sigma) {
+    EOmalloc$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
-    public Phi lambda() throws Exception {
-        return new Data.ToPhi(
-            Ram.INSTANCE.read(
-                this.take(Attr.RHO).take(Attr.RHO),
-                new Param(
-                    this.take(Attr.RHO), "position"
-                ).strong(Long.class).intValue(),
-                new Param(
-                    this.take(Attr.RHO), "size"
-                ).strong(Long.class).intValue()
-            )
+    public Phi lambda() {
+        final Phi size = this.take(Attr.RHO).take("size");
+        final int identifier = Heaps.INSTANCE.get().malloc(
+            this, new Dataized(size).take(Long.class).intValue()
         );
+        final Phi pointer = this.take(Attr.SIGMA).take("memory-block-pointer").copy();
+        pointer.put("id", new Data.ToPhi((long) identifier));
+        pointer.put("size", size);
+        System.out.println(new Data.ToPhi((long) identifier));
+        return pointer;
     }
 }

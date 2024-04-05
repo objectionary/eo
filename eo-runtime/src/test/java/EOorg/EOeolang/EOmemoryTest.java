@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOmemory} and {@link EOmemory$EOalloc}.
+ * Test case for {@link EOmemory} and {@link EOmemory$EOallocated}.
  *
  * @since 0.1
  */
@@ -259,9 +259,8 @@ public final class EOmemoryTest {
      * @return Alloc object
      */
     private static Phi allocated(final Phi obj) {
-        final Phi memory = Phi.Φ.take("org.eolang.memory");
-        final Phi alloc = memory.take("alloc").copy();
-        alloc.put(0, obj);
-        return alloc;
+        final Phi memory = Phi.Φ.take("org.eolang.memory").copy();
+        memory.put(0, obj);
+        return memory.take("alloc");
     }
 }

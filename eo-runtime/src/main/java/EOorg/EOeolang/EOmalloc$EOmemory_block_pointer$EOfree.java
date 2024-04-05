@@ -27,39 +27,37 @@
  */
 package EOorg.EOeolang;
 
-import java.io.IOException;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Ram;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Write bytes to memory from position, according to the ram.slice object.
- * @since 0.1
+ * Malloc.pointer.free object.
+ *
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public final class EOram$EOram_slice$EOwrite extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.pointer.free")
+public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOram_slice$EOwrite(final Phi sigma) {
+    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
         super(sigma);
-        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() throws IOException {
-        final Phi ram = this.take(Attr.RHO);
-        final int pos = new Param(ram, "position").strong(Long.class).intValue();
-        final byte[] bytes = new Param(this, "data").strong(byte[].class);
-        Ram.INSTANCE.write(ram.take(Attr.RHO), pos, bytes);
+    public Phi lambda() {
+        Heaps.INSTANCE.get().free(
+            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+        );
         return new Data.ToPhi(true);
     }
 }
