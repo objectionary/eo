@@ -9,11 +9,11 @@ phi: |
   {
     ⟦
       main ↦ ⟦
-        λ ⤍ Lambda
+        λ ⤍ Lmain
       ⟧,
       outer ↦ ⟦
         inner ↦ ⟦
-          λ ⤍ Lambda
+          λ ⤍ Louter_inner
         ⟧
       ⟧
     ⟧
