@@ -79,6 +79,11 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </xsl:if>
   </xsl:function>
+  <!-- Get clean escaped object name  -->
+  <xsl:function name="eo:lambda-name">
+    <xsl:param name="name"/>
+    <xsl:value-of select="concat('L', replace(replace(replace(substring($name, 3), '\.', '_'), '-', '_'), '@', 'φ'))"/>
+  </xsl:function>
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
@@ -359,11 +364,14 @@ SOFTWARE.
       <xsl:value-of select="eo:eol($tabs+1)"/>
       <!-- Atom -->
       <xsl:if test="@atom">
+        <xsl:variable name="lambda-name">
+          <xsl:value-of select="$package"/>
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$name"/>
+        </xsl:variable>
         <xsl:value-of select="$lambda"/>
         <xsl:value-of select="$dashed-arrow"/>
-        <xsl:value-of select="$package"/>
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$name"/>
+        <xsl:value-of select="eo:lambda-name($lambda-name)"/>
         <xsl:if test="count(o)&gt;0">
           <xsl:value-of select="eo:comma(2, $tabs+1)"/>
         </xsl:if>
