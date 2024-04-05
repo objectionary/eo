@@ -277,7 +277,7 @@ SOFTWARE.
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:choose>
-          <xsl:when test="@ref">
+          <xsl:when test="@ref and not(@data)">
             <xsl:value-of select="eo:add-xi(true())"/>
             <xsl:apply-templates select="." mode="path">
               <xsl:with-param name="find" select="@base"/>
