@@ -59,7 +59,6 @@ final class EOmalloc$EOmemory_block_pointer$EOwrite extends PhDefault implements
 
     @Override
     public Phi lambda() throws Exception {
-        final Phi rho = this.take(Attr.RHO);
         Heaps.INSTANCE.get().write(
             new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
             new Dataized(this.take("data")).take()
