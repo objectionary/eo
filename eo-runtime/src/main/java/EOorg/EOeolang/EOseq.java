@@ -81,7 +81,7 @@ public final class EOseq extends PhDefault implements Atom {
         Phi external = args;
         for (int ind = length - 1; ind >= 0; --ind) {
             res[ind] = new PhMethod(external, "tail");
-            external = external.copy().take("head");
+            external = external.take("head");
         }
         return res;
     }
