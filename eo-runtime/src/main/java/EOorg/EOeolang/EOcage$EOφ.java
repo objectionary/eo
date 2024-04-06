@@ -30,40 +30,38 @@ package EOorg.EOeolang;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Memory.φ object.
+ * Cage.φ object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "memory.@")
-public final class EOmemory$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "cage.@")
+public final class EOcage$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOmemory$EOφ(final Phi sigma) {
+    EOcage$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
     public Phi lambda() throws Exception {
-        final byte[] bytes = new Dataized(this.take(Attr.RHO).take("data")).take();
-        final Phi malloc = Phi.Φ.take("org.eolang.malloc").copy();
-        malloc.put("size", new Data.ToPhi((long) bytes.length));
-        final Phi pointer = malloc.take(Attr.PHI).take(Attr.LAMBDA);
-        final Phi write = pointer.take("write").copy();
-        write.put("offset", new Data.ToPhi(0L));
-        write.put("data", new Data.ToPhi(bytes));
-        new Dataized(write).take();
-        final Phi alloc = this.take(Attr.SIGMA).take("allocated").copy();
-        alloc.put("pointer", pointer);
-        return alloc;
+        final Phi encaged = this.take(Attr.SIGMA).take("encaged").copy();
+        encaged.put(
+            "locator",
+            new Data.ToPhi(
+                (long) Cages.INSTANCE.get().encage(
+                    this.take(Attr.RHO).take("object")
+                )
+            )
+        );
+        return encaged;
     }
 }

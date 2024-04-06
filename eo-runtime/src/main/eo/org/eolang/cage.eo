@@ -29,7 +29,22 @@
 # This object is doing exactly the same as "memory", but allows
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
-[] > cage
-  # Make new `cage` for an object. After application this `new` object starts behave
-  # like `it` object.
-  [it] > new /?
+[object] > cage
+  @.new > new
+
+  # Object encaged for the first time.
+  [] > @ /encaged
+
+  # Object encaged by locator.
+  [locator] > encaged
+    $ > new
+    it > @
+
+    # Retrieved encaged object by locator.
+    [] > it /?
+
+    # Encage new object by locator.
+    [object] > encage /true
+
+    # Remove object from the cage.
+    [] > remove /true
