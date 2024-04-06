@@ -31,6 +31,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedLocator;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -41,7 +42,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "cage.encaged.it")
-public class EOcage$EOencaged$EOit extends PhDefault implements Atom {
+final class EOcage$EOencaged$EOit extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -52,8 +53,12 @@ public class EOcage$EOencaged$EOit extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        return Cages.INSTANCE.get().get(
-            Math.toIntExact(new Param(this.take(Attr.RHO), "locator").strong(Long.class))
+        final int locator = Math.toIntExact(
+            new Param(this.take(Attr.RHO), "locator").strong(Long.class)
+        );
+        return new PhTracedLocator(
+            Cages.INSTANCE.get(locator),
+            locator
         );
     }
 }

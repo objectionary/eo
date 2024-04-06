@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "cage.encaged.encage")
-class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
+final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
@@ -55,7 +55,7 @@ class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        Cages.INSTANCE.get().encage(
+        Cages.INSTANCE.encage(
             Math.toIntExact(
                 new Param(this.take(Attr.RHO), "locator").strong(Long.class)
             ),

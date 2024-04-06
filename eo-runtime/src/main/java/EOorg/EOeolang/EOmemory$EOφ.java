@@ -43,7 +43,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "memory.@")
-public final class EOmemory$EOφ extends PhDefault implements Atom {
+final class EOmemory$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma

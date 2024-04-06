@@ -32,30 +32,32 @@ import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedLocator;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Cage.encaged.remove object.
+ * Cage.encaged.free object.
  * @since 0.36.0
  */
 @Versionized
-@XmirObject(oname = "cage.encaged.remove")
-public class EOcage$EOencaged$EOremove extends PhDefault implements Atom {
+@XmirObject(oname = "cage.encaged.free")
+final class EOcage$EOencaged$EOfree extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOcage$EOencaged$EOremove(final Phi sigma) {
+    EOcage$EOencaged$EOfree(final Phi sigma) {
         super(sigma);
     }
 
     @Override
     public Phi lambda() throws Exception {
-        Cages.INSTANCE.get().remove(
-            Math.toIntExact(new Param(this.take(Attr.RHO), "locator").strong(Long.class))
+        final int locator = Math.toIntExact(
+            new Param(this.take(Attr.RHO), "locator").strong(Long.class)
         );
+        Cages.INSTANCE.remove(locator);
         return new Data.ToPhi(true);
     }
 }
