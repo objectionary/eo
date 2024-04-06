@@ -44,7 +44,7 @@ public final class HeapsTest {
     /**
      * Heaps.
      */
-    private static final Heaps HEAPS = Heaps.INSTANCE.get();
+    private static final Heaps HEAPS = Heaps.INSTANCE;
 
     @Test
     void allocatesMemory() {
