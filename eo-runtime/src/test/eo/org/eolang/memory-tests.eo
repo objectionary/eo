@@ -29,37 +29,40 @@
 # Test.
 [] > writes-into-memory
   (memory 0).alloc > x
-  eq. > @
-    seq
-      *
-        x.write 10
-        x
-    10
+  seq > @
+    *
+      x.write 10
+      and.
+        x.eq 10
+        x.free
 
 # Test.
 [] > memory-double-writes
   (memory "1234567890123").alloc > m
-  eq. > @
-    42.as-bytes.concat
-      "orld!".as-bytes
-    seq
-      *
-        m.write "Hello, world!"
-        m.write 42
-        m
+  seq > @
+    *
+      m.write "Hello, world!"
+      m.write 42
+      and.
+        m.eq
+          42.as-bytes.concat
+            "orld!".as-bytes
+        m.free
 
 # Test.
 [] > rewrites-and-increments-itself
   (memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        m.write (m.as-int.plus 5)
-        m
-    6
+  seq > @
+    *
+      m.write 1
+      m.write (m.as-int.plus 5)
+      and.
+        m.eq 6
+        m.free
 
 # Test.
+# This test does not work in the way we would expect because every time we do `a.x` -
+# new copy of `x` object is created which leads to new allocation in memory and memory leaks.
 [] > memory-in-outer-scope
   # Outer scope object.
   [] > a
@@ -76,25 +79,29 @@
 [] > writes-into-two-memory-objects
   (memory 0).alloc > a
   (memory 0).alloc > b
-  and. > @
-    seq
-      *
-        a.write 10
-        b.write 20
-        b.eq 20
-    a.eq 10
+  seq > @
+    *
+      a.write 10
+      b.write 20
+      and.
+        (b.plus a).eq 30
+        and.
+          m.free
+          b.free
 
 # Test.
 [] > writes-into-two-memory-objects-and-check-first
   (memory 0).alloc > a
   (memory 0).alloc > b
-  eq. > @
-    seq
-      *
-        a.write 10
-        b.write 20
-        a
-    10
+  seq > @
+    *
+      a.write 10
+      b.write 20
+      and.
+        a.eq 10
+        and.
+          b.free
+          a.free
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
@@ -103,7 +110,9 @@
     []
       m.write 86124867.88 > @
     [e]
-      QQ.io.stdout e > @
+      and. > @
+        QQ.io.stdout e
+        m.free
     nop
 
 # Test.
@@ -113,54 +122,64 @@
     []
       m.write "Much longer string!" > @
     [e]
-      QQ.io.stdout e > @
+      and. > @
+        QQ.io.stdout e
+        m.free
     nop
 
 # Test.
 [] > memory-is-strictly-typed-int
   (memory 12248).alloc > m
-  eq. > @
-    try
-      []
-        m.write 2556 > @
-      [e]
-        e > @
-      nop
-    2556
+  and. > @
+    eq.
+      try
+        []
+          m.write 2556 > @
+        [e]
+          e > @
+        nop
+      2556
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-float
   (memory 245.88).alloc > m
-  eq. > @
-    try
-      []
-        m.write 82.22 > @
-      [e]
-        e > @
-      nop
-    82.22
+  and. > @
+    eq.
+      try
+        []
+          m.write 82.22 > @
+        [e]
+          e > @
+        nop
+      82.22
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-string
-  (memory "Hello").alloc > m
-  eq. > @
-    try
-      []
-        m.write "Prot" > @
-      [e]
-        e > @
-      nop
-    "Proto"
+  (memory "HellX").alloc > m
+  and. > @
+    eq. > @
+      try
+        []
+          m.write "Prot" > @
+        [e]
+          e > @
+        nop
+      "ProtX"
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-bool
   (memory FALSE).alloc > m
-  try > @
-    []
-      m.write TRUE > @
-    [e]
-      e > @
-    nop
+  and. > @
+    try
+      []
+        m.write TRUE > @
+      [e]
+        e > @
+      nop
+    m.free
 
 # Test.
 [] > memory-is-cleared-successfully

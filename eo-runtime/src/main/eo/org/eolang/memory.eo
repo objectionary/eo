@@ -38,6 +38,7 @@
 #     m          # dataization leads to reading from memory
 #     m.@        # taking @ attribute also leads to reading from memory
 #     m.free     # clear memory
+#     m.freed    # clear memory and return the data
 # ```
 # Clearing the memory is optional and is up to programmer.
 [data] > memory
@@ -61,3 +62,12 @@
     # Free memory.
     [] > free
       ^.pointer.free > @
+
+    # Free memory and return data.
+    [] > freed
+      (cage bytes).new > data
+      seq > @
+        *
+          data.encage ^.pointer.read
+          ^.free
+          data.freed

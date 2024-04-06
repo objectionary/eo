@@ -30,14 +30,14 @@
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
 [object] > cage
-  @.new > new
+  @.self > new
 
   # Object encaged for the first time.
   [] > @ /encaged
 
   # Object encaged by locator.
   [locator] > encaged
-    $ > new
+    $ > self
     it > @
 
     # Retrieved encaged object by locator.
@@ -46,5 +46,8 @@
     # Encage new object by locator.
     [object] > encage /true
 
-    # Remove object from the cage.
-    [] > remove /true
+    # Just remove object from the cage.
+    [] > free /true
+
+    # Remove object from the cage and return it.
+    [] > freed /?

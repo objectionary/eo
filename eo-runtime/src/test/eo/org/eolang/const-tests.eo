@@ -38,7 +38,7 @@
       cached.as-int
       cached.as-bytes
       cached.as-bool
-      1.eq m
+      1.eq m.freed
 
 # Test.
 [] > const-behaves-as-exclamationed
@@ -49,6 +49,7 @@
       *
         TRUE
         m.write (m.as-int.plus 1)
+        m.freed
   (const func).make > cached1
   func > cached2!
   seq > @

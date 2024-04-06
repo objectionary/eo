@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 
@@ -40,7 +41,7 @@ final class Cages {
     /**
      * Cages instance.
      */
-    static final ThreadLocal<Cages> INSTANCE = ThreadLocal.withInitial(Cages::new);
+    static final Cages INSTANCE = new Cages();
 
     /**
      * Encaged objects.
@@ -61,12 +62,9 @@ final class Cages {
      * @param object Object ot encage
      * @return Locator to the object in cage
      */
-    int encage(final Phi object) {
+    int init(final Phi object) {
         final int locator = object.hashCode();
-        if (this.objects.containsKey(locator)) {
-
-        }
-        this.objects.put(locator, object);
+        this.objects.putIfAbsent(locator, object);
         return locator;
     }
 
@@ -76,14 +74,28 @@ final class Cages {
      * @param object Object to encage
      */
     void encage(final int locator, final Phi object) {
-        if (!this.objects.containsKey(locator)) {
-
+        synchronized (this.objects) {
+            if (!this.objects.containsKey(locator)) {
+                throw new ExFailure(
+                    String.format(
+                        "Encaged object with locator %d was not initialized, can't reencage, can't encage",
+                        locator
+                    )
+                );
+            }
+            final String current = this.objects.get(locator).forma();
+            final String forma = object.forma();
+            if (!current.equals(forma)) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't encage an object formed by %s because object formed by %s was encaged before",
+                        forma,
+                        current
+                    )
+                );
+            }
+            this.objects.put(locator, object);
         }
-        final Phi current = this.objects.get(locator);
-        if (!current.forma().equals(object.forma())) {
-
-        }
-        this.objects.put(locator, object);
     }
 
     /**
@@ -92,10 +104,17 @@ final class Cages {
      * @return Object
      */
     Phi get(final int locator) {
-        if (!this.objects.containsKey(locator)) {
-
+        synchronized (this.objects) {
+            if (!this.objects.containsKey(locator)) {
+                throw new ExFailure(
+                    String.format(
+                        "Object with locator %d is absent in cage, can't get",
+                        locator
+                    )
+                );
+            }
+            return this.objects.get(locator);
         }
-        return this.objects.get(locator);
     }
 
     /**
@@ -103,9 +122,16 @@ final class Cages {
      * @param locator Locator of the object
      */
     void remove(final int locator) {
-        if (!this.objects.containsKey(locator)) {
-
+        synchronized (this.objects) {
+            if (!this.objects.containsKey(locator)) {
+                throw new ExFailure(
+                    String.format(
+                        "Object with locator %d is absent in cage, can't remove",
+                        locator
+                    )
+                );
+            }
+            this.objects.remove(locator);
         }
-        this.objects.remove(locator);
     }
 }
