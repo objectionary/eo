@@ -55,7 +55,7 @@ public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault impl
 
     @Override
     public Phi lambda() {
-        Heaps.INSTANCE.get().free(
+        Heaps.INSTANCE.free(
             new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
         );
         return new Data.ToPhi(true);
