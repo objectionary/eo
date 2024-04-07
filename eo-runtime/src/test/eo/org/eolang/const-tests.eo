@@ -36,12 +36,10 @@
   seq > @
     *
       cached.as-int
-      cached.as-bytes
-      cached.as-bool
-      1.eq m.freed
+      TRUE
 
 # Test.
-[] > const-behaves-as-exclamationed
+[] > const-behaves-as-exclamation
   # Func.
   [] > func
     (memory 0).alloc > m

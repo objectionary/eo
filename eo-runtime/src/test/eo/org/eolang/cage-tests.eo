@@ -44,7 +44,7 @@
   seq > @
     *
       x.encage 42
-      copy.freed.eq 42
+      42.eq copy.freed
 
 # Test.
 [] > dataizes-encaged-object-not-lazily-first
@@ -176,7 +176,7 @@
         [e]
           cge.encage 10 > @
         nop
-      cge.freed.eq 10
+      10.eq cge.freed
 
 # Check that cage stack leads to error. Just prints the error
 # message if passes.
@@ -199,12 +199,14 @@
 
 # Test.
 [] > applies-after-retrieval
-  # Func.
-  [x] > func
-    2.plus x > @
-  (cage func).new > c
+  new. > c
+    cage
+      []
+        # Func.
+        [x] > func
+          2.plus x > @
   and. > @
     eq.
-      c.it 5
+      c.func 5
       7
     c.free

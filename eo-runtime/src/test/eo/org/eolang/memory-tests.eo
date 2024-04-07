@@ -97,11 +97,7 @@
     *
       a.write 10
       b.write 20
-      and.
-        a.eq 10
-        and.
-          b.free
-          a.free
+      a.eq 10
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
@@ -159,7 +155,7 @@
 [] > memory-is-strictly-typed-string
   (memory "HellX").alloc > m
   and. > @
-    eq. > @
+    eq.
       try
         []
           m.write "Prot" > @

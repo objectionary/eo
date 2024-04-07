@@ -63,11 +63,5 @@
     [] > free
       ^.pointer.free > @
 
-    # Free memory and return data.
-    [] > freed
-      (cage bytes).new > data
-      seq > @
-        *
-          data.encage ^.pointer.read
-          ^.free
-          data.freed
+    # Free memory and return the data.
+    [] > freed /bytes

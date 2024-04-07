@@ -39,7 +39,7 @@
   while > res!
     condition
     [i] (condition.write FALSE > @)
-  and.
+  and. > @
     (bool res).not
     condition.free
 
