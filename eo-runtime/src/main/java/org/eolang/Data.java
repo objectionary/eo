@@ -35,6 +35,11 @@ import java.nio.charset.StandardCharsets;
  */
 @Versionized
 public interface Data {
+    /**
+     * Attach data to the object.
+     * @param data Data.
+     */
+    void attach(byte[] data);
 
     /**
      * Take the data.
@@ -88,11 +93,6 @@ public interface Data {
         }
 
         @Override
-        public Phi take(final String name, final Phi rho) {
-            return this.object.take(name, rho);
-        }
-
-        @Override
         public void put(final int pos, final Phi obj) {
             this.object.put(pos, obj);
         }
@@ -120,6 +120,11 @@ public interface Data {
         @Override
         public String toString() {
             return this.object.toString();
+        }
+
+        @Override
+        public void attach(final byte[] data) {
+            this.object.attach(data);
         }
 
         @Override
@@ -171,15 +176,14 @@ public interface Data {
                     )
                 );
             }
-            final Phi object;
             if (delta) {
-                object = new PhData(phi, bytes);
+                phi.attach(bytes);
             } else {
-                final Phi bts = new PhData(eolang.take("bytes").copy(), bytes);
+                final Phi bts = eolang.take("bytes").copy();
+                bts.attach(bytes);
                 phi.put(0, bts);
-                object = phi;
             }
-            return object;
+            return phi;
         }
 
         /**

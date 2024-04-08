@@ -81,11 +81,6 @@ public interface Phi extends Term, Data {
         }
 
         @Override
-        public Phi take(final String name, final Phi rho) {
-            return this.pkg.take(name, rho);
-        }
-
-        @Override
         public void put(final int pos, final Phi object) {
             throw new IllegalStateException(
                 String.format("Can't #put(%d, %s) to Φ", pos, object)
@@ -109,6 +104,10 @@ public interface Phi extends Term, Data {
             return this.pkg.forma();
         }
 
+        public void attach(final byte[] data) {
+
+        }
+
         @Override
         public byte[] delta() {
             throw new IllegalStateException(
@@ -130,14 +129,6 @@ public interface Phi extends Term, Data {
      * @return The object
      */
     Phi take(String name);
-
-    /**
-     * Get object by the name of the attribute and set \rho to it.
-     * @param name The name of the attribute
-     * @param rho The \rho object
-     * @return The object
-     */
-    Phi take(String name, Phi rho);
 
     /**
      * Put object by position of the attribute.

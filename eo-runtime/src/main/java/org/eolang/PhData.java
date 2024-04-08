@@ -25,108 +25,35 @@
 package org.eolang;
 
 /**
- * Object with data.
+ * Object with attached data.
  * @since 0.36.0
  */
-public final class PhData implements Phi {
-
-    /**
-     * The original object.
-     */
-    private final Phi object;
-
-    /**
-     * Data.
-     */
-    private final byte[] data;
+public final class PhData extends PhOnce {
 
     /**
      * Ctor.
-     * @param obj Original object
-     * @param data Data
+     * @param phi Object
+     * @param bytes Data to attach
      */
-    public PhData(final Phi obj, final byte[] data) {
-        this.object = obj;
-        this.data = data;
-    }
+    public PhData(final Phi phi, final byte[] bytes) {
+        super(
+            () -> {
+                phi.attach(bytes);
+                return phi;
+            },
+            () -> String.format(
+                "%s[%s=%s]",
+                phi,
+                Attr.DELTA,
+                new BytesOf(bytes).asString()
+            ),
+            () -> String.format(
+                "%s(%s ↦ %s)",
+                phi.φTerm(),
+                Attr.DELTA,
+                new BytesOf(bytes).asString()
 
-    @Override
-    public Phi copy() {
-        return new PhData(this.object.copy(), this.data);
-    }
-
-    @Override
-    public Phi take(final String name) {
-        return this.take(name, this);
-    }
-
-    @Override
-    public Phi take(final String name, final Phi rho) {
-        return this.object.take(name, rho);
-    }
-
-    @Override
-    public void put(final int pos, final Phi obj) {
-        this.object.put(pos, obj);
-    }
-
-    @Override
-    public void put(final String name, final Phi obj) {
-        this.object.put(name, obj);
-    }
-
-    @Override
-    public String locator() {
-        return this.object.locator();
-    }
-
-    @Override
-    public String forma() {
-        return this.object.forma();
-    }
-
-    @Override
-    public String φTerm() {
-        return this.object.φTerm()
-            .replaceFirst(
-                "⟦\n",
-                String.format(
-                    "⟦\n\t%s ↦ %s,\n",
-                    Attr.DELTA,
-                    this.bytes()
-                )
-            );
-    }
-
-    @Override
-    public byte[] delta() {
-        return this.data;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-            "%s=%s",
-            this.object.toString(),
-            this.bytes()
+            )
         );
-    }
-
-    /**
-     * Converts byte array to string.
-     * @return Byte array as string
-     */
-    public String bytes() {
-        final StringBuilder out = new StringBuilder(0);
-        for (final byte bte : this.data) {
-            if (out.length() > 0) {
-                out.append('-');
-            }
-            out.append(String.format("%02X", bte));
-        }
-        if (this.data.length == 0) {
-            out.append("--");
-        }
-        return out.toString();
     }
 }

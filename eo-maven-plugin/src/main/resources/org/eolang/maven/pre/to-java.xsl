@@ -206,7 +206,6 @@ SOFTWARE.
         <xsl:text>super(sigma);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">

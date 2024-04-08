@@ -27,12 +27,16 @@
 +version 0.0.0
 
 # Test.
+# @todo #2931:30min Enable the tests: dataizes-encaged-object-lazily-third and
+#  dataizes-encaged-object-not-lazily-first. The tests were disabled because current cage
+#  implementation is wrong (see: https://github.com/objectionary/eo/issues/3057).
+#  We need to enable them when cage is great again.
 [] > encages-into-cage
   # Object with free attribute.
   [z] > a
   cage.new a > x
   eq. > @
-    seq > seven!
+    seq
       *
         x.encage
           a 7
@@ -62,11 +66,11 @@
   cage.new 0 > x
   cage.new int.plus > sum
   eq. > @
-    seq > s!
+    seq
       *
         x.encage 42
         sum.encage
-          x.plus 1
+          x.as-int.plus 1
         x.encage 7
         sum
     8
@@ -76,7 +80,7 @@
   cage.new 0 > x
   cage.new int.plus > sum
   eq. > @
-    seq > s!
+    seq
       *
         x.encage 42
         sum.encage
@@ -91,12 +95,12 @@
   cage.new 0 > y
   cage.new int.plus > sum
   eq. > @
-    seq > s!
+    seq
       *
         x.encage 42
         y.encage 7
         sum.encage
-          x.plus y
+          x.as-int.plus y
         y.encage 13
         x.encage 4
         sum
@@ -144,11 +148,11 @@
               mb.write (mb.as-int.plus 1)
               mb.as-int
   eq. > @
-    seq > s1!
+    seq
       *
         ca
         ca.plus 40
-    seq > s2!
+    seq
       *
         cb.z
         cb.z.plus 40

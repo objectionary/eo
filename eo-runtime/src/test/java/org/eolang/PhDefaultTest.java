@@ -426,7 +426,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void calculatesRandomTwice() {
+    void doesNotCalculateRandomTwice() {
         final Phi rnd = new PhWith(
             new PhMethod(
                 new PhWith(
@@ -441,7 +441,15 @@ final class PhDefaultTest {
         );
         MatcherAssert.assertThat(
             new Dataized(rnd).take(Double.class),
-            Matchers.not(Matchers.equalTo(new Dataized(rnd).take(Double.class)))
+            Matchers.equalTo(new Dataized(rnd).take(Double.class))
+        );
+    }
+
+    @Test
+    void injectsDeltaIntoTerm() {
+        MatcherAssert.assertThat(
+            new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
+            Matchers.containsString("Δ ↦ 01-02-03")
         );
     }
 
