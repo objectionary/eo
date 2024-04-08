@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOseq;
 import java.util.HashMap;
 import java.util.Map;
@@ -191,7 +192,7 @@ final class UniverseDefaultTest {
          */
         DummyWithAt(final Phi sigma, final String att) {
             super(sigma);
-            this.add(att, new AtOnce(new AtComposite(sigma, self -> new Data.ToPhi(1L))));
+            this.add(att, new AtOnce(new AtComposite(sigma, self -> new EOint(Phi.Φ))));
         }
 
         /**
