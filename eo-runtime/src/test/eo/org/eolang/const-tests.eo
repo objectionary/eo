@@ -27,88 +27,36 @@
 +version 0.0.0
 
 # Test.
-[] > simple-division-by-zero
-  try > @
-    []
-      42.div 0 > @
-    [e]
-      QQ.io.stdout > @
-        e
-    []
-      QQ.io.stdout > @
-        "\nfinally"
-
-# Test.
-[] > catches-simple-exception
-  try > @
-    []
-      slice. > @
-        "some string"
-        7
-        5
-    [e]
-      QQ.io.stdout e > @
-    []
-      FALSE > @
-
-# Test.
-[] > two-nested-try-blocks
-  try > @
-    []
-      try > @
-        []
-          slice. > @
-            "some string"
-            7
-            5
-        [e]
-          error e > @
-        nop
-    [e]
-      QQ.io.stdout e > @
-    nop
-
-# Test.
-[] > try-without-error-block
-  eq. > @
-    try
-      []
-        30.plus 2 > @
-      [e]
-        e > @
-      nop
-    32
-
-# Test.
-[] > try-memory-update
+[] > const-does-not-do-recalculation
   (memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        try
-          []
-            m.write (m.as-int.plus 1) > @
-          [e]
-            e > @
-          nop
-        m.as-int
-    2
+  # Func.
+  [] > func
+    ^.m.write (^.m.as-int.plus 1) > @
+  (const func).make > cached
+  seq > @
+    *
+      cached.as-int
+      cached.as-bytes
+      cached.as-bool
+      1.eq m
 
 # Test.
-[] > try-memory-update-catch
-  (memory 0).alloc > m
-  eq. > @
-    seq
+[] > const-behaves-as-exclamationed
+  # Func.
+  [] > func
+    (memory 0).alloc > m
+    seq > @
       *
-        m.write 1
-        try
-          []
-            seq > @
-              5.div 0
-              m.write (m.plus 1)
-          [e]
-            e > @
-          nop
-        m
-    1
+        TRUE
+        m.write (m.as-int.plus 1)
+  (const func).make > cached1
+  func > cached2!
+  seq > @
+    *
+      cached1
+      cached2
+      cached1
+      cached2
+      and.
+        cached1.eq cached2
+        1.eq cached1

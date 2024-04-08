@@ -92,7 +92,16 @@ final class PhPackage implements Phi {
         if (!this.objects.get().containsKey(key)) {
             this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
         }
-        return this.objects.get().get(key);
+        final Phi res;
+        final Phi phi = this.objects.get().get(key);
+        if (phi instanceof PhPackage) {
+            res = phi;
+        } else {
+            res = new AtSetRho(
+                this.objects.get().get(key).copy(), this, key
+            ).get();
+        }
+        return res;
     }
 
     @Override

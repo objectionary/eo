@@ -22,43 +22,48 @@
  * SOFTWARE.
  */
 
-package org.eolang;
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
+
+package EOorg.EOeolang;
+
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Attribute that tries to set \rho to retrieved object.
- * Attribute does not set \rho if retrieved object is \rho or \sigma.
- * Since every \rho attribute of {@link Phi} is {@link AtRho} it won't be
- * reset because {@link AtRho} ignores all puts except first.
+ * Malloc.pointer.write object.
  * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-final class AtSetRho extends AtEnvelope {
+@Versionized
+@XmirObject(oname = "malloc.pointer.write")
+final class EOmalloc$EOmemory_block_pointer$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param obj Object
-     * @param rho Rho that will be set
-     * @param name Name of the attribute
+     * @param sigma Sigma
      */
-    AtSetRho(final Phi obj, final Phi rho, final String name) {
-        this(new AtSimple(obj), rho, name);
+    EOmalloc$EOmemory_block_pointer$EOwrite(final Phi sigma) {
+        super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("data", new AtVoid("data"));
     }
 
-    /**
-     * Ctor.
-     * @param attr Origin attribute
-     * @param rho Rho that will be set
-     * @param name Name of the attribute
-     */
-    AtSetRho(final Attr attr, final Phi rho, final String name) {
-        super(
-            new AtGetOnly(
-                () -> {
-                    final Phi ret = attr.get();
-                    if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
-                        ret.put(Attr.RHO, rho);
-                    }
-                    return ret;
-                }
-            )
+    @Override
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.get().write(
+            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue(),
+            new Param(this, "offset").strong(Long.class).intValue(),
+            new Dataized(this.take("data")).take()
         );
+        return new Data.ToPhi(true);
     }
 }

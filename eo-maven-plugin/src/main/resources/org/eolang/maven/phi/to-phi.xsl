@@ -79,6 +79,11 @@ SOFTWARE.
       <xsl:text>.</xsl:text>
     </xsl:if>
   </xsl:function>
+  <!-- Get clean escaped object name  -->
+  <xsl:function name="eo:lambda-name">
+    <xsl:param name="name"/>
+    <xsl:value-of select="concat('L', replace(replace(replace(substring($name, 3), '\.', '_'), '-', '_'), '@', 'φ'))"/>
+  </xsl:function>
   <!-- SPECIAL CHARACTERS -->
   <xsl:function name="eo:specials">
     <xsl:param name="n"/>
@@ -190,6 +195,11 @@ SOFTWARE.
           </xsl:for-each>
           <xsl:apply-templates select="objects">
             <xsl:with-param name="tabs" select="$tabs + $length + 1"/>
+            <xsl:with-param name="package">
+              <xsl:value-of select="$program"/>
+              <xsl:text>.</xsl:text>
+              <xsl:value-of select="$package"/>
+            </xsl:with-param>
           </xsl:apply-templates>
           <xsl:for-each select="$parts">
             <xsl:value-of select="eo:comma(2, $tabs + $length + 2 - position())"/>
@@ -203,6 +213,7 @@ SOFTWARE.
         <xsl:otherwise>
           <xsl:apply-templates select="objects">
             <xsl:with-param name="tabs" select="$tabs"/>
+            <xsl:with-param name="package" select="$program"/>
           </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
@@ -215,10 +226,12 @@ SOFTWARE.
   <!-- Objects  -->
   <xsl:template match="objects">
     <xsl:param name="tabs"/>
+    <xsl:param name="package"/>
     <xsl:for-each select="o">
       <xsl:value-of select="eo:comma(position(), $tabs)"/>
       <xsl:apply-templates select=".">
         <xsl:with-param name="tabs" select="$tabs"/>
+        <xsl:with-param name="package" select="$package"/>
       </xsl:apply-templates>
     </xsl:for-each>
   </xsl:template>
@@ -255,6 +268,7 @@ SOFTWARE.
   <!-- Just object -->
   <xsl:template match="o[@base]">
     <xsl:param name="tabs"/>
+    <xsl:param name="package"/>
     <xsl:if test="@name">
       <xsl:value-of select="eo:specials(@name, true())"/>
       <xsl:value-of select="$arrow"/>
@@ -263,7 +277,7 @@ SOFTWARE.
       <!-- Not method -->
       <xsl:when test="not(starts-with(@base, '.'))">
         <xsl:choose>
-          <xsl:when test="@ref">
+          <xsl:when test="@ref and not(@data)">
             <xsl:value-of select="eo:add-xi(true())"/>
             <xsl:apply-templates select="." mode="path">
               <xsl:with-param name="find" select="@base"/>
@@ -296,6 +310,7 @@ SOFTWARE.
       <xsl:otherwise>
         <xsl:apply-templates select="o[position()=1]">
           <xsl:with-param name="tabs" select="$tabs"/>
+          <xsl:with-param name="package" select="$package"/>
         </xsl:apply-templates>
         <xsl:value-of select="eo:specials(@base, true())"/>
         <!-- Copy -->
@@ -337,8 +352,10 @@ SOFTWARE.
   <!-- Formation -->
   <xsl:template match="o[not(@base) and (@abstract or @atom)]">
     <xsl:param name="tabs"/>
+    <xsl:param name="package"/>
+    <xsl:variable name="name" select="eo:specials(@name, true())"/>
     <xsl:if test="@name">
-      <xsl:value-of select="eo:specials(@name, true())"/>
+      <xsl:value-of select="$name"/>
       <xsl:value-of select="$arrow"/>
     </xsl:if>
     <xsl:value-of select="$lb"/>
@@ -347,9 +364,14 @@ SOFTWARE.
       <xsl:value-of select="eo:eol($tabs+1)"/>
       <!-- Atom -->
       <xsl:if test="@atom">
+        <xsl:variable name="lambda-name">
+          <xsl:value-of select="$package"/>
+          <xsl:text>.</xsl:text>
+          <xsl:value-of select="$name"/>
+        </xsl:variable>
         <xsl:value-of select="$lambda"/>
         <xsl:value-of select="$dashed-arrow"/>
-        <xsl:text>Lambda</xsl:text>
+        <xsl:value-of select="eo:lambda-name($lambda-name)"/>
         <xsl:if test="count(o)&gt;0">
           <xsl:value-of select="eo:comma(2, $tabs+1)"/>
         </xsl:if>
@@ -358,6 +380,11 @@ SOFTWARE.
         <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
         <xsl:apply-templates select=".">
           <xsl:with-param name="tabs" select="$tabs+1"/>
+          <xsl:with-param name="package">
+            <xsl:value-of select="$package"/>
+            <xsl:text>.</xsl:text>
+            <xsl:value-of select="$name"/>
+          </xsl:with-param>
         </xsl:apply-templates>
       </xsl:for-each>
       <xsl:value-of select="eo:eol($tabs)"/>

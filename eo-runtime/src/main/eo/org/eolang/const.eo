@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,10 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Random-access memory (RAM).
-[size] > ram
-  # Write bytes from position.
-  [position data] > write /true
+# Dataizes given `object`, makes new `bytes` from the data and behaves as given `bytes`.
+[object] > const
+  (memory object).alloc > cached
 
-  # Slice fixed size of bytes from position.
-  [position size] > slice /ram-slice
-
-  # Slice fixed size of bytes from position.
-  [position size] > ram-slice
-    # Fixed sliced bytes from position.
-    [] > @ /bytes
-
-    # Write bytes to memory from position, according to the ram.slice object.
-    [data] > write /bytes
+  # Object for using the cached one.
+  [] > make
+    ^.cached > @

@@ -25,43 +25,44 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
-import java.io.IOException;
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Ram;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Write into memory.
- * @since 0.1
+ * Memory.φ object.
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
-@XmirObject(oname = "ram.write")
-public final class EOram$EOwrite extends PhDefault implements Atom {
+@XmirObject(oname = "memory.@")
+public final class EOmemory$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOwrite(final Phi sigma) {
+    EOmemory$EOφ(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtVoid("position"));
-        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() throws IOException {
-        final int pos = new Param(this, "position").strong(Long.class).intValue();
-        final byte[] bytes = new Param(this, "data").strong(byte[].class);
-        Ram.INSTANCE.write(this.take(Attr.RHO), pos, bytes);
-        return new Data.ToPhi(true);
+    public Phi lambda() throws Exception {
+        final byte[] bytes = new Dataized(this.take(Attr.RHO).take("data")).take();
+        final Phi malloc = Phi.Φ.take("org.eolang.malloc").copy();
+        malloc.put("size", new Data.ToPhi((long) bytes.length));
+        final Phi pointer = malloc.take(Attr.PHI).take(Attr.LAMBDA);
+        final Phi write = pointer.take("write").copy();
+        write.put("offset", new Data.ToPhi(0L));
+        write.put("data", new Data.ToPhi(bytes));
+        new Dataized(write).take();
+        final Phi alloc = this.take(Attr.SIGMA).take("allocated").copy();
+        alloc.put("pointer", pointer);
+        return alloc;
     }
 }

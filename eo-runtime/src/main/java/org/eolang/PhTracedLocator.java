@@ -29,11 +29,10 @@ import java.util.function.Supplier;
 
 /**
  * Class to trace if the "cage.new" got into recursion during the dataization.
- * NOT thread-safe.
+ * This class is thread safe in the meaning that different threads
+ * can safely use different instances of the class and recursion
+ * (If a thread dataizes the same recursively) will still be detected.
  * @since 0.36
- * @todo #2836:60min Make the class thread safe. It has private static
- *  field which can be accessed from differ thread and is not thread safe.
- *  Needs to synchronize this field.
  */
 @Versionized
 public final class PhTracedLocator implements Phi {
@@ -48,7 +47,8 @@ public final class PhTracedLocator implements Phi {
      * Cages that are currently being dataized. If one cage is being datazed, and
      * it needs to be dataized inside current dataization, the locator of current object be here.
      */
-    private static final Map<Integer, Integer> DATAIZING_CAGES = new HashMap<>();
+    private static final ThreadLocal<Map<Integer, Integer>> DATAIZING_CAGES = ThreadLocal
+        .withInitial(HashMap::new);
 
     /**
      * Encaged object itself.
@@ -185,7 +185,7 @@ public final class PhTracedLocator implements Phi {
          * @return New value in the map.
          */
         private Integer incrementCageCounter() {
-            return PhTracedLocator.DATAIZING_CAGES.compute(
+            return PhTracedLocator.DATAIZING_CAGES.get().compute(
                 PhTracedLocator.this.locator, (key, counter) -> {
                     final int ret = this.incremented(counter);
                     if (ret > PhTracedLocator.this.depth) {
@@ -226,11 +226,11 @@ public final class PhTracedLocator implements Phi {
         private void decrementCageCounter(final int incremented) {
             final int decremented = incremented - 1;
             if (decremented == 0) {
-                PhTracedLocator.DATAIZING_CAGES.remove(
+                PhTracedLocator.DATAIZING_CAGES.get().remove(
                     PhTracedLocator.this.locator
                 );
             } else {
-                PhTracedLocator.DATAIZING_CAGES.put(
+                PhTracedLocator.DATAIZING_CAGES.get().put(
                     PhTracedLocator.this.locator, decremented
                 );
             }

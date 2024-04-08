@@ -21,48 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang;
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Ram;
-import org.eolang.Versionized;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * Read from memory.
- * @since 0.25
- * @checkstyle TypeNameCheck (5 lines)
+ * Test case for {@link PhLocatedTest}.
+ *
+ * @since 0.36.0
  */
-@Versionized
-public final class EOram$EOram_slice$EOφ extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOram$EOram_slice$EOφ(final Phi sigma) {
-        super(sigma);
-    }
+class PhLocatedTest {
 
-    @Override
-    public Phi lambda() throws Exception {
-        return new Data.ToPhi(
-            Ram.INSTANCE.read(
-                this.take(Attr.RHO).take(Attr.RHO),
-                new Param(
-                    this.take(Attr.RHO), "position"
-                ).strong(Long.class).intValue(),
-                new Param(
-                    this.take(Attr.RHO), "size"
-                ).strong(Long.class).intValue()
-            )
+    @Test
+    void savesLocationAfterCopying() {
+        final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
+        MatcherAssert.assertThat(
+            located.copy().locator(),
+            Matchers.equalTo(located.locator())
         );
     }
 }

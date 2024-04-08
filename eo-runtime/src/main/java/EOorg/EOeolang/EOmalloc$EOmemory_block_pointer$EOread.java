@@ -25,40 +25,40 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Slice fixed size of bytes from position.
- * @since 0.25
+ * Malloc.pointer.read object.
+ * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "ram.slice")
-public final class EOram$EOslice extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.pointer.read")
+final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOram$EOslice(final Phi sigma) {
+    EOmalloc$EOmemory_block_pointer$EOread(final Phi sigma) {
         super(sigma);
-        this.add("position", new AtVoid("position"));
-        this.add("size", new AtVoid("size"));
     }
 
     @Override
-    public Phi lambda() {
-        final Phi rho = this.take(Attr.RHO);
-        final Phi slice = rho.take("ram-slice").copy();
-        slice.put("position", this.take("position"));
-        slice.put("size", this.take("size"));
-        return slice;
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            Heaps.INSTANCE.get().read(
+                new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+            )
+        );
     }
 }

@@ -35,7 +35,7 @@
 
 # Test.
 [] > simple-bool-expression-via-memory-in-while
-  memory.alloc TRUE > condition
+  (memory TRUE).alloc > condition
   while > res!
     condition
     [i] (condition.write FALSE > @)
@@ -43,7 +43,7 @@
 
 # Test.
 [] > last-while-dataization-object
-  memory.alloc 0 > x
+  (memory 0).alloc > x
   eq. > @
     3
     while > res!
@@ -54,7 +54,7 @@
 
 # Test.
 [] > iterates-over-simple-counter
-  memory.alloc 0 > x
+  (memory 0).alloc > x
   and. > @
     eq.
       x.write 5
@@ -69,7 +69,7 @@
 
 # Test.
 [] > last-while-dataization-object-with-false-condition
-  memory.alloc 3 > x
+  (memory 3).alloc > x
   eq. > @
     while > iter!
       1.gt x
@@ -79,8 +79,8 @@
 # Test.
 [] > iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
-  memory.alloc 0 > iter
-  memory.alloc 0 > acc
+  (memory 0).alloc > iter
+  (memory 0).alloc > acc
   arr.length.plus -1 > max
   seq > @
     *
@@ -107,8 +107,8 @@
 # Test.
 [] > iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
-  memory.alloc 0 > iter
-  memory.alloc 0 > acc
+  (memory 0).alloc > iter
+  (memory 0).alloc > acc
   arr.length.minus 1 > max
   seq > @
     *
@@ -134,8 +134,8 @@
 
 # Test.
 [] > while-with-body-in-condition
-  memory.alloc -1 > x
-  memory.alloc 0 > i
+  (memory -1).alloc > x
+  (memory 0).alloc > i
   seq > @
     *
       while
@@ -156,8 +156,8 @@
 # Test.
 [] > iterating-tuple-with-while-without-body-multiple
   * 1 1 1 > arr
-  memory.alloc 0 > iter
-  memory.alloc 0 > acc
+  (memory 0).alloc > iter
+  (memory 0).alloc > acc
   arr.length > max
   seq > @
     *
@@ -183,8 +183,8 @@
 # Test.
 [] > iterating-tuple-with-while-without-body-single
   * 1 > arr
-  memory.alloc 0 > iter
-  memory.alloc 0 > acc
+  (memory 0).alloc > iter
+  (memory 0).alloc > acc
   arr.length > max
   seq > @
     *

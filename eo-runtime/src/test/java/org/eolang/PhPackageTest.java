@@ -56,12 +56,24 @@ final class PhPackageTest {
     private static final String DEFAULT_PACKAGE = "org.eolang";
 
     @Test
-    void takesPackage() {
+    void copiesObject() {
         MatcherAssert.assertThat(
             Phi.Φ.take("org").take("eolang").take("seq"),
-            Matchers.equalTo(
-                Phi.Φ.take("org").take("eolang").take("seq")
+            Matchers.not(
+                Matchers.equalTo(
+                    Phi.Φ.take("org").take("eolang").take("seq")
+                )
             )
+        );
+    }
+
+    @Test
+    void setsRhoToObject() {
+        final Phi eolang = Phi.Φ.take("org").take("eolang");
+        final Phi seq = eolang.take("seq");
+        MatcherAssert.assertThat(
+            seq.take(Attr.RHO),
+            Matchers.equalTo(eolang)
         );
     }
 

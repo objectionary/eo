@@ -43,7 +43,7 @@
 # The same story with all other tests in this file. The only difference is in the amount of
 # attribute retrievals.
 [] > seq-four-dataizations-float-less
-  memory.alloc 0.0 > counter
+  (memory 0.0).alloc > counter
   lt. > @
     seq
       *
@@ -54,7 +54,7 @@
 
 # Test.
 [] > cached-seq-single-dataization-float-less
-  memory.alloc 0.0 > counter
+  (memory 0.0).alloc > counter
   lt. > @
     float
       seq > cached!
@@ -65,7 +65,7 @@
 
 # Test.
 [] > seq-two-dataizations-float-greater
-  memory.alloc 0.0 > counter
+  (memory 0.0).alloc > counter
   gt. > @
     seq
       *
@@ -76,7 +76,7 @@
 
 # Test.
 [] > cached-seq-single-dataization-float-greater
-  memory.alloc 0.0 > counter
+  (memory 0.0).alloc > counter
   gt. > @
     float
       seq > cached!
@@ -87,7 +87,7 @@
 
 # Test.
 [] > seq-four-dataizations-int-less
-  memory.alloc 0 > counter
+  (memory 0).alloc > counter
   lt. > @
     seq
       *
@@ -98,7 +98,7 @@
 
 # Test.
 [] > cached-seq-single-dataization-int-less
-  memory.alloc 0 > counter
+  (memory 0).alloc > counter
   lt. > @
     int
       seq > cached!
@@ -109,7 +109,7 @@
 
 # Test.
 [] > seq-four-dataizations-int-less-or-equal
-  memory.alloc 0 > counter
+  (memory 0).alloc > counter
   lte. > @
     seq
       *
@@ -120,7 +120,7 @@
 
 # Test.
 [] > cached-seq-single-dataization-int-less-or-equal
-  memory.alloc 0 > counter
+  (memory 0).alloc > counter
   lte. > @
     int
       seq > cached!
@@ -129,3 +129,52 @@
             counter.as-int.plus 1
           counter.as-int
     1
+
+# This test should have acceptable time to pass.
+[] > very-long-seq
+  eq. > @
+    TRUE
+    seq
+      *
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
