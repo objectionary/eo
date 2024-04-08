@@ -123,7 +123,7 @@ final class PhPackage implements Phi {
     public void attach(final byte[] data) {
         throw new IllegalStateException(
             String.format(
-                "Can't #attachData(%s) to package object '%s'", Arrays.toString(data), this.pkg
+                "Can't #attac(%s) to package object '%s'", Arrays.toString(data), this.pkg
             )
         );
     }

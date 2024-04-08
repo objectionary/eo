@@ -105,7 +105,7 @@ public interface Phi extends Term, Data {
         }
 
         public void attach(final byte[] data) {
-
+            this.pkg.attach(data);
         }
 
         @Override

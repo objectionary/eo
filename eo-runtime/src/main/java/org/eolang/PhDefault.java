@@ -67,16 +67,16 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
-     * Data.
-     * @checkstyle VisibilityModifierCheck (2 lines)
-     */
-    private AtomicReference<byte[]> data = new AtomicReference<>(null);
-
-    /**
      * Identity of it (the ID of the vertex).
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
     protected int vertex;
+
+    /**
+     * Data.
+     * @checkstyle VisibilityModifierCheck (2 lines)
+     */
+    private AtomicReference<byte[]> data = new AtomicReference<>(null);
 
     /**
      * Forma of it.

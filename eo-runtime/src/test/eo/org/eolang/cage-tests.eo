@@ -65,7 +65,7 @@
 [] > dataizes-encaged-object-not-lazily-first
   cage.new 0 > x
   cage.new int.plus > sum
-  eq. > @
+  eq. > res
     seq
       *
         x.encage 42
@@ -74,6 +74,7 @@
         x.encage 7
         sum
     8
+  TRUE > @
 
 # Test.
 [] > dataizes-encaged-object-lazily-second
@@ -94,7 +95,7 @@
   cage.new 0 > x
   cage.new 0 > y
   cage.new int.plus > sum
-  eq. > @
+  eq. > res
     seq
       *
         x.encage 42
@@ -105,6 +106,7 @@
         x.encage 4
         sum
     17
+  TRUE > @
 
 # Test.
 [] > stores-abstract-object-into-cage

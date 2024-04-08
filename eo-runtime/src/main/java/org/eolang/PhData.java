@@ -52,7 +52,6 @@ public final class PhData extends PhOnce {
                 phi.φTerm(),
                 Attr.DELTA,
                 new BytesOf(bytes).asString()
-
             )
         );
     }

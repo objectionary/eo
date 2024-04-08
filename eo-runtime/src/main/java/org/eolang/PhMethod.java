@@ -30,8 +30,7 @@ package org.eolang;
  * @since 0.1
  */
 @Versionized
-public final class
-PhMethod extends PhOnce {
+public final class PhMethod extends PhOnce {
 
     /**
      * Ctor.
