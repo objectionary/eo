@@ -98,22 +98,20 @@ final class PhPackage implements Phi {
         if (phi instanceof PhPackage) {
             res = phi;
         } else {
-            res = new AtSetRho(
-                this.objects.get().get(key).copy(), this, key
-            ).get();
+            res = new AtSetRho(this.objects.get().get(key), this, key).get();
         }
         return res;
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
+    public boolean put(final int pos, final Phi object) {
         throw new IllegalStateException(
             String.format("Can't #put(%d, %s) to package object '%s'", pos, object, this.pkg)
         );
     }
 
     @Override
-    public void put(final String name, final Phi object) {
+    public boolean put(final String name, final Phi object) {
         throw new IllegalStateException(
             String.format("Can't #put(%s, %s) to package object '%s'", name, object, this.pkg)
         );

@@ -126,13 +126,17 @@ public final class EOtry extends PhDefault implements Atom {
         }
 
         @Override
-        public void put(final int pos, final Phi object) {
-            this.func.accept(phi -> phi.put(pos, object));
+        public boolean put(final int pos, final Phi object) {
+            return new TryReturn<Boolean>(
+                this.body, this.ctch, this.last
+            ).apply(phi -> phi.put(pos, object));
         }
 
         @Override
-        public void put(final String name, final Phi object) {
-            this.func.accept(phi -> phi.put(name, object));
+        public boolean put(final String name, final Phi object) {
+            return new TryReturn<Boolean>(
+                this.body, this.ctch, this.last
+            ).apply(phi -> phi.put(name, object));
         }
 
         @Override

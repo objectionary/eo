@@ -105,13 +105,17 @@ public final class PhTracedLocator implements Phi {
     }
 
     @Override
-    public void put(final int pos, final Phi obj) {
-        this.object.put(pos, obj);
+    public boolean put(final int pos, final Phi obj) {
+        return new PhTracedLocator.TracingWhileGetting<>(
+            () -> this.object.put(pos, obj)
+        ).get();
     }
 
     @Override
-    public void put(final String name, final Phi obj) {
-        this.object.put(name, obj);
+    public boolean put(final String name, final Phi obj) {
+        return new PhTracedLocator.TracingWhileGetting<>(
+            () -> this.object.put(name, obj)
+        ).get();
     }
 
     @Override

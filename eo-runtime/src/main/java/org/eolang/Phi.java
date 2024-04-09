@@ -81,14 +81,14 @@ public interface Phi extends Term, Data {
         }
 
         @Override
-        public void put(final int pos, final Phi object) {
+        public boolean put(final int pos, final Phi object) {
             throw new IllegalStateException(
                 String.format("Can't #put(%d, %s) to Φ", pos, object)
             );
         }
 
         @Override
-        public void put(final String name, final Phi object) {
+        public boolean put(final String name, final Phi object) {
             throw new IllegalStateException(
                 String.format("Can't #put(%s, %s) to Φ", name, object)
             );
@@ -134,15 +134,17 @@ public interface Phi extends Term, Data {
      * Put object by position of the attribute.
      * @param pos The position of the attribute.
      * @param object The object to put
+     * @return Was attribute set
      */
-    void put(int pos, Phi object);
+    boolean put(int pos, Phi object);
 
     /**
      * Put object by name of the attribute.
      * @param name The name of the attribute.
      * @param object The object to put
+     * @return Was attribute set
      */
-    void put(String name, Phi object);
+    boolean put(String name, Phi object);
 
     /**
      * Get code locator of the phi.

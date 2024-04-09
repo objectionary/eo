@@ -111,13 +111,13 @@ class PhOnce implements Phi {
     }
 
     @Override
-    public void put(final int pos, final Phi obj) {
-        this.object.get().put(pos, obj);
+    public boolean put(final int pos, final Phi obj) {
+        return this.object.get().put(pos, obj);
     }
 
     @Override
-    public void put(final String name, final Phi obj) {
-        this.object.get().put(name, obj);
+    public boolean put(final String name, final Phi obj) {
+        return this.object.get().put(name, obj);
     }
 
     @Override
