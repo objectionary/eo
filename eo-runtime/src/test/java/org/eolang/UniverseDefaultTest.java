@@ -40,9 +40,13 @@ import org.junit.jupiter.api.Test;
 final class UniverseDefaultTest {
 
     /**
-     * Name of attribute.
+     * Name of attribute bound with abstract object.
      */
     private static final String ABSTRACT_ATT = "abstract";
+
+    /**
+     * Name of dataizable attribute.
+     */
     private static final String VALUE_ATT = "value";
 
     /**
@@ -55,7 +59,9 @@ final class UniverseDefaultTest {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            universe.find(String.format("%s.%s.%s", "$", UniverseDefaultTest.ABSTRACT_ATT, Attr.RHO)),
+            universe.find(
+                String.format("%s.%s.%s", "$", UniverseDefaultTest.ABSTRACT_ATT, Attr.RHO)
+            ),
             Matchers.equalTo(
                 phi.hashCode()
             )
@@ -192,8 +198,14 @@ final class UniverseDefaultTest {
          */
         DummyWithAt(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtComposite(sigma, self -> new EOint(Phi.Φ)));
-            this.add(UniverseDefaultTest.VALUE_ATT, new AtComposite(sigma, self -> new Data.ToPhi(1L)));
+            this.add(
+                UniverseDefaultTest.ABSTRACT_ATT,
+                new AtComposite(sigma, self -> new EOint(Phi.Φ))
+            );
+            this.add(
+                UniverseDefaultTest.VALUE_ATT,
+                new AtComposite(sigma, self -> new Data.ToPhi(1L))
+            );
         }
     }
 
@@ -209,7 +221,7 @@ final class UniverseDefaultTest {
          */
         DummyWithStructure(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtOnce(new AtComposite(this, DummyWithAt::new)));
+            this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtComposite(this, DummyWithAt::new));
         }
     }
 
@@ -225,7 +237,10 @@ final class UniverseDefaultTest {
          */
         DummyAbstract(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtVoid(UniverseDefaultTest.ABSTRACT_ATT));
+            this.add(
+                UniverseDefaultTest.ABSTRACT_ATT,
+                new AtVoid(UniverseDefaultTest.ABSTRACT_ATT)
+            );
         }
     }
 }
