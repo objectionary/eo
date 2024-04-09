@@ -92,13 +92,15 @@
 [] > writes-into-two-memory-objects-and-check-first
   (memory 0).alloc > a
   (memory 0).alloc > b
-  eq. > @
-    seq
-      *
-        a.write 10
-        b.write 20
-        a
-    10
+  seq > @
+    *
+      a.write 10
+      b.write 20
+      and.
+        and.
+          a.eq 10
+          a.free
+        b.free
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
@@ -107,7 +109,9 @@
     []
       m.write 86124867.88 > @
     [e]
-      QQ.io.stdout e > @
+      and. > @
+        QQ.io.stdout e
+        m.free
     nop
 
 # Test.
@@ -117,54 +121,64 @@
     []
       m.write "Much longer string!" > @
     [e]
-      QQ.io.stdout e > @
+      and. > @
+        QQ.io.stdout e
+        m.free
     nop
 
 # Test.
 [] > memory-is-strictly-typed-int
   (memory 12248).alloc > m
-  eq. > @
-    try
-      []
-        m.write 2556 > @
-      [e]
-        e > @
-      nop
-    2556
+  and. > @
+    eq.
+      try
+        []
+          m.write 2556 > @
+        [e]
+          e > @
+        nop
+      2556
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-float
   (memory 245.88).alloc > m
-  eq. > @
-    try
-      []
-        m.write 82.22 > @
-      [e]
-        e > @
-      nop
-    82.22
+  and. > @
+    eq.
+      try
+        []
+          m.write 82.22 > @
+        [e]
+          e > @
+        nop
+      82.22
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-string
   (memory "Hello").alloc > m
-  eq. > @
-    try
-      []
-        m.write "Prot" > @
-      [e]
-        e > @
-      nop
-    "Proto"
+  and. > @
+    eq.
+      try
+        []
+          m.write "Prot" > @
+        [e]
+          e > @
+        nop
+      "Proto"
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-bool
   (memory FALSE).alloc > m
-  try > @
-    []
-      m.write TRUE > @
-    [e]
-      e > @
-    nop
+  and. > @
+    try
+      []
+        m.write TRUE > @
+      [e]
+        e > @
+      nop
+    m.free
 
 # Test.
 [] > memory-is-cleared-successfully

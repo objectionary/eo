@@ -149,15 +149,19 @@
             *
               mb.write (mb.as-int.plus 1)
               mb.as-int
-  eq. > @
-    seq
-      *
-        ca
-        ca.plus 40
-    seq
-      *
-        cb.z
-        cb.z.plus 40
+  and. > @
+    eq.
+      seq
+        *
+          ca
+          ca.plus 40
+      seq
+        *
+          cb.z
+          cb.z.plus 40
+    and.
+      ma.free
+      mb.free
 
 # Test.
 [] > infinite-loop-check
