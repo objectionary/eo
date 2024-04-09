@@ -155,13 +155,13 @@ public final class UniverseDefault implements Universe {
             final char cur = name.charAt(iter);
             switch (cur) {
                 case '^':
-                    builder.append('ρ');
+                    builder.append(Attr.RHO);
                     break;
                 case '@':
-                    builder.append('φ');
+                    builder.append(Attr.PHI);
                     break;
                 case '&':
-                    builder.append('σ');
+                    builder.append(Attr.SIGMA);
                     break;
                 default:
                     builder.append(cur);
