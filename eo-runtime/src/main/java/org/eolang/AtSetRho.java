@@ -25,8 +25,8 @@
 package org.eolang;
 
 /**
- * The attribute tries to set \rho to the given attribute.
- * If the name of the attribute is {@link Attr#RHO} or {@link Attr#SIGMA} - just attribute is
+ * The attribute tries to copy object and set \rho to it.
+ * If the name of the attribute is {@link Attr#RHO} or {@link Attr#SIGMA} - just object is
  * returned.
  *
  * @since 0.36.0
