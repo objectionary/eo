@@ -29,35 +29,35 @@
 # Test.
 [] > writes-into-memory
   (memory 0).alloc > x
-  eq. > @
-    seq
-      *
-        x.write 10
-        x
-    10
+  seq > @
+    *
+      x.write 10
+      and.
+        x.eq 10
+        x.free
 
 # Test.
 [] > memory-double-writes
   (memory "1234567890123").alloc > m
-  eq. > @
-    42.as-bytes.concat
-      "orld!".as-bytes
-    seq
-      *
-        m.write "Hello, world!"
-        m.write 42
-        m
+  and. > @
+    eq.
+      42.as-bytes.concat
+        "orld!".as-bytes
+      seq
+        *
+          m.write "Hello, world!"
+          m.write 42
+          m
+    m.free
 
 # Test.
 [] > rewrites-and-increments-itself
   (memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        m.write (m.as-int.plus 5)
-        m
-    6
+  seq > @
+    *
+      m.write 1
+      m.write (m.as-int.plus 5)
+      (m.eq 6).and m.free
 
 # Test.
 [] > memory-in-outer-scope
@@ -81,8 +81,12 @@
       *
         a.write 10
         b.write 20
-        b.eq 20
-    a.eq 10
+        and.
+          b.eq 20
+          a.eq 10
+    and.
+      a.free
+      b.free
 
 # Test.
 [] > writes-into-two-memory-objects-and-check-first

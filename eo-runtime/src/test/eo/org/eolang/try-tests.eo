@@ -82,33 +82,34 @@
 # Test.
 [] > try-memory-update
   (memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        try
-          []
-            m.write (m.as-int.plus 1) > @
-          [e]
-            e > @
-          nop
-        m.as-int
-    2
+  seq > @
+    *
+      m.write 1
+      try
+        []
+          m.write (m.as-int.plus 1) > @
+        [e]
+          e > @
+        nop
+      and.
+        m.as-int.eq 2
+        m.free
 
 # Test.
 [] > try-memory-update-catch
   (memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        try
-          []
-            seq > @
+  seq > @
+    *
+      m.write 1
+      try
+        []
+          seq > @
+            *
               5.div 0
               m.write (m.plus 1)
-          [e]
-            e > @
-          nop
-        m
-    1
+        [e]
+          e > @
+        nop
+      and.
+        m.eq 1
+        m.free
