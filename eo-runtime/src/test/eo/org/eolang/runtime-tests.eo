@@ -214,7 +214,7 @@
 [] > directly-accesses-objects-from-root
   (Q.org.eolang.memory 0).alloc > m
   eq. > @
-    seq > written!
+    seq
       *
         m.write 42
         Q.org.eolang.io.stdout
@@ -227,7 +227,7 @@
 [] > directly-accesses-objects-from-standard-root
   (QQ.memory 0).alloc > m
   eq. > @
-    seq > written!
+    seq
       *
         m.write 42
         QQ.io.stdout
@@ -238,9 +238,9 @@
 
 # Test.
 [] > standard-root-and-root
-  QQ.io.stdout > stand-root!
+  QQ.io.stdout > stand-root
     "one"
-  Q.org.eolang.io.stdout > root!
+  Q.org.eolang.io.stdout > root
     "one"
   eq. > @
     root

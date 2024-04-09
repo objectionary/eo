@@ -36,7 +36,7 @@
 # Test.
 [] > simple-bool-expression-via-memory-in-while
   (memory TRUE).alloc > condition
-  while > res!
+  while > res
     condition
     [i] (condition.write FALSE > @)
   (bool res).not > @
@@ -46,7 +46,7 @@
   (memory 0).alloc > x
   eq. > @
     3
-    while > res!
+    while
       2.gt x
       [i]
         x.write > @
@@ -60,7 +60,7 @@
       x.write 5
       5
     eq.
-      while > iterated!
+      while
         10.gt x
         [i]
           x.write > @
@@ -71,7 +71,7 @@
 [] > last-while-dataization-object-with-false-condition
   (memory 3).alloc > x
   eq. > @
-    while > iter!
+    while
       1.gt x
       [i] (x.write (x.as-int.plus 1) > @)
     FALSE

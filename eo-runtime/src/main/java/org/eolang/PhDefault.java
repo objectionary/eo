@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -70,6 +71,12 @@ public abstract class PhDefault implements Phi, Cloneable {
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
     protected int vertex;
+
+    /**
+     * Data.
+     * @checkstyle VisibilityModifierCheck (2 lines)
+     */
+    private AtomicReference<byte[]> data = new AtomicReference<>(null);
 
     /**
      * Forma of it.
@@ -122,6 +129,13 @@ public abstract class PhDefault implements Phi, Cloneable {
     public String φTerm() {
         final List<String> list = new ArrayList<>(this.attrs.size());
         final String format = "%s ↦ %s";
+        if (this.data.get() != null) {
+            list.add(
+                String.format(
+                    format, Attr.DELTA, new BytesOf(this.data.get()).asString()
+                )
+            );
+        }
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
             e -> !Arrays.asList(Attr.RHO, Attr.SIGMA).contains(e.getKey())
         ).collect(Collectors.toList())) {
@@ -148,11 +162,19 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String toString() {
-        return String.format(
+        String result = String.format(
             "%sν%d",
             this.getClass().getCanonicalName(),
             this.vertex
         );
+        if (this.data.get() != null) {
+            result = String.format(
+                "%s=%s",
+                result,
+                new BytesOf(this.data.get()).asString()
+            );
+        }
+        return result;
     }
 
     @Override
@@ -160,6 +182,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
+            copy.data = new AtomicReference<>(this.data.get());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
@@ -191,11 +214,6 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public Phi take(final String name) {
-        return this.take(name, this);
-    }
-
-    @Override
-    public Phi take(final String name, final Phi rho) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
@@ -203,7 +221,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 this.named(
                     new AtSetRho(
                         new AtCopied(this.attrs.get(name), name),
-                        rho,
+                        this,
                         name
                     ),
                     name
@@ -213,17 +231,17 @@ public abstract class PhDefault implements Phi, Cloneable {
             object = new AtSafe(
                 this.named(
                     new AtSetRho(
-                        new AtFormed(() -> new AtomSafe((Atom) this).lambda()),
-                        rho,
+                        new AtFormed(new AtomSafe((Atom) this)::lambda),
+                        this,
                         name
                     ),
                     name
                 )
             ).get();
         } else if (this instanceof Atom) {
-            object = this.take(Attr.LAMBDA, rho).take(name, rho);
+            object = this.take(Attr.LAMBDA).take(name);
         } else if (this.attrs.containsKey(Attr.PHI)) {
-            object = this.take(Attr.PHI, rho).take(name, rho);
+            object = this.take(Attr.PHI).take(name);
         } else {
             object = new AtSafe(
                 this.named(
@@ -256,18 +274,32 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
+    public void attach(final byte[] bytes) {
+        synchronized (this.data) {
+            if (this.data.get() != null) {
+                throw new ExFailure(
+                    "Data is already attached to the object, can't reattach"
+                );
+            }
+            this.data.set(bytes);
+        }
+    }
+
+    @Override
     public byte[] delta() {
-        final byte[] data;
-        if (this instanceof Atom) {
-            data = this.take(Attr.LAMBDA).delta();
+        final byte[] bytes;
+        if (this.data.get() != null) {
+            bytes = this.data.get();
+        } else if (this instanceof Atom) {
+            bytes = this.take(Attr.LAMBDA).delta();
         } else if (this.attrs.containsKey(Attr.PHI)) {
-            data = this.take(Attr.PHI).delta();
+            bytes = this.take(Attr.PHI).delta();
         } else {
             throw new ExFailure(
                 "There's no data in the object, can't take it"
             );
         }
-        return data;
+        return bytes;
     }
 
     @Override

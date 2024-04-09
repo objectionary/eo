@@ -102,6 +102,11 @@ public final class EOtry extends PhDefault implements Atom {
         }
 
         @Override
+        public void attach(final byte[] data) {
+            this.func.accept(phi -> phi.attach(data));
+        }
+
+        @Override
         public byte[] delta() {
             return new TryReturn<byte[]>(
                 this.body, this.ctch, this.last
@@ -118,13 +123,6 @@ public final class EOtry extends PhDefault implements Atom {
             return new TryReturn<Phi>(
                 this.body, this.ctch, this.last
             ).apply(phi -> phi.take(name));
-        }
-
-        @Override
-        public Phi take(final String name, final Phi rho) {
-            return new TryReturn<Phi>(
-                this.body, this.ctch, this.last
-            ).apply(phi -> phi.take(name, rho));
         }
 
         @Override

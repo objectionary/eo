@@ -84,11 +84,6 @@ final class PhNamed implements Phi {
     }
 
     @Override
-    public Phi take(final String nme, final Phi rho) {
-        return this.origin.take(nme, rho);
-    }
-
-    @Override
     public void put(final int pos, final Phi object) {
         this.origin.put(pos, object);
     }
@@ -106,6 +101,11 @@ final class PhNamed implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
+    }
+
+    @Override
+    public void attach(final byte[] data) {
+        this.origin.attach(data);
     }
 
     @Override

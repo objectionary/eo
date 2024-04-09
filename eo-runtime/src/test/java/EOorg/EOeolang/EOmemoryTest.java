@@ -180,7 +180,7 @@ public final class EOmemoryTest {
     }
 
     @Test
-    void comparesOnFly() {
+    void doesNotCompareOnFly() {
         final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(10L));
         new Dataized(
             new PhWith(
@@ -204,7 +204,7 @@ public final class EOmemoryTest {
         ).take();
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),
-            Matchers.equalTo(false)
+            Matchers.not(Matchers.equalTo(false))
         );
     }
 
