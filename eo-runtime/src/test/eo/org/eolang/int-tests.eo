@@ -241,7 +241,7 @@
       2.div 0 > @
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Checks that division by one returns the dividend.
 [] > division-by-one

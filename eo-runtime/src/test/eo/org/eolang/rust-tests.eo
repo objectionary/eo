@@ -206,7 +206,7 @@
           put > @
         [e]
           e > @
-        nop
+        TRUE
       0
       length.
         message
@@ -237,7 +237,7 @@
       insert > @
     [e]
       e > @
-    nop
+    TRUE
   eq. > @
     res.slice
       0
@@ -337,7 +337,7 @@
       err > @
     [e]
       e > @
-    nop
+    TRUE
   eq. > @
     slice.
       res

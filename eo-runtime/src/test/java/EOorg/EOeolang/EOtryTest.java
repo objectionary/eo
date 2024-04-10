@@ -60,7 +60,7 @@ public final class EOtryTest {
                         1, new Catcher(Phi.Φ)
                     ),
                     2,
-                    new EOnop(Phi.Φ)
+                    new Data.ToPhi(true)
                 )
             ).take(String.class),
             Matchers.containsString("it is brok")
@@ -78,7 +78,7 @@ public final class EOtryTest {
                 1, new Catcher(Phi.Φ)
             ),
             2,
-            new EOnop(Phi.Φ)
+            new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
             new Dataized(body).take(String.class),
@@ -97,7 +97,7 @@ public final class EOtryTest {
                 1, new Catcher(Phi.Φ)
             ),
             2,
-            new EOnop(Phi.Φ)
+            new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
             new Dataized(body).take(String.class),
@@ -118,7 +118,7 @@ public final class EOtryTest {
                         1, new Catcher(Phi.Φ)
                     ),
                     2,
-                    new EOnop(Phi.Φ)
+                    new Data.ToPhi(true)
                 )
             ).take(Long.class),
             Matchers.equalTo(42L)
@@ -131,7 +131,7 @@ public final class EOtryTest {
         final MainWithCounter main = new MainWithCounter();
         trier.put(0, main);
         trier.put(1, new Catcher(Phi.Φ));
-        trier.put(2, new EOnop(Phi.Φ));
+        trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
             main.count,

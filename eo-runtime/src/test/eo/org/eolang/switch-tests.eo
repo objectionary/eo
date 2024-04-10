@@ -89,7 +89,7 @@
     switch *
     [ex]
       QQ.io.stdout ex > @
-    nop
+    TRUE
 
 # Test.
 [] > switch-complex-case

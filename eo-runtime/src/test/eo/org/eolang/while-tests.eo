@@ -164,7 +164,8 @@
                 i.write (i.as-int.plus 1)
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       and.
         and.
           and.
@@ -195,7 +196,8 @@
                   iter.as-int.plus 1
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       and.
         and.
           eq.
@@ -226,7 +228,8 @@
                   iter.as-int.plus 1
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       and.
         and.
           eq.

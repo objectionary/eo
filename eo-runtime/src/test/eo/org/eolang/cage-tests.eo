@@ -141,7 +141,7 @@
         cge.encage "Hello world"
         [e]
           cge.encage 10 > @
-        nop
+        TRUE
       cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error

@@ -63,10 +63,10 @@
             5
         [e]
           error e > @
-        nop
+        TRUE
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Test.
 [] > try-without-error-block
@@ -76,7 +76,7 @@
         30.plus 2 > @
       [e]
         e > @
-      nop
+      TRUE
     32
 
 # Test.
@@ -90,7 +90,7 @@
           m.write (m.as-int.plus 1) > @
         [e]
           e > @
-        nop
+        TRUE
       and.
         m.as-int.eq 2
         m.free
@@ -109,7 +109,7 @@
               m.write (m.plus 1)
         [e]
           e > @
-        nop
+        TRUE
       and.
         m.eq 1
         m.free

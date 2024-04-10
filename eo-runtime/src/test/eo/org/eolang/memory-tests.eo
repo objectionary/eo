@@ -112,7 +112,7 @@
       and. > @
         QQ.io.stdout e
         m.free
-    nop
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-string-error-overflow
@@ -124,7 +124,7 @@
       and. > @
         QQ.io.stdout e
         m.free
-    nop
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-int
@@ -136,7 +136,7 @@
           m.write 2556 > @
         [e]
           e > @
-        nop
+        TRUE
       2556
     m.free
 
@@ -150,7 +150,7 @@
           m.write 82.22 > @
         [e]
           e > @
-        nop
+        TRUE
       82.22
     m.free
 
@@ -164,7 +164,7 @@
           m.write "Prot" > @
         [e]
           e > @
-        nop
+        TRUE
       "Proto"
     m.free
 
@@ -177,7 +177,7 @@
         m.write TRUE > @
       [e]
         e > @
-      nop
+      TRUE
     m.free
 
 # Test.
