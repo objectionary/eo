@@ -49,8 +49,8 @@
     $ > pointer
     ^.size > size
 
-    # Read `bytes` from the block in memory by the pointer.
-    [] > read /bytes
+    # Read `length` bytes from `offset` from the block in memory by the pointer.
+    [offset length] > read /bytes
 
     # Write `data` from `offset` to the block in memory by the pointer.
     [offset data] > write /true

@@ -55,14 +55,14 @@
   # Data allocated in memory.
   [pointer] > allocated
     $ > alloc
-    pointer.read > @
+    pointer.read 0 pointer.size > @
 
     # Write data into memory
     [data] > write
       seq > @
         *
           ^.pointer.write 0 data
-          ^.pointer.read
+          ^.pointer.read 0 ^.pointer.size
 
     # Free memory.
     [] > free

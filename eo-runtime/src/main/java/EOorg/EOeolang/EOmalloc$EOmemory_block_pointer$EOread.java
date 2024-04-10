@@ -28,6 +28,7 @@
 
 package EOorg.EOeolang;
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -51,13 +52,17 @@ final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements 
      */
     EOmalloc$EOmemory_block_pointer$EOread(final Phi sigma) {
         super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("length", new AtVoid("length"));
     }
 
     @Override
     public Phi lambda() throws Exception {
         return new Data.ToPhi(
             Heaps.INSTANCE.read(
-                new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+                Math.toIntExact(new Param(this.take(Attr.RHO), "id").strong(Long.class)),
+                Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+                Math.toIntExact(new Param(this, "length").strong(Long.class))
             )
         );
     }

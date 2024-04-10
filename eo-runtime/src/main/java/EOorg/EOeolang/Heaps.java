@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
@@ -85,7 +86,7 @@ final class Heaps {
      * @param identifier Identifier of the pointer
      * @return Bytes from the block in memory
      */
-    byte[] read(final int identifier) {
+    byte[] read(final int identifier, final int offset, final int length) {
         synchronized (this.blocks) {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
@@ -95,7 +96,18 @@ final class Heaps {
                     )
                 );
             }
-            return this.blocks.get(identifier);
+            final byte[] bytes = this.blocks.get(identifier);
+            if (offset + length > bytes.length) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't read %d bytes from offset %d, because only %d are allocated",
+                        length,
+                        offset,
+                        bytes.length
+                    )
+                );
+            }
+            return Arrays.copyOfRange(bytes, offset, offset + length);
         }
     }
 

@@ -50,7 +50,7 @@ public final class HeapsTest {
     void allocatesMemory() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 10);
         Assertions.assertDoesNotThrow(
-            () -> HeapsTest.HEAPS.read(idx)
+            () -> HeapsTest.HEAPS.read(idx, 0, 10)
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -70,7 +70,7 @@ public final class HeapsTest {
     void allocatesAndReadsEmptyBytes() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
         MatcherAssert.assertThat(
-            HeapsTest.HEAPS.read(idx),
+            HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
         HeapsTest.HEAPS.free(idx);
@@ -82,7 +82,7 @@ public final class HeapsTest {
         final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
-            HeapsTest.HEAPS.read(idx),
+            HeapsTest.HEAPS.read(idx, 0, bytes.length),
             Matchers.equalTo(bytes)
         );
         HeapsTest.HEAPS.free(idx);
@@ -100,8 +100,13 @@ public final class HeapsTest {
     void failsOnReadFromEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.read(new PhFake().hashCode())
+            () -> HeapsTest.HEAPS.read(new PhFake().hashCode(), 0, 1)
         );
+    }
+
+    @Test
+    void failsOnReadIfOutOfBounds() {
+
     }
 
     @Test
@@ -132,7 +137,7 @@ public final class HeapsTest {
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
         HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
-            HeapsTest.HEAPS.read(idx),
+            HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
         HeapsTest.HEAPS.free(idx);
@@ -144,7 +149,7 @@ public final class HeapsTest {
         HeapsTest.HEAPS.free(idx);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> HeapsTest.HEAPS.read(idx)
+            () -> HeapsTest.HEAPS.read(idx, 0, 5)
         );
     }
 
