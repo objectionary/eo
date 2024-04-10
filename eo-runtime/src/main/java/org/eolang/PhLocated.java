@@ -114,13 +114,13 @@ public final class PhLocated implements Phi {
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
-        this.origin.put(pos, object);
+    public boolean put(final int pos, final Phi object) {
+        return this.origin.put(pos, object);
     }
 
     @Override
-    public void put(final String name, final Phi object) {
-        this.origin.put(name, object);
+    public boolean put(final String name, final Phi object) {
+        return this.origin.put(name, object);
     }
 
     @Override

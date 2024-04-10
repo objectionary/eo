@@ -58,7 +58,7 @@ final class AtGetOnly implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new IllegalStateException(
             "Should never happen"
         );

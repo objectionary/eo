@@ -25,10 +25,10 @@
 package org.eolang;
 
 /**
- * Attribute that tries to set \rho to retrieved object.
- * Attribute does not set \rho if retrieved object is \rho or \sigma.
- * Since every \rho attribute of {@link Phi} is {@link AtRho} it won't be
- * reset because {@link AtRho} ignores all puts except first.
+ * The attribute tries to copy object and set \rho to it.
+ * If the name of the attribute is {@link Attr#RHO} or {@link Attr#SIGMA} - just object is
+ * returned.
+ *
  * @since 0.36.0
  */
 final class AtSetRho extends AtEnvelope {
@@ -52,9 +52,12 @@ final class AtSetRho extends AtEnvelope {
         super(
             new AtGetOnly(
                 () -> {
-                    final Phi ret = attr.get();
+                    Phi ret = attr.get();
                     if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
-                        ret.put(Attr.RHO, rho);
+                        final Phi copy = ret.copy();
+                        if (copy.put(Attr.RHO, rho)) {
+                            ret = copy;
+                        }
                     }
                     return ret;
                 }

@@ -73,6 +73,10 @@
         FALSE
 
 # Test.
+[] > malloc-pointer-uses-right-size
+  (malloc 10).pointer.size.eq 10 > @
+
+# Test.
 [] > malloc-pointer-cant-write-more-than-allocated
   (malloc 1).pointer > p
   try > @

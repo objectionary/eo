@@ -74,7 +74,7 @@ final class AtFixed implements Attr {
     }
 
     @Override
-    public void put(final Phi src) {
-        // ignore it
+    public boolean put(final Phi src) {
+        return false;
     }
 }

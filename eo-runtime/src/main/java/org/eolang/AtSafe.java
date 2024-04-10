@@ -85,9 +85,9 @@ final class AtSafe implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         try {
-            this.origin.put(phi);
+            return this.origin.put(phi);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))

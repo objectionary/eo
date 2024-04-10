@@ -112,7 +112,7 @@ public final class AtVoid implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         if (this.object.get() == null) {
             this.object.set(phi);
         } else {
@@ -120,6 +120,7 @@ public final class AtVoid implements Attr {
                 "This void attribute is already set, can't reset"
             );
         }
+        return true;
     }
 
 }

@@ -114,7 +114,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void takesDifferentKidsEveryDispatch() {
+    void takesDifferentAbstractKidsEveryDispatch() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
             "Child attributes should be copied on every dispatch",
@@ -232,7 +232,7 @@ final class PhDefaultTest {
     }
 
     @Test
-    void copiesSetVoidAttribute() {
+    void copiesSetVoidAttributeOnCopy() {
         final Phi phi = new PhDefaultTest.Int();
         phi.put("void", new Data.ToPhi(10L));
         final Phi copy = phi.copy();
@@ -242,6 +242,25 @@ final class PhDefaultTest {
             Matchers.not(
                 Matchers.equalTo(copy.take("void"))
             )
+        );
+    }
+
+    @Test
+    void doesNotCopySetVoidAttributeWithRho() {
+        final Phi phi = new PhDefaultTest.Int();
+        phi.put("void", new Data.ToPhi(10L));
+        MatcherAssert.assertThat(
+            phi.take("void"),
+            Matchers.equalTo(phi.take("void"))
+        );
+    }
+
+    @Test
+    void doesNotCopyContextAttributeWithRho() {
+        final Phi phi = new PhDefaultTest.Int();
+        MatcherAssert.assertThat(
+            phi.take("context"),
+            Matchers.equalTo(phi.take("context"))
         );
     }
 

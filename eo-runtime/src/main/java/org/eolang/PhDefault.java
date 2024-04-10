@@ -195,12 +195,12 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
-        this.put(this.attr(pos), object);
+    public boolean put(final int pos, final Phi object) {
+        return this.put(this.attr(pos), object);
     }
 
     @Override
-    public void put(final String name, final Phi object) {
+    public boolean put(final String name, final Phi object) {
         if (!this.attrs.containsKey(name)) {
             throw new ExUnset(
                 String.format(
@@ -209,7 +209,7 @@ public abstract class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        new AtSafe(this.named(this.attrs.get(name), name)).put(object);
+        return new AtSafe(this.named(this.attrs.get(name), name)).put(object);
     }
 
     @Override
@@ -220,7 +220,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             object = new AtSafe(
                 this.named(
                     new AtSetRho(
-                        new AtCopied(this.attrs.get(name), name),
+                        this.attrs.get(name),
                         this,
                         name
                     ),

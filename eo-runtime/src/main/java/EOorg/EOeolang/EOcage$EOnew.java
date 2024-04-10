@@ -131,7 +131,7 @@ public final class EOcage$EOnew extends PhDefault implements Atom {
         }
 
         @Override
-        public void put(final Phi phi) {
+        public boolean put(final Phi phi) {
             if (this.forma == null) {
                 this.forma = phi.forma();
             } else if (!this.forma.equals(phi.forma())) {
@@ -147,6 +147,7 @@ public final class EOcage$EOnew extends PhDefault implements Atom {
                 }
             }
             EOcage$EOnew.CAGES.put(this.locator, phi);
+            return true;
         }
 
         @Override

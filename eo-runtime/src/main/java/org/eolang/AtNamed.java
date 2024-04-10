@@ -98,9 +98,9 @@ final class AtNamed implements Attr {
     }
 
     @Override
-    public void put(final Phi src) {
+    public boolean put(final Phi src) {
         try {
-            this.origin.put(src);
+            return this.origin.put(src);
         } catch (final ExReadOnly ex) {
             throw new ExReadOnly(this.label(), ex);
         } catch (final ExFailure ex) {
