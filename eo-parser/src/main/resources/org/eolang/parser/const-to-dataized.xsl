@@ -24,12 +24,9 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="const-to-dataized" version="2.0">
   <!--
-  Here we go through all objects and find what their @base
-  are referring to. If we find the object they refer to,
-  we add a new @ref attribute to the object. Those objects
-  which are not getting @ref attributes after this transformation
-  are not visible in the current scope. Maybe they are
-  global or just a mistake.
+  Replace @const with dataized.as-bytes
+  1. a > b!     => (dataized a).as-bytes > b
+  2. x.y z > m! => (dataized (x.y z)).as-bytes > m
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- Generate unique name for an abstract object -->
