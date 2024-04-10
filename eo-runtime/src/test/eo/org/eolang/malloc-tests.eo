@@ -50,7 +50,7 @@
     *
       p.write 0 "Hello, Jeff!"
       and.
-        p.read.eq "Hello, Jeff!"
+        (p.read 0 12).eq "Hello, Jeff!"
         p.free
 
 # Test.
@@ -61,7 +61,7 @@
       p.write 0 "XXX"
       p.write 1 "Y"
       and.
-        p.read.eq "XYX"
+        (p.read 0 3).eq "XYX"
         p.free
 
 # Test.
@@ -76,7 +76,7 @@
       p.write 0 42
       p.free
       try
-        p.read
+        p.read 0 8
         [e] (QQ.io.stdout e > @)
         FALSE
 
@@ -116,5 +116,13 @@
       p.write 0 42
       p.write 0 94
       and.
-        p.read.eq 94
+        (p.read 0 8).eq 94
         p.free
+
+# Test.
+[] > malloc-reads-with-offset-and-length
+  (malloc 10).pointer > p
+  seq > @
+    *
+      p.write 2 "Hello"
+      (p.read 2 5).eq "Hello"

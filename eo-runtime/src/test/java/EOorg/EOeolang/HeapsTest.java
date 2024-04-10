@@ -106,7 +106,21 @@ public final class HeapsTest {
 
     @Test
     void failsOnReadIfOutOfBounds() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 2);
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> HeapsTest.HEAPS.read(idx, 1, 3)
+        );
+    }
 
+    @Test
+    void readsByOffsetAndLength() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
+        MatcherAssert.assertThat(
+            HeapsTest.HEAPS.read(idx, 1, 3),
+            Matchers.equalTo(new byte[] {2, 3, 4})
+        );
     }
 
     @Test
