@@ -48,7 +48,6 @@ class CagesTest {
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.get(locator)
         );
-        Cages.INSTANCE.remove(locator);
     }
 
     @Test
@@ -58,7 +57,6 @@ class CagesTest {
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.init(phi)
         );
-        Cages.INSTANCE.remove(locator);
     }
 
     @Test
@@ -71,7 +69,6 @@ class CagesTest {
             Cages.INSTANCE.get(locator).hashCode(),
             Matchers.equalTo(second.hashCode())
         );
-        Cages.INSTANCE.remove(locator);
     }
 
     @Test
@@ -90,7 +87,6 @@ class CagesTest {
             ExFailure.class,
             () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L))
         );
-        Cages.INSTANCE.remove(locator);
     }
 
     @Test
@@ -98,25 +94,6 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.get(new PhFake().hashCode())
-        );
-    }
-
-    @Test
-    void removesObjectSuccessfully() {
-        final Phi phi = new PhFake();
-        final int locator = Cages.INSTANCE.init(phi);
-        Cages.INSTANCE.remove(locator);
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Cages.INSTANCE.get(locator)
-        );
-    }
-
-    @Test
-    void failsToRemoveIfWasNotInitialized() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Cages.INSTANCE.remove(new PhFake().hashCode())
         );
     }
 }

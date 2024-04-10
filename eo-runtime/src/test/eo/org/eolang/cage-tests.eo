@@ -35,9 +35,7 @@
     *
       x.encage
         a 7
-      and.
-        x.z.eq 7
-        x.free
+      x.z.eq 7
 
 # Test.
 [] > checks-forma-and-fixes
@@ -49,11 +47,7 @@
       sum.encage
         x.plus 1
       x.encage 7
-      and.
-        and.
-          sum.eq 43
-          sum.free
-        x.free
+      sum.eq 43
 
 # Test.
 [] > dataizes-encaged-object-lazily-second
@@ -65,11 +59,7 @@
       sum.encage
         1.plus x
       x.encage 7
-      and.
-        sum.eq 8
-        and.
-          sum.free
-          x.free
+      sum.eq 8
 
 # Test.
 [] > stores-abstract-object-into-cage
@@ -77,9 +67,7 @@
     cage
       []
         112 > @
-  and. > @
-    c.eq 112
-    c.free
+  c.eq 112 > @
 
 # Test.
 [] > multi-layer-volatility
@@ -112,19 +100,15 @@
               mb.write (mb.as-int.plus 1)
               mb.as-int
   and. > @
-    and.
-      eq.
-        seq
-          *
-            ca
-            ca.plus 40
-        seq
-          *
-            cb.z
-            cb.z.plus 40
-      and.
-        cb.free
-        ca.free
+    eq.
+      seq
+        *
+          ca
+          ca.plus 40
+      seq
+        *
+          cb.z
+          cb.z.plus 40
     and.
       ma.free
       mb.free
@@ -146,11 +130,7 @@
         x.add (pyint 1)
       QQ.io.stdout
         tmp.value
-      and.
-        tmp.value.eq 1
-        and.
-          x.free
-          tmp.free
+      tmp.value.eq 1
 
 # Test.
 [] > catches-encaging-objects-of-different-formas
@@ -162,9 +142,7 @@
         [e]
           cge.encage 10 > @
         nop
-      and.
-        cge.eq 10
-        cge.free
+      cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error
 # message if passes.
@@ -179,9 +157,7 @@
           cge
           FALSE
     [stack-overflow-message]
-      and. > @
-        QQ.io.stdout stack-overflow-message
-        cge.free
+      QQ.io.stdout stack-overflow-message > @
     FALSE
 
 # Test.
@@ -192,8 +168,6 @@
         # Func.
         [x] > func
           2.plus x > @
-  and. > @
-    eq.
-      c.func 5
-      7
-    c.free
+  eq. > @
+    c.func 5
+    7
