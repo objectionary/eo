@@ -1,6 +1,8 @@
 tests:
   - //o[@base='.as-bytes' and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.int' and not(@name)]]]
-  - //o[@base='.as-bytes' and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.int' and not(@name)]]]
+  - //o[@base='.as-bytes' and @name='m' and o[@base='org.eolang.dataized' and o[@abstract and @name='m-3' and count(o)=2]]]
+  - //o[@base='.as-bytes' and @name='z' and o[@base='org.eolang.dataized' and o[@base='.o' and not(@name) and count(o)=1]]]
+  - //o[@base='.as-bytes' and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.c' and not(@name)]]]
 eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > foo
@@ -11,3 +13,7 @@ eo: |
         b
           c 1 2 > y!
       .o > z!
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > m-1
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > m-2

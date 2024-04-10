@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="const-to-dataized" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org"  id="const-to-dataized" version="2.0">
   <!--
   Here we go through all objects and find what their @base
   are referring to. If we find the object they refer to,
@@ -32,6 +32,22 @@ SOFTWARE.
   global or just a mistake.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- Generate unique name for an abstract object -->
+  <xsl:function name="eo:unique-name">
+    <xsl:param name="name"/>
+    <xsl:param name="scope"/>
+    <xsl:param name="counter"/>
+    <xsl:variable name="unique" select="concat($name, '-', $counter)"/>
+    <xsl:choose>
+      <xsl:when test="$scope[o[@name=$unique]]">
+        <xsl:value-of select="eo:unique-name($name, $scope, $counter + 1)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$unique"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!-- Template -->
   <xsl:template match="o[@const]">
     <xsl:element name="o">
       <xsl:attribute name="base" select="'.as-bytes'"/>
@@ -44,6 +60,11 @@ SOFTWARE.
               <xsl:value-of select="."/>
             </xsl:attribute>
           </xsl:for-each>
+          <xsl:if test="@abstract">
+            <xsl:attribute name="name">
+              <xsl:value-of select="eo:unique-name(@name, ./parent::o, 1)"/>
+            </xsl:attribute>
+          </xsl:if>
           <xsl:for-each select="o">
             <xsl:apply-templates select="."/>
           </xsl:for-each>
