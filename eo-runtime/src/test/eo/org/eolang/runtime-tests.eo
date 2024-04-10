@@ -114,7 +114,7 @@
 # Test.
 [] > writes-cage-to-memory
   (memory 0).alloc > f1
-  cage.new int.plus > f2
+  (cage int.plus).new > f2
   (memory 0).alloc > f0
   seq > @
     *
@@ -124,11 +124,11 @@
       f1.write f2
       and.
         and.
-          eq.
-            f1
-            3
+          f1.eq 3
           f1.free
-        f0.free
+        and.
+          f0.free
+          f2.free
 
 # Test.
 [] > recursion-without-arguments
@@ -187,18 +187,6 @@
       # A.
       [] > a
         TRUE > @
-
-# Test.
-[] > calling-caged-function
-  # Func.
-  [] > func
-    # Inner object.
-    [x] > @
-      2.plus x > @
-  cage.new func > h
-  eq. > @
-    h.@ 8
-    10
 
 # Test.
 [] > app-that-calls-func

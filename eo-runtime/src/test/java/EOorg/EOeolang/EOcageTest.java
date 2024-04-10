@@ -54,7 +54,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test cases for {@link EOcage} and {@link EOcage$EOφ}.
+ * Test cases for {@link EOcage}.
  * @since 0.19
  */
 final class EOcageTest {

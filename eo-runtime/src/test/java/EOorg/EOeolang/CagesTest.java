@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  */
 class CagesTest {
     @Test
-    void initializeObjectForTheFirstTime() {
+    void initializesObjectForTheFirstTime() {
         final Phi phi = new PhFake();
         final int locator = Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(

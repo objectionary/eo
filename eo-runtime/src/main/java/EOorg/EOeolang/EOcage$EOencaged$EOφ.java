@@ -39,6 +39,7 @@ import org.eolang.XmirObject;
 /**
  * Cage.encaged.φ object.
  * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "cage.encaged.@")
@@ -56,9 +57,8 @@ final class EOcage$EOencaged$EOφ extends PhDefault implements Atom {
         final int locator = Math.toIntExact(
             new Param(this.take(Attr.RHO), "locator").strong(Long.class)
         );
-        final Phi obj = Cages.INSTANCE.get(locator);
         return new PhTracedLocator(
-            obj,
+            Cages.INSTANCE.get(locator),
             locator
         );
     }

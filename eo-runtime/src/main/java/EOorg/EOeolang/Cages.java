@@ -48,7 +48,6 @@ final class Cages {
      */
     private final ConcurrentHashMap<Integer, Phi> objects = new ConcurrentHashMap<>(0);
 
-
     /**
      * Ctor.
      */

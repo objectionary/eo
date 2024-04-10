@@ -40,6 +40,7 @@ import org.eolang.XmirObject;
 /**
  * Cage.encaged.encage object.
  * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "cage.encaged.encage")
