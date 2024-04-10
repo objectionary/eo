@@ -288,10 +288,6 @@ SOFTWARE.
             <xsl:value-of select="eo:specials(@base, false())"/>
           </xsl:otherwise>
         </xsl:choose>
-        <!-- Copy -->
-        <xsl:if test="@copy">
-          <xsl:text>()</xsl:text>
-        </xsl:if>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;0">
           <xsl:text>(</xsl:text>
@@ -313,10 +309,6 @@ SOFTWARE.
           <xsl:with-param name="package" select="$package"/>
         </xsl:apply-templates>
         <xsl:value-of select="eo:specials(@base, true())"/>
-        <!-- Copy -->
-        <xsl:if test="@copy">
-          <xsl:text>()</xsl:text>
-        </xsl:if>
         <!-- Nested objects -->
         <xsl:if test="count(o)&gt;1">
           <xsl:text>(</xsl:text>

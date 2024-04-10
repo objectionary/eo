@@ -1,5 +1,6 @@
 xsls: []
 tests:
+  - /program/errors[count(error)=0]
   - /program/license[text()!='']
   - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
@@ -43,7 +44,7 @@ eo: |
           z
         f
           12:foo
-          ((t' r 8.54 "yes" "\t").print 88 0x1f):hey
+          ((t r 8.54 "yes" "\t").print 88 0x1f):hey
           TRUE:vtx
           false:fle > a!
             []
@@ -58,8 +59,8 @@ eo: |
           q
           .w
           .e:qwerty > qwe
-      f'
-        z'
+      f
+        z
           (z 5):0
           z:1
       a.
@@ -93,21 +94,21 @@ eo: |
       t.o
     .two "hello!"
     .three > a1
-    .four (a b c') > a2
+    .four (a b c) > a2
     .five > a3
 
   test
     me
       (now (f (f (f (f 1)))).f):i
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > ooo
     # This is one
-    # This is the default 64+ symbols comment in front of abstract object
+    # This is the default 64+ symbols comment in front of abstract object.
     [] > o-1 /?
 
     # This is two
-    # This is the default 64+ symbols comment in front of abstract object
+    # This is the default 64+ symbols comment in front of abstract object.
     [] > o2
 
   -2.4E3 > x

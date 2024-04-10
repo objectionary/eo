@@ -380,10 +380,6 @@ SOFTWARE.
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
-    <xsl:apply-templates select=".[@copy]" mode="copy">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -434,22 +430,6 @@ SOFTWARE.
       <xsl:with-param name="skip" select="1"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
-    <xsl:apply-templates select=".[@copy]" mode="copy">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
-  </xsl:template>
-  <!-- Empty application  -->
-  <xsl:template match="o[@copy]" mode="copy">
-    <xsl:param name="indent"/>
-    <xsl:param name="name"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:value-of select="eo:tabs(1)"/>
-    <xsl:value-of select="$name"/>
-    <xsl:text> = new PhCopy(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>);</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Location of object -->
   <xsl:template match="*" mode="located">
