@@ -39,42 +39,50 @@
   while > res
     condition
     [i] (condition.write FALSE > @)
-  (bool res).not > @
+  and. > @
+    (bool res).not
+    condition.free
 
 # Test.
 [] > last-while-dataization-object
   (memory 0).alloc > x
-  eq. > @
-    3
-    while
-      2.gt x
-      [i]
-        x.write > @
-          x.as-int.plus 1
+  and. > @
+    eq.
+      3
+      while
+        2.gt x
+        [i]
+          x.write > @
+            x.as-int.plus 1
+    x.free
 
 # Test.
 [] > iterates-over-simple-counter
   (memory 0).alloc > x
   and. > @
-    eq.
-      x.write 5
-      5
-    eq.
-      while
-        10.gt x
-        [i]
-          x.write > @
-            x.as-int.plus 1
-      11
+    and.
+      eq.
+        x.write 5
+        5
+      eq.
+        while
+          10.gt x
+          [i]
+            x.write > @
+              x.as-int.plus 1
+        11
+    x.free
 
 # Test.
 [] > last-while-dataization-object-with-false-condition
   (memory 3).alloc > x
-  eq. > @
-    while
-      1.gt x
-      [i] (x.write (x.as-int.plus 1) > @)
-    FALSE
+  and. > @
+    eq.
+      while
+        1.gt x
+        [i] (x.write (x.as-int.plus 1) > @)
+      FALSE
+    x.free
 
 # Test.
 [] > iterating-tuple-with-while-using-internal-iterator
@@ -100,9 +108,13 @@
                       i
                 iter.write
                   iter.as-int.plus 1
-      eq.
-        acc.as-int
-        arr.length
+      and.
+        and.
+          eq.
+            acc.as-int
+            arr.length
+          iter.free
+        acc.free
 
 # Test.
 [] > iterating-tuple-with-while-using-external-iterator
@@ -128,9 +140,13 @@
                       iter.as-int
                 iter.write
                   iter.as-int.plus 1
-      eq.
-        acc.as-int
-        arr.length
+      and.
+        and.
+          eq.
+            acc.as-int
+            arr.length
+          iter.free
+        acc.free
 
 # Test.
 [] > while-with-body-in-condition
@@ -151,8 +167,12 @@
         [i]
           TRUE > @
       and.
-        x.eq 1
-        i.eq 2
+        and.
+          and.
+            x.eq 1
+            i.eq 2
+          x.free
+        i.free
 
 # Test.
 [] > iterating-tuple-with-while-without-body-multiple
@@ -178,9 +198,13 @@
             FALSE
         [i]
           TRUE > @
-      eq.
-        acc.as-int
-        arr.length
+      and.
+        and.
+          eq.
+            acc.as-int
+            arr.length
+          iter.free
+        acc.free
 
 # Test.
 [] > iterating-tuple-with-while-without-body-single
@@ -206,6 +230,10 @@
             FALSE
         [i]
           TRUE > @
-      eq.
-        acc.as-int
-        arr.length
+      and.
+        and.
+          eq.
+            acc.as-int
+            arr.length
+          iter.free
+        acc.free

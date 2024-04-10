@@ -30,34 +30,38 @@ package EOorg.EOeolang;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.free object.
- *
+ * Cage.φ object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.free")
-public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
+@XmirObject(oname = "cage.@")
+final class EOcage$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
+    EOcage$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
-    public Phi lambda() {
-        Heaps.INSTANCE.free(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+    public Phi lambda() throws Exception {
+        final Phi encaged = this.take(Attr.SIGMA).take("encaged").copy();
+        encaged.put(
+            "locator",
+            new Data.ToPhi(
+                (long) Cages.INSTANCE.init(
+                    this.take(Attr.RHO).take("object")
+                )
+            )
         );
-        return new Data.ToPhi(true);
+        return encaged;
     }
 }

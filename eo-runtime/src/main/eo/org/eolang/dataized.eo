@@ -22,41 +22,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang
++rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Test.
-[] > const-does-not-do-recalculation
-  (memory 0).alloc > m
-  # Func.
-  [] > func
-    ^.m.write (^.m.as-int.plus 1) > @
-  (const func).make > cached
-  seq > @
-    *
-      cached.as-int
-      cached.as-bytes
-      cached.as-bool
-      1.eq m
-
-# Test.
-[] > const-behaves-as-exclamationed
-  # Func.
-  [] > func
-    (memory 0).alloc > m
-    seq > @
-      *
-        TRUE
-        m.write (m.as-int.plus 1)
-  (const func).make > cached1
-  func > cached2!
-  seq > @
-    *
-      cached1
-      cached2
-      cached1
-      cached2
-      and.
-        cached1.eq cached2
-        1.eq cached1
+# Dataizes given `target`, makes new `bytes` from the data and behaves as result `bytes`.
+[target] > dataized /bytes

@@ -30,22 +30,24 @@
 # Test.
 [] > goto-jumps-backwards
   (memory 0).alloc > i
-  eq. > @
-    seq
-      *
-        i.write 1
-        go.to
-          [g]
-            seq > @
-              *
-                i.write (i.as-int.plus 1)
-                if
-                  i.as-int.lt 10
-                  g.backward
-                  TRUE
-        stdout "Finished!\n"
-        i
-    10
+  and. > @
+    eq.
+      seq
+        *
+          i.write 1
+          go.to
+            [g]
+              seq > @
+                *
+                  i.write (i.as-int.plus 1)
+                  if
+                    i.as-int.lt 10
+                    g.backward
+                    TRUE
+          stdout "Finished!\n"
+          i
+      10
+    i.free
 
 # Test.
 [] > goto-jumps-forward
@@ -63,7 +65,9 @@
                   g.forward TRUE
                   TRUE
                 r.write (42.div x)
-        r
+        (dataized r).as-bytes > result
+        r.free
+        result
   and. > @
     eq.
       div 7

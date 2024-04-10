@@ -103,18 +103,18 @@
       *
         x.write (x.as-int.plus 1)
         42
-  eq. > @
-    seq
-      *
-        x.write 0
-        a.neg.neg.neg.neg.eq 42
-        x
-    1
+  seq > @
+    *
+      x.write 0
+      a.neg.neg.neg.neg.eq 42
+      and.
+        x.eq 1
+        x.free
 
 # Test.
 [] > writes-cage-to-memory
   (memory 0).alloc > f1
-  cage.new int.plus > f2
+  (cage int.plus).new > f2
   (memory 0).alloc > f0
   seq > @
     *
@@ -122,9 +122,11 @@
       f1.write 2
       f2.encage ((int f0).plus f1)
       f1.write f2
-      eq.
-        f1
-        3
+      and.
+        and.
+          f1.eq 3
+          f1.free
+        f0.free
 
 # Test.
 [] > recursion-without-arguments
@@ -138,12 +140,12 @@
           n.write (n.as-int.minus 1)
           ^.func
       n
-  eq. > @
-    seq
-      *
-        n.write 4
-        func
-    0
+  seq > @
+    *
+      n.write 4
+      and.
+        func.eq 0
+        n.free
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
@@ -173,7 +175,8 @@
             *
               m.write 42
               go.write FALSE
-      TRUE
+              m.free
+      go.free
 
 # Test.
 [] > named-inner-abstract-object
@@ -182,18 +185,6 @@
       # A.
       [] > a
         TRUE > @
-
-# Test.
-[] > calling-caged-function
-  # Func.
-  [] > func
-    # Inner object.
-    [x] > @
-      2.plus x > @
-  cage.new func > h
-  eq. > @
-    h.@ 8
-    10
 
 # Test.
 [] > app-that-calls-func
@@ -213,28 +204,31 @@
 # Test.
 [] > directly-accesses-objects-from-root
   (Q.org.eolang.memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 42
-        Q.org.eolang.io.stdout
-          "Hello, world!"
-        m.write
-          m.as-int.minus 2
-    40
+  seq > @
+    *
+      m.write 42
+      Q.org.eolang.io.stdout
+        "Hello, world!"
+      m.write
+        m.as-int.minus 2
+      and.
+        m.eq 40
+        m.free
 
 # Test.
 [] > directly-accesses-objects-from-standard-root
   (QQ.memory 0).alloc > m
-  eq. > @
-    seq
-      *
-        m.write 42
-        QQ.io.stdout
-          "Works fine!"
-        m.write
-          m.as-int.minus 2
-    40
+  seq > @
+    *
+      m.write 42
+      QQ.io.stdout
+        "Works fine!"
+      and.
+        eq.
+          m.write
+            m.as-int.minus 2
+          40
+        m.free
 
 # Test.
 [] > standard-root-and-root
@@ -272,11 +266,13 @@
         x.as-int
   int > num
     inc a > n!
-  eq. > @
-    times.
-      num
-      num
-    64
+  and. > @
+    eq.
+      times.
+        num
+        num
+      64
+    a.free
 
 # Test.
 [] > copy-object-with-dot
@@ -298,9 +294,11 @@
       m. > @
         ^.
           ^
-  eq. > @
-    value
-    5
+  and. > @
+    eq.
+      value
+      5
+    m.free
 
 # Test.
 [] > parent-in-horizontal-notation
@@ -310,9 +308,11 @@
     # Phi.
     [] > @
       ^.^.m > @
-  eq. > @
-    value
-    5
+  and. > @
+    eq.
+      value
+      5
+    m.free
 
 # Test.
 [] > phi-in-vertical-notation

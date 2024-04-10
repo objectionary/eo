@@ -29,35 +29,37 @@ package EOorg.EOeolang;
 
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
+import org.eolang.PhTracedLocator;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.free object.
- *
+ * Cage.encaged.φ object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.free")
-public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
+@XmirObject(oname = "cage.encaged.@")
+final class EOcage$EOencaged$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
+    EOcage$EOencaged$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
-    public Phi lambda() {
-        Heaps.INSTANCE.free(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+    public Phi lambda() throws Exception {
+        final int locator = Math.toIntExact(
+            new Param(this.take(Attr.RHO), "locator").strong(Long.class)
         );
-        return new Data.ToPhi(true);
+        return new PhTracedLocator(
+            Cages.INSTANCE.get(locator),
+            locator
+        );
     }
 }

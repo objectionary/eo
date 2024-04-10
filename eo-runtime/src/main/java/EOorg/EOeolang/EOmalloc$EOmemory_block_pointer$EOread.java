@@ -56,7 +56,7 @@ final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements 
     @Override
     public Phi lambda() throws Exception {
         return new Data.ToPhi(
-            Heaps.INSTANCE.get().read(
+            Heaps.INSTANCE.read(
                 new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
             )
         );

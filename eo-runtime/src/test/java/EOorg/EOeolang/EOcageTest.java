@@ -54,7 +54,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
- * Test cases for {@link EOcage} and {@link EOcage$EOnew}.
+ * Test cases for {@link EOcage}.
  * @since 0.19
  */
 final class EOcageTest {
@@ -179,10 +179,9 @@ final class EOcageTest {
      * @return Cage.new object
      */
     private static Phi encaged(final Phi obj) {
-        final Phi cage = Phi.Φ.take("org.eolang.cage");
-        final Phi encaged = cage.take("new").copy();
-        encaged.put(0, obj);
-        return encaged;
+        final Phi cage = Phi.Φ.take("org.eolang.cage").copy();
+        cage.put(0, obj);
+        return cage.take("new");
     }
 
     /**
@@ -212,7 +211,7 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowIfDataizesConcurrently() {
-            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            final Phi cage = EOcageTest.encaged(new RecursiveDummy());
             EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH, cage)
@@ -261,7 +260,9 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfRecursion() {
-            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            final Phi cage = EOcageTest.encaged(
+                Phi.Φ.take("org.eolang.cage").take("encaged")
+            );
             EOcageTest.encageTo(cage, cage);
             Assertions.assertThrows(
                 ExAbstract.class,
@@ -272,7 +273,7 @@ final class EOcageTest {
 
         @Test
         void doesNotThrowExceptionIfSmallDepth() {
-            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            final Phi cage = EOcageTest.encaged(new RecursiveDummy());
             EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH / 2, cage)
@@ -293,7 +294,7 @@ final class EOcageTest {
          */
         @Test
         void doesNotThrowExceptionIfMaxDepth() {
-            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            final Phi cage = EOcageTest.encaged(new RecursiveDummy());
             EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH, cage)
@@ -311,7 +312,7 @@ final class EOcageTest {
 
         @Test
         void throwsExceptionIfBigDepth() {
-            final Phi cage = Phi.Φ.take("org.eolang.cage").take("new").copy();
+            final Phi cage = EOcageTest.encaged(new RecursiveDummy());
             EOcageTest.encageTo(
                 cage,
                 new RecursiveDummy(EOcageTest.RecursionTests.MAX_DEPTH + 1, cage)
@@ -337,7 +338,7 @@ final class EOcageTest {
             /**
              * How many times should we met the cage while dataizing it eventually.
              */
-            private final int depth;
+            private final Integer depth;
 
             /**
              * The cage.
@@ -350,11 +351,18 @@ final class EOcageTest {
             private final ThreadLocal<Integer> counter;
 
             /**
+             * Ctor for initialize cage.
+             */
+            RecursiveDummy() {
+                this(null, null);
+            }
+
+            /**
              * Ctor.
              * @param depth Depth.
              * @param cage Cage.
              */
-            RecursiveDummy(final int depth, final Phi cage) {
+            RecursiveDummy(final Integer depth, final Phi cage) {
                 this.depth = depth;
                 this.cage = cage;
                 this.counter = ThreadLocal.withInitial(() -> 0);
