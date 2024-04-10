@@ -240,7 +240,7 @@
         1
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Test.
 [] > slice-end-below-start
@@ -252,7 +252,7 @@
         -1
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Test.
 [] > slice-end-greater-actual
@@ -264,4 +264,4 @@
         5
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE

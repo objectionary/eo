@@ -148,7 +148,8 @@
                 i.write (i.as-int.plus 1)
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       and.
         x.eq 1
         i.eq 2
@@ -175,7 +176,8 @@
                   iter.as-int.plus 1
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       eq.
         acc.as-int
         arr.length
@@ -202,7 +204,8 @@
                   iter.as-int.plus 1
                 TRUE
             FALSE
-        nop
+        [i]
+          TRUE > @
       eq.
         acc.as-int
         arr.length

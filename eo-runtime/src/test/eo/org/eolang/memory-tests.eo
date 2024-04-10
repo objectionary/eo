@@ -104,7 +104,7 @@
       m.write 86124867.88 > @
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-string-error-overflow
@@ -114,7 +114,7 @@
       m.write "Much longer string!" > @
     [e]
       QQ.io.stdout e > @
-    nop
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-int
@@ -125,7 +125,7 @@
         m.write 2556 > @
       [e]
         e > @
-      nop
+      TRUE
     2556
 
 # Test.
@@ -137,7 +137,7 @@
         m.write 82.22 > @
       [e]
         e > @
-      nop
+      TRUE
     82.22
 
 # Test.
@@ -149,7 +149,7 @@
         m.write "Prot" > @
       [e]
         e > @
-      nop
+      TRUE
     "Proto"
 
 # Test.
@@ -160,7 +160,7 @@
       m.write TRUE > @
     [e]
       e > @
-    nop
+    TRUE
 
 # Test.
 [] > memory-is-cleared-successfully
