@@ -1,0 +1,13 @@
+tests:
+  - //o[@base='.as-bytes' and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.int' and not(@name)]]]
+  - //o[@base='.as-bytes' and @name='y' and o[@base='org.eolang.dataized' and o[@base='org.eolang.int' and not(@name)]]]
+eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > foo
+    int > x!
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > m!
+      a
+        b
+          c 1 2 > y!
+      .o > z!
