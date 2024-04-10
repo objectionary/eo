@@ -53,7 +53,7 @@ class CagesTest {
     @Test
     void rencagesTheSameObject() {
         final Phi phi = new PhFake();
-        final int locator = Cages.INSTANCE.init(phi);
+        Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.init(phi)
         );
