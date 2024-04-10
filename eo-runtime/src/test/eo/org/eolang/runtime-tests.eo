@@ -275,16 +275,6 @@
     a.free
 
 # Test.
-[] > copy-object-with-dot
-  # Book.
-  [] > book
-    "qwerty" > title
-  book.title' > copy-title
-  eq. > @
-    copy-title
-    "qwerty"
-
-# Test.
 [] > parent-in-vertical-notation
   (memory 5).alloc > m
   # Value.

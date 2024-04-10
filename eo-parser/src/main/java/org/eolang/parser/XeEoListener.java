@@ -496,16 +496,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
+        } else if (ctx.PHI() != null) {
             base = "@";
         } else {
             base = "";
         }
         if (!base.isEmpty()) {
             this.objects.prop("base", base);
-        }
-        if (ctx.COPY() != null) {
-            this.objects.prop("copy");
         }
         this.objects.leave();
     }
@@ -1068,7 +1065,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
+        } else if (ctx.PHI() != null) {
             base = "@";
         } else if (ctx.RHO() != null) {
             base = "^";
@@ -1088,15 +1085,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
+    public void enterBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
-        if (ctx.COPY() != null) {
-            this.objects.enter().prop("copy").leave();
-        }
+    public void exitBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -1135,8 +1130,8 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final EoParser.SuffixContext ctx) {
         this.objects.enter();
-        if (ctx.AT() != null) {
-            this.objects.prop("name", ctx.AT().getText());
+        if (ctx.PHI() != null) {
+            this.objects.prop("name", ctx.PHI().getText());
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
         }

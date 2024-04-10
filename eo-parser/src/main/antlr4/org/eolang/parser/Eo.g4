@@ -59,8 +59,7 @@ master
     ;
 
 // Just an object reference without name
-just: beginner
-    | finisherCopied
+just: beginnerOrFinisher
     | versioned
     ;
 
@@ -160,7 +159,8 @@ happlicationHeadExtended
 // Simple statements that can be used as head of application
 applicable
     : STAR
-    | (NAME | AT) COPY?
+    | NAME
+    | PHI
     ;
 
 // Horizontal application tail
@@ -182,8 +182,7 @@ happlicationTailReversedFirst
 // Argument of horizontal application
 // Does not contain elements in vertical notation
 happlicationArg
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | hmethod
     | scope
     ;
@@ -391,15 +390,13 @@ hmethodExtendedVersioned
 
 // Head of horizontal method
 hmethodHead
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
 // Extended head of horizontal method
 hmethodHeadExtended
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
@@ -454,7 +451,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisherCopied
+    : DOT finisher
     ;
 
 // Versioned tail of method
@@ -475,14 +472,15 @@ beginner
 // Can start or finish the statement
 finisher
     : NAME
-    | AT
+    | PHI
     | RHO
     | SIGMA
     ;
 
-// Finisher with optional COPY
-finisherCopied
-    : finisher COPY?
+// Beginner or finisher
+beginnerOrFinisher
+    : beginner
+    | finisher
     ;
 
 // Name with optional version
@@ -503,7 +501,7 @@ oname
 
 // Suffix
 suffix
-    : SPACE ARROW SPACE (AT | NAME)
+    : SPACE ARROW SPACE (PHI | NAME)
     ;
 
 // Simple scope
@@ -554,8 +552,6 @@ SLASH
 COLON
     : ':'
     ;
-COPY: '\''
-    ;
 ARROW
     : '>'
     ;
@@ -585,7 +581,7 @@ LB  : '('
     ;
 RB  : ')'
     ;
-AT  : '@'
+PHI : '@'
     ;
 RHO : '^'
     ;
