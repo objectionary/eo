@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-public final class EOtryTest {
+public final class EOtryTes t {
 
     @Test
     public void catchesException() {
