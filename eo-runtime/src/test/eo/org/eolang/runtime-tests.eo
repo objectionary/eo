@@ -126,9 +126,7 @@
         and.
           f1.eq 3
           f1.free
-        and.
-          f0.free
-          f2.free
+        f0.free
 
 # Test.
 [] > recursion-without-arguments

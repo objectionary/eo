@@ -115,22 +115,4 @@ final class Cages {
             return this.objects.get(locator);
         }
     }
-
-    /**
-     * Remove object from the cage by locator.
-     * @param locator Locator of the object
-     */
-    void remove(final int locator) {
-        synchronized (this.objects) {
-            if (!this.objects.containsKey(locator)) {
-                throw new ExFailure(
-                    String.format(
-                        "Object with locator %d is absent in cage, can't remove",
-                        locator
-                    )
-                );
-            }
-            this.objects.remove(locator);
-        }
-    }
 }
