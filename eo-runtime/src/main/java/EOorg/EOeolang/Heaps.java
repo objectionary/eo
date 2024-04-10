@@ -84,6 +84,8 @@ final class Heaps {
     /**
      * Get data from the block in memory by identifier.
      * @param identifier Identifier of the pointer
+     * @param offset Offset to start reading from
+     * @param length Length of bytes to read
      * @return Bytes from the block in memory
      */
     byte[] read(final int identifier, final int offset, final int length) {
