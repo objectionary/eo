@@ -21,60 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package org.eolang;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+
 /**
- * Attribute that ignores putting and copying.
- * The only usage for the attribute is keeping \sigma
- * attribute.
+ * Test case for {@link PhLocatedTest}.
  *
- * @since 0.1
+ * @since 0.36.0
  */
-@Versionized
-final class AtFixed implements Attr {
+class PhLocatedTest {
 
-    /**
-     * Phi that is fixed.
-     */
-    private final Phi fixed;
-
-    /**
-     * Attribute.
-     */
-    private final Attr attr;
-
-    /**
-     * Ctor.
-     * @param phi Fixed phi
-     */
-    AtFixed(final Phi phi) {
-        this.fixed = phi;
-        this.attr = new AtSimple(this.fixed);
-    }
-
-    @Override
-    public String toString() {
-        return this.attr.toString();
-    }
-
-    @Override
-    public String φTerm() {
-        return this.attr.φTerm();
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtFixed(this.fixed);
-    }
-
-    @Override
-    public Phi get() {
-        return this.fixed;
-    }
-
-    @Override
-    public boolean put(final Phi src) {
-        return false;
+    @Test
+    void savesLocationAfterCopying() {
+        final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
+        MatcherAssert.assertThat(
+            located.copy().locator(),
+            Matchers.equalTo(located.locator())
+        );
     }
 }

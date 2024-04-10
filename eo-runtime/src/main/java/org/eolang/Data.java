@@ -35,6 +35,18 @@ import java.nio.charset.StandardCharsets;
  */
 @Versionized
 public interface Data {
+    /**
+     * Attach data to the object.
+     * @param data Data.
+     * @todo #2931:60min Change the data storage architecture. Current implementation allows the
+     *  presence of two methods for data manipulations: {@link Data#attach(byte[])} to set data and
+     *  {@link Data#delta()} to get data; which does not seem to be object oriented. It also
+     *  requires every object to have reserved place for possible injected data. In our case, every
+     *  {@link PhDefault} has {@link PhDefault#data} variable. It would be much better to have this
+     *  data only inside some decorator. The main difficulty here is - child attributes of
+     *  decorated object should know that their \rho is decorated and contains data.
+     */
+    void attach(byte[] data);
 
     /**
      * Take the data.
@@ -88,18 +100,13 @@ public interface Data {
         }
 
         @Override
-        public Phi take(final String name, final Phi rho) {
-            return this.object.take(name, rho);
+        public boolean put(final int pos, final Phi obj) {
+            return this.object.put(pos, obj);
         }
 
         @Override
-        public void put(final int pos, final Phi obj) {
-            this.object.put(pos, obj);
-        }
-
-        @Override
-        public void put(final String name, final Phi obj) {
-            this.object.put(name, obj);
+        public boolean put(final String name, final Phi obj) {
+            return this.object.put(name, obj);
         }
 
         @Override
@@ -120,6 +127,11 @@ public interface Data {
         @Override
         public String toString() {
             return this.object.toString();
+        }
+
+        @Override
+        public void attach(final byte[] data) {
+            this.object.attach(data);
         }
 
         @Override
@@ -171,15 +183,14 @@ public interface Data {
                     )
                 );
             }
-            final Phi object;
             if (delta) {
-                object = new PhData(phi, bytes);
+                phi.attach(bytes);
             } else {
-                final Phi bts = new PhData(eolang.take("bytes").copy(), bytes);
+                final Phi bts = eolang.take("bytes").copy();
+                bts.attach(bytes);
                 phi.put(0, bts);
-                object = phi;
             }
-            return object;
+            return phi;
         }
 
         /**

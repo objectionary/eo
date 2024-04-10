@@ -45,7 +45,13 @@
   @.alloc > alloc
 
   # Allocate data in memory and return `allocated`.
-  [] > @ /allocated
+  [] > @
+    (dataized ^.data).as-bytes > bts
+    (malloc bts.size).pointer > p
+    seq > @
+      *
+        p.write 0 bts
+        ^.allocated p
 
   # Data allocated in memory.
   [pointer] > allocated

@@ -97,18 +97,13 @@ public final class PhConst implements Phi {
     }
 
     @Override
-    public Phi take(final String name, final Phi rho) {
-        return this.primitive().take(name, rho);
+    public boolean put(final int pos, final Phi object) {
+        return this.primitive().put(pos, object);
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
-        this.primitive().put(pos, object);
-    }
-
-    @Override
-    public void put(final String name, final Phi object) {
-        this.primitive().put(name, object);
+    public boolean put(final String name, final Phi object) {
+        return this.primitive().put(name, object);
     }
 
     @Override
@@ -119,6 +114,11 @@ public final class PhConst implements Phi {
     @Override
     public String forma() {
         return this.wrapped.forma();
+    }
+
+    @Override
+    public void attach(final byte[] data) {
+        this.primitive().attach(data);
     }
 
     @Override

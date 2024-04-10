@@ -215,6 +215,21 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    public String asString() {
+        final StringBuilder out = new StringBuilder(0);
+        for (final byte bte : this.data) {
+            if (out.length() > 0) {
+                out.append('-');
+            }
+            out.append(String.format("%02X", bte));
+        }
+        if (this.data.length == 0) {
+            out.append("--");
+        }
+        return out.toString();
+    }
+
+    @Override
     public byte[] take() {
         return Arrays.copyOf(this.data, this.data.length);
     }

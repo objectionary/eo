@@ -104,8 +104,9 @@
       try
         []
           seq > @
-            5.div 0
-            m.write (m.plus 1)
+            *
+              5.div 0
+              m.write (m.plus 1)
         [e]
           e > @
         nop

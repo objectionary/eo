@@ -85,9 +85,9 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public Phi take(final String name, final Phi rho) {
+    public boolean put(final int pos, final Phi object) {
         try {
-            return this.origin.take(name, rho);
+            return this.origin.put(pos, object);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
@@ -96,20 +96,9 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
+    public boolean put(final String name, final Phi object) {
         try {
-            this.origin.put(pos, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
-            );
-        }
-    }
-
-    @Override
-    public void put(final String name, final Phi object) {
-        try {
-            this.origin.put(name, object);
+            return this.origin.put(name, object);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
@@ -125,6 +114,17 @@ public final class PhSafe implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
+    }
+
+    @Override
+    public void attach(final byte[] data) {
+        try {
+            this.origin.attach(data);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
 
     @Override

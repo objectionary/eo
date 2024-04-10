@@ -105,20 +105,17 @@ public final class PhTracedLocator implements Phi {
     }
 
     @Override
-    public Phi take(final String name, final Phi rho) {
+    public boolean put(final int pos, final Phi obj) {
         return new PhTracedLocator.TracingWhileGetting<>(
-            () -> this.object.take(name, rho)
+            () -> this.object.put(pos, obj)
         ).get();
     }
 
     @Override
-    public void put(final int pos, final Phi obj) {
-        this.object.put(pos, obj);
-    }
-
-    @Override
-    public void put(final String name, final Phi obj) {
-        this.object.put(name, obj);
+    public boolean put(final String name, final Phi obj) {
+        return new PhTracedLocator.TracingWhileGetting<>(
+            () -> this.object.put(name, obj)
+        ).get();
     }
 
     @Override
@@ -144,6 +141,11 @@ public final class PhTracedLocator implements Phi {
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof Phi && this.hashCode() == obj.hashCode();
+    }
+
+    @Override
+    public void attach(final byte[] data) {
+        this.object.attach(data);
     }
 
     @Override

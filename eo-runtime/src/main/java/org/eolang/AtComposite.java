@@ -77,7 +77,7 @@ public final class AtComposite implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new ExReadOnly(
             "You can't overwrite lambda expression"
         );

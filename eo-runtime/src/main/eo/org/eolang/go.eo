@@ -72,7 +72,7 @@
       # Backward jump.
       error > backward
         []
-          &.^.@ > value
+          &.^.^.to &.^.body > value
           &.^.^.id > id
 
       # Forward jump.

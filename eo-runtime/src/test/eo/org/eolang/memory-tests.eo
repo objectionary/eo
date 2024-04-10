@@ -39,15 +39,16 @@
 # Test.
 [] > memory-double-writes
   (memory "1234567890123").alloc > m
-  seq > @
-    *
-      m.write "Hello, world!"
-      m.write 42
-      and.
-        m.eq
-          42.as-bytes.concat
-            "orld!".as-bytes
-        m.free
+  and. > @
+    eq.
+      42.as-bytes.concat
+        "orld!".as-bytes
+      seq
+        *
+          m.write "Hello, world!"
+          m.write 42
+          m
+    m.free
 
 # Test.
 [] > rewrites-and-increments-itself
@@ -56,13 +57,9 @@
     *
       m.write 1
       m.write (m.as-int.plus 5)
-      and.
-        m.eq 6
-        m.free
+      (m.eq 6).and m.free
 
 # Test.
-# This test does not work in the way we would expect because every time we do `a.x` -
-# new copy of `x` object is created which leads to new allocation in memory and memory leaks.
 [] > memory-in-outer-scope
   # Outer scope object.
   [] > a
@@ -79,15 +76,17 @@
 [] > writes-into-two-memory-objects
   (memory 0).alloc > a
   (memory 0).alloc > b
-  seq > @
-    *
-      a.write 10
-      b.write 20
-      and.
-        (b.plus a).eq 30
+  and. > @
+    seq
+      *
+        a.write 10
+        b.write 20
         and.
-          m.free
-          b.free
+          b.eq 20
+          a.eq 10
+    and.
+      a.free
+      b.free
 
 # Test.
 [] > writes-into-two-memory-objects-and-check-first
@@ -97,7 +96,11 @@
     *
       a.write 10
       b.write 20
-      a.eq 10
+      and.
+        and.
+          a.eq 10
+          a.free
+        b.free
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
@@ -153,7 +156,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-string
-  (memory "HellX").alloc > m
+  (memory "Hello").alloc > m
   and. > @
     eq.
       try
@@ -162,7 +165,7 @@
         [e]
           e > @
         nop
-      "ProtX"
+      "Proto"
     m.free
 
 # Test.

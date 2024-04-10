@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOseq;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,22 +31,23 @@ import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link UniverseDefault}.
  * @since 0.31
- * @todo #2931:30min Enable the tests. The tests were disabled because Universe can't find object.
- *  Most probably it's because {@link PhDefault#take(String, Phi)} method makes copy of object
- *  before returning. Need to find out what's going on and enable the tests
  */
 final class UniverseDefaultTest {
 
     /**
-     * Name of attribute.
+     * Name of attribute bound with abstract object.
      */
-    private static final String ATT = "value";
+    private static final String ABSTRACT_ATT = "abstract";
+
+    /**
+     * Name of dataizable attribute.
+     */
+    private static final String VALUE_ATT = "value";
 
     /**
      * Data byte array.
@@ -53,33 +55,35 @@ final class UniverseDefaultTest {
     private static final byte[] DATA = new BytesOf(123456789L).take();
 
     @Test
-    @Disabled
     void findsSimpleAtt() {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            universe.find("$.".concat(UniverseDefaultTest.ATT)),
+            universe.find(
+                String.format("%s.%s.%s", "$", UniverseDefaultTest.ABSTRACT_ATT, Attr.RHO)
+            ),
             Matchers.equalTo(
-                phi.take(UniverseDefaultTest.ATT).hashCode()
+                phi.hashCode()
             )
         );
     }
 
     @Test
-    @Disabled
     void findsLongAtt() {
         final Phi phi = new DummyWithStructure(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
             universe.find(
                 String.format(
-                    "$.%s.%s",
-                    UniverseDefaultTest.ATT,
-                    UniverseDefaultTest.ATT
+                    "$.%s.%s.%s.%s",
+                    UniverseDefaultTest.ABSTRACT_ATT,
+                    UniverseDefaultTest.ABSTRACT_ATT,
+                    Attr.RHO,
+                    Attr.RHO
                     )
                 ),
             Matchers.equalTo(
-                phi.take(UniverseDefaultTest.ATT).take(UniverseDefaultTest.ATT).hashCode()
+                phi.hashCode()
             )
         );
     }
@@ -111,7 +115,7 @@ final class UniverseDefaultTest {
             new DummyWithAt(Phi.Φ)
         );
         final int vertex = universe.find(
-            "$.".concat(UniverseDefaultTest.ATT)
+            "$.".concat(UniverseDefaultTest.VALUE_ATT)
         );
         MatcherAssert.assertThat(
             universe.dataize(vertex),
@@ -172,10 +176,10 @@ final class UniverseDefaultTest {
         final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         universe.bind(
-            dummy.hashCode(), copy, UniverseDefaultTest.ATT
+            dummy.hashCode(), copy, UniverseDefaultTest.ABSTRACT_ATT
         );
         MatcherAssert.assertThat(
-            new Dataized(dummy.take(UniverseDefaultTest.ATT)).take(),
+            new Dataized(dummy.take(UniverseDefaultTest.ABSTRACT_ATT)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
             )
@@ -189,21 +193,19 @@ final class UniverseDefaultTest {
     private static class DummyWithAt extends PhDefault {
 
         /**
-         * Main ctor.
-         * @param sigma Sigma.
-         * @param att Att name.
-         */
-        DummyWithAt(final Phi sigma, final String att) {
-            super(sigma);
-            this.add(att, new AtOnce(new AtComposite(sigma, self -> new Data.ToPhi(1L))));
-        }
-
-        /**
          * Ctor.
          * @param sigma Sigma.
          */
         DummyWithAt(final Phi sigma) {
-            this(sigma, UniverseDefaultTest.ATT);
+            super(sigma);
+            this.add(
+                UniverseDefaultTest.ABSTRACT_ATT,
+                new AtComposite(sigma, self -> new EOint(Phi.Φ))
+            );
+            this.add(
+                UniverseDefaultTest.VALUE_ATT,
+                new AtComposite(sigma, self -> new Data.ToPhi(1L))
+            );
         }
     }
 
@@ -219,7 +221,7 @@ final class UniverseDefaultTest {
          */
         DummyWithStructure(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ATT, new AtOnce(new AtComposite(this, DummyWithAt::new)));
+            this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtComposite(this, DummyWithAt::new));
         }
     }
 
@@ -235,7 +237,10 @@ final class UniverseDefaultTest {
          */
         DummyAbstract(final Phi sigma) {
             super(sigma);
-            this.add(UniverseDefaultTest.ATT, new AtVoid(UniverseDefaultTest.ATT));
+            this.add(
+                UniverseDefaultTest.ABSTRACT_ATT,
+                new AtVoid(UniverseDefaultTest.ABSTRACT_ATT)
+            );
         }
     }
 }

@@ -105,7 +105,7 @@ public final class Dataized {
                         String.join("", Collections.nCopies(before, "·")),
                         this.phi.locator(),
                         this.phi.toString().replaceAll("[\n\t]", ""),
-                        new PhData(Phi.Φ, data).bytes().replaceAll("[\n\t]", "")
+                        new BytesOf(data).asString().replaceAll("[\n\t]", "")
                     )
                 );
             }

@@ -28,16 +28,20 @@
 
 # Test.
 [] > malloc-gives-id-to-pointer
-  (malloc 2).id.gt 0 > @
+  (malloc 2).pointer > p
+  and. > @
+    p.id.gt 0
+    p.free
 
 #Test.
 [] > malloc-gives-id-to-pointer-after-copy
   (malloc 2).pointer > p
-  p.id.gt 0 > @
+  (p.id.gt 0).and p.free > @
 
 # Test.
 [] > malloc-allocates-right-size-block
-  (malloc 10).size.eq 10 > @
+  (malloc 10).pointer > p
+  (p.size.eq 10).and p.free > @
 
 # Test.
 [] > malloc-pointer-writes-and-reads
@@ -45,7 +49,9 @@
   seq > @
     *
       p.write 0 "Hello, Jeff!"
-      p.read.eq "Hello, Jeff!"
+      and.
+        p.read.eq "Hello, Jeff!"
+        p.free
 
 # Test.
 [] > malloc-pointer-concacts-strings-with-offset
@@ -54,7 +60,9 @@
     *
       p.write 0 "XXX"
       p.write 1 "Y"
-      p.read.eq "XYX"
+      and.
+        p.read.eq "XYX"
+        p.free
 
 # Test.
 [] > malloc-pointer-frees-successfully
@@ -80,8 +88,11 @@
       *
         p.write 0 42
         FALSE
-    [e] (QQ.io.stdout e > @)
-    FALSE
+    [e]
+      and. > @
+        QQ.io.stdout e
+        p.free
+    TRUE
 
 # Test.
 [] > malloc-pointer-cant-write-more-than-allocated-with-offset
@@ -91,8 +102,11 @@
       *
         p.write 1 TRUE
         FALSE
-    [e] (QQ.io.stdout e > @)
-    FALSE
+    [e]
+      and. > @
+        QQ.io.stdout e
+        p.free
+    TRUE
 
 # Test.
 [] > malloc-pointer-rewrites-successfully
@@ -101,4 +115,6 @@
     *
       p.write 0 42
       p.write 0 94
-      p.read.eq 94
+      and.
+        p.read.eq 94
+        p.free

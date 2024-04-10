@@ -103,34 +103,32 @@
       *
         x.write (x.as-int.plus 1)
         42
-  and. > @
-    eq.
-      seq
-        *
-          x.write 0
-          a.neg.neg.neg.neg.eq 42
-          x
-      1
-    x.free
+  seq > @
+    *
+      x.write 0
+      a.neg.neg.neg.neg.eq 42
+      and.
+        x.eq 1
+        x.free
 
 # Test.
 [] > writes-cage-to-memory
   (memory 0).alloc > f1
-  (cage int.plus).new > f2
+  cage.new int.plus > f2
   (memory 0).alloc > f0
   seq > @
     *
       f0.write 1
       f1.write 2
       f2.encage ((int f0).plus f1)
-      f1.write f2.freed
+      f1.write f2
       and.
-        eq.
-          f1
-          3
         and.
+          eq.
+            f1
+            3
           f1.free
-          f0.free
+        f0.free
 
 # Test.
 [] > recursion-without-arguments
@@ -178,9 +176,8 @@
           seq > @
             *
               m.write 42
-              and.
-                m.free
-                go.write FALSE
+              go.write FALSE
+              m.free
       go.free
 
 # Test.
@@ -198,9 +195,9 @@
     # Inner object.
     [x] > @
       2.plus x > @
-  (cage func).new > h
+  cage.new func > h
   eq. > @
-    h.freed.@ 8
+    h.@ 8
     10
 
 # Test.
@@ -240,17 +237,18 @@
       m.write 42
       QQ.io.stdout
         "Works fine!"
-      m.write
-        m.as-int.minus 2
       and.
-        m.eq 40
+        eq.
+          m.write
+            m.as-int.minus 2
+          40
         m.free
 
 # Test.
 [] > standard-root-and-root
-  QQ.io.stdout > stand-root!
+  QQ.io.stdout > stand-root
     "one"
-  Q.org.eolang.io.stdout > root!
+  Q.org.eolang.io.stdout > root
     "one"
   eq. > @
     root

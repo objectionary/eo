@@ -70,7 +70,7 @@ public final class AtFormed implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new ExReadOnly(
             "Formed attribute is read only"
         );

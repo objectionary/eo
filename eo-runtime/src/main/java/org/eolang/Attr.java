@@ -75,7 +75,7 @@ public interface Attr extends Term {
      * Put a new object in.
      *
      * @param phi The object to put
+     * @return Was attribute set
      */
-    void put(Phi phi);
-
+    boolean put(Phi phi);
 }

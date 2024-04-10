@@ -33,12 +33,11 @@ import org.junit.jupiter.api.Test;
  * @since 0.36.0
  */
 public class PhDataTest {
-
     @Test
-    void injectsDeltaIntoTerm() {
+    void addsApplicationWithDelta() {
         MatcherAssert.assertThat(
-            new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
-            Matchers.containsString("Δ ↦ 01-02-03,")
+            new PhData(Phi.Φ, new byte[] {1, 2, 3}).φTerm(),
+            Matchers.containsString("(Δ ↦ 01-02-03)")
         );
     }
 
@@ -46,20 +45,21 @@ public class PhDataTest {
     void returnsData() {
         final byte[] data = new byte[] {0x2A, 0x3B};
         MatcherAssert.assertThat(
-            new Data.ToPhi(data).delta(),
+            new PhData(new Dummy(), data).delta(),
             Matchers.equalTo(data)
         );
     }
 
-    @Test
-    void usesSelfAsRhoOfChildAttribute() {
-        final Phi bytes = new PhData(
-            Phi.Φ.take("org.eolang.bytes").copy(),
-            new byte[] {0x01}
-        );
-        MatcherAssert.assertThat(
-            bytes.take("as-int").take(Attr.RHO),
-            Matchers.equalTo(bytes)
-        );
+    /**
+     * Dummy.
+     * @since 0.36.0
+     */
+    private static final class Dummy extends PhDefault {
+        /**
+         * Ctor.
+         */
+        Dummy() {
+            super(Phi.Φ);
+        }
     }
 }

@@ -32,7 +32,7 @@ import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -58,25 +58,36 @@ public final class EOseq extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi steps = this.take("steps");
-        final Long length = new Dataized(
-            steps.take("length")
-        ).take(Long.class);
-        for (long idx = 0; idx < length - 1; ++idx) {
-            new Dataized(
-                new PhWith(
-                    steps.take("at").copy(),
-                    0, new Data.ToPhi(idx)
-                )
-            ).take();
+        final Phi[] items = EOseq.eoTupleAsArray(steps);
+        for (int ind = 0; ind < items.length - 1; ++ind) {
+            new Dataized(items[ind]).take();
         }
         final Phi ret;
-        if (length > 0) {
-            final Phi last = steps.take("at").copy();
-            last.put(0, new Data.ToPhi(length - 1));
-            ret = last;
+        if (items.length > 0) {
+            ret = new PhMethod(steps, "tail");
         } else {
             ret = new Data.ToPhi(false);
         }
         return ret;
+    }
+
+    /**
+     * Converts eo tuple to java array.
+     * @param args Eo tuple.
+     * @return Java array.
+     */
+    private static Phi[] eoTupleAsArray(final Phi args) {
+        final int length = Math.toIntExact(
+            new Dataized(
+                args.take("length")
+            ).take(Long.class)
+        );
+        final Phi[] res = new Phi[length];
+        Phi external = args;
+        for (int ind = length - 1; ind >= 0; --ind) {
+            res[ind] = new PhMethod(external, "tail");
+            external = external.take("head");
+        }
+        return res;
     }
 }

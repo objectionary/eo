@@ -20,39 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.SHELLFLAGS=-e -x -c
-.ONESHELL:
-.PHONY: clean
-SHELL=bash
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang
++version 0.0.0
 
-TLROOT=$$(kpsewhich -var-value TEXMFDIST)
-PACKAGES=ffcode to-be-determined href-ul iexec eolang bibcop
-REPO=objectionary/eo
+# Test.
+[] > dataized-does-not-do-recalculation
+  (memory 0).alloc > m
+  # Func.
+  [] > func
+    ^.m.write (^.m.as-int.plus 1) > @
+  (dataized func).as-bytes > cached
+  seq > @
+    *
+      cached.as-int
+      cached.as-bytes
+      cached.as-bool
+      1.eq m
 
-gsed=$(if $(shell which gsed),gsed,sed)
-
-zip: *.tex sections/*.tex
-	rm -rf package
-	mkdir package
-	cd package
-	cp ../eolang-paper.tex .
-	cp ../phigure.sty .
-	cp ../main.bib .
-	for p in $(PACKAGES); do cp $(TLROOT)/tex/latex/$${p}/$${p}.sty .; done
-	cp -r ../sections .
-	version=$$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/$(REPO)/releases/latest | jq -r '.tag_name')
-	echo "Version is: $${version}"
-	${gsed} -i "s|0\.0\.0|$${version}|g" eolang-paper.tex
-	${gsed} -i "s|REPOSITORY|$(REPO)|g" eolang-paper.tex
-	pdflatex -shell-escape -halt-on-error eolang-paper.tex > /dev/null
-	bibtex eolang-paper
-	pdflatex -halt-on-error eolang-paper.tex > /dev/null
-	pdflatex -halt-on-error eolang-paper.tex > /dev/null
-	rm -rf *.aux *.bcf *.blg *.fdb_latexmk *.fls *.log *.run.xml *.out *.exc
-	zip -x eolang-paper.pdf -r paper-$${version}.zip *
-	mv paper-$${version}.zip ..
-	cd ..
-
-clean:
-	git clean -dfX
-
+# Test.
+[] > dataizes-as-bytes-behaves-as-exclamationed
+  # Func.
+  [] > func
+    (memory 0).alloc > m
+    seq > @
+      *
+        TRUE
+        m.write (m.as-int.plus 1)
+  (dataized func).as-bytes > cached1
+  func > cached2!
+  seq > @
+    *
+      cached1
+      cached2
+      cached1
+      cached2
+      and.
+        cached1.eq cached2
+        1.eq cached1

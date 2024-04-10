@@ -59,9 +59,8 @@ final class EOmalloc$EOφ extends PhDefault implements Atom {
         final int identifier = Heaps.INSTANCE.malloc(
             this, new Dataized(size).take(Long.class).intValue()
         );
-        final Phi pointer = this.take(Attr.SIGMA).take("memory-block-pointer").copy();
+        final Phi pointer = this.take(Attr.RHO).take("memory-block-pointer").copy();
         pointer.put("id", new Data.ToPhi((long) identifier));
-        pointer.put("size", size);
         return pointer;
     }
 }

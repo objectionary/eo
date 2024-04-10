@@ -94,6 +94,12 @@ public interface Bytes {
     <T extends Number> T asNumber(Class<T> type);
 
     /**
+     * Convert to string.
+     * @return String.
+     */
+    String asString();
+
+    /**
      * Get bytes itself.
      * @return Bytes.
      */
