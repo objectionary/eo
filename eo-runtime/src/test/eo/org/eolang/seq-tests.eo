@@ -140,7 +140,7 @@
     1
 
 # Test.
-[] > seq-single-dataization-int-equal-to-test-bug
+[] > seq-single-dataization-int-equal-to-cache-problem-test
   (memory 0).alloc > x
   eq. > nop
     seq
