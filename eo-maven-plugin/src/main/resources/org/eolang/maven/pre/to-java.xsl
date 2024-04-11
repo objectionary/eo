@@ -246,11 +246,6 @@ SOFTWARE.
       </xsl:with-param>
       <xsl:with-param name="rho" select="'this'"/>
     </xsl:apply-templates>
-    <xsl:if test="o[@const]">
-      <xsl:value-of select="eo:tabs(3)"/>
-      <xsl:text>ret = new PhConst(ret);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
@@ -268,11 +263,6 @@ SOFTWARE.
       </xsl:with-param>
       <xsl:with-param name="rho" select="'rho'"/>
     </xsl:apply-templates>
-    <xsl:if test="o[@const]">
-      <xsl:value-of select="eo:tabs(3)"/>
-      <xsl:text>ret = new PhConst(ret);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
