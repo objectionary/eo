@@ -88,7 +88,7 @@ public final class TranspiledTojos implements Closeable {
     public void add(final Path transpiled, final Path optimized) {
         synchronized (this.lock) {
             this.all.value().add(String.valueOf(transpiled)).set(
-                Attribute.OPTIMIZED.key(),
+                Attribute.OPTIMIZED.getKey(),
                 optimized
             );
         }
@@ -102,7 +102,7 @@ public final class TranspiledTojos implements Closeable {
     public long remove(final Path optimized) {
         return this.findByOptimized(optimized)
             .stream()
-            .map(row -> row.get(Attribute.ID.key()))
+            .map(row -> row.get(Attribute.ID.getKey()))
             .map(File::new)
             .filter(File::delete)
             .count();
@@ -116,7 +116,7 @@ public final class TranspiledTojos implements Closeable {
     private List<Tojo> findByOptimized(final Path optimized) {
         synchronized (this.lock) {
             return this.all.value().select(
-                row -> row.get(Attribute.OPTIMIZED.key()).equals(optimized.toString())
+                row -> row.get(Attribute.OPTIMIZED.getKey()).equals(optimized.toString())
             );
         }
     }
@@ -155,7 +155,7 @@ public final class TranspiledTojos implements Closeable {
          * Get attribute key.
          * @return Attribute key.
          */
-        String key() {
+        String getKey() {
             return this.key;
         }
     }

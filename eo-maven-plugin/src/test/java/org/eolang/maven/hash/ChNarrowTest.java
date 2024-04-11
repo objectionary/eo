@@ -35,7 +35,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-class ChNarrowTest {
+final class ChNarrowTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -46,6 +46,10 @@ class ChNarrowTest {
     })
     void cutsHashCorrectly(final String input, final String output) {
         MatcherAssert.assertThat(
+            String.format(
+                "The hash of %s was calculated incorrectly",
+                input
+            ),
             new ChNarrow(
                 new CommitHash.ChConstant(input)
             ).value(),

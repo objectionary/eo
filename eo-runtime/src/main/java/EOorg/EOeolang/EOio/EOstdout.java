@@ -28,9 +28,8 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -46,11 +45,16 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "stdout")
-public class EOstdout extends PhDefault {
+public final class EOstdout extends PhDefault implements Atom {
     /**
      * Default out print stream.
      */
     private static final PrintStream OUT = System.out;
+
+    /**
+     * Stream to print out.
+     */
+    private final PrintStream out;
 
     /**
      * Default ctor.
@@ -67,18 +71,15 @@ public class EOstdout extends PhDefault {
      */
     EOstdout(final Phi sigma, final PrintStream out) {
         super(sigma);
-        this.add("text", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    out.print(
-                        new Param(rho, "text").strong(String.class)
-                    );
-                    return new Data.ToPhi(true);
-                }
-            )
+        this.out = out;
+        this.add("text", new AtVoid("text"));
+    }
+
+    @Override
+    public Phi lambda() {
+        this.out.print(
+            new Param(this, "text").strong(String.class)
         );
+        return new Data.ToPhi(true);
     }
 }

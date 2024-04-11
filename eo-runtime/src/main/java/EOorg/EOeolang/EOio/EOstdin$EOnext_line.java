@@ -28,8 +28,7 @@
 package EOorg.EOeolang.EOio;
 
 import java.util.NoSuchElementException;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhDefault;
@@ -43,29 +42,25 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOstdin$EOnext_line extends PhDefault {
+public final class EOstdin$EOnext_line extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param parent Sigma
+     * @param sigma Sigma
      */
-    public EOstdin$EOnext_line(final Phi parent) {
-        super(parent);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    try {
-                        final Input input = Input.getInstance();
-                        final String line = input.getLine();
-                        return new Data.ToPhi(line);
-                    } catch (final NoSuchElementException exception) {
-                        throw new ExFailure(
-                            "There is no line in the standard input stream to consume"
-                        );
-                    }
-                }
-            )
-        );
+    public EOstdin$EOnext_line(final Phi sigma) {
+        super(sigma);
+    }
+
+    @Override
+    public Phi lambda() {
+        try {
+            final Input input = Input.getInstance();
+            final String line = input.getLine();
+            return new Data.ToPhi(line);
+        } catch (final NoSuchElementException exception) {
+            throw new ExFailure(
+                "There is no line in the standard input stream to consume"
+            );
+        }
     }
 }

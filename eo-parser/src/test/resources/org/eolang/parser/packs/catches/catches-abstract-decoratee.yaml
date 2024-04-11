@@ -4,8 +4,8 @@ tests:
   - /program/errors[count(error[@severity='error'])=1]
   - /program/errors/error[@line='4']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > main
-    # This is the default 64+ symbols comment in front of abstract object
+    # This is the default 64+ symbols comment in front of abstract object.
     [] > @
       hello > test

@@ -35,6 +35,11 @@ import org.junit.jupiter.api.Test;
  * @since 1.0
  */
 final class EoIndentLexerTest {
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+
     @Test
     void emitsTab() throws IOException {
         final EoIndentLexer lexer = new EoIndentLexer(
@@ -42,6 +47,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
+            EoIndentLexerTest.EMPTY_MSG,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -55,6 +61,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
+            EoIndentLexerTest.EMPTY_MSG,
             lexer.getGrammarFileName(),
             Matchers.is(
                 "Eo.g4"
@@ -69,6 +76,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
+            EoIndentLexerTest.EMPTY_MSG,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -85,6 +93,7 @@ final class EoIndentLexerTest {
         lexer.nextToken();
         lexer.nextToken();
         MatcherAssert.assertThat(
+            EoIndentLexerTest.EMPTY_MSG,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.UNTAB
@@ -98,6 +107,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
+            EoIndentLexerTest.EMPTY_MSG,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.EOF

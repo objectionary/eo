@@ -10,6 +10,6 @@ eo: |
   +home https://github.com/objectionary/eo-strings
   +package sandbox
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > main
     (stdout "Hello, world!").print

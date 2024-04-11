@@ -7,7 +7,7 @@ tests:
 eo: |
   +alias foo
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > fff
     test > @
     $ > t

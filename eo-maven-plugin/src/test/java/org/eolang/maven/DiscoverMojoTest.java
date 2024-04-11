@@ -88,8 +88,13 @@ final class DiscoverMojoTest {
             new MnCsv(maven.foreignPath()).read()
         );
         final Map<String, String> first = json.removeFirst();
-        MatcherAssert.assertThat(dependencies, Matchers.equalTo(json.size()));
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            dependencies,
+            Matchers.equalTo(json.size())
+        );
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             String.valueOf(dependencies),
             Matchers.equalTo(first.get("discovered"))
         );

@@ -39,7 +39,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.28.6
  */
-class CleanMojoTest {
+final class CleanMojoTest {
 
     @Test
     void cleansSuccessfully(@TempDir final Path temp) throws IOException {
@@ -54,6 +54,7 @@ class CleanMojoTest {
             .with("targetDir", dir.toFile())
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
         );
@@ -75,6 +76,7 @@ class CleanMojoTest {
             .execute(AssembleMojo.class)
             .execute(CleanMojo.class);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             temp.resolve("target").toFile().exists(),
             Matchers.is(false)
         );

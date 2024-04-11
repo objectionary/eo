@@ -46,6 +46,7 @@ final class ParsingTrainTest {
     @Test
     void buildsList() {
         MatcherAssert.assertThat(
+            "ParsingTrain is not iterable with more than 1 item, but it must be",
             new ParsingTrain(),
             Matchers.iterableWithSize(Matchers.greaterThan(1))
         );
@@ -69,6 +70,7 @@ final class ParsingTrainTest {
             )
         );
         MatcherAssert.assertThat(
+            "XSL transformation don't work properly.",
             new Xsline(
                 new ParsingTrain()
             ).pass(xml),
@@ -97,6 +99,7 @@ final class ParsingTrainTest {
     })
     void runsXslFunction(final String bytes, final String num) {
         MatcherAssert.assertThat(
+            "Failed to convert byte to int using the apply-func.xsl transformation",
             new Xsline(
                 new ParsingTrain("/org/eolang/parser/apply-func.xsl")
             ).pass(new XMLDocument(String.format("<o>%s</o>", bytes))),
@@ -116,6 +119,10 @@ final class ParsingTrainTest {
             );
         }
         MatcherAssert.assertThat(
+            String.format(
+                "The %s check pack is failed.",
+                pack
+            ),
             check.failures(),
             Matchers.empty()
         );
@@ -125,6 +132,10 @@ final class ParsingTrainTest {
     @ClasspathSource(value = "org/eolang/parser/xax/", glob = "**.yml")
     void createsXaxStoryWithXslStylesheets(final String yaml) {
         MatcherAssert.assertThat(
+            String.format(
+                "The %s xax check is failed",
+                yaml
+            ),
             new XaxStory(yaml),
             Matchers.is(true)
         );

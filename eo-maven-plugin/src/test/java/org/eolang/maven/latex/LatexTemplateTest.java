@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.30
  */
-class LatexTemplateTest {
+final class LatexTemplateTest {
 
     /**
      * Check the full template.
@@ -40,6 +40,7 @@ class LatexTemplateTest {
     @Test
     void generatesFullTemplate() {
         MatcherAssert.assertThat(
+            "LatexTemplate.asString() gives incorrect template",
             new LatexTemplate(
                 "+package f\n[args] > main\n  stdout \"Hello!\""
             ).asString(),

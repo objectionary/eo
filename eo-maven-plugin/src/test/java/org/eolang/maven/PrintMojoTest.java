@@ -81,12 +81,12 @@ final class PrintMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
-    void printsInStraitNotation(final String pack, @TempDir final Path temp) throws Exception {
+    void printsInStraightNotation(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> yaml = new Yaml().load(pack);
         MatcherAssert.assertThat(
-            "PrintMojo should print EO in strait notation, but it didn't",
+            "PrintMojo should print EO in straight notation, but it didn't",
             PrintMojoTest.printed(yaml, temp, false).asString(),
-            Matchers.equalTo((String) yaml.get("strait"))
+            Matchers.equalTo((String) yaml.get("straight"))
         );
     }
 

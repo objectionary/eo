@@ -27,9 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Param;
@@ -46,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "string.slice")
-public class EOstring$EOslice extends PhDefault {
+public final class EOstring$EOslice extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -54,38 +53,34 @@ public class EOstring$EOslice extends PhDefault {
      */
     public EOstring$EOslice(final Phi sigma) {
         super(sigma);
-        this.add("start", new AtFree());
-        this.add("len", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final String str = new Param(rho).strong(String.class);
-                    final int start = new Param(rho, "start").strong(Long.class).intValue();
-                    final int length = new Param(rho, "len").strong(Long.class).intValue();
-                    final int end = length + start;
-                    if (start < 0) {
-                        throw new ExFailure(
-                            "Start index must be greater than 0 but was %d",
-                            start
-                        );
-                    }
-                    if (start > end) {
-                        throw new ExFailure(
-                            "End index must be greater or equal to start but was %d < %d",
-                            end, start
-                        );
-                    }
-                    if (end > str.length()) {
-                        throw new ExFailure(
-                            "Start index + length must not exceed string length but was %d > %d",
-                            end, str.length()
-                        );
-                    }
-                    return new Data.ToPhi(str.substring(start, end));
-                }
-            )
-        );
+        this.add("start", new AtVoid("start"));
+        this.add("len", new AtVoid("len"));
+    }
+
+    @Override
+    public Phi lambda() {
+        final String str = new Param(this).strong(String.class);
+        final int start = new Param(this, "start").strong(Long.class).intValue();
+        final int length = new Param(this, "len").strong(Long.class).intValue();
+        final int end = length + start;
+        if (start < 0) {
+            throw new ExFailure(
+                "Start index must be greater than 0 but was %d",
+                start
+            );
+        }
+        if (start > end) {
+            throw new ExFailure(
+                "End index must be greater or equal to start but was %d < %d",
+                end, start
+            );
+        }
+        if (end > str.length()) {
+            throw new ExFailure(
+                "Start index + length must not exceed string length but was %d > %d",
+                end, str.length()
+            );
+        }
+        return new Data.ToPhi(str.substring(start, end));
     }
 }

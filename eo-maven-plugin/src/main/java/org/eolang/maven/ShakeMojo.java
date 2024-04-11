@@ -67,16 +67,17 @@ public final class ShakeMojo extends SafeMojo {
      * The map with directories of ShakeMojo.
      * @checkstyle DiamondOperatorCheck (10 lines)
      */
+    @SuppressWarnings("PMD.UseDiamondOperator")
     private static final Map<String, String> DIRECTORIES = new MapOf<String, String>(
-        new MapEntry<>(OptimizationFolder.TARGET.key(), ShakeMojo.DIR),
-        new MapEntry<>(OptimizationFolder.CACHE.key(), ShakeMojo.SHAKEN)
+        new MapEntry<>(OptimizationFolder.TARGET.getKey(), ShakeMojo.DIR),
+        new MapEntry<>(OptimizationFolder.CACHE.getKey(), ShakeMojo.SHAKEN)
     );
 
     /**
      * Track optimization steps into intermediate XML files?
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
@@ -93,8 +94,8 @@ public final class ShakeMojo extends SafeMojo {
             this.optimization(),
             new OptimizationTask(
                 new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
                 ),
                 ShakeMojo.DIRECTORIES,
                 ForeignTojo::withShaken,

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29.6
  */
-class OnSwapTest {
+final class OnSwapTest {
     /**
      * First.
      */

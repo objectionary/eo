@@ -27,8 +27,15 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtComposite;
+import org.eolang.AtOnce;
+import org.eolang.AtSimple;
+import org.eolang.AtVoid;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -49,12 +56,12 @@ final class EOtupleEOatTest {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
         final Phi tuple = new PhWith(
-            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
             0, str
         );
         final Phi idx = new Data.ToPhi(0L);
-        final Phi get = tuple.attr("at").get().copy();
-        get.attr(0).put(idx);
+        final Phi get = tuple.take("at").copy();
+        get.put(0, idx);
         MatcherAssert.assertThat(
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
@@ -85,19 +92,78 @@ final class EOtupleEOatTest {
         );
     }
 
+    @Test
+    void returnsGivenArgument() {
+        final Phi tuple = new EOtuple(Phi.Φ);
+        final Phi empty = tuple.take("empty");
+        final Phi copy = tuple.copy();
+        copy.put(0, empty);
+        copy.put(1, new Data.ToPhi(10L));
+        final Phi phi = new PhWith(
+            new Parenting(Phi.Φ),
+            "args", copy
+        );
+        MatcherAssert.assertThat(
+            new Dataized(phi).take(Long.class),
+            Matchers.equalTo(10L)
+        );
+    }
+
     private Phi get(final long index) {
         final String first = "first";
         final String second = "second";
         final Phi tuple = new PhWith(
             new PhWith(
-                new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                new EOtuple$EOempty(Phi.Φ).take("with").copy(),
                 0, new Data.ToPhi(first)
-            ).attr("with").get().copy(),
+            ).take("with").copy(),
             0, new Data.ToPhi(second)
         );
         final Phi idx = new Data.ToPhi(index);
-        final Phi get = tuple.attr("at").get().copy();
-        get.attr(0).put(idx);
+        final Phi get = tuple.take("at").copy();
+        get.put(0, idx);
         return get;
+    }
+
+    /**
+     * Parenting.
+     * @since 0.36.0
+     */
+    private static class Parenting extends PhDefault {
+        Parenting(final Phi sigma) {
+            super(sigma);
+            this.add("args", new AtVoid("args"));
+            this.add("take", new AtSimple(new Take(this)));
+            this.add(
+                Attr.PHI,
+                new AtOnce(
+                    new AtComposite(this, rho -> new PhMethod(rho, "take"))
+                )
+            );
+        }
+    }
+
+    /**
+     * Take.
+     * @since 0.36.0
+     */
+    private static class Take extends PhDefault {
+        Take(final Phi sigma) {
+            super(sigma);
+            this.add(
+                Attr.PHI,
+                new AtComposite(
+                    this,
+                    rho -> {
+                        final Phi ret = rho.take(Attr.RHO)
+                            .take("args")
+                            .take("at")
+                            .copy();
+                        ret.put(0, new Data.ToPhi(0L));
+                        return ret;
+                    }
+                )
+            );
+        }
     }
 }

@@ -5,7 +5,7 @@ tests:
   - /program/errors/error[@line='3']
   - /program/objects/o[@name='first']/o[@name='x']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [x] > first
     second > x
 

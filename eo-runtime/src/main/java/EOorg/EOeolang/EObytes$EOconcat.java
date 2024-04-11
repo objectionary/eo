@@ -27,9 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.concat")
-public class EObytes$EOconcat extends PhDefault {
+public final class EObytes$EOconcat extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,20 +52,16 @@ public class EObytes$EOconcat extends PhDefault {
      */
     public EObytes$EOconcat(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final byte[] current = new Param(rho).strong(byte[].class);
-                    final byte[] provided = new Param(rho, "b").strong(byte[].class);
-                    final byte[] dest = new byte[current.length + provided.length];
-                    System.arraycopy(current, 0, dest, 0, current.length);
-                    System.arraycopy(provided, 0, dest, current.length, provided.length);
-                    return new Data.ToPhi(dest);
-                }
-            )
-        );
+        this.add("b", new AtVoid("b"));
+    }
+
+    @Override
+    public Phi lambda() {
+        final byte[] current = new Param(this).strong(byte[].class);
+        final byte[] provided = new Param(this, "b").strong(byte[].class);
+        final byte[] dest = new byte[current.length + provided.length];
+        System.arraycopy(current, 0, dest, 0, current.length);
+        System.arraycopy(provided, 0, dest, current.length, provided.length);
+        return new Data.ToPhi(dest);
     }
 }

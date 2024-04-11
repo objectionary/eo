@@ -16,7 +16,7 @@ tests:
   - //o[@base='x' and @line='18' and @ref='16']
   - //o[@base='first' and @line='19' and @ref='2']
 eo: |
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [x a] > first
     stdout x
     second > hello
@@ -30,13 +30,13 @@ eo: |
             x
       something > a
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [a] > x
     tt
       x 4
       first
 
-  # This is the default 64+ symbols comment in front of abstract object
+  # This is the default 64+ symbols comment in front of abstract object.
   [] > y
     one
       [f]

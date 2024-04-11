@@ -3,9 +3,10 @@ name: ebnf
 on:
   push:
     paths-ignore: ['paper/**', 'sandbox/**']
-concurrency:
-  group: ebnf-${{ github.ref }}
-  cancel-in-progress: true
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
   ebnf:
     runs-on: ubuntu-22.04
@@ -16,7 +17,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
-      - uses: teatimeguest/setup-texlive-action@v3.0.1
+      - uses: teatimeguest/setup-texlive-action@v3.2.1
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox

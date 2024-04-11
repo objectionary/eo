@@ -47,6 +47,11 @@ class AtLoggedTest {
     private AtLogged logged;
 
     /**
+     * Object to test put.
+     */
+    private AtLogged put;
+
+    /**
      * Delegate.
      */
     private AtSimple origin;
@@ -76,6 +81,7 @@ class AtLoggedTest {
         this.handler = new StreamHandler(this.out, new SimpleFormatter());
         mock.addHandler(this.handler);
         this.logged = new AtLogged(this.origin, this.label, mock);
+        this.put = new AtLogged(new AtVoid("x"), this.label, mock);
     }
 
     @Test
@@ -125,7 +131,7 @@ class AtLoggedTest {
 
     @Test
     void putsWithLogging() {
-        this.logged.put(Phi.Φ);
+        this.put.put(Phi.Φ);
         MatcherAssert.assertThat(
             this.log(),
             Matchers.containsString(String.format("  %s.put()...", this.label))

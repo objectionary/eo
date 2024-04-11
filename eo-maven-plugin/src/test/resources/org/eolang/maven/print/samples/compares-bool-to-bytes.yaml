@@ -1,0 +1,26 @@
+origin: |
+  # Test.
+  [] > compares-bool-to-bytes
+    and. > @
+      TRUE.eq 01-
+      FALSE.eq 00-
+straight: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > compares-bool-to-bytes
+    TRUE
+    .eq
+      01-
+    .and > @
+      FALSE
+      .eq
+        00-
+reversed: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > compares-bool-to-bytes
+    and. > @
+      eq.
+        TRUE
+        01-
+      eq.
+        FALSE
+        00-

@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -122,9 +123,9 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
+     * @since 0.11.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.11.0
      */
     @Parameter(
         property = "eo.placed",
@@ -143,9 +144,9 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * The path to a text file where paths of generated java files per EO program.
+     * @since 0.11.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.11.0
      */
     @Parameter(
         property = "eo.transpiled",
@@ -156,8 +157,8 @@ abstract class SafeMojo extends AbstractMojo {
 
     /**
      * Mojo execution timeout in seconds.
-     * @checkstyle VisibilityModifierCheck (10 lines)
      * @since 0.28.12
+     * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.timeout")
     protected Integer timeout = Integer.MAX_VALUE;
@@ -173,9 +174,9 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
+     * @since 0.29.0
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
-     * @since 0.29.0
      */
     @Parameter(property = "eo.unrollExitError")
     protected boolean unrollExitError = true;
@@ -207,7 +208,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    @Parameter(property = "rewriteBinaries", defaultValue = "true")
+    @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
     @SuppressWarnings("PMD.ImmutableField")
     protected boolean rewriteBinaries = true;
 
@@ -258,6 +259,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle CyclomaticComplexityCheck (70 lines)
      */
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public final void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -326,9 +328,11 @@ abstract class SafeMojo extends AbstractMojo {
      * @throws ExecutionException If unexpected exception happened during execution
      * @throws TimeoutException If timeout limit reached
      */
+    @SuppressWarnings("PMD.CloseResource")
     private void execWithTimeout() throws ExecutionException, TimeoutException {
+        final ExecutorService service = Executors.newSingleThreadExecutor();
         try {
-            Executors.newSingleThreadExecutor().submit(
+            service.submit(
                 () -> {
                     this.exec();
                     return new Object();
@@ -343,6 +347,20 @@ abstract class SafeMojo extends AbstractMojo {
                 ),
                 ex
             );
+        } finally {
+            boolean terminated = false;
+            service.shutdown();
+            while (!terminated) {
+                try {
+                    terminated = service.awaitTermination(60, TimeUnit.SECONDS);
+                    if (terminated) {
+                        service.shutdownNow();
+                    }
+                } catch (final InterruptedException ex) {
+                    service.shutdownNow();
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 
@@ -367,35 +385,36 @@ abstract class SafeMojo extends AbstractMojo {
      */
     private void exitError(final String msg, final Throwable exp)
         throws MojoFailureException {
+        if (!this.unrollExitError) {
+            return;
+        }
         final MojoFailureException out = new MojoFailureException(msg, exp);
-        if (this.unrollExitError) {
-            final List<String> causes = SafeMojo.causes(exp);
-            for (int pos = 0; pos < causes.size(); ++pos) {
-                final String cause = causes.get(pos);
-                if (cause == null) {
-                    causes.remove(pos);
+        final List<String> causes = SafeMojo.causes(exp);
+        for (int pos = 0; pos < causes.size(); ++pos) {
+            final String cause = causes.get(pos);
+            if (cause == null) {
+                causes.remove(pos);
+                break;
+            }
+        }
+        int idx = 0;
+        while (true) {
+            if (idx >= causes.size()) {
+                break;
+            }
+            final String cause = causes.get(idx);
+            for (int later = idx + 1; later < causes.size(); ++later) {
+                final String another = causes.get(later);
+                if (another != null && cause.contains(another)) {
+                    causes.remove(idx);
+                    idx -= 1;
                     break;
                 }
             }
-            int idx = 0;
-            while (true) {
-                if (idx >= causes.size()) {
-                    break;
-                }
-                final String cause = causes.get(idx);
-                for (int later = idx + 1; later < causes.size(); ++later) {
-                    final String another = causes.get(later);
-                    if (another != null && cause.contains(another)) {
-                        causes.remove(idx);
-                        idx -= 1;
-                        break;
-                    }
-                }
-                idx += 1;
-            }
-            for (final String cause : new LinkedHashSet<>(causes)) {
-                Logger.error(this, cause);
-            }
+            idx += 1;
+        }
+        for (final String cause : new LinkedHashSet<>(causes)) {
+            Logger.error(this, cause);
         }
         throw out;
     }

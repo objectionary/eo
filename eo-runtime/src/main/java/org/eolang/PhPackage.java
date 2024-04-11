@@ -25,13 +25,13 @@
 package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package object, coming from {@link Phi}.
- *
  * @since 0.22
  */
 @Versionized
@@ -58,16 +58,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Attr attr(final String name) {
-        final String obj = this.eoPackage(name);
-        final String key = new JavaPath(obj).toString();
-        if (!this.objects.get().containsKey(key)) {
-            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
-        }
-        return new AtSimple(this.objects.get().get(key));
-    }
-
-    @Override
     public String locator() {
         return "?:?";
     }
@@ -75,7 +65,7 @@ final class PhPackage implements Phi {
     @Override
     public String forma() {
         throw new ExFailure(
-            String.format("Can't #type() from package object '%s'", this.pkg)
+            String.format("Can't #form() from package object '%s'", this.pkg)
         );
     }
 
@@ -90,16 +80,56 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public Attr attr(final int pos) {
+    public Phi copy() {
         throw new ExFailure(
-            String.format("Can't #attr(%d) from package object '%s'", pos, this.pkg)
+            String.format("Can't #copy() package object '%s'", this.pkg)
         );
     }
 
     @Override
-    public Phi copy() {
-        throw new ExFailure(
-            String.format("Can't #copy() package object '%s'", this.pkg)
+    public Phi take(final String name) {
+        final String obj = this.eoPackage(name);
+        final String key = new JavaPath(obj).toString();
+        if (!this.objects.get().containsKey(key)) {
+            this.objects.get().put(key, this.loadPhi(key).orElseGet(() -> new PhPackage(obj)));
+        }
+        final Phi res;
+        final Phi phi = this.objects.get().get(key);
+        if (phi instanceof PhPackage) {
+            res = phi;
+        } else {
+            res = new AtSetRho(this.objects.get().get(key), this, key).get();
+        }
+        return res;
+    }
+
+    @Override
+    public boolean put(final int pos, final Phi object) {
+        throw new IllegalStateException(
+            String.format("Can't #put(%d, %s) to package object '%s'", pos, object, this.pkg)
+        );
+    }
+
+    @Override
+    public boolean put(final String name, final Phi object) {
+        throw new IllegalStateException(
+            String.format("Can't #put(%s, %s) to package object '%s'", name, object, this.pkg)
+        );
+    }
+
+    @Override
+    public void attach(final byte[] data) {
+        throw new IllegalStateException(
+            String.format(
+                "Can't #attac(%s) to package object '%s'", Arrays.toString(data), this.pkg
+            )
+        );
+    }
+
+    @Override
+    public byte[] delta() {
+        throw new IllegalStateException(
+            String.format("Can't #data() from package object '%s'", this.pkg)
         );
     }
 
@@ -125,11 +155,11 @@ final class PhPackage implements Phi {
     private Optional<Phi> loadPhi(final String target) {
         Optional<Phi> res;
         try {
-            final Phi kid = (Phi) Class.forName(target)
-                .getConstructor(Phi.class)
-                .newInstance(Phi.Φ);
-            kid.attr("ρ").put(this);
-            res = Optional.of(kid);
+            res = Optional.of(
+                (Phi) Class.forName(target)
+                    .getConstructor(Phi.class)
+                    .newInstance(Phi.Φ)
+            );
         } catch (final ClassNotFoundException notfound) {
             res = Optional.empty();
         } catch (final NoSuchMethodException

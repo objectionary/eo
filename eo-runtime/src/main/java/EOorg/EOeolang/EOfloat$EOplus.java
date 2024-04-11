@@ -27,9 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "float.plus")
-public class EOfloat$EOplus extends PhDefault {
+public final class EOfloat$EOplus extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,17 +52,15 @@ public class EOfloat$EOplus extends PhDefault {
      */
     public EOfloat$EOplus(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    Double.sum(
-                        new Param(rho).strong(Double.class),
-                        new Param(rho, "x").strong(Double.class)
-                    )
-                )
+        this.add("x", new AtVoid("x"));
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            Double.sum(
+                new Param(this).strong(Double.class),
+                new Param(this, "x").strong(Double.class)
             )
         );
     }

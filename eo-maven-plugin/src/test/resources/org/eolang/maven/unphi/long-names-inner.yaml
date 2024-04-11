@@ -1,0 +1,23 @@
+tests:
+  - //o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name' and o[@abstract and @name='long-object-name']]]]]
+phi: |
+  {
+    ⟦
+      compiles-correctly-with-long-duplicate-names ↦ ⟦
+        long-object-name ↦ ⟦
+          long-object-name ↦ ⟦
+            long-object-name ↦ ⟦
+              long-object-name ↦ ⟦
+                long-object-name ↦ ⟦⟧
+              ⟧
+            ⟧
+          ⟧
+        ⟧,
+        φ ↦ Φ.org.eolang.bool(
+          α0 ↦ Φ.org.eolang.bytes(
+            Δ ⤍ 01-
+          )
+        )
+      ⟧
+    ⟧
+  }

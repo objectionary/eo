@@ -2,5 +2,8 @@
 #  are not available for the project. For example a lot of
 #  package name contains capital letter and such names are conventional.
 exclude_paths:
-  - "eo-runtime/src/test/groovy/check-runtime-deps.groovy"
-  - "eo-runtime/src/main/java/org/eolang/Data.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$EOencaged$EOencage.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/Cages.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$EOencaged$EOφ.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$φ.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/CagesTest.java"

@@ -27,8 +27,7 @@
  */
 package EOorg.EOeolang.EOio;
 
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -41,21 +40,19 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-public class EOstdin$EOφ extends PhDefault {
+public final class EOstdin$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param parent Sigma
+     * @param sigma Sigma
      */
-    public EOstdin$EOφ(final Phi parent) {
-        super(parent);
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    Input.getInstance().getAllLines()
-                )
-            )
+    public EOstdin$EOφ(final Phi sigma) {
+        super(sigma);
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            Input.getInstance().getAllLines()
         );
     }
 }

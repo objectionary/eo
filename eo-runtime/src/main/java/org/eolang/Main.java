@@ -24,7 +24,6 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EOtuple;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -178,27 +177,24 @@ public final class Main {
         final Phi app;
         try {
             Main.LOGGER.fine(String.format("Loading class %s...", path));
-            app = Phi.class.cast(
-                Class.forName(path).getConstructor(Phi.class)
-                .newInstance(Phi.Φ)
-            );
+            app = (Phi) Class.forName(path)
+                .getConstructor(Phi.class)
+                .newInstance(Phi.Φ);
         } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
                 String.format("Can not find '%s' object", opts.get(0))
             );
         }
         if (opts.size() > 1) {
-            Phi args = Phi.Φ.attr("org").get()
-                .attr("eolang").get()
-                .attr("tuple").get()
-                .attr("empty").get();
+            final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
+            Phi args = tuple.take("empty");
             for (int idx = 1; idx < opts.size(); ++idx) {
-                final Phi tuple = new EOtuple(Phi.Φ);
-                tuple.attr(0).put(args);
-                tuple.attr(1).put(new Data.ToPhi(opts.get(idx)));
-                args = tuple;
+                final Phi arg = tuple.copy();
+                arg.put(0, args);
+                arg.put(1, new Data.ToPhi(opts.get(idx)));
+                args = arg;
             }
-            app.attr(0).put(args);
+            app.put(0, args);
         }
         Main.LOGGER.info(
             String.format(

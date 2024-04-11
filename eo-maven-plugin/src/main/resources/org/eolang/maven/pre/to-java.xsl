@@ -29,41 +29,44 @@ SOFTWARE.
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
   </xsl:variable>
+  <!-- FUNCTIONS -->
+  <!-- EOL -->
   <xsl:function name="eo:eol">
     <xsl:param name="tabs"/>
     <xsl:value-of select="'&#10;'"/>
     <xsl:value-of select="eo:tabs($tabs)"/>
   </xsl:function>
+  <!-- TABS -->
   <xsl:function name="eo:tabs">
     <xsl:param name="n"/>
     <xsl:for-each select="1 to $n">
       <xsl:text>  </xsl:text>
     </xsl:for-each>
   </xsl:function>
-  <xsl:function name="eo:type-of">
-    <xsl:param name="root"/>
-    <xsl:param name="o"/>
-    <xsl:choose>
-      <xsl:when test="$o/@base and $o/@ref">
-        <xsl:copy-of select="eo:type-of($root, $root//o[@name=$o/@base and @line=$o/@ref])"/>
-      </xsl:when>
-      <xsl:when test="not($o/@base) and not($o/@ref) and contains($o/@line, '.')">
-        <xsl:copy-of select="eo:type-of($root, $root//o[@line=substring-after($o/@line, '.') and @name=$o/@name])"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy-of select="$o"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <!-- Fetch object by given name -->
+  <!-- org.eolang.int -> Phi.Ф.take("org").take("eolang").take("int")  -->
+  <xsl:function name="eo:fetch">
+    <xsl:param name="object"/>
+    <xsl:variable name="parts" select="tokenize($object, '\.')"/>
+    <xsl:text>Phi.Φ</xsl:text>
+    <xsl:for-each select="$parts">
+      <xsl:text>.take("</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>")</xsl:text>
+    </xsl:for-each>
   </xsl:function>
+  <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', replace(replace(replace(replace(replace($n, '_', '__'), '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
+  <!-- Get object name with suffix -->
   <xsl:function name="eo:suffix" as="xs:string">
     <xsl:param name="s1"/>
     <xsl:param name="s2"/>
     <xsl:value-of select="concat(concat($s1, '_'), $s2)"/>
   </xsl:function>
+  <!-- Get class name for the object -->
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:param name="alt" as="xs:string"/>
@@ -96,6 +99,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!-- Get name for special attributes  -->
   <xsl:function name="eo:attr-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
@@ -110,6 +114,7 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!-- Class name  -->
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:value-of select="."/>
@@ -123,6 +128,7 @@ SOFTWARE.
       <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
     </xsl:attribute>
   </xsl:template>
+  <!-- Class. Entry point  -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
@@ -136,6 +142,7 @@ SOFTWARE.
       </xsl:element>
     </xsl:copy>
   </xsl:template>
+  <!-- Class body  -->
   <xsl:template match="class" mode="body">
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
@@ -166,6 +173,7 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Xmir comment  -->
   <xsl:template match="xmir">
     <xsl:for-each select="tokenize(text(), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
@@ -173,6 +181,7 @@ SOFTWARE.
       <xsl:value-of select="."/>
     </xsl:for-each>
   </xsl:template>
+  <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
     <xsl:value-of select="eo:tabs(1)"/>
     <xsl:value-of select="eo:eol(1)"/>
@@ -197,11 +206,6 @@ SOFTWARE.
         <xsl:text>super(sigma);</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:variable name="type" select="concat(//meta[head='package']/tail, '.', @name)"/>
-    <xsl:if test="$type='org.eolang.bytes'">
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:text>this.add("Δ", new AtFree(new AtSimple()));</xsl:text>
-    </xsl:if>
     <xsl:apply-templates select="attr">
       <xsl:with-param name="class" select="."/>
       <xsl:with-param name="indent">
@@ -212,19 +216,42 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Attribute -->
   <xsl:template match="attr">
+    <xsl:variable name="name" select="eo:attr-name(@name)"/>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>this.add("</xsl:text>
-    <xsl:value-of select="eo:attr-name(@name)"/>
+    <xsl:value-of select="$name"/>
     <xsl:text>", </xsl:text>
-    <xsl:apply-templates select="*"/>
+    <xsl:apply-templates select="*">
+      <xsl:with-param name="name" select="$name"/>
+    </xsl:apply-templates>
     <xsl:text>);</xsl:text>
   </xsl:template>
-  <xsl:template match="free">
-    <xsl:text>new AtFree(</xsl:text>
-    <xsl:apply-templates select="*"/>
-    <xsl:text>)</xsl:text>
+  <!-- Void attribute -->
+  <xsl:template match="void">
+    <xsl:param name="name"/>
+    <xsl:text>new AtVoid("</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>")</xsl:text>
   </xsl:template>
+  <!-- Formed attribute -->
+  <xsl:template match="formed">
+    <xsl:text>new AtFormed(() -&gt; {</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:apply-templates select="*">
+      <xsl:with-param name="name" select="'ret'"/>
+      <xsl:with-param name="indent">
+        <xsl:value-of select="eo:tabs(3)"/>
+      </xsl:with-param>
+      <xsl:with-param name="rho" select="'this'"/>
+    </xsl:apply-templates>
+    <xsl:value-of select="eo:tabs(3)"/>
+    <xsl:text>return ret;</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>})</xsl:text>
+  </xsl:template>
+  <!-- Bound attribute -->
   <xsl:template match="bound">
     <xsl:text>new AtOnce(</xsl:text>
     <xsl:text>new AtComposite(this, rho -&gt; {</xsl:text>
@@ -234,22 +261,15 @@ SOFTWARE.
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(3)"/>
       </xsl:with-param>
+      <xsl:with-param name="rho" select="'rho'"/>
     </xsl:apply-templates>
-    <xsl:if test="o[@const]">
-      <xsl:value-of select="eo:tabs(3)"/>
-      <xsl:text>ret = new PhConst(ret);</xsl:text>
-      <xsl:value-of select="eo:eol(0)"/>
-    </xsl:if>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
   </xsl:template>
-  <xsl:template match="o[not(@base) and @name]">
-    <xsl:text>/</xsl:text>
-    <xsl:text>* default */</xsl:text>
-  </xsl:template>
+  <!-- Anonymous abstract object without attributes -->
   <xsl:template match="o[not(@base) and not(@name)]">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
@@ -262,21 +282,14 @@ SOFTWARE.
     <xsl:text>* anonymous abstract object without attributes */ };</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <xsl:function name="eo:fetch">
-    <xsl:param name="object"/>
-    <xsl:variable name="parts" select="tokenize($object, '\.')"/>
-    <xsl:text>Phi.Φ</xsl:text>
-    <xsl:for-each select="$parts">
-      <xsl:text>.attr("</xsl:text>
-      <xsl:value-of select="."/>
-      <xsl:text>").get()</xsl:text>
-    </xsl:for-each>
-  </xsl:function>
+  <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
+    <xsl:param name="name"/>
+    <xsl:param name="rho"/>
     <xsl:variable name="current" select="."/>
     <xsl:variable name="source" select="//*[generate-id()!=generate-id($current) and @name=$current/@base and @line=$current/@ref]"/>
+    <!-- Terminate -->
     <xsl:if test="count($source) &gt; 1">
       <xsl:message terminate="yes">
         <xsl:text>Found more than one target of '</xsl:text>
@@ -303,12 +316,11 @@ SOFTWARE.
     <xsl:text> = </xsl:text>
     <xsl:choose>
       <xsl:when test="@primitive and @base">
-        <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:class-name(@base, eo:suffix(@line, @pos))"/>
-        <xsl:text>(Phi.Φ)</xsl:text>
+        <xsl:value-of select="eo:fetch(@base)"/>
+        <xsl:text>.copy()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='$'">
-        <xsl:text>rho</xsl:text>
+        <xsl:value-of select="$rho"/>
       </xsl:when>
       <xsl:when test="@base='Q'">
         <xsl:text>Phi.Φ</xsl:text>
@@ -319,10 +331,13 @@ SOFTWARE.
       <xsl:when test="@base='&amp;'">
         <xsl:text>new PhMethod(rho, "σ")</xsl:text>
       </xsl:when>
+      <!-- TBD -->
       <xsl:when test="$source/@ancestors">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($source/@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>(rho)</xsl:text>
+        <xsl:text>(</xsl:text>
+        <xsl:value-of select="$rho"/>
+        <xsl:text>)</xsl:text>
       </xsl:when>
       <xsl:when test="$source and name($source)='class'">
         <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
@@ -353,19 +368,18 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
-    </xsl:apply-templates>
-    <xsl:apply-templates select=".[@copy]" mode="copy">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
   </xsl:template>
+  <!-- Attribute body: method object (starts with .) -->
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
+    <xsl:param name="name"/>
+    <xsl:param name="rho"/>
     <xsl:apply-templates select="*[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
@@ -374,6 +388,7 @@ SOFTWARE.
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
       </xsl:with-param>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
@@ -389,9 +404,6 @@ SOFTWARE.
       <xsl:when test="$method='&amp;'">
         <xsl:text>σ</xsl:text>
       </xsl:when>
-      <xsl:when test="$method='&lt;'">
-        <xsl:text>ν</xsl:text>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:attr-name($method)"/>
       </xsl:otherwise>
@@ -406,23 +418,10 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
-    </xsl:apply-templates>
-    <xsl:apply-templates select=".[@copy]" mode="copy">
-      <xsl:with-param name="name" select="$name"/>
-      <xsl:with-param name="indent" select="$indent"/>
+      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
   </xsl:template>
-  <xsl:template match="o[@copy]" mode="copy">
-    <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
-    <xsl:value-of select="$indent"/>
-    <xsl:value-of select="eo:tabs(1)"/>
-    <xsl:value-of select="$name"/>
-    <xsl:text> = new PhCopy(</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>);</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-  </xsl:template>
+  <!-- Location of object -->
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name" select="'o'"/>
@@ -444,6 +443,7 @@ SOFTWARE.
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
   </xsl:template>
+  <!-- Application  -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
@@ -456,10 +456,6 @@ SOFTWARE.
         <xsl:text> = </xsl:text>
         <xsl:text>new PhCopy(</xsl:text>
         <xsl:value-of select="$name"/>
-        <xsl:if test="$rho">
-          <xsl:text>, </xsl:text>
-          <xsl:value-of select="$rho"/>
-        </xsl:if>
         <xsl:text>);</xsl:text>
         <xsl:value-of select="eo:eol(0)"/>
       </xsl:if>
@@ -474,9 +470,10 @@ SOFTWARE.
           <xsl:value-of select="$indent"/>
           <xsl:value-of select="eo:tabs(1)"/>
         </xsl:with-param>
+        <xsl:with-param name="rho" select="$rho"/>
       </xsl:apply-templates>
     </xsl:for-each>
-    <xsl:for-each select="./*[name()!='value' and name()!='tuple' and position() &gt; $skip][not(@level)]">
+    <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">
       <xsl:value-of select="$indent"/>
       <xsl:value-of select="eo:tabs(1)"/>
       <xsl:value-of select="$name"/>
@@ -497,7 +494,7 @@ SOFTWARE.
           </xsl:choose>
         </xsl:when>
         <xsl:when test="../@base = 'org.eolang.error'">
-          <xsl:text>"α"</xsl:text>
+          <xsl:text>"message"</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="position() - 1"/>
@@ -510,7 +507,7 @@ SOFTWARE.
       <xsl:text>);</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:for-each>
-    <xsl:apply-templates select="value|tuple">
+    <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
@@ -518,18 +515,20 @@ SOFTWARE.
       </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
+  <!-- Data -->
   <xsl:template match="value">
     <xsl:param name="indent"/>
-    <xsl:param name="name" select="'o'"/>
+    <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhWith(</xsl:text>
+    <xsl:text> = new PhData(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, "Δ", new Data.Value&lt;&gt;(</xsl:text>
+    <xsl:text>, </xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>));</xsl:text>
+    <xsl:text>);</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Class for tests -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>@Test</xsl:text>
@@ -556,23 +555,17 @@ SOFTWARE.
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Assertion in tests  -->
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Object obj = new Dataized(new </xsl:text>
+    <xsl:text>Boolean obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
     <xsl:text>()).take(Boolean.class);</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>if (obj instanceof String) {</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>  Assertions.fail(obj.toString());</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>} else {</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>  Assertions.assertTrue((Boolean) obj);</xsl:text>
-    <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>}</xsl:text>
+    <xsl:text>Assertions.assertTrue(obj);</xsl:text>
   </xsl:template>
+  <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">
     <xsl:text>package </xsl:text>
     <xsl:value-of select="eo:class-name(tail, '')"/>
@@ -580,12 +573,14 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Imports for tests  -->
   <xsl:template match="meta[head='junit' or head='tests']" mode="head">
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- License with disclaimer  -->
   <xsl:template match="/program" mode="license">
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>/* </xsl:text>
@@ -593,6 +588,7 @@ SOFTWARE.
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!-- Other -->
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

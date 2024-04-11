@@ -44,7 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.29
  */
-class JavaFilesTest {
+final class JavaFilesTest {
 
     /**
      * Parsed eo program from resources.
@@ -66,6 +66,7 @@ class JavaFilesTest {
             Paths.get("sum.xmir")
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(
                 new InputOf(
                     new JavaFiles(
@@ -85,6 +86,7 @@ class JavaFilesTest {
             Paths.get("sum.xmir")
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new JavaFiles(
                 temp.resolve("xml").resolve("sum.xmir"),
                 temp.resolve("java")

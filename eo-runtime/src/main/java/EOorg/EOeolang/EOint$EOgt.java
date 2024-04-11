@@ -27,9 +27,8 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
 import org.eolang.PhDefault;
@@ -45,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "int.gt")
-public class EOint$EOgt extends PhDefault {
+public final class EOint$EOgt extends PhDefault implements Atom {
 
     /**
      * Ctor.
@@ -53,16 +52,14 @@ public class EOint$EOgt extends PhDefault {
      */
     public EOint$EOgt(final Phi sigma) {
         super(sigma);
-        this.add("x", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> new Data.ToPhi(
-                    new Param(rho).strong(Long.class)
-                        > new Param(rho, "x").strong(Long.class)
-                )
-            )
+        this.add("x", new AtVoid("x"));
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Param(this).strong(Long.class)
+                > new Param(this, "x").strong(Long.class)
         );
     }
 }

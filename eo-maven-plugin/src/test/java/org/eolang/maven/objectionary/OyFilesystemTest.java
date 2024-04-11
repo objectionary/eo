@@ -43,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.30
  */
-class OyFilesystemTest {
+final class OyFilesystemTest {
 
     /**
      * Object content.
@@ -56,6 +56,7 @@ class OyFilesystemTest {
         final String object = "org.eolang.found";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -64,9 +65,10 @@ class OyFilesystemTest {
     @Test
     void containsObjectWithDefaultHome(@TempDir final Path home) throws IOException {
         final OyFilesystem objectionary = new OyFilesystem();
-        final String object = "org.eolang.ram";
+        final String object = "org.eolang.malloc";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -92,6 +94,7 @@ class OyFilesystemTest {
         final String object = "org.eolang.get";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(objectionary.get(object)),
             Matchers.equalTo(new TextOf(new InputOf(OyFilesystemTest.OBJECT_CONTENT)))
         );

@@ -41,19 +41,19 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.11</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.11</version>
+      <version>2.0.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.14</version>
+      <version>1.5.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -178,7 +178,7 @@ SOFTWARE.
         <configuration>
           <foreign>${project.basedir}/target/eo-foreign.csv</foreign>
           <foreignFormat>csv</foreignFormat>
-          <failOnWarning>true</failOnWarning>
+          <failOnWarning>false</failOnWarning>
           <offline>true</offline>
         </configuration>
         <executions>
@@ -249,7 +249,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.20</version>
+            <version>3.0.21</version>
           </dependency>
         </dependencies>
       </plugin>

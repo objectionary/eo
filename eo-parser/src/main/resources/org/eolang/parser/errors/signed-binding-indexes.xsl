@@ -30,7 +30,7 @@ SOFTWARE.
       <xsl:for-each select="//o[@as and matches(@as, '^(-|\+)\d+$')]">
         <xsl:element name="error">
           <xsl:attribute name="check">
-            <xsl:text>zero-version</xsl:text>
+            <xsl:text>signed-binding-indexes</xsl:text>
           </xsl:attribute>
           <xsl:attribute name="line">
             <xsl:value-of select="@line"/>

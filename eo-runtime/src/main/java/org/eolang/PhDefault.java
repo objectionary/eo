@@ -27,10 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
  * A simple object.
  *
  * The class is thread-safe.
- *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
@@ -64,11 +62,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     private static final Pattern SORTABLE = Pattern.compile("^[a-z].*$");
 
     /**
-     * Terms being processed now.
-     */
-    private static final ThreadLocal<Set<Integer>> TERMS = new ThreadLocal<>();
-
-    /**
      * Attributes nesting level.
      */
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
@@ -80,24 +73,25 @@ public abstract class PhDefault implements Phi, Cloneable {
     protected int vertex;
 
     /**
+     * Data.
+     * @checkstyle VisibilityModifierCheck (2 lines)
+     */
+    private AtomicReference<byte[]> data = new AtomicReference<>(null);
+
+    /**
      * Forma of it.
      */
-    private String form;
+    private final String form;
 
     /**
      * Order of their names.
      */
-    private final List<String> order;
+    private final Map<Integer, String> order;
 
     /**
      * Attributes.
      */
     private Map<String, Attr> attrs;
-
-    /**
-     * Cached \phi.
-     */
-    private CachedPhi cached = new CachedPhi();
 
     /**
      * Ctor.
@@ -116,9 +110,9 @@ public abstract class PhDefault implements Phi, Cloneable {
         this.vertex = PhDefault.VTX.next();
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
-        this.order = new ArrayList<>(0);
-        this.add("ρ", new AtSimple(sigma));
-        this.add("σ", new AtFixed(new AtSimple(sigma)));
+        this.order = new HashMap<>(0);
+        this.add(Attr.RHO, new AtRho());
+        this.add(Attr.SIGMA, new AtFixed(sigma));
     }
 
     @Override
@@ -133,34 +127,35 @@ public abstract class PhDefault implements Phi, Cloneable {
 
     @Override
     public String φTerm() {
-        if (null == PhDefault.TERMS.get()) {
-            PhDefault.TERMS.set(new HashSet<>());
+        final List<String> list = new ArrayList<>(this.attrs.size());
+        final String format = "%s ↦ %s";
+        if (this.data.get() != null) {
+            list.add(
+                String.format(
+                    format, Attr.DELTA, new BytesOf(this.data.get()).asString()
+                )
+            );
         }
-        String txt;
-        if (PhDefault.TERMS.get().contains(this.vertex)) {
-            txt = String.format("ν%d", this.vertex);
-        } else {
-            PhDefault.TERMS.get().add(this.vertex);
-            final List<String> list = new ArrayList<>(this.attrs.size());
-            for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-                e -> Arrays.asList("σ", "ρ", "Δ").contains(e.getKey())
-            ).collect(Collectors.toList())) {
-                final String attr = String.format(
-                    "%s ↦ %s",
-                    ent.getKey(),
-                    ent.getValue().φTerm()
-                );
-                list.add(attr);
-            }
-            PhDefault.TERMS.get().remove(this.vertex);
-            Collections.sort(list);
-            txt = this.oname();
-            if (!list.isEmpty()) {
-                txt = String.format(
-                    "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
-                    new Indented(String.join(",\n", list))
-                );
-            }
+        for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
+            e -> !Arrays.asList(Attr.RHO, Attr.SIGMA).contains(e.getKey())
+        ).collect(Collectors.toList())) {
+            final String attr = String.format(
+                format,
+                ent.getKey(),
+                ent.getValue().φTerm()
+            );
+            list.add(attr);
+        }
+        if (this instanceof Atom) {
+            list.add(String.format(format, Attr.LAMBDA, "Lambda"));
+        }
+        Collections.sort(list);
+        String txt = this.oname();
+        if (!list.isEmpty()) {
+            txt = String.format(
+                "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
+                new Indented(String.join(",\n", list))
+            );
         }
         return txt;
     }
@@ -172,11 +167,11 @@ public abstract class PhDefault implements Phi, Cloneable {
             this.getClass().getCanonicalName(),
             this.vertex
         );
-        if (this.attrs.containsKey("Δ")) {
+        if (this.data.get() != null) {
             result = String.format(
                 "%s=%s",
                 result,
-                this.attrs.get("Δ").toString()
+                new BytesOf(this.data.get()).asString()
             );
         }
         return result;
@@ -187,8 +182,7 @@ public abstract class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.vertex = PhDefault.VTX.next();
-            copy.form = this.form;
-            copy.cached = new CachedPhi();
+            copy.data = new AtomicReference<>(this.data.get());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
@@ -201,93 +195,111 @@ public abstract class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public final Attr attr(final int pos) {
-        if (0 > pos) {
-            throw new ExFailure(
-                String.format(
-                    "Attribute position can't be negative (%d)",
-                    pos
-                )
-            );
-        }
-        if (this.order.isEmpty()) {
-            throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
-            );
-        }
-        Attr attr = this.attr(this.order.get(0));
-        for (int idx = 0; idx <= pos; ++idx) {
-            if (idx >= this.order.size()) {
-                throw new ExFailure(
-                    String.format(
-                        "%s has just %d attribute(s), can't read the %d-th one",
-                        this,
-                        this.order.size(),
-                        pos
-                    )
-                );
-            }
-            attr = this.attr(this.order.get(idx));
-        }
-        return attr;
+    public boolean put(final int pos, final Phi object) {
+        return this.put(this.attr(pos), object);
     }
 
     @Override
-    public final Attr attr(final String name) {
+    public boolean put(final String name, final Phi object) {
+        if (!this.attrs.containsKey(name)) {
+            throw new ExUnset(
+                String.format(
+                    "Can't #put(%s, %s) to %s, because %s is absent",
+                    name, object, this, name
+                )
+            );
+        }
+        return new AtSafe(this.named(this.attrs.get(name), name)).put(object);
+    }
+
+    @Override
+    public Phi take(final String name) {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
-        Attr attr;
-        if ("ν".equals(name)) {
-            attr = new AtSimple(new Data.ToPhi((long) this.hashCode()));
+        final Phi object;
+        if (this.attrs.containsKey(name)) {
+            object = new AtSafe(
+                this.named(
+                    new AtSetRho(
+                        this.attrs.get(name),
+                        this,
+                        name
+                    ),
+                    name
+                )
+            ).get();
+        } else if (name.equals(Attr.LAMBDA)) {
+            object = new AtSafe(
+                this.named(
+                    new AtSetRho(
+                        new AtFormed(new AtomSafe((Atom) this)::lambda),
+                        this,
+                        name
+                    ),
+                    name
+                )
+            ).get();
+        } else if (this instanceof Atom) {
+            object = this.take(Attr.LAMBDA).take(name);
+        } else if (this.attrs.containsKey(Attr.PHI)) {
+            object = this.take(Attr.PHI).take(name);
         } else {
-            attr = this.attrs.get(name);
+            object = new AtSafe(
+                this.named(
+                    new AtAbsent(
+                        name,
+                        String.format(
+                            "Can't #take(), attribute \"%s\" is absent among other %d attrs (%s), %s and %s are also absent",
+                            name,
+                            this.attrs.size(),
+                            String.join(", ", this.attrs.keySet()),
+                            Attr.PHI,
+                            Attr.LAMBDA
+                        )
+                    ),
+                    name
+                )
+            ).get();
         }
-        if (null == attr) {
-            final String through;
-            if (this.attrs.containsKey(Attr.PHI)) {
-                through = Attr.PHI;
-            } else {
-                through = Attr.LAMBDA;
-            }
-            final Attr aphi = this.attrs.get(through);
-            if (null == aphi) {
-                attr = new AtAbsent(
-                    name,
-                    String.format(
-                        " among other %d attrs (%s) and %s is absent",
-                        this.attrs.size(),
-                        String.join(", ", this.attrs.keySet()),
-                        through
-                    )
-                );
-            } else {
-                final Phi phi = this.cached.get(name, aphi::get);
-                final Phi found = phi.attr(name).get();
-                found.attr("ρ").put(this);
-                attr = new AtSimple(found);
-            }
-        }
-        attr = this.named(attr, name);
-        if (Attr.PHI.equals(name)) {
-            attr = new AtPhiSensitive(attr, this.cached);
-        }
-        if (this.getClass().isAnnotationPresent(Volatile.class)) {
-            this.cached.reset();
-        }
-        attr = new AtSafe(attr);
         PhDefault.debug(
             String.format(
                 "%s\uD835\uDD38('%s' for %s) ➜ %s",
                 PhDefault.padding(),
                 name,
                 this,
-                attr
+                object
             )
         );
         PhDefault.NESTING.set(PhDefault.NESTING.get() - 1);
-        return attr;
+        return object;
+    }
+
+    @Override
+    public void attach(final byte[] bytes) {
+        synchronized (this.data) {
+            if (this.data.get() != null) {
+                throw new ExFailure(
+                    "Data is already attached to the object, can't reattach"
+                );
+            }
+            this.data.set(bytes);
+        }
+    }
+
+    @Override
+    public byte[] delta() {
+        final byte[] bytes;
+        if (this.data.get() != null) {
+            bytes = this.data.get();
+        } else if (this instanceof Atom) {
+            bytes = this.take(Attr.LAMBDA).delta();
+        } else if (this.attrs.containsKey(Attr.PHI)) {
+            bytes = this.take(Attr.PHI).delta();
+        } else {
+            throw new ExFailure(
+                "There's no data in the object, can't take it"
+            );
+        }
+        return bytes;
     }
 
     @Override
@@ -306,7 +318,6 @@ public abstract class PhDefault implements Phi, Cloneable {
      * memory leaks.
      */
     public static void cleanUp() {
-        PhDefault.TERMS.remove();
         PhDefault.NESTING.remove();
     }
 
@@ -316,15 +327,49 @@ public abstract class PhDefault implements Phi, Cloneable {
      * This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
      * protected. Not the brightest design, I admit.
-     *
      * @param name The name
      * @param attr The attr
      */
     protected final void add(final String name, final Attr attr) {
         if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.add(name);
+            this.order.put(this.order.size(), name);
         }
         this.attrs.put(name, attr);
+    }
+
+    /**
+     * Get attribute name by position.
+     * @param pos Position of the attribute
+     * @return Attribute name
+     */
+    private String attr(final int pos) {
+        if (0 > pos) {
+            throw new ExFailure(
+                String.format(
+                    "Attribute position can't be negative (%d)",
+                    pos
+                )
+            );
+        }
+        if (this.order.isEmpty()) {
+            throw new ExFailure(
+                String.format(
+                    "There are no attributes here, can't read the %d-th one",
+                    pos
+                )
+            );
+        }
+        if (!this.order.containsKey(pos)) {
+            throw new ExFailure(
+                String.format(
+                    "%s has just %d attribute(s), can't read the %d-th one",
+                    this,
+                    this.order.size(),
+                    pos
+                )
+            );
+        }
+        return this.order.get(pos);
     }
 
     /**

@@ -31,9 +31,14 @@ import org.eolang.PhDefault;
 
 /**
  * Wrong object that can't be used and instantiated.
+ * Used in {@link org.eolang.PhPackageTest#throwsExceptionIfCantInstantiateObject()}
  *
  * @since 0.29
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "JTCOP.RuleInheritanceInTests"
+})
 final class EOfailed extends PhDefault {
 }

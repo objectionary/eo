@@ -98,6 +98,7 @@ public final class ProbeMojo extends SafeMojo {
     );
 
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public void exec() throws IOException {
         if (this.hash == null) {
             this.hash = new ChCached(

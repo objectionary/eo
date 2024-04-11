@@ -60,8 +60,7 @@ final class AtNamed implements Attr {
      * @param attr Attribute
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    AtNamed(final String nme, final String onme,
-        final Phi src, final Attr attr) {
+    AtNamed(final String nme, final String onme, final Phi src, final Attr attr) {
         this.name = nme;
         this.oname = onme;
         this.phi = src;
@@ -82,8 +81,6 @@ final class AtNamed implements Attr {
     public Attr copy(final Phi self) {
         try {
             return new AtNamed(this.name, this.oname, this.phi, this.origin.copy(self));
-        } catch (final ExFlow ex) {
-            throw ex;
         } catch (final ExFailure ex) {
             throw new ExFailure(this.label(), ex);
         }
@@ -91,28 +88,19 @@ final class AtNamed implements Attr {
 
     @Override
     public Phi get() {
-        Phi obj;
         try {
-            obj = this.origin.get();
-        } catch (final ExFlow ex) {
-            throw ex;
+            return new PhNamed(this.origin.get(), this.oname);
         } catch (final ExUnset ex) {
             throw new ExUnset(this.label(), ex);
         } catch (final ExFailure ex) {
             throw new ExFailure(this.label(), ex);
         }
-        if (!(obj instanceof Data)) {
-            obj = new PhNamed(obj, this.oname);
-        }
-        return obj;
     }
 
     @Override
-    public void put(final Phi src) {
+    public boolean put(final Phi src) {
         try {
-            this.origin.put(src);
-        } catch (final ExFlow ex) {
-            throw ex;
+            return this.origin.put(src);
         } catch (final ExReadOnly ex) {
             throw new ExReadOnly(this.label(), ex);
         } catch (final ExFailure ex) {
@@ -127,5 +115,4 @@ final class AtNamed implements Attr {
     private String label() {
         return String.format("Error at \"%s\" attribute", this.name);
     }
-
 }

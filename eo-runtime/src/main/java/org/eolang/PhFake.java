@@ -36,6 +36,12 @@ import java.util.function.Supplier;
  */
 @Versionized
 public final class PhFake extends PhDefault {
+    /**
+     * Ctor.
+     */
+    public PhFake() {
+        this(() -> Phi.Φ);
+    }
 
     /**
      * Ctor.
@@ -43,7 +49,7 @@ public final class PhFake extends PhDefault {
      */
     public PhFake(final Supplier<Phi> sup) {
         super(Phi.Φ);
-        this.add("args", new AtFree());
+        this.add("args", new AtVoid("args"));
         this.add("φ", new AtComposite(this, rho -> sup.get()));
     }
 }

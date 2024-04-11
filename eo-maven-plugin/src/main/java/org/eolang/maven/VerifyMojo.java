@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.nio.file.Path;
@@ -74,12 +75,12 @@ public final class VerifyMojo extends SafeMojo {
             this.optimization(),
             new OptimizationTask(
                 new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
                 ),
                 new MapOf<String, String>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), "6-verify"),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), "verified")
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), "6-verify"),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), "verified")
                 ),
                 ForeignTojo::withVerified,
                 ForeignTojo::shaken
@@ -105,6 +106,7 @@ public final class VerifyMojo extends SafeMojo {
      */
     private Optimization optimization() {
         Optimization opt = new OptTrain(
+            this::logErrors,
             new TrClasspath<>(
                 new TrDefault<>(),
                 "/org/eolang/parser/fail-on-errors.xsl",
@@ -115,6 +117,37 @@ public final class VerifyMojo extends SafeMojo {
             opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
         }
         return opt;
+    }
+
+    /**
+     * Log errors of xml.
+     * @param xml XMIR.
+     * @return XML.
+     */
+    private XML logErrors(final XML xml) {
+        for (final XML error: xml.nodes("/program/errors/error")) {
+            final String message = Logger.format(
+                "%[file]s, line %s: %s",
+                xml.xpath("/program/@source").get(0),
+                error.xpath("@line").get(0),
+                error.xpath("text()").get(0)
+            );
+            final String severity = error.xpath("@severity").get(0);
+            switch (severity) {
+                case "warning":
+                    Logger.warn(this, message);
+                    break;
+                case "error":
+                case "critical":
+                    Logger.error(this, message);
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                        String.format("Incorrect severity: %s", severity)
+                    );
+            }
+        }
+        return xml;
     }
 
 }

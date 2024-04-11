@@ -46,7 +46,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  */
 @Execution(ExecutionMode.SAME_THREAD)
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-class LogFormatTest {
+final class LogFormatTest {
 
     /**
      * Expected log message format.
@@ -78,6 +78,7 @@ class LogFormatTest {
     @Test
     void matchesCorrectly() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );

@@ -41,7 +41,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-class ChTextTest {
+final class ChTextTest {
 
     /**
      * Test file path in temp dir.
@@ -84,12 +84,17 @@ class ChTextTest {
         final String hash,
         final String tag
     ) {
-        MatcherAssert.assertThat(new ChText(ChTextTest.file, tag).value(), Matchers.equalTo(hash));
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            new ChText(ChTextTest.file, tag).value(),
+            Matchers.equalTo(hash)
+        );
     }
 
     @Test
     void readsCorrectHashByTagFromSimpleString() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"

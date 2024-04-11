@@ -24,7 +24,8 @@ do
       compilation=$1
       ;;
     *)
-      echo "Invalid option: $1. Please, specify --max, --folder or --compilation options, for example, --max 15 --folder /some/path"
+      echo "Invalid option: $1. Please, specify --max, --folder or --compilation options, \
+for example, --max 15 --folder /some/path"
       exit 1
       ;;
   esac
@@ -40,8 +41,7 @@ cd "$folder"
 # without running the tests
 mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
 # Run the tests several times
-max=10
-for i in $(seq 1 $max)
+for i in $(seq 1 "$max")
 do
   echo "Test repetition #$i of $max"
   if [ "$compilation" = true ]; then

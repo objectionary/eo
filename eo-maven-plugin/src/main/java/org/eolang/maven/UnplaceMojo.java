@@ -58,8 +58,8 @@ public final class UnplaceMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for unplacing (these files will be removed for sure).
-     * @since 0.24
      * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
+     * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
@@ -67,14 +67,15 @@ public final class UnplaceMojo extends SafeMojo {
 
     /**
      * List of inclusion GLOB filters for placing (ONLY these files will stay).
-     * @since 0.24
      * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
+     * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter
     private Set<String> keepBinaries = new SetOf<>();
 
     @Override
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public void exec() throws IOException {
         if (this.placedTojos.isEmpty()) {
             Logger.info(
@@ -105,6 +106,7 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private void unplaceClasses() throws IOException {
         final Collection<PlacedTojo> classes = this.placedTojos.classes();
         int deleted = 0;
@@ -141,6 +143,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private int killThem(final Iterable<PlacedTojo> all) throws IOException {
         int unplaced = 0;
         for (final PlacedTojo tojo : all) {
@@ -195,6 +198,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private int keepThem(final Iterable<? extends PlacedTojo> tojos) throws IOException {
         int deleted = 0;
         int remained = 0;

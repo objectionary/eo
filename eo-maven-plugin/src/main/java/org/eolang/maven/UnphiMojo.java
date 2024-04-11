@@ -30,18 +30,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.IterableEnvelope;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.PhiSyntax;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
  * Read PHI files and parse them to the XMIR.
@@ -58,7 +64,7 @@ public final class UnphiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "unphiInputDir",
+        property = "eo.unphiInputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/phi"
     )
@@ -69,16 +75,25 @@ public final class UnphiMojo extends SafeMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
-        property = "unphiOutputDir",
+        property = "eo.unphiOutputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/1-parse"
     )
     private File unphiOutputDir;
 
+    /**
+     * Extra metas to add to unphied XMIR.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ImmutableField")
+    @Parameter(property = "eo.unphiMetas")
+    private Set<String> unphiMetas = new SetOf<>();
+
     @Override
     public void exec() {
         final List<Path> errors = new ListOf<>();
         final Home home = new HmBase(this.unphiOutputDir);
+        final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -93,7 +108,8 @@ public final class UnphiMojo extends SafeMojo {
                         );
                         final XML parsed = new PhiSyntax(
                             phi.getFileName().toString().replace(".phi", ""),
-                            new TextOf(phi)
+                            new TextOf(phi),
+                            metas
                         ).parsed();
                         home.save(parsed.toString(), xmir);
                         Logger.info(
@@ -117,6 +133,56 @@ public final class UnphiMojo extends SafeMojo {
                     "%d files with parsing errors were found: %s",
                     errors.size(),
                     Arrays.toString(errors.toArray())
+                )
+            );
+        }
+    }
+
+    /**
+     * Accumulates all metas that should be attached to unphied XMIR.
+     * +package meta is prohibited since it's converted to special object
+     * with "λ -> Package" binding.
+     * @since 0.36.0
+     */
+    private static class Metas extends IterableEnvelope<Directive> {
+        /**
+         * Package meta.
+         */
+        private static final String PACKAGE = "package";
+
+        /**
+         * Ctor.
+         * @param metas Metas to append
+         */
+        Metas(final Iterable<String> metas) {
+            super(
+                new Joined<>(
+                    new Mapped<>(
+                        meta -> {
+                            final String[] pair = meta.split(" ", 2);
+                            final String head = pair[0].substring(1);
+                            if (UnphiMojo.Metas.PACKAGE.equals(head)) {
+                                throw new IllegalStateException(
+                                    "+package meta is prohibited for attaching to unphied XMIR"
+                                );
+                            }
+                            final Directives dirs = new Directives()
+                                .xpath("/program/metas")
+                                .add("meta")
+                                .add("head").set(head).up()
+                                .add("tail");
+                            if (pair.length > 1) {
+                                dirs.set(pair[1].trim()).up();
+                                for (final String part : pair[1].trim().split(" ")) {
+                                    dirs.add("part").set(part).up();
+                                }
+                            } else {
+                                dirs.up();
+                            }
+                            return dirs.up();
+                        },
+                        metas
+                    )
                 )
             );
         }

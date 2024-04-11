@@ -37,7 +37,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
-class RelTest {
+final class RelTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -53,6 +53,7 @@ class RelTest {
         @TempDir final Path temp
     ) {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Rel(temp, temp.resolve(file)).toString(),
             Matchers.is(Paths.get(expected).toString())
         );
@@ -61,6 +62,7 @@ class RelTest {
     @Test
     void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Rel(
                 Paths.get("/a/b/c"),
                 Paths.get("/d/e/f")

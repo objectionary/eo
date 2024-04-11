@@ -33,30 +33,32 @@
 # e.g.
 # switch
 #   *
-#     TRUE
-#     "this value will be returned"
-#   *
-#     FALSE
-#     "this value will be skipped"
+#     *
+#       TRUE
+#       "this value will be returned"
+#     *
+#       FALSE
+#       "this value will be skipped"
 #
 # This object returns value of only first truly statement.
 [cases] > switch
   cases.length > len!
+
   # Take case by given index.
   # If case key is TRUE, return case value.
   # Otherwise take next case.
   [index] > case-at
-    if. > @
+    if > @
       index.eq ^.len
       TRUE
-      if.
+      if
         at.
-          ^.cases.at index > case!
+          ^.cases.at index > case
           0
         case.at 1
         ^.case-at
           index.plus 1
-  if. > @
-    cases.length.eq 0
+  if > @
+    len.eq 0
     error "switch cases are empty"
     case-at 0

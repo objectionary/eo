@@ -1,0 +1,35 @@
+eo: |
+  # Test.
+  [] > compiles-correctly-with-long-duplicate-names
+    # Long object 1.
+    [] > long-object-name
+      # Long object 2.
+      [] > long-object-name
+        # Long object 3.
+        [] > long-object-name
+          # Long object 4.
+          [] > long-object-name
+            # Long object 5.
+            [] > long-object-name
+    TRUE > @
+phi: |
+  {
+    ⟦
+      compiles-correctly-with-long-duplicate-names ↦ ⟦
+        long-object-name ↦ ⟦
+          long-object-name ↦ ⟦
+            long-object-name ↦ ⟦
+              long-object-name ↦ ⟦
+                long-object-name ↦ ⟦⟧
+              ⟧
+            ⟧
+          ⟧
+        ⟧,
+        φ ↦ Φ.org.eolang.bool(
+          α0 ↦ Φ.org.eolang.bytes(
+            Δ ⤍ 01-
+          )
+        )
+      ⟧
+    ⟧
+  }

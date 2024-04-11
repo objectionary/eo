@@ -25,7 +25,9 @@
 package org.eolang;
 
 /**
- * Attribute that is read-only.
+ * Attribute that ignores putting and copying.
+ * The only usage for the attribute is keeping \sigma
+ * attribute.
  *
  * @since 0.1
  */
@@ -33,40 +35,46 @@ package org.eolang;
 final class AtFixed implements Attr {
 
     /**
-     * Origin.
+     * Phi that is fixed.
      */
-    private final Attr origin;
+    private final Phi fixed;
+
+    /**
+     * Attribute.
+     */
+    private final Attr attr;
 
     /**
      * Ctor.
-     * @param attr Attribute
+     * @param phi Fixed phi
      */
-    AtFixed(final Attr attr) {
-        this.origin = attr;
+    AtFixed(final Phi phi) {
+        this.fixed = phi;
+        this.attr = new AtSimple(this.fixed);
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.attr.toString();
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return this.attr.φTerm();
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtFixed(this.origin.copy(self));
+        return new AtFixed(this.fixed);
     }
 
     @Override
     public Phi get() {
-        return this.origin.get();
+        return this.fixed;
     }
 
     @Override
-    public void put(final Phi src) {
-        // ignore it
+    public boolean put(final Phi src) {
+        return false;
     }
 }

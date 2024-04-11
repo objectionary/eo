@@ -50,6 +50,11 @@ import org.junit.jupiter.api.io.TempDir;
 final class PlaceMojoTest {
 
     /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+
+    /**
      * The default folder for placed binaries.
      */
     private static final String TARGET_CLASSES = "target/classes";
@@ -68,14 +73,17 @@ final class PlaceMojoTest {
             .execute(PlaceMojo.class)
             .result();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             res,
             Matchers.hasKey("target/classes/EObar/x.bin")
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             res,
             Matchers.hasKey("target/classes/org/eolang/f/x.a.class")
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             res,
             Matchers.hasKey("target/classes/org/eolang/t.txt")
         );
@@ -86,6 +94,7 @@ final class PlaceMojoTest {
         final String expected = String.format("%s/EObar/x.bin", CopyMojo.DIR);
         PlaceMojoTest.saveBinary(temp, expected);
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -112,6 +121,7 @@ final class PlaceMojoTest {
             PlaceMojoTest.saveBinary(temp, binary);
         }
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new FakeMaven(temp)
                 .with("placeBinariesThatHaveSources", true)
                 .execute(PlaceMojo.class)
@@ -147,6 +157,7 @@ final class PlaceMojoTest {
             binary
         ).toFile().lastModified();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new FakeMaven(temp)
                 .withPlacedBinary(
                     temp.resolve(PlaceMojoTest.TARGET_CLASSES).resolve(binary)
@@ -170,10 +181,12 @@ final class PlaceMojoTest {
         final FakeMaven maven = new FakeMaven(temp).withPlacedBinary(path);
         maven.placed().unplaceAll();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             maven.execute(PlaceMojo.class).result(),
             Matchers.hasValue(path)
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             content,
             Matchers.is(new TextOf(path).asString())
         );
@@ -183,6 +196,7 @@ final class PlaceMojoTest {
     void placesWithoutBinaries(@TempDir final Path temp) throws IOException {
         Files.createDirectories(temp.resolve("target").resolve(ResolveMojo.DIR));
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -193,6 +207,7 @@ final class PlaceMojoTest {
     @Test
     void placesWithoutResolveDirectory(@TempDir final Path temp) throws IOException {
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new FakeMaven(temp)
                 .execute(PlaceMojo.class)
                 .result(),
@@ -211,10 +226,12 @@ final class PlaceMojoTest {
             .execute(PlaceMojo.class)
             .result();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             res,
             Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, first))
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             res,
             Matchers.hasValue(PlaceMojoTest.pathToPlacedBinary(temp, second))
         );
@@ -233,6 +250,7 @@ final class PlaceMojoTest {
     void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             maven.withHelloWorld()
                 .execute(new FakeMaven.Place())
                 .result()
@@ -240,6 +258,7 @@ final class PlaceMojoTest {
             new ContainsFiles("**/eo-runtime-*.jar")
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             maven.placed().jars().size(),
             Matchers.is(1)
         );
@@ -249,6 +268,7 @@ final class PlaceMojoTest {
     void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             maven.withHelloWorld()
                 .with("withRuntimeDependency", false)
                 .execute(new FakeMaven.Place())
@@ -257,6 +277,7 @@ final class PlaceMojoTest {
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             maven.placed().jars().isEmpty(),
             Matchers.is(true)
         );
@@ -272,6 +293,7 @@ final class PlaceMojoTest {
         PlaceMojoTest.saveBinary(temp, "new content", binary);
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );
@@ -288,6 +310,7 @@ final class PlaceMojoTest {
         maven.placed().unplaceAll();
         maven.execute(PlaceMojo.class).result();
         MatcherAssert.assertThat(
+            PlaceMojoTest.EMPTY_MSG,
             new TextOf(PlaceMojoTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(updated)
         );

@@ -43,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
  * everything works fine it's important to run the tests many times.
  * @since 0.29.0
  */
-class CatalogsTest {
+final class CatalogsTest {
 
     /**
      * Number of cores on the running system.
@@ -54,6 +54,7 @@ class CatalogsTest {
     void readsFromTojosConcurrently(@TempDir final Path tmp) {
         final Tojos tojos = Catalogs.INSTANCE.make(tmp.resolve("foreign"), "json");
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new SumOf(
                 new Threads<>(
                     CatalogsTest.CORES,

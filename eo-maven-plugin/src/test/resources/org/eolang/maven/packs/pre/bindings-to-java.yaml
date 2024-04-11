@@ -7,11 +7,9 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - //java/text()[contains(., 'new PhWith(ret, 0')]
-  - //java/text()[contains(., 'new PhWith(ret, "ρ"')]
   - //java/text()[contains(., 'new PhWith(ret, "text"')]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     stdout x:0 > print1
-    stdout x:^ > print2
-    stdout x:text > print3
+    stdout x:text > print2

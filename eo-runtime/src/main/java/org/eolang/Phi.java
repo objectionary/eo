@@ -36,7 +36,7 @@ package org.eolang;
  *
  * @since 0.1
  */
-public interface Phi extends Term {
+public interface Phi extends Term, Data {
 
     /**
      * The global scope object, which owns all other objects.
@@ -45,6 +45,9 @@ public interface Phi extends Term {
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
     Phi Φ = new Phi() {
+        /**
+         * Default package.
+         */
         private final Phi pkg = new PhPackage("");
 
         @Override
@@ -73,15 +76,22 @@ public interface Phi extends Term {
         }
 
         @Override
-        public Attr attr(final int pos) {
-            throw new ExFailure(
-                String.format("Can't #attr(%d) in Φ", pos)
+        public Phi take(final String name) {
+            return this.pkg.take(name);
+        }
+
+        @Override
+        public boolean put(final int pos, final Phi object) {
+            throw new IllegalStateException(
+                String.format("Can't #put(%d, %s) to Φ", pos, object)
             );
         }
 
         @Override
-        public Attr attr(final String name) {
-            return this.pkg.attr(name);
+        public boolean put(final String name, final Phi object) {
+            throw new IllegalStateException(
+                String.format("Can't #put(%s, %s) to Φ", name, object)
+            );
         }
 
         @Override
@@ -93,6 +103,17 @@ public interface Phi extends Term {
         public String forma() {
             return this.pkg.forma();
         }
+
+        public void attach(final byte[] data) {
+            this.pkg.attach(data);
+        }
+
+        @Override
+        public byte[] delta() {
+            throw new IllegalStateException(
+                "Can't #data() from Ф"
+            );
+        }
     };
 
     /**
@@ -103,20 +124,27 @@ public interface Phi extends Term {
     Phi copy();
 
     /**
-     * Get attribute by position.
-     *
-     * @param pos The position of the attribute
-     * @return The attr
+     * Take object by name of the attribute.
+     * @param name The name of the attribute
+     * @return The object
      */
-    Attr attr(int pos);
+    Phi take(String name);
 
     /**
-     * Get attribute.
-     *
-     * @param name The name of the attribute
-     * @return The attr
+     * Put object by position of the attribute.
+     * @param pos The position of the attribute.
+     * @param object The object to put
+     * @return Was attribute set
      */
-    Attr attr(String name);
+    boolean put(int pos, Phi object);
+
+    /**
+     * Put object by name of the attribute.
+     * @param name The name of the attribute.
+     * @param object The object to put
+     * @return Was attribute set
+     */
+    boolean put(String name, Phi object);
 
     /**
      * Get code locator of the phi.

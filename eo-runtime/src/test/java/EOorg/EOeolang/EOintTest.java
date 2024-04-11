@@ -39,15 +39,15 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  * @checkstyle TypeNameCheck (4 lines)
  */
-public class EOintTest {
+public final class EOintTest {
 
     @Test
-    void hasEqualHashes() {
+    void hasDifferentHashes() {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             left.hashCode(),
-            Matchers.equalTo(right.hashCode())
+            Matchers.not(Matchers.equalTo(right.hashCode()))
         );
     }
 

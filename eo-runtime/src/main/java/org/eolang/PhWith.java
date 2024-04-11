@@ -42,7 +42,7 @@ public final class PhWith extends PhOnce {
     public PhWith(final Phi phi, final String name, final Phi attr) {
         super(
             () -> {
-                phi.attr(name).put(attr);
+                phi.put(name, attr);
                 return phi;
             },
             () -> String.format(
@@ -84,7 +84,7 @@ public final class PhWith extends PhOnce {
     public PhWith(final Phi phi, final int pos, final Phi attr) {
         super(
             () -> {
-                phi.attr(pos).put(attr);
+                phi.put(pos, attr);
                 return phi;
             },
             () -> String.format(

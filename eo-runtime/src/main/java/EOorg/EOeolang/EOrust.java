@@ -43,9 +43,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eolang.AtFree;
-import org.eolang.AtLambda;
-import org.eolang.Attr;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.ExNative;
@@ -67,7 +66,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "rust")
-public class EOrust extends PhDefault {
+public final class EOrust extends PhDefault implements Atom {
 
     /**
      * Map with location of the `code` attribute as the key
@@ -133,46 +132,42 @@ public class EOrust extends PhDefault {
      */
     public EOrust(final Phi sigma) {
         super(sigma);
-        this.add("code", new AtFree());
-        this.add("portal", new AtFree());
-        this.add("params", new AtFree());
-        this.add(
-            Attr.LAMBDA,
-            new AtLambda(
-                this,
-                rho -> {
-                    final String name = NAMES.get(
-                        rho.attr("code").get().locator().split(":")[0]
-                    );
-                    final Method method = Class.forName(
-                        String.format(
-                            "EOrust.natives.%s",
-                            name
-                        )
-                    ).getDeclaredMethod(name, Universe.class);
-                    if (method.getReturnType() != byte[].class) {
-                        throw new ExFailure(
-                            "Return type of %s is %s, required %s",
-                            method,
-                            method.getReturnType(),
-                            byte[].class
-                        );
-                    }
-                    final Phi portal = rho.attr("portal").get();
-                    return this.translate(
-                        (byte[]) method.invoke(
-                            null,
-                            new UniverseSafe(
-                                new UniverseDefault(
-                                    portal, this.phis
-                                ),
-                                this.error
-                            )
-                        ),
-                        rho.attr("code").get().locator()
-                    );
-                }
+        this.add("code", new AtVoid("code"));
+        this.add("portal", new AtVoid("portal"));
+        this.add("params", new AtVoid("params"));
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final String name = NAMES.get(
+            this.take("code").locator().split(":")[0]
+        );
+        final Method method = Class.forName(
+            String.format(
+                "EOrust.natives.%s",
+                name
             )
+        ).getDeclaredMethod(name, Universe.class);
+        if (method.getReturnType() != byte[].class) {
+            throw new ExFailure(
+                "Return type of %s is %s, required %s",
+                method,
+                method.getReturnType(),
+                byte[].class
+            );
+        }
+        final Phi portal = this.take("portal");
+        return this.translate(
+            (byte[]) method.invoke(
+                null,
+                new UniverseSafe(
+                    new UniverseDefault(
+                        portal, this.phis
+                    ),
+                    this.error
+                )
+            ),
+            this.take("code").locator()
         );
     }
 
@@ -194,7 +189,7 @@ public class EOrust extends PhDefault {
             if (result.getClass() != ConcurrentHashMap.class) {
                 throw new ClassCastException(
                     String.format(
-                        "Object inside %s has wrong class %s",
+                        "Object inside %s has wrong class %s, a ConcurrentHashMap was expected",
                         src,
                         result.getClass()
                     )
@@ -204,7 +199,7 @@ public class EOrust extends PhDefault {
         } catch (final ClassNotFoundException exc) {
             throw new IllegalArgumentException(
                 String.format(
-                    "File %s contains invalid data",
+                    "File %s contains invalid data, a ConcurrentHashMap objects was expected",
                     src
                 ),
                 exc

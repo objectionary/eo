@@ -13,7 +13,7 @@ eop : EOL EOL
 
 // Licence
 license
-    : (COMMENT EOL)* COMMENT eop
+    : (COMMENTARY EOL)* COMMENTARY eop
     ;
 
 // Metas
@@ -28,7 +28,7 @@ objects
     ;
 
 comment
-    : COMMENT EOL
+    : COMMENTARY EOL
     ;
 
 commentOptional
@@ -59,8 +59,7 @@ master
     ;
 
 // Just an object reference without name
-just: beginner
-    | finisherCopied
+just: beginnerOrFinisher
     | versioned
     ;
 
@@ -160,7 +159,8 @@ happlicationHeadExtended
 // Simple statements that can be used as head of application
 applicable
     : STAR
-    | (NAME | AT) COPY?
+    | NAME
+    | PHI
     ;
 
 // Horizontal application tail
@@ -182,8 +182,7 @@ happlicationTailReversedFirst
 // Argument of horizontal application
 // Does not contain elements in vertical notation
 happlicationArg
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | hmethod
     | scope
     ;
@@ -288,14 +287,18 @@ vapplicationArgHapplicationUnbound
     ;
 
 // Vertical anonym object as argument of vertical application
-// todo - replace with formation?
 vapplicationArgVanonymUnbound
-    : commentMandatory formation
-    | formationNameless
+    : formationNamedOrNameless
     ;
 
 formationNameless
     : attributes innersOrEol
+    ;
+
+// Formation with or without name
+formationNamedOrNameless
+    : commentMandatory formation
+    | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
@@ -387,15 +390,13 @@ hmethodExtendedVersioned
 
 // Head of horizontal method
 hmethodHead
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
 // Extended head of horizontal method
 hmethodHeadExtended
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
@@ -420,22 +421,15 @@ vmethodOptional
 // So in order to avoid it this block was described in more detail
 // Head of vertical method can be:
 // 1. vertical method
-// 2. horizontal method
-// 3. vertical application
-// 4. horizontal application. The same logic as with a vertical application
-// 5. just an object reference
+// 2. vertical application
+// 3. just an object reference
+// 4. vertical formation
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | vmethodHeadCurrent EOL
-    ;
-
-// Head of vertical method that ends on the current line
-vmethodHeadCurrent
-    : vmethodHeadHapplication
-    | vmethodHeadHmethodExtended
-    | justNamed
+    | justNamed EOL
+    | formationNamedOrNameless
     ;
 
 methodTailOptional
@@ -448,10 +442,6 @@ vmethodHeadApplicationTail
     | happlicationTail oname? EOL
     ;
 
-vmethodHeadHmethodExtended
-    : hmethodOptional oname?
-    ;
-
 // Vertical application as head of vertical method
 // Ends on the next line
 vmethodHeadVapplication
@@ -459,14 +449,9 @@ vmethodHeadVapplication
     | reversed oname? vapplicationArgsReversed
     ;
 
-vmethodHeadHapplication
-    : (applicable | hmethodExtended) happlicationTail oname?
-    | happlicationReversed oname?
-    ;
-
 // Tail of method
 methodTail
-    : DOT finisherCopied
+    : DOT finisher
     ;
 
 // Versioned tail of method
@@ -487,15 +472,15 @@ beginner
 // Can start or finish the statement
 finisher
     : NAME
-    | AT
+    | PHI
     | RHO
     | SIGMA
-    | VERTEX
     ;
 
-// Finisher with optional COPY
-finisherCopied
-    : finisher COPY?
+// Beginner or finisher
+beginnerOrFinisher
+    : beginner
+    | finisher
     ;
 
 // Name with optional version
@@ -516,7 +501,7 @@ oname
 
 // Suffix
 suffix
-    : SPACE ARROW SPACE (AT | NAME)
+    : SPACE ARROW SPACE (PHI | NAME)
     ;
 
 // Simple scope
@@ -532,7 +517,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO | INT)
+as  : COLON (NAME | INT)
     ;
 
 // Data
@@ -545,7 +530,7 @@ data: BYTES
     | HEX
     ;
 
-COMMENT
+COMMENTARY
     : HASH
     | (HASH ~[\r\n]* ~[\r\n\t ])
     ;
@@ -567,13 +552,8 @@ SLASH
 COLON
     : ':'
     ;
-COPY: '\''
-    ;
 ARROW
     : '>'
-    ;
-VERTEX
-    : '<'
     ;
 SIGMA
     : '&'
@@ -601,7 +581,7 @@ LB  : '('
     ;
 RB  : ')'
     ;
-AT  : '@'
+PHI : '@'
     ;
 RHO : '^'
     ;
