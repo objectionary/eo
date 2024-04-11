@@ -32,8 +32,8 @@ bindings
 binding
     : alphaBinding
     | emptyBinding
-    | deltaBidning
-    | lambdaBidning
+    | deltaBinding
+    | lambdaBinding
     ;
 
 alphaBinding
@@ -56,11 +56,11 @@ emptyBinding
     : attribute ARROW EMPTY
     ;
 
-deltaBidning
+deltaBinding
     : DELTA DASHED_ARROW (BYTES | EMPTY)
     ;
 
-lambdaBidning
+lambdaBinding
     : LAMBDA DASHED_ARROW FUNCTION
     ;
 
