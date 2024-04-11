@@ -33,11 +33,12 @@
 # e.g.
 # switch
 #   *
-#     TRUE
-#     "this value will be returned"
-#   *
-#     FALSE
-#     "this value will be skipped"
+#     *
+#       TRUE
+#       "this value will be returned"
+#     *
+#       FALSE
+#       "this value will be skipped"
 #
 # This object returns value of only first truly statement.
 [cases] > switch

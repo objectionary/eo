@@ -27,18 +27,14 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:30min Enable or remove bool tests. Object bool.while stopped working properly when
-#  \rho attribute became immutable. Need to either remove the tests or refactor and enable them.
-#  Tests: iterates-over-simple-counter, complex-bool-expression-in-while,
-#  last-while-dataization-object, while-without-last-dataization,
-#  last-while-dataization-object-with-false-condition,
-#  iterating-tuple-with-while-using-internal-iterator,
-#  iterating-tuple-with-while-using-external-iterator,
-#  iterating-tuple-with-while-without-body-multiple, iterating-tuple-with-while-without-body-single
 [] > compares-two-bools
   eq. > @
     TRUE
     TRUE
+
+# Test.
+[] > true-as-bool
+  TRUE.as-bool > @
 
 # Test.
 [] > compares-two-different-types
@@ -46,22 +42,6 @@
     eq.
       TRUE
       42
-
-# Test.
-[] > iterates-over-simple-counter
-  memory 0 > x
-  and. > res
-    eq.
-      x.write 5
-      5
-    eq.
-      while.
-        x.as-int.lt 10
-        [i]
-          x.write > @
-            x.as-int.plus 1
-      11
-  nop > @
 
 # Test.
 [] > compares-bool-to-bytes
@@ -80,180 +60,3 @@
   and. > @
     01-.as-bytes.eq TRUE
     00-.as-bytes.eq FALSE
-
-# Test.
-[] > complex-bool-expression-in-while
-  memory 0 > m
-  seq > res
-    *
-      m.write 5
-      while.
-        eq.
-          m.as-int.gt 0
-          TRUE
-        [i]
-          seq > @
-            *
-              m.write
-                m.as-int.minus 1
-              TRUE
-      TRUE
-  nop > @
-
-# Test.
-[] > last-while-dataization-object
-  memory 0 > x
-  eq. > res
-    while.
-      x.as-int.lt 2
-      [i]
-        seq > @
-          *
-            x.write (x.as-int.plus 1)
-            x.as-int
-    3
-  nop > @
-
-# Test.
-[] > while-without-last-dataization
-  memory 0 > x
-  eq. > res
-    seq
-      *
-        while.
-          x.as-int.lt 2
-          [i]
-            x.write (x.as-int.plus 1) > @
-        .@
-        .<
-        x.as-int
-    2
-  nop > @
-
-# Test.
-[] > last-while-dataization-object-with-false-condition
-  memory 3 > x
-  eq. > res
-    while.
-      x.as-int.lt 1
-      [i]
-        seq > @
-          *
-            x.write (x.as-int.plus 1)
-            x
-    FALSE
-  nop > @
-
-# Test.
-[] > iterating-tuple-with-while-using-internal-iterator
-  * 1 1 1 1 > arr
-  memory 0 > iter
-  memory 0 > acc
-  arr.length.minus 1 > max
-  seq > res
-    *
-      if
-        max.eq 0
-        acc.write
-          acc.as-int.plus
-            arr.at 0
-        while.
-          iter.as-int.lt max
-          [i]
-            seq > @
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      i
-                iter.write
-                  iter.as-int.plus 1
-      eq.
-        acc.as-int
-        arr.length
-  nop > @
-
-# Test.
-[] > iterating-tuple-with-while-using-external-iterator
-  * 1 1 1 1 > arr
-  memory 0 > iter
-  memory 0 > acc
-  arr.length.minus 1 > max
-  seq > nop
-    *
-      if
-        max.eq 0
-        acc.write
-          acc.as-int.plus
-            arr.at 0
-        while.
-          iter.as-int.lt max
-          [i]
-            seq > @
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-      eq.
-        acc.as-int
-        arr.length
-  TRUE > @
-
-# Test.
-[] > iterating-tuple-with-while-without-body-multiple
-  * 1 1 1 1 > arr
-  memory 0 > iter
-  memory 0 > acc
-  arr.length > max
-  seq > res
-    *
-      while.
-        []
-          if > @
-            iter.as-int.lt max
-            seq
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-                TRUE
-            FALSE
-        nop
-      eq.
-        acc.as-int
-        arr.length
-  nop > @
-
-# Test.
-[] > iterating-tuple-with-while-without-body-single
-  * 1 > arr
-  memory 0 > iter
-  memory 0 > acc
-  arr.length > max
-  seq > nop
-    *
-      while.
-        []
-          if > @
-            iter.as-int.lt max
-            seq
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-                TRUE
-            FALSE
-        nop
-      eq.
-        acc.as-int
-        arr.length
-  TRUE > @

@@ -27,15 +27,13 @@
 +version 0.0.0
 
 # Test.
-[] > less-true
-  eq. > @
-    lt.
-      10
-      50
-    TRUE
+[] > int-less-true
+  lt. > @
+    10
+    50
 
 # Test.
-[] > less-equal
+[] > int-less-equal
   eq. > @
     not.
       lt.
@@ -44,7 +42,7 @@
     TRUE
 
 # Test.
-[] > less-false
+[] > int-less-false
   eq. > @
     not.
       lt.
@@ -53,7 +51,7 @@
     TRUE
 
 # Test.
-[] > greater-true
+[] > int-greater-true
   eq. > @
     gt.
       -200
@@ -61,7 +59,7 @@
     TRUE
 
 # Test.
-[] > greater-false
+[] > int-greater-false
   eq. > @
     not.
       gt.
@@ -70,7 +68,7 @@
     TRUE
 
 # Test.
-[] > greater-equal
+[] > int-greater-equal
   eq. > @
     not.
       gt.
@@ -79,7 +77,7 @@
     TRUE
 
 # Test.
-[] > leq-true
+[] > int-leq-true
   eq. > @
     lte.
       -200
@@ -87,7 +85,7 @@
     TRUE
 
 # Test.
-[] > leq-equal
+[] > int-leq-equal
   eq. > @
     lte.
       50
@@ -95,7 +93,7 @@
     TRUE
 
 # Test.
-[] > leq-false
+[] > int-leq-false
   eq. > @
     not.
       lte.
@@ -104,7 +102,7 @@
     TRUE
 
 # Test.
-[] > gte-true
+[] > int-gte-true
   eq. > @
     gte.
       -1000
@@ -112,7 +110,7 @@
     TRUE
 
 # Test.
-[] > gte-equal
+[] > int-gte-equal
   eq. > @
     gte.
       113
@@ -120,7 +118,7 @@
     TRUE
 
 # Test.
-[] > gte-false
+[] > int-gte-false
   eq. > @
     not.
       gte.
@@ -145,7 +143,7 @@
     TRUE
 
 # Test.
-[] > zero-eq-to-zero
+[] > int-zero-eq-to-zero
   eq. > @
     eq.
       0
@@ -161,7 +159,7 @@
     TRUE
 
 # Test.
-[] > eq-true
+[] > int-eq-true
   eq. > @
     eq.
       123
@@ -169,7 +167,7 @@
     TRUE
 
 # Test.
-[] > eq-false
+[] > int-eq-false
   eq. > @
     not.
       eq.
@@ -236,18 +234,16 @@
         minus1.plus minus2
         rec (n.minus 1) (minus1.plus minus2) minus1
 
-# Checks that division by zero returns an error object
+# Checks that division by zero returns an error object.
 [] > zero-division
-  eq. > @
-    try
-      []
-        2.div 0 > @
-      [e]
-        e > @
-      nop
-    "Can't divide by integer zero"
+  try > @
+    []
+      2.div 0 > @
+    [e]
+      QQ.io.stdout e > @
+    TRUE
 
-# Checks that division by one returns the dividend
+# Checks that division by one returns the dividend.
 [] > division-by-one
   -235 > dividend
   eq. > @

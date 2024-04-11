@@ -28,7 +28,7 @@
 package EOorg.EOeolang.EOio;
 
 import java.io.PrintStream;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Param;
@@ -72,7 +72,7 @@ public final class EOstdout extends PhDefault implements Atom {
     EOstdout(final Phi sigma, final PrintStream out) {
         super(sigma);
         this.out = out;
-        this.add("text", new AtFree());
+        this.add("text", new AtVoid("text"));
     }
 
     @Override

@@ -34,7 +34,7 @@
         (series *).max > @
       [e]
         e > @
-      nop
+      TRUE
     $.equal-to "Can't get max of empty array"
 
 [] > min-of-empty-array
@@ -44,7 +44,7 @@
         (series *).min > @
       [e]
         e > @
-      nop
+      TRUE
     $.equal-to "Can't get min of empty array"
 
 [] > max-of-one-item-array

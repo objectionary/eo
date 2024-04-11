@@ -28,19 +28,14 @@
 +version 0.0.0
 
 # Test.
-# @todo #2931:60min Enable goto tests. They were fully disabled because they don't work for
-#  some reason when \rho attribute became immutable. Need to find out what's wrong and enable
-#  all the tests.
-[] > goto-tests
-  TRUE > @
-  # Test.
-  [] > goto-jumps-backwards
-    memory 0 > i
-    eq. > @
+[] > goto-jumps-backwards
+  (memory 0).alloc > i
+  and. > @
+    eq.
       seq
         *
           i.write 1
-          goto
+          go.to
             [g]
               seq > @
                 *
@@ -49,86 +44,64 @@
                     i.as-int.lt 10
                     g.backward
                     TRUE
-          stdout "Finished!"
-          i
-      11
-
-  # Test.
-  [] > goto-jumps-backwards-without-last-datization
-    memory 0 > i
-    eq. > @
-      seq
-        *
-          i.write 1
-          goto
-            [g]
-              seq > @
-                *
-                  i.write (i.as-int.plus 1)
-                  if
-                    i.as-int.lt 10
-                    g.backward
-                    TRUE
-          .@
-          .<
-          stdout "Finished!"
+          stdout "Finished!\n"
           i
       10
+    i.free
 
-  # Test.
-  [] > goto-jumps-forward
-    # Div.
-    [x] > div
-      memory 0 > r
-      seq > @
-        *
-          r.write 0
-          goto
-            [g]
-              seq > @
-                *
-                  if
-                    x.eq 0
-                    g.forward TRUE
-                    TRUE
-                  r.write (42.div x)
-          r
-    eq. > @
-      and.
-        eq.
-          div 7
-          6
-        eq.
-          div 0
-          0
-      TRUE
+# Test.
+[] > goto-jumps-forward
+  # Div.
+  [x] > div
+    (memory 0).alloc > r
+    seq > @
+      *
+        go.to
+          [g]
+            seq > @
+              *
+                if
+                  x.eq 0
+                  g.forward TRUE
+                  TRUE
+                r.write (42.div x)
+        (dataized r).as-bytes > result
+        r.free
+        result
+  and. > @
+    eq.
+      div 7
+      6
+    eq.
+      div 0
+      0
 
-  # Test.
-  [] > returns-from-method-body
-    # Max.
-    [a b] > max
-      goto > @
-        [g]
-          seq > @
-            *
-              if
-                a.gt b
-                g.forward a
-                TRUE
-              b
-    eq. > @
-      max 7 42
-      42
+# Test.
+[] > returns-from-method-body
+  # Max.
+  [a b] > max
+    go.to > @
+      [g]
+        seq > @
+          *
+            if
+              a.gt b
+              g.forward a
+              TRUE
+            b
+  eq. > @
+    max 7 42
+    42
 
-  # Test.
-  [] > nested-goto
-    eq. > @
-      goto
-        [g1]
-          seq > @
-            *
-              goto
-                [g2]
-                  g1.forward 42 > @
-              7
-      42
+# Test.
+[] > nested-goto
+  eq. > @
+    go.to
+      [g1]
+        seq > @
+          *
+            go.to
+              [g2]
+                g1.forward 42 > @
+            7
+    42

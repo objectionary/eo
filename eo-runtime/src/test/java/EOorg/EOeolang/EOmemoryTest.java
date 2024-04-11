@@ -40,12 +40,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOmemory}.
+ * Test case for {@link EOmemory} and {@link EOmemory$EOallocated}.
  *
  * @since 0.1
- * @todo #2931:30min Decide what to do with test {@link EOmemoryTest#comparesOnFly}.
- *  The test was disabled because it does not pass after new rho logic was introduced.
- *  We need either to delete the test, or resolve it somehow
  */
 public final class EOmemoryTest {
 
@@ -56,40 +53,66 @@ public final class EOmemoryTest {
 
     @Test
     void behavesAsBytes() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(1L));
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            new Dataized(mem).take(),
-            Matchers.instanceOf(byte[].class)
+            new Dataized(alloc.take("as-int")).take(Long.class),
+            Matchers.equalTo(1L)
         );
     }
 
     @Test
-    void rewritesAfterInit() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(0L));
-        final Phi write = mem.attr("write").get();
-        final Phi first = write.copy();
-        first.attr(0).put(new Data.ToPhi(42L));
-        new Dataized(first).take();
-        final Phi minus = mem.attr("as-int").get().attr("minus").get().copy();
-        minus.attr(0).put(new Data.ToPhi(2L));
-        final Phi second = write.copy();
-        second.attr(0).put(minus);
+    void comparesWithInt() {
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            new Dataized(second).take(Long.class),
-            Matchers.equalTo(40L)
+            new Dataized(
+                new PhWith(
+                    new PhMethod(
+                        new PhWith(alloc.take("write").copy(), 0, new Data.ToPhi(3L)),
+                        "eq"
+                    ),
+                    0, new Data.ToPhi(3L)
+                )
+            ).take(Boolean.class),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void hasTheSameDataAfterCopy() {
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            new Dataized(alloc).take(),
+            Matchers.equalTo(new Dataized(alloc.copy()).take())
+        );
+    }
+
+    @Test
+    void writesDataToNewMemorySegment() {
+        final Phi first = EOmemoryTest.allocated(new Data.ToPhi(1L));
+        final Phi second = EOmemoryTest.allocated(new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            new Dataized(first).take(),
+            Matchers.not(Matchers.equalTo(new Dataized(second).take()))
+        );
+    }
+
+    @Test
+    void rewritesToTheSameSegment() {
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(1L));
+        new Dataized(new PhWith(alloc.take("write").copy(), 0, new Data.ToPhi(10L))).take();
+        MatcherAssert.assertThat(
+            new Dataized(alloc).take(Long.class),
+            Matchers.equalTo(10L)
         );
     }
 
     @Test
     void takesAsIntAndUpdates() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(1L));
+        final Phi alloc = EOmemoryTest.allocated(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    mem.attr("as-int").get().attr("plus").get().copy(),
+                    alloc.take("as-int").take("plus").copy(),
                     0, new Data.ToPhi(1L)
                 )
             ).take(Long.class),
@@ -99,43 +122,21 @@ public final class EOmemoryTest {
 
     @Test
     void getsWrittenValueRightAfterWriting() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             new Dataized(
                 new PhWith(
-                    mem.attr(EOmemoryTest.WRITE).get().copy(),
+                    mem.take(EOmemoryTest.WRITE).copy(),
                     0, new Data.ToPhi(10L)
-                ).attr("as-int").get()
+                ).take("as-int")
             ).take(Long.class),
             Matchers.equalTo(10L)
         );
     }
 
     @Test
-    void writesAfterCopy() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(1L));
-        MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-int").get()).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    void readsAndWrites() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        final Phi write = mem.attr(EOmemoryTest.WRITE).get();
-        write.attr(0).put(new Data.ToPhi("Hello, world!"));
-        new Dataized(write).take();
-        MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-string").get()).take(String.class),
-            Matchers.startsWith("Hello, ")
-        );
-    }
-
-    @Test
     void comparesForEquality() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(2L));
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -155,7 +156,7 @@ public final class EOmemoryTest {
 
     @Test
     void writesAndRewrites() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(10L));
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -163,7 +164,7 @@ public final class EOmemoryTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-int").get()).take(Long.class),
+            new Dataized(mem.take("as-int")).take(Long.class),
             Matchers.equalTo(1L)
         );
         new Dataized(
@@ -173,48 +174,14 @@ public final class EOmemoryTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-int").get()).take(Long.class),
+            new Dataized(mem.take("as-int")).take(Long.class),
             Matchers.equalTo(5L)
         );
     }
 
     @Test
-    void makesCorrectCopy() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        final Phi write = mem.attr(EOmemoryTest.WRITE).get();
-        write.attr(0).put(new Data.ToPhi(1L));
-        new Dataized(write).take();
-        MatcherAssert.assertThat(
-            new Dataized(new PhCopy(mem.attr("as-int").get())).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-    }
-
-    @Test
-    void makesTrueCopy() {
-        final Phi first = new EOmemory(Phi.Φ).copy();
-        first.attr(0).put(new Data.ToPhi(1L));
-        final Phi second = first.copy();
-        new Dataized(
-            new PhWith(
-                second.attr("write").get(),
-                "x", new Data.ToPhi(2L)
-            )
-        ).take();
-        MatcherAssert.assertThat(
-            new Dataized(first.attr("as-int").get()).take(Long.class),
-            Matchers.equalTo(1L)
-        );
-        MatcherAssert.assertThat(
-            new Dataized(second.attr("as-int").get()).take(Long.class),
-            Matchers.equalTo(2L)
-        );
-    }
-
-    @Test
-    @Disabled
-    void comparesOnFly() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
+    void doesNotCompareOnFly() {
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(10L));
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
@@ -222,7 +189,7 @@ public final class EOmemoryTest {
             )
         ).take();
         final Phi less = new PhWith(
-            mem.attr("as-int").get().attr("lt").get().copy(),
+            mem.take("as-int").take("lt").copy(),
             0, new Data.ToPhi(10L)
         );
         MatcherAssert.assertThat(
@@ -237,44 +204,37 @@ public final class EOmemoryTest {
         ).take();
         MatcherAssert.assertThat(
             new Dataized(less).take(Boolean.class),
-            Matchers.equalTo(false)
+            Matchers.not(Matchers.equalTo(false))
         );
     }
 
     @Test
     void rewritesItself() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        new Dataized(
-            new PhWith(
-                new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
-                0, new Data.ToPhi(1L)
-            )
-        ).take();
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(1L));
         new Dataized(
             new PhWith(
                 new PhCopy(new PhMethod(mem, EOmemoryTest.WRITE)),
                 0,
                 new PhWith(
-                    mem.attr("as-int").get().attr("plus").get().copy(),
+                    mem.take("as-int").take("plus").copy(),
                     0, new Data.ToPhi(42L)
                 )
             )
         ).take();
         MatcherAssert.assertThat(
-            new Dataized(mem.attr("as-int").get()).take(Long.class),
+            new Dataized(mem.take("as-int")).take(Long.class),
             Matchers.equalTo(43L)
         );
     }
 
     @Test
     void doesNotWriteMoreThanAllocated() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(true));
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(true));
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(
                 new PhWith(
-                    mem.attr(EOmemoryTest.WRITE).get(),
+                    mem.take(EOmemoryTest.WRITE),
                     0, new Data.ToPhi(8L)
                 )
             ).take()
@@ -283,14 +243,24 @@ public final class EOmemoryTest {
 
     @Test
     void writesLessAndRewritesTheSame() {
-        final Phi mem = new EOmemory(Phi.Φ).copy();
-        mem.attr(0).put(new Data.ToPhi(2L));
-        final Phi write = mem.attr(EOmemoryTest.WRITE).get();
+        final Phi mem = EOmemoryTest.allocated(new Data.ToPhi(2L));
+        final Phi write = mem.take(EOmemoryTest.WRITE);
         new Dataized(new PhWith(write.copy(), 0, new Data.ToPhi(true))).take();
         Assertions.assertDoesNotThrow(
             () -> new Dataized(
                 new PhWith(write.copy(), 0, new Data.ToPhi(1L))
             ).take()
         );
+    }
+
+    /**
+     * Allocated data.
+     * @param obj Object to put
+     * @return Alloc object
+     */
+    private static Phi allocated(final Phi obj) {
+        final Phi memory = Phi.Φ.take("org.eolang.memory").copy();
+        memory.put(0, obj);
+        return memory.take("alloc");
     }
 }

@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  * @since 0.36.0
  */
-public final class AtRho implements Attr {
+final class AtRho implements Attr {
     /**
      * Rho.
      */
@@ -53,7 +53,7 @@ public final class AtRho implements Attr {
     /**
      * Ctor.
      */
-    public AtRho() {
+    AtRho() {
         this(null);
     }
 
@@ -81,14 +81,25 @@ public final class AtRho implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
+        final boolean ret;
         if (this.rho.get() == null) {
             this.rho.set(phi);
+            ret = true;
+        } else {
+            ret = false;
         }
+        return ret;
     }
 
     @Override
     public String φTerm() {
-        return null;
+        final String term;
+        if (this.rho.get() == null) {
+            term = Term.EMPTY;
+        } else {
+            term = this.rho.get().φTerm();
+        }
+        return term;
     }
 }

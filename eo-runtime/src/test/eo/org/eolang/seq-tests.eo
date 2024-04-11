@@ -27,46 +27,103 @@
 +version 0.0.0
 
 # Test.
-[] > seq-single-dataization-float-less-than-test
-  memory 0.0 > counter
-  lt. > @
-    seq
-      *
-        counter.write
-          counter.as-float.plus 1.0
-        counter.as-float
-    2.0
-
-# Test.
-[] > seq-single-dataization-float-greater-than-test
-  memory 0.0 > counter
-  not. > @
-    gt.
-      seq
-        *
-          counter.write
-            counter.as-float.plus 1.0
-          counter.as-float
+[] > seq-single-dataization-float-less
+  (memory 0.0).alloc > counter
+  and. > @
+    lt.
+      float
+        seq
+          *
+            counter.write (counter.as-float.plus 1.0)
+            counter.as-float
       1.1
+    counter.free
 
 # Test.
-[] > seq-single-dataization-int-less-than-test
-  memory 0 > counter
-  lt. > @
-    seq
-      *
-        counter.write
-          counter.as-int.plus 1
-        counter.as-int
-    2
+[] > seq-single-dataization-float-greater
+  (memory 0.0).alloc > counter
+  and. > @
+    gt.
+      float
+        seq
+          *
+            counter.write (counter.as-float.plus 1.0)
+            counter.as-float
+      0.9
+    counter.free
 
 # Test.
-[] > seq-single-dataization-int-greater-than-test
-  memory 0 > counter
-  lte. > @
+[] > seq-single-dataization-int-less
+  (memory 0).alloc > counter
+  and. > @
+    lt.
+      int
+        seq
+          *
+            counter.write (counter.as-int.plus 1)
+            counter.as-int
+      2
+    counter.free
+
+# Test.
+[] > seq-single-dataization-int-less-or-equal
+  (memory 0).alloc > counter
+  and. > @
+    lte.
+      int
+        seq
+          *
+            counter.write
+              counter.as-int.plus 1
+            counter.as-int
+      1
+    counter.free
+
+# This test should have acceptable time to pass.
+[] > very-long-seq
+  eq. > @
+    TRUE
     seq
       *
-        counter.write
-          counter.as-int.plus 1
-        counter.as-int
-    1
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE
+        TRUE

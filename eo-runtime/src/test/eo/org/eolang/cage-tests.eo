@@ -27,120 +27,52 @@
 +version 0.0.0
 
 # Test.
-[] > writes-into-cage
+[] > encages-into-cage
   # Object with free attribute.
   [z] > a
-  cage a > x
-  eq. > @
-    seq
-      *
-        x.write
-          a 7
-        x.z
-    7
+  (cage a).new > x
+  seq > @
+    *
+      x.encage
+        a 7
+      x.z.eq 7
 
 # Test.
-[] > avoid-infinite-loop
-  cage > x
-    if
-  x' > copy
-  eq. > @
-    seq
-      *
-        x.write
-          if TRUE 1 0
-        copy.<
-        x.write
-          if TRUE copy 0
-        x
-    1
-
-# Test.
-[] > cage-nested-objects
-  # Dummy object.
-  [x] > dummy
-    x > @
-  cage dummy > c
-  c' > copy
-  eq. > @
-    seq
-      *
-        c.write (dummy 42)
-        copy.<
-        c.write (dummy copy)
-        c.x.x
-    42
-
-# Test.
-# The test seems not obvious, but it illustrates `cage` side effects well.
-# Here when `sum.write (x.plus 1)` is dataized `sum` needs to check if given
-# object has the valid form - `int.plus`. But `x.plus` does not have form at
-# the beginning because attribute `plus` in not taken from `x` yet.
-# So to get forma this `plus` is taken from `x`. As the result we get object
-# `42.plus` which means `42.plus.^` is `42` and it won't be changed.
-# That's why `x.write 7` rewrites value of `x` but does not affect `42.plus` and
-# does not affect `sum`.
-[] > dataizes-encaged-object-not-lazily-first
-  cage 0 > x
-  cage 0.plus > sum
-  eq. > @
-    seq
-      *
-        x.write 42
-        sum.write
-          x.plus 1
-        x.write 7
-        sum
-    43
+[] > checks-forma-and-fixes
+  (cage 0).new > x
+  (cage int.plus).new > sum
+  seq > @
+    *
+      x.encage 42
+      sum.encage
+        x.plus 1
+      x.encage 7
+      sum.eq 43
 
 # Test.
 [] > dataizes-encaged-object-lazily-second
-  cage 0 > x
-  cage 0.plus > sum
-  eq. > @
-    seq
-      *
-        x.write 42
-        sum.write
-          1.plus x
-        x.write 7
-        sum
-    8
-
-# Test.
-# The test seems not obvious, but you may see detailed explanation in
-# `dataizes-encaged-object-not-lazily-first` test.
-[] > dataizes-encaged-object-lazily-third
-  cage 0 > x
-  cage 0 > y
-  cage 0.plus > sum
-  eq. > @
-    seq
-      *
-        x.write 42
-        y.write 7
-        sum.write
-          x.plus y
-        y.write 13
-        x.write 4
-        sum
-    55
+  (cage 0).new > x
+  (cage int.plus).new > sum
+  seq > @
+    *
+      x.encage 42
+      sum.encage
+        1.plus x
+      x.encage 7
+      sum.eq 8
 
 # Test.
 [] > stores-abstract-object-into-cage
-  eq. > @
-    seq
-      *
-        cage > c
-          []
-            112 > @
-        c.@
-    112
+  new. > c
+    cage
+      []
+        112 > @
+  c.eq 112 > @
 
 # Test.
 [] > multi-layer-volatility
-  memory 0 > ma
-  cage a > ca
+  (memory 0).alloc > ma
+  (cage a).new > ca
   # Layer A.
   [] > a
     # Layer A.phi.
@@ -153,8 +85,8 @@
             *
               ma.write (ma.as-int.plus 1)
               ma.as-int
-  memory 0 > mb
-  cage b > cb
+  (memory 0).alloc > mb
+  (cage b).new > cb
   # Layer B.
   [] > b
     # Layer B.phi.
@@ -167,15 +99,19 @@
             *
               mb.write (mb.as-int.plus 1)
               mb.as-int
-  eq. > @
-    seq
-      *
-        ca
-        ca.plus 40
-    seq
-      *
-        cb.z
-        cb.z.plus 40
+  and. > @
+    eq.
+      seq
+        *
+          ca
+          ca.plus 40
+      seq
+        *
+          cb.z
+          cb.z.plus 40
+    and.
+      ma.free
+      mb.free
 
 # Test.
 [] > infinite-loop-check
@@ -184,40 +120,34 @@
     # Add.
     [y] > add
       pyint (^.value.plus y.value) > @
-  cage pyint > x
-  cage > tmp
-    x.add
-  eq. > @
-    seq
-      *
-        x.write
-          pyint 0
-        tmp.write
-          x.add (pyint 1)
-        QQ.io.stdout
-          tmp.value
+  (cage pyint).new > x
+  (cage x.add).new > tmp
+  seq > @
+    *
+      x.encage
+        pyint 0
+      tmp.encage
+        x.add (pyint 1)
+      QQ.io.stdout
         tmp.value
-    1
+      tmp.value.eq 1
 
 # Test.
-[] > catches-writing-objects-of-different-types
-  cage 5 > cge
-  eq. > @
-    seq
-      *
-        try
-          cge.write "Hello world"
-          [e]
-            cge.write 10 > @
-          nop
-        cge.eq 10
-    TRUE
+[] > catches-encaging-objects-of-different-formas
+  (cage int).new > cge
+  seq > @
+    *
+      try
+        cge.encage "Hello world"
+        [e]
+          cge.encage 10 > @
+        TRUE
+      cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error
 # message if passes.
 [] > catches-stack-overflow
-  cage > cge
-    0.plus
+  (cage int.plus).new > cge
   try > @
     []
       seq > @
@@ -227,7 +157,17 @@
           cge
           FALSE
     [stack-overflow-message]
-      QQ.io.stdout > @
-        stack-overflow-message
-    []
-      FALSE > @
+      QQ.io.stdout stack-overflow-message > @
+    FALSE
+
+# Test.
+[] > applies-after-retrieval
+  new. > c
+    cage
+      []
+        # Func.
+        [x] > func
+          2.plus x > @
+  eq. > @
+    c.func 5
+    7

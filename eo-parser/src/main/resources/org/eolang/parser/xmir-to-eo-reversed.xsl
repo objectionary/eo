@@ -121,11 +121,8 @@ SOFTWARE.
     </xsl:for-each>
     <xsl:text>]</xsl:text>
   </xsl:template>
-  <!-- TAIL: SUFFIX, NAME, CONST, COPY, ATOM -->
+  <!-- TAIL: SUFFIX, NAME, CONST, ATOM -->
   <xsl:template match="o" mode="tail">
-    <xsl:if test="@copy">
-      <xsl:text>'</xsl:text>
-    </xsl:if>
     <xsl:if test="@as">
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@as"/>

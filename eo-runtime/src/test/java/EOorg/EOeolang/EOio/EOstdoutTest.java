@@ -33,6 +33,7 @@ import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.eolang.AtComposite;
+import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -50,24 +51,19 @@ import org.junit.jupiter.params.provider.CsvSource;
 /**
  * Test case for {@link EOstdout}.
  * @since 0.1
- * @todo #2931:30min Enable the test {@link EOstdoutTest#doesNotPrintTwiceOnFloatComparisonMethods}.
- *  The test was disabled after new rho logic was introduced and {@link org.eolang.PhConst} stopped
- *  working properly. Need to enable the test when it's possible.
  */
 public final class EOstdoutTest {
     @Test
     public void printsFromTuple() {
-        final Phi tuple = Phi.Φ.attr("org").get()
-            .attr("eolang").get()
-            .attr("tuple").get();
+        final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
         final Phi copy = tuple.copy();
-        copy.attr(0).put(tuple.attr("empty").get());
-        copy.attr(1).put(new Data.ToPhi("Hello"));
+        copy.put(0, tuple.take("empty"));
+        copy.put(1, new Data.ToPhi("Hello"));
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final Phi ret = copy.attr("at").get().copy();
-        ret.attr(0).put(new Data.ToPhi(0L));
-        final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream)).copy();
-        stdout.attr(0).put(ret);
+        final Phi ret = copy.take("at").copy();
+        ret.put(0, new Data.ToPhi(0L));
+        final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream));
+        stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
             stream.toString(),
@@ -116,7 +112,6 @@ public final class EOstdoutTest {
 
     @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    @Disabled
     public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final String str = "Hello world";
@@ -148,6 +143,12 @@ public final class EOstdoutTest {
     private static class PrintWithCmp extends PhDefault {
         /**
          * Ctor.
+         * E.g.
+         * 1.lt
+         *  seq
+         *    *
+         *      stdout "Hello world"
+         *      3
          *
          * @param method Comparison PhMethod ("lt", "gt", "lte", "gte")
          * @param value Phi value to be compared
@@ -157,30 +158,31 @@ public final class EOstdoutTest {
             super(Phi.Φ);
             this.add(
                 "φ",
-                new AtComposite(
-                    this,
-                    self -> new Data.ToPhi(
-                        new Dataized(
-                            new PhWith(
-                                method,
-                                0,
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        self -> new Data.ToPhi(
+                            new Dataized(
                                 new PhWith(
-                                    new EOseq(Phi.Φ),
+                                    method,
                                     0,
                                     new PhWith(
+                                        new EOseq(Phi.Φ),
+                                        0,
                                         new PhWith(
-                                            new EOtuple$EOempty(Phi.Φ)
-                                                .attr("with")
-                                                .get()
-                                                .copy(),
-                                            0,
-                                            stdout
-                                        ).attr("with").get().copy(),
-                                        0, value
+                                            new PhWith(
+                                                new EOtuple$EOempty(Phi.Φ)
+                                                    .take("with")
+                                                    .copy(),
+                                                0,
+                                                stdout
+                                            ).take("with").copy(),
+                                            0, value
+                                        )
                                     )
                                 )
-                            )
-                        ).take()
+                            ).take()
+                        )
                     )
                 )
             );

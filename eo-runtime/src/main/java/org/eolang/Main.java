@@ -177,25 +177,24 @@ public final class Main {
         final Phi app;
         try {
             Main.LOGGER.fine(String.format("Loading class %s...", path));
-            app = ((Phi) Class.forName(path)
+            app = (Phi) Class.forName(path)
                 .getConstructor(Phi.class)
-                .newInstance(Phi.Φ))
-                .copy();
+                .newInstance(Phi.Φ);
         } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
                 String.format("Can not find '%s' object", opts.get(0))
             );
         }
         if (opts.size() > 1) {
-            final Phi tuple = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();
-            Phi args = tuple.attr("empty").get();
+            final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
+            Phi args = tuple.take("empty");
             for (int idx = 1; idx < opts.size(); ++idx) {
                 final Phi arg = tuple.copy();
-                arg.attr(0).put(args);
-                arg.attr(1).put(new Data.ToPhi(opts.get(idx)));
+                arg.put(0, args);
+                arg.put(1, new Data.ToPhi(opts.get(idx)));
                 args = arg;
             }
-            app.attr(0).put(args);
+            app.put(0, args);
         }
         Main.LOGGER.info(
             String.format(

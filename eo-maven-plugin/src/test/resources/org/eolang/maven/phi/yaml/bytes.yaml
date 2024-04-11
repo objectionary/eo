@@ -1,0 +1,135 @@
+eo: |
+  +architect yegor256@gmail.com
+  +home https://github.com/objectionary/eo
+  +package org.eolang
+  +rt jvm org.eolang:eo-runtime:0.0.0
+  +version 0.0.0 
+  
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > bytes
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [x] > eq /bool
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > size /int
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [start len] > slice /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > as-string /string
+
+    # Turn this chain of eight bytes into an integer.
+    # If there are less or more than eight bytes, there will
+    # be an error returned.
+    [] > as-int /int
+
+    # Turn this chain of eight bytes into a float.
+    # If there are less or more than eight bytes, there will
+    # be an error returned.
+    [] > as-float /float
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [b] > and /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [b] > or /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [b] > xor /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > not /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [x] > left
+      ^.right x.neg > @
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [x] > right /bytes
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > as-bool
+      ^.eq 01- > @
+
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > as-bytes
+      ^ > @
+
+    # Concatenation of two byte sequences:
+    # the current and the provided one,
+    # as a new sequence.
+    [b] > concat /bytes
+phi: |
+  {
+    ⟦
+      org ↦ ⟦
+        eolang ↦ ⟦
+          bytes ↦ ⟦
+            eq ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_eq,
+              x ↦ ∅
+            ⟧,
+            size ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_size
+            ⟧,
+            slice ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_slice,
+              start ↦ ∅,
+              len ↦ ∅
+            ⟧,
+            as-string ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_as_string
+            ⟧,
+            as-int ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_as_int
+            ⟧,
+            as-float ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_as_float
+            ⟧,
+            and ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_and,
+              b ↦ ∅
+            ⟧,
+            or ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_or,
+              b ↦ ∅
+            ⟧,
+            xor ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_xor,
+              b ↦ ∅
+            ⟧,
+            not ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_not
+            ⟧,
+            left ↦ ⟦
+              x ↦ ∅,
+              φ ↦ ξ.ρ.right(
+                α0 ↦ ξ.x.neg
+              )
+            ⟧,
+            right ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_right,
+              x ↦ ∅
+            ⟧,
+            as-bool ↦ ⟦
+              φ ↦ ξ.ρ.eq(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 01-
+                )
+              )
+            ⟧,
+            as-bytes ↦ ⟦
+              φ ↦ ξ.ρ
+            ⟧,
+            concat ↦ ⟦
+              λ ⤍ Lorg_eolang_bytes_concat,
+              b ↦ ∅
+            ⟧
+          ⟧,
+          λ ⤍ Package
+        ⟧,
+        λ ⤍ Package
+      ⟧
+    ⟧
+  }

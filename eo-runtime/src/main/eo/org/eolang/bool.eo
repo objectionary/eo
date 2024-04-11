@@ -39,8 +39,8 @@
   # NOT.
   [] > not
     eq. > @
-      ^
       FALSE
+      ^
 
   # AND.
   [x] > and
@@ -61,10 +61,3 @@
         x
         TRUE
         FALSE
-
-  # While this is true copies the object
-  # with "i" as the position of the cycle. The result
-  # of WHILE is the last dataized object or FALSE if
-  # ^ condition was never TRUE. The \rho of the object
-  # copied will be set to "while.\rho".
-  [f] > while /int

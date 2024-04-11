@@ -54,8 +54,8 @@ public abstract class AtEnvelope implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
+    public boolean put(final Phi phi) {
+        return this.origin.put(phi);
     }
 
     @Override

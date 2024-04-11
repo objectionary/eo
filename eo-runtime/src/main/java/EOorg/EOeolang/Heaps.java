@@ -27,13 +27,14 @@
  */
 package EOorg.EOeolang;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 
 /**
- * All heaps.
+ * Dynamic memory.
  *
  * @since 0.19
  */
@@ -43,18 +44,12 @@ final class Heaps {
     /**
      * Heaps.
      */
-    public static final ThreadLocal<Heaps> INSTANCE = ThreadLocal.withInitial(Heaps::new);
+    static final Heaps INSTANCE = new Heaps();
 
     /**
      * All.
      */
-    private final ConcurrentHashMap<Phi, byte[]> all =
-        new ConcurrentHashMap<>(0);
-
-    /**
-     * Heads.
-     */
-    private final ConcurrentHashMap<Phi, Integer> heads =
+    private final ConcurrentHashMap<Integer, byte[]> blocks =
         new ConcurrentHashMap<>(0);
 
     /**
@@ -65,57 +60,121 @@ final class Heaps {
     }
 
     /**
-     * Data.
-     * @param pointer Pointer
-     * @return Bytes comprising data
+     * Allocate a block in memory.
+     * @param phi Object
+     * @param size How many bytes
+     * @return The identifier of pointer to the block in memory
      */
-    public byte[] data(final Phi pointer) {
-        final Phi heap = pointer.attr("ρ").get();
-        return this.all.computeIfAbsent(
-            heap,
-            key -> {
-                final long size = new Dataized(heap.attr("size").get()).take(Long.class);
-                if (size > (long) Integer.MAX_VALUE) {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "The size of heap %d is too big",
-                            size
-                        )
-                    );
-                }
-                return new byte[(int) size];
+    int malloc(final Phi phi, final int size) {
+        final int identifier = phi.hashCode();
+        synchronized (this.blocks) {
+            if (this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't allocate block in memory with identifier %d because it's already allocated",
+                        identifier
+                    )
+                );
             }
-        );
+            this.blocks.put(identifier, new byte[size]);
+        }
+        return identifier;
     }
 
     /**
-     * Allocate a piece.
-     *
-     * The implementation is very primitive. It just allocates blocks
-     * of memory one after another. It doesn't listen to free()
-     * requests and never frees any blocks. They just go one by one.
-     *
-     * @param heap The heap
-     * @param size How many bytes?
-     * @return The pointer to it
+     * Get data from the block in memory by identifier.
+     * @param identifier Identifier of the pointer
+     * @param offset Offset to start reading from
+     * @param length Length of bytes to read
+     * @return Bytes from the block in memory
      */
-    public int malloc(final Phi heap, final int size) {
-        synchronized (this.heads) {
-            this.heads.putIfAbsent(heap, 0);
-            final int ptr = this.heads.get(heap);
-            this.heads.put(heap, ptr + size);
-            return ptr;
+    byte[] read(final int identifier, final int offset, final int length) {
+        synchronized (this.blocks) {
+            if (!this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Block in memory by identifier %d is not allocated, can't read",
+                        identifier
+                    )
+                );
+            }
+            final byte[] bytes = this.blocks.get(identifier);
+            if (offset + length > bytes.length) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't read %d bytes from offset %d, because only %d are allocated",
+                        length,
+                        offset,
+                        bytes.length
+                    )
+                );
+            }
+            return Arrays.copyOfRange(bytes, offset, offset + length);
+        }
+    }
+
+    /**
+     * Write given data to the block in memory by given identifier.
+     * @param identifier Identifier of the pointer
+     * @param offset Writing offset
+     * @param data Data to write
+     */
+    void write(final int identifier, final int offset, final byte[] data) {
+        synchronized (this.blocks) {
+            if (!this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't read a block in memory with identifier %d because it's not allocated",
+                        identifier
+                    )
+                );
+            }
+            final byte[] current = this.blocks.get(identifier);
+            final int length = current.length;
+            if (length < offset + data.length) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't write %d bytes with offset %d to the block with identifier %d, because only %d were allocated",
+                        data.length,
+                        offset,
+                        identifier,
+                        length
+                    )
+                );
+            }
+            final byte[] result = new byte[length];
+            if (offset > 0) {
+                System.arraycopy(current, 0, result, 0, offset);
+            }
+            System.arraycopy(data, 0, result, offset, data.length);
+            if (length > offset + data.length) {
+                System.arraycopy(
+                    current,
+                    offset + data.length,
+                    result,
+                    offset + data.length,
+                    length - offset - data.length
+                );
+            }
+            this.blocks.put(identifier, result);
         }
     }
 
     /**
      * Free it.
-     * @param heap The heap
-     * @param ptr The pointer
-     * @checkstyle NonStaticMethodCheck (5 lines)
+     * @param identifier Identifier of pointer
      */
-    public void free(final Phi heap, final int ptr) {
-        // Nothing yet
+    void free(final int identifier) {
+        synchronized (this.blocks) {
+            if (!this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Can't free a block in memory with identifier %d because it's not allocated",
+                        identifier
+                    )
+                );
+            }
+            this.blocks.remove(identifier);
+        }
     }
-
 }

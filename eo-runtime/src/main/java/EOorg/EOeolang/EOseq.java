@@ -27,21 +27,20 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhConst;
 import org.eolang.PhDefault;
-import org.eolang.PhWith;
+import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
  * SEQ.
- * @checkstyle TypeNameCheck (5 lines)
  * @since 1.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "seq")
@@ -53,31 +52,42 @@ public final class EOseq extends PhDefault implements Atom {
      */
     public EOseq(final Phi sigma) {
         super(sigma);
-        this.add("steps", new AtFree());
+        this.add("steps", new AtVoid("steps"));
     }
 
     @Override
     public Phi lambda() {
-        final Phi steps = this.attr("steps").get();
-        final Long length = new Dataized(
-            steps.attr("length").get()
-        ).take(Long.class);
-        for (long idx = 0; idx < length - 1; ++idx) {
-            new Dataized(
-                new PhWith(
-                    steps.attr("at").get().copy(),
-                    0, new Data.ToPhi(idx)
-                )
-            ).take();
+        final Phi steps = this.take("steps");
+        final Phi[] items = EOseq.eoTupleAsArray(steps);
+        for (int ind = 0; ind < items.length - 1; ++ind) {
+            new Dataized(items[ind]).take();
         }
         final Phi ret;
-        if (length > 0) {
-            final Phi last = steps.attr("at").get().copy();
-            last.attr(0).put(new Data.ToPhi(length - 1));
-            ret = last;
+        if (items.length > 0) {
+            ret = new PhMethod(steps, "tail");
         } else {
             ret = new Data.ToPhi(false);
         }
         return ret;
+    }
+
+    /**
+     * Converts eo tuple to java array.
+     * @param args Eo tuple.
+     * @return Java array.
+     */
+    private static Phi[] eoTupleAsArray(final Phi args) {
+        final int length = Math.toIntExact(
+            new Dataized(
+                args.take("length")
+            ).take(Long.class)
+        );
+        final Phi[] res = new Phi[length];
+        Phi external = args;
+        for (int ind = length - 1; ind >= 0; --ind) {
+            res[ind] = new PhMethod(external, "tail");
+            external = external.take("head");
+        }
+        return res;
     }
 }

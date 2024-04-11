@@ -53,7 +53,8 @@ import org.xembly.Directives;
     "PMD.TooManyMethods",
     "PMD.AvoidDuplicateLiterals",
     "PMD.ExcessivePublicCount",
-    "PMD.ExcessiveClassLength"
+    "PMD.ExcessiveClassLength",
+    "PMD.GodClass"
 })
 public final class XePhiListener implements PhiListener, Iterable<Directive> {
     /**
@@ -214,16 +215,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.alphaBinding() != null) {
-            if (ctx.alphaBinding().attribute().VERTEX() != null) {
-                this.objs.add(new Objects.ObjXembly());
-            }
-            this.objects().start();
-        }
-        if (ctx.emptyBinding() != null) {
-            if (ctx.emptyBinding().attribute().VERTEX() != null) {
-                this.objs.add(new Objects.ObjXembly());
-            }
+        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
             this.objects().start();
         }
     }
@@ -231,26 +223,11 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
-        if (this.objs.size() > this.packages.size()) {
-            if (ctx.alphaBinding() != null) {
-                if (ctx.alphaBinding().attribute().VERTEX() != null) {
-                    this.attributes.pop();
-                    this.objs.removeLast();
-                } else {
-                    this.objects().enter()
-                        .prop(this.properties.peek(), this.attributes.pop())
-                        .leave();
-                }
-            } else if (ctx.emptyBinding() != null) {
-                if (ctx.emptyBinding().attribute().VERTEX() != null) {
-                    this.attributes.pop();
-                    this.objs.removeLast();
-                } else {
-                    this.objects().enter()
-                        .prop(this.properties.peek(), this.attributes.pop())
-                        .leave();
-                }
-            }
+        if (this.objs.size() > this.packages.size()
+            && (ctx.alphaBinding() != null || ctx.emptyBinding() != null)) {
+            this.objects().enter()
+                .prop(this.properties.peek(), this.attributes.pop())
+                .leave();
         }
     }
 
@@ -274,8 +251,6 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "^";
         } else if (ctx.SIGMA() != null) {
             attr = "&";
-        } else if (ctx.VERTEX() != null) {
-            attr = "<";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
         } else if (ctx.alphaAttr() != null) {
@@ -324,7 +299,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .start()
             .prop("data", "bytes")
             .prop("base", "org.eolang.bytes");
-        if (!ctx.BYTES().getText().equals("--")) {
+        if (!"--".equals(ctx.BYTES().getText())) {
             this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
         }
         this.objects().leave();
@@ -337,7 +312,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
-        if (!ctx.FUNCTION().getText().equals(XePhiListener.LAMBDA_PACKAGE)) {
+        if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
             this.objects().prop("atom");
         }
     }

@@ -290,7 +290,7 @@ final class VerifyMojoTest {
                 .replace("\\", "\\\\")
             );
         final String res;
-        if (error.equals("Warnings identified")) {
+        if ("Warnings identified".equals(error)) {
             res = str.concat(", \\d*: .*[\\s]*)+\\]");
         } else {
             res = str.concat(", \\d+: .*[\\s]*)+\\]");

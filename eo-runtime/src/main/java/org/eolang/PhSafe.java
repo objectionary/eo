@@ -58,9 +58,9 @@ public final class PhSafe extends PhDecorator {
     }
 
     @Override
-    public Attr attr(final int pos) {
+    public Phi take(final String name) {
         try {
-            return this.origin.attr(pos);
+            return this.origin.take(name);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
@@ -69,9 +69,20 @@ public final class PhSafe extends PhDecorator {
     }
 
     @Override
-    public Attr attr(final String attr) {
+    public boolean put(final int pos, final Phi object) {
         try {
-            return this.origin.attr(attr);
+            return this.origin.put(pos, object);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+    }
+
+    @Override
+    public boolean put(final String name, final Phi object) {
+        try {
+            return this.origin.put(name, object);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
@@ -89,4 +100,25 @@ public final class PhSafe extends PhDecorator {
         return this.origin.forma();
     }
 
+    @Override
+    public void attach(final byte[] data) {
+        try {
+            this.origin.attach(data);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+    }
+
+    @Override
+    public byte[] delta() {
+        try {
+            return this.origin.delta();
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
+    }
 }

@@ -64,13 +64,18 @@ final class PhNamed extends PhDecorator {
     }
 
     @Override
-    public Attr attr(final int pos) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(pos));
+    public Phi take(final String nme) {
+        return this.origin.take(nme);
     }
 
     @Override
-    public Attr attr(final String attr) {
-        return new AtNamed(this.name, this.name, this, this.origin.attr(attr));
+    public boolean put(final int pos, final Phi object) {
+        return this.origin.put(pos, object);
+    }
+
+    @Override
+    public boolean put(final String nme, final Phi object) {
+        return this.origin.put(nme, object);
     }
 
     @Override
@@ -83,4 +88,13 @@ final class PhNamed extends PhDecorator {
         return this.origin.forma();
     }
 
+    @Override
+    public void attach(final byte[] data) {
+        this.origin.attach(data);
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.origin.delta();
+    }
 }

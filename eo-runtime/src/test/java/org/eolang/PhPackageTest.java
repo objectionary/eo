@@ -26,7 +26,7 @@ package org.eolang;
 import EOorg.EOeolang.EObool$EOand;
 import EOorg.EOeolang.EObytes$EOas_int;
 import EOorg.EOeolang.EObytes$EOeq;
-import EOorg.EOeolang.EOgoto;
+import EOorg.EOeolang.EOgo;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,21 +56,33 @@ final class PhPackageTest {
     private static final String DEFAULT_PACKAGE = "org.eolang";
 
     @Test
-    void takesPackage() {
+    void copiesObject() {
         MatcherAssert.assertThat(
-            Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get(),
-            Matchers.equalTo(
-                Phi.Φ.attr("org").get().attr("eolang").get().attr("seq").get()
+            Phi.Φ.take("org").take("eolang").take("seq"),
+            Matchers.not(
+                Matchers.equalTo(
+                    Phi.Φ.take("org").take("eolang").take("seq")
+                )
             )
+        );
+    }
+
+    @Test
+    void setsRhoToObject() {
+        final Phi eolang = Phi.Φ.take("org").take("eolang");
+        final Phi seq = eolang.take("seq");
+        MatcherAssert.assertThat(
+            seq.take(Attr.RHO),
+            Matchers.equalTo(eolang)
         );
     }
 
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            Phi.Φ.attr("org").get()
-                .attr("eolang").get()
-                .attr("bytes$eq").get().copy(),
+            Phi.Φ.take("org")
+                .take("eolang")
+                .take("bytes$eq").copy(),
             Matchers.instanceOf(Phi.class)
         );
     }
@@ -79,7 +91,7 @@ final class PhPackageTest {
     @MethodSource("attributes")
     void retrievesAttribute(final String attribute, final Class<?> expected) {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
-        final Phi actual = parent.attr(attribute).get();
+        final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
             actual,
             Matchers.instanceOf(expected)
@@ -90,7 +102,7 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr("failed").get()
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed")
         );
     }
 
@@ -99,14 +111,6 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy()
-        );
-    }
-
-    @Test
-    void doesNotGetAttributeByPosition() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).attr(0)
         );
     }
 
@@ -153,7 +157,7 @@ final class PhPackageTest {
             () -> (Runnable) () -> {
                 try {
                     latch.await();
-                    basket.add(System.identityHashCode(pckg.attr("goto").get()));
+                    basket.add(System.identityHashCode(pckg.take("goto")));
                 } catch (final InterruptedException exception) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(
@@ -183,7 +187,7 @@ final class PhPackageTest {
             Arguments.of("absent", PhPackage.class),
             Arguments.of("bytes$as-int", EObytes$EOas_int.class),
             Arguments.of("bytes$eq", EObytes$EOeq.class),
-            Arguments.of("goto", EOgoto.class),
+            Arguments.of("go", EOgo.class),
             Arguments.of("bool$and", EObool$EOand.class)
         );
     }

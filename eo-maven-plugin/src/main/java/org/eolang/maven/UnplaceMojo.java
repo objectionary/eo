@@ -75,6 +75,7 @@ public final class UnplaceMojo extends SafeMojo {
     private Set<String> keepBinaries = new SetOf<>();
 
     @Override
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     public void exec() throws IOException {
         if (this.placedTojos.isEmpty()) {
             Logger.info(
@@ -105,6 +106,7 @@ public final class UnplaceMojo extends SafeMojo {
      * Place what's necessary.
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private void unplaceClasses() throws IOException {
         final Collection<PlacedTojo> classes = this.placedTojos.classes();
         int deleted = 0;
@@ -141,6 +143,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private int killThem(final Iterable<PlacedTojo> all) throws IOException {
         int unplaced = 0;
         for (final PlacedTojo tojo : all) {
@@ -195,6 +198,7 @@ public final class UnplaceMojo extends SafeMojo {
      * @return Number of files deleted
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.AvoidAccessToStaticMembersViaThis")
     private int keepThem(final Iterable<? extends PlacedTojo> tojos) throws IOException {
         int deleted = 0;
         int remained = 0;

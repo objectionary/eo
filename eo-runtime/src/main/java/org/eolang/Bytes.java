@@ -35,7 +35,7 @@ import EOorg.EOeolang.EObytes;
  * @since 1.0
  */
 @Versionized
-public interface Bytes extends Data<byte[]> {
+public interface Bytes {
     /**
      * NOT operation.
      * @return Bytes.
@@ -94,14 +94,14 @@ public interface Bytes extends Data<byte[]> {
     <T extends Number> T asNumber(Class<T> type);
 
     /**
-     * Convert Bytes to Phi.
-     * @param bytes Bytes.
-     * @return Phi object.
+     * Convert to string.
+     * @return String.
      */
-    static Phi toPhi(final Bytes bytes) {
-        final Phi object = new EObytes(Phi.Φ);
-        object.attr("Δ").put(new Data.Value<>(bytes.take()));
-        return new PhConst(object);
-    }
+    String asString();
 
+    /**
+     * Get bytes itself.
+     * @return Bytes.
+     */
+    byte[] take();
 }

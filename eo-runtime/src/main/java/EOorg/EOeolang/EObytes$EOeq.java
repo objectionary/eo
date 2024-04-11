@@ -28,7 +28,7 @@
 package EOorg.EOeolang;
 
 import java.util.Arrays;
-import org.eolang.AtFree;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -54,7 +54,7 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
      */
     public EObytes$EOeq(final Phi sigma) {
         super(sigma);
-        this.add("b", new AtFree());
+        this.add("b", new AtVoid("b"));
     }
 
     @Override
@@ -62,7 +62,7 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
         return new Data.ToPhi(
             Arrays.equals(
                 new Dataized(
-                    this.attr("b").get().attr("as-bytes").get()
+                    this.take("b").take("as-bytes")
                 ).take(byte[].class),
                 new Param(this).strong(byte[].class)
             )

@@ -38,17 +38,16 @@
 
   # Tests that $ < x.
   [x] > lt
-    gt. > @
-      plus.
-        neg.
-          ^
-        x
-      0
+    0.gt > @
+      ^.minus
+        int
+          x > value!
 
   # Tests that $ ≤ x.
   [x] > lte
     not. > @
-      ^.gt x
+      ^.gt
+        x > value!
 
   # Tests that $ > x.
   [x] > gt /bool
@@ -56,7 +55,8 @@
   # Tests that $ ≥ x.
   [x] > gte
     not. > @
-      ^.lt x
+      ^.lt
+        x > value!
 
   # Change the sign of the number.
   [] > neg

@@ -46,11 +46,11 @@ final class EObytesEOconcatTest {
 
     @Test
     void concatenatesBytes() {
-        final Phi current = new Data.ToPhi("привет ").attr("as-bytes").get();
-        final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").attr("as-bytes").get();
+        final Phi current = new Data.ToPhi("привет ").take("as-bytes");
+        final Phi provided = new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes");
         final Phi phi = new PhMethod(
             new PhWith(
-                current.attr("concat").get().copy(),
+                current.take("concat").copy(),
                 "b",
                 provided
             ),

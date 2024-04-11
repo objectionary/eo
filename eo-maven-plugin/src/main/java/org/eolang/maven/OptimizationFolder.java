@@ -59,7 +59,7 @@ public enum OptimizationFolder {
      *
      * @return The attribute name.
      */
-    String key() {
+    String getKey() {
         return this.key;
     }
 }

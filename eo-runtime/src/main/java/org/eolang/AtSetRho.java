@@ -25,27 +25,22 @@
 package org.eolang;
 
 /**
- * Attribute that tries to set \rho to retrieved object.
- * Attribute does not set \rho if retrieved object is \rho or \sigma.
- * Since every \rho attribute of {@link Phi} is {@link AtRho} it won't be
- * reset because {@link AtRho} ignores all puts except first.
+ * The attribute tries to copy object and set \rho to it.
+ * If the name of the attribute is {@link Attr#RHO} or {@link Attr#SIGMA} - just object is
+ * returned.
+ *
  * @since 0.36.0
  */
-public final class AtSetRho implements Attr {
+final class AtSetRho extends AtEnvelope {
     /**
-     * Original attribute.
+     * Ctor.
+     * @param obj Object
+     * @param rho Rho that will be set
+     * @param name Name of the attribute
      */
-    private final Attr origin;
-
-    /**
-     * Rho to put.
-     */
-    private final Phi rho;
-
-    /**
-     * Name of the attribute to get.
-     */
-    private final String name;
+    AtSetRho(final Phi obj, final Phi rho, final String name) {
+        this(new AtSimple(obj), rho, name);
+    }
 
     /**
      * Ctor.
@@ -53,38 +48,20 @@ public final class AtSetRho implements Attr {
      * @param rho Rho that will be set
      * @param name Name of the attribute
      */
-    public AtSetRho(final Attr attr, final Phi rho, final String name) {
-        this.origin = attr;
-        this.rho = rho;
-        this.name = name;
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        return new AtSetRho(this.origin.copy(self), self, this.name);
-    }
-
-    @Override
-    public Phi get() {
-        final Phi ret = this.origin.get();
-        if (!this.name.equals(Attr.RHO) && !this.name.equals(Attr.SIGMA)) {
-            ret.attr(Attr.RHO).put(this.rho);
-        }
-        return ret;
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
-    }
-
-    @Override
-    public String φTerm() {
-        return this.origin.φTerm();
-    }
-
-    @Override
-    public String toString() {
-        return this.origin.toString();
+    AtSetRho(final Attr attr, final Phi rho, final String name) {
+        super(
+            new AtGetOnly(
+                () -> {
+                    Phi ret = attr.get();
+                    if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
+                        final Phi copy = ret.copy();
+                        if (copy.put(Attr.RHO, rho)) {
+                            ret = copy;
+                        }
+                    }
+                    return ret;
+                }
+            )
+        );
     }
 }

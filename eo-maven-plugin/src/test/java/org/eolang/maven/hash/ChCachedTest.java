@@ -45,8 +45,16 @@ final class ChCachedTest {
             }
         );
         for (int idx = 0; idx < 10; ++idx) {
-            MatcherAssert.assertThat(cached.value(), Matchers.equalTo("dummy"));
+            MatcherAssert.assertThat(
+                "TO ADD ASSERTION MESSAGE",
+                cached.value(),
+                Matchers.equalTo("dummy")
+            );
         }
-        MatcherAssert.assertThat(invocations.get(), Matchers.equalTo(1));
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            invocations.get(),
+            Matchers.equalTo(1)
+        );
     }
 }

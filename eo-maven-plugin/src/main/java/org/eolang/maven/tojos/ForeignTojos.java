@@ -110,8 +110,8 @@ public final class ForeignTojos implements Closeable {
      */
     public ForeignTojo add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
-        if (!tojo.exists(Attribute.SCOPE.key())) {
-            tojo.set(Attribute.SCOPE.key(), this.scope.get());
+        if (!tojo.exists(Attribute.SCOPE.getKey())) {
+            tojo.set(Attribute.SCOPE.getKey(), this.scope.get());
         }
         return new ForeignTojo(tojo);
     }
@@ -133,7 +133,7 @@ public final class ForeignTojos implements Closeable {
     public ForeignTojo find(final String id) {
         return new ForeignTojo(
             this.tojos.value()
-                .select(tojo -> tojo.get(Attribute.ID.key()).equals(id))
+                .select(tojo -> tojo.get(Attribute.ID.getKey()).equals(id))
                 .stream()
                 .findFirst()
                 .orElseThrow(
@@ -150,7 +150,9 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> notDiscovered() {
         return this.select(
-            row -> row.exists(Attribute.OPTIMIZED.key()) && !row.exists(Attribute.DISCOVERED.key())
+            row ->
+                row.exists(Attribute.OPTIMIZED.getKey())
+                && !row.exists(Attribute.DISCOVERED.getKey())
         );
     }
 
@@ -159,7 +161,7 @@ public final class ForeignTojos implements Closeable {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withXmir() {
-        return this.select(row -> row.exists(Attribute.XMIR.key()));
+        return this.select(row -> row.exists(Attribute.XMIR.getKey()));
     }
 
     /**
@@ -168,9 +170,9 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> dependencies() {
         return this.select(
-            t -> t.exists(Attribute.XMIR.key())
-                && t.exists(Attribute.VERSION.key())
-                && !t.exists(Attribute.JAR.key())
+            t -> t.exists(Attribute.XMIR.getKey())
+                && t.exists(Attribute.VERSION.getKey())
+                && !t.exists(Attribute.JAR.getKey())
         );
     }
 
@@ -179,7 +181,7 @@ public final class ForeignTojos implements Closeable {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withSources() {
-        return this.select(row -> row.exists(Attribute.EO.key()));
+        return this.select(row -> row.exists(Attribute.EO.getKey()));
     }
 
     /**
@@ -188,8 +190,8 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> withoutSources() {
         return this.select(
-            row -> !row.exists(Attribute.EO.key())
-                && !row.exists(Attribute.XMIR.key())
+            row -> !row.exists(Attribute.EO.getKey())
+                && !row.exists(Attribute.XMIR.getKey())
         );
     }
 
@@ -198,7 +200,7 @@ public final class ForeignTojos implements Closeable {
      * @return The tojos.
      */
     public Collection<ForeignTojo> withOptimized() {
-        return this.select(row -> row.exists(Attribute.OPTIMIZED.key()));
+        return this.select(row -> row.exists(Attribute.OPTIMIZED.getKey()));
     }
 
     /**
@@ -207,8 +209,8 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> unprobed() {
         return this.select(
-            row -> row.exists(Attribute.OPTIMIZED.key())
-                && !row.exists(Attribute.PROBED.key())
+            row -> row.exists(Attribute.OPTIMIZED.getKey())
+                && !row.exists(Attribute.PROBED.getKey())
         );
     }
 
@@ -226,7 +228,7 @@ public final class ForeignTojos implements Closeable {
      * @return True if the tojo exists.
      */
     public boolean contains(final String name) {
-        return !this.select(tojo -> tojo.get(Attribute.ID.key()).equals(name)).isEmpty();
+        return !this.select(tojo -> tojo.get(Attribute.ID.getKey()).equals(name)).isEmpty();
     }
 
     /**
@@ -264,7 +266,7 @@ public final class ForeignTojos implements Closeable {
                 String.format(
                     "%s:%d",
                     attr,
-                    this.select(tojo -> tojo.exists(attr.key())).size()
+                    this.select(tojo -> tojo.exists(attr.getKey())).size()
                 )
             );
         }
@@ -277,7 +279,8 @@ public final class ForeignTojos implements Closeable {
      * @return Selected tojos.
      */
     private Collection<ForeignTojo> select(final Predicate<? super Tojo> filter) {
-        final Predicate<Tojo> scoped = t -> t.get(Attribute.SCOPE.key()).equals(this.scope.get());
+        final Predicate<Tojo> scoped = t ->
+            t.get(Attribute.SCOPE.getKey()).equals(this.scope.get());
         return this.tojos.value()
             .select(t -> filter.test(t) && scoped.test(t))
             .stream().map(ForeignTojo::new).collect(Collectors.toList());
@@ -399,7 +402,7 @@ public final class ForeignTojos implements Closeable {
          * Get the attribute name.
          * @return The attribute name.
          */
-        String key() {
+        String getKey() {
             return this.key;
         }
     }

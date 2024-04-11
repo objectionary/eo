@@ -54,6 +54,7 @@ final class CommentedTest {
             "//"
         ).save(new FtDefault(temp));
         MatcherAssert.assertThat(
+            "The auto-generated file has wrong comment",
             new TextOf(
                 temp.resolve("name.ext")
             ).asString(),

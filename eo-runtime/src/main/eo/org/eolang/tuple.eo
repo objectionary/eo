@@ -42,20 +42,15 @@
 
   # Obtain the length of the tuple.
   [] > length
-    ^.head.length.plus 1 > len!
-    int len > @
+    int > @
+      ^.head.length.plus 1 > len!
 
   # Take one element from the tuple, at the given position.
-  # @todo #2931:30min Return previous optimizations for the object.
-  #  The optimization was removed because it does not work with new rho logic.
-  #  Please check previous version of the object and try to implement it again.
-  #  Also we need to enable the tuple tests: at-without-checks-with-first-element,
-  #  at-without-checks-with-last-element
   [i] > at
-    i > idx!
     ^.length > len
     if > index!
-      0.gt idx
+      0.gt
+        i > idx!
       len.plus idx
       idx
     if > @
@@ -63,12 +58,16 @@
         0.gt index
         len.lte index
       error "Given index is out of tuple bounds"
-      if
-        gt.
+      at-fast ^ len
+
+    # Fast recursive obtaining element from tuple.
+    [tup len] > at-fast
+      if > @
+        (len.plus -1).gt ^.index
+        ^.at-fast
+          tup.head
           len.plus -1
-          index
-        ^.head.at index
-        ^.tail
+        tup.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

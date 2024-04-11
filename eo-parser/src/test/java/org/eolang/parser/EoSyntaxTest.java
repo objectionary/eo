@@ -50,9 +50,15 @@ import org.yaml.snakeyaml.Yaml;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
+    /**
+     * Empty message for JUnit Assertions.
+     */
+    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+
     @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -86,6 +92,7 @@ final class EoSyntaxTest {
         final String message
     ) throws IOException {
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -118,6 +125,7 @@ final class EoSyntaxTest {
             "[] > x-н, 1\n"
         );
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -149,6 +157,7 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             xml.xpath("/program/listing/text()"),
             Matchers.contains(src)
         );
@@ -178,6 +187,7 @@ final class EoSyntaxTest {
     @Test
     void parsesArrow() throws IOException {
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             new EoSyntax(
                 "test-it-3",
                 new InputOf("1 > x")
@@ -201,6 +211,7 @@ final class EoSyntaxTest {
             "      v\n"
         );
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             new EoSyntax(
                 "test-it-4",
                 new InputOf(src)
@@ -215,6 +226,7 @@ final class EoSyntaxTest {
     @Test
     void parsesDefinition() throws IOException {
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             new EoSyntax(
                 "test-it-5",
                 new InputOf(
@@ -236,6 +248,7 @@ final class EoSyntaxTest {
     @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             new EoSyntax(
                 "test-it-1",
                 new InputOf("add.\n  0\n  TRUE")
@@ -265,6 +278,7 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             xml,
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
@@ -275,7 +289,7 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/parser/typos/", glob = "**.yaml")
-    void checksTypoPacks(final String yml) throws IOException, NumberFormatException {
+    void checksTypoPacks(final String yml) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         Assumptions.assumeTrue(map.get("skip") == null);
@@ -284,6 +298,7 @@ final class EoSyntaxTest {
             new InputOf(String.format("%s\n", map.get("eo")))
         ).parsed();
         MatcherAssert.assertThat(
+            EoSyntaxTest.EMPTY_MSG,
             XhtmlMatchers.xhtml(xml.toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );

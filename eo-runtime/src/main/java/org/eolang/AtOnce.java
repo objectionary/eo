@@ -71,7 +71,7 @@ public final class AtOnce implements Attr {
         final String txt;
         final Phi phi = this.cached.get();
         if (phi == null) {
-            txt = "λ";
+            txt = "Lazy";
         } else {
             txt = phi.φTerm();
         }
@@ -94,7 +94,7 @@ public final class AtOnce implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new ExReadOnly(
             String.format(
                 "You can't overwrite '%s'",

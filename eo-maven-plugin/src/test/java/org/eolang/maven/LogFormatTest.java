@@ -78,6 +78,7 @@ final class LogFormatTest {
     @Test
     void matchesCorrectly() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             "16:02:08 [INFO] org.eolang.maven.LogFormatTest: Wake up, Neo...\n",
             Matchers.matchesPattern(LogFormatTest.FORMAT)
         );

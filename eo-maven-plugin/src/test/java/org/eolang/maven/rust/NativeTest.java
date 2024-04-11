@@ -45,6 +45,7 @@ final class NativeTest {
         final Native java = new Native("name", target.toString());
         java.save(new FtDefault(temp.resolve(target)));
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new TextOf(
                 temp.resolve(target.resolve("name.java"))
             ).asString(),

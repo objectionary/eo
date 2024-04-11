@@ -68,12 +68,10 @@
 
   # Tests that $ < x.
   [x] > lt
-    gt. > @
-      plus.
-        neg.
-          ^
-        x
-      0.0
+    0.0.gt > @
+      ^.minus
+        float
+          x > value!
 
   # Tests that $ ≤ x.
   [x] > lte
