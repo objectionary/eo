@@ -66,6 +66,7 @@ phi: |
       org ↦ ⟦
         eolang ↦ ⟦
           bytes ↦ ⟦
+            Δ ⤍ ∅,
             eq ↦ ⟦
               λ ⤍ Lorg_eolang_bytes_eq,
               x ↦ ∅
