@@ -368,6 +368,14 @@ SOFTWARE.
           <xsl:value-of select="eo:comma(2, $tabs+1)"/>
         </xsl:if>
       </xsl:if>
+      <!-- Empty delta binding in org.eolang.bytes -->
+      <xsl:if test="$package=concat($program, '.', 'org.eolang') and $name='bytes'">
+        <xsl:value-of select="$delta"/>
+        <xsl:value-of select="$dashed-arrow"/>
+        <xsl:value-of select="$empty"/>
+        <xsl:value-of select="eo:comma(2, $tabs+1)"/>
+      </xsl:if>
+      <!-- Inner objects -->
       <xsl:for-each select="o">
         <xsl:value-of select="eo:comma(position(), $tabs+1)"/>
         <xsl:apply-templates select=".">
