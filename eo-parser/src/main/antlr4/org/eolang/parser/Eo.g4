@@ -265,6 +265,7 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
+    | onlyphi // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -334,6 +335,19 @@ vapplicationArgHanonymUnbound
 // Horizontal anonym object
 hanonym
     : attributes hanonymInner+
+    ;
+
+// Unnamed abstract object with only @-bound attribute
+// x.y.z > [i]          -> [i] (x.y.z > @)
+// x y z > [i]          -> [i] (x y z > @)
+// [a] (b > c) > [i]    -> [i] ([a] (b > c) > @)
+// x > [i]              -> [i] (x > @)
+onlyphi
+    : (hmethod | happlication | hanonym | just) onlyphiTail
+    ;
+
+// Tail of the unnamed abstract object with only @-bound attribute
+onlyphiTail: spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
@@ -424,11 +438,12 @@ vmethodOptional
 // 2. vertical application
 // 3. just an object reference
 // 4. vertical formation
+// 5. unnamed abstract object with only @-bound attribute
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | justNamed EOL
+    | (justNamed | onlyphi) EOL
     | formationNamedOrNameless
     ;
 
@@ -501,7 +516,11 @@ oname
 
 // Suffix
 suffix
-    : SPACE ARROW SPACE (PHI | NAME)
+    : spacedArrow (PHI | NAME)
+    ;
+
+spacedArrow
+    : SPACE ARROW SPACE
     ;
 
 // Simple scope

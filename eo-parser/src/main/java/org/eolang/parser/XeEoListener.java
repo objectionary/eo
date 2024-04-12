@@ -829,6 +829,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOnlyphi(final EoParser.OnlyphiContext ctx) {
+        this.startAbstract(ctx).enter();
+    }
+
+    @Override
+    public void exitOnlyphi(final EoParser.OnlyphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
+        this.objects.enter().prop("name", "@").leave().leave();
+    }
+
+    @Override
+    public void exitOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHanonymInner(final EoParser.HanonymInnerContext ctx) {
         this.objects.enter();
     }
@@ -974,12 +994,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
     public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
@@ -1140,6 +1160,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitSuffix(final EoParser.SuffixContext ctx) {
         this.objects.leave();
+    }
+
+    @Override
+    public void enterSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -1314,7 +1344,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * Start abstract object.
      *
      * @param ctx Context
-     * @return Xembly objects after creating abstract object 
+     * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
         return this.startObject(ctx).prop("abstract").leave();
