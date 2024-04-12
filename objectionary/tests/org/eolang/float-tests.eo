@@ -24,46 +24,44 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.35.11
++version 0.36.0
 
 # Test.
-[] > less-true
-  eq. > @
-    -10.5.lt 50.3
-    TRUE
+[] > float-less-true
+  -10.5.lt 50.3 > @
 
 # Test.
-[] > less-equal
+[] > float-less-equal
   eq. > @
     -10.7.lt -10.7
     FALSE
 
 # Test.
-[] > less-false
+[] > float-less-false
   eq. > @
     10.13.lt -5.3
     FALSE
 
 # Test.
-[] > greater-true
+[] > float-greater-true
   gt. > @
     -200.1
     -1000.0
 
 # Test.
-[] > greater-false
+[] > float-greater-false
   eq. > @
     0.5.gt 100.1
     FALSE
 
 # Test.
-[] > greater-equal
+[] > float-greater-equal
   eq. > @
     0.7.gt 0.7
     FALSE
 
 # Test.
-[] > leq-true
+[] > float-leq-true
   eq. > @
     lte.
       -200.5
@@ -71,7 +69,7 @@
     TRUE
 
 # Test.
-[] > leq-equal
+[] > float-leq-equal
   eq. > @
     lte.
       50.1
@@ -79,7 +77,7 @@
     TRUE
 
 # Test.
-[] > leq-false
+[] > float-leq-false
   eq. > @
     lte.
       0.9
@@ -87,7 +85,7 @@
     FALSE
 
 # Test.
-[] > gte-true
+[] > float-gte-true
   eq. > @
     gte.
       -1000.1
@@ -95,7 +93,7 @@
     TRUE
 
 # Test.
-[] > gte-equal
+[] > float-gte-equal
   eq. > @
     gte.
       113.333
@@ -103,7 +101,7 @@
     TRUE
 
 # Test.
-[] > gte-false
+[] > float-gte-false
   eq. > @
     gte.
       0.7
@@ -135,7 +133,7 @@
     FALSE
 
 # Test.
-[] > zero-eq-to-zero
+[] > float-zero-eq-to-zero
   eq. > @
     eq.
       0.0
@@ -291,7 +289,7 @@
             24
         [e]
           e > @
-        nop
+        TRUE
       66.5
 
 # Test.
@@ -324,35 +322,31 @@
 
 # Test.
 [] > float-times-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.times not-a-number
-    not-a-number.as-bytes
+      35.2.times nan
+    nan.as-bytes
 
 # Test.
 [] > float-plus-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.plus not-a-number
-    not-a-number.as-bytes
+      35.2.plus nan
+    nan.as-bytes
 
 # Test.
 [] > float-minus-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.minus not-a-number
-    not-a-number.as-bytes
+      35.2.minus nan
+    nan.as-bytes
 
 # Test.
 [] > float-div-nan-is-nan
-  nan > not-a-number!
   eq. > @
     as-bytes.
-      35.2.div not-a-number
-    not-a-number.as-bytes
+      35.2.div nan
+    nan.as-bytes
 
 # Test.
 [] > float-not-gt-nan

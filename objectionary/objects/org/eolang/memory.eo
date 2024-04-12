@@ -23,10 +23,47 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.11
-+version 0.35.11
++rt jvm org.eolang:eo-runtime:0.36.0
++version 0.36.0
 
 # Storage of data in memory.
-# @todo #2211:30min We can implement memory in EO instead of Java and let it use
-#  ram object. Let's not forget to update the "Origins of Objects" paper.
-[] > memory /bytes
+# You can use it like this:
+# ```
+# [] > obj
+#   5 > @
+# (memory obj).alloc > m
+# seq > @
+#   *
+#     m.write 42 # write 8 bytes integer to memory
+#     m          # dataization leads to reading from memory
+#     m.@        # taking @ attribute also leads to reading from memory
+#     m.free     # clear memory
+# ```
+# Clearing the memory is optional and is up to programmer.
+[data] > memory
+  @.alloc > alloc
+
+  # Allocate data in memory and return `allocated`.
+  [] > @
+    (dataized ^.data).as-bytes > bts
+    (malloc bts.size).pointer > p
+    seq > @
+      *
+        p.write 0 bts
+        ^.allocated p
+
+  # Data allocated in memory.
+  [pointer] > allocated
+    $ > alloc
+    pointer.read 0 pointer.size > @
+
+    # Write data into memory
+    [data] > write
+      seq > @
+        *
+          ^.pointer.write 0 data
+          ^.pointer.read 0 ^.pointer.size
+
+    # Free memory.
+    [] > free
+      ^.pointer.free > @

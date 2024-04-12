@@ -23,46 +23,24 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.11
-+version 0.35.11
++rt jvm org.eolang:eo-runtime:0.36.0
++version 0.36.0
 
 # This object is doing exactly the same as "memory", but allows
 # you to store objects, not only data. In other words, it doesn't
 # do dataization when objects are being stored.
-# Attention: your program will fail with StackOverflow exception if you try to
-# write to "cage" an object that was obtained by any manipulations with the
-# same "cage".
-# For example, the code below fails
-# [] > example
-#   cage > cge
-#     plus.
-#       0
-#       0
-#   seq > @
-#     cge.write
-#       plus.
-#         cge
-#         1
-#     cge
-#
-# The reason of failing is described in detail here:
-# https://github.com/objectionary/eo/issues/1698#issuecomment-1675224923
-# To prevent failing you have to make a copy of "cage" before writing:
-# [] > example
-#   cage > cge
-#     plus.
-#       0
-#       0
-#   seq > @
-#     cge.write
-#       plus.
-#         cge' # <--copy is made here
-#         1
-#     cge
-# @todo #1698:60min Make up with an idea how to prevent StackOverflow exception
-#  or warn a user if he writes cage into the same cage. Options: 1) xsl file
-#  that somehow checks if cage is about to write to the same cage 2) catch
-#  StackOverflow exception at the top level and say to the user that maybe he
-#  writes cage to the same cage.
-[] > cage /?
+[object] > cage
+  @.self > new
 
+  # Object encaged for the first time.
+  [] > @ /encaged
+
+  # Object encaged by locator.
+  [locator] > encaged
+    $ > self
+
+    # Retrieved encaged object by locator.
+    [] > @ /?
+
+    # Encage new object by locator.
+    [object] > encage /true

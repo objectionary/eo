@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.11
++version 0.36.0
 
 # Test.
 [] > switch-simple-case
@@ -41,7 +41,7 @@
 
 # Test.
 [] > switch-strings-case
-  memory "swordfish" > password
+  "swordfish" > password
   eq. > @
     switch
       *
@@ -74,26 +74,22 @@
 
 # Test.
 [] > switch-with-all-false-cases
-  eq. > @
-    switch
+  switch > @
+    *
       *
-        *
-          FALSE
-          "FALSE1"
-        *
-          FALSE
-          "FALSE2"
-    TRUE
+        FALSE
+        "FALSE1"
+      *
+        FALSE
+        "FALSE2"
 
 # Test.
 [] > switch-case-with-error
   try > @
     switch *
     [ex]
-      eq. > @
-        ex
-        "switch cases are empty"
-    nop
+      QQ.io.stdout ex > @
+    TRUE
 
 # Test.
 [] > switch-complex-case

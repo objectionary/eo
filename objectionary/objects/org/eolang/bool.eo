@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.11
-+version 0.35.11
++rt jvm org.eolang:eo-runtime:0.36.0
++version 0.36.0
 
 # Boolean.
 [as-bytes] > bool
@@ -36,20 +36,17 @@
       ^.as-bytes
       x.as-bytes
 
-  # If true, return "t", otherwise "f".
-  [t f] > if /?
-
   # NOT.
   [] > not
     eq. > @
-      ^
       FALSE
+      ^
 
   # AND.
   [x] > and
-    if. > @
+    if > @
       ^
-      if.
+      if
         x
         TRUE
         FALSE
@@ -57,17 +54,10 @@
 
   # OR.
   [x] > or
-    if. > @
+    if > @
       ^
       TRUE
-      if.
+      if
         x
         TRUE
         FALSE
-
-  # While this is true copies the object
-  # with "i" as the position of the cycle. The result
-  # of WHILE is the last dataized object or FALSE if
-  # ^ condition was never TRUE. The \rho of the object
-  # copied will be set to "while.\rho".
-  [f] > while /int

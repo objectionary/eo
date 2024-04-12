@@ -23,9 +23,9 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.11
++version 0.36.0
 
-# Test.
+# Test
 [] > rust-returns-positive-int
   QQ.rust > r
     """
@@ -134,7 +134,7 @@
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       Some(
-        EOInt(portal.find("$.^.a")? as i64)
+        EOInt(portal.find("$.&.a")? as i64)
       )
     }
     """
@@ -155,7 +155,7 @@
     use eo::eo_enum::EO::{EOVertex};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.^.book")?;
+      let v = portal.find("$.&.book")?;
       Some(EOVertex(v))
     }
     """
@@ -185,11 +185,13 @@
 
 # Test.
 [] > rust-invalid-put
+  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > message
   QQ.rust > put
     """
     use eo::Portal;
     use eo::eo_enum::EO;
     use eo::eo_enum::EO::{EOInt, EOError};
+
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       portal.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
       Some(EOError("put failed".to_string()))
@@ -204,36 +206,38 @@
           put > @
         [e]
           e > @
-        nop
+        TRUE
       0
-      18
-    "Rust insert failed"
+      length.
+        message
+    message
 
 # Test.
-[] > rust-bind-not-fails
+[] > rust-invalid-bind
   1 > a
   2 > b
-  "Rust insert failed" > to-check!
+  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > to-check
   QQ.rust > insert
     """
     use eo::Portal;
     use eo::eo_enum::EO;
     use eo::eo_enum::EO::{EOInt};
+
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v1 = portal.find("$.^.a")?;
-      let v2 = portal.find("$.^.b")?;
+      let v1 = portal.find("$.&.a")?;
+      let v2 = portal.find("$.&.b")?;
       portal.bind(v1 , v2, "EO-att")?;
       Some(EOInt(0 as i64))
     }
     """
     []
     *
-  try > res!
+  try > res
     []
       insert > @
     [e]
       e > @
-    nop
+    TRUE
   eq. > @
     res.slice
       0
@@ -248,8 +252,9 @@
     use eo::Portal;
     use eo::eo_enum::EO;
     use eo::eo_enum::EO::{EOVertex};
+
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.^.a")?;
+      let v = portal.find("$.&.a")?;
       let copy = portal.copy(v)?;
       Some(EOVertex(copy))
     }
@@ -268,8 +273,9 @@
     use eo::Portal;
     use eo::eo_enum::EO;
     use eo::eo_enum::EO::{EOInt};
+
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.^.a")?;
+      let v = portal.find("$.&.a")?;
       let _bytes = portal.dataize(v)?;
       Some(EOInt(v as i64))
     }
@@ -293,15 +299,14 @@
     use byteorder::{BigEndian, ReadBytesExt};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let a = portal.find("$.^.a")?;
+      let a = portal.find("$.&.a")?;
       let bytes_a = portal.dataize(a)?;
       let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
-      let b = portal.find("$.^.b")?;
+      let b = portal.find("$.&.b")?;
       let bytes_b = portal.dataize(b)?;
       let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
       println!("sum 5 + 10 = {}", a + b);
-
       Some(EOInt(a + b))
     }
     """
@@ -314,8 +319,8 @@
 
 # Test.
 [] > rust-error
-  "Rust insert failed " > message!
-  QQ.rust > err!
+  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > message
+  QQ.rust > err
     """
     use eo::Portal;
     use eo::eo_enum::EO;
@@ -332,7 +337,7 @@
       err > @
     [e]
       e > @
-    nop
+    TRUE
   eq. > @
     slice.
       res
@@ -374,9 +379,9 @@
     use eo::eo_enum::EO::{EOVertex};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let eobook = portal.find("$.^.book")?;
+      let eobook = portal.find("$.&.book")?;
       let copy = portal.copy(eobook)?;
-      let eoline = portal.find("$.^.line")?;
+      let eoline = portal.find("$.&.line")?;
       portal.bind(copy.clone(), eoline, "content")?;
       Some(EOVertex(copy))
     }

@@ -23,21 +23,37 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.35.11
-+version 0.35.11
++rt jvm org.eolang:eo-runtime:0.36.0
++version 0.36.0
 
-# Random-access memory (RAM).
-[size] > ram
-  # Write bytes from position.
-  [position data] > write /true
+# Allocates a block in memory of `size` bytes.
+# You can use it like:
+# ```
+# (malloc 8).pointer > p
+# seq
+#   *
+#     p.write 0 42 # write 8 bytes integer with offset 0
+#     p.read       # read from memory, 42 will be returned
+#     p.free       # free allocated block
+# ```
+# Clearing the block is optional and is up to programmer.
+[size] > malloc
+  @.pointer > pointer
 
-  # Slice fixed size of bytes from position.
-  [position size] > slice /ram-slice
+  # Allocates a memory block in RAM and returns pointer to it.
+  [] > @ /memory-block-pointer
 
-  # Slice fixed size of bytes from position.
-  [position size] > ram-slice
-    # Fixed sliced bytes from position.
-    [] > @ /bytes
+  # Pointer to allocated block in memory.
+  # Here `id` is identifier of pointer, `size` is length of the block.
+  [id] > memory-block-pointer
+    $ > pointer
+    ^.size > size
 
-    # Write bytes to memory from position, according to the ram.slice object.
-    [data] > write /bytes
+    # Read `length` bytes from `offset` from the block in memory by the pointer.
+    [offset length] > read /bytes
+
+    # Write `data` from `offset` to the block in memory by the pointer.
+    [offset data] > write /true
+
+    # Free the block in memory by the pointer.
+    [] > free /true

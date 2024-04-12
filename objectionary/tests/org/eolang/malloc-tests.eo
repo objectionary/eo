@@ -1,0 +1,128 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang
++version 0.36.0
+
+# Test.
+[] > malloc-gives-id-to-pointer
+  (malloc 2).pointer > p
+  and. > @
+    p.id.gt 0
+    p.free
+
+#Test.
+[] > malloc-gives-id-to-pointer-after-copy
+  (malloc 2).pointer > p
+  (p.id.gt 0).and p.free > @
+
+# Test.
+[] > malloc-allocates-right-size-block
+  (malloc 10).pointer > p
+  (p.size.eq 10).and p.free > @
+
+# Test.
+[] > malloc-pointer-writes-and-reads
+  (malloc 12).pointer > p
+  seq > @
+    *
+      p.write 0 "Hello, Jeff!"
+      and.
+        (p.read 0 12).eq "Hello, Jeff!"
+        p.free
+
+# Test.
+[] > malloc-pointer-concacts-strings-with-offset
+  (malloc 3).pointer > p
+  seq > @
+    *
+      p.write 0 "XXX"
+      p.write 1 "Y"
+      and.
+        (p.read 0 3).eq "XYX"
+        p.free
+
+# Test.
+[] > malloc-pointer-frees-successfully
+  (malloc 8).free > @
+
+# Test.
+[] > malloc-pointer-frees-after-writing
+  (malloc 8).pointer > p
+  seq > @
+    *
+      p.write 0 42
+      p.free
+      try
+        p.read 0 8
+        [e] (QQ.io.stdout e > @)
+        FALSE
+
+# Test.
+[] > malloc-pointer-cant-write-more-than-allocated
+  (malloc 1).pointer > p
+  try > @
+    seq
+      *
+        p.write 0 42
+        FALSE
+    [e]
+      and. > @
+        QQ.io.stdout e
+        p.free
+    TRUE
+
+# Test.
+[] > malloc-pointer-cant-write-more-than-allocated-with-offset
+  (malloc 1).pointer > p
+  try > @
+    seq
+      *
+        p.write 1 TRUE
+        FALSE
+    [e]
+      and. > @
+        QQ.io.stdout e
+        p.free
+    TRUE
+
+# Test.
+[] > malloc-pointer-rewrites-successfully
+  (malloc 8).pointer > p
+  seq > @
+    *
+      p.write 0 42
+      p.write 0 94
+      and.
+        (p.read 0 8).eq 94
+        p.free
+
+# Test.
+[] > malloc-reads-with-offset-and-length
+  (malloc 10).pointer > p
+  seq > @
+    *
+      p.write 2 "Hello"
+      (p.read 2 5).eq "Hello"

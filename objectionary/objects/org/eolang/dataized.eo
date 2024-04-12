@@ -22,80 +22,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang
-+version 0.35.11
++rt jvm org.eolang:eo-runtime:0.36.0
++version 0.36.0
 
-# Test.
-[] > writes-and-slice-ram
-  ram 1024 > r
-  eq. > @
-    seq
-      *
-        write.
-          r.slice 200 13 > s
-          "Hello, world!".as-bytes
-        as-string.
-          s.slice 0 5
-    "Hello"
-
-# Test.
-[] > writes-integer-to-ram
-  ram 1024 > r
-  3.as-bytes > b
-  r.write 0 b > w
-  eq. > @
-    and.
-      w.eq TRUE
-      (r.slice 0 8).as-int.eq 3
-    TRUE
-
-# Test.
-[] > several-slices-ram
-  ram 1024 > r
-  eq. > @
-    seq
-      *
-        write.
-          r.slice 10 3
-          "abc".as-bytes
-        write.
-          r.slice 13 3
-          "def".as-bytes
-        as-string.
-          (r.slice 10 6).slice 0 6
-    "abcdef"
-
-# Test.
-[] > intersection-writes-in-ram
-  ram 64 > r
-  eq. > @
-    seq
-      *
-        write.
-          r.slice 0 10
-          "1234567890".as-bytes
-        write.
-          r.slice 5 10
-          "-----".as-bytes
-        as-string.
-          (r.slice 0 10).slice 0 10
-    "12345-----"
-
-# Test.
-[] > slice-chain
-  ram 1024 > r
-  # Cut hello.
-  [] > cut-hello
-    seq > @
-      *
-        write.
-          r.slice 200 13 > s
-          "Hello, world!".as-bytes
-        s
-        .slice 0 5
-        .slice 0 4
-        .slice 0 1
-  eq. > @
-    cut-hello
-    "H"
+# Dataizes given `target`, makes new `bytes` from the data and behaves as result `bytes`.
+[target] > dataized /bytes

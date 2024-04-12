@@ -24,20 +24,39 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.11
++version 0.36.0
 
 # Test.
-[] > nop-is-true
-  eq. > @
-    nop
-    TRUE
+[] > dataized-does-not-do-recalculation
+  (memory 0).alloc > m
+  # Func.
+  [] > func
+    ^.m.write (^.m.as-int.plus 1) > @
+  (dataized func).as-bytes > cached
+  seq > @
+    *
+      cached.as-int
+      cached.as-bytes
+      cached.as-bool
+      1.eq m
 
 # Test.
-[] > nop-is-true-despite-arguments
-  eq. > @
-    nop
+[] > dataizes-as-bytes-behaves-as-exclamationed
+  # Func.
+  [] > func
+    (memory 0).alloc > m
+    seq > @
       *
-        "abc"
-        1
-        1.0
-    TRUE
+        TRUE
+        m.write (m.as-int.plus 1)
+  (dataized func).as-bytes > cached1
+  func > cached2!
+  seq > @
+    *
+      cached1
+      cached2
+      cached1
+      cached2
+      and.
+        cached1.eq cached2
+        1.eq cached1

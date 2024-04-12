@@ -24,161 +24,169 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.11
++version 0.36.0
 
 # Test.
-# @todo #761:30min Let's make sure memory can only accept one "type" of data primitives.
-#  If we try to write a float into a memory that was initialized with an int, we should
-#  get an error. The same goes for strings and booleans. We should also make sure that
-#  we can't write a string that is longer than the memory size. We should also make sure
-#  that we can't write a number that is bigger than the memory size. And etc.
-#  We can also implement memory in EO instead of Java and let it use ram object.
-#  Let's not forget to update the "Origins of Objects" paper.
 [] > writes-into-memory
-  memory 0 > x
-  eq. > @
-    seq
-      *
-        x.write 10
-        x
-    10
+  (memory 0).alloc > x
+  seq > @
+    *
+      x.write 10
+      and.
+        x.eq 10
+        x.free
 
 # Test.
-[] > double-writes
-  memory "1234567890123" > m
-  eq. > @
-    seq
-      *
-        m.write "Hello, world!"
-        m.write 42
-        m
-    42
+[] > memory-double-writes
+  (memory "1234567890123").alloc > m
+  and. > @
+    eq.
+      42.as-bytes.concat
+        "orld!".as-bytes
+      seq
+        *
+          m.write "Hello, world!"
+          m.write 42
+          m
+    m.free
 
 # Test.
 [] > rewrites-and-increments-itself
-  memory 0 > m
-  eq. > @
-    seq
-      *
-        m.write 1
-        m.write (m.as-int.plus 5)
-        m
-    6
+  (memory 0).alloc > m
+  seq > @
+    *
+      m.write 1
+      m.write (m.as-int.plus 5)
+      (m.eq 6).and m.free
 
 # Test.
 [] > memory-in-outer-scope
   # Outer scope object.
-  [] > outer
-    memory 0 > x
-  outer > a
+  [] > a
+    (memory 0).alloc > x
   seq > @
     *
       a.x.write 1
-      eq.
-        a.x.as-int
-        1
+      not.
+        eq.
+          a.x.as-int
+          1
 
 # Test.
 [] > writes-into-two-memory-objects
-  memory 0 > a
-  memory 0 > b
-  eq. > @
-    and.
-      seq
-        *
-          a.write 10
-          eq.
-            b.write 20
-            20
-      a.eq 10
-    TRUE
-
-# Test.
-[] > writes-into-two-memory-objects-and-check-first
-  memory 0 > a
-  memory 0 > b
-  eq. > @
+  (memory 0).alloc > a
+  (memory 0).alloc > b
+  and. > @
     seq
       *
         a.write 10
         b.write 20
-        a
-    10
+        and.
+          b.eq 20
+          a.eq 10
+    and.
+      a.free
+      b.free
+
+# Test.
+[] > writes-into-two-memory-objects-and-check-first
+  (memory 0).alloc > a
+  (memory 0).alloc > b
+  seq > @
+    *
+      a.write 10
+      b.write 20
+      and.
+        and.
+          a.eq 10
+          a.free
+        b.free
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
-  memory FALSE > m
-  nop > @
-    eq.
-      try
-        []
-          m.write 86124867.88 > @
-        [e]
-          e > @
-        nop
-      "Not enough memory to write: expected <1> byte, got <2^61>"
+  (memory FALSE).alloc > m
+  try > @
+    []
+      m.write 86124867.88 > @
+    [e]
+      and. > @
+        QQ.io.stdout e
+        m.free
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-string-error-overflow
-  memory "Hello" > m
-  nop > @
-    eq.
-      try
-        []
-          m.write "Much longer string!" > @
-        [e]
-          e > @
-        nop
-      "Not enough memory to write: expected <5>, got <20>"
+  (memory "Hello").alloc > m
+  try > @
+    []
+      m.write "Much longer string!" > @
+    [e]
+      and. > @
+        QQ.io.stdout e
+        m.free
+    TRUE
 
 # Test.
 [] > memory-is-strictly-typed-int
-  memory 12248 > m
-  nop > @
+  (memory 12248).alloc > m
+  and. > @
     eq.
       try
         []
           m.write 2556 > @
         [e]
           e > @
-        nop
+        TRUE
       2556
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-float
-  memory 245.88 > m
-  nop > @
+  (memory 245.88).alloc > m
+  and. > @
     eq.
       try
         []
           m.write 82.22 > @
         [e]
           e > @
-        nop
+        TRUE
       82.22
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-string
-  memory "Hello" > m
-  nop > @
+  (memory "Hello").alloc > m
+  and. > @
     eq.
       try
         []
-          m.write "Hell" > @
+          m.write "Prot" > @
         [e]
           e > @
-        nop
-      "Hell"
+        TRUE
+      "Proto"
+    m.free
 
 # Test.
 [] > memory-is-strictly-typed-bool
-  memory FALSE > m
-  nop > @
-    eq.
-      try
-        []
-          m.write TRUE > @
-        [e]
-          e > @
-        nop
+  (memory FALSE).alloc > m
+  and. > @
+    try
+      []
+        m.write TRUE > @
+      [e]
+        e > @
       TRUE
+    m.free
+
+# Test.
+[] > memory-is-cleared-successfully
+  (memory FALSE).alloc > m
+  seq > @
+    *
+      m.free
+      try
+        m
+        [e] (QQ.io.stdout e > @)
+        FALSE

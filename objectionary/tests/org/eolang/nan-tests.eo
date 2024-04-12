@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.35.11
++version 0.36.0
 
 # Test.
 [] > nan-not-eq-number
@@ -35,11 +35,10 @@
 
 # Test.
 [] > nan-not-eq-nan
-  nan > not-a-number!
   not. > @
     eq.
-      not-a-number
-      not-a-number
+      nan
+      nan
 
 # Test.
 [] > nan-not-lt-number
@@ -49,9 +48,8 @@
 
 # Test.
 [] > nan-not-lt-nan
-  nan > not-a-number!
   eq. > @
-    not-a-number.lt not-a-number
+    nan.lt nan
     FALSE
 
 # Test.
@@ -62,9 +60,8 @@
 
 # Test.
 [] > nan-not-lte-nan
-  nan > not-a-number!
   eq. > @
-    not-a-number.lte not-a-number
+    nan.lte nan
     FALSE
 
 # Test.
@@ -75,9 +72,8 @@
 
 # Test.
 [] > nan-not-gt-nan
-  nan > not-a-number!
   eq. > @
-    not-a-number.gt not-a-number
+    nan.gt nan
     FALSE
 
 # Test.
@@ -88,73 +84,63 @@
 
 # Test.
 [] > nan-not-gte-nan
-  nan > not-a-number!
   eq. > @
-    not-a-number.gte not-a-number
+    nan.gte nan
     FALSE
 
 # Test.
 [] > nan-times-number-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.times 42).as-bytes
-    not-a-number.as-bytes
+    (nan.times 42).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-times-nan-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.times not-a-number).as-bytes
-    not-a-number.as-bytes
+    (nan.times nan).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-div-number-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.div 42).as-bytes
-    not-a-number.as-bytes
+    (nan.div 42).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-div-nan-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.div not-a-number).as-bytes
-    not-a-number.as-bytes
+    (nan.div nan).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-plus-number-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.plus 42).as-bytes
-    not-a-number.as-bytes
+    (nan.plus 42).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-plus-nan-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.plus not-a-number).as-bytes
-    not-a-number.as-bytes
+    (nan.plus nan).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-neg-is-nan
-  nan > not-a-number!
   eq. > @
-    not-a-number.neg.as-bytes
-    not-a-number.as-bytes
+    nan.neg.as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-minus-number-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.minus 42).as-bytes
-    not-a-number.as-bytes
+    (nan.minus 42).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-minus-nan-is-nan
-  nan > not-a-number!
   eq. > @
-    (not-a-number.minus not-a-number).as-bytes
-    not-a-number.as-bytes
+    (nan.minus nan).as-bytes
+    nan.as-bytes
 
 # Test.
 [] > nan-as-bytes-is-bytes-of-zero-div-zero

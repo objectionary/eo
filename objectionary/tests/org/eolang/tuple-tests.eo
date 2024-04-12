@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.35.11
++version 0.36.0
 
 # Test.
 [] > makes-tuple-through-special-syntax
@@ -74,7 +74,7 @@
 
 # Test.
 [] > tuple-as-a-bound-attribute-size-2
-  * > arr!
+  * > arr
     1
     2
   and. > @
@@ -87,7 +87,7 @@
 
 # Test.
 [] > tuple-with
-  with. > arr!
+  with. > arr
     * 1 2 3
     "with"
   and. > @
@@ -108,16 +108,14 @@
 
 # Test.
 [] > tuple-at-with-error
-  eq. > @
-    try
-      []
-        at. > @
-          * 1 2 3 4
-          20
-      [e]
-        e > @
-      nop
-    "Given index is out of tuple bounds"
+  try > @
+    []
+      at. > @
+        * 1 2 3 4
+        20
+    [e]
+      QQ.io.stdout e > @
+    TRUE
 
 # Test.
 [] > tuple-fluent-with
@@ -173,21 +171,17 @@
     3
 
 # Test
-[] > at-without-checks-with-first-element
+[] > at-fast-with-first-element
+  * 100 101 102 > arr
   eq. > @
-    at-without-checks.
-      at.
-        * 100 101 102
-      0
+    (arr.at 0).at-fast arr 3
     100
 
 # Test
-[] > at-without-checks-with-last-element
+[] > at-fast-with-last-element
+  * 100 101 102 > arr
   eq. > @
-    at-without-checks.
-      at.
-        * 100 101 102
-      2
+    (arr.at 2).at-fast arr 3
     102
 
 # Test.
@@ -226,11 +220,9 @@
 # Test.
 [] > tuple-with-negative-index-out-of-bounds
   * 0 1 2 3 4 > arr
-  eq. > @
-    try
-      []
-        arr.at -6 > @
-      [e]
-        e > @
-      nop
-    "Given index is out of tuple bounds"
+  try > @
+    []
+      arr.at -6 > @
+    [e]
+      QQ.io.stdout e > @
+    TRUE
