@@ -30,7 +30,7 @@
 [] > simple-while-with-false-first
   while > res
     FALSE
-    [i] (TRUE > @)
+    TRUE > [i]
   (bool res).not > @
 
 # Test.
@@ -38,7 +38,7 @@
   (memory TRUE).alloc > condition
   while > res
     condition
-    [i] (condition.write FALSE > @)
+    condition.write FALSE > [i]
   and. > @
     (bool res).not
     condition.free

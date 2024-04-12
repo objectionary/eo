@@ -46,10 +46,8 @@
         "some string"
         7
         5
-    [e]
-      QQ.io.stdout e > @
-    []
-      FALSE > @
+    QQ.io.stdout e > [e]
+    FALSE > []
 
 # Test.
 [] > two-nested-try-blocks
@@ -61,8 +59,7 @@
             "some string"
             7
             5
-        [e]
-          error e > @
+        error e > [e]
         TRUE
     [e]
       QQ.io.stdout e > @
@@ -72,10 +69,8 @@
 [] > try-without-error-block
   eq. > @
     try
-      []
-        30.plus 2 > @
-      [e]
-        e > @
+      30.plus 2 > []
+      e > [e]
       TRUE
     32
 
@@ -86,10 +81,8 @@
     *
       m.write 1
       try
-        []
-          m.write (m.as-int.plus 1) > @
-        [e]
-          e > @
+        m.write (m.as-int.plus 1) > []
+        e > [e]
         TRUE
       and.
         m.as-int.eq 2
@@ -107,8 +100,7 @@
             *
               5.div 0
               m.write (m.plus 1)
-        [e]
-          e > @
+        e > [e]
         TRUE
       and.
         m.eq 1

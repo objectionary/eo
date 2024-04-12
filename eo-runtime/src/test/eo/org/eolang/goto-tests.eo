@@ -101,7 +101,6 @@
         seq > @
           *
             go.to
-              [g2]
-                g1.forward 42 > @
+              g1.forward 42 > [g2]
             7
     42
