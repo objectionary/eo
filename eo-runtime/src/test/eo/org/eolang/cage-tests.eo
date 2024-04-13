@@ -65,8 +65,7 @@
 [] > stores-abstract-object-into-cage
   new. > c
     cage
-      []
-        112 > @
+      112 > []
   c.eq 112 > @
 
 # Test.

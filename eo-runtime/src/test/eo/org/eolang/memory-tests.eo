@@ -132,10 +132,8 @@
   and. > @
     eq.
       try
-        []
-          m.write 2556 > @
-        [e]
-          e > @
+        m.write 2556 > []
+        e > [e]
         TRUE
       2556
     m.free
@@ -146,10 +144,8 @@
   and. > @
     eq.
       try
-        []
-          m.write 82.22 > @
-        [e]
-          e > @
+        m.write 82.22 > []
+        e > []
         TRUE
       82.22
     m.free
@@ -160,10 +156,8 @@
   and. > @
     eq.
       try
-        []
-          m.write "Prot" > @
-        [e]
-          e > @
+        m.write "Prot" > []
+        e > []
         TRUE
       "Proto"
     m.free
@@ -188,5 +182,5 @@
       m.free
       try
         m
-        [e] (QQ.io.stdout e > @)
+        QQ.io.stdout e > [e]
         FALSE
