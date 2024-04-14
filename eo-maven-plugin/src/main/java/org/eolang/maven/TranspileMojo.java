@@ -58,6 +58,16 @@ import org.eolang.maven.util.Rel;
 /**
  * Compile.
  *
+ * @todo #2375:90min.
+ * Implement mechanism for "inner" and "outer" classes.
+ *  To get rid of TranspileMojo#cleanUpClasses, we can implement mechanism,
+ *  that will mark classes of the project like "inner", which is will be checked
+ *  during the compilation process.
+ *  Also here is one more solution, it's create analog of gradle `implementation` and `api`,
+ *   - implementation – just includes the dependency
+ *   - api – allows to users of our API to use dependency which was added to project via `api` keyword
+ *   <p>
+ *   <a href="https://shorturl.at/abns4">More about api and implementation here</a>
  * @since 0.1
  */
 @Mojo(
@@ -246,7 +256,7 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Clean up dirty classes.
-     * The method is trying to fix problem produced by dirty libraries:
+     * The method is trying to fix a problem produced by dirty libraries:
      * <a href="https://github.com/objectionary/eo-strings/issues/147"> eo-strings example </a>
      * Some libraries by mistake can put ALL their compiled classes right into the final library
      * jar, instead of only adding atoms. This can cause different runtime errors since the
@@ -265,12 +275,6 @@ public final class TranspileMojo extends SafeMojo {
      * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
      * @param java The list of java files.
-     * @todo #2375:90min. Add concurrency tests for the TranspileMojo.cleanUpClasses method.
-     *  We should be sure that the method works correctly in a concurrent environment.
-     *  In order to do so we should add a test that will run the cleanUpClasses method in
-     *  multiple threads and check that the method works correctly without exceptions.
-     *  We can apply the same approach as mentioned in that post:
-     *  <a href="https://www.yegor256.com/2018/03/27/how-to-test-thread-safety.html">Post</a>
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
