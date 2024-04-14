@@ -264,16 +264,16 @@ public final class TranspileMojo extends SafeMojo {
      * In other words, concurrent file deletions on the Windows OS can lead to an
      * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
+     * @param java The list of java files.
      * @todo #2375:90min. Implement mechanism for "inner" and "outer" classes.
      *  To get rid of TranspileMojo#cleanUpClasses, we can implement mechanism,
      *  that will mark classes of the project like "inner", which is will be checked
      *  during the compilation process.
      *  Another solution is to create analog of gradle `implementation` and `api`,
-     *    - implementation – just includes the dependency for inner usage
-     *    - api – allows to users of API to
-     *    use dependency which was added to project via `api` keyword
+     *  - implementation – just includes the dependency for inner usage
+     *  - api – allows to users of API to
+     *  use dependency which was added to project via `api` keyword
      *  <p/><a href="https://shorturl.at/abns4">More about api and implementation here</a>
-     * @param java The list of java files.
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
