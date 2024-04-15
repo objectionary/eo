@@ -32,7 +32,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
 import java.util.Arrays;
-
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
@@ -85,17 +84,11 @@ final class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        System.out.println(temp.toString());
         final String message = this.getMessage(out, "Errors identified", temp.toString());
-        System.out.println(message);
         MatcherAssert.assertThat(
             "Errors message should have program name and error line number",
             message,
             Matchers.matchesPattern(this.createRegEx(temp, "Errors identified"))
-        );
-        Assertions.assertTrue(
-            message.matches(this.createRegEx(temp, "Errors identified")),
-            "Errors message should have program name and error line number"
         );
     }
 
