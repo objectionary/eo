@@ -33,13 +33,29 @@ import EOorg.EOeolang.EOerror;
  * @since 0.26
  */
 @Versionized
-public final class PhSafe extends PhDecorator {
+public final class PhSafe implements Phi {
+
+    /**
+     * The original.
+     */
+    private final Phi origin;
+
     /**
      * Ctor.
      * @param phi The object
      */
     public PhSafe(final Phi phi) {
-        super(phi);
+        this.origin = phi;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
     }
 
     @Override

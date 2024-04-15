@@ -30,7 +30,12 @@ package org.eolang;
  * @since 0.21
  */
 @Versionized
-public final class PhLocated extends PhDecorator {
+public final class PhLocated implements Phi {
+
+    /**
+     * The original.
+     */
+    private final Phi origin;
 
     /**
      * The line number.
@@ -68,10 +73,20 @@ public final class PhLocated extends PhDecorator {
      * @checkstyle ParameterNumberCheck (5 lines)
      */
     public PhLocated(final Phi phi, final int lne, final int pos, final String loc) {
-        super(phi);
+        this.origin = phi;
         this.line = lne;
         this.position = pos;
         this.location = loc;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.origin.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.origin.hashCode();
     }
 
     @Override
