@@ -265,15 +265,18 @@ public final class TranspileMojo extends SafeMojo {
      * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
      * @param java The list of java files.
-     * @todo #2375:90min. Implement mechanism for "inner" and "outer" classes.
-     *  To get rid of TranspileMojo#cleanUpClasses, we can implement mechanism,
-     *  that will mark classes of the project like "inner", which is will be checked
-     *  during the compilation process.
-     *  Another solution is to create analog of gradle `implementation` and `api`,
-     *  - implementation – just includes the dependency for inner usage
-     *  - api – allows to users of API to
-     *  use dependency which was added to project via `api` keyword
-     *  <p/><a href="https://shorturl.at/abns4">More about api and implementation here</a>
+     * @todo #2375:90min. Implement a mechanism for "internal" and "external" classes.
+     *  - "internal" classes will be included in the catalog
+     *  - "external" classes will be placed in another directory.
+     *  For example, external classes will be placed in directories
+     *  where the top level will be the name of the package from
+     *  which the object is connected, and the subdirectories
+     *  will indicate the version of this package.
+     *  Another solution is to create an analogue of `implementation` and `api` from gradle:
+     *  - implementation – just includes a dependency for internal use
+     *  - api – allows API users use a dependency that
+     *  was added to the project using the keyword `api`
+     *  <p/><a href="https://stackoverflow.com/a/44419574/11529150">More about api and implementation here</a>
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
