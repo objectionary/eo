@@ -266,7 +266,7 @@ final class VerifyMojoTest {
      * @param logs Logs logs
      * @param parts String needed error message
      */
-    private String getMessage(final Logs logs, final String ... parts) {
+    private String getMessage(final Logs logs, final String... parts) {
         return String.valueOf(logs.captured().stream()
             .filter(
                 log -> Arrays.stream(parts).allMatch(log::contains)
