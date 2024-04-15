@@ -24,47 +24,68 @@
 package org.eolang.maven.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
-import org.cactoos.Bytes;
+import org.cactoos.Input;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 
 /**
- * Location for the files.
+ * The data is saved to a file.
  * @since 0.32.0
  */
-public interface Home extends DataSaved {
+public interface DataSaved {
     /**
-     * Check if exists.
+     * Saving string.
      *
+     * @param str String
      * @param path Cwd-relative path to file
-     * @return True if exists
+     * @throws IOException If fails
+     */
+    default void save(final String str, final Path path) throws IOException {
+        this.save(new InputOf(str), path);
+    }
+
+    /**
+     * Saving text.
+     *
+     * @param txt Text
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    default void save(final Text txt, final Path path) throws IOException {
+        this.save(new InputOf(txt), path);
+    }
+
+    /**
+     * Saving stream.
+     *
+     * @param stream Input stream
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    default void save(final InputStream stream, final Path path) throws IOException  {
+        this.save(new InputOf(stream), path);
+    }
+
+    /**
+     * Saving bytes.
+     *
+     * @param bytes Byte array
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    default void save(final byte[] bytes, final Path path) throws IOException  {
+        this.save(new InputOf(bytes), path);
+    }
+
+    /**
+     * Saving input.
+     *
+     * @param input Input
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
      * @throws IllegalArgumentException If given path is absolute
      */
-    boolean exists(Path path);
-
-    /**
-     * Load bytes from file by path.
-     *
-     * @param path Cwd-relative path to file
-     * @return Bytes of file
-     * @throws IOException if method can't find the file by path or
-     *  if some exception happens during reading the file
-     * @throws IllegalArgumentException If given path is absolute
-     */
-    Bytes load(Path path) throws IOException;
-
-    /**
-     * Absolute path to a file.
-     *
-     * @param path Cwd-relative path to file
-     * @return Absolute path
-     */
-    Path absolute(Path path);
-
-    /**
-     * Verifies that given path is relative and throws exception.
-     * @param path Path to be verified
-     * @return Given path if it's relative
-     * @throws IllegalArgumentException If given path is Absolute
-     */
-    Path onlyRelative(Path path);
+    void save(Input input, Path path) throws IOException;
 }

@@ -42,7 +42,7 @@ import org.cactoos.scalar.LengthOf;
  * @since 0.27
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmBase extends Home {
+public final class HmBase implements Home {
     /**
      * Current working directory.
      */

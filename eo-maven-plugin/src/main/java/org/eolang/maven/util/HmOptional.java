@@ -34,7 +34,7 @@ import org.cactoos.Input;
  * @since 0.32.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class HmOptional extends Home {
+public final class HmOptional implements Home {
     /**
      * Original home.
      */
