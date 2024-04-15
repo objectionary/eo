@@ -32,12 +32,12 @@
 
   # Tests that $ = x.
   [x] > eq
-    x.as-bytes > x-as-bytes!
-    ^.as-bytes > self-as-bytes!
-    nan.as-bytes > nan-as-bytes!
-    0.0.as-bytes > pos-zero-as-bytes!
-    -0.0.as-bytes > neg-zero-as-bytes!
-    if. > @
+    x > x-as-bytes!
+    ^ > self-as-bytes!
+    nan > nan-as-bytes!
+    0.0 > pos-zero-as-bytes!
+    -0.0 > neg-zero-as-bytes!
+    if > @
       or.
         eq.
           x-as-bytes
@@ -68,12 +68,10 @@
 
   # Tests that $ < x.
   [x] > lt
-    gt. > @
-      plus.
-        neg.
-          ^
-        x
-      0.0
+    0.0.gt > @
+      ^.minus
+        float
+          x > value!
 
   # Tests that $ ≤ x.
   [x] > lte

@@ -41,32 +41,33 @@
     0 > length
 
   # Obtain the length of the tuple.
-  [] > length!
-    ^.head.length.plus 1 > @
+  [] > length
+    int > @
+      ^.head.length.plus 1 > len!
 
   # Take one element from the tuple, at the given position.
   [i] > at
-    i > idx!
-    ^.length > len!
-    if. > index!
-      idx.lt 0
+    ^.length > len
+    if > index!
+      0.gt
+        i > idx!
       len.plus idx
       idx
-    if. > @
+    if > @
       or.
-        index.lt 0
-        index.gte len
+        0.gt index
+        len.lte index
       error "Given index is out of tuple bounds"
-      at-without-checks index
+      at-fast ^ len
 
-    # Takes element from the tuple without index validation.
-    # Here `i` must be an object that can be comparable with `int` using `lt` attribute.
-    [i] > at-without-checks
-      i > idx!
-      if. > @
-        idx.lt head.length
-        ^.^.head.at.at-without-checks idx
-        ^.^.tail
+    # Fast recursive obtaining element from tuple.
+    [tup len] > at-fast
+      if > @
+        (len.plus -1).gt ^.index
+        ^.at-fast
+          tup.head
+          len.plus -1
+        tup.tail
 
   # Create a new tuple with this element added to the end of it.
   [x] > with

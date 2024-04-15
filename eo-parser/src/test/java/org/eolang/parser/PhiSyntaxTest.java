@@ -26,6 +26,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 
@@ -34,7 +35,7 @@ import org.xembly.Directives;
  *
  * @since 0.35.0
  */
-class PhiSyntaxTest {
+final class PhiSyntaxTest {
     @Test
     void addsError() throws IOException {
         MatcherAssert.assertThat(
@@ -45,6 +46,15 @@ class PhiSyntaxTest {
             XhtmlMatchers.hasXPath(
                 "//errors[count(error)>0]"
             )
+        );
+    }
+
+    @Test
+    void catchesDeltaToNothingBinding() throws IOException {
+        Assertions.assertThrows(
+            ParsingException.class,
+            new PhiSyntax("{ ⟦ x ↦ ⟦ Δ ⤍ ∅ ⟧ ⟧ }")::parsed,
+            "Impossible binding with Δ should be caught"
         );
     }
 

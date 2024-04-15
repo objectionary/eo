@@ -1,0 +1,965 @@
+eo: |
+  +architect yegor256@gmail.com
+  +home https://github.com/objectionary/eo
+  +tests
+  +package org.eolang
+  +version 0.0.0
+
+  # Test.
+  [] > compares-two-bools
+    eq. > @
+      TRUE
+      TRUE
+
+  # Test.
+  [] > compares-two-different-types
+    not. > @
+      eq.
+        TRUE
+        42
+
+  # Test.
+  [] > forks-on-condition
+    eq. > @
+      if.
+        5.eq 8
+        123
+        42
+      42
+
+  # Test.
+  [] > iterates-over-simple-counter
+    memory 0 > x
+    and. > @
+      eq.
+        x.write 5
+        5
+      eq.
+        while.
+          x.as-int.lt 10
+          [i]
+            x.write > @
+              x.as-int.plus 1
+        11
+
+  # Test.
+  [] > compares-bool-to-bytes
+    and. > @
+      TRUE.eq 01-
+      FALSE.eq 00-
+
+  # Test.
+  [] > compares-bool-to-string
+    and. > @
+      TRUE.eq "\001"
+      FALSE.eq "\000"
+
+  # Test.
+  [] > compares-bool-to-bytes-reverse
+    and. > @
+      01-.as-bytes.eq TRUE
+      00-.as-bytes.eq FALSE
+
+  # Test.
+  [] > complex-bool-expression-in-while
+    memory 0 > m
+    seq > res
+      *
+        m.write 5
+        while.
+          eq.
+            m.as-int.gt 0
+            TRUE
+          [i]
+            seq > @
+              *
+                m.write
+                  m.as-int.minus 1
+                TRUE
+        TRUE
+    nop > @
+
+  # Test.
+  [] > last-while-dataization-object
+    memory 0 > x
+    eq. > @
+      while.
+        x.as-int.lt 2
+        [i]
+          seq > @
+            *
+              x.write (x.as-int.plus 1)
+              x.as-int
+      3
+
+  # Test.
+  [] > last-while-dataization-object-with-false-condition
+    memory 3 > x
+    eq. > @
+      while.
+        x.as-int.lt 1
+        [i]
+          seq > @
+            *
+              x.write (x.as-int.plus 1)
+              x
+      FALSE
+
+  # Test.
+  [] > iterating-tuple-with-while-using-internal-iterator
+    * 1 1 1 1 > arr
+    memory 0 > iter
+    memory 0 > acc
+    arr.length.minus 1 > max
+    seq > @
+      *
+        if.
+          max.eq 0
+          acc.write
+            acc.as-int.plus
+              arr.at 0
+          while.
+            iter.as-int.lt max
+            [i]
+              seq > @
+                *
+                  acc.write
+                    acc.as-int.plus
+                      arr.at
+                        i
+                  iter.write
+                    iter.as-int.plus 1
+        eq.
+          acc.as-int
+          arr.length
+
+  # Test.
+  [] > iterating-tuple-with-while-using-external-iterator
+    * 1 1 1 1 > arr
+    memory 0 > iter
+    memory 0 > acc
+    arr.length.minus 1 > max
+    seq > nop
+      *
+        if.
+          max.eq 0
+          acc.write
+            acc.as-int.plus
+              arr.at 0
+          while.
+            iter.as-int.lt max
+            [i]
+              seq > @
+                *
+                  acc.write
+                    acc.as-int.plus
+                      arr.at
+                        iter.as-int
+                  iter.write
+                    iter.as-int.plus 1
+        eq.
+          acc.as-int
+          arr.length
+    TRUE > @
+
+  # Test.
+  [] > iterating-tuple-with-while-without-body-multiple
+    * 1 1 1 1 > arr
+    memory 0 > iter
+    memory 0 > acc
+    arr.length > max
+    seq > @
+      *
+        while.
+          []
+            if. > @
+              iter.as-int.lt max
+              seq
+                *
+                  acc.write
+                    acc.as-int.plus
+                      arr.at
+                        iter.as-int
+                  iter.write
+                    iter.as-int.plus 1
+                  TRUE
+              FALSE
+          nop
+        eq.
+          acc.as-int
+          arr.length
+
+  # Test.
+  [] > iterating-tuple-with-while-without-body-single
+    * 1 > arr
+    memory 0 > iter
+    memory 0 > acc
+    arr.length > max
+    seq > nop
+      *
+        while.
+          []
+            if. > @
+              iter.as-int.lt max
+              seq
+                *
+                  acc.write
+                    acc.as-int.plus
+                      arr.at
+                        iter.as-int
+                  iter.write
+                    iter.as-int.plus 1
+                  TRUE
+              FALSE
+          nop
+        eq.
+          acc.as-int
+          arr.length
+    TRUE > @
+phi: |
+  {
+    ⟦
+      org ↦ ⟦
+        eolang ↦ ⟦
+          compares-two-bools ↦ ⟦
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.bool(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 01-
+                )
+              )
+            )
+          ⟧,
+          compares-two-different-types ↦ ⟦
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-2A
+                )
+              )
+            ).not
+          ⟧,
+          forks-on-condition ↦ ⟦
+            φ ↦ Φ.org.eolang.int(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 00-00-00-00-00-00-00-05
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-08
+                )
+              )
+            ).if(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-7B
+                )
+              ),
+              α1 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-2A
+                )
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-2A
+                )
+              )
+            )
+          ⟧,
+          iterates-over-simple-counter ↦ ⟦
+            x ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            φ ↦ ξ.x.write(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-05
+                )
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-05
+                )
+              )
+            ).and(
+              α0 ↦ ξ.x.as-int.lt(
+                α0 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-00-00-00-00-00-00-0A
+                  )
+                )
+              ).while(
+                α0 ↦ ⟦
+                  i ↦ ∅,
+                  φ ↦ ξ.σ.x.write(
+                    α0 ↦ ξ.σ.x.as-int.plus(
+                      α0 ↦ Φ.org.eolang.int(
+                        α0 ↦ Φ.org.eolang.bytes(
+                          Δ ⤍ 00-00-00-00-00-00-00-01
+                        )
+                      )
+                    )
+                  )
+                ⟧
+              ).eq(
+                α0 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-00-00-00-00-00-00-0B
+                  )
+                )
+              )
+            )
+          ⟧,
+          compares-bool-to-bytes ↦ ⟦
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            ).and(
+              α0 ↦ Φ.org.eolang.bool(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-
+                )
+              ).eq(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-
+                )
+              )
+            )
+          ⟧,
+          compares-bool-to-string ↦ ⟦
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            ).eq(
+              α0 ↦ Φ.org.eolang.string(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 01-
+                )
+              )
+            ).and(
+              α0 ↦ Φ.org.eolang.bool(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-
+                )
+              ).eq(
+                α0 ↦ Φ.org.eolang.string(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-
+                  )
+                )
+              )
+            )
+          ⟧,
+          compares-bool-to-bytes-reverse ↦ ⟦
+            φ ↦ Φ.org.eolang.bytes(
+              Δ ⤍ 01-
+            ).as-bytes.eq(
+              α0 ↦ Φ.org.eolang.bool(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 01-
+                )
+              )
+            ).and(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 00-
+              ).as-bytes.eq(
+                α0 ↦ Φ.org.eolang.bool(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-
+                  )
+                )
+              )
+            )
+          ⟧,
+          complex-bool-expression-in-while ↦ ⟦
+            m ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            res ↦ Φ.org.eolang.seq(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple.empty,
+                    α1 ↦ ξ.m.write(
+                      α0 ↦ Φ.org.eolang.int(
+                        α0 ↦ Φ.org.eolang.bytes(
+                          Δ ⤍ 00-00-00-00-00-00-00-05
+                        )
+                      )
+                    )
+                  ),
+                  α1 ↦ ξ.m.as-int.gt(
+                    α0 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-00
+                      )
+                    )
+                  ).eq(
+                    α0 ↦ Φ.org.eolang.bool(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 01-
+                      )
+                    )
+                  ).while(
+                    α0 ↦ ⟦
+                      i ↦ ∅,
+                      φ ↦ Φ.org.eolang.seq(
+                        α0 ↦ Φ.org.eolang.tuple(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple.empty,
+                            α1 ↦ ξ.σ.m.write(
+                              α0 ↦ ξ.σ.m.as-int.minus(
+                                α0 ↦ Φ.org.eolang.int(
+                                  α0 ↦ Φ.org.eolang.bytes(
+                                    Δ ⤍ 00-00-00-00-00-00-00-01
+                                  )
+                                )
+                              )
+                            )
+                          ),
+                          α1 ↦ Φ.org.eolang.bool(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 01-
+                            )
+                          )
+                        )
+                      )
+                    ⟧
+                  )
+                ),
+                α1 ↦ Φ.org.eolang.bool(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 01-
+                  )
+                )
+              )
+            ),
+            φ ↦ Φ.org.eolang.nop
+          ⟧,
+          last-while-dataization-object ↦ ⟦
+            x ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            φ ↦ ξ.x.as-int.lt(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-02
+                )
+              )
+            ).while(
+              α0 ↦ ⟦
+                i ↦ ∅,
+                φ ↦ Φ.org.eolang.seq(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple(
+                      α0 ↦ Φ.org.eolang.tuple.empty,
+                      α1 ↦ ξ.σ.x.write(
+                        α0 ↦ ξ.σ.x.as-int.plus(
+                          α0 ↦ Φ.org.eolang.int(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 00-00-00-00-00-00-00-01
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    α1 ↦ ξ.σ.x.as-int
+                  )
+                )
+              ⟧
+            ).eq(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-03
+                )
+              )
+            )
+          ⟧,
+          last-while-dataization-object-with-false-condition ↦ ⟦
+            x ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-03
+                )
+              )
+            ),
+            φ ↦ ξ.x.as-int.lt(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ).while(
+              α0 ↦ ⟦
+                i ↦ ∅,
+                φ ↦ Φ.org.eolang.seq(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple(
+                      α0 ↦ Φ.org.eolang.tuple.empty,
+                      α1 ↦ ξ.σ.x.write(
+                        α0 ↦ ξ.σ.x.as-int.plus(
+                          α0 ↦ Φ.org.eolang.int(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 00-00-00-00-00-00-00-01
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    α1 ↦ ξ.σ.x
+                  )
+                )
+              ⟧
+            ).eq(
+              α0 ↦ Φ.org.eolang.bool(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-
+                )
+              )
+            )
+          ⟧,
+          iterating-tuple-with-while-using-internal-iterator ↦ ⟦
+            arr ↦ Φ.org.eolang.tuple(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple.empty,
+                    α1 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-01
+                      )
+                    )
+                  ),
+                  α1 ↦ Φ.org.eolang.int(
+                    α0 ↦ Φ.org.eolang.bytes(
+                      Δ ⤍ 00-00-00-00-00-00-00-01
+                    )
+                  )
+                ),
+                α1 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-00-00-00-00-00-00-01
+                  )
+                )
+              ),
+              α1 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            iter ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            acc ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            max ↦ ξ.arr.length.minus(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            φ ↦ Φ.org.eolang.seq(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple.empty,
+                  α1 ↦ ξ.max.eq(
+                    α0 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-00
+                      )
+                    )
+                  ).if(
+                    α0 ↦ ξ.acc.write(
+                      α0 ↦ ξ.acc.as-int.plus(
+                        α0 ↦ ξ.arr.at(
+                          α0 ↦ Φ.org.eolang.int(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 00-00-00-00-00-00-00-00
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    α1 ↦ ξ.iter.as-int.lt(
+                      α0 ↦ ξ.max
+                    ).while(
+                      α0 ↦ ⟦
+                        i ↦ ∅,
+                        φ ↦ Φ.org.eolang.seq(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple(
+                              α0 ↦ Φ.org.eolang.tuple.empty,
+                              α1 ↦ ξ.σ.acc.write(
+                                α0 ↦ ξ.σ.acc.as-int.plus(
+                                  α0 ↦ ξ.σ.arr.at(
+                                    α0 ↦ ξ.i
+                                  )
+                                )
+                              )
+                            ),
+                            α1 ↦ ξ.σ.iter.write(
+                              α0 ↦ ξ.σ.iter.as-int.plus(
+                                α0 ↦ Φ.org.eolang.int(
+                                  α0 ↦ Φ.org.eolang.bytes(
+                                    Δ ⤍ 00-00-00-00-00-00-00-01
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      ⟧
+                    )
+                  )
+                ),
+                α1 ↦ ξ.acc.as-int.eq(
+                  α0 ↦ ξ.arr.length
+                )
+              )
+            )
+          ⟧,
+          iterating-tuple-with-while-using-external-iterator ↦ ⟦
+            arr ↦ Φ.org.eolang.tuple(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple.empty,
+                    α1 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-01
+                      )
+                    )
+                  ),
+                  α1 ↦ Φ.org.eolang.int(
+                    α0 ↦ Φ.org.eolang.bytes(
+                      Δ ⤍ 00-00-00-00-00-00-00-01
+                    )
+                  )
+                ),
+                α1 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-00-00-00-00-00-00-01
+                  )
+                )
+              ),
+              α1 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            iter ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            acc ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            max ↦ ξ.arr.length.minus(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            nop ↦ Φ.org.eolang.seq(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple.empty,
+                  α1 ↦ ξ.max.eq(
+                    α0 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-00
+                      )
+                    )
+                  ).if(
+                    α0 ↦ ξ.acc.write(
+                      α0 ↦ ξ.acc.as-int.plus(
+                        α0 ↦ ξ.arr.at(
+                          α0 ↦ Φ.org.eolang.int(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 00-00-00-00-00-00-00-00
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    α1 ↦ ξ.iter.as-int.lt(
+                      α0 ↦ ξ.max
+                    ).while(
+                      α0 ↦ ⟦
+                        i ↦ ∅,
+                        φ ↦ Φ.org.eolang.seq(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple(
+                              α0 ↦ Φ.org.eolang.tuple.empty,
+                              α1 ↦ ξ.σ.acc.write(
+                                α0 ↦ ξ.σ.acc.as-int.plus(
+                                  α0 ↦ ξ.σ.arr.at(
+                                    α0 ↦ ξ.σ.iter.as-int
+                                  )
+                                )
+                              )
+                            ),
+                            α1 ↦ ξ.σ.iter.write(
+                              α0 ↦ ξ.σ.iter.as-int.plus(
+                                α0 ↦ Φ.org.eolang.int(
+                                  α0 ↦ Φ.org.eolang.bytes(
+                                    Δ ⤍ 00-00-00-00-00-00-00-01
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      ⟧
+                    )
+                  )
+                ),
+                α1 ↦ ξ.acc.as-int.eq(
+                  α0 ↦ ξ.arr.length
+                )
+              )
+            ),
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            )
+          ⟧,
+          iterating-tuple-with-while-without-body-multiple ↦ ⟦
+            arr ↦ Φ.org.eolang.tuple(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple(
+                    α0 ↦ Φ.org.eolang.tuple.empty,
+                    α1 ↦ Φ.org.eolang.int(
+                      α0 ↦ Φ.org.eolang.bytes(
+                        Δ ⤍ 00-00-00-00-00-00-00-01
+                      )
+                    )
+                  ),
+                  α1 ↦ Φ.org.eolang.int(
+                    α0 ↦ Φ.org.eolang.bytes(
+                      Δ ⤍ 00-00-00-00-00-00-00-01
+                    )
+                  )
+                ),
+                α1 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.bytes(
+                    Δ ⤍ 00-00-00-00-00-00-00-01
+                  )
+                )
+              ),
+              α1 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            iter ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            acc ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            max ↦ ξ.arr.length,
+            φ ↦ Φ.org.eolang.seq(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple.empty,
+                  α1 ↦ ⟦
+                    φ ↦ ξ.σ.iter.as-int.lt(
+                      α0 ↦ ξ.σ.max
+                    ).if(
+                      α0 ↦ Φ.org.eolang.seq(
+                        α0 ↦ Φ.org.eolang.tuple(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple(
+                              α0 ↦ Φ.org.eolang.tuple.empty,
+                              α1 ↦ ξ.σ.acc.write(
+                                α0 ↦ ξ.σ.acc.as-int.plus(
+                                  α0 ↦ ξ.σ.arr.at(
+                                    α0 ↦ ξ.σ.iter.as-int
+                                  )
+                                )
+                              )
+                            ),
+                            α1 ↦ ξ.σ.iter.write(
+                              α0 ↦ ξ.σ.iter.as-int.plus(
+                                α0 ↦ Φ.org.eolang.int(
+                                  α0 ↦ Φ.org.eolang.bytes(
+                                    Δ ⤍ 00-00-00-00-00-00-00-01
+                                  )
+                                )
+                              )
+                            )
+                          ),
+                          α1 ↦ Φ.org.eolang.bool(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 01-
+                            )
+                          )
+                        )
+                      ),
+                      α1 ↦ Φ.org.eolang.bool(
+                        α0 ↦ Φ.org.eolang.bytes(
+                          Δ ⤍ 00-
+                        )
+                      )
+                    )
+                  ⟧.while(
+                    α0 ↦ Φ.org.eolang.nop
+                  )
+                ),
+                α1 ↦ ξ.acc.as-int.eq(
+                  α0 ↦ ξ.arr.length
+                )
+              )
+            )
+          ⟧,
+          iterating-tuple-with-while-without-body-single ↦ ⟦
+            arr ↦ Φ.org.eolang.tuple(
+              α0 ↦ Φ.org.eolang.tuple.empty,
+              α1 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-01
+                )
+              )
+            ),
+            iter ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            acc ↦ Φ.org.eolang.memory(
+              α0 ↦ Φ.org.eolang.int(
+                α0 ↦ Φ.org.eolang.bytes(
+                  Δ ⤍ 00-00-00-00-00-00-00-00
+                )
+              )
+            ),
+            max ↦ ξ.arr.length,
+            nop ↦ Φ.org.eolang.seq(
+              α0 ↦ Φ.org.eolang.tuple(
+                α0 ↦ Φ.org.eolang.tuple(
+                  α0 ↦ Φ.org.eolang.tuple.empty,
+                  α1 ↦ ⟦
+                    φ ↦ ξ.σ.iter.as-int.lt(
+                      α0 ↦ ξ.σ.max
+                    ).if(
+                      α0 ↦ Φ.org.eolang.seq(
+                        α0 ↦ Φ.org.eolang.tuple(
+                          α0 ↦ Φ.org.eolang.tuple(
+                            α0 ↦ Φ.org.eolang.tuple(
+                              α0 ↦ Φ.org.eolang.tuple.empty,
+                              α1 ↦ ξ.σ.acc.write(
+                                α0 ↦ ξ.σ.acc.as-int.plus(
+                                  α0 ↦ ξ.σ.arr.at(
+                                    α0 ↦ ξ.σ.iter.as-int
+                                  )
+                                )
+                              )
+                            ),
+                            α1 ↦ ξ.σ.iter.write(
+                              α0 ↦ ξ.σ.iter.as-int.plus(
+                                α0 ↦ Φ.org.eolang.int(
+                                  α0 ↦ Φ.org.eolang.bytes(
+                                    Δ ⤍ 00-00-00-00-00-00-00-01
+                                  )
+                                )
+                              )
+                            )
+                          ),
+                          α1 ↦ Φ.org.eolang.bool(
+                            α0 ↦ Φ.org.eolang.bytes(
+                              Δ ⤍ 01-
+                            )
+                          )
+                        )
+                      ),
+                      α1 ↦ Φ.org.eolang.bool(
+                        α0 ↦ Φ.org.eolang.bytes(
+                          Δ ⤍ 00-
+                        )
+                      )
+                    )
+                  ⟧.while(
+                    α0 ↦ ξ.nop
+                  )
+                ),
+                α1 ↦ ξ.acc.as-int.eq(
+                  α0 ↦ ξ.arr.length
+                )
+              )
+            ),
+            φ ↦ Φ.org.eolang.bool(
+              α0 ↦ Φ.org.eolang.bytes(
+                Δ ⤍ 01-
+              )
+            )
+          ⟧,
+          λ ⤍ Package
+        ⟧,
+        λ ⤍ Package
+      ⟧
+    ⟧
+  }

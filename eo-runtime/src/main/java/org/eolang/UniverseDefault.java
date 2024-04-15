@@ -96,7 +96,7 @@ public final class UniverseDefault implements Universe {
         atts[0] = "";
         for (final String att: atts) {
             if (!"".equals(att)) {
-                accum = accum.attr(att).get();
+                accum = accum.take(att);
             }
         }
         this.indexed.putIfAbsent(accum.hashCode(), accum);
@@ -105,16 +105,12 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public void put(final int vertex, final byte[] bytes) {
-        this.get(vertex).attr("Δ").put(
-            new Data.Value<>(bytes)
-        );
+        this.indexed.put(vertex, new PhData(this.get(vertex), bytes));
     }
 
     @Override
     public void bind(final int parent, final int child, final String att) {
-        this.get(parent)
-            .attr(att)
-            .put(this.get(child));
+        this.get(parent).put(att, this.get(child));
     }
 
     @Override
@@ -126,10 +122,7 @@ public final class UniverseDefault implements Universe {
 
     @Override
     public byte[] dataize(final int vertex) {
-        return new Param(
-            this.get(vertex),
-            "Δ"
-        ).asBytes().take();
+        return this.get(vertex).delta();
     }
 
     /**
@@ -162,13 +155,13 @@ public final class UniverseDefault implements Universe {
             final char cur = name.charAt(iter);
             switch (cur) {
                 case '^':
-                    builder.append('ρ');
+                    builder.append(Attr.RHO);
                     break;
                 case '@':
-                    builder.append('φ');
+                    builder.append(Attr.PHI);
                     break;
                 case '&':
-                    builder.append('σ');
+                    builder.append(Attr.SIGMA);
                     break;
                 default:
                     builder.append(cur);

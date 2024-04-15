@@ -59,7 +59,7 @@ final class EOerrorTest {
             () -> new Dataized(
                 new PhWith(
                     new EOerror(Phi.Φ),
-                    "α",
+                    "message",
                     new Data.ToPhi("intentional error")
                 )
             ).take()
@@ -114,9 +114,9 @@ final class EOerrorTest {
                         this,
                         rho -> new PhWith(
                             new PhCopy(
-                                Phi.Φ.attr("org").get().attr("eolang").get().attr("error").get()
+                                Phi.Φ.take("org").take("eolang").take("error")
                             ),
-                            "α",
+                            "message",
                             new Data.ToPhi(data)
                         )
                     )

@@ -53,6 +53,10 @@ final class UnspileMojoTest {
             .with("classesDir", classes.toFile())
             .execute(UnspileMojo.class);
         MatcherAssert.assertThat(
+            String.format(
+                "UnspileMojo unable to remove %s class",
+                foo
+            ),
             Files.exists(foo),
             Matchers.is(false)
         );

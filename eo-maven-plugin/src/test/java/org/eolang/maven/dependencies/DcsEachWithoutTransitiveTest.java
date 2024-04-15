@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.30
  */
-class DcsEachWithoutTransitiveTest {
+final class DcsEachWithoutTransitiveTest {
 
     @Test
     void failsIfHasTransitiveDependencies() {
@@ -55,6 +55,7 @@ class DcsEachWithoutTransitiveTest {
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.randDep("test"))
@@ -67,6 +68,7 @@ class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 DcsFake::new
@@ -79,6 +81,7 @@ class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.runtimeDep())

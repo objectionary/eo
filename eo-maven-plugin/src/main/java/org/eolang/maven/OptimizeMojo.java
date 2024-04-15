@@ -70,16 +70,17 @@ public final class OptimizeMojo extends SafeMojo {
      * The map with directories of OptimizeMojo.
      * @checkstyle DiamondOperatorCheck (10 lines)
      */
+    @SuppressWarnings("PMD.UseDiamondOperator")
     private static final Map<String, String> DIRECTORIES = new MapOf<String, String>(
-        new MapEntry<>(OptimizationFolder.TARGET.key(), OptimizeMojo.DIR),
-        new MapEntry<>(OptimizationFolder.CACHE.key(), OptimizeMojo.OPTIMIZED)
+        new MapEntry<>(OptimizationFolder.TARGET.getKey(), OptimizeMojo.DIR),
+        new MapEntry<>(OptimizationFolder.CACHE.getKey(), OptimizeMojo.OPTIMIZED)
     );
 
     /**
      * Track optimization steps into intermediate XML files?
      *
-     * @checkstyle MemberNameCheck (7 lines)
      * @since 0.24.0
+     * @checkstyle MemberNameCheck (7 lines)
      */
     @SuppressWarnings("PMD.LongVariable")
     @Parameter(property = "eo.trackOptimizationSteps", required = true, defaultValue = "false")
@@ -96,8 +97,8 @@ public final class OptimizeMojo extends SafeMojo {
             this.optimization(),
             new OptimizationTask(
                 new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.key(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.key(), this.cache)
+                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
+                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
                 ),
                 OptimizeMojo.DIRECTORIES,
                 ForeignTojo::withOptimized,

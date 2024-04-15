@@ -47,6 +47,16 @@ public interface Attr extends Term {
     String DELTA = "Δ";
 
     /**
+     * Rho attribute.
+     */
+    String RHO = "ρ";
+
+    /**
+     * Sigma attribute.
+     */
+    String SIGMA = "σ";
+
+    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to
@@ -65,7 +75,7 @@ public interface Attr extends Term {
      * Put a new object in.
      *
      * @param phi The object to put
+     * @return Was attribute set
      */
-    void put(Phi phi);
-
+    boolean put(Phi phi);
 }

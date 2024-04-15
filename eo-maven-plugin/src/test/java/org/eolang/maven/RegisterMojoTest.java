@@ -60,6 +60,7 @@ final class RegisterMojoTest {
             .with(RegisterMojoTest.PARAM, temp.resolve(RegisterMojoTest.SOURCES).toFile())
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             maven.foreign().getById("org.eolang.maven.abc-def").exists("id"),
             Matchers.is(true)
         );
@@ -80,6 +81,7 @@ final class RegisterMojoTest {
             }
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             exception.getCause().getCause().getMessage(),
             Matchers.containsString("Incorrect name found: '.abc.eo'")
         );
@@ -96,6 +98,7 @@ final class RegisterMojoTest {
             .with("strictFileNames", false)
             .execute(new FakeMaven.Register());
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             maven.foreign().getById("org.eolang.maven..abc").exists("id"),
             Matchers.is(true)
         );

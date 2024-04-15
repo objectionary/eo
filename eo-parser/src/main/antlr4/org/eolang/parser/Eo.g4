@@ -59,8 +59,7 @@ master
     ;
 
 // Just an object reference without name
-just: beginner
-    | finisherCopied
+just: beginnerOrFinisher
     | versioned
     ;
 
@@ -160,7 +159,8 @@ happlicationHeadExtended
 // Simple statements that can be used as head of application
 applicable
     : STAR
-    | (NAME | AT) COPY?
+    | NAME
+    | PHI
     ;
 
 // Horizontal application tail
@@ -182,8 +182,7 @@ happlicationTailReversedFirst
 // Argument of horizontal application
 // Does not contain elements in vertical notation
 happlicationArg
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | hmethod
     | scope
     ;
@@ -266,6 +265,7 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
+    | onlyphi // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -288,14 +288,18 @@ vapplicationArgHapplicationUnbound
     ;
 
 // Vertical anonym object as argument of vertical application
-// todo - replace with formation?
 vapplicationArgVanonymUnbound
-    : commentMandatory formation
-    | formationNameless
+    : formationNamedOrNameless
     ;
 
 formationNameless
     : attributes innersOrEol
+    ;
+
+// Formation with or without name
+formationNamedOrNameless
+    : commentMandatory formation
+    | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
@@ -331,6 +335,19 @@ vapplicationArgHanonymUnbound
 // Horizontal anonym object
 hanonym
     : attributes hanonymInner+
+    ;
+
+// Unnamed abstract object with only @-bound attribute
+// x.y.z > [i]          -> [i] (x.y.z > @)
+// x y z > [i]          -> [i] (x y z > @)
+// [a] (b > c) > [i]    -> [i] ([a] (b > c) > @)
+// x > [i]              -> [i] (x > @)
+onlyphi
+    : (hmethod | happlication | hanonym | just) onlyphiTail
+    ;
+
+// Tail of the unnamed abstract object with only @-bound attribute
+onlyphiTail: spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
@@ -387,15 +404,13 @@ hmethodExtendedVersioned
 
 // Head of horizontal method
 hmethodHead
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
 // Extended head of horizontal method
 hmethodHeadExtended
-    : beginner
-    | finisherCopied
+    : beginnerOrFinisher
     | scope
     ;
 
@@ -422,11 +437,14 @@ vmethodOptional
 // 1. vertical method
 // 2. vertical application
 // 3. just an object reference
+// 4. vertical formation
+// 5. unnamed abstract object with only @-bound attribute
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | justNamed EOL
+    | (justNamed | onlyphi) EOL
+    | formationNamedOrNameless
     ;
 
 methodTailOptional
@@ -448,7 +466,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisherCopied
+    : DOT finisher
     ;
 
 // Versioned tail of method
@@ -469,15 +487,15 @@ beginner
 // Can start or finish the statement
 finisher
     : NAME
-    | AT
+    | PHI
     | RHO
     | SIGMA
-    | VERTEX
     ;
 
-// Finisher with optional COPY
-finisherCopied
-    : finisher COPY?
+// Beginner or finisher
+beginnerOrFinisher
+    : beginner
+    | finisher
     ;
 
 // Name with optional version
@@ -498,7 +516,11 @@ oname
 
 // Suffix
 suffix
-    : SPACE ARROW SPACE (AT | NAME)
+    : spacedArrow (PHI | NAME)
+    ;
+
+spacedArrow
+    : SPACE ARROW SPACE
     ;
 
 // Simple scope
@@ -514,7 +536,7 @@ version
     ;
 
 // Binding
-as  : COLON (NAME | RHO | INT)
+as  : COLON (NAME | INT)
     ;
 
 // Data
@@ -549,13 +571,8 @@ SLASH
 COLON
     : ':'
     ;
-COPY: '\''
-    ;
 ARROW
     : '>'
-    ;
-VERTEX
-    : '<'
     ;
 SIGMA
     : '&'
@@ -583,7 +600,7 @@ LB  : '('
     ;
 RB  : ')'
     ;
-AT  : '@'
+PHI : '@'
     ;
 RHO : '^'
     ;

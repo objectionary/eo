@@ -25,6 +25,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,13 +34,12 @@ import org.junit.jupiter.api.Test;
  * @since 0.16
  */
 final class PhMethodTest {
-
     @Test
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            num.attr("plus").get(),
-            Matchers.equalTo(num.attr("plus").get())
+            num.take("plus"),
+            Matchers.not(Matchers.equalTo(num.take("plus")))
         );
     }
 
@@ -82,17 +82,6 @@ final class PhMethodTest {
     }
 
     @Test
-    void calculatesPhiManyTimes() {
-        final Dummy dummy = new Dummy(Phi.Φ);
-        final Phi phi = new PhMethod(dummy, "neg");
-        final int total = 10;
-        for (int idx = 0; idx < total; ++idx) {
-            new Dataized(phi).take();
-        }
-        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(total));
-    }
-
-    @Test
     void hasDifferentFormasWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
@@ -130,12 +119,14 @@ final class PhMethodTest {
             super(sigma);
             this.add(
                 "φ",
-                new AtComposite(
-                    this,
-                    self -> {
-                        this.count += 1;
-                        return new Data.ToPhi(1L);
-                    }
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        self -> {
+                            this.count += 1;
+                            return new Data.ToPhi(1L);
+                        }
+                    )
                 )
             );
             this.add(

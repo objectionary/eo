@@ -51,9 +51,9 @@ public final class EOseqTest {
                     0,
                     new PhWith(
                         new PhWith(
-                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
                             0, new Data.ToPhi(0L)
-                        ).attr("with").get().copy(),
+                        ).take("with").copy(),
                         0, new Data.ToPhi(1L)
                     )
                 )
@@ -71,9 +71,9 @@ public final class EOseqTest {
                     0,
                     new PhWith(
                         new PhWith(
-                            new EOtuple$EOempty(Phi.Φ).attr("with").get().copy(),
+                            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
                             0, new Data.ToPhi(0L)
-                        ).attr("with").get().copy(),
+                        ).take("with").copy(),
                         0, new Data.ToPhi("Hello!")
                     )
                 )

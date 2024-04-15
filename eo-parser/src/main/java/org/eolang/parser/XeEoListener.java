@@ -58,7 +58,8 @@ import org.xembly.Directives;
     "PMD.TooManyMethods",
     "PMD.AvoidDuplicateLiterals",
     "PMD.ExcessivePublicCount",
-    "PMD.ExcessiveClassLength"
+    "PMD.ExcessiveClassLength",
+    "PMD.GodClass"
 })
 public final class XeEoListener implements EoListener, Iterable<Directive> {
     /**
@@ -184,7 +185,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         for (final TerminalNode node : ctx.META()) {
             final String[] pair = node.getText().split(" ", 2);
             final String head = pair[0].substring(1);
-            if (head.equals(XeEoListener.TESTS_META)) {
+            if (XeEoListener.TESTS_META.equals(head)) {
                 this.tests = true;
             }
             this.dirs.add("meta")
@@ -241,49 +242,50 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        if (!this.tests) {
-            final String comment = String.join(
-                "",
-                ctx.comment().COMMENTARY().getText().substring(1).trim(),
-                ctx.commentOptional().comment().stream().map(
-                    context -> context.COMMENTARY().getText().substring(1).trim()
-                ).collect(Collectors.joining(""))
-            );
-            final String length = String.format(
-                "Comment must be at least %d characters long",
-                XeEoListener.MIN_COMMENT_LENGTH
-            );
-            final String warning = "warning";
-            if (comment.isEmpty()) {
+        if(this.tests) {
+            return;
+        }
+        final String comment = String.join(
+            "",
+            ctx.comment().COMMENTARY().getText().substring(1).trim(),
+            ctx.commentOptional().comment().stream().map(
+                context -> context.COMMENTARY().getText().substring(1).trim()
+            ).collect(Collectors.joining(""))
+        );
+        final String length = String.format(
+            "Comment must be at least %d characters long",
+            XeEoListener.MIN_COMMENT_LENGTH
+        );
+        final String warning = "warning";
+        if (comment.isEmpty()) {
+            this.addError(ctx, "comment-length-check", warning, length);
+        } else {
+            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
                 this.addError(ctx, "comment-length-check", warning, length);
-            } else {
-                if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
-                    this.addError(ctx, "comment-length-check", warning, length);
-                }
-                if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
-                    this.addError(
-                        ctx,
-                        "comment-content-check",
-                        warning,
-                        "Comment must contain only ASCII printable characters: 0x20-0x7f"
-                    );
-                }
-                if (!Character.isUpperCase(comment.charAt(0))) {
-                    this.addError(
-                        ctx,
-                        "comment-start-character-check",
-                        warning,
-                        "Comment must start with capital letter"
-                    );
-                }
-                if (comment.charAt(comment.length() - 1) != '.') {
-                    this.addError(
-                        ctx,
-                        "comment-ending-check",
-                        warning,
-                        "Comment must end with dot"
-                    );
-                }
+            }
+            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
+                this.addError(
+                    ctx,
+                    "comment-content-check",
+                    warning,
+                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
+                );
+            }
+            if (!Character.isUpperCase(comment.charAt(0))) {
+                this.addError(
+                    ctx,
+                    "comment-start-character-check",
+                    warning,
+                    "Comment must start with capital letter"
+                );
+            }
+            if (comment.charAt(comment.length() - 1) != '.') {
+                this.addError(
+                    ctx,
+                    "comment-ending-check",
+                    warning,
+                    "Comment must end with dot"
+                );
             }
         }
     }
@@ -494,16 +496,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             this.objects.prop("star");
         } else if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
+        } else if (ctx.PHI() != null) {
             base = "@";
         } else {
             base = "";
         }
         if (!base.isEmpty()) {
             this.objects.prop("base", base);
-        }
-        if (ctx.COPY() != null) {
-            this.objects.prop("copy");
         }
         this.objects.leave();
     }
@@ -738,6 +737,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitFormationNamedOrNameless(final EoParser.FormationNamedOrNamelessContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterVapplicationArgVanonymBound(
         final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
@@ -816,6 +825,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitHanonym(final EoParser.HanonymContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyphi(final EoParser.OnlyphiContext ctx) {
+        this.startAbstract(ctx).enter();
+    }
+
+    @Override
+    public void exitOnlyphi(final EoParser.OnlyphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
+        this.objects.enter().prop("name", "@").leave().leave();
+    }
+
+    @Override
+    public void exitOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
         // Nothing here
     }
 
@@ -965,12 +994,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
     public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
@@ -1056,12 +1085,10 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
         final String base;
         if (ctx.NAME() != null) {
             base = ctx.NAME().getText();
-        } else if (ctx.AT() != null) {
+        } else if (ctx.PHI() != null) {
             base = "@";
         } else if (ctx.RHO() != null) {
             base = "^";
-        } else if (ctx.VERTEX() != null) {
-            base = "<";
         } else if (ctx.SIGMA() != null) {
             base = "&";
         } else {
@@ -1078,15 +1105,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
+    public void enterBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitFinisherCopied(final EoParser.FinisherCopiedContext ctx) {
-        if (ctx.COPY() != null) {
-            this.objects.enter().prop("copy").leave();
-        }
+    public void exitBeginnerOrFinisher(final EoParser.BeginnerOrFinisherContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -1125,8 +1150,8 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterSuffix(final EoParser.SuffixContext ctx) {
         this.objects.enter();
-        if (ctx.AT() != null) {
-            this.objects.prop("name", ctx.AT().getText());
+        if (ctx.PHI() != null) {
+            this.objects.prop("name", ctx.PHI().getText());
         } else if (ctx.NAME() != null) {
             this.objects.prop("name", ctx.NAME().getText());
         }
@@ -1135,6 +1160,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitSuffix(final EoParser.SuffixContext ctx) {
         this.objects.leave();
+    }
+
+    @Override
+    public void enterSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -1309,7 +1344,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * Start abstract object.
      *
      * @param ctx Context
-     * @return Xembly objects after creating abstract object 
+     * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
         return this.startObject(ctx).prop("abstract").leave();

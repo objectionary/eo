@@ -34,7 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.29
  */
-class LatexMojoTest {
+final class LatexMojoTest {
 
     /**
      * Generate simple main.tex file from main.xmir file
@@ -46,6 +46,7 @@ class LatexMojoTest {
     @Test
     void generatesTexFile(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new FakeMaven(temp)
                 .withHelloWorld()
                 .execute(new FakeMaven.Latex())
@@ -63,6 +64,7 @@ class LatexMojoTest {
     @Test
     void checksLastName() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             LatexMojo.last("foo.bar.hello"),
             Matchers.equalTo("hello")
         );

@@ -45,7 +45,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -71,6 +70,7 @@ final class SodgMojoTest {
         }
         final XML graph = SodgMojoTest.toGraph(program.toString(), "**");
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             ".foo .foo",
             new SodgMojoTest.ExistsIn(graph)
         );
@@ -80,6 +80,7 @@ final class SodgMojoTest {
     @ClasspathSource(value = "org/eolang/maven/sodg-packs", glob = "**.yaml")
     void transformsThroughSheets(final String yaml) {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -87,12 +88,16 @@ final class SodgMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/sodgs/", glob = "**.yaml")
-    @SuppressWarnings("PMD.JUnitTestContainsTooManyAsserts")
+    @SuppressWarnings({
+        "PMD.JUnitTestContainsTooManyAsserts",
+        "PMD.ProhibitPlainJunitAssertionsRule"
+    })
     void generatesSodgForPacks(final String pack) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
-        Assumptions.assumeTrue(
-            map.get("skip") == null,
-            String.format("%s is skipped", pack)
+        MatcherAssert.assertThat(
+            String.format("%s is skipped", pack),
+            map.get("skip"),
+            Matchers.equalTo(null)
         );
         Object inclusion = map.get("inclusion");
         if (inclusion == null) {
@@ -109,6 +114,7 @@ final class SodgMojoTest {
         for (final String loc : (Iterable<String>) map.get("locators")) {
             assertions.add(
                 () -> MatcherAssert.assertThat(
+                    "TO ADD ASSERTION MESSAGE",
                     loc,
                     new SodgMojoTest.ExistsIn(graph)
                 )
@@ -193,7 +199,11 @@ final class SodgMojoTest {
          * @checkstyle CyclomaticComplexityCheck (10 lines)
          * @checkstyle NPathComplexityCheck (10 lines)
          */
-        @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
+        @SuppressWarnings({
+            "PMD.NPathComplexity",
+            "PMD.ExcessiveMethodLength",
+            "PMD.CognitiveComplexity"
+        })
         private void matches(final String item) {
             String vertex = "ν0";
             final String[] parts = item.split(" ");

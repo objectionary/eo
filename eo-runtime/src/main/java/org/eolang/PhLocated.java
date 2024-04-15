@@ -105,17 +105,22 @@ public final class PhLocated implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhLocated(this.origin.copy(), this.line, this.position);
+        return new PhLocated(this.origin.copy(), this.line, this.position, this.location);
     }
 
     @Override
-    public Attr attr(final int pos) {
-        return new AtLocated(this.origin.attr(pos), this.line, this.position);
+    public Phi take(final String name) {
+        return this.origin.take(name);
     }
 
     @Override
-    public Attr attr(final String attr) {
-        return new AtLocated(this.origin.attr(attr), this.line, this.position);
+    public boolean put(final int pos, final Phi object) {
+        return this.origin.put(pos, object);
+    }
+
+    @Override
+    public boolean put(final String name, final Phi object) {
+        return this.origin.put(name, object);
     }
 
     @Override
@@ -128,4 +133,13 @@ public final class PhLocated implements Phi {
         return this.origin.forma();
     }
 
+    @Override
+    public void attach(final byte[] data) {
+        this.origin.attach(data);
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.origin.delta();
+    }
 }

@@ -27,7 +27,8 @@ package org.eolang;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Read only once.
+ * Attribute that retrieves object only once.
+ * It's highly recommended to use it with {@link AtComposite}.
  *
  * @since 0.1
  */
@@ -70,7 +71,7 @@ public final class AtOnce implements Attr {
         final String txt;
         final Phi phi = this.cached.get();
         if (phi == null) {
-            txt = "λ";
+            txt = "Lazy";
         } else {
             txt = phi.φTerm();
         }
@@ -93,7 +94,7 @@ public final class AtOnce implements Attr {
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new ExReadOnly(
             String.format(
                 "You can't overwrite '%s'",

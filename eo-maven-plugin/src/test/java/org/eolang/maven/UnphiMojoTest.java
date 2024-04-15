@@ -53,7 +53,7 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
  */
-class UnphiMojoTest {
+final class UnphiMojoTest {
     @Test
     void createsFile(@TempDir final Path temp) throws Exception {
         new HmBase(temp).save(

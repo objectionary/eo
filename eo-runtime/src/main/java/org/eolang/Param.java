@@ -52,7 +52,7 @@ public final class Param {
      * @param obj The object to fetch \rho from
      */
     public Param(final Phi obj) {
-        this(obj, "ρ");
+        this(obj, Attr.RHO);
     }
 
     /**
@@ -80,7 +80,7 @@ public final class Param {
      * @return Bytes.
      */
     public Bytes asBytes() {
-        return new BytesOf(this.dataized().take(byte[].class));
+        return new BytesOf(this.dataized().take());
     }
 
     /**
@@ -89,7 +89,7 @@ public final class Param {
      */
     private Dataized dataized() {
         return new Dataized(
-            this.rho.attr(this.attr).get()
+            this.rho.take(this.attr)
         );
     }
 }

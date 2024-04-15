@@ -24,12 +24,13 @@
 
 package org.eolang;
 
+import java.util.Arrays;
+
 /**
  * An object that reports all manipulations with it to the log (very useful
  * for debugging purposes).
  *
  * <p>This class is thread-safe.</p>
- *
  * @since 0.24
  */
 @Versionized
@@ -42,7 +43,6 @@ public final class PhLogged implements Phi {
 
     /**
      * Ctor.
-     *
      * @param phi The origin
      */
     public PhLogged(final Phi phi) {
@@ -63,24 +63,26 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public Attr attr(final int pos) {
-        System.out.printf("%d.attr(#%d)...\n", this.hashCode(), pos);
-        final Attr ret = new AtLogged(
-            this.origin.attr(pos),
-            String.format("%d#%d", this.hashCode(), pos)
-        );
-        System.out.printf("%d.attr(#%d)!\n", this.hashCode(), pos);
+    public Phi take(final String name) {
+        System.out.printf("%d.take(\"%s\")...\n", this.hashCode(), name);
+        final Phi ret = this.origin.take(name);
+        System.out.printf("%d.take(\"%s\")!\n", this.hashCode(), name);
         return ret;
     }
 
     @Override
-    public Attr attr(final String name) {
-        System.out.printf("%d.attr(\"%s\")...\n", this.hashCode(), name);
-        final Attr ret = new AtLogged(
-            this.origin.attr(name),
-            String.format("%d#%s", this.hashCode(), name)
-        );
-        System.out.printf("%d.attr(\"%s\")!\n", this.hashCode(), name);
+    public boolean put(final int pos, final Phi object) {
+        System.out.printf("%d.put(%d, %d)...\n", this.hashCode(), pos, object.hashCode());
+        final boolean ret = this.origin.put(pos, object);
+        System.out.printf("%d.put(%d, %d)!\n", this.hashCode(), pos, object.hashCode());
+        return ret;
+    }
+
+    @Override
+    public boolean put(final String name, final Phi object) {
+        System.out.printf("%d.put(\"%s\", %d)...\n", this.hashCode(), name, object.hashCode());
+        final boolean ret = this.origin.put(name, object);
+        System.out.printf("%d.put(\"%s\", %d)!\n", this.hashCode(), name, object.hashCode());
         return ret;
     }
 
@@ -109,4 +111,18 @@ public final class PhLogged implements Phi {
         return this.origin.toString();
     }
 
+    @Override
+    public void attach(final byte[] data) {
+        System.out.printf("%d.attach(%s)...\n", this.hashCode(), Arrays.toString(data));
+        this.origin.attach(data);
+        System.out.printf("%d.attach(%s)!\n", this.hashCode(), Arrays.toString(data));
+    }
+
+    @Override
+    public byte[] delta() {
+        System.out.printf("%d.delta()...\n", this.hashCode());
+        final byte[] data = this.origin.delta();
+        System.out.printf("%d.delta()!\n", this.hashCode());
+        return data;
+    }
 }

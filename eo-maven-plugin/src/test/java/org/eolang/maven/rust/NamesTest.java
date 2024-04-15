@@ -46,10 +46,12 @@ final class NamesTest {
         final String one = "AaAaAa";
         final String two = "AaAaBB";
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             one.hashCode(),
             Matchers.equalTo(two.hashCode())
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             dispatcher.name(one),
             Matchers.not(
                 dispatcher.name(two)
@@ -68,12 +70,14 @@ final class NamesTest {
             Collectors.toMap(loc -> loc, before::name)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             locations.size(),
             Matchers.equalTo(functions.size())
         );
         before.save();
         final Names after = new Names(temp.resolve(names));
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             before,
             Matchers.equalTo(after)
         );

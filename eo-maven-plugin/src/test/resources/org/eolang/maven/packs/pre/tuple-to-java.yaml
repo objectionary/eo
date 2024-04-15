@@ -10,17 +10,15 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'Phi ret = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '  Phi ret_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '      Phi ret_1_1_1_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), 'Phi ret = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '  Phi ret_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi ret_1_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_1_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '      Phi ret_1_1_1 = new PhMethod(ret_1_1_1_base, "empty");')]
-  - //java[contains(text(), '  Phi ret_2 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
+  - //java[contains(text(), '  Phi ret_2 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '    Phi ret_2_1 = Phi.Φ.take("org").take("eolang").take("tuple");')]
+  - //java[contains(text(), '      Phi ret_2_1_1_base = Phi.Φ.take("org").take("eolang").take("tuple");')]
   - //java[contains(text(), '      Phi ret_2_1_1 = new PhMethod(ret_2_1_1_base, "empty");')]
-  - //java[contains(text(), '  Phi ret_2_base = Phi.Φ.attr("org").get().attr("eolang").get().attr("tuple").get();')]
-  - //java[contains(text(), '  Phi ret_2 = new PhMethod(ret_2_base, "empty");')]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > foo

@@ -34,64 +34,23 @@ package org.eolang;
  * @since 0.1
  */
 @Versionized
-final class AtAbsent implements Attr {
-
-    /**
-     * Name.
-     */
-    private final String name;
-
-    /**
-     * Suffix.
-     */
-    private final String suffix;
-
+final class AtAbsent extends AtEnvelope {
     /**
      * Ctor.
      * @param attr Attribute name
      * @param sfx Suffix
      */
     AtAbsent(final String attr, final String sfx) {
-        this.name = attr;
-        this.suffix = sfx;
-    }
-
-    @Override
-    public String toString() {
-        return "\uD835\uDF02";
-    }
-
-    @Override
-    public String φTerm() {
-        return "Ø";
-    }
-
-    @Override
-    public Attr copy(final Phi self) {
-        throw new ExUnset(
-            String.format(
-                "Can't copy(), attribute \"%s\" is absent%s",
-                this.name, this.suffix
-            )
-        );
-    }
-
-    @Override
-    public Phi get() {
-        throw new ExUnset(
-            String.format(
-                "Can't get(), attribute \"%s\" is absent%s",
-                this.name, this.suffix
-            )
-        );
-    }
-
-    @Override
-    public void put(final Phi phi) {
-        throw new ExUnset(
-            String.format(
-                "Can't put(), attribute \"%s\" is absent%s",
-                this.name, this.suffix
+        super(
+            new AtGetOnly(
+                () -> {
+                    throw new ExUnset(
+                        String.format(
+                            "Can't get(), attribute \"%s\" is absent%s",
+                            attr, sfx
+                        )
+                    );
+                }
             )
         );
     }

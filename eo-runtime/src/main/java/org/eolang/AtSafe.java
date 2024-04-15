@@ -27,13 +27,17 @@ package org.eolang;
 import EOorg.EOeolang.EOerror;
 
 /**
- * It catches {@link ExFailure} and
+ * The attribute that catches {@link ExFailure} and
  * throws {@link EOerror.ExError}.
+ * Every time attribute is taken from an object (when method {@link PhDefault#attr(String)}
+ * is called) - this attribute is being wrapped by this {@link AtSafe}.
+ * It allows to catch {@link ExFailure} inside encapsulated attributes and transform them into
+ * {@link EOerror.ExError} which is cached by {@link EOorg.EOeolang.EOtry} lately.
  *
  * @since 0.26
  */
 @Versionized
-public final class AtSafe implements Attr {
+final class AtSafe implements Attr {
 
     /**
      * Origin attribute.
@@ -44,44 +48,50 @@ public final class AtSafe implements Attr {
      * Ctor.
      * @param attr Origin attribute
      */
-    public AtSafe(final Attr attr) {
+    AtSafe(final Attr attr) {
         this.origin = attr;
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public Attr copy(final Phi self) {
-        return new AtSafe(this.origin.copy(self));
+        throw new IllegalStateException(
+            "Should never happen"
+        );
     }
 
     @Override
     public Phi get() {
-        Phi phi;
         try {
-            phi = this.origin.get();
+            return new PhSafe(this.origin.get());
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(EOerror.message(ex))
             );
         }
-        if (!(phi instanceof Data)) {
-            phi = new PhSafe(phi);
-        }
-        return phi;
     }
 
     @Override
-    public void put(final Phi phi) {
-        this.origin.put(phi);
+    public boolean put(final Phi phi) {
+        try {
+            return this.origin.put(phi);
+        } catch (final ExFailure ex) {
+            throw new EOerror.ExError(
+                new Data.ToPhi(EOerror.message(ex))
+            );
+        }
     }
-
 }

@@ -38,7 +38,7 @@ public class ExInterruptedTest {
         final EOthrow phi = new EOthrow(new Data.ToPhi(true));
         Assertions.assertThrows(
             ExInterrupted.class,
-            () -> new Dataized(phi.attr("φ").get()).take()
+            () -> new Dataized(phi.take(Attr.PHI)).take()
         );
     }
 

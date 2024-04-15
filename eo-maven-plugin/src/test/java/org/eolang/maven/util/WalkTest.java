@@ -43,6 +43,7 @@ final class WalkTest {
         new HmBase(temp).save("", Paths.get("foo/hello/0.1/EObar/x.bin"));
         new HmBase(temp).save("", Paths.get("EOxxx/bar"));
         MatcherAssert.assertThat(
+            "Walk is not iterable with more than 1 item, but it must be",
             new Walk(temp).includes(new ListOf<>("EO**/*")),
             Matchers.iterableWithSize(1)
         );

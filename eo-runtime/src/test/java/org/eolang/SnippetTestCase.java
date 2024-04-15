@@ -40,6 +40,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,8 +58,8 @@ import org.yaml.snakeyaml.Yaml;
  *
  * @since 0.1
  *
- * @todo #2718:30min One snippet is disabled now, in
- *  the "src/test/resources/snippets/*.yaml" because there's no
+ * @todo #2718:30min One snippets is disabled now, in
+ *  the "src/test/resources/snippets/*.yaml". It needs
  *  "sprintf" object in objectionary (fibo.yaml).
  *  When "sprintf" is in objectionary again - we need to enable
  *  it (by removing the "skip" attribute from the YAML file).
@@ -80,6 +81,7 @@ final class SnippetTestCase {
      * @throws IOException If fails
      */
     @ParameterizedTest
+    @Tag("slow")
     @ExtendWith(WeAreOnline.class)
     @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")

@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
-      - uses: teatimeguest/setup-texlive-action@v3.0.2
+      - uses: teatimeguest/setup-texlive-action@v3.2.1
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox

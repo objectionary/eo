@@ -24,128 +24,48 @@
 
 package org.eolang;
 
-import EOorg.EOeolang.EObool;
-import EOorg.EOeolang.EObytes;
-import EOorg.EOeolang.EOfloat;
 import EOorg.EOeolang.EOint;
 import EOorg.EOeolang.EOstring;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 /**
  * A data container.
  *
- * @param <T> Data type.
  * @since 0.1
  */
 @Versionized
-public interface Data<T> {
+public interface Data {
+    /**
+     * Attach data to the object.
+     * @param data Data.
+     * @todo #2931:60min Change the data storage architecture. Current implementation allows the
+     *  presence of two methods for data manipulations: {@link Data#attach(byte[])} to set data and
+     *  {@link Data#delta()} to get data; which does not seem to be object oriented. It also
+     *  requires every object to have reserved place for possible injected data. In our case, every
+     *  {@link PhDefault} has {@link PhDefault#data} variable. It would be much better to have this
+     *  data only inside some decorator. The main difficulty here is - child attributes of
+     *  decorated object should know that their \rho is decorated and contains data.
+     */
+    void attach(byte[] data);
 
     /**
      * Take the data.
      * @return The data
      */
-    T take();
+    byte[] delta();
 
     /**
-     * Data being returned only once, from encapsulated object.
+     * Makes a {@link Phi} out of a primitive Java object, like {@link String} or {@link Integer}.
      *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Once<T> implements Data<T> {
-
-        /**
-         * Data.
-         */
-        private final Data<T> src;
-
-        /**
-         * Reference.
-         */
-        private final AtomicReference<T> ref;
-
-        /**
-         * Blank supplier.
-         */
-        private final Supplier<String> blank;
-
-        /**
-         * Ctor.
-         * @param data Data to return
-         * @param txt Missing data text
-         */
-        public Once(final Data<T> data, final Supplier<String> txt) {
-            this.src = data;
-            this.ref = new AtomicReference<>();
-            this.blank = txt;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.take().hashCode();
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            return this.take().equals(((Once<?>) obj).take());
-        }
-
-        @Override
-        public String toString() {
-            final T data = this.ref.get();
-            String txt = this.blank.get();
-            if (txt.isEmpty()) {
-                txt = this.take().toString();
-            } else if (data != null) {
-                txt = data.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            synchronized (this.ref) {
-                return this.ref.updateAndGet(
-                    t -> {
-                        final T result;
-                        if (t == null) {
-                            result = Once.this.src.take();
-                        } else {
-                            result = t;
-                        }
-                        return result;
-                    }
-                );
-            }
-        }
-    }
-
-    /**
-     * Makes a {@link Phi} out of a Java object, like {@link String} or {@link Integer}.
-     *
-     * <p>This is more convenient than making {@link EOstring} and then
-     * injecting "Δ" into it. This class is used in Java tests mostly
-     * for the sake of brevity. In auto-generated Java code we use
-     * {@link EOint}/{@link EOstring}
-     * and then inject "Δ" with {@link Data.Value} into it.
+     * <p>This is more convenient than making {@link EOstring}, then making
+     * {@link EOorg.EOeolang.EObytes}, fill it up with data and then injecting bytes to string.
+     * This class is used in Java tests mostly for the sake of brevity.
+     * In auto-generated Java code we use
+     * {@link EOint}/{@link EOstring} and then wrap it with {@link PhData}.
      *
      * @since 0.1
      */
     final class ToPhi implements Phi {
-
-        /**
-         * Data.
-         */
-        private final Phi value;
-
         /**
          * Phi object.
          */
@@ -156,33 +76,37 @@ public interface Data<T> {
          * @param obj Data
          */
         public ToPhi(final Object obj) {
-            this.value = new Data.Value<>(obj);
-            this.object = Data.ToPhi.toPhi(obj, this.value);
+            this.object = Data.ToPhi.toPhi(obj);
         }
 
         @Override
         public boolean equals(final Object obj) {
-            return this.value.equals(obj);
+            return this.object.equals(obj);
         }
 
         @Override
         public int hashCode() {
-            return this.value.hashCode();
+            return this.object.hashCode();
         }
 
         @Override
         public Phi copy() {
-            return this;
+            return this.object.copy();
         }
 
         @Override
-        public Attr attr(final int pos) {
-            return this.object.attr(pos);
+        public Phi take(final String name) {
+            return this.object.take(name);
         }
 
         @Override
-        public Attr attr(final String name) {
-            return this.object.attr(name);
+        public boolean put(final int pos, final Phi obj) {
+            return this.object.put(pos, obj);
+        }
+
+        @Override
+        public boolean put(final String name, final Phi obj) {
+            return this.object.put(name, obj);
         }
 
         @Override
@@ -205,18 +129,28 @@ public interface Data<T> {
             return this.object.toString();
         }
 
+        @Override
+        public void attach(final byte[] data) {
+            this.object.attach(data);
+        }
+
+        @Override
+        public byte[] delta() {
+            return this.object.delta();
+        }
+
         /**
          * Convert to Phi object.
          * @param obj Object to convert
-         * @param value Data value
          * @return Constructed Phi
          */
-        private static Phi toPhi(final Object obj, final Phi value) {
+        private static Phi toPhi(final Object obj) {
             final Phi phi;
-            byte[] bytes = new byte[0];
+            final byte[] bytes;
             final boolean delta;
+            final Phi eolang = Phi.Φ.take("org").take("eolang");
             if (obj instanceof Boolean) {
-                phi = new EObool(Phi.Φ);
+                phi = eolang.take("bool").copy();
                 delta = false;
                 if (obj.equals(true)) {
                     bytes = new byte[] {0x01};
@@ -224,20 +158,21 @@ public interface Data<T> {
                     bytes = new byte[] {0x00};
                 }
             } else if (obj instanceof byte[]) {
-                phi = new EObytes(Phi.Φ);
+                phi = eolang.take("bytes").copy();
                 delta = true;
+                bytes = (byte[]) obj;
             } else if (obj instanceof Long) {
-                phi = new EOint(Phi.Φ);
+                phi = eolang.take("int").copy();
                 delta = false;
                 bytes = new BytesOf((Long) obj).take();
             } else if (obj instanceof String) {
-                phi = new EOstring(Phi.Φ);
+                phi = eolang.take("string").copy();
                 delta = false;
                 bytes = Data.ToPhi.unescapeJavaString(
                     (String) obj
                 ).getBytes(StandardCharsets.UTF_8);
             } else if (obj instanceof Double) {
-                phi = new EOfloat(Phi.Φ);
+                phi = eolang.take("float").copy();
                 delta = false;
                 bytes = new BytesOf((Double) obj).take();
             } else {
@@ -249,11 +184,11 @@ public interface Data<T> {
                 );
             }
             if (delta) {
-                phi.attr(Attr.DELTA).put(value);
+                phi.attach(bytes);
             } else {
-                final Phi bts = new EObytes(Phi.Φ);
-                bts.attr(Attr.DELTA).put(new Data.Value<>(bytes));
-                phi.attr(0).put(bts);
+                final Phi bts = eolang.take("bytes").copy();
+                bts.attach(bytes);
+                phi.put(0, bts);
             }
             return phi;
         }
@@ -288,11 +223,11 @@ public interface Data<T> {
                     if (next >= '0' && next <= '7') {
                         String code = String.valueOf(next);
                         ++idx;
-                        if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                        if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                             && str.charAt(idx + 1) <= '7') {
                             code += str.charAt(idx + 1);
                             ++idx;
-                            if ((idx < str.length() - 1) && str.charAt(idx + 1) >= '0'
+                            if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                                 && str.charAt(idx + 1) <= '7') {
                                 code += str.charAt(idx + 1);
                                 ++idx;
@@ -356,93 +291,4 @@ public interface Data<T> {
             return unescaped.toString();
         }
     }
-
-    /**
-     * A single value as {@code Phi}.
-     *
-     * @param <T> The type of data
-     * @since 0.1
-     */
-    final class Value<T> extends PhDefault implements Data<T> {
-
-        /**
-         * Value.
-         */
-        private final T val;
-
-        /**
-         * Ctor.
-         * @param value Value
-         */
-        public Value(final T value) {
-            super(Phi.Φ);
-            this.val = value;
-            this.vertex = PhDefault.VTX.best(value);
-        }
-
-        @Override
-        public String φTerm() {
-            final String txt;
-            if (this.val instanceof Term) {
-                txt = Term.class.cast(this.val).φTerm();
-            } else if (this.val instanceof Phi[]) {
-                final StringBuilder out = new StringBuilder(0);
-                final Phi[] items = Phi[].class.cast(this.val);
-                for (int idx = 0; idx < items.length; ++idx) {
-                    if (out.length() > 0) {
-                        out.append(",\n");
-                    }
-                    out.append('ι').append(idx).append(" ↦ ");
-                    if (items[idx] == null) {
-                        out.append('Ø');
-                    } else {
-                        out.append(items[idx].φTerm());
-                    }
-                }
-                txt = String.format("⟦\n\t%s\n⟧", out.toString());
-            } else {
-                txt = this.toString()
-                    .replace("⟦", "\\uE29FA6")
-                    .replace("⟧", "\\uE29FA7")
-                    .replace(", ", "\\u2C ");
-            }
-            return txt;
-        }
-
-        @Override
-        public String toString() {
-            final String txt;
-            if (this.val instanceof String) {
-                txt = String.format(
-                    "\"%s\"",
-                    this.val.toString()
-                        .replace("\n", "\\n")
-                        .replace("\r", "\\r")
-                );
-            } else if (this.val instanceof byte[]) {
-                final StringBuilder out = new StringBuilder(0);
-                for (final byte data : (byte[]) this.val) {
-                    if (out.length() > 0) {
-                        out.append('-');
-                    }
-                    out.append(String.format("%02X", data));
-                }
-                if (out.length() == 0) {
-                    out.append('-');
-                }
-                txt = out.toString();
-            } else if (this.val.getClass().isArray()) {
-                txt = String.format("array[%d]", ((Object[]) this.val).length);
-            } else {
-                txt = this.val.toString();
-            }
-            return txt;
-        }
-
-        @Override
-        public T take() {
-            return this.val;
-        }
-    }
-
 }

@@ -161,7 +161,7 @@ public final class UnphiMojo extends SafeMojo {
                         meta -> {
                             final String[] pair = meta.split(" ", 2);
                             final String head = pair[0].substring(1);
-                            if (head.equals(UnphiMojo.Metas.PACKAGE)) {
+                            if (UnphiMojo.Metas.PACKAGE.equals(head)) {
                                 throw new IllegalStateException(
                                     "+package meta is prohibited for attaching to unphied XMIR"
                                 );

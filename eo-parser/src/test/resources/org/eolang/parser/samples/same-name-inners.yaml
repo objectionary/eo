@@ -1,0 +1,44 @@
+origin: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > compiles-correctly-with-long-duplicate-names
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > long-object-name
+      # This is the default 64+ symbols comment in front of named abstract object.
+      [] > long-object-name
+        # This is the default 64+ symbols comment in front of named abstract object.
+        [] > long-object-name
+          # This is the default 64+ symbols comment in front of named abstract object.
+          [] > long-object-name
+            # This is the default 64+ symbols comment in front of named abstract object.
+            [] > long-object-name
+    TRUE > @
+
+straight: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > compiles-correctly-with-long-duplicate-names
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > long-object-name
+      # This is the default 64+ symbols comment in front of named abstract object.
+      [] > long-object-name
+        # This is the default 64+ symbols comment in front of named abstract object.
+        [] > long-object-name
+          # This is the default 64+ symbols comment in front of named abstract object.
+          [] > long-object-name
+            # This is the default 64+ symbols comment in front of named abstract object.
+            [] > long-object-name
+    TRUE > @
+
+reversed: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [] > compiles-correctly-with-long-duplicate-names
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > long-object-name
+      # This is the default 64+ symbols comment in front of named abstract object.
+      [] > long-object-name
+        # This is the default 64+ symbols comment in front of named abstract object.
+        [] > long-object-name
+          # This is the default 64+ symbols comment in front of named abstract object.
+          [] > long-object-name
+            # This is the default 64+ symbols comment in front of named abstract object.
+            [] > long-object-name
+    TRUE > @

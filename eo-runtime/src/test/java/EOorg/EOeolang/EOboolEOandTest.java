@@ -46,8 +46,8 @@ final class EOboolEOandTest {
     void joinsTwoValuesLogically() {
         final Phi left = new Data.ToPhi(true);
         final Phi right = new Data.ToPhi(false);
-        final Phi and = left.attr("and").get();
-        and.attr(0).put(right);
+        final Phi and = left.take("and");
+        and.put(0, right);
         MatcherAssert.assertThat(
             new Dataized(and).take(Boolean.class),
             Matchers.equalTo(false)

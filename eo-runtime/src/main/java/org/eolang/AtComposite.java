@@ -24,23 +24,20 @@
 
 package org.eolang;
 
+import java.util.function.Supplier;
+
 /**
- * Static attribute with an expression inside, which
- * constructs an object.
+ * Attribute that constructs object lazily.
+ * The attribute depends on context (argument of lambda expression).
  *
  * @since 0.1
- * @todo #2566:60min Remove AtComposite class. AtComposite is used only because the style of
- *  generated (from EO) java is imperative. We need to make transpilation declarative (for example
- *  new PhLocated(new PhWith(new PhMethod(...), ...), ...)) so we would not need AtComposite
- *  anymore. Don't forget to remove the puzzle.
  */
 @Versionized
 public final class AtComposite implements Attr {
-
     /**
-     * The \rho to send to the expression.
+     * Function that returns object.
      */
-    private final Phi rho;
+    private final Supplier<Phi> func;
 
     /**
      * The expression itself.
@@ -53,8 +50,10 @@ public final class AtComposite implements Attr {
      * @param exp The expression
      */
     public AtComposite(final Phi obj, final Expr exp) {
-        this.rho = obj;
         this.expr = exp;
+        this.func = new SafeFunc<>(
+            () -> this.expr.get(obj)
+        );
     }
 
     @Override
@@ -74,28 +73,11 @@ public final class AtComposite implements Attr {
 
     @Override
     public Phi get() {
-        try {
-            return this.expr.get(this.rho);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-            // @checkstyle IllegalCatchCheck (3 line)
-        } catch (final RuntimeException ex) {
-            throw ex;
-        } catch (final Throwable ex) {
-            throw new ExFailure(
-                String.format(
-                    "Unexpected error '%s' of type %s",
-                    ex.getMessage(),
-                    ex.getClass().getSimpleName()
-                ),
-                ex
-            );
-        }
+        return this.func.get();
     }
 
     @Override
-    public void put(final Phi phi) {
+    public boolean put(final Phi phi) {
         throw new ExReadOnly(
             "You can't overwrite lambda expression"
         );

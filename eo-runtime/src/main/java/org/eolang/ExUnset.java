@@ -31,7 +31,7 @@ package org.eolang;
  * @since 0.21
  */
 @Versionized
-public final class ExUnset extends ExAbstract {
+public final class ExUnset extends ExFailure {
 
     /**
      * Serialization identifier.

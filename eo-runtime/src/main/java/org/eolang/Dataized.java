@@ -94,29 +94,7 @@ public final class Dataized {
         final int before = Dataized.LEVEL.get();
         Dataized.LEVEL.set(before + 1);
         try {
-            Phi src = this.phi;
-            if (!(src instanceof Data)) {
-                src = src.attr("Δ").get();
-                if (!(src instanceof Data)) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "The attribute Δ of %s has %s instead of %s",
-                            this.phi.getClass().getCanonicalName(),
-                            src.getClass().getCanonicalName(),
-                            Data.class.getCanonicalName()
-                        )
-                    );
-                }
-            }
-            final Object data = Data.class.cast(src).take();
-            if (!(data instanceof byte[])) {
-                throw new ExFailure(
-                    "data of %s must be %s, but was %s",
-                    this.phi.toString(),
-                    byte[].class,
-                    data.getClass()
-                );
-            }
+            final byte[] data = this.phi.delta();
             if (this.logger.isLoggable(Level.FINE)
                 && Dataized.LEVEL.get() <= Dataized.MAX_LEVEL.get()
             ) {
@@ -127,11 +105,11 @@ public final class Dataized {
                         String.join("", Collections.nCopies(before, "·")),
                         this.phi.locator(),
                         this.phi.toString().replaceAll("[\n\t]", ""),
-                        new Data.Value<>(data).toString().replaceAll("[\n\t]", "")
+                        new BytesOf(data).asString().replaceAll("[\n\t]", "")
                     )
                 );
             }
-            return (byte[]) data;
+            return data;
         } finally {
             Dataized.LEVEL.set(before);
         }
@@ -177,5 +155,4 @@ public final class Dataized {
         Dataized.LEVEL.remove();
         Dataized.MAX_LEVEL.remove();
     }
-
 }

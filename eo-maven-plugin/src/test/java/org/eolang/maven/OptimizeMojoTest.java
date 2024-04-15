@@ -66,6 +66,7 @@ final class OptimizeMojoTest {
             );
         }
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             check.failures(),
             Matchers.empty()
         );
@@ -82,6 +83,7 @@ final class OptimizeMojoTest {
         final long mtime = path.toFile().lastModified();
         maven.execute(OptimizeMojo.class);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             path.toFile().lastModified(),
             Matchers.is(mtime)
         );
@@ -143,6 +145,7 @@ final class OptimizeMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new XMLDocument(
                 new HmBase(temp).load(
                     Paths.get(
@@ -168,6 +171,7 @@ final class OptimizeMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             cache.resolve(OptimizeMojo.OPTIMIZED)
                 .resolve(hash)
                 .resolve("foo/x/main.xmir").toFile(),
@@ -184,12 +188,14 @@ final class OptimizeMojoTest {
             .execute(new FakeMaven.Optimize())
             .result();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
             )
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             res,
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
@@ -215,6 +221,7 @@ final class OptimizeMojoTest {
             .result();
         for (int program = 0; program < total; ++program) {
             MatcherAssert.assertThat(
+                "TO ADD ASSERTION MESSAGE",
                 res,
                 Matchers.hasKey(
                     String.format(
@@ -231,6 +238,7 @@ final class OptimizeMojoTest {
     @Test
     void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new FakeMaven(temp)
                 .withProgram(
                     "+package f\n",
@@ -250,6 +258,7 @@ final class OptimizeMojoTest {
     @Test
     void choosesTransformerFactoryOnce() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             TransformerFactory.newInstance().getClass(),
             Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
         );
@@ -261,6 +270,7 @@ final class OptimizeMojoTest {
             .mapToObj(i -> TransformerFactory.newInstance().getClass())
             .collect(Collectors.toList())) {
             MatcherAssert.assertThat(
+                "TO ADD ASSERTION MESSAGE",
                 clazz,
                 Matchers.typeCompatibleWith(TransformerFactoryImpl.class)
             );
