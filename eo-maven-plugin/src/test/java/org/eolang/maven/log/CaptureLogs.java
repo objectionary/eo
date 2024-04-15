@@ -42,6 +42,9 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
  * Captured logs annotation for tests.
+ * @todo #2896:90min Logs should contains only messages related to
+ *  the test. Now it appends all messages that were logged via Logger,
+ *  so massages from other tests(in parallel) are included too.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
