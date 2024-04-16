@@ -32,17 +32,17 @@ SOFTWARE.
   <!-- $.x > x -->
   <xsl:function name="eo:with-this" as="xs:boolean">
     <xsl:param name="object"/>
-    <xsl:sequence select="$object/@base=concat('.', $object/@name) and $object/@method and $object/preceding-sibling::o[@base='$']"/>
+    <xsl:sequence select="$object/@base=concat('.', $object/@name) and $object/@method and $object/preceding-sibling::o[1][@base='$']"/>
   </xsl:function>
   <!-- x.method any > x -->
   <xsl:function name="eo:with-method" as="xs:boolean">
     <xsl:param name="object"/>
-    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[@base=$object/@name]"/>
+    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[1][@base=$object/@name]"/>
   </xsl:function>
   <!-- $.x.method any > x -->
   <xsl:function name="eo:with-method-and-this" as="xs:boolean">
     <xsl:param name="object"/>
-    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[@base=concat('.',$object/@name) and @method and preceding-sibling::o[@base='$']]"/>
+    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[1][@base=concat('.',$object/@name) and @method and preceding-sibling::o[1][@base='$']]"/>
   </xsl:function>
   <xsl:template match="/program/errors">
     <xsl:copy>
