@@ -23,8 +23,10 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.jcabi.aspects.RetryOnFailure;
 import java.net.URL;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
@@ -43,6 +45,11 @@ import org.cactoos.text.TextOf;
 final class ObjectsIndex {
 
     /**
+     * Tags.
+     */
+    private static final String HOME = "https://home.objectionary.com/objectionary.lst";
+
+    /**
      * Cached objects index.
      */
     private final Scalar<? extends Set<String>> objects;
@@ -59,9 +66,7 @@ final class ObjectsIndex {
                         new Mapped<>(
                             Text::asString,
                             new Split(
-                                new TextOf(
-                                    new URL("https://home.objectionary.com/objectionary.lst")
-                                ),
+                                ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
                                 "\n"
                             )
                         )
@@ -101,5 +106,16 @@ final class ObjectsIndex {
         return name.substring(0, name.length() - 3)
             .replace('/', '.')
             .substring(name.indexOf('/') + 1);
+    }
+
+    /**
+     * Download from the URL and return the content.
+     * @param url The URL with tags
+     * @return The body of the web page
+     */
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private static Text asText(final URL url) {
+        final String body = new TextOf(url).toString();
+        return new TextOf(body);
     }
 }
