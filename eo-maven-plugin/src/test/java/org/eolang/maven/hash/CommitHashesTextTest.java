@@ -23,43 +23,26 @@
  */
 package org.eolang.maven.hash;
 
-import java.net.URL;
-import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
+import com.yegor256.WeAreOnline;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * CommitHashes which we download from Objectionary.
+ * Test case for {@link CommitHashesText}.
  *
- * @since 0.30
+ * @since 0.37.0
  */
-final class ObjectionaryCommitHashes extends TextEnvelope {
+final class CommitHashesTextTest {
 
-    /**
-     * Tags.
-     */
-    private static final String HOME = "https://home.objectionary.com/tags.txt";
-
-    /**
-     * Constructor.
-     */
-    ObjectionaryCommitHashes() {
-        this(ObjectionaryCommitHashes.HOME);
-    }
-
-    /**
-     * Constructor.
-     * @param tags The url from which to download tags list.
-     */
-    private ObjectionaryCommitHashes(final String tags) {
-        this(new Unchecked<>(() -> new URL(tags)).value());
-    }
-
-    /**
-     * Constructor.
-     * @param tags The url from which to download tags list.
-     */
-    private ObjectionaryCommitHashes(final URL tags) {
-        super(new TextOf(tags));
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void downloadsDefaultList() throws Exception {
+        MatcherAssert.assertThat(
+            "CommitHashesText downloads the default list of hashes from Objectionary",
+            new CommitHashesText().asString(),
+            Matchers.containsString("master")
+        );
     }
 }

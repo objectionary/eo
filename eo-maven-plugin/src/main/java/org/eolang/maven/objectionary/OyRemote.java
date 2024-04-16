@@ -23,11 +23,13 @@
  */
 package org.eolang.maven.objectionary;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
@@ -85,6 +87,7 @@ public final class OyRemote implements Objectionary {
     }
 
     @Override
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     public boolean contains(final String name) throws IOException {
         final int code = ((HttpURLConnection) this.template.value(name).openConnection())
             .getResponseCode();
