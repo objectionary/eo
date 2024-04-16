@@ -61,7 +61,7 @@ public @interface CaptureLogs {
      * @since 0.30
      */
     final class CaptureLogsExtension implements
-        ParameterResolver, BeforeEachCallback, AfterEachCallback {
+         ParameterResolver, BeforeEachCallback, AfterEachCallback {
 
         /**
          * Logs.
