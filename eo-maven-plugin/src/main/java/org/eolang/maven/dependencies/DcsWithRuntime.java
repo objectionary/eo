@@ -23,10 +23,12 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Sticky;
@@ -104,6 +106,7 @@ public final class DcsWithRuntime implements Iterable<Dependency> {
      *
      * @return Runtime dependency from Maven Central.
      */
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static Unchecked<Dependency> mavenDependency() {
         final String url = String.format(
             "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",

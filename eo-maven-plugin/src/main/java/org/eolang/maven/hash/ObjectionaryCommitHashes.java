@@ -23,7 +23,10 @@
  */
 package org.eolang.maven.hash;
 
+import com.jcabi.aspects.RetryOnFailure;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
@@ -49,17 +52,28 @@ final class ObjectionaryCommitHashes extends TextEnvelope {
 
     /**
      * Constructor.
-     * @param tags The url from which to download tags list.
+     * @param url The URL from which to download tags list.
      */
-    private ObjectionaryCommitHashes(final String tags) {
-        this(new Unchecked<>(() -> new URL(tags)).value());
+    private ObjectionaryCommitHashes(final String url) {
+        this(new Unchecked<>(() -> new URL(url)).value());
     }
 
     /**
      * Constructor.
-     * @param tags The url from which to download tags list.
+     * @param url The URL from which to download tags list.
      */
-    private ObjectionaryCommitHashes(final URL tags) {
-        super(new TextOf(tags));
+    private ObjectionaryCommitHashes(final URL url) {
+        super(ObjectionaryCommitHashes.asText(url));
+    }
+
+    /**
+     * Download from the URL and return the content.
+     * @param url The URL with tags
+     * @return The body of the web page
+     */
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private static Text asText(final URL url) {
+        final String body = new TextOf(url).toString();
+        return new TextOf(body);
     }
 }
