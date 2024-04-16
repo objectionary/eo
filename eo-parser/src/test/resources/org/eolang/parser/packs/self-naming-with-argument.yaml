@@ -1,0 +1,8 @@
+xsls:
+  - /org/eolang/parser/errors/self-naming.xsl
+tests:
+  - /program/errors[count(error)=0]
+eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > first
+    5.plus a > a
