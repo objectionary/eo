@@ -32,6 +32,7 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -115,7 +116,7 @@ final class ObjectsIndex {
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static Text asText(final URL url) {
-        final String body = new TextOf(url).toString();
+        final String body = new Unchecked<>(() -> new TextOf(url).asString()).value();
         return new TextOf(body);
     }
 }
