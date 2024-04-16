@@ -84,10 +84,9 @@ final class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final String message = this.getMessage(out, "Errors identified", temp.toString());
         MatcherAssert.assertThat(
             "Errors message should have program name and error line number",
-            message,
+            this.getMessage(out, "Errors identified", temp.toString()),
             Matchers.matchesPattern(this.createRegEx(temp, "Errors identified"))
         );
     }
