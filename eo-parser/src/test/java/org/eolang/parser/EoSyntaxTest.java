@@ -180,7 +180,8 @@ final class EoSyntaxTest {
             new InputOf(code)
         );
         Assertions.assertDoesNotThrow(
-            syntax::parsed
+            syntax::parsed,
+            EoSyntaxTest.EMPTY_MSG
         );
     }
 

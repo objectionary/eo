@@ -71,7 +71,8 @@ final class BinarizeMojoTest {
                 .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -85,7 +86,8 @@ final class BinarizeMojoTest {
         }
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -121,7 +123,8 @@ final class BinarizeMojoTest {
             )
         );
         Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 

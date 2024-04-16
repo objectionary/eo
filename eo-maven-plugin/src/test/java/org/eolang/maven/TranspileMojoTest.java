@@ -276,7 +276,8 @@ final class TranspileMojoTest {
                 .execute(ParseMojo.class)
                 .execute(OptimizeMojo.class)
                 .execute(ShakeMojo.class)
-                .execute(TranspileMojo.class)
+                .execute(TranspileMojo.class),
+            "TO ADD ASSERTION MESSAGE"
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(

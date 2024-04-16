@@ -81,7 +81,8 @@ final class ParseMojoTest {
             () -> new FakeMaven(temp)
                 .withHelloWorld()
                 .with("timeout", 0)
-                .execute(InfiniteMojo.class)
+                .execute(InfiniteMojo.class),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 

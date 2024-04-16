@@ -62,7 +62,8 @@ final class ChRemoteTest {
     void throwsCommitHashException() {
         Assertions.assertThrows(
             ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
+            () -> new ChRemote("nonsense").value(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

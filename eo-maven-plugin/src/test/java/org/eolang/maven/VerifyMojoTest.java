@@ -194,7 +194,8 @@ final class VerifyMojoTest {
                     "    TRUE > x",
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
-                .execute(new FakeMaven.Verify())
+                .execute(new FakeMaven.Verify()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 

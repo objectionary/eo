@@ -45,7 +45,8 @@ final class SafeMojoTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")
-                .execute(new FakeMaven.Parse())
+                .execute(new FakeMaven.Parse()),
+            "TO ADD ASSERTION MESSAGE"
         );
         MatcherAssert.assertThat(
             "TO ADD ASSERTION MESSAGE",

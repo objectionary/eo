@@ -38,7 +38,8 @@ final class OyEmptyTest {
     void resolvesObject() {
         Assertions.assertThrows(
             IOException.class,
-            () -> new OyEmpty().get("org.eolang.io.stdin")
+            () -> new OyEmpty().get("org.eolang.io.stdin"),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -46,7 +47,8 @@ final class OyEmptyTest {
     void checksPresenceOfObject() {
         Assertions.assertThrows(
             IOException.class,
-            () -> new OyEmpty().contains("org.eolang.io.stdin")
+            () -> new OyEmpty().contains("org.eolang.io.stdin"),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

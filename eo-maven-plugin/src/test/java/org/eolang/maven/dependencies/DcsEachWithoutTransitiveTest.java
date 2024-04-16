@@ -47,7 +47,8 @@ final class DcsEachWithoutTransitiveTest {
             () -> new DcsEachWithoutTransitive(
                 new DcsFake(),
                 dep -> new DcsFake(100)
-            ).iterator().next()
+            ).iterator().next(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 

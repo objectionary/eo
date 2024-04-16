@@ -133,7 +133,8 @@ final class HmBaseTest {
     void loadsFromAbsentFile(@TempDir final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
-            () -> new HmBase(temp).load(Paths.get("nonexistent"))
+            () -> new HmBase(temp).load(Paths.get("nonexistent")),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -141,7 +142,8 @@ final class HmBaseTest {
     void throwsExceptionOnAbsolute(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new HmBase(temp).exists(temp.toAbsolutePath())
+            () -> new HmBase(temp).exists(temp.toAbsolutePath()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

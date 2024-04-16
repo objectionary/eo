@@ -64,7 +64,8 @@ final class OyRemoteTest {
             () -> new OyRemote.UrlOy(
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
-            ).value("org.eolang.app")
+            ).value("org.eolang.app"),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 

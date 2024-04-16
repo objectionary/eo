@@ -72,7 +72,10 @@ final class PhiMojoTest {
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
-        Assertions.assertDoesNotThrow(() -> maven.execute(PhiMojo.class));
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(PhiMojo.class),
+            "TO ADD ASSERTION MESSAGE"
+        );
     }
 
     @ParameterizedTest

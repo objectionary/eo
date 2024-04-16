@@ -61,7 +61,8 @@ final class ChNarrowTest {
     void throwsExceptionIfEmpty() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+            () -> new ChNarrow(new CommitHash.ChConstant("")).value(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

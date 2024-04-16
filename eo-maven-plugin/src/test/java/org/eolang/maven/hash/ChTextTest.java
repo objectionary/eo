@@ -110,7 +110,8 @@ final class ChTextTest {
             () -> new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "non-existent-tag"
-            ).value()
+            ).value(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

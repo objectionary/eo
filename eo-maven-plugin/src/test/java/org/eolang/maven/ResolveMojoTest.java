@@ -209,7 +209,9 @@ final class ResolveMojoTest {
                         dependency
                     )
                 )
-                .execute(new FakeMaven.Resolve())
+                .execute(new FakeMaven.Resolve()),
+            "TO ADD ASSERTION MESSAGE"
+
         );
     }
 
