@@ -42,9 +42,12 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
  * Captured logs annotation for tests.
- * @todo #2896:90min Logs should contains only messages related to
- *  the test. Now it appends all messages that were logged via Logger,
- *  so massages from other tests(in parallel) are included too.
+ * @todo #2896:90min Make '@CaptureLogs' thread-safe.
+ *  'Logs' should contain only messages related to the test.
+ *  Currently, '@CaptureLogs' appends all messages that
+ *  were logged via 'Logger' to 'Logs', so messages from
+ *  other tests (run in parallel) are also included, which causes
+ *  problems when tests are run in parallel.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
