@@ -45,6 +45,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturns() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new EOseq(Phi.Φ),
@@ -65,6 +66,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturnsObject() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new EOseq(Phi.Φ),

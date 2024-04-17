@@ -46,7 +46,8 @@ class CagesTest {
         final Phi phi = new PhFake();
         final int locator = Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
-            () -> Cages.INSTANCE.get(locator)
+            () -> Cages.INSTANCE.get(locator),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -55,7 +56,8 @@ class CagesTest {
         final Phi phi = new PhFake();
         Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
-            () -> Cages.INSTANCE.init(phi)
+            () -> Cages.INSTANCE.init(phi),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -66,6 +68,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(first);
         Cages.INSTANCE.encage(locator, second);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             Cages.INSTANCE.get(locator).hashCode(),
             Matchers.equalTo(second.hashCode())
         );
@@ -76,7 +79,8 @@ class CagesTest {
         final Phi phi = new PhFake();
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Cages.INSTANCE.encage(phi.hashCode(), phi)
+            () -> Cages.INSTANCE.encage(phi.hashCode(), phi),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -85,7 +89,8 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(new PhFake());
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L))
+            () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L)),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -93,7 +98,8 @@ class CagesTest {
     void failsToGetObjectIfWasNotInitialized() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Cages.INSTANCE.get(new PhFake().hashCode())
+            () -> Cages.INSTANCE.get(new PhFake().hashCode()),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 }

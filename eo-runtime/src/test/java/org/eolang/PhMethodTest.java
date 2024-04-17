@@ -38,6 +38,7 @@ final class PhMethodTest {
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             num.take("plus"),
             Matchers.not(Matchers.equalTo(num.take("plus")))
         );
@@ -46,6 +47,7 @@ final class PhMethodTest {
     @Test
     void convertsSafeToString() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
         );
@@ -59,7 +61,11 @@ final class PhMethodTest {
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
-        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            dummy.count,
+            Matchers.equalTo(1)
+        );
     }
 
     @Test
@@ -70,7 +76,11 @@ final class PhMethodTest {
         for (int idx = 0; idx < total; ++idx) {
             new Dataized(phi).take();
         }
-        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            dummy.count,
+            Matchers.equalTo(1)
+        );
     }
 
     @Test
@@ -78,13 +88,18 @@ final class PhMethodTest {
         final Dummy dummy = new Dummy(Phi.Φ);
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
-        MatcherAssert.assertThat(dummy.count, Matchers.equalTo(1));
+        MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
+            dummy.count,
+            Matchers.equalTo(1)
+        );
     }
 
     @Test
     void hasDifferentFormasWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             dummy.forma(),
             Matchers.not(
                 Matchers.equalTo(

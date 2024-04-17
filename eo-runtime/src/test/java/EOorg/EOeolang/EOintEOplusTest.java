@@ -49,6 +49,7 @@ final class EOintEOplusTest {
         final Phi add = left.take("plus");
         add.put(0, right);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(add).take(Long.class),
             Matchers.equalTo(55L)
         );

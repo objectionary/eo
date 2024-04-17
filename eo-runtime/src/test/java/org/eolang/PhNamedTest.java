@@ -37,10 +37,12 @@ final class PhNamedTest {
     @Test
     void comparesTwoObjects() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new PhNamed(new Data.ToPhi(1L), ""),
             Matchers.not(Matchers.equalTo(new PhNamed(new Data.ToPhi(1L), "")))
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new PhNamed(new Data.ToPhi(1L), ""),
             Matchers.not(Matchers.equalTo(new PhNamed(new Data.ToPhi(42L), "")))
         );

@@ -59,6 +59,7 @@ final class EOintEOeqTest {
             0, right
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(eql).take(Boolean.class),
             Matchers.equalTo(false)
         );

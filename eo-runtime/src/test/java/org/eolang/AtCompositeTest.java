@@ -45,7 +45,8 @@ final class AtCompositeTest {
                 self -> {
                     throw new InstantiationException("intended checked");
                 }
-            ).get()
+            ).get(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -58,7 +59,8 @@ final class AtCompositeTest {
                 self -> {
                     throw new IllegalStateException("intended unchecked");
                 }
-            ).get()
+            ).get(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -67,6 +69,7 @@ final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Double.class),
             Matchers.equalTo(
                 new Dataized(phi).take(Double.class)

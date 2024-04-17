@@ -37,6 +37,7 @@ final class PhCopyTest {
     @Test
     void makesObjectCopy() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhCopy(new Data.ToPhi(1L))
             ).take(Long.class),
@@ -48,6 +49,7 @@ final class PhCopyTest {
     void hasTheSameFormaAsCopied() {
         final Phi phi = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             phi.forma(),
             Matchers.equalTo(
                 phi.copy().forma()

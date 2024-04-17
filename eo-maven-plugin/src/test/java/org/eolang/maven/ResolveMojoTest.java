@@ -211,7 +211,6 @@ final class ResolveMojoTest {
                 )
                 .execute(new FakeMaven.Resolve()),
             "TO ADD ASSERTION MESSAGE"
-
         );
     }
 

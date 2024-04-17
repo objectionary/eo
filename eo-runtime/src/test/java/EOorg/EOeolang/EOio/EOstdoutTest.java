@@ -66,6 +66,7 @@ public final class EOstdoutTest {
         stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             stream.toString(),
             Matchers.equalTo("Hello")
         );
@@ -80,6 +81,7 @@ public final class EOstdoutTest {
             format
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Boolean.class),
             Matchers.equalTo(true)
         );
@@ -105,6 +107,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             stream.toString(),
             Matchers.equalTo(str)
         );
@@ -130,6 +133,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             stream.toString(),
             Matchers.equalTo(str)
         );

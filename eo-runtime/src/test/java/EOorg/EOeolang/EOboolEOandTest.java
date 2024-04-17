@@ -49,6 +49,7 @@ final class EOboolEOandTest {
         final Phi and = left.take("and");
         and.put(0, right);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(and).take(Boolean.class),
             Matchers.equalTo(false)
         );

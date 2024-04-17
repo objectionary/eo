@@ -50,6 +50,7 @@ final class EOboolEOnotTest {
         final Phi left = new Data.ToPhi(true);
         final Phi not = left.take("not");
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(not).take(Boolean.class),
             Matchers.equalTo(false)
         );

@@ -62,7 +62,8 @@ final class EOerrorTest {
                     "message",
                     new Data.ToPhi("intentional error")
                 )
-            ).take()
+            ).take(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -77,6 +78,7 @@ final class EOerrorTest {
         }
         assert error != null;
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             error.toString(),
             Matchers.containsString(
                 new VerboseBytesAsStringTest.ArgumentsUtils().toString(cnst)

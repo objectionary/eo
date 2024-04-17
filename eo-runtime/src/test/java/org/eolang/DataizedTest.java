@@ -58,6 +58,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -86,6 +87,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -119,6 +121,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             logs.size(),
             Matchers.equalTo(1)
         );
@@ -149,6 +152,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             logs.size(),
             Matchers.greaterThan(1)
         );

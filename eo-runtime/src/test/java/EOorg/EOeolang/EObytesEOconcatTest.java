@@ -57,6 +57,7 @@ final class EObytesEOconcatTest {
             "as-string"
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(String.class),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );

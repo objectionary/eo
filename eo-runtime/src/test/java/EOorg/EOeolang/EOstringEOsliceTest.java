@@ -57,6 +57,7 @@ final class EOstringEOsliceTest {
             new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(String.class),
             Matchers.equalTo("ㄤ")
         );

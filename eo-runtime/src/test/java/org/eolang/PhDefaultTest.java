@@ -250,6 +250,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         phi.put("void", new Data.ToPhi(10L));
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             phi.take("void"),
             Matchers.equalTo(phi.take("void"))
         );
@@ -259,6 +260,7 @@ final class PhDefaultTest {
     void doesNotCopyContextAttributeWithRho() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             phi.take("context"),
             Matchers.equalTo(phi.take("context"))
         );
@@ -269,11 +271,13 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int().copy();
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> phi.take(Attr.PHI)
+            () -> phi.take(Attr.PHI),
+            "TO ADD ASSERTION MESSAGE"
         );
         phi.put("void", new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
-            () -> phi.take(Attr.PHI)
+            () -> phi.take(Attr.PHI),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -293,6 +297,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -309,6 +314,7 @@ final class PhDefaultTest {
             ).limit(threads).collect(Collectors.toList())
         ).forEach(objects::add);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             objects,
             Matchers.hasSize(threads)
         );
@@ -318,7 +324,8 @@ final class PhDefaultTest {
     void failsGracefullyOnMissingAttribute() {
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Data.ToPhi("Hey").take("missing-attr")
+            () -> new Data.ToPhi("Hey").take("missing-attr"),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -329,6 +336,7 @@ final class PhDefaultTest {
         phi.put(0, new Data.ToPhi(data));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(copy).take(String.class),
             Matchers.equalTo(data)
         );
@@ -341,7 +349,8 @@ final class PhDefaultTest {
         phi.put(0, num);
         Assertions.assertThrows(
             ExReadOnly.class,
-            () -> phi.put(0, num)
+            () -> phi.put(0, num),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -350,6 +359,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.EndlessRecursion(Phi.Φ);
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -360,6 +370,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -370,6 +381,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -383,6 +395,7 @@ final class PhDefaultTest {
         copy.take("plus");
         phi.take("plus");
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             PhDefaultTest.Dummy.count,
             Matchers.equalTo(1)
         );
@@ -396,6 +409,7 @@ final class PhDefaultTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(new PhMethod(phi, "count")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -404,6 +418,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithBoundedData() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Data.ToPhi(5L).forma(),
             Matchers.equalTo(new Data.ToPhi(6L).forma())
         );
@@ -413,6 +428,7 @@ final class PhDefaultTest {
     void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             five.forma(),
             Matchers.not(
                 Matchers.equalTo(
@@ -429,6 +445,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new PhWith(
                 new Data.ToPhi(5L).take("plus").copy(),
                 "x",
@@ -459,6 +476,7 @@ final class PhDefaultTest {
             0, new Data.ToPhi(1.2)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(rnd).take(Double.class),
             Matchers.equalTo(new Dataized(rnd).take(Double.class))
         );
@@ -467,6 +485,7 @@ final class PhDefaultTest {
     @Test
     void injectsDeltaIntoTerm() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
             Matchers.containsString("Δ ↦ 01-02-03")
         );

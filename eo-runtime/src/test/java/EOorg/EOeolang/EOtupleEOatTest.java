@@ -63,10 +63,12 @@ final class EOtupleEOatTest {
         final Phi get = tuple.take("at").copy();
         get.put(0, idx);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
@@ -75,10 +77,12 @@ final class EOtupleEOatTest {
     @Test
     void checksNegativeIndex() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(this.get(-1L)).take(String.class),
             Matchers.equalTo("second")
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(this.get(-2L)).take(String.class),
             Matchers.equalTo("first")
         );
@@ -88,7 +92,8 @@ final class EOtupleEOatTest {
     void checksOutOfBounds() {
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(this.get(-3L)).take()
+            () -> new Dataized(this.get(-3L)).take(),
+            "TO ADD ASSERTION MESSAGE"
         );
     }
 
@@ -104,6 +109,7 @@ final class EOtupleEOatTest {
             "args", copy
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(10L)
         );

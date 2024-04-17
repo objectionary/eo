@@ -50,6 +50,7 @@ final class EOstringTest {
     void comparesTwoEqualStrings() {
         final String txt = "Hello, друг!";
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(txt), "eq"),
@@ -63,6 +64,7 @@ final class EOstringTest {
     @Test
     void comparesTwoDifferentStrings() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),

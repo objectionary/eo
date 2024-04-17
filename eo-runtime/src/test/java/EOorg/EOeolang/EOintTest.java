@@ -46,6 +46,7 @@ public final class EOintTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             left.hashCode(),
             Matchers.not(Matchers.equalTo(right.hashCode()))
         );
@@ -55,6 +56,7 @@ public final class EOintTest {
     void hasHashEvenWithoutData() {
         final Phi phi = new EOint(Phi.Φ);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -65,6 +67,7 @@ public final class EOintTest {
         final Phi raw = new EOint(Phi.Φ);
         final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             raw.hashCode(),
             Matchers.not(initialized.hashCode())
         );

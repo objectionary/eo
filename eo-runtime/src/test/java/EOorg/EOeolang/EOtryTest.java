@@ -50,6 +50,7 @@ public final class EOtryTest {
     @Test
     public void catchesException() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -81,6 +82,7 @@ public final class EOtryTest {
             new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(body).take(String.class),
             Matchers.containsString("it is broken")
         );
@@ -100,6 +102,7 @@ public final class EOtryTest {
             new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(body).take(String.class),
             Matchers.containsString("it is broken")
         );
@@ -108,6 +111,7 @@ public final class EOtryTest {
     @Test
     public void worksWithoutException() {
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -134,6 +138,7 @@ public final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
+            "TO ADD ASSERTION MESSAGE",
             main.count,
             Matchers.equalTo(1)
         );
