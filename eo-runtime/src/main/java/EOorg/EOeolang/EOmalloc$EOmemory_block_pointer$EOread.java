@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.pointer.read")
-final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements Atom {
+public final class EOmalloc$EOmemory_block_pointer$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
