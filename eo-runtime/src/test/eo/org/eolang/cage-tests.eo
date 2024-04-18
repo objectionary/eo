@@ -140,7 +140,7 @@
         cge.encage "Hello world"
         [e]
           cge.encage 10 > @
-        TRUE
+        true
       cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error
@@ -154,10 +154,10 @@
           cge.write
             0.plus cge
           cge
-          FALSE
+          false
     [stack-overflow-message]
       QQ.io.stdout stack-overflow-message > @
-    FALSE
+    false
 
 # Test.
 [] > applies-after-retrieval

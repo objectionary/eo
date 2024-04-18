@@ -47,7 +47,7 @@
     (memory 0).alloc > m
     seq > @
       *
-        TRUE
+        true
         m.write (m.as-int.plus 1)
   (dataized func).as-bytes > cached1
   func > cached2!

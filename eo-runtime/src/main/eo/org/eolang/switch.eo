@@ -37,7 +37,7 @@
 #       true
 #       "this value will be returned"
 #     *
-#       FALSE
+#       false
 #       "this value will be skipped"
 #
 # This object returns value of only first truly statement.
@@ -48,17 +48,17 @@
   # If case key is true, return case value.
   # Otherwise take next case.
   [index] > case-at
-    if > @
+    if. > @
       index.eq ^.len
       true
-      if
+      if.
         at.
           ^.cases.at index > case
           0
         case.at 1
         ^.case-at
           index.plus 1
-  if > @
+  if. > @
     len.eq 0
     error "switch cases are empty"
     case-at 0

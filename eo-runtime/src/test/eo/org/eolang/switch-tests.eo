@@ -32,7 +32,7 @@
     switch
       *
         *
-          FALSE
+          false
           "1"
         *
           true
@@ -52,7 +52,7 @@
           password.eq ""
           "empty password is not allowed"
         *
-          FALSE
+          false
           "password is wrong"
     "password is correct!"
 
@@ -65,7 +65,7 @@
           true
           "TRUE1"
         *
-          FALSE
+          false
           "FALSE"
         *
           true
@@ -77,11 +77,11 @@
   switch > @
     *
       *
-        FALSE
-        "FALSE1"
+        false
+        "false1"
       *
-        FALSE
-        "FALSE2"
+        false
+        "false2"
 
 # Test.
 [] > switch-case-with-error
@@ -89,19 +89,19 @@
     switch *
     [ex]
       QQ.io.stdout ex > @
-    TRUE
+    true
 
 # Test.
 [] > switch-complex-case
   # Inner object 1.
   [] > c1
-    FALSE > @
+    false > @
   # Inner object 1.
   [] > c2
     "1".eq "2" > @
   # Inner object 1.
   [] > c3
-    TRUE > @
+    true > @
   eq. > @
     switch
       *

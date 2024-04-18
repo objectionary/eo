@@ -32,23 +32,23 @@
 
   # Tests that $ = x.
   [x] > eq
-    FALSE > @
+    false > @
 
   # Tests that $ < x.
   [x] > lt
-    FALSE > @
+    false > @
 
   # Tests that $ ≤ x.
   [x] > lte
-    FALSE > @
+    false > @
 
   # Tests that $ > x.
   [x] > gt
-    FALSE > @
+    false > @
 
   # Tests that $ ≥ x.
   [x] > gte
-    FALSE > @
+    false > @
 
   # Multiplication of $ and x.
   [x] > times

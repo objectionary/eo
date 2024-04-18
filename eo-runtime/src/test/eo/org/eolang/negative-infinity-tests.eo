@@ -70,7 +70,7 @@
 [] > negative-infinity-lt-negative-infinity
   eq. > @
     negative-infinity.lt negative-infinity
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-lt-positive-infinity
@@ -82,7 +82,7 @@
 [] > negative-infinity-not-lt-nan
   eq. > @
     negative-infinity.lt nan
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-lt-int
@@ -112,7 +112,7 @@
 [] > negative-infinity-not-lte-nan
   eq. > @
     negative-infinity.lte nan
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-lte-int
@@ -137,55 +137,55 @@
 [] > negative-infinity-not-gt-positive-infinity
   eq. > @
     negative-infinity.gt positive-infinity
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gt-nan
   eq. > @
     negative-infinity.gt nan
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gt-int
   eq. > @
     negative-infinity.gt 42
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gt-float
   eq. > @
     negative-infinity.gt 42.5
-    FALSE
+    false
 
 # Greater or equal than.
 [] > negative-infinity-gte-negative-infinity
   eq. > @
     negative-infinity.gte negative-infinity
-    TRUE
+    true
 
 # Test.
 [] > negative-infinity-not-gte-positive-infinity
   eq. > @
     negative-infinity.gte positive-infinity
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gte-nan
   eq. > @
     negative-infinity.gte nan
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gte-int
   eq. > @
     negative-infinity.gte 42
-    FALSE
+    false
 
 # Test.
 [] > negative-infinity-not-gte-float
   eq. > @
     negative-infinity.gte 42.5
-    FALSE
+    false
 
 # Times.
 # Test.

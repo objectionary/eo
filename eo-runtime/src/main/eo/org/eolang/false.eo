@@ -34,3 +34,11 @@
   # Since $ is FALSE - behaves as `right` object.
   [left right] > if
     right > @
+
+  # And.
+  [x] > and
+    ^ > @
+
+  # Or.
+  [x] > or
+    01-.eq x > @
