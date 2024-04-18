@@ -62,6 +62,19 @@
     00-.as-bytes.eq false
 
 # Test.
+[] > true-not-is-false
+  eq. > @
+    true.not
+    false
+
+# Test.
+[] > true-and-false-is-false
+  not. > @
+    and.
+      true
+      false
+
+# Test.
 [] > forks-on-true-condition
   eq. > @
     if.
