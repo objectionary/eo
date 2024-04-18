@@ -26,7 +26,11 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Control structure that allows for conditional execution of code.
-# It evaluates a condition, which is a `bool` object, and behaves as `left` if the condition is
-# `TRUE`. If the condition evaluates to `FALSE` - behaves as `right`.
-[condition left right] > if /?
+# True.
+[] > true
+  bool 01- > @
+
+  # Control structure that allows for conditional execution of code.
+  # Since $ is TRUE - behaves as `left` object.
+  [left right] > if
+    left > @
