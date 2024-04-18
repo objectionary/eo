@@ -29,12 +29,12 @@
 # Allow to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
 # consist of condition bool value and expected value, if this
-# condition is TRUE.
+# condition is true.
 # e.g.
 # switch
 #   *
 #     *
-#       TRUE
+#       true
 #       "this value will be returned"
 #     *
 #       FALSE
@@ -45,12 +45,12 @@
   cases.length > len!
 
   # Take case by given index.
-  # If case key is TRUE, return case value.
+  # If case key is true, return case value.
   # Otherwise take next case.
   [index] > case-at
     if > @
       index.eq ^.len
-      TRUE
+      true
       if
         at.
           ^.cases.at index > case

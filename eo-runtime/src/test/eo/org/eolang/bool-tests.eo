@@ -29,18 +29,18 @@
 # Test.
 [] > compares-two-bools
   eq. > @
-    TRUE
-    TRUE
+    true
+    true
 
 # Test.
 [] > true-as-bool
-  TRUE.as-bool > @
+  true.as-bool > @
 
 # Test.
 [] > compares-two-different-types
   not. > @
     eq.
-      TRUE
+      true
       42
 
 # Test.

@@ -43,7 +43,7 @@
                   if
                     i.as-int.lt 10
                     g.backward
-                    TRUE
+                    true
           stdout "Finished!\n"
           i
       10
@@ -62,7 +62,7 @@
               *
                 if
                   x.eq 0
-                  g.forward TRUE
+                  g.forward true
                   TRUE
                 r.write (42.div x)
         (dataized r).as-bytes > result

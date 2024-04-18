@@ -100,7 +100,7 @@
 [] > positive-infinity-lte-positive-infinity
   eq. > @
     positive-infinity.lte positive-infinity
-    TRUE
+    true
 
 # Test.
 [] > positive-infinity-not-lte-negative-infinity
