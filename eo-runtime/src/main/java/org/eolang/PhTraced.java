@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * @since 0.36
  */
 @Versionized
-public final class PhTracing implements Phi {
+public final class PhTraced implements Phi {
 
     /**
      * Name of property that responsible for keeping max depth.
@@ -70,12 +70,12 @@ public final class PhTracing implements Phi {
      * @param object Encaged object
      * @param locator Locator of encaged object
      */
-    public PhTracing(final Phi object, final Integer locator) {
+    public PhTraced(final Phi object, final Integer locator) {
         this(
             object,
             locator,
             Integer.parseInt(
-                System.getProperty(PhTracing.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
+                System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
             )
         );
     }
@@ -86,7 +86,7 @@ public final class PhTracing implements Phi {
      * @param locator Locator of encaged object
      * @param depth Max depth of cage recursion
      */
-    public PhTracing(final Phi object, final Integer locator, final int depth) {
+    public PhTraced(final Phi object, final Integer locator, final int depth) {
         this.object = object;
         this.locator = locator;
         this.depth = depth;
@@ -94,26 +94,26 @@ public final class PhTracing implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhTracing(this.object.copy(), this.locator);
+        return new PhTraced(this.object.copy(), this.locator);
     }
 
     @Override
     public Phi take(final String name) {
-        return new PhTracing.TracingWhileGetting<>(
+        return new PhTraced.TracingWhileGetting<>(
             () -> this.object.take(name)
         ).get();
     }
 
     @Override
     public boolean put(final int pos, final Phi obj) {
-        return new PhTracing.TracingWhileGetting<>(
+        return new PhTraced.TracingWhileGetting<>(
             () -> this.object.put(pos, obj)
         ).get();
     }
 
     @Override
     public boolean put(final String name, final Phi obj) {
-        return new PhTracing.TracingWhileGetting<>(
+        return new PhTraced.TracingWhileGetting<>(
             () -> this.object.put(name, obj)
         ).get();
     }
@@ -183,19 +183,19 @@ public final class PhTracing implements Phi {
         }
 
         /**
-         * Increments counter of cage in the {@link PhTracing#DATAIZING_CAGES}.
+         * Increments counter of cage in the {@link PhTraced#DATAIZING_CAGES}.
          * @return New value in the map.
          */
         private Integer incrementCageCounter() {
-            return PhTracing.DATAIZING_CAGES.get().compute(
-                PhTracing.this.locator, (key, counter) -> {
+            return PhTraced.DATAIZING_CAGES.get().compute(
+                PhTraced.this.locator, (key, counter) -> {
                     final int ret = this.incremented(counter);
-                    if (ret > PhTracing.this.depth) {
+                    if (ret > PhTraced.this.depth) {
                         throw new ExFailure(
                             "The cage %s with locator %d has reached the maximum nesting depth = %d",
-                            PhTracing.this.object,
-                            PhTracing.this.locator,
-                            PhTracing.this.depth
+                            PhTraced.this.object,
+                            PhTraced.this.locator,
+                            PhTraced.this.depth
                         );
                     }
                     return ret;
@@ -221,19 +221,19 @@ public final class PhTracing implements Phi {
         }
 
         /**
-         * Decrements counter in the {@link PhTracing#DATAIZING_CAGES}.
+         * Decrements counter in the {@link PhTraced#DATAIZING_CAGES}.
          * @param incremented Current value of counter. This argument ensures
          *  temporal coupling with {@link TracingWhileGetting#incrementCageCounter} method.
          */
         private void decrementCageCounter(final int incremented) {
             final int decremented = incremented - 1;
             if (decremented == 0) {
-                PhTracing.DATAIZING_CAGES.get().remove(
-                    PhTracing.this.locator
+                PhTraced.DATAIZING_CAGES.get().remove(
+                    PhTraced.this.locator
                 );
             } else {
-                PhTracing.DATAIZING_CAGES.get().put(
-                    PhTracing.this.locator, decremented
+                PhTraced.DATAIZING_CAGES.get().put(
+                    PhTraced.this.locator, decremented
                 );
             }
         }
