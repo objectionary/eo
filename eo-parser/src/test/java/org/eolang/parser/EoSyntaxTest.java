@@ -264,8 +264,8 @@ final class EoSyntaxTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "FALSE > false",
-        "TRUE > true"
+        "false > f",
+        "true > t"
     })
     void storesAsBytes(final String code) throws IOException {
         final XML xml = new XMLDocument(
