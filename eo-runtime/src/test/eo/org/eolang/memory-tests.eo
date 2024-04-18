@@ -145,7 +145,7 @@
     eq.
       try
         m.write 82.22 > []
-        e > []
+        e > [e]
         TRUE
       82.22
     m.free
@@ -157,7 +157,7 @@
     eq.
       try
         m.write "Prot" > []
-        e > []
+        e > [e]
         TRUE
       "Proto"
     m.free
