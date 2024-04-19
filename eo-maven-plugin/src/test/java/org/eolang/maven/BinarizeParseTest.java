@@ -50,7 +50,7 @@ final class BinarizeParseTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
@@ -67,11 +67,11 @@ final class BinarizeParseTest {
             function
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
@@ -84,7 +84,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 res.get(
                     String.format(
@@ -112,15 +112,15 @@ final class BinarizeParseTest {
             Names.PREFIX
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(one)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(two)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
@@ -130,7 +130,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
@@ -145,7 +145,7 @@ final class BinarizeParseTest {
     @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -169,19 +169,19 @@ final class BinarizeParseTest {
             dir
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(cargo)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(lib)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(module)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(cargo)).asString(),
             Matchers.stringContainsInOrder(
                 "[lib]",
@@ -191,7 +191,7 @@ final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(cargo)).asString(),
             Matchers.stringContainsInOrder(
                 "[dependencies]",

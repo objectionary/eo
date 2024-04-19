@@ -41,12 +41,12 @@ final class OyFallbackSwapTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void getsWithFallbackNoSwapOy() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -61,7 +61,7 @@ final class OyFallbackSwapTest {
     @Test
     void getsWithFallbackSwapOyFail() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -80,7 +80,7 @@ final class OyFallbackSwapTest {
     @Test
     void getsWithFallbackSwapOy() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -107,7 +107,7 @@ final class OyFallbackSwapTest {
             )
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new OyFallbackSwap(
                 home,
                 cache,
@@ -116,7 +116,7 @@ final class OyFallbackSwapTest {
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     home,
@@ -127,7 +127,7 @@ final class OyFallbackSwapTest {
             Matchers.is(Matchers.notNullValue())
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.EMPTY_MSG,
+            OyFallbackSwapTest.TO_ADD_MESSAGE,
             new OyFallbackSwap(
                 home,
                 cache,

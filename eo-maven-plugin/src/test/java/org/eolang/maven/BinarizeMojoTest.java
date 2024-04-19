@@ -53,7 +53,7 @@ final class BinarizeMojoTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     /**
      * BinarizeMojo can binarize without errors.
@@ -105,14 +105,14 @@ final class BinarizeMojoTest {
             .execute(new FakeMaven.Binarize())
             .result();
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeMojoTest.TO_ADD_MESSAGE,
             res,
             Matchers.hasValue(
                 cache.resolve("Lib")
             )
         );
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeMojoTest.TO_ADD_MESSAGE,
             res,
             Matchers.not(
                 Matchers.hasValue(
@@ -147,7 +147,7 @@ final class BinarizeMojoTest {
         finish = System.currentTimeMillis();
         final long second = finish - start;
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeMojoTest.TO_ADD_MESSAGE,
             second,
             Matchers.lessThan(first)
         );
@@ -172,12 +172,12 @@ final class BinarizeMojoTest {
         maven.execute(new FakeMaven.Binarize());
         final long second = executable.lastModified();
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeMojoTest.TO_ADD_MESSAGE,
             first,
             Matchers.not(0L)
         );
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeMojoTest.TO_ADD_MESSAGE,
             second,
             Matchers.equalTo(first)
         );

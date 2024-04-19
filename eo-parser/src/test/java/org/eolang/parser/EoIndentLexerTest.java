@@ -38,7 +38,7 @@ final class EoIndentLexerTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void emitsTab() throws IOException {
@@ -47,7 +47,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -61,7 +61,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.getGrammarFileName(),
             Matchers.is(
                 "Eo.g4"
@@ -76,7 +76,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -93,7 +93,7 @@ final class EoIndentLexerTest {
         lexer.nextToken();
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.UNTAB
@@ -107,7 +107,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.EOF

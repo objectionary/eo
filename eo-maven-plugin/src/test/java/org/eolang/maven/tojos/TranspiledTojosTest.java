@@ -54,7 +54,7 @@ final class TranspiledTojosTest {
     /**
      * Empty message for JUnit Assertions.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     /**
      * Transpiled files.
@@ -99,7 +99,7 @@ final class TranspiledTojosTest {
     void adds() {
         this.tojos.add(this.transpiled.get(0), Paths.get("first.optimized.xmir"));
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(1)
         );
@@ -113,22 +113,22 @@ final class TranspiledTojosTest {
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.tojos.remove(first),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.tojos.remove(second),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(1)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(3)
         );
@@ -137,17 +137,17 @@ final class TranspiledTojosTest {
     @Test
     void removesAbsent() {
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.tojos.remove(Paths.get("absent.xmir")),
             Matchers.equalTo(0L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(3)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            TranspiledTojosTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(0)
         );
