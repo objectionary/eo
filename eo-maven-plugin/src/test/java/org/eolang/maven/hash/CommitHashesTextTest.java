@@ -54,7 +54,7 @@ final class CommitHashesTextTest {
     }
 
     @Test
-    void isUsedBeUsedByManyThreads() throws ExecutionException, InterruptedException {
+    void isThreadSafe() throws ExecutionException, InterruptedException {
         final int threads = 200;
         boolean nonulls = true;
         final ExecutorService service =
