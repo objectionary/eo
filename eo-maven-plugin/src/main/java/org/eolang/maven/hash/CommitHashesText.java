@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Sticky;
+import org.cactoos.text.Synced;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
@@ -47,21 +48,13 @@ final class CommitHashesText extends TextEnvelope {
     private static final String HOME = "https://home.objectionary.com/tags.txt";
 
     /**
-     * Thread-unsafe cache. Access to this field must be performed with
-     *  synchronization.
-     */
-    private static final Text THREAD_UNSAFE_CACHE = new Sticky(
-        CommitHashesText.asText(CommitHashesText.HOME)
-    );
-
-    /**
      * Cache.
      */
-    private static final Text CACHE = () -> {
-        synchronized (CommitHashesText.THREAD_UNSAFE_CACHE) {
-            return THREAD_UNSAFE_CACHE.asString();
-        }
-    };
+    private static final Text CACHE = new Synced(
+        new Sticky(
+            CommitHashesText.asText(CommitHashesText.HOME)
+        )
+    );
 
     /**
      * Constructor.
