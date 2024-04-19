@@ -80,7 +80,8 @@ final class DataizedTest {
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Dataized(wrong).take()
+                () -> new Dataized(wrong).take(),
+                "TO ADD ASSERTION MESSAGE"
             )
         );
         new Dataized(new Data.ToPhi(1L), log).take();
