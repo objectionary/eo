@@ -24,10 +24,24 @@
 package org.eolang.maven.hash;
 
 import com.yegor256.WeAreOnline;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Test case for {@link CommitHashesText}.
@@ -43,6 +57,33 @@ final class CommitHashesTextTest {
             "CommitHashesText downloads the default list of hashes from Objectionary",
             new CommitHashesText().asString(),
             Matchers.containsString("master")
+        );
+    }
+
+    @Test
+    void isUsedBeUsedByManyThreads() throws ExecutionException, InterruptedException {
+        final int threads = 200;
+        boolean nonulls = true;
+        final ExecutorService service =
+            Executors.newFixedThreadPool(threads);
+        final CountDownLatch latch = new CountDownLatch(1);
+        final Collection<Future<Boolean>> futures =
+            new ArrayList<>(threads);
+        for (int thread = 0; thread < threads; ++thread) {
+            futures.add(
+                service.submit(
+                    () -> new CommitHashesText().asString() != null
+                )
+            );
+        }
+        latch.countDown();
+        for (final Future<Boolean> fun : futures) {
+            nonulls &= fun.get();
+        }
+        MatcherAssert.assertThat(
+            "Can be used in different threads without NPE",
+            nonulls,
+            Matchers.equalTo(true)
         );
     }
 }
