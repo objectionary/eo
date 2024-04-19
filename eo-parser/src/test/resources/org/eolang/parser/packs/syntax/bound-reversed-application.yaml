@@ -7,7 +7,7 @@ tests:
   - //o[@base='.if' and o[@base='int' and @as='b']]
 eo: |
   if. > first
-    TRUE
+    true
     "TRUE":0
     "FALSE":1
-  if. FALSE 1:a 2:b > second
+  if. false 1:a 2:b > second

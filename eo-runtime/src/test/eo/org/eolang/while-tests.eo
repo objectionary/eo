@@ -29,18 +29,18 @@
 # Test.
 [] > simple-while-with-false-first
   while > res
-    FALSE
-    TRUE > [i]
+    false
+    true > [i]
   (bool res).not > @
 
 # Test.
 [] > simple-bool-expression-via-memory-in-while
-  (memory TRUE).alloc > condition
+  (memory true).alloc > condition
   while > res
     condition
-    condition.write FALSE > [i]
+    condition.write false > [i]
   and. > @
-    (bool res).not
+    res.as-bool.not
     condition.free
 
 # Test.
@@ -81,7 +81,7 @@
       while
         1.gt x
         [i] (x.write (x.as-int.plus 1) > @)
-      FALSE
+      false
     x.free
 
 # Test.
@@ -92,7 +92,7 @@
   arr.length.plus -1 > max
   seq > @
     *
-      if
+      if.
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -124,7 +124,7 @@
   arr.length.minus 1 > max
   seq > @
     *
-      if
+      if.
         max.eq 0
         acc.write
           acc.as-int.plus
@@ -156,16 +156,16 @@
     *
       while
         []
-          if > @
+          if. > @
             1.gt x
             seq
               *
                 x.write i.as-int
                 i.write (i.as-int.plus 1)
-                TRUE
-            FALSE
+                true
+            false
         [i]
-          TRUE > @
+          true > @
       and.
         and.
           and.
@@ -184,7 +184,7 @@
     *
       while
         []
-          if > @
+          if. > @
             max.gt iter
             seq
               *
@@ -194,10 +194,10 @@
                       iter.as-int
                 iter.write
                   iter.as-int.plus 1
-                TRUE
-            FALSE
+                true
+            false
         [i]
-          TRUE > @
+          true > @
       and.
         and.
           eq.
@@ -216,7 +216,7 @@
     *
       while
         []
-          if > @
+          if. > @
             max.gt iter
             seq
               *
@@ -226,10 +226,10 @@
                       iter.as-int
                 iter.write
                   iter.as-int.plus 1
-                TRUE
-            FALSE
+                true
+            false
         [i]
-          TRUE > @
+          true > @
       and.
         and.
           eq.

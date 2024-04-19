@@ -21,7 +21,7 @@ eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > decorates-application
     if > @
-      TRUE
+      true
       5
       five
   
@@ -50,4 +50,4 @@ eo: |
 
   # This is the default 64+ symbols comment in front of abstract object.
   [args] > nop
-    TRUE > @
+    true > @

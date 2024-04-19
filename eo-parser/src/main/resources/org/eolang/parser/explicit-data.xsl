@@ -29,8 +29,6 @@ SOFTWARE.
   - int 5         => int 5
   - 42.2          => float 42.2
   - float 22.4    => float 22.4
-  - TRUE          => bool TRUE
-  - bool TRUE     => bool TRUE
   - "Hey"         => string "Hey"
   - QQ.string "H" => QQ.string "H"
 

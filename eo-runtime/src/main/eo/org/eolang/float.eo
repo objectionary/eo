@@ -37,7 +37,7 @@
     nan > nan-as-bytes!
     0.0 > pos-zero-as-bytes!
     -0.0 > neg-zero-as-bytes!
-    if > @
+    if. > @
       or.
         eq.
           x-as-bytes
@@ -45,7 +45,7 @@
         eq.
           self-as-bytes
           nan-as-bytes
-      FALSE
+      false
       or.
         and.
           or.

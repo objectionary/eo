@@ -251,21 +251,21 @@ final class EoSyntaxTest {
             EoSyntaxTest.EMPTY_MSG,
             new EoSyntax(
                 "test-it-1",
-                new InputOf("add.\n  0\n  TRUE")
+                new InputOf("add.\n  0\n  true")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-it-1']",
                 "/program/objects/o[@base='.add']",
                 "/program/objects/o/o[@base='int']",
-                "/program/objects/o/o[@base='bool']"
+                "/program/objects/o/o[@base='true']"
             )
         );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "FALSE > false",
-        "TRUE > true"
+        "5 > five",
+        "\"Hello\" > str"
     })
     void storesAsBytes(final String code) throws IOException {
         final XML xml = new XMLDocument(

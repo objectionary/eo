@@ -134,7 +134,7 @@ public final class Main {
     /**
      * Process one option.
      * @param opt The option
-     * @return TRUE if it's time to exit
+     * @return True if it's time to exit
      * @throws IOException If fails
      */
     private static boolean parse(final String opt) throws IOException {

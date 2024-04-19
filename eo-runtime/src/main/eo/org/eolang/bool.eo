@@ -39,25 +39,5 @@
   # NOT.
   [] > not
     eq. > @
-      FALSE
+      false
       ^
-
-  # AND.
-  [x] > and
-    if > @
-      ^
-      if
-        x
-        TRUE
-        FALSE
-      FALSE
-
-  # OR.
-  [x] > or
-    if > @
-      ^
-      TRUE
-      if
-        x
-        TRUE
-        FALSE

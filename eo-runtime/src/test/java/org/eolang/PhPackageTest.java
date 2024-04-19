@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EObool$EOand;
 import EOorg.EOeolang.EObytes$EOas_int;
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
@@ -187,8 +186,7 @@ final class PhPackageTest {
             Arguments.of("absent", PhPackage.class),
             Arguments.of("bytes$as-int", EObytes$EOas_int.class),
             Arguments.of("bytes$eq", EObytes$EOeq.class),
-            Arguments.of("go", EOgo.class),
-            Arguments.of("bool$and", EObool$EOand.class)
+            Arguments.of("go", EOgo.class)
         );
     }
 }

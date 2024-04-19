@@ -78,8 +78,8 @@
   # A.
   [x] > a
     x > @
-  a FALSE > closed
-  closed TRUE > @
+  a false > closed
+  closed true > @
 
 # Test.
 [] > makes-deep-object-recursively
@@ -88,7 +88,7 @@
     0
   # X.
   [i] > x
-    if > @
+    if. > @
       i.lt 0
       0
       x
@@ -133,7 +133,7 @@
   (memory 0).alloc > n
   # Func.
   [] > func
-    if > @
+    if. > @
       n.as-int.gt 0
       seq
         *
@@ -159,14 +159,14 @@
         [] > long-object-name
           # Long object 5.
           [] > long-object-name
-  TRUE > @
+  true > @
 
 # Test.
 [] > refers-to-inner-vars-correctly
   (memory 0).alloc > go
   seq > @
     *
-      go.write TRUE
+      go.write true
       while
         go.as-bool
         [i]
@@ -174,7 +174,7 @@
           seq > @
             *
               m.write 42
-              go.write FALSE
+              go.write false
               m.free
       go.free
 
@@ -184,7 +184,7 @@
     *
       # A.
       [] > a
-        TRUE > @
+        true > @
 
 # Test.
 [] > app-that-calls-func

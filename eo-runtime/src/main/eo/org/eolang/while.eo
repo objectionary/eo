@@ -28,10 +28,10 @@
 
 # While.
 [condition body] > while
-  if > @
-    condition
+  if. > @
+    condition.as-bool
     start 0
-    FALSE
+    false
 
   # First loop iteration that does not check condition.
   [index] > start
@@ -43,8 +43,8 @@
   # Recursive
   [index] > loop
     ^.body index > current
-    if > @
-      ^.condition
+    if. > @
+      ^.condition.as-bool
       seq
         *
           current
