@@ -50,15 +50,11 @@ import org.yaml.snakeyaml.Yaml;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class EoSyntaxTest {
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -92,7 +88,7 @@ final class EoSyntaxTest {
         final String message
     ) throws IOException {
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -125,7 +121,7 @@ final class EoSyntaxTest {
             "[] > x-н, 1\n"
         );
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(
                 new String(
                     new EoSyntax(
@@ -157,7 +153,7 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             xml.xpath("/program/listing/text()"),
             Matchers.contains(src)
         );
@@ -181,14 +177,14 @@ final class EoSyntaxTest {
         );
         Assertions.assertDoesNotThrow(
             syntax::parsed,
-            EoSyntaxTest.TO_ADD_MESSAGE
+            EoIndentLexerTest.TO_ADD_MESSAGE
         );
     }
 
     @Test
     void parsesArrow() throws IOException {
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
                 "test-it-3",
                 new InputOf("1 > x")
@@ -212,7 +208,7 @@ final class EoSyntaxTest {
             "      v\n"
         );
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
                 "test-it-4",
                 new InputOf(src)
@@ -227,7 +223,7 @@ final class EoSyntaxTest {
     @Test
     void parsesDefinition() throws IOException {
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
                 "test-it-5",
                 new InputOf(
@@ -249,7 +245,7 @@ final class EoSyntaxTest {
     @Test
     void parsesMethodCalls() throws IOException {
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new EoSyntax(
                 "test-it-1",
                 new InputOf("add.\n  0\n  true")
@@ -279,7 +275,7 @@ final class EoSyntaxTest {
             )
         );
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             xml,
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
@@ -299,7 +295,7 @@ final class EoSyntaxTest {
             new InputOf(String.format("%s\n", map.get("eo")))
         ).parsed();
         MatcherAssert.assertThat(
-            EoSyntaxTest.TO_ADD_MESSAGE,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             XhtmlMatchers.xhtml(xml.toString()),
             XhtmlMatchers.hasXPaths("/program/errors/error/@line")
         );

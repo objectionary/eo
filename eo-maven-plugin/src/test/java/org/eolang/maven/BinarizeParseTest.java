@@ -54,7 +54,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 public final class BinarizeParseTest {
 
     /**
-     * Empty message for JUnit Assertions. To be removed.
+     * Empty message for JUnit Assertions.
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
