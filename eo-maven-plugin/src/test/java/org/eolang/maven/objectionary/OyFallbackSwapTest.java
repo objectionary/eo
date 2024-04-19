@@ -35,6 +35,9 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests for {@link OyFallbackSwap}.
  * @since 1.0
+ *
+ * @todo #2297:60m Replace all appearances of TO_ADD_MESSAGE variable or "TO ADD ASSERTION MESSAGE"
+ *  strings in assertions with meaningful assert messages. Don't forget to remove the puzzle.
  */
 final class OyFallbackSwapTest {
 
