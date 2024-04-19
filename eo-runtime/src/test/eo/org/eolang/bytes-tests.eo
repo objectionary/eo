@@ -428,12 +428,12 @@
 [] > bytes-of-wrong-size-as-int-of-returns-error
   try > @
     01-01-01-01.as-int
-  QQ.io.stdout e > [e]
-  FALSE
+    QQ.io.stdout e > [e]
+    false
 
 # Test.
 [] > bytes-of-wrong-size-as-float-returns-error
   try > @
     01-01-01-01.as-float
-  QQ.io.stdout e > [e]
-  FALSE
+    QQ.io.stdout e > [e]
+    false
