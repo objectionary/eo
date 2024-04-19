@@ -43,14 +43,20 @@ import org.junit.jupiter.params.ParameterizedTest;
  * Test case for {@link BinarizeParse}.
  *
  * @since 0.1
+ *
+ * @todo #2297:60m Replace all appearances of {@link BinarizeParseTest#TO_ADD_MESSAGE} field in
+ *  assertions with meaningful assert messages. Don't forget to remove
+ *  {@link BinarizeParseTest#TO_ADD_MESSAGE} field and remove public modifier from this class if no
+ *  longer need.
  */
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 @Execution(ExecutionMode.CONCURRENT)
-final class BinarizeParseTest {
+public final class BinarizeParseTest {
 
     /**
-     * Empty message for JUnit Assertions.
+     * Empty message for JUnit Assertions. To be removed.
      */
-    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
+    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {

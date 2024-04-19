@@ -27,6 +27,7 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
@@ -65,7 +66,7 @@ final class OyRemoteTest {
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
             ).value("org.eolang.app"),
-            "TO ADD ASSERTION MESSAGE"
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 

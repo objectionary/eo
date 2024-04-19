@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +40,6 @@ import org.junit.jupiter.api.Test;
  * @since 1.0
  */
 final class OyFallbackTest {
-
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     /**
      * Primary objectionary.
@@ -68,17 +64,17 @@ final class OyFallbackTest {
     @Test
     void getsObjectWhenPrimaryContains() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(this.fallback.get("org.example.main")).asString(),
             Matchers.equalTo(this.primary.source)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.primary.invocations.get(),
             Matchers.equalTo(1)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.secondary.invocations.get(),
             Matchers.equalTo(0)
         );
@@ -87,17 +83,17 @@ final class OyFallbackTest {
     @Test
     void getsObjectWhenPrimaryNotContains() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(this.fallback.get("org.example.secondary")).asString(),
             Matchers.equalTo(this.secondary.source)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.primary.invocations.get(),
             Matchers.equalTo(1)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.secondary.invocations.get(),
             Matchers.equalTo(1)
         );
@@ -106,22 +102,22 @@ final class OyFallbackTest {
     @Test
     void containsObject() throws IOException {
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.fallback.contains("org.example.main"),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.fallback.contains("org.example.absent"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.primary.invocations.get(),
             Matchers.equalTo(2)
         );
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.secondary.invocations.get(),
             Matchers.equalTo(1)
         );
@@ -130,7 +126,7 @@ final class OyFallbackTest {
     @Test
     void convertsToString() {
         MatcherAssert.assertThat(
-            OyFallbackTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.fallback.toString(),
             Matchers.equalTo(String.format("[%s]+[fallback to %s]", this.primary, this.secondary))
         );

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,21 +36,13 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Tests for {@link OyFallbackSwap}.
  * @since 1.0
- *
- * @todo #2297:60m Replace all appearances of TO_ADD_MESSAGE variable or "TO ADD ASSERTION MESSAGE"
- *  strings in assertions with meaningful assert messages. Don't forget to remove the puzzle.
  */
 final class OyFallbackSwapTest {
-
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void getsWithFallbackNoSwapOy() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -64,7 +57,7 @@ final class OyFallbackSwapTest {
     @Test
     void getsWithFallbackSwapOyFail() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -83,7 +76,7 @@ final class OyFallbackSwapTest {
     @Test
     void getsWithFallbackSwapOy() throws Exception {
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     new Objectionary.Fake(s -> new InputOf("[] > local\n")),
@@ -110,7 +103,7 @@ final class OyFallbackSwapTest {
             )
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyFallbackSwap(
                 home,
                 cache,
@@ -119,7 +112,7 @@ final class OyFallbackSwapTest {
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyFallbackSwap(
                     home,
@@ -130,7 +123,7 @@ final class OyFallbackSwapTest {
             Matchers.is(Matchers.notNullValue())
         );
         MatcherAssert.assertThat(
-            OyFallbackSwapTest.TO_ADD_MESSAGE,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyFallbackSwap(
                 home,
                 cache,

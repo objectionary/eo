@@ -74,7 +74,7 @@ final class PhiMojoTest {
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
         Assertions.assertDoesNotThrow(
             () -> maven.execute(PhiMojo.class),
-            "TO ADD ASSERTION MESSAGE"
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 

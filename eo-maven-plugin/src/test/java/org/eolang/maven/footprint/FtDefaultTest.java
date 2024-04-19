@@ -26,6 +26,7 @@ package org.eolang.maven.footprint;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ final class FtDefaultTest {
         final Path target = temp.resolve("target");
         new FtDefault(target).save(program, FtDefaultTest.XMIR, FtDefaultTest.CONTENT);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new FtDefault(target).load(program, FtDefaultTest.XMIR),
             Matchers.equalTo(FtDefaultTest.CONTENT.value())
         );
@@ -68,7 +69,7 @@ final class FtDefaultTest {
         footprint.save("org.eolang.dir.sub", "o", FtDefaultTest.CONTENT);
         final Path subfolder = temp.resolve("org").resolve("eolang");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             footprint.list("xmir"),
             Matchers.containsInAnyOrder(
                 subfolder.resolve("a.xmir"),
@@ -76,7 +77,7 @@ final class FtDefaultTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             footprint.list("o"),
             Matchers.containsInAnyOrder(
                 subfolder.resolve("c.o"),
@@ -84,7 +85,7 @@ final class FtDefaultTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             footprint.list("org"),
             Matchers.empty()
         );

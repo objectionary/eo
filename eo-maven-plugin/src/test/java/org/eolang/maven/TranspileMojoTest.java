@@ -76,7 +76,7 @@ final class TranspileMojoTest {
     @ClasspathSource(value = "org/eolang/maven/pre/", glob = "**.yaml")
     void createsPreStylesheets(final String yaml) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new XaxStory(yaml),
             Matchers.is(true)
         );
@@ -92,13 +92,13 @@ final class TranspileMojoTest {
         final Path java = res.get(this.compiled);
         final long before = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             Matchers.is(true)
         );
         maven.execute(TranspileMojo.class);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile().lastModified(),
             Matchers.greaterThan(before)
         );
@@ -116,22 +116,22 @@ final class TranspileMojoTest {
             String.format("target/%s/foo/x/main.xmir", TranspileMojo.DIR)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             xmir.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             xmir.toFile().setLastModified(0L),
             Matchers.is(true)
         );
@@ -139,12 +139,12 @@ final class TranspileMojoTest {
         maven.execute(TranspileMojo.class);
         final long after = java.toFile().lastModified();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             after,
             Matchers.greaterThan(0L)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             before,
             Matchers.not(Matchers.equalTo(after))
         );
@@ -158,18 +158,18 @@ final class TranspileMojoTest {
             .execute(new FakeMaven.Transpile())
             .result().get(this.compiled);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile(),
             FileMatchers.anExistingFile()
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile().setLastModified(0L),
             Matchers.is(true)
         );
         maven.execute(TranspileMojo.class);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile().lastModified(),
             Matchers.is(0L)
         );
@@ -184,11 +184,11 @@ final class TranspileMojoTest {
             .result();
         final String java = "target/generated/EOorg/EOeolang/EOtuple.java";
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res, Matchers.hasKey(java)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(res.get(java)).asString(),
             Matchers.containsString("class EOtuple")
         );
@@ -203,7 +203,7 @@ final class TranspileMojoTest {
         }
         maven.execute(new FakeMaven.Transpile()).result();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             Files.list(maven.generatedPath()
                 .resolve("EOorg")
                 .resolve("EOeolang")
@@ -233,7 +233,7 @@ final class TranspileMojoTest {
             .withProgram(this.program)
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.foreign().size(),
             Matchers.equalTo(2)
         );
@@ -259,7 +259,7 @@ final class TranspileMojoTest {
             .withHelloWorld()
             .execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath().resolve(binary).toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );
@@ -277,7 +277,7 @@ final class TranspileMojoTest {
                 .execute(OptimizeMojo.class)
                 .execute(ShakeMojo.class)
                 .execute(TranspileMojo.class),
-            "TO ADD ASSERTION MESSAGE"
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
         Assertions.assertTrue(
             out.captured().stream().anyMatch(

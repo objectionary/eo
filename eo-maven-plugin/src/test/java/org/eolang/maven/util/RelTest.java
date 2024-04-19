@@ -25,6 +25,7 @@ package org.eolang.maven.util;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ final class RelTest {
         @TempDir final Path temp
     ) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new Rel(temp, temp.resolve(file)).toString(),
             Matchers.is(Paths.get(expected).toString())
         );
@@ -62,7 +63,7 @@ final class RelTest {
     @Test
     void returnsAbsolutePathIfBaseAndOtherFromDifferentHierarchies() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new Rel(
                 Paths.get("/a/b/c"),
                 Paths.get("/d/e/f")
