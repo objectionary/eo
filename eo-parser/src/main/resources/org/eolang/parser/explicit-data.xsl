@@ -41,18 +41,16 @@ SOFTWARE.
         00 00 00 00 00 00 00 01                  =>      00 00 00 00 00 00 00 01
       </o>                                             </o>
     </o>                                             </o>
-  - <o base=".bool" name="b">                        <o base=".bool" name="b">
+  - <o base=".int" name="b">                        <o base=".int" name="b">
       <o base=".eolang">                               <o base=".eolang">
         <o base=".org">                                  <o base="org">
           <o base="Q"></o>                                 <o base="Q"/>
         </o>                                             </o>
       </o>                                             </o>
-      <o base="org.eolang.bool" data="bytes">    =>    <o base="org.eolang.bool">
-        01                                               <o base="org.eolang.bytes" data="bytes">
-      </o>                                                 01
-    </o>                                                 </o>
-                                                       </o>
-                                                     </o>
+      <o base="org.eolang.int" data="bytes">    =>    <o base="org.eolang.bytes" data="bytes">
+        01                                               01
+      </o>                                             </o>
+    </o>                                             </o>
   -->
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>

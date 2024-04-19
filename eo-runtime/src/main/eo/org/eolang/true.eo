@@ -28,7 +28,8 @@
 
 # True.
 [] > true
-  bool 01- > @
+  01- > @
+  false > not
 
   # Control structure that allows for conditional execution of code.
   # Since $ is TRUE - behaves as `left` object.
