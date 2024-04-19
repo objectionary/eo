@@ -57,11 +57,9 @@ final class CommitHashesTextTest {
     void isThreadSafe() throws ExecutionException, InterruptedException {
         final int threads = 200;
         boolean nonulls = true;
-        final ExecutorService service =
-            Executors.newFixedThreadPool(threads);
+        final ExecutorService service = Executors.newFixedThreadPool(threads);
         final CountDownLatch latch = new CountDownLatch(1);
-        final Collection<Future<Boolean>> futures =
-            new ArrayList<>(threads);
+        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
         for (int thread = 0; thread < threads; ++thread) {
             futures.add(
                 service.submit(
