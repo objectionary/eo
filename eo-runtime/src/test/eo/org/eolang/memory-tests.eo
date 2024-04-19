@@ -104,7 +104,7 @@
 
 # Test.
 [] > memory-is-strictly-typed-bool-error-overflow
-  (memory FALSE).alloc > m
+  (memory false).alloc > m
   try > @
     []
       m.write 86124867.88 > @
@@ -112,7 +112,7 @@
       and. > @
         QQ.io.stdout e
         m.free
-    TRUE
+    true
 
 # Test.
 [] > memory-is-strictly-typed-string-error-overflow
@@ -124,7 +124,7 @@
       and. > @
         QQ.io.stdout e
         m.free
-    TRUE
+    true
 
 # Test.
 [] > memory-is-strictly-typed-int
@@ -134,7 +134,7 @@
       try
         m.write 2556 > []
         e > [e]
-        TRUE
+        true
       2556
     m.free
 
@@ -146,7 +146,7 @@
       try
         m.write 82.22 > []
         e > []
-        TRUE
+        true
       82.22
     m.free
 
@@ -158,29 +158,29 @@
       try
         m.write "Prot" > []
         e > []
-        TRUE
+        true
       "Proto"
     m.free
 
 # Test.
 [] > memory-is-strictly-typed-bool
-  (memory FALSE).alloc > m
+  (memory false).alloc > m
   and. > @
     try
       []
-        m.write TRUE > @
+        m.write true > @
       [e]
         e > @
-      TRUE
+      true
     m.free
 
 # Test.
 [] > memory-is-cleared-successfully
-  (memory FALSE).alloc > m
+  (memory false).alloc > m
   seq > @
     *
       m.free
       try
         m
         QQ.io.stdout e > [e]
-        FALSE
+        false

@@ -1,19 +1,17 @@
 locators:
-  - .org .eolang .bool
-  - .org .eolang .bool !.not
+  - .org .eolang .true
+  - .org .eolang .true !.not
   - .org .eolang .int !.plus
-  - .dots .x .ε .β .not .α0 .Δ δ=01
-  - .dots .x .ε .β .not .π >bool
   - .dots .y >b
   - .dots .z .π .β .times .π .β .plus .α0 .Δ δ=00-00-00-00-00-00-00-2A
   - .dots .z .π .β .times .π .β .plus .π >int
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > dots
-    TRUE.not > x
+    true.not > x
     Q.a.b > y
     times. > z
       plus.
         42
-        TRUE
+        true
       x

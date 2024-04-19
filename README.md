@@ -165,7 +165,7 @@ This is how you iterate:
                   x.times x
               x.write
                 x.plus 1
-    TRUE
+    true
 ```
 
 This code will print this:

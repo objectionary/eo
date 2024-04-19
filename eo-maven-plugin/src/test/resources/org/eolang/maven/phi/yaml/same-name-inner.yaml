@@ -11,7 +11,7 @@ eo: |
           [] > long-object-name
             # Long object 5.
             [] > long-object-name
-    TRUE > @
+    true > @
 phi: |
   {
     ⟦
@@ -25,11 +25,7 @@ phi: |
             ⟧
           ⟧
         ⟧,
-        φ ↦ Φ.org.eolang.bool(
-          α0 ↦ Φ.org.eolang.bytes(
-            Δ ⤍ 01-
-          )
-        )
+        φ ↦ Φ.org.eolang.true
       ⟧
     ⟧
   }

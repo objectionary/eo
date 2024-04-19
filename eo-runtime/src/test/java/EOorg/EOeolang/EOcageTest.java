@@ -40,7 +40,7 @@ import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
-import org.eolang.PhTracedLocator;
+import org.eolang.PhTraced;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -210,13 +210,13 @@ final class EOcageTest {
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
+                PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
             );
         }
 
         @AfterEach
         void clearDepth() {
-            System.clearProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
+            System.clearProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
         }
 
         @Test
@@ -255,7 +255,7 @@ final class EOcageTest {
         @Test
         void rewritesItselfToItselfViaDummy() {
             System.setProperty(
-                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
+                PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
             );
             final Phi cage = EOcageTest.encaged(
                 new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
@@ -293,8 +293,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -314,8 +314,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -333,8 +333,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );

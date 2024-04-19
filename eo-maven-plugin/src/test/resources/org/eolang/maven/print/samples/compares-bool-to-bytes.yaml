@@ -2,16 +2,16 @@ origin: |
   # Test.
   [] > compares-bool-to-bytes
     and. > @
-      TRUE.eq 01-
-      FALSE.eq 00-
+      true.eq 01-
+      false.eq 00-
 straight: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > compares-bool-to-bytes
-    TRUE
+    true
     .eq
       01-
     .and > @
-      FALSE
+      false
       .eq
         00-
 reversed: |
@@ -19,8 +19,8 @@ reversed: |
   [] > compares-bool-to-bytes
     and. > @
       eq.
-        TRUE
+        true
         01-
       eq.
-        FALSE
+        false
         00-

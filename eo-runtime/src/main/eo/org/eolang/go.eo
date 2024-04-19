@@ -38,7 +38,7 @@
 #   [g]
 #     seq > @
 #       *
-#         g.forward TRUE
+#         g.forward true
 #         stdout "Will never be printed"
 # ```
 #
@@ -61,11 +61,11 @@
     try > @
       body token
       [e]
-        if > @
+        if. > @
           &.^.id.eq e.id
           e.value
           error e
-      TRUE
+      true
 
     # Token.
     [] > token

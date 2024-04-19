@@ -11,7 +11,7 @@ origin: |
           [] > long-object-name
             # This is the default 64+ symbols comment in front of named abstract object.
             [] > long-object-name
-    TRUE > @
+    true > @
 
 straight: |
   # This is the default 64+ symbols comment in front of named abstract object.
@@ -26,7 +26,7 @@ straight: |
           [] > long-object-name
             # This is the default 64+ symbols comment in front of named abstract object.
             [] > long-object-name
-    TRUE > @
+    true > @
 
 reversed: |
   # This is the default 64+ symbols comment in front of named abstract object.
@@ -41,4 +41,4 @@ reversed: |
           [] > long-object-name
             # This is the default 64+ symbols comment in front of named abstract object.
             [] > long-object-name
-    TRUE > @
+    true > @

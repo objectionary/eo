@@ -1225,14 +1225,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             type = "bytes";
             base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
-        } else if (ctx.BOOL() != null) {
-            type = "bytes";
-            base = "bool";
-            if (Boolean.parseBoolean(text)) {
-                data = XeEoListener.bytesToHex((byte) 0x01);
-            } else {
-                data = XeEoListener.bytesToHex((byte) 0x00);
-            }
         } else if (ctx.FLOAT() != null) {
             type = "bytes";
             base = "float";

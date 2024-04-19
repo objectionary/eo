@@ -214,8 +214,8 @@ final class ShakeMojoTest {
                     "+package f\n",
                     "[args] > main",
                     "  seq > @",
-                    "    TRUE > x",
-                    "    FALSE > x"
+                    "    true > x",
+                    "    false > x"
                 ).with("trackOptimizationSteps", true)
                 .execute(new FakeMaven.Shake())
                 .result(),

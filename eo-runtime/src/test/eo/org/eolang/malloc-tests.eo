@@ -78,7 +78,7 @@
       try
         p.read 0 8
         [e] (QQ.io.stdout e > @)
-        FALSE
+        false
 
 # Test.
 [] > malloc-pointer-cant-write-more-than-allocated
@@ -87,12 +87,12 @@
     seq
       *
         p.write 0 42
-        FALSE
+        false
     [e]
       and. > @
         QQ.io.stdout e
         p.free
-    TRUE
+    true
 
 # Test.
 [] > malloc-pointer-cant-write-more-than-allocated-with-offset
@@ -100,13 +100,13 @@
   try > @
     seq
       *
-        p.write 1 TRUE
-        FALSE
+        p.write 1 true
+        false
     [e]
       and. > @
         QQ.io.stdout e
         p.free
-    TRUE
+    true
 
 # Test.
 [] > malloc-pointer-rewrites-successfully

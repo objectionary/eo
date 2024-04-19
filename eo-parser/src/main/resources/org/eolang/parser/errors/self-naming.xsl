@@ -22,12 +22,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="self-naming" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="self-naming" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- x > x -->
+  <xsl:function name="eo:base-eq-name" as="xs:boolean">
+    <xsl:param name="object"/>
+    <xsl:sequence select="$object/@base=$object/@name"/>
+  </xsl:function>
+  <!-- $.x > x -->
+  <xsl:function name="eo:with-this" as="xs:boolean">
+    <xsl:param name="object"/>
+    <xsl:sequence select="$object/@base=concat('.', $object/@name) and $object/@method and $object/preceding-sibling::o[1][@base='$']"/>
+  </xsl:function>
+  <!-- x.method any > x -->
+  <xsl:function name="eo:with-method" as="xs:boolean">
+    <xsl:param name="object"/>
+    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[1][@base=$object/@name]"/>
+  </xsl:function>
+  <!-- $.x.method any > x -->
+  <xsl:function name="eo:with-method-and-this" as="xs:boolean">
+    <xsl:param name="object"/>
+    <xsl:sequence select="starts-with($object/@base,'.') and $object/@method and $object/preceding-sibling::o[1][@base=concat('.',$object/@name) and @method and preceding-sibling::o[1][@base='$']]"/>
+  </xsl:function>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[@name and @base and @base=@name]">
+      <xsl:for-each select="//o[@name and @base and (eo:base-eq-name(.) or eo:with-this(.) or eo:with-method(.) or eo:with-method-and-this(.))]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>self-naming</xsl:text>

@@ -23,9 +23,14 @@
  */
 package org.eolang.maven.hash;
 
+import com.jcabi.aspects.RetryOnFailure;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.Text;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Sticky;
 import org.cactoos.text.TextEnvelope;
+import org.cactoos.text.TextOf;
 
 /**
  * Commit hashes table as text from objectionary.
@@ -37,22 +42,34 @@ import org.cactoos.text.TextEnvelope;
 final class CommitHashesText extends TextEnvelope {
 
     /**
+     * Tags.
+     */
+    private static final String HOME = "https://home.objectionary.com/tags.txt";
+
+    /**
      * Cache.
      */
-    private static final Text CACHE = new Sticky(new ObjectionaryCommitHashes());
+    private static final Text CACHE = new Sticky(
+        CommitHashesText.asText(CommitHashesText.HOME)
+    );
 
     /**
      * Constructor.
      */
     CommitHashesText() {
-        this(CommitHashesText.CACHE);
+        super(CommitHashesText.CACHE);
     }
 
     /**
-     * Constructor.
-     * @param text The text to of commit hashes.
+     * Download from the URL and return the content.
+     * @param url The URL with tags
+     * @return The body of the web page
      */
-    private CommitHashesText(final Text text) {
-        super(text);
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private static Text asText(final String url) {
+        final String body = new Unchecked<>(
+            () -> new TextOf(new URL(url)).asString()
+        ).value();
+        return new TextOf(body);
     }
 }

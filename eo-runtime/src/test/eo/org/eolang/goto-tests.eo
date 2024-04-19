@@ -40,10 +40,10 @@
               seq > @
                 *
                   i.write (i.as-int.plus 1)
-                  if
+                  if.
                     i.as-int.lt 10
                     g.backward
-                    TRUE
+                    true
           stdout "Finished!\n"
           i
       10
@@ -60,10 +60,10 @@
           [g]
             seq > @
               *
-                if
+                if.
                   x.eq 0
-                  g.forward TRUE
-                  TRUE
+                  g.forward true
+                  true
                 r.write (42.div x)
         (dataized r).as-bytes > result
         r.free
@@ -84,10 +84,10 @@
       [g]
         seq > @
           *
-            if
+            if.
               a.gt b
               g.forward a
-              TRUE
+              true
             b
   eq. > @
     max 7 42
