@@ -33,7 +33,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -63,22 +62,25 @@ final class CommitHashesTextTest {
         final ExecutorService service = Executors.newFixedThreadPool(threads);
         final CountDownLatch latch = new CountDownLatch(1);
         final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
-        for (int thread = 0; thread < threads; ++thread) {
-            futures.add(
-                service.submit(
-                    () -> new CommitHashesText().asString() != null
-                )
+        try {
+            for (int thread = 0; thread < threads; ++thread) {
+                futures.add(
+                    service.submit(
+                        () -> new CommitHashesText().asString() != null
+                    )
+                );
+            }
+            latch.countDown();
+            for (final Future<Boolean> fun : futures) {
+                nonulls &= fun.get(1, TimeUnit.SECONDS);
+            }
+            MatcherAssert.assertThat(
+                "Can be used in different threads without NPE",
+                nonulls,
+                Matchers.equalTo(true)
             );
+        } finally {
+            service.shutdown();
         }
-        latch.countDown();
-        for (final Future<Boolean> fun : futures) {
-            nonulls &= fun.get(1, TimeUnit.SECONDS);
-        }
-        MatcherAssert.assertThat(
-            "Can be used in different threads without NPE",
-            nonulls,
-            Matchers.equalTo(true)
-        );
-        service.shutdown();
     }
 }
