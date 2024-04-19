@@ -42,7 +42,10 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class EoIndentLexerTest {
     /**
-     * Empty message for JUnit Assertions.
+     * @todo #2297:60m Replace all appearances of {@link EoIndentLexerTest#TO_ADD_MESSAGE} field in
+     *  eo-parser with meaningful assert messages. Don't forget to remove
+     *  {@link EoIndentLexerTest#TO_ADD_MESSAGE} field and remove public modifier from this class if no
+     *  longer need.
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 

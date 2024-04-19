@@ -33,16 +33,14 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link AtComposite}.
  *
  * @since 0.16
- *
- * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
- *  eo-runtime with meaningful assert messages. Don't forget to remove
- *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if no
- *  longer need.
  */
 public final class AtCompositeTest {
 
     /**
-     * Empty message for JUnit Assertions. To be removed.
+     * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
+     *  eo-runtime with meaningful assert messages. Don't forget to remove
+     *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  no longer need.
      */
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
