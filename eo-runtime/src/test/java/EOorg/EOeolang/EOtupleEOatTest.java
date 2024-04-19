@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtOnce;
 import org.eolang.AtSimple;
 import org.eolang.AtVoid;
@@ -63,12 +64,12 @@ final class EOtupleEOatTest {
         final Phi get = tuple.take("at").copy();
         get.put(0, idx);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
@@ -77,12 +78,12 @@ final class EOtupleEOatTest {
     @Test
     void checksNegativeIndex() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(this.get(-1L)).take(String.class),
             Matchers.equalTo("second")
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(this.get(-2L)).take(String.class),
             Matchers.equalTo("first")
         );
@@ -93,7 +94,7 @@ final class EOtupleEOatTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(this.get(-3L)).take(),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -109,7 +110,7 @@ final class EOtupleEOatTest {
             "args", copy
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(10L)
         );

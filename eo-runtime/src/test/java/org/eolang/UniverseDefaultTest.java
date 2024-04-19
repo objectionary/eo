@@ -59,7 +59,7 @@ final class UniverseDefaultTest {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             universe.find(
                 String.format("%s.%s.%s", "$", UniverseDefaultTest.ABSTRACT_ATT, Attr.RHO)
             ),
@@ -74,7 +74,7 @@ final class UniverseDefaultTest {
         final Phi phi = new DummyWithStructure(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             universe.find(
                 String.format(
                     "$.%s.%s.%s.%s",
@@ -96,7 +96,7 @@ final class UniverseDefaultTest {
         final UniverseDefault universe = new UniverseDefault(Phi.Φ, indexed);
         final int vertex = universe.find("Q.org.eolang.seq");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             indexed.get(vertex).getClass(),
             Matchers.equalTo(EOseq.class)
         );
@@ -109,7 +109,7 @@ final class UniverseDefaultTest {
             () -> new UniverseDefault(
                 new DummyWithStructure(Phi.Φ)
             ).find("$.wrong-name"),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -122,7 +122,7 @@ final class UniverseDefaultTest {
             "$.".concat(UniverseDefaultTest.VALUE_ATT)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             universe.dataize(vertex),
             Matchers.equalTo(new BytesOf(1L).take())
         );
@@ -135,7 +135,7 @@ final class UniverseDefaultTest {
             () -> new UniverseDefault(
                 new DummyWithStructure(Phi.Φ)
             ).dataize(-1),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -147,12 +147,12 @@ final class UniverseDefaultTest {
         final int origin = universe.find("$");
         final int copy = universe.copy(origin);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             copy,
             Matchers.not(origin)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             universe.dataize(copy),
             Matchers.equalTo(
                 universe.dataize(origin)
@@ -168,7 +168,7 @@ final class UniverseDefaultTest {
         final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(indexed.get(copy)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
@@ -188,7 +188,7 @@ final class UniverseDefaultTest {
             dummy.hashCode(), copy, UniverseDefaultTest.ABSTRACT_ATT
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(dummy.take(UniverseDefaultTest.ABSTRACT_ATT)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA

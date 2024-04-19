@@ -45,7 +45,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.1
  *
  * @todo #2297:60m Replace all appearances of {@link BinarizeParseTest#TO_ADD_MESSAGE} field in
- *  assertions with meaningful assert messages. Don't forget to remove
+ *  eo-maven-plugin with meaningful assert messages. Don't forget to remove
  *  {@link BinarizeParseTest#TO_ADD_MESSAGE} field and remove public modifier from this class if no
  *  longer need.
  */

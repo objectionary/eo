@@ -45,7 +45,7 @@ final class VerticesTest {
     @Test
     void makesNext() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Vertices().next(),
             Matchers.greaterThan(0)
         );
@@ -68,7 +68,7 @@ final class VerticesTest {
         );
         new Threads<>(threads, tasks).forEach(hashes::add);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             hashes.size(),
             Matchers.equalTo(threads)
         );

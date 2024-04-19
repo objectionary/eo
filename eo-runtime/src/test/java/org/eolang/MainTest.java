@@ -49,7 +49,7 @@ final class MainTest {
     @Test
     void printsVersion() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--version"),
             Matchers.allOf(
                 Matchers.containsString("."),
@@ -61,7 +61,7 @@ final class MainTest {
     @Test
     void printsHelp() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--help"),
             Matchers.containsString("Usage: ")
         );
@@ -71,7 +71,7 @@ final class MainTest {
     @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
             Matchers.stringContainsInOrder(
                 String.format("Hello!%n---%n"),
@@ -85,7 +85,7 @@ final class MainTest {
     @Disabled
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--verbose", "org.eolang.io.tupled-stdout", "Hello, dude!"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
@@ -99,7 +99,7 @@ final class MainTest {
     @Test
     void executesJvmFullRunWithDashedObject() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--verbose", "as-bytes"),
             Matchers.allOf(
                 Matchers.containsString("Loading class EOas_bytes"),
@@ -111,7 +111,7 @@ final class MainTest {
     @Test
     void executesJvmFullRinWithAttributeCall() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--verbose", "string$as-bytes"),
             Matchers.allOf(
                 Matchers.containsString("Loading class EOstring$EOas_bytes"),
@@ -123,7 +123,7 @@ final class MainTest {
     @Test
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
         );
@@ -132,7 +132,7 @@ final class MainTest {
     @Test
     void executesWithObjectNotFoundException() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             MainTest.exec("unavailable-name"),
             Matchers.containsString("Can not find 'unavailable-name' object")
         );
@@ -153,7 +153,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             reader.readLine().length(),
             Matchers.greaterThan(0)
         );
@@ -174,7 +174,7 @@ final class MainTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             reader.readLine().length(),
             Matchers.greaterThan(1)
         );
@@ -183,7 +183,7 @@ final class MainTest {
     @Test
     void readsBytesCorrectly() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new ByteArrayInputStream(
                 "··\uD835\uDD38➜Φ".getBytes(
                     StandardCharsets.UTF_8

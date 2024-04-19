@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.number.SumOf;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -62,7 +63,7 @@ final class EOcageTest {
     void encagesViaApplication() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -73,7 +74,7 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         EOcageTest.encageTo(cage, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -88,7 +89,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -100,7 +101,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -112,7 +113,7 @@ final class EOcageTest {
         final Phi second = first.copy();
         EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(first).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -122,13 +123,13 @@ final class EOcageTest {
     void writesAndRewritesPrimitive() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
         EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
         );
@@ -140,7 +141,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world")),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -156,7 +157,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, ten),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -168,7 +169,7 @@ final class EOcageTest {
                 EOcageTest.encaged(dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             ),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -228,7 +229,7 @@ final class EOcageTest {
             );
             final int threads = 500;
             MatcherAssert.assertThat(
-                "TO ADD ASSERTION MESSAGE",
+                AtCompositeTest.TO_ADD_MESSAGE,
                 new SumOf(
                     new Threads<>(
                         threads,

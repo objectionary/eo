@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -50,7 +51,7 @@ final class EOstringTest {
     void comparesTwoEqualStrings() {
         final String txt = "Hello, друг!";
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi(txt), "eq"),
@@ -64,7 +65,7 @@ final class EOstringTest {
     @Test
     void comparesTwoDifferentStrings() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhMethod(new Data.ToPhi("Hello, друг!"), "eq"),

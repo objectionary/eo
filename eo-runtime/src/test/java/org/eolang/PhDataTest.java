@@ -36,7 +36,7 @@ public class PhDataTest {
     @Test
     void addsApplicationWithDelta() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhData(Phi.Φ, new byte[] {1, 2, 3}).φTerm(),
             Matchers.containsString("(Δ ↦ 01-02-03)")
         );
@@ -46,7 +46,7 @@ public class PhDataTest {
     void returnsData() {
         final byte[] data = new byte[] {0x2A, 0x3B};
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhData(new Dummy(), data).delta(),
             Matchers.equalTo(data)
         );

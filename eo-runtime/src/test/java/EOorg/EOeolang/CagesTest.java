@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhFake;
@@ -47,7 +48,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.get(locator),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -57,7 +58,7 @@ class CagesTest {
         Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.init(phi),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -68,7 +69,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(first);
         Cages.INSTANCE.encage(locator, second);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             Cages.INSTANCE.get(locator).hashCode(),
             Matchers.equalTo(second.hashCode())
         );
@@ -80,7 +81,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(phi.hashCode(), phi),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -90,7 +91,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L)),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -99,7 +100,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.get(new PhFake().hashCode()),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 }

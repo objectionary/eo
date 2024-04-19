@@ -28,6 +28,7 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtVoid;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -50,7 +51,7 @@ public final class EOtryTest {
     @Test
     public void catchesException() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -82,7 +83,7 @@ public final class EOtryTest {
             new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(body).take(String.class),
             Matchers.containsString("it is broken")
         );
@@ -102,7 +103,7 @@ public final class EOtryTest {
             new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(body).take(String.class),
             Matchers.containsString("it is broken")
         );
@@ -111,7 +112,7 @@ public final class EOtryTest {
     @Test
     public void worksWithoutException() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -138,7 +139,7 @@ public final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             main.count,
             Matchers.equalTo(1)
         );

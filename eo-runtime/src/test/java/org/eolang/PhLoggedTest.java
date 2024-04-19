@@ -38,7 +38,7 @@ class PhLoggedTest {
     @Test
     void convertsToOriginTerm() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ).φTerm(),
             Matchers.is(Phi.Φ.φTerm())
         );
@@ -47,7 +47,7 @@ class PhLoggedTest {
     @Test
     void copiesOrigin() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ).copy(),
             Matchers.equalTo(Phi.Φ)
         );
@@ -56,7 +56,7 @@ class PhLoggedTest {
     @Test
     void returnsOriginHashCode() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ).hashCode(),
             Matchers.equalTo(Phi.Φ.hashCode())
         );
@@ -65,7 +65,7 @@ class PhLoggedTest {
     @Test
     void equalsToOrigin() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(Phi.Φ),
             Matchers.equalTo(Phi.Φ)
         );
@@ -75,7 +75,7 @@ class PhLoggedTest {
     void getsOriginLocator() {
         final Phi phi = Phi.Φ;
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(phi).locator(),
             Matchers.equalTo(phi.locator())
         );
@@ -85,7 +85,7 @@ class PhLoggedTest {
     void convertsToString() {
         final Phi phi = Phi.Φ;
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLogged(phi).toString(),
             Matchers.equalTo(phi.toString())
         );

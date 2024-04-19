@@ -33,6 +33,7 @@ import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.eolang.AtComposite;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -66,7 +67,7 @@ public final class EOstdoutTest {
         stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             stream.toString(),
             Matchers.equalTo("Hello")
         );
@@ -81,7 +82,7 @@ public final class EOstdoutTest {
             format
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).take(Boolean.class),
             Matchers.equalTo(true)
         );
@@ -107,7 +108,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             stream.toString(),
             Matchers.equalTo(str)
         );
@@ -133,7 +134,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            AtCompositeTest.TO_ADD_MESSAGE,
             stream.toString(),
             Matchers.equalTo(str)
         );

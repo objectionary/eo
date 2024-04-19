@@ -39,7 +39,7 @@ public class ExInterruptedTest {
         Assertions.assertThrows(
             ExInterrupted.class,
             () -> new Dataized(phi.take(Attr.PHI)).take(),
-            "TO ADD ASSERTION MESSAGE"
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
