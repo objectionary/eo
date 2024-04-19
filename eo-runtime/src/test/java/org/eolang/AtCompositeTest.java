@@ -37,6 +37,8 @@ import org.junit.jupiter.api.Test;
 public final class AtCompositeTest {
 
     /**
+     * Empty message for JUnit Assertions.
+     *
      * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
      *  eo-runtime with meaningful assert messages. Don't forget to remove
      *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
