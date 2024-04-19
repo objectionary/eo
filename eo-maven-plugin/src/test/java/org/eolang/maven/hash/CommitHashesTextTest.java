@@ -31,6 +31,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -54,7 +57,7 @@ final class CommitHashesTextTest {
     }
 
     @Test
-    void isThreadSafe() throws ExecutionException, InterruptedException {
+    void isThreadSafe() throws ExecutionException, InterruptedException, TimeoutException {
         final int threads = 200;
         boolean nonulls = true;
         final ExecutorService service = Executors.newFixedThreadPool(threads);
@@ -69,12 +72,13 @@ final class CommitHashesTextTest {
         }
         latch.countDown();
         for (final Future<Boolean> fun : futures) {
-            nonulls &= fun.get();
+            nonulls &= fun.get(1, TimeUnit.SECONDS);
         }
         MatcherAssert.assertThat(
             "Can be used in different threads without NPE",
             nonulls,
             Matchers.equalTo(true)
         );
+        service.shutdown();
     }
 }
