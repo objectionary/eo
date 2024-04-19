@@ -24,15 +24,10 @@
 package org.eolang.maven.hash;
 
 import com.yegor256.WeAreOnline;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -56,31 +51,21 @@ final class CommitHashesTextTest {
     }
 
     @Test
-    void isThreadSafe() throws ExecutionException, InterruptedException, TimeoutException {
+    void isThreadSafe() {
         final int threads = 200;
         boolean nonulls = true;
-        final ExecutorService service = Executors.newFixedThreadPool(threads);
-        final CountDownLatch latch = new CountDownLatch(1);
-        final Collection<Future<Boolean>> futures = new ArrayList<>(threads);
-        try {
-            for (int thread = 0; thread < threads; ++thread) {
-                futures.add(
-                    service.submit(
-                        () -> new CommitHashesText().asString() != null
-                    )
-                );
-            }
-            latch.countDown();
-            for (final Future<Boolean> fun : futures) {
-                nonulls &= fun.get(1, TimeUnit.SECONDS);
-            }
-            MatcherAssert.assertThat(
-                "Can be used in different threads without NPE",
-                nonulls,
-                Matchers.equalTo(true)
-            );
-        } finally {
-            service.shutdownNow();
+        for (final boolean bool: new Threads<>(
+            threads,
+            Stream.generate(
+                () -> (Scalar<Boolean>) () -> new CommitHashesText().asString() != null
+            ).limit(threads).collect(Collectors.toList())
+            )) {
+            nonulls &= bool;
         }
+        MatcherAssert.assertThat(
+            "Can be used in different threads without NPE",
+            nonulls,
+            Matchers.equalTo(true)
+        );
     }
 }
