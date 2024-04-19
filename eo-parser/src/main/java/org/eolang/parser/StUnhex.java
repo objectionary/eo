@@ -73,17 +73,6 @@ public final class StUnhex extends StEnvelope {
                         )
                     ),
                     new StXPath(
-                        StUnhex.xpath("bool"),
-                        xml -> StUnhex.append(
-                            "bool",
-                            Boolean.toString(
-                                !"00".equals(
-                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
-                                )
-                            ).toUpperCase(Locale.ENGLISH)
-                        )
-                    ),
-                    new StXPath(
                         StUnhex.xpath("string"),
                         xml -> StUnhex.append(
                             "string",

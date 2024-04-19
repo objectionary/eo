@@ -29,7 +29,7 @@
 # Bytes.
 [] > bytes
   # Equals to another object.
-  [x] > eq /bool
+  [b] > eq /bool
 
   # Total number of bytes.
   [] > size /int
