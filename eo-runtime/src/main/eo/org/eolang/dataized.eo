@@ -26,5 +26,13 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Dataizes given `target`, makes new `bytes` from the data and behaves as result `bytes`.
+# The object dataizes `target`, makes new instance of `bytes` from given data and behaves as result
+# `bytes`.
+# The object is used as implementation of caching syntax (`!`).
+# The next two lines of code behaves identically:
+# ```
+# some-object > cached!
+# (dataized some-object).as-bytes > cached
+# ```
+#
 [target] > dataized /bytes
