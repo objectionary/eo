@@ -29,7 +29,6 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
 import org.xembly.Directives;
