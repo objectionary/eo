@@ -80,7 +80,7 @@ final class CommitHashesTextTest {
                 Matchers.equalTo(true)
             );
         } finally {
-            service.shutdown();
+            service.shutdownNow();
         }
     }
 }
