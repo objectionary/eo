@@ -26,9 +26,10 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# True.
+# False.
 [] > false
-  bool 00- > @
+  00- > @
+  true > not
 
   # Control structure that allows for conditional execution of code.
   # Since $ is FALSE - behaves as `right` object.

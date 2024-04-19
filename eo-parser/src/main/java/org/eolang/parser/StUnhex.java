@@ -29,7 +29,6 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StSequence;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -70,17 +69,6 @@ public final class StUnhex extends StEnvelope {
                                     StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                 ).getLong()
                             )
-                        )
-                    ),
-                    new StXPath(
-                        StUnhex.xpath("bool"),
-                        xml -> StUnhex.append(
-                            "bool",
-                            Boolean.toString(
-                                !"00".equals(
-                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
-                                )
-                            ).toUpperCase(Locale.ENGLISH)
                         )
                     ),
                     new StXPath(

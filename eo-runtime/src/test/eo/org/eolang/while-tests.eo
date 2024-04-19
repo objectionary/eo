@@ -28,10 +28,10 @@
 
 # Test.
 [] > simple-while-with-false-first
-  while > res
-    false
-    true > [i]
-  (bool res).not > @
+  not. > @
+    while > res
+      false
+      true > [i]
 
 # Test.
 [] > simple-bool-expression-via-memory-in-while

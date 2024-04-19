@@ -111,38 +111,4 @@ final class StUnhexTest {
             )
         );
     }
-
-    @Test
-    void convertsTrueFromHexToEo() {
-        MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            new Xsline(new StUnhex()).pass(
-                new XMLDocument(
-                    String.join(
-                        "",
-                        "<p><o base='bool' name='a'><o base='bytes' data='bytes'>01</o></o>",
-                        "<o base='bool' name='b'><o base='bytes' data='bytes'>00</o></o></p>"
-                    )
-                )
-            ),
-            XhtmlMatchers.hasXPaths(
-                "//o[text()='TRUE' and @data='bool' and @name='a']",
-                "//o[text()='FALSE' and @data='bool' and @name='b']"
-            )
-        );
-    }
-
-    @Test
-    void convertsFalseFromHexToEo() {
-        MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            new Xsline(new StUnhex()).pass(
-                new XMLDocument(
-                    "<p><o base='bool'><o base='org.eolang.bytes' data='bytes'>00</o></o></p>"
-                )
-            ),
-            XhtmlMatchers.hasXPaths("//o[text()='FALSE' and @data='bool']")
-        );
-    }
-
 }

@@ -12,7 +12,7 @@ eo: |
         42
     # This is the default 64+ symbols comment in front of named abstract object.
     [x] > foo
-      if > @
+      if. > @
         x.eq 0
         error "x is zero"
         42

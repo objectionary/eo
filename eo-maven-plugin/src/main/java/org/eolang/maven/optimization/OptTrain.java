@@ -35,6 +35,9 @@ import com.yegor256.xsline.Xsline;
 /**
  * Optimisation train of XLS`s.
  * @since 0.28.12
+ * @todo #3115:30min Return constant-folding.xsl when it's ready. This optimization was removed from
+ *  the train because it's not really ready and works only with `bool` object which was removed. We
+ *  need to make this optimization great again and add to the train.
  */
 public final class OptTrain implements Optimization {
 
@@ -57,7 +60,6 @@ public final class OptTrain implements Optimization {
             "/org/eolang/parser/optimize/fix-missed-names.xsl",
             "/org/eolang/parser/add-refs.xsl",
             "/org/eolang/parser/errors/broken-refs.xsl",
-            "/org/eolang/parser/optimize/constant-folding.xsl",
             "/org/eolang/parser/set-locators.xsl"
         ).back(),
         TrFast.class,
