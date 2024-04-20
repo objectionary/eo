@@ -38,17 +38,26 @@
   [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8.
-  [] > as-string /string
+  [] > as-string
+    string ^ > @
 
   # Turn this chain of eight bytes into an integer.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-int /int
+  [] > as-int
+    if. > @
+      ^.size.eq 8
+      int ^
+      error "Can't convert non 8 length bytes to int"
 
   # Turn this chain of eight bytes into a float.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-float /float
+  [] > as-float
+    if. > @
+      ^.size.eq 8
+      float ^
+      error "Can't convert non 8 length bytes to float"
 
   # Calculate bitwise and.
   [b] > and /bytes
