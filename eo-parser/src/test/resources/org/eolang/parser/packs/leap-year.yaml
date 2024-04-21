@@ -1,3 +1,4 @@
+---
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=1]
