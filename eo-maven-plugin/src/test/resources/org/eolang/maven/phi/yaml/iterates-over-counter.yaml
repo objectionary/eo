@@ -14,7 +14,7 @@ eo: |
             x.write > @
               x.as-int.plus 1
         11
-phi: |
+phi: |-
   {
     ⟦
       iterates-over-simple-counter ↦ ⟦

@@ -13,7 +13,7 @@ eo: |
             # Long object 5.
             [] > long-object-name
     true > @
-phi: |
+phi: |-
   {
     ⟦
       compiles-correctly-with-long-duplicate-names ↦ ⟦

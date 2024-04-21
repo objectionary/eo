@@ -1,7 +1,7 @@
 ---
 tests:
   - /program/objects/o[@name='main' and @abstract and o[@name='x']]
-phi: |
+phi: |-
   {
     ⟦
       main ↦ ⟦
