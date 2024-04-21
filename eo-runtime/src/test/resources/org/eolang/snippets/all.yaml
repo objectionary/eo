@@ -1,7 +1,8 @@
+---
 out:
   - ".*works!.*"
 file: org/eolang/snippets/all.eo
-args: ["org.eolang.snippets.all"]
+args: [ "org.eolang.snippets.all" ]
 eo: |
   +package org.eolang.snippets
 
