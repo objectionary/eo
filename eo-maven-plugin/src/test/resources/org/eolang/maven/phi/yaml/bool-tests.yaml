@@ -1,3 +1,4 @@
+---
 eo: |
   # The MIT License (MIT)
   #
@@ -62,7 +63,7 @@ eo: |
       01-.as-bytes.eq true
       00-.as-bytes.eq false
 
-phi: |
+phi: |-
   {
     ⟦
       org ↦ ⟦

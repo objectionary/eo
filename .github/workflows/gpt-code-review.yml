@@ -1,7 +1,8 @@
+---
 name: GPT-code-review
 on:
   pull_request:
-    branches: [master]
+    branches: [ master ]
 permissions:
   pull-requests: write
   contents: read
@@ -9,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4

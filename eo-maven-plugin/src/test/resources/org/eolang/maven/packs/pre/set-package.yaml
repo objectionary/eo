@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/maven/pre/package.xsl
@@ -6,7 +7,7 @@ tests:
   - //class[@name='bar' and @package='foo.long-name']
 eo: |
   +package foo.long-name
-  
+
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > bar
     "hello"

@@ -1,10 +1,11 @@
+---
 locators:
   - .foo .x .a .π
   - .foo .x .y .ε .b .π
   - .foo .x .y .ε .z .ε .c .ε .β .a .ε .β .ρ .ε .β .ρ .ξ .d
 eo: |
   +package foo
-  
+
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > x
     42 > a

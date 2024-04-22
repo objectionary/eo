@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/warnings/incorrect-home.xsl
 tests:
@@ -12,7 +13,7 @@ eo: |
   +home www.something.com
   +alias org.eolang.io.stdout
   +home https://|http/wrong.com
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [x] > foo
     x.div in.nextInt > @
