@@ -23,35 +23,56 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
+import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EObool$EOnot}.
- * {@link EOorg.EOeolang.EObool$EOnot} is the generated class. This is the reason
- * why we disable jtcop check.
- *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
+ * Malloc.of.φ object.
+ * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOboolEOnotTest {
+@Versionized
+@XmirObject(oname = "malloc.of.@")
+final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     * @param sigma Sigma
+     */
+    EOmalloc$EOof$EOφ(final Phi sigma) {
+        super(sigma);
+    }
 
-    @Test
-    void inversesValue() {
-        final Phi left = new Data.ToPhi(true);
-        final Phi not = left.take("not");
-        MatcherAssert.assertThat(
-            new Dataized(not).take(Boolean.class),
-            Matchers.equalTo(false)
+    @Override
+    public Phi lambda() {
+        final Phi rho = this.take(Attr.RHO);
+        final int size = Math.toIntExact(
+            new Dataized(rho.take("size")).take(Long.class)
         );
+        final int identifier = Heaps.INSTANCE.malloc(this, size);
+        final Phi res;
+        try {
+            final Phi allocated = rho.take("allocated");
+            allocated.put("id", new Data.ToPhi((long) identifier));
+            final Phi scope = rho.take("scope").copy();
+            scope.put(0, allocated);
+            new Dataized(scope).take();
+            res = new Data.ToPhi(
+                Heaps.INSTANCE.read(identifier, 0, size)
+            );
+        } finally {
+            Heaps.INSTANCE.free(identifier);
+        }
+        return res;
     }
 }

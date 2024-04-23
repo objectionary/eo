@@ -1,10 +1,11 @@
+---
 eo: |
   +package foo.bar.baz
-  
+
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     stdout > @
-phi: |
+phi: |-
   {
     ⟦
       foo ↦ ⟦

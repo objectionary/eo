@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -57,6 +58,7 @@ final class EObytesEOconcatTest {
             "as-string"
         );
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).take(String.class),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );

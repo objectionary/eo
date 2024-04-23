@@ -1,4 +1,5 @@
-xsls: []
+---
+xsls: [ ]
 tests:
   - //o[@base='.a' and @name='one' and count(o)=1]
   - //o[@base='.b' and @name='two' and count(o)=1]

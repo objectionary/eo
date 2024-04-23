@@ -31,6 +31,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
@@ -59,6 +60,7 @@ final class EOintEOeqTest {
             0, right
         );
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(eql).take(Boolean.class),
             Matchers.equalTo(false)
         );

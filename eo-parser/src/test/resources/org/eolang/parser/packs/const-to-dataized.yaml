@@ -1,3 +1,4 @@
+---
 tests:
   - //o[@base='.as-bytes' and @line and @pos and @name='x' and o[@base='org.eolang.dataized' and o[@base='org.eolang.int' and not(@name)]]]
   - //o[@base='.as-bytes' and @line and @pos and @name='m' and o[@base='org.eolang.dataized' and o[@abstract and @name='m-3' and count(o)=2]]]

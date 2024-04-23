@@ -95,8 +95,8 @@ final class StEoLoggedTest {
                 String.join(
                     "\n",
                     "[] > main",
-                    "  TRUE > x",
-                    "  FALSE > y"
+                    "  true > x",
+                    "  false > y"
                 )
             )
         );
@@ -107,8 +107,8 @@ final class StEoLoggedTest {
      * <p>
      * {@code
      * [] > main
-     *   TRUE > x
-     *   FALSE > y
+     *   true > x
+     *   false > y
      * }
      * </p>
      *
@@ -123,8 +123,8 @@ final class StEoLoggedTest {
                 "  <sheets/>",
                 "  <objects>",
                 "    <o abstract=\"\" line=\"1\" name=\"main\" pos=\"0\">",
-                "      <o base=\"bool\" data=\"bytes\" line=\"2\" name=\"x\" pos=\"2\">01</o>",
-                "      <o base=\"bool\" data=\"bytes\" line=\"3\" name=\"y\" pos=\"2\">00</o>",
+                "      <o base=\"true\" line=\"2\" name=\"x\" pos=\"2\"/>",
+                "      <o base=\"false\" line=\"3\" name=\"y\" pos=\"2\"/>",
                 "    </o>",
                 "  </objects>",
                 "</program>"

@@ -1,3 +1,4 @@
+---
 tests:
   - /program/errors[count(error)=0]
   - //o[@name='a' and @loc='Φ.org.abc.a']
@@ -36,5 +37,5 @@ eo: |
       6.2
     [e]
       e.hello > @
-  
+
   $.&.^.p > q

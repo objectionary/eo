@@ -51,11 +51,6 @@ final class BinarizeMojoTest {
     public static final Path SRC = Paths.get("src/test/resources/org/eolang/maven/binarize/");
 
     /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
-
-    /**
      * BinarizeMojo can binarize without errors.
      * @param temp Temporary directory.
      * @throws Exception If fails.
@@ -71,7 +66,8 @@ final class BinarizeMojoTest {
                 .withProgram(BinarizeMojoTest.SRC.resolve("twice-rust.eo"));
         }
         Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -85,7 +81,8 @@ final class BinarizeMojoTest {
         }
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -103,14 +100,14 @@ final class BinarizeMojoTest {
             .execute(new FakeMaven.Binarize())
             .result();
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res,
             Matchers.hasValue(
                 cache.resolve("Lib")
             )
         );
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             res,
             Matchers.not(
                 Matchers.hasValue(
@@ -121,7 +118,8 @@ final class BinarizeMojoTest {
             )
         );
         Assertions.assertDoesNotThrow(
-            () -> maven.execute(new FakeMaven.Binarize())
+            () -> maven.execute(new FakeMaven.Binarize()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -144,7 +142,7 @@ final class BinarizeMojoTest {
         finish = System.currentTimeMillis();
         final long second = finish - start;
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             second,
             Matchers.lessThan(first)
         );
@@ -169,12 +167,12 @@ final class BinarizeMojoTest {
         maven.execute(new FakeMaven.Binarize());
         final long second = executable.lastModified();
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             first,
             Matchers.not(0L)
         );
         MatcherAssert.assertThat(
-            BinarizeMojoTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             second,
             Matchers.equalTo(first)
         );

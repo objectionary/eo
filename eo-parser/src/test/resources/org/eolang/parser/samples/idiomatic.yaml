@@ -1,3 +1,4 @@
+---
 origin: |
   # This is the license part
   # of the program
@@ -23,7 +24,7 @@ origin: |
             *
               "Hello, друг"
               2.18
-              TRUE
+              true
         bar
           plus.
             n
@@ -52,7 +53,7 @@ straight: |
         *
           "Hello, \u0434\u0440\u0443\u0433"
           2.18
-          TRUE
+          true
     .plus
       bar
         n
@@ -85,7 +86,7 @@ reversed: |
             *
               "Hello, \u0434\u0440\u0443\u0433"
               2.18
-              TRUE
+              true
         bar
           plus.
             n

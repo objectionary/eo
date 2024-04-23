@@ -41,6 +41,7 @@ public final class VerboseBytesAsStringTest {
     @MethodSource("getTestSources")
     void representsString(final Object object) {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new VerboseBytesAsString(VerboseBytesAsStringTest.toBytes(object)).get(),
             Matchers.containsString(
                 new VerboseBytesAsStringTest.ArgumentsUtils().toString(object)

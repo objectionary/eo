@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/errors/many-free-attributes.xsl
 tests:
@@ -26,17 +27,17 @@ eo: |
   [] > not-many-free-attributes
     # This is the default 64+ symbols comment in front of abstract object
     [] > empty1
-      TRUE > @
+      true > @
     # This is the default 64+ symbols comment in front of abstract object
     [] > empty2
-      TRUE > @
+      true > @
     # This is the default 64+ symbols comment in front of abstract object
     [] > empty3
-      TRUE > @
+      true > @
     # This is the default 64+ symbols comment in front of abstract object
     [] > empty4
-      TRUE > @
+      true > @
     # This is the default 64+ symbols comment in front of abstract object
     [] > empty5
-      TRUE > @
-    TRUE > @
+      true > @
+    true > @

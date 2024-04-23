@@ -27,6 +27,7 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.util.Collections;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ final class OyIndexedTest {
     @Test
     void getsFromDelegate() throws Exception {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(new OyIndexed(new Objectionary.Fake()).get("foo")).asString(),
             Matchers.equalTo(
                 "# This is the default 64+ symbols comment in front of named abstract object.\n[] > sprintf\n"
@@ -59,7 +60,7 @@ final class OyIndexedTest {
     @ExtendWith(WeAreOnline.class)
     void containsInRealIndex() throws IOException {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyIndexed(new Objectionary.Fake()).contains(OyIndexedTest.STDOUT_OBJECT),
             Matchers.is(true)
         );
@@ -68,7 +69,7 @@ final class OyIndexedTest {
     @Test
     void containsInFakeIndex() throws IOException {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyIndexed(
                 new Objectionary.Fake(),
                 new ObjectsIndex(() -> Collections.singleton(OyIndexedTest.STDOUT_OBJECT))
@@ -80,7 +81,7 @@ final class OyIndexedTest {
     @Test
     void checksContainsInDelegateIfExceptionHappensInIndex() throws IOException {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyIndexed(
                 new Objectionary.Fake(),
                 new ObjectsIndex(

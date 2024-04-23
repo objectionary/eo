@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -46,12 +47,12 @@ final class NamesTest {
         final String one = "AaAaAa";
         final String two = "AaAaBB";
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             one.hashCode(),
             Matchers.equalTo(two.hashCode())
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             dispatcher.name(one),
             Matchers.not(
                 dispatcher.name(two)
@@ -70,14 +71,14 @@ final class NamesTest {
             Collectors.toMap(loc -> loc, before::name)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             locations.size(),
             Matchers.equalTo(functions.size())
         );
         before.save();
         final Names after = new Names(temp.resolve(names));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             before,
             Matchers.equalTo(after)
         );

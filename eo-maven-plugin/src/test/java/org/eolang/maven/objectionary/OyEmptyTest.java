@@ -24,6 +24,7 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
+import org.eolang.maven.BinarizeParseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,8 @@ final class OyEmptyTest {
     void resolvesObject() {
         Assertions.assertThrows(
             IOException.class,
-            () -> new OyEmpty().get("org.eolang.io.stdin")
+            () -> new OyEmpty().get("org.eolang.io.stdin"),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -46,7 +48,8 @@ final class OyEmptyTest {
     void checksPresenceOfObject() {
         Assertions.assertThrows(
             IOException.class,
-            () -> new OyEmpty().contains("org.eolang.io.stdin")
+            () -> new OyEmpty().contains("org.eolang.io.stdin"),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 }

@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/expand-qqs.xsl
 tests:
@@ -10,7 +11,7 @@ tests:
   - //metas[count(.//meta[head/text()='alias']/*[text()[starts-with(., 'Q.org.eolang.txt.sprintfQQ')]])=2]
 eo: |
   +alias QQ.txt.sprintfQQ
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [] > app
     QQ.io.stdout > @

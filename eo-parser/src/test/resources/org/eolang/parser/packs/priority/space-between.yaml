@@ -1,3 +1,4 @@
+---
 tests:
   - /program/errors[count(error)=0]
   - //o[@base='.plus']/o[@base='.a']/o[@base='^']

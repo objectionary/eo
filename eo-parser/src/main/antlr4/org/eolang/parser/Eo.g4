@@ -527,7 +527,7 @@ spacedArrow
 // Does not contain elements in vertical notation
 // Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hanonym) RB
+    : LB (happlication | hanonym | onlyphi) RB
     ;
 
 // Version
@@ -541,7 +541,6 @@ as  : COLON (NAME | INT)
 
 // Data
 data: BYTES
-    | BOOL
     | TEXT
     | STRING
     | INT
@@ -636,10 +635,6 @@ BYTES
     : EMPTY_BYTES
     | BYTE MINUS
     | LINE_BYTES (MINUS EOL LINE_BYTES)*
-    ;
-
-BOOL: 'TRUE'
-    | 'FALSE'
     ;
 
 fragment ESCAPE_SEQUENCE

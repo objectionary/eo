@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/add-refs.xsl
   - /org/eolang/parser/vars-float-up.xsl
@@ -33,7 +34,7 @@ eo: |
     # This is the default 64+ symbols comment in front of abstract object.
     [] > last
       three 1
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [ppp] > pp
     one
