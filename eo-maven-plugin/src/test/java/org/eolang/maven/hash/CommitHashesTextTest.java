@@ -62,6 +62,7 @@ final class CommitHashesTextTest {
 
     @Test
     @Order(0)
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void isThreadSafe() throws ExecutionException, InterruptedException, TimeoutException {
         final int threads = 200;
         boolean nonulls = true;
