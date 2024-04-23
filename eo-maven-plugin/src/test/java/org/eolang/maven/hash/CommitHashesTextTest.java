@@ -47,7 +47,6 @@ import org.junit.jupiter.api.parallel.Isolated;
  * @since 0.37.0
  */
 @Isolated
-//@Execution(ExecutionMode.SAME_THREAD)
 final class CommitHashesTextTest {
 
     @Test
