@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > int-less-true
@@ -39,7 +39,7 @@
       lt.
         10
         10
-    TRUE
+    true
 
 # Test.
 [] > int-less-false
@@ -48,7 +48,7 @@
       lt.
         10
         -5
-    TRUE
+    true
 
 # Test.
 [] > int-greater-true
@@ -56,7 +56,7 @@
     gt.
       -200
       -1000
-    TRUE
+    true
 
 # Test.
 [] > int-greater-false
@@ -65,7 +65,7 @@
       gt.
         0
         100
-    TRUE
+    true
 
 # Test.
 [] > int-greater-equal
@@ -74,7 +74,7 @@
       gt.
         0
         0
-    TRUE
+    true
 
 # Test.
 [] > int-leq-true
@@ -82,7 +82,7 @@
     lte.
       -200
       -100
-    TRUE
+    true
 
 # Test.
 [] > int-leq-equal
@@ -90,7 +90,7 @@
     lte.
       50
       50
-    TRUE
+    true
 
 # Test.
 [] > int-leq-false
@@ -99,7 +99,7 @@
       lte.
         0
         -10
-    TRUE
+    true
 
 # Test.
 [] > int-gte-true
@@ -107,7 +107,7 @@
     gte.
       -1000
       -1100
-    TRUE
+    true
 
 # Test.
 [] > int-gte-equal
@@ -115,7 +115,7 @@
     gte.
       113
       113
-    TRUE
+    true
 
 # Test.
 [] > int-gte-false
@@ -124,7 +124,7 @@
       gte.
         0
         10
-    TRUE
+    true
 
 # Test.
 [] > int-equal-to-nan-and-infinites-is-false
@@ -134,13 +134,13 @@
         and.
           and.
             and.
-              (0.eq nan).eq FALSE
-              (0.eq positive-infinity).eq FALSE
-            (0.eq negative-infinity).eq FALSE
-          (42.eq nan).eq FALSE
-        (42.eq positive-infinity).eq FALSE
-      (42.eq negative-infinity).eq FALSE
-    TRUE
+              (0.eq nan).eq false
+              (0.eq positive-infinity).eq false
+            (0.eq negative-infinity).eq false
+          (42.eq nan).eq false
+        (42.eq positive-infinity).eq false
+      (42.eq negative-infinity).eq false
+    true
 
 # Test.
 [] > int-zero-eq-to-zero
@@ -148,7 +148,7 @@
     eq.
       0
       0
-    TRUE
+    true
 
 # Test.
 [] > int-zero-eq-to-float-zero
@@ -156,7 +156,7 @@
     eq.
       0
       0.0
-    TRUE
+    true
 
 # Test.
 [] > int-eq-true
@@ -164,7 +164,7 @@
     eq.
       123
       123
-    TRUE
+    true
 
 # Test.
 [] > int-eq-false
@@ -173,7 +173,7 @@
       eq.
         123
         42
-    TRUE
+    true
 
 # Test
 [] > one-plus-one
@@ -191,13 +191,13 @@
 [] > compares-two-different-types
   eq. > @
     68.eq "12345678"
-    FALSE
+    false
 
 # Test.
 [] > calculates-fibonacci-number-with-recursion
   # Fibonacci.
   [n] > fibo
-    if > @
+    if. > @
       n.lt 3
       1
       plus.
@@ -215,21 +215,21 @@
 
   # Fibonacci.
   [n] > fibonacci
-    if > @
+    if. > @
       n.lt 3
       small n
       rec n 1 1
 
     # Small.
     [n] > small
-      if > @
+      if. > @
         n.eq 2
         1
         n
 
     # Recursive.
     [n minus1 minus2] > rec
-      if > @
+      if. > @
         n.eq 3
         minus1.plus minus2
         rec (n.minus 1) (minus1.plus minus2) minus1
@@ -241,7 +241,7 @@
       2.div 0 > @
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true
 
 # Checks that division by one returns the dividend.
 [] > division-by-one

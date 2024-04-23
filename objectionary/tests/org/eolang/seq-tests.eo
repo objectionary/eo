@@ -24,130 +24,153 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > seq-single-dataization-float-less
-  (memory 0.0).alloc > counter
-  and. > @
-    lt.
-      float
-        seq
-          *
-            counter.write (counter.as-float.plus 1.0)
-            counter.as-float
-      1.1
-    counter.free
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        0.0
+        [m]
+          b.put > @
+            lt.
+              seq
+                *
+                  m.put (m.as-float.plus 1.0)
+                  m.as-float
+              1.1
 
 # Test.
 [] > seq-single-dataization-float-greater
-  (memory 0.0).alloc > counter
-  and. > @
-    gt.
-      float
-        seq
-          *
-            counter.write (counter.as-float.plus 1.0)
-            counter.as-float
-      0.9
-    counter.free
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        0.0
+        [m]
+          b.put > @
+            gt.
+              seq
+                *
+                  m.put (m.as-float.plus 1.0)
+                  m.as-float
+              0.9
 
 # Test.
 [] > seq-single-dataization-int-less
-  (memory 0).alloc > counter
-  and. > @
-    lt.
-      int
-        seq
-          *
-            counter.write (counter.as-int.plus 1)
-            counter.as-int
-      2
-    counter.free
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        0
+        [m]
+          b.put > @
+            lt.
+              seq
+                *
+                  m.put (m.as-int.plus 1)
+                  m.as-int
+              2
 
 # Test.
 [] > seq-single-dataization-int-less-or-equal
-  (memory 0).alloc > counter
-  and. > @
-    lte.
-      int
-        seq
-          *
-            counter.write
-              counter.as-int.plus 1
-            counter.as-int
-      1
-    counter.free
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        0
+        [m]
+          b.put > @
+            lte.
+              seq
+                *
+                  m.put (m.as-int.plus 1)
+                  m.as-int
+              1
 
 # This test should have acceptable time to pass.
 [] > very-long-seq
   eq. > @
-    TRUE
+    true
     seq
       *
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
-        TRUE
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
 
 # Test.
 [] > seq-single-dataization-int-equal-to-test
-  (memory 0).alloc > x
-  eq. > @
-    seq
-      *
-        x.write 0
-        x.write (x.as-int.plus 1)
-        x.as-int
+  malloc.of > @
     1
+    [b]
+      malloc.for > @
+        0
+        [m]
+          b.put > @
+            eq.
+              seq
+                *
+                  m.put 0
+                  m.put (m.as-int.plus 1)
+                  m.as-int
+              1
 
 # Test.
 [] > seq-single-dataization-int-equal-to-cache-problem-test
-  (memory 0).alloc > x
-  eq. > @
-    seq
-      *
-        at.
-          * 0 1
-          x.as-int
-        x.write (x.as-int.plus 1)
-        x.as-int
+  malloc.of > @
     1
+    [b]
+      malloc.for > @
+        0
+        [m]
+          b.put > @
+            eq.
+              seq
+                *
+                  at.
+                    * 0 1
+                    m
+                  m.put (m.as-int.plus 1)
+                  m
+              1

@@ -23,13 +23,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Bytes.
 [] > bytes
   # Equals to another object.
-  [x] > eq /bool
+  [b] > eq /bool
 
   # Total number of bytes.
   [] > size /int
@@ -38,17 +38,26 @@
   [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8.
-  [] > as-string /string
+  [] > as-string
+    string ^ > @
 
   # Turn this chain of eight bytes into an integer.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-int /int
+  [] > as-int
+    if. > @
+      ^.size.eq 8
+      int ^
+      error "Can't convert non 8 length bytes to int"
 
   # Turn this chain of eight bytes into a float.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-float /float
+  [] > as-float
+    if. > @
+      ^.size.eq 8
+      float ^
+      error "Can't convert non 8 length bytes to float"
 
   # Calculate bitwise and.
   [b] > and /bytes

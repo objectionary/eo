@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Tuple.
 [head tail] > tuple
@@ -48,12 +48,12 @@
   # Take one element from the tuple, at the given position.
   [i] > at
     ^.length > len
-    if > index!
+    if. > index!
       0.gt
         i > idx!
       len.plus idx
       idx
-    if > @
+    if. > @
       or.
         0.gt index
         len.lte index
@@ -62,7 +62,7 @@
 
     # Fast recursive obtaining element from tuple.
     [tup len] > at-fast
-      if > @
+      if. > @
         (len.plus -1).gt ^.index
         ^.at-fast
           tup.head

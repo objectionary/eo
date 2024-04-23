@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > calculates-length-of-spaces-only
@@ -74,7 +74,7 @@
 [] > compares-string-with-positive-infinity
   eq. > @
     positive-infinity.eq "друг"
-    FALSE
+    false
 
 # Test.
 [] > compares-string-with-negative-infinity
@@ -148,7 +148,7 @@
     eq.
       "x"
       "x"
-    TRUE
+    true
 
 # Test.
 [] > one-symbol-string-compares
@@ -240,7 +240,7 @@
         1
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true
 
 # Test.
 [] > slice-end-below-start
@@ -252,7 +252,7 @@
         -1
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true
 
 # Test.
 [] > slice-end-greater-actual
@@ -264,4 +264,4 @@
         5
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true

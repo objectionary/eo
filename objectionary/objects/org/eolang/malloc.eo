@@ -23,37 +23,90 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
-# Allocates a block in memory of `size` bytes.
-# You can use it like:
+# Storage of data in memory.
+#
+# There are two ways of usage `malloc`:
+# 1. of size:
 # ```
-# (malloc 8).pointer > p
-# seq
-#   *
-#     p.write 0 42 # write 8 bytes integer with offset 0
-#     p.read       # read from memory, 42 will be returned
-#     p.free       # free allocated block
+# malloc.of
+#   8
+#   [m]
+#     m.put 10 > @
 # ```
-# Clearing the block is optional and is up to programmer.
-[size] > malloc
-  @.pointer > pointer
+# Here, the first argument is a size of allocated block in memory, the second argument
+# is the scope where memory block is available for reading and writing. When `malloc.of` is
+# dataized it dataizes the scope, take the data from the block in memory, clears the block and
+# returns the data. So there's no need for end-user to care about clearing memory after allocation.
+#
+# 2. for object
+# ```
+# malloc.for
+#   "Hello world!"
+#   [m]
+#     m.put "Hello, Jeff!" > @
+# ```
+# Here, the first argument is an object which will be dataized, then a block in memory of given data
+# size is allocated and the data is written to the block. The second argument is the same scope as
+# in the p.1.
+#
+# The void attribute in the scope object is memory-block object which provides API to write and read
+# data to the memory.
+# ```
+# malloc.of
+#   8                         # allocate 8 bytes length block in memory
+#   [m]
+#     seq > @
+#       *
+#         m.write 2 "Hello"   # write object "Hello" with offset 2
+#         m.read 3 4          # read 4 bytes from offset 3 -> "ello"
+#         m.put 42            # write object 42 with offset 0
+#         m.get               # just get all the data from the memory block -> 42
+#         m.size              # get size of the block
+#         m.id                # get identifier of the block
+#         m.@                 # the same as m.get
+# ```
+# Malloc.
+[] > malloc
+  # Allocates block in memory for given `object`. After allocation the provided object is dataized
+  # and the data are written into memory.
+  [object scope] > for
+    (dataized object).as-bytes > bts
+    &.of > @
+      bts.size
+      [m]
+        seq > @
+          *
+            m.write 0 bts
+            scope m
 
-  # Allocates a memory block in RAM and returns pointer to it.
-  [] > @ /memory-block-pointer
+  # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
+  # written into memory.
+  [size scope] > of
+    # Allocates a memory block, initializes it, pass it to the `scope` and dataizes `scope` and
+    # at the end, even if the error is occurred, clears the block.
+    [] > @ /bytes
 
-  # Pointer to allocated block in memory.
-  # Here `id` is identifier of pointer, `size` is length of the block.
-  [id] > memory-block-pointer
-    $ > pointer
-    ^.size > size
+    # Allocated block in memory that provides an API for writing and reading.
+    [id] > allocated
+      ^.size > size
+      get > @
 
-    # Read `length` bytes from `offset` from the block in memory by the pointer.
-    [offset length] > read /bytes
+      # Read `length` bytes with `offset` from the allocated block in memory.
+      [offset length] > read /bytes
 
-    # Write `data` from `offset` to the block in memory by the pointer.
-    [offset data] > write /true
+      # Write `data` with `offset` to the allocated block in memory.
+      [offset data] > write /true
 
-    # Free the block in memory by the pointer.
-    [] > free /true
+      # Just get all the data from the allocated block in memory.
+      [] > get
+        ^.read 0 ^.size > @
+
+      # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
+      [object] > put
+        seq > @
+          *
+            ^.write 0 object
+            ^.get

@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Non-conditional forward and backward jumps.
 # Forward jump instantly returns provided object to `g.forward` without touching
@@ -38,7 +38,7 @@
 #   [g]
 #     seq > @
 #       *
-#         g.forward TRUE
+#         g.forward true
 #         stdout "Will never be printed"
 # ```
 #
@@ -54,18 +54,20 @@
 # ```
 # Go to.
 [] > go
-  (malloc 1).id.as-bytes > id
+  malloc.of > id!
+    8
+    m.put m.id > [m]
 
   # To.
   [body] > to
     try > @
       body token
       [e]
-        if > @
+        if. > @
           &.^.id.eq e.id
           e.value
           error e
-      TRUE
+      true
 
     # Token.
     [] > token

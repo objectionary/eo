@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Not a number.
 [] > nan
@@ -32,23 +32,23 @@
 
   # Tests that $ = x.
   [x] > eq
-    FALSE > @
+    false > @
 
   # Tests that $ < x.
   [x] > lt
-    FALSE > @
+    false > @
 
   # Tests that $ ≤ x.
   [x] > lte
-    FALSE > @
+    false > @
 
   # Tests that $ > x.
   [x] > gt
-    FALSE > @
+    false > @
 
   # Tests that $ ≥ x.
   [x] > gte
-    FALSE > @
+    false > @
 
   # Multiplication of $ and x.
   [x] > times

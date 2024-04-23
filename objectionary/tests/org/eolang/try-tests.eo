@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > simple-division-by-zero
@@ -46,10 +46,8 @@
         "some string"
         7
         5
-    [e]
-      QQ.io.stdout e > @
-    []
-      FALSE > @
+    QQ.io.stdout e > [e]
+    false > []
 
 # Test.
 [] > two-nested-try-blocks
@@ -61,55 +59,36 @@
             "some string"
             7
             5
-        [e]
-          error e > @
-        TRUE
+        error e > [e]
+        true
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true
 
 # Test.
 [] > try-without-error-block
   eq. > @
     try
-      []
-        30.plus 2 > @
-      [e]
-        e > @
-      TRUE
+      30.plus 2 > []
+      e > [e]
+      true
     32
 
 # Test.
-[] > try-memory-update
-  (memory 0).alloc > m
-  seq > @
-    *
-      m.write 1
-      try
-        []
-          m.write (m.as-int.plus 1) > @
-        [e]
-          e > @
-        TRUE
-      and.
-        m.as-int.eq 2
-        m.free
-
-# Test.
-[] > try-memory-update-catch
-  (memory 0).alloc > m
-  seq > @
-    *
-      m.write 1
-      try
-        []
-          seq > @
-            *
-              5.div 0
-              m.write (m.plus 1)
-        [e]
-          e > @
-        TRUE
-      and.
-        m.eq 1
-        m.free
+[] > try-malloc-update-catch
+  eq. > @
+    malloc.of
+      8
+      [m]
+        seq > @
+          *
+            m.put 1
+            try
+              []
+                seq > @
+                  *
+                    5.div 0
+                    m.put (m.plus 1)
+              e > [e]
+              false
+    1

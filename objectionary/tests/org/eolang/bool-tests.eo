@@ -24,39 +24,70 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > compares-two-bools
   eq. > @
-    TRUE
-    TRUE
+    true
+    true
 
 # Test.
 [] > true-as-bool
-  TRUE.as-bool > @
+  true.as-bool > @
 
 # Test.
 [] > compares-two-different-types
   not. > @
     eq.
-      TRUE
+      true
       42
 
 # Test.
 [] > compares-bool-to-bytes
   and. > @
-    TRUE.eq 01-
-    FALSE.eq 00-
+    true.eq 01-
+    false.eq 00-
 
 # Test.
 [] > compares-bool-to-string
   and. > @
-    TRUE.eq "\001"
-    FALSE.eq "\000"
+    true.eq "\001"
+    false.eq "\000"
 
 # Test.
 [] > compares-bool-to-bytes-reverse
   and. > @
-    01-.as-bytes.eq TRUE
-    00-.as-bytes.eq FALSE
+    01-.as-bytes.eq true
+    00-.as-bytes.eq false
+
+# Test.
+[] > true-not-is-false
+  eq. > @
+    true.not
+    false
+
+# Test.
+[] > true-and-false-is-false
+  not. > @
+    and.
+      true
+      false
+
+# Test.
+[] > forks-on-true-condition
+  eq. > @
+    if.
+      5.eq 5
+      123
+      42
+    123
+
+# Test.
+[] > forks-on-false-condition
+  eq. > @
+    if.
+      5.eq 8
+      123
+      42
+    42

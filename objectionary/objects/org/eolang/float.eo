@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Float.
 [as-bytes] > float
@@ -37,7 +37,7 @@
     nan > nan-as-bytes!
     0.0 > pos-zero-as-bytes!
     -0.0 > neg-zero-as-bytes!
-    if > @
+    if. > @
       or.
         eq.
           x-as-bytes
@@ -45,7 +45,7 @@
         eq.
           self-as-bytes
           nan-as-bytes
-      FALSE
+      false
       or.
         and.
           or.

@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > makes-tuple-through-special-syntax
@@ -115,7 +115,7 @@
         20
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true
 
 # Test.
 [] > tuple-fluent-with
@@ -225,4 +225,4 @@
       arr.at -6 > @
     [e]
       QQ.io.stdout e > @
-    TRUE
+    true

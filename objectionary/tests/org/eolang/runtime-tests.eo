@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > understands-this-correctly
@@ -78,8 +78,8 @@
   # A.
   [x] > a
     x > @
-  a FALSE > closed
-  closed TRUE > @
+  a false > closed
+  closed true > @
 
 # Test.
 [] > makes-deep-object-recursively
@@ -88,7 +88,7 @@
     0
   # X.
   [i] > x
-    if > @
+    if. > @
       i.lt 0
       0
       x
@@ -96,56 +96,53 @@
 
 # Test.
 [] > calculates-only-once
-  (memory 0).alloc > x
-  # A.
-  [] > a
-    seq > @
-      *
-        x.write (x.as-int.plus 1)
-        42
-  seq > @
-    *
-      x.write 0
-      a.neg.neg.neg.neg.eq 42
-      and.
-        x.eq 1
-        x.free
+  eq. > @
+    malloc.for
+      0
+      [m]
+        # A.
+        [] > a
+          seq > @
+            *
+              ^.m.put (^.m.as-int.plus 1)
+              42
+        a.neg.neg.neg.neg.eq 42 > @
+    1
 
 # Test.
-[] > writes-cage-to-memory
-  (memory 0).alloc > f1
+[] > writes-cage-to-malloc
   (cage int.plus).new > f2
-  (memory 0).alloc > f0
-  seq > @
-    *
-      f0.write 1
-      f1.write 2
-      f2.encage ((int f0).plus f1)
-      f1.write f2
-      and.
-        and.
-          f1.eq 3
-          f1.free
-        f0.free
+  eq. > @
+    malloc.of
+      8
+      [f1]
+        malloc.of > @
+          8
+          [f0]
+            seq > @
+              *
+                f0.put 1
+                f1.put 2
+                f2.encage (f0.as-int.plus f1)
+                f1.put f2
+    3
 
 # Test.
 [] > recursion-without-arguments
-  (memory 0).alloc > n
   # Func.
-  [] > func
-    if > @
+  [n] > func
+    if. > @
       n.as-int.gt 0
       seq
         *
-          n.write (n.as-int.minus 1)
-          ^.func
+          n.put (n.as-int.minus 1)
+          ^.func n
       n
-  seq > @
-    *
-      n.write 4
-      and.
-        func.eq 0
-        n.free
+  eq. > @
+    malloc.for
+      4
+      func m > [m]
+    0
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
@@ -159,24 +156,7 @@
         [] > long-object-name
           # Long object 5.
           [] > long-object-name
-  TRUE > @
-
-# Test.
-[] > refers-to-inner-vars-correctly
-  (memory 0).alloc > go
-  seq > @
-    *
-      go.write TRUE
-      while
-        go.as-bool
-        [i]
-          (memory 0).alloc > m
-          seq > @
-            *
-              m.write 42
-              go.write FALSE
-              m.free
-      go.free
+  true > @
 
 # Test.
 [] > named-inner-abstract-object
@@ -184,7 +164,7 @@
     *
       # A.
       [] > a
-        TRUE > @
+        true > @
 
 # Test.
 [] > app-that-calls-func
@@ -203,32 +183,33 @@
 
 # Test.
 [] > directly-accesses-objects-from-root
-  (Q.org.eolang.memory 0).alloc > m
-  seq > @
-    *
-      m.write 42
-      Q.org.eolang.io.stdout
-        "Hello, world!"
-      m.write
-        m.as-int.minus 2
-      and.
-        m.eq 40
-        m.free
+  eq. > @
+    Q.org.eolang.malloc.of
+      8
+      [m]
+        seq > @
+          *
+            m.put 42
+            Q.org.eolang.io.stdout
+              "Hello, world!"
+            m.put
+              m.as-int.minus 2
+    40
 
 # Test.
 [] > directly-accesses-objects-from-standard-root
-  (QQ.memory 0).alloc > m
-  seq > @
-    *
-      m.write 42
-      QQ.io.stdout
-        "Works fine!"
-      and.
-        eq.
-          m.write
-            m.as-int.minus 2
-          40
-        m.free
+  eq. > @
+    QQ.malloc.of
+      8
+      [m]
+        seq > @
+          *
+            m.put 42
+            QQ.io.stdout
+              "Hello, world!"
+            m.put
+              m.as-int.minus 2
+    40
 
 # Test.
 [] > standard-root-and-root
@@ -256,27 +237,28 @@
 
 # Test.
 [] > constant-defends-against-side-effects
-  (memory 7).alloc > a
   # Increment.
   [x] > inc
     seq > @
       *
-        x.write
+        x.put
           x.as-int.plus 1
         x.as-int
-  int > num
-    inc a > n!
-  and. > @
-    eq.
-      times.
-        num
-        num
-      64
-    a.free
+  eq. > @
+    malloc.for
+      7
+      [m]
+        int > num
+          inc m > n!
+        m.put > @
+          times.
+            num
+            num
+    64
 
 # Test.
 [] > parent-in-vertical-notation
-  (memory 5).alloc > m
+  5 > m
   # Value.
   [] > value
     # Phi.
@@ -284,25 +266,21 @@
       m. > @
         ^.
           ^
-  and. > @
-    eq.
-      value
-      5
-    m.free
+  eq. > @
+    value
+    5
 
 # Test.
 [] > parent-in-horizontal-notation
-  (memory 5).alloc > m
+  5 > m
   # Value.
   [] > value
     # Phi.
     [] > @
       ^.^.m > @
-  and. > @
-    eq.
-      value
-      5
-    m.free
+  eq. > @
+    value
+    5
 
 # Test.
 [] > phi-in-vertical-notation

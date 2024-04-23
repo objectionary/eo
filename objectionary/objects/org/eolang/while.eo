@@ -23,15 +23,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # While.
 [condition body] > while
-  if > @
-    condition
+  if. > @
+    condition.as-bool
     start 0
-    FALSE
+    false
 
   # First loop iteration that does not check condition.
   [index] > start
@@ -43,8 +43,8 @@
   # Recursive
   [index] > loop
     ^.body index > current
-    if > @
-      ^.condition
+    if. > @
+      ^.condition.as-bool
       seq
         *
           current

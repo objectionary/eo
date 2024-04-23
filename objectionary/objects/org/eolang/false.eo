@@ -23,10 +23,23 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
-# Control structure that allows for conditional execution of code.
-# It evaluates a condition, which is a `bool` object, and behaves as `left` if the condition is
-# `TRUE`. If the condition evaluates to `FALSE` - behaves as `right`.
-[condition left right] > if /?
+# False.
+[] > false
+  00- > @
+  true > not
+
+  # Control structure that allows for conditional execution of code.
+  # Since $ is FALSE - behaves as `right` object.
+  [left right] > if
+    right > @
+
+  # And.
+  [x] > and
+    ^ > @
+
+  # Or.
+  [x] > or
+    01-.eq x > @

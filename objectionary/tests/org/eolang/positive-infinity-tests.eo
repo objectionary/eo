@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.36.0
++version 0.37.0
 
 # Equal to.
 [] > positive-infinity-is-equal-to-one-div-zero
@@ -70,61 +70,61 @@
 [] > positive-infinity-lt-positive-infinity
   eq. > @
     positive-infinity.lt positive-infinity
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lt-negative-infinity
   eq. > @
     positive-infinity.lt negative-infinity
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lt-nan
   eq. > @
     positive-infinity.lt nan
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lt-int
   eq. > @
     positive-infinity.lt 42
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lt-float
   eq. > @
     positive-infinity.lt 42.5
-    FALSE
+    false
 
 # Less or equal than.
 [] > positive-infinity-lte-positive-infinity
   eq. > @
     positive-infinity.lte positive-infinity
-    TRUE
+    true
 
 # Test.
 [] > positive-infinity-not-lte-negative-infinity
   eq. > @
     positive-infinity.lte negative-infinity
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lte-nan
   eq. > @
     positive-infinity.lte nan
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lte-int
   eq. > @
     positive-infinity.lte 42
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-not-lte-float
   eq. > @
     positive-infinity.lte 42.5
-    FALSE
+    false
 
 # Greater than.
 [] > positive-infinity-gt-positive-infinity
@@ -162,31 +162,31 @@
 [] > positive-infinity-gte-positive-infinity
   eq. > @
     positive-infinity.gte positive-infinity
-    TRUE
+    true
 
 # Test.
 [] > positive-infinity-gte-negative-infinity
   eq. > @
     positive-infinity.gte negative-infinity
-    TRUE
+    true
 
 # Test.
 [] > positive-infinity-not-gte-nan
   eq. > @
     positive-infinity.gte nan
-    FALSE
+    false
 
 # Test.
 [] > positive-infinity-gte-int
   eq. > @
     positive-infinity.gte 42
-    TRUE
+    true
 
 # Test.
 [] > positive-infinity-gte-float
   eq. > @
     positive-infinity.gte 42.5
-    TRUE
+    true
 
 # Test.
 [] > float-equal-to-nan-and-infinites-is-false-highload
@@ -203,19 +203,19 @@
                     and.
                       and.
                         and.
-                          (0.0.eq nan).eq FALSE
-                          (0.0.eq positive-infinity).eq FALSE
-                        (0.0.eq neg-inf).eq FALSE
-                      (42.5.eq nan).eq FALSE
-                    (42.5.eq positive-infinity).eq FALSE
-                  (42.5.eq neg-inf).eq FALSE
-                (0.0.eq nan).eq FALSE
-              (0.0.eq positive-infinity).eq FALSE
-            (0.0.eq neg-inf).eq FALSE
-          (42.5.eq nan).eq FALSE
-        (42.5.eq positive-infinity).eq FALSE
-      (42.5.eq neg-inf).eq FALSE
-    TRUE
+                          (0.0.eq nan).eq false
+                          (0.0.eq positive-infinity).eq false
+                        (0.0.eq neg-inf).eq false
+                      (42.5.eq nan).eq false
+                    (42.5.eq positive-infinity).eq false
+                  (42.5.eq neg-inf).eq false
+                (0.0.eq nan).eq false
+              (0.0.eq positive-infinity).eq false
+            (0.0.eq neg-inf).eq false
+          (42.5.eq nan).eq false
+        (42.5.eq positive-infinity).eq false
+      (42.5.eq neg-inf).eq false
+    true
 
 # Times.
 # Test.

@@ -24,216 +24,143 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > simple-while-with-false-first
-  while > res
-    FALSE
-    [i] (TRUE > @)
-  (bool res).not > @
+  not. > @
+    while > res
+      false
+      true > [i]
 
 # Test.
-[] > simple-bool-expression-via-memory-in-while
-  (memory TRUE).alloc > condition
-  while > res
-    condition
-    [i] (condition.write FALSE > @)
-  and. > @
-    (bool res).not
-    condition.free
+[] > simple-bool-expression-via-malloc-in-while
+  eq. > @
+    malloc.for
+      true
+      [m]
+        while > @
+          m
+          m.put false > [i]
+    false
 
 # Test.
 [] > last-while-dataization-object
-  (memory 0).alloc > x
-  and. > @
-    eq.
-      3
-      while
-        2.gt x
-        [i]
-          x.write > @
-            x.as-int.plus 1
-    x.free
-
-# Test.
-[] > iterates-over-simple-counter
-  (memory 0).alloc > x
-  and. > @
-    and.
-      eq.
-        x.write 5
-        5
-      eq.
-        while
-          10.gt x
-          [i]
-            x.write > @
-              x.as-int.plus 1
-        11
-    x.free
+  eq. > @
+    malloc.for
+      0
+      [m]
+        while > @
+          2.gt m
+          m.put (m.as-int.plus 1) > [i]
+    3
 
 # Test.
 [] > last-while-dataization-object-with-false-condition
-  (memory 3).alloc > x
-  and. > @
-    eq.
-      while
-        1.gt x
-        [i] (x.write (x.as-int.plus 1) > @)
-      FALSE
-    x.free
+  not. > @
+    while
+      1.gt 2
+      true > [i]
 
 # Test.
 [] > iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
-  (memory 0).alloc > iter
-  (memory 0).alloc > acc
   arr.length.plus -1 > max
-  seq > @
-    *
-      if
-        max.eq 0
-        acc.write
-          acc.as-int.plus
-            arr.at 0
-        while
-          max.gt iter
-          [i]
-            seq > @
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      i
-                iter.write
-                  iter.as-int.plus 1
-      and.
-        and.
-          eq.
-            acc.as-int
-            arr.length
-          iter.free
-        acc.free
+  malloc.for > data
+    0
+    [acc]
+      malloc.for > @
+        0
+        [iter]
+          if. > @
+            max.eq 0
+            acc.put
+              acc.as-int.plus
+                arr.at 0
+            while
+              max.gt iter
+              [i]
+                seq > @
+                  *
+                    acc.put
+                      acc.as-int.plus
+                        arr.at i
+                    iter.put
+                      iter.as-int.plus 1
+  data.eq arr.length > @
 
 # Test.
 [] > iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
-  (memory 0).alloc > iter
-  (memory 0).alloc > acc
-  arr.length.minus 1 > max
-  seq > @
-    *
-      if
-        max.eq 0
-        acc.write
-          acc.as-int.plus
-            arr.at 0
-        while
-          max.gt iter
-          [i]
-            seq > @
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-      and.
-        and.
-          eq.
-            acc.as-int
-            arr.length
-          iter.free
-        acc.free
-
-# Test.
-[] > while-with-body-in-condition
-  (memory -1).alloc > x
-  (memory 0).alloc > i
-  seq > @
-    *
-      while
-        []
-          if > @
-            1.gt x
-            seq
-              *
-                x.write i.as-int
-                i.write (i.as-int.plus 1)
-                TRUE
-            FALSE
-        [i]
-          TRUE > @
-      and.
-        and.
-          and.
-            x.eq 1
-            i.eq 2
-          x.free
-        i.free
+  arr.length.plus -1 > max
+  malloc.for > data
+    0
+    [acc]
+      malloc.for > @
+        0
+        [iter]
+          while > @
+            max.gt iter
+            [i]
+              seq > @
+                *
+                  acc.put
+                    acc.as-int.plus
+                      arr.at iter
+                  iter.put
+                    iter.as-int.plus 1
+  data.eq arr.length > @
 
 # Test.
 [] > iterating-tuple-with-while-without-body-multiple
   * 1 1 1 > arr
-  (memory 0).alloc > iter
-  (memory 0).alloc > acc
   arr.length > max
-  seq > @
-    *
-      while
-        []
-          if > @
-            max.gt iter
-            seq
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-                TRUE
-            FALSE
-        [i]
-          TRUE > @
-      and.
-        and.
-          eq.
-            acc.as-int
-            arr.length
-          iter.free
-        acc.free
+  malloc.for > data
+    0
+    [acc]
+      malloc.for > @
+        0
+        [iter]
+          while > @
+            []
+              if. > @
+                max.gt iter
+                seq
+                  *
+                    acc.put
+                      acc.as-int.plus
+                        arr.at
+                          iter.as-int
+                    iter.put
+                      iter.as-int.plus 1
+                    true
+                false
+            true > [i]
+  data.eq arr.length > @
 
 # Test.
 [] > iterating-tuple-with-while-without-body-single
   * 1 > arr
-  (memory 0).alloc > iter
-  (memory 0).alloc > acc
   arr.length > max
-  seq > @
-    *
-      while
-        []
-          if > @
-            max.gt iter
-            seq
-              *
-                acc.write
-                  acc.as-int.plus
-                    arr.at
-                      iter.as-int
-                iter.write
-                  iter.as-int.plus 1
-                TRUE
-            FALSE
-        [i]
-          TRUE > @
-      and.
-        and.
-          eq.
-            acc.as-int
-            arr.length
-          iter.free
-        acc.free
+  malloc.for > data
+    0
+    [acc]
+      malloc.for > @
+        0
+        [iter]
+          while > @
+            []
+              if. > @
+                max.gt iter
+                seq
+                  *
+                    acc.put
+                      acc.as-int.plus
+                        arr.at
+                          iter.as-int
+                    iter.put
+                      iter.as-int.plus 1
+                    true
+                false
+            true > [i]
+  data.eq arr.length > @

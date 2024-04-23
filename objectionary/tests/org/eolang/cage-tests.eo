@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > encages-into-cage
@@ -65,13 +65,11 @@
 [] > stores-abstract-object-into-cage
   new. > c
     cage
-      []
-        112 > @
+      112 > []
   c.eq 112 > @
 
 # Test.
 [] > multi-layer-volatility
-  (memory 0).alloc > ma
   (cage a).new > ca
   # Layer A.
   [] > a
@@ -81,11 +79,9 @@
       [] > @
         # Layer A.phi.phi.phi.
         [] > @
-          seq > @
-            *
-              ma.write (ma.as-int.plus 1)
-              ma.as-int
-  (memory 0).alloc > mb
+          malloc.for > @
+            0
+            ma.put (ma.as-int.plus 1) > [ma]
   (cage b).new > cb
   # Layer B.
   [] > b
@@ -95,23 +91,18 @@
       [] > @
         # Layer B.phi.phi.phi.
         [] > @
-          seq > z
-            *
-              mb.write (mb.as-int.plus 1)
-              mb.as-int
-  and. > @
-    eq.
-      seq
-        *
-          ca
-          ca.plus 40
-      seq
-        *
-          cb.z
-          cb.z.plus 40
-    and.
-      ma.free
-      mb.free
+          malloc.for > z
+            0
+            mb.put (mb.as-int.plus 1) > [mb]
+  eq. > @
+    seq
+      *
+        ca
+        ca.as-int.plus 40
+    seq
+      *
+        cb.z
+        cb.z.as-int.plus 40
 
 # Test.
 [] > infinite-loop-check
@@ -141,7 +132,7 @@
         cge.encage "Hello world"
         [e]
           cge.encage 10 > @
-        TRUE
+        true
       cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error
@@ -155,10 +146,10 @@
           cge.write
             0.plus cge
           cge
-          FALSE
+          false
     [stack-overflow-message]
       QQ.io.stdout stack-overflow-message > @
-    FALSE
+    false
 
 # Test.
 [] > applies-after-retrieval

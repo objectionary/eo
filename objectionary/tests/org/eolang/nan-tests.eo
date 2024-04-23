@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > nan-not-eq-number
@@ -44,49 +44,49 @@
 [] > nan-not-lt-number
   eq. > @
     nan.lt 42
-    FALSE
+    false
 
 # Test.
 [] > nan-not-lt-nan
   eq. > @
     nan.lt nan
-    FALSE
+    false
 
 # Test.
 [] > nan-not-lte-number
   eq. > @
     nan.lte 42
-    FALSE
+    false
 
 # Test.
 [] > nan-not-lte-nan
   eq. > @
     nan.lte nan
-    FALSE
+    false
 
 # Test.
 [] > nan-not-gt-number
   eq. > @
     nan.gt 42
-    FALSE
+    false
 
 # Test.
 [] > nan-not-gt-nan
   eq. > @
     nan.gt nan
-    FALSE
+    false
 
 # Test.
 [] > nan-not-gte-number
   eq. > @
     nan.gte 42
-    FALSE
+    false
 
 # Test.
 [] > nan-not-gte-nan
   eq. > @
     nan.gte nan
-    FALSE
+    false
 
 # Test.
 [] > nan-times-number-is-nan

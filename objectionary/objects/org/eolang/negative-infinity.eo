@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.36.0
-+version 0.36.0
++rt jvm org.eolang:eo-runtime:0.37.0
++version 0.37.0
 
 # Negative infinity.
 [] > negative-infinity
@@ -53,7 +53,7 @@
 
   # Tests that $ > x.
   [x] > gt
-    FALSE > @
+    false > @
 
   # Tests that $ ≥ x.
   [x] > gte
@@ -70,7 +70,7 @@
           0.lt num > @
         [e]
           0.0.lt num > @
-        FALSE
+        false
 
     # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
@@ -85,10 +85,10 @@
             num.eq -0.0
           num.eq 0.0
         num.eq 0
-    if > @
+    if. > @
       is-nan-or-zero value
       nan
-      if
+      if.
         is-num-gt-zero value
         negative-infinity
         positive-infinity
@@ -101,7 +101,7 @@
     # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
-    if > @
+    if. > @
       or.
         is-nan value
         value.eq pos-inf-as-bytes
@@ -116,7 +116,7 @@
     # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
-    if > @
+    if. > @
       or.
         is-nan value
         value.eq neg-inf-as-bytes
@@ -145,11 +145,11 @@
           0.lte num > @
         [e]
           0.0.lte num > @
-        FALSE
-    if > @
+        false
+    if. > @
       is-nan-or-infinite value
       nan
-      if
+      if.
         is-num-gte-zero value
         negative-infinity
         positive-infinity

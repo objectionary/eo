@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > float-less-true
@@ -34,13 +34,13 @@
 [] > float-less-equal
   eq. > @
     -10.7.lt -10.7
-    FALSE
+    false
 
 # Test.
 [] > float-less-false
   eq. > @
     10.13.lt -5.3
-    FALSE
+    false
 
 # Test.
 [] > float-greater-true
@@ -52,13 +52,13 @@
 [] > float-greater-false
   eq. > @
     0.5.gt 100.1
-    FALSE
+    false
 
 # Test.
 [] > float-greater-equal
   eq. > @
     0.7.gt 0.7
-    FALSE
+    false
 
 # Test.
 [] > float-leq-true
@@ -66,7 +66,7 @@
     lte.
       -200.5
       -100.6
-    TRUE
+    true
 
 # Test.
 [] > float-leq-equal
@@ -74,7 +74,7 @@
     lte.
       50.1
       50.1
-    TRUE
+    true
 
 # Test.
 [] > float-leq-false
@@ -82,7 +82,7 @@
     lte.
       0.9
       -10.11
-    FALSE
+    false
 
 # Test.
 [] > float-gte-true
@@ -90,7 +90,7 @@
     gte.
       -1000.1
       -1100.1
-    TRUE
+    true
 
 # Test.
 [] > float-gte-equal
@@ -98,7 +98,7 @@
     gte.
       113.333
       113.333
-    TRUE
+    true
 
 # Test.
 [] > float-gte-false
@@ -106,31 +106,31 @@
     gte.
       0.7
       10.9
-    FALSE
+    false
 
 # Test.
 [] > float-zero-not-equal-to-nan
   eq. > @
     0.0.eq nan
-    FALSE
+    false
 
 # Test.
 [] > float-not-equal-to-nan
   eq. > @
     52.4.eq nan
-    FALSE
+    false
 
 # Test.
 [] > float-not-equal-to-positive-infinity
   eq. > @
     52.4.eq positive-infinity
-    FALSE
+    false
 
 # Test.
 [] > float-not-equal-to-negative-infinity
   eq. > @
     52.4.eq negative-infinity
-    FALSE
+    false
 
 # Test.
 [] > float-zero-eq-to-zero
@@ -138,67 +138,67 @@
     eq.
       0.0
       0.0
-    TRUE
+    true
 
 # Test.
 [] > zero-equal-to-neg-zero
   eq. > @
     0.0.eq -0.0
-    TRUE
+    true
 
 # Test.
 [] > neg-zero-equal-to-zero
   eq. > @
     -0.0.eq 0.0
-    TRUE
+    true
 
 # Test.
 [] > zero-not-greater-that-neg-zero
   eq. > @
     0.0.gt -0.0
-    FALSE
+    false
 
 # Test.
 [] > neg-zero-not-greater-that-zero
   eq. > @
     -0.0.gt 0.0
-    FALSE
+    false
 
 # Test.
 [] > zero-not-less-that-neg-zero
   eq. > @
     0.0.lt -0.0
-    FALSE
+    false
 
 # Test.
 [] > neg-zero-not-less-that-zero
   eq. > @
     -0.0.lt 0.0
-    FALSE
+    false
 
 # Test.
 [] > zero-gte-neg-zero
   eq. > @
     0.0.gte -0.0
-    TRUE
+    true
 
 # Test.
 [] > neg-zero-gte-zero
   eq. > @
     -0.0.gte 0.0
-    TRUE
+    true
 
 # Test.
 [] > zero-lte-neg-zero
   eq. > @
     0.0.lte -0.0
-    TRUE
+    true
 
 # Test.
 [] > neg-zero-lte-zero
   eq. > @
     -0.0.lte 0.0
-    TRUE
+    true
 
 # Test.
 [] > float-zero-eq-to-int-zero
@@ -222,13 +222,13 @@
 [] > eq-false
   eq. > @
     123.5.eq 42.4
-    FALSE
+    false
 
 # Test.
 [] > compares-two-different-types
   eq. > @
     3.14.eq "Hello"
-    FALSE
+    false
 
 # Test.
 [] > times-by-zero
@@ -289,7 +289,7 @@
             24
         [e]
           e > @
-        TRUE
+        true
       66.5
 
 # Test.
@@ -352,25 +352,25 @@
 [] > float-not-gt-nan
   eq. > @
     52.3.gt nan
-    FALSE
+    false
 
 # Test.
 [] > float-not-gte-nan
   eq. > @
     52.3.gte nan
-    FALSE
+    false
 
 # Test.
 [] > float-not-lt-nan
   eq. > @
     52.3.lt nan
-    FALSE
+    false
 
 # Test.
 [] > float-not-lte-nan
   eq. > @
     52.3.lte nan
-    FALSE
+    false
 
 # Test.
 [] > one-div-zero-is-positive-infinity

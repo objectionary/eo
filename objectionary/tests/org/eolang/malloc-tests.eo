@@ -24,105 +24,195 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
-[] > malloc-gives-id-to-pointer
-  (malloc 2).pointer > p
-  and. > @
-    p.id.gt 0
-    p.free
+[] > writes-into-memory-of
+  malloc.of > mem
+    8
+    m.write 0 10 > [m]
+  mem.eq 10 > @
 
-#Test.
-[] > malloc-gives-id-to-pointer-after-copy
-  (malloc 2).pointer > p
-  (p.id.gt 0).and p.free > @
+# Test.
+[] > puts-into-memory-for
+  malloc.for > mem
+    0
+    m.put 10 > [m]
+  mem.eq 10 > @
+
+# Test.
+[] > malloc-scope-is-dataized-twice
+  malloc.for > first
+    0
+    [f]
+      malloc.of > second
+        1
+        f.put (f.as-int.plus 1) > [s]
+      seq > @
+        *
+          second
+          second
+  first.eq 2 > @
+
+# Test.
+[] > malloc-for-writes-first-init-value
+  eq. > @
+    malloc.for
+      42
+      true > [m]
+    42
+
+# Test.
+[] > malloc-puts-over-the-previous-data
+  malloc.of > mem
+    13
+    [m]
+      seq > @
+        *
+          m.put "Hello, world!"
+          m.put 42
+  eq. > @
+    42.as-bytes.concat
+      "orld!".as-bytes
+    mem
+
+# Test.
+[] > malloc-rewrites-and-increments-itself
+  malloc.of > mem
+    8
+    [m]
+      seq > @
+        *
+          m.write 0 1
+          m.put (m.as-int.plus 5)
+  mem.eq 6 > @
+
+# Test.
+[] > writes-into-two-malloc-objects
+  malloc.of > a
+    8
+    m.put 10 > [m]
+  malloc.of > b
+    8
+    m.put 20 > [m]
+  and. > @
+    a.eq 10
+    b.eq 20
+
+# Test.
+[] > malloc-is-strictly-sized-bool-error-overflow
+  try > @
+    malloc.for
+      false
+      m.put 86124867.88 > [m]
+    QQ.io.stdout e > [e]
+    false
+
+# Test.
+[] > malloc-is-strictly-sized-string-error-overflow
+  try > @
+    malloc.for
+      "Hello"
+      m.put "Much longer string!" > [m]
+    QQ.io.stdout e > [e]
+    false
+
+# Test.
+[] > malloc-is-strictly-sized-int
+  eq. > @
+    malloc.for
+      12248
+      m.put 2556 > [m]
+    2556
+
+# Test.
+[] > malloc-is-strictly-typed-float
+  eq. > @
+    malloc.for
+      245.88
+      m.put 82.22 > [m]
+    82.22
+
+# Test.
+[] > memory-is-strictly-sized-string
+  eq. > @
+    malloc.for
+      "Hello"
+      m.put "Prot" > [m]
+    "Proto"
+
+# Test.
+[] > malloc-is-strictly-typed-bool
+  malloc.for > @
+    false
+    m.put true > [m]
+
+# Test.
+[] > malloc-gives-id-to-allocated-block
+  malloc.of > @
+    1
+    m.put (m.id.gt 0) > [m]
 
 # Test.
 [] > malloc-allocates-right-size-block
-  (malloc 10).pointer > p
-  (p.size.eq 10).and p.free > @
+  malloc.of > @
+    1
+    [b]
+      malloc.of > @
+        10
+        b.put (m.size.eq 10) > [m]
 
 # Test.
-[] > malloc-pointer-writes-and-reads
-  (malloc 12).pointer > p
-  seq > @
-    *
-      p.write 0 "Hello, Jeff!"
-      and.
-        (p.read 0 12).eq "Hello, Jeff!"
-        p.free
+[] > malloc-writes-and-reads
+  malloc.of > @
+    1
+    [b]
+      malloc.of > @
+        12
+        [m]
+          seq > @
+            *
+              m.write 0 "Hello, "
+              m.write 7 "Jeff!"
+              b.put
+                eq.
+                  m.read 0 12
+                  "Hello, Jeff!"
 
 # Test.
-[] > malloc-pointer-concacts-strings-with-offset
-  (malloc 3).pointer > p
-  seq > @
-    *
-      p.write 0 "XXX"
-      p.write 1 "Y"
-      and.
-        (p.read 0 3).eq "XYX"
-        p.free
+[] > malloc-concacts-strings-with-offset
+  malloc.of > @
+    1
+    [b]
+      malloc.of > @
+        3
+        [m]
+          seq > @
+            *
+              m.write 0 "XXX"
+              m.write 1 "Y"
+              b.put
+                (m.read 0 3).eq "XYX"
 
 # Test.
-[] > malloc-pointer-frees-successfully
-  (malloc 8).free > @
-
-# Test.
-[] > malloc-pointer-frees-after-writing
-  (malloc 8).pointer > p
-  seq > @
-    *
-      p.write 0 42
-      p.free
-      try
-        p.read 0 8
-        [e] (QQ.io.stdout e > @)
-        FALSE
-
-# Test.
-[] > malloc-pointer-cant-write-more-than-allocated
-  (malloc 1).pointer > p
+[] > malloc-cant-write-more-than-allocated-with-offset
   try > @
-    seq
-      *
-        p.write 0 42
-        FALSE
-    [e]
-      and. > @
-        QQ.io.stdout e
-        p.free
-    TRUE
-
-# Test.
-[] > malloc-pointer-cant-write-more-than-allocated-with-offset
-  (malloc 1).pointer > p
-  try > @
-    seq
-      *
-        p.write 1 TRUE
-        FALSE
-    [e]
-      and. > @
-        QQ.io.stdout e
-        p.free
-    TRUE
-
-# Test.
-[] > malloc-pointer-rewrites-successfully
-  (malloc 8).pointer > p
-  seq > @
-    *
-      p.write 0 42
-      p.write 0 94
-      and.
-        (p.read 0 8).eq 94
-        p.free
+    malloc.of
+      1
+      m.write 1 true > [m]
+    QQ.io.stdout e > [e]
+    false
 
 # Test.
 [] > malloc-reads-with-offset-and-length
-  (malloc 10).pointer > p
-  seq > @
-    *
-      p.write 2 "Hello"
-      (p.read 2 5).eq "Hello"
+  malloc.of > @
+    1
+    [b]
+      malloc.of > @
+        10
+        [m]
+          seq > @
+            *
+              m.write 2 "Hello"
+              b.put
+                (m.read 2 5).eq "Hello"

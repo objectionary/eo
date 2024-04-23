@@ -1,5 +1,4 @@
 objectionary/tests/org/eolang/runtime-tests.eo
-objectionary/tests/org/eolang/if-tests.eo
 objectionary/tests/org/eolang/string-tests.eo
 objectionary/tests/org/eolang/tuple-tests.eo
 objectionary/tests/org/eolang/goto-tests.eo
@@ -14,7 +13,6 @@ objectionary/tests/org/eolang/bool-tests.eo
 objectionary/tests/org/eolang/seq-tests.eo
 objectionary/tests/org/eolang/dataized-tests.eo
 objectionary/tests/org/eolang/try-tests.eo
-objectionary/tests/org/eolang/memory-tests.eo
 objectionary/tests/org/eolang/int-tests.eo
 objectionary/tests/org/eolang/cage-tests.eo
 objectionary/tests/org/eolang/switch-tests.eo
@@ -27,13 +25,12 @@ objectionary/objects/org/eolang/go.eo
 objectionary/objects/org/eolang/nan.eo
 objectionary/objects/org/eolang/positive-infinity.eo
 objectionary/objects/org/eolang/seq.eo
-objectionary/objects/org/eolang/if.eo
-objectionary/objects/org/eolang/memory.eo
 objectionary/objects/org/eolang/cage.eo
 objectionary/objects/org/eolang/error.eo
+objectionary/objects/org/eolang/true.eo
 objectionary/objects/org/eolang/rust.eo
 objectionary/objects/org/eolang/cti.eo
-objectionary/objects/org/eolang/bool.eo
+objectionary/objects/org/eolang/false.eo
 objectionary/objects/org/eolang/dataized.eo
 objectionary/objects/org/eolang/float.eo
 objectionary/objects/org/eolang/negative-infinity.eo

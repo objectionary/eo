@@ -24,31 +24,36 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > dataized-does-not-do-recalculation
-  (memory 0).alloc > m
-  # Func.
-  [] > func
-    ^.m.write (^.m.as-int.plus 1) > @
-  (dataized func).as-bytes > cached
-  seq > @
-    *
-      cached.as-int
-      cached.as-bytes
-      cached.as-bool
-      1.eq m
+  eq. > @
+    malloc.for
+      0
+      [m]
+        # Func.
+        [] > func
+          ^.m.put (^.m.as-int.plus 1) > @
+        (dataized func).as-bytes > cached
+        seq > @
+          *
+            cached.as-int
+            cached.as-bytes
+            cached.as-bool
+    1
 
 # Test.
 [] > dataizes-as-bytes-behaves-as-exclamationed
   # Func.
   [] > func
-    (memory 0).alloc > m
-    seq > @
-      *
-        TRUE
-        m.write (m.as-int.plus 1)
+    malloc.for > @
+      0
+      [m]
+        seq > @
+          *
+            true
+            m.put (m.as-int.plus 1)
   (dataized func).as-bytes > cached1
   func > cached2!
   seq > @

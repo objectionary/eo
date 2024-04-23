@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > takes-part-of-bytes
@@ -86,7 +86,7 @@
     eq.
       -1.as-bytes.left 3
       7.as-bytes
-    FALSE
+    false
 
 # Test.
 [] > left-with-even-neg
@@ -142,7 +142,7 @@
     eq.
       36.as-bytes.right 2
       -10.as-bytes
-    FALSE
+    false
 
 # Test.
 [] > right-with-odd-plus
@@ -311,8 +311,8 @@
 
 # Test.
 [] > concat-bools-as-bytes
-  TRUE.as-bytes > b1
-  FALSE.as-bytes > b2
+  true.as-bytes > b1
+  false.as-bytes > b2
   eq. > @
     concat.
       b1
@@ -423,3 +423,17 @@
   eq. > @
     (-4294967296.as-bytes.or 1.as-bytes).as-int
     -4294967295
+
+# Test.
+[] > bytes-of-wrong-size-as-int-of-returns-error
+  try > @
+    01-01-01-01.as-int
+    QQ.io.stdout e > [e]
+    false
+
+# Test.
+[] > bytes-of-wrong-size-as-float-returns-error
+  try > @
+    01-01-01-01.as-float
+    QQ.io.stdout e > [e]
+    false

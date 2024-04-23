@@ -25,49 +25,45 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.36.0
++version 0.37.0
 
 # Test.
 [] > goto-jumps-backwards
-  (memory 0).alloc > i
-  and. > @
-    eq.
-      seq
-        *
-          i.write 1
-          go.to
-            [g]
-              seq > @
-                *
-                  i.write (i.as-int.plus 1)
-                  if
-                    i.as-int.lt 10
-                    g.backward
-                    TRUE
-          stdout "Finished!\n"
-          i
-      10
-    i.free
+  eq. > @
+    malloc.of
+      8
+      [i]
+        seq > @
+          *
+            i.put 1
+            go.to
+              [g]
+                seq > @
+                  *
+                    i.put (i.as-int.plus 1)
+                    if.
+                      i.as-int.lt 10
+                      g.backward
+                      true
+            stdout "Finished!\n"
+    10
 
 # Test.
 [] > goto-jumps-forward
   # Div.
   [x] > div
-    (memory 0).alloc > r
-    seq > @
-      *
-        go.to
+    malloc.for > @
+      0
+      [r]
+        go.to > @
           [g]
             seq > @
               *
-                if
+                if.
                   x.eq 0
-                  g.forward TRUE
-                  TRUE
-                r.write (42.div x)
-        (dataized r).as-bytes > result
-        r.free
-        result
+                  g.forward true
+                  true
+                r.put (42.div x)
   and. > @
     eq.
       div 7
@@ -84,10 +80,10 @@
       [g]
         seq > @
           *
-            if
+            if.
               a.gt b
               g.forward a
-              TRUE
+              true
             b
   eq. > @
     max 7 42
@@ -101,7 +97,6 @@
         seq > @
           *
             go.to
-              [g2]
-                g1.forward 42 > @
+              g1.forward 42 > [g2]
             7
     42
