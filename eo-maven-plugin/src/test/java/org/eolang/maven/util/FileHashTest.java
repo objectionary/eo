@@ -25,6 +25,7 @@ package org.eolang.maven.util;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ final class FileHashTest {
         final Path path = temp.resolve("1.txt");
         new HmBase(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new FileHash(path).toString(),
             Matchers.startsWith("[-26, 1, -29, 113, ")
         );
@@ -52,7 +53,7 @@ final class FileHashTest {
     void readsFromAbsentFile(@TempDir final Path temp) {
         final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new FileHash(path).toString(),
             Matchers.equalTo("")
         );

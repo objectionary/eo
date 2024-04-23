@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -48,6 +49,7 @@ final class EOstringEOasBytesTest {
         final Phi str = new Data.ToPhi("Hello, друг!");
         final Phi phi = str.take("as-bytes");
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).take(byte[].class).length,
             Matchers.equalTo(16)
         );

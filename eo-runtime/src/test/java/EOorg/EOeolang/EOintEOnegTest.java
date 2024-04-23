@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -51,6 +52,7 @@ final class EOintEOnegTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(neg).take(Long.class),
             Matchers.equalTo(-42L)
         );

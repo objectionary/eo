@@ -26,6 +26,7 @@ package org.eolang.maven.hash;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -85,7 +86,7 @@ final class ChTextTest {
         final String tag
     ) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new ChText(ChTextTest.file, tag).value(),
             Matchers.equalTo(hash)
         );
@@ -94,7 +95,7 @@ final class ChTextTest {
     @Test
     void readsCorrectHashByTagFromSimpleString() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "gh-pages"
@@ -110,7 +111,8 @@ final class ChTextTest {
             () -> new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "non-existent-tag"
-            ).value()
+            ).value(),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 }

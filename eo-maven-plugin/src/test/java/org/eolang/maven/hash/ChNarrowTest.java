@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.hash;
 
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -61,7 +62,8 @@ final class ChNarrowTest {
     void throwsExceptionIfEmpty() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new ChNarrow(new CommitHash.ChConstant("")).value()
+            () -> new ChNarrow(new CommitHash.ChConstant("")).value(),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 }

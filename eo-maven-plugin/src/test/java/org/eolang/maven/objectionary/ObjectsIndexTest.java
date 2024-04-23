@@ -27,6 +27,7 @@ import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.29
  */
 final class ObjectsIndexTest {
-
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void contains() throws Exception {
@@ -57,22 +53,22 @@ final class ObjectsIndexTest {
             )
         );
         MatcherAssert.assertThat(
-            ObjectsIndexTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            ObjectsIndexTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             index.contains(object),
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            ObjectsIndexTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             index.contains("unknown"),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            ObjectsIndexTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             calls.get(),
             Matchers.is(1)
         );
@@ -82,7 +78,7 @@ final class ObjectsIndexTest {
     @ExtendWith(WeAreOnline.class)
     void downloadsAndChecksFromRealSource() throws Exception {
         MatcherAssert.assertThat(
-            ObjectsIndexTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new ObjectsIndex().contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

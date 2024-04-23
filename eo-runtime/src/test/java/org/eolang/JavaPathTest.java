@@ -47,6 +47,7 @@ class JavaPathTest {
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new JavaPath(name).toString(),
             Matchers.equalTo(expected)
         );

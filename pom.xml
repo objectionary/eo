@@ -391,18 +391,6 @@ SOFTWARE.
             <version>1.2.4</version>
             <configuration>
               <ignoreGeneratedTests>true</ignoreGeneratedTests>
-              <exclusions>
-                <!--
-                  @todo #2171:30min Enable RuleAssertionMessage.
-                    This rule is disabled because lots of tests in the
-                    project are written without assertion messages. We have
-                    to add all messages for all assertions and then enable
-                    that rule and remove that puzzle.
-                -->
-                <exclusion>
-                  JTCOP.RuleAssertionMessage
-                </exclusion>
-              </exclusions>
             </configuration>
             <executions>
               <execution>

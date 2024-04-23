@@ -58,6 +58,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -79,13 +80,15 @@ final class DataizedTest {
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Dataized(wrong).take()
+                () -> new Dataized(wrong).take(),
+                AtCompositeTest.TO_ADD_MESSAGE
             )
         );
         new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -119,6 +122,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             logs.size(),
             Matchers.equalTo(1)
         );
@@ -149,6 +153,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             logs.size(),
             Matchers.greaterThan(1)
         );
