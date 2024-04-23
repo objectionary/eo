@@ -54,7 +54,9 @@
 # ```
 # Go to.
 [] > go
-  (malloc 1).id.as-bytes > id
+  malloc.of > id!
+    8
+    m.put m.id > [m]
 
   # To.
   [body] > to

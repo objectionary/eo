@@ -527,7 +527,7 @@ spacedArrow
 // Does not contain elements in vertical notation
 // Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hanonym) RB
+    : LB (happlication | hanonym | onlyphi) RB
     ;
 
 // Version

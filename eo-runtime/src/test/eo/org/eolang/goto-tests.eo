@@ -29,34 +29,33 @@
 
 # Test.
 [] > goto-jumps-backwards
-  (memory 0).alloc > i
-  and. > @
-    eq.
-      seq
-        *
-          i.write 1
-          go.to
-            [g]
-              seq > @
-                *
-                  i.write (i.as-int.plus 1)
-                  if.
-                    i.as-int.lt 10
-                    g.backward
-                    true
-          stdout "Finished!\n"
-          i
-      10
-    i.free
+  eq. > @
+    malloc.of
+      8
+      [i]
+        seq > @
+          *
+            i.put 1
+            go.to
+              [g]
+                seq > @
+                  *
+                    i.put (i.as-int.plus 1)
+                    if.
+                      i.as-int.lt 10
+                      g.backward
+                      true
+            stdout "Finished!\n"
+    10
 
 # Test.
 [] > goto-jumps-forward
   # Div.
   [x] > div
-    (memory 0).alloc > r
-    seq > @
-      *
-        go.to
+    malloc.for > @
+      0
+      [r]
+        go.to > @
           [g]
             seq > @
               *
@@ -64,10 +63,7 @@
                   x.eq 0
                   g.forward true
                   true
-                r.write (42.div x)
-        (dataized r).as-bytes > result
-        r.free
-        result
+                r.put (42.div x)
   and. > @
     eq.
       div 7

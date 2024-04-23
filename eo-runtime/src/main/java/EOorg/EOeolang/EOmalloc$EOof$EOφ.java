@@ -25,39 +25,54 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.free object.
- *
+ * Malloc.of.φ object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.free")
-public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.of.@")
+final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
+    EOmalloc$EOof$EOφ(final Phi sigma) {
         super(sigma);
     }
 
     @Override
     public Phi lambda() {
-        Heaps.INSTANCE.free(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+        final Phi rho = this.take(Attr.RHO);
+        final int size = Math.toIntExact(
+            new Dataized(rho.take("size")).take(Long.class)
         );
-        return new Data.ToPhi(true);
+        final int identifier = Heaps.INSTANCE.malloc(this, size);
+        final Phi res;
+        try {
+            final Phi allocated = rho.take("allocated");
+            allocated.put("id", new Data.ToPhi((long) identifier));
+            final Phi scope = rho.take("scope").copy();
+            scope.put(0, allocated);
+            new Dataized(scope).take();
+            res = new Data.ToPhi(
+                Heaps.INSTANCE.read(identifier, 0, size)
+            );
+        } finally {
+            Heaps.INSTANCE.free(identifier);
+        }
+        return res;
     }
 }
