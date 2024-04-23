@@ -1,3 +1,4 @@
+---
 tests:
   - /program/errors[count(error)=0]
   - /program/sheets/sheet[contains(text(),'add-probes')]

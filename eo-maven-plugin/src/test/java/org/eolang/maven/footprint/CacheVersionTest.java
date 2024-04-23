@@ -25,6 +25,7 @@ package org.eolang.maven.footprint;
 
 import java.io.File;
 import java.nio.file.Paths;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,7 +57,7 @@ class CacheVersionTest {
         final boolean expected
     ) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new CacheVersion(version, hash).cacheable(),
             Matchers.is(expected)
         );
@@ -82,7 +83,7 @@ class CacheVersionTest {
         final String expected
     ) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new CacheVersion(version, hash).path(),
             Matchers.equalTo(Paths.get(expected.replace("|", File.separator)))
         );

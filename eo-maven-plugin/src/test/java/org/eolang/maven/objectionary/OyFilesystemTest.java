@@ -32,6 +32,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -56,7 +57,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.found";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -68,7 +69,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.malloc";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             objectionary.contains(object),
             Matchers.is(true)
         );
@@ -94,7 +95,7 @@ final class OyFilesystemTest {
         final String object = "org.eolang.get";
         OyFilesystemTest.save(object, home);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(objectionary.get(object)),
             Matchers.equalTo(new TextOf(new InputOf(OyFilesystemTest.OBJECT_CONTENT)))
         );

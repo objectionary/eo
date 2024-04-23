@@ -1,3 +1,4 @@
+---
 tests:
   - /program/metas/meta[head[text()='package'] and tail[text()='foo.bar.baz'] and part[text()='foo.bar.baz']]
   - /program/objects/o[@abstract and @name='main']

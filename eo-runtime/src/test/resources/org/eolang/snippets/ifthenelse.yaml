@@ -1,3 +1,4 @@
+---
 out:
   - ".*greater.*"
 file: org/eolang/snippets/ifthenelse.eo
@@ -16,4 +17,3 @@ eo: |
         "greater"
     stdout > @
       f 17
-

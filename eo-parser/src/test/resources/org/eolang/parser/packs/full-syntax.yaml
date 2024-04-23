@@ -1,4 +1,5 @@
-xsls: []
+---
+xsls: [ ]
 tests:
   - /program/errors[count(error)=0]
   - /program/license[text()!='']
@@ -79,7 +80,7 @@ eo: |
       @.
         b
     oops
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [] > obj
     "some" > @

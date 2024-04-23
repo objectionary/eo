@@ -57,6 +57,7 @@ final class PhPackageTest {
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             Phi.Φ.take("org").take("eolang").take("seq"),
             Matchers.not(
                 Matchers.equalTo(
@@ -71,6 +72,7 @@ final class PhPackageTest {
         final Phi eolang = Phi.Φ.take("org").take("eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             seq.take(Attr.RHO),
             Matchers.equalTo(eolang)
         );
@@ -79,6 +81,7 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             Phi.Φ.take("org")
                 .take("eolang")
                 .take("bytes$eq").copy(),
@@ -92,6 +95,7 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.instanceOf(expected)
         );
@@ -101,7 +105,8 @@ final class PhPackageTest {
     void throwsExceptionIfCantInstantiateObject() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed")
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -109,7 +114,8 @@ final class PhPackageTest {
     void doesNotCopies() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy()
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -117,13 +123,15 @@ final class PhPackageTest {
     void doesNotGetForma() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma()
+            () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
     @Test
     void convertsToPhiTerm() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).φTerm(),
             Matchers.equalTo("Φ.org.eolang")
         );
@@ -132,6 +140,7 @@ final class PhPackageTest {
     @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
             Matchers.equalTo("?:?")
         );
@@ -140,6 +149,7 @@ final class PhPackageTest {
     @Test
     void convertsToString() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).toString(),
             Matchers.equalTo("Φ.org.eolang")
         );
@@ -169,7 +179,11 @@ final class PhPackageTest {
         latch.countDown();
         service.shutdown();
         if (service.awaitTermination(1, TimeUnit.SECONDS)) {
-            MatcherAssert.assertThat(basket.size(), Matchers.equalTo(threads));
+            MatcherAssert.assertThat(
+                AtCompositeTest.TO_ADD_MESSAGE,
+                basket.size(),
+                Matchers.equalTo(threads)
+            );
         } else {
             throw new IllegalStateException(
                 String.format(

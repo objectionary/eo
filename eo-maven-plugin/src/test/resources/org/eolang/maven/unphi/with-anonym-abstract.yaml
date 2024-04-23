@@ -1,8 +1,9 @@
+---
 tests:
   - //o[@name='test' and count(o)=2]
   - //o[@name='test']/o[position()=1 and @abstract and not(@name)]
   - //o[@name='test']/o[last() and @base='.plus' and @method]
-phi: |
+phi: |-
   {
     ⟦
       test ↦ ⟦

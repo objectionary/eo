@@ -28,20 +28,16 @@
 package EOorg.EOeolang;
 
 import org.eolang.AtComposite;
-import org.eolang.AtSimple;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtVoid;
-import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
-import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +57,8 @@ public final class EOmallocTest {
         new Dataized(phi).take();
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id)
+            () -> Heaps.INSTANCE.free((int) dummy.id),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -74,11 +71,13 @@ public final class EOmallocTest {
         );
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(phi).take()
+            () -> new Dataized(phi).take(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id)
+            () -> Heaps.INSTANCE.free((int) dummy.id),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 

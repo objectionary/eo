@@ -1,7 +1,8 @@
+---
 out:
   - ".*first.*"
 file: org/eolang/snippets/vmb.eo
-args: ["org.eolang.snippets.vbm"]
+args: [ "org.eolang.snippets.vbm" ]
 eo: |
   +package org.eolang.snippets
   +alias org.eolang.io.stdout

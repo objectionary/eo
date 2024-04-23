@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.cactoos.Func;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -69,7 +70,7 @@ final class ForeignTojosTest {
     void contains(final String name) {
         this.tojos.add(name);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.tojos.contains(name),
             Matchers.is(true)
         );
@@ -84,7 +85,7 @@ final class ForeignTojosTest {
     void doesNotContain(final String existing, final String considered) {
         this.tojos.add(existing);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.tojos.contains(considered),
             Matchers.is(false)
         );

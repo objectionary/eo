@@ -2,7 +2,7 @@
 name: ebnf
 on:
   push:
-    paths-ignore: ['paper/**', 'sandbox/**']
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
       - master
@@ -13,7 +13,7 @@ jobs:
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
