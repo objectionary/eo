@@ -138,6 +138,12 @@ final class SnippetTestCase {
                     .set("project.reporting.outputEncoding", "UTF-8");
                 SnippetTestCase.copySources(f, "src/test/eo");
                 f.dependencies().appendItself();
+                f.dependencies()
+                    .append(
+                        "org.junit.jupiter",
+                        "junit-jupiter-api",
+                        "5.10.2"
+                    );
         //                f.build()
         //                    .plugins()
         //                    .append(
