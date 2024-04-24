@@ -50,17 +50,14 @@ final class CommitHashesText extends TextEnvelope {
     /**
      * Cache.
      */
-    private static final Text CACHE = new Synced(
-        new Sticky(
-            CommitHashesText.asText(CommitHashesText.HOME)
-        )
-    );
+    private static final String CACHE = CommitHashesText.asText(CommitHashesText.HOME);
+
 
     /**
      * Constructor.
      */
     CommitHashesText() {
-        super(CommitHashesText.CACHE);
+        super(() -> CommitHashesText.CACHE);
     }
 
     /**
@@ -69,10 +66,9 @@ final class CommitHashesText extends TextEnvelope {
      * @return The body of the web page
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static Text asText(final String url) {
-        final String body = new Unchecked<>(
+    private static String asText(final String url) {
+        return new Unchecked<>(
             () -> new TextOf(new URL(url)).asString()
         ).value();
-        return new TextOf(body);
     }
 }
