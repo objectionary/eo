@@ -44,6 +44,7 @@ final class CommitHashesText extends TextEnvelope {
      */
     private static final String HOME = "https://home.objectionary.com/tags.txt";
 
+
     /**
      * Cache.
      */
