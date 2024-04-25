@@ -23,31 +23,23 @@
  */
 package org.eolang;
 
-import com.yegor256.Jaxec;
+import com.jcabi.log.Logger;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.TeeInput;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -108,6 +100,7 @@ final class SnippetTestCase {
                         "eo-maven-plugin",
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
+                    .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
@@ -115,6 +108,7 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
+                    .execution("run")
                     .phase("test")
                     .goals("java")
                     .configuration()
@@ -139,30 +133,71 @@ final class SnippetTestCase {
     }
 
     @Test
-    @Tag("slow")
     void runTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
-        BufferedWriter writer = new BufferedWriter(
-            new FileWriter(
-                Paths.get(System.getProperty("user.dir")).resolve("../../../../Desktop/log.txt").toFile(),
-                true
-            )
-        );
         new Farea(temp).together(
-            compile -> {
-                compile.properties()
+            f -> {
+                SnippetTestCase.copySources(f, "src/main");
+                SnippetTestCase.copySources(f, "src/test/eo");
+                f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
-                SnippetTestCase.copySources(compile, "src/main/eo");
-                SnippetTestCase.copySources(compile, "src/main/java");
-                compile.dependencies().appendItself();
-                compile.build()
+                f.dependencies().append(
+                    "net.sf.saxon",
+                    "Saxon-HE",
+                    "12.4"
+                );
+                f.build()
                     .plugins()
                     .append(
                         "org.eolang",
                         "eo-maven-plugin",
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
-                    .phase("test")
+                    .execution("phi-unphi")
+                    .phase("compile")
+                    .goals(
+                        "register",
+                        "parse",
+                        "optimize",
+                        "xmir-to-phi",
+                        "phi-to-xmir",
+                        "print"
+                    )
+                    .configuration()
+                    .set("sourcesDir", "${project.basedir}/src/test/eo")
+                    .set("targetDir", "${project.build.directory}/eo-test")
+                    .set("phiInputDir", "${project.build.directory}/eo-test/2-optimize")
+                    .set("phiOutputDir", "${project.build.directory}/phi")
+                    .set("unphiInputDir", "${project.build.directory}/phi")
+                    .set("unphiOutputDir", "${project.build.directory}/generated-eo-test/1-parse")
+                    .set("unphiMetas", new String[]{"+tests"})
+                    .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
+                    .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
+                    .set("printReversed", "true");
+                f.exec("clean", "compile");
+                final String phi = f.log();
+                MatcherAssert.assertThat(
+                    "Converting to phi and back was not successful",
+                    phi,
+                    Matchers.containsString("BUILD SUCCESS")
+                );
+                f.files().file("pom.xml").delete();
+                f.properties()
+                    .set("project.build.sourceEncoding", "UTF-8")
+                    .set("project.reporting.outputEncoding", "UTF-8");
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-api",
+                    "5.10.2"
+                );
+                f.build()
+                    .plugins()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
+                    .execution("compile")
                     .goals(
                         "register",
                         "assemble",
@@ -179,82 +214,6 @@ final class SnippetTestCase {
                     .set("offline", "true")
                     .set("withRuntimeDependency", "false")
                     .set("placeBinariesThatHaveSources", "true");
-                compile.exec("clean", "test");
-                MatcherAssert.assertThat(
-                    "Compile sources step was not successful",
-                    compile.log(),
-                    Matchers.containsString("BUILD SUCCESS")
-                );
-            }
-        );
-        Files.deleteIfExists(temp.resolve("pom.xml"));
-        new Farea(temp).together(
-            phi -> {
-                phi.properties()
-                    .set("project.build.sourceEncoding", "UTF-8")
-                    .set("project.reporting.outputEncoding", "UTF-8");
-                SnippetTestCase.copySources(phi, "src/test/eo");
-                phi.dependencies().append(
-                    "net.sf.saxon",
-                    "Saxon-HE",
-                    "12.4"
-                );
-                phi.build()
-                    .plugins()
-                    .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty("eo.version", "1.0-SNAPSHOT")
-                    )
-                    .phase("test")
-                    .goals(
-                        "register",
-                        "parse",
-                        "optimize",
-                        "xmir-to-phi",
-                        "phi-to-xmir",
-                        "optimize",
-                        "print"
-                    )
-                    .configuration()
-                    .set("sourcesDir", "${project.basedir}/src/test/eo")
-                    .set("targetDir", "${project.build.directory}/eo-test")
-                    .set("phiInputDir", "${project.build.directory}/eo-test/2-optimize")
-                    .set("phiOutputDir", "${project.build.directory}/phi")
-                    .set("unphiInputDir", "${project.build.directory}/phi")
-                    .set("unphiOutputDir", "${project.build.directory}/eo-test/1-parse")
-                    .set("printSourcesDir", "${project.build.directory}/eo-test/2-optimize")
-                    .set("printOutputDir", "${project.basedir}/src/test/generated-eo");
-                phi.exec("test");
-                writer.write(phi.log());
-                MatcherAssert.assertThat(
-                    "PHI->UNPHI step was not successful",
-                    phi.log(),
-                    Matchers.containsString("BUILD SUCCESS")
-                );
-            }
-        );
-        Files.deleteIfExists(temp.resolve("pom.xml"));
-        Files.deleteIfExists(temp.resolve("target/eo-foreign.csv"));
-        FileUtils.deleteDirectory(temp.resolve("target/eo").toFile());
-        System.out.println(
-            new UncheckedText(
-                new TextOf(
-                    temp.resolve("src/test/generated-eo/org/eolang/bool-tests.eo")
-                )
-            ).asString()
-        );
-        new Farea(temp).together(
-            f -> {
-                f.properties()
-                    .set("project.build.sourceEncoding", "UTF-8")
-                    .set("project.reporting.outputEncoding", "UTF-8");
-                f.dependencies()
-                    .append(
-                        "org.junit.jupiter",
-                        "junit-jupiter-api",
-                        "5.10.2"
-                    );
                 f.build()
                     .plugins()
                     .append(
@@ -262,6 +221,7 @@ final class SnippetTestCase {
                         "eo-maven-plugin",
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
+                    .execution("tests")
                     .phase("generate-test-sources")
                     .goals(
                         "register",
@@ -277,16 +237,21 @@ final class SnippetTestCase {
                     .set("offline", "true")
                     .set("scope", "test")
                     .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
-                    .set("targetDir", "${project.build.directory}/generated-eo-test")
+                    .set("targetDir", "${project.basedir}/target/eo-test")
                     .set("addSourcesRoot", "false")
                     .set("addTestSourcesRoot", "true")
                     .set("failOnWarning", "false")
-                    .set("generatedDir", "${project.build.directory}/generated-test-sources")
+                    .set("generatedDir", "${project.basedir}/target/generated-test-sources")
                     .set("withRuntimeDependency", "false")
                     .set("placeBinariesThatHaveSources", "true");
-                f.exec("test");
-                System.out.println(
-                    f.log()
+                System.out.println(f.files().file("pom.xml").content());
+                f.exec("clean", "test");
+                final String log = f.log();
+                Logger.debug(this, log);
+                MatcherAssert.assertThat(
+                    "Some tests weren't passed after converting to phi and back",
+                    log,
+                    Matchers.containsString("BUILD SUCCESS")
                 );
             }
         );
@@ -315,6 +280,7 @@ final class SnippetTestCase {
             .resolve(target);
         final Collection<Path> sources = Files.walk(runtime)
             .filter(src -> !src.toFile().isDirectory())
+            .filter(src -> !src.endsWith("rust-tests.eo"))
             .collect(Collectors.toList());
         for (final Path src : sources) {
             farea.files()
