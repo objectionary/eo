@@ -41,6 +41,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,25 +58,19 @@ import org.yaml.snakeyaml.Yaml;
  * Central. Thus, when changes are made, it is recommended to disable this test.
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
- * @todo #2718:30min One snippets is disabled now, in
- * the "src/test/resources/snippets/*.yaml". It needs
- * "sprintf" object in objectionary (fibo.yaml).
- * When "sprintf" is in objectionary again - we need to enable
- * it (by removing the "skip" attribute from the YAML file).
  * @since 0.1
+ * @todo #2718:30min One snippets is disabled now, in
+ *  the "src/test/resources/snippets/*.yaml". It needs
+ *  "sprintf" object in objectionary (fibo.yaml).
+ *  When "sprintf" is in objectionary again - we need to enable
+ *  it (by removing the "skip" attribute from the YAML file).
  */
 @ExtendWith(WeAreOnline.class)
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class SnippetTestCase {
-    /**
-     * Integration test.
-     * @param yml The YAML
-     * @throws IOException If fails
-     */
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+final class SnippetCaseTest {
     @ParameterizedTest
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
-    @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml, final @TempDir Path temp) throws IOException {
         final Yaml yaml = new Yaml();
@@ -91,7 +86,18 @@ final class SnippetTestCase {
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
-                SnippetTestCase.copySources(f, "src/main/eo");
+                SnippetCaseTest.copySources(f, "src/main/eo");
+                final Path runtime = Paths.get(System.getProperty("user.dir"))
+                    .resolve("src/main/eo");
+                final Collection<Path> sources = Files.walk(runtime)
+                    .filter(src -> !src.toFile().isDirectory())
+                    .collect(Collectors.toList());
+                for (final Path src : sources) {
+                    f.files()
+                        .file(String.format("src/main/eo/%s", runtime.relativize(src)))
+                        .write(new UncheckedText(new TextOf(src)).asString())
+                        .show();
+                }
                 f.dependencies().appendItself();
                 f.build()
                     .plugins()
@@ -115,7 +121,6 @@ final class SnippetTestCase {
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
-                System.out.println(f.log());
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     f.log(),
@@ -133,11 +138,13 @@ final class SnippetTestCase {
     }
 
     @Test
-    void runTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
+    @Tag("slow")
+    @ExtendWith(WeAreOnline.class)
+    void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                SnippetTestCase.copySources(f, "src/main");
-                SnippetTestCase.copySources(f, "src/test/eo");
+                SnippetCaseTest.copySources(f, "src/main");
+                SnippetCaseTest.copySources(f, "src/test/eo");
                 f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
@@ -244,7 +251,6 @@ final class SnippetTestCase {
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
                     .set("withRuntimeDependency", "false")
                     .set("placeBinariesThatHaveSources", "true");
-                System.out.println(f.files().file("pom.xml").content());
                 f.exec("clean", "test");
                 final String log = f.log();
                 Logger.debug(this, log);
@@ -255,27 +261,20 @@ final class SnippetTestCase {
                 );
             }
         );
-}
-
-
-    /**
-     * Copy EO sources.
-     * @param farea Farea instance
-     * @param dir   Directory to copy from
-     * @throws IOException If fails to copy files
-     */
-    private static void copySources(final Farea farea, final String dir) throws IOException {
-        SnippetTestCase.copySources(farea, dir, dir);
     }
 
     /**
      * Copy EO sources.
-     * @param farea  Farea instance
+     * @param farea Farea instance
      * @param target Directory to copy from
-     * @param dest   Directory to copy to
      * @throws IOException If fails to copy files
+     * @todo #3092:30min Remove filter with "rust-tests.eo". BinarizeMojo does not add rust
+     *  dependencies to rust-tests after phi->unphi (see:
+     *  <a href="https://github.com/objectionary/eo/issues/3145">this</a> for details).
+     *  When it's resolved we need to remove the filter and make sure the snippet test
+     *  {@link SnippetCaseTest#runTestsAfterPhiAndUnphi} still works.
      */
-    private static void copySources(final Farea farea, final String target, final String dest) throws IOException {
+    private static void copySources(final Farea farea, final String target) throws IOException {
         final Path runtime = Paths.get(System.getProperty("user.dir"))
             .resolve(target);
         final Collection<Path> sources = Files.walk(runtime)
@@ -284,7 +283,7 @@ final class SnippetTestCase {
             .collect(Collectors.toList());
         for (final Path src : sources) {
             farea.files()
-                .file(String.format("%s/%s", dest, runtime.relativize(src)))
+                .file(String.format("%s/%s", target, runtime.relativize(src)))
                 .write(new UncheckedText(new TextOf(src)).asString())
                 .show();
         }
