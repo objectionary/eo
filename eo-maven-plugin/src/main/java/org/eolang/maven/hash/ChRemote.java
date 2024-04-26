@@ -37,7 +37,7 @@ public final class ChRemote implements CommitHash {
     /**
      * Cached text of hashes.
      */
-    private static final Text CACHE = new Sticky(new CommitHashesText());
+    private static final Text CACHE = new CommitHashesText();
 
     /**
      * Tag.
