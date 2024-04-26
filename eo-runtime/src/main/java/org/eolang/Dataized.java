@@ -25,6 +25,7 @@
 package org.eolang;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -140,7 +141,11 @@ public final class Dataized {
             }
         } else {
             throw new IllegalArgumentException(
-                String.format("Unknown type: %s", type.getCanonicalName())
+                String.format(
+                    "Unknown type: %s, bytes are: %s",
+                    type.getCanonicalName(),
+                    Arrays.toString(weak)
+                )
             );
         }
         return type.cast(strong);

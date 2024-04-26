@@ -2,6 +2,7 @@
 # The aim of this test is to check that entire pipeline with
 # scoped objects works as expected without creating  any warnings or errors.
 # Pay attention to to-java.xsl transformations.
+---
 xsls:
   - /org/eolang/parser/errors/not-empty-atoms.xsl
   - /org/eolang/parser/critical-errors/duplicate-names.xsl
@@ -58,7 +59,7 @@ eo: |
   +tests
   +package org.eolang
   +version 0.0.0
-  
+
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > method
     * 1 (* "one" "two") 3 > res

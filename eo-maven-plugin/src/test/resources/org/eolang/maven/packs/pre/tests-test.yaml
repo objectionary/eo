@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/wrap-method-calls.xsl
   - /org/eolang/parser/optimize/globals-to-abstracts.xsl
@@ -17,7 +18,7 @@ tests:
   - //java[contains(text(), '@Test')]
 eo: |
   +tests
-  
+
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > works
     1.eq 1 > @

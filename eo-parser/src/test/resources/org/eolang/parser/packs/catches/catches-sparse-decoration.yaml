@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/warnings/sparse-decoration.xsl
 tests:
@@ -21,10 +22,10 @@ eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > decorates-application
     if > @
-      TRUE
+      true
       5
       five
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [free] > decorates-with-free-args
     five > @
@@ -50,4 +51,4 @@ eo: |
 
   # This is the default 64+ symbols comment in front of abstract object.
   [args] > nop
-    TRUE > @
+    true > @

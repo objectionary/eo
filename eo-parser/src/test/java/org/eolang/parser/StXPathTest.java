@@ -41,7 +41,7 @@ final class StXPathTest {
     @Test
     void modifiesSimpleNode() {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(
                 new StEndless(
                     new StXPath(

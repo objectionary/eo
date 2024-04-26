@@ -29,6 +29,7 @@ package EOorg.EOeolang;
 
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -62,7 +63,8 @@ final class EOerrorTest {
                     "message",
                     new Data.ToPhi("intentional error")
                 )
-            ).take()
+            ).take(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -77,6 +79,7 @@ final class EOerrorTest {
         }
         assert error != null;
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             error.toString(),
             Matchers.containsString(
                 new VerboseBytesAsStringTest.ArgumentsUtils().toString(cnst)

@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
@@ -45,6 +46,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturns() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new EOseq(Phi.Φ),
@@ -65,6 +67,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturnsObject() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
                     new EOseq(Phi.Φ),

@@ -194,7 +194,8 @@ final class VerifyMojoTest {
                     "    TRUE > x",
                     "    FALSE > x"
                 ).with("trackOptimizationSteps", true)
-                .execute(new FakeMaven.Verify())
+                .execute(new FakeMaven.Verify()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 

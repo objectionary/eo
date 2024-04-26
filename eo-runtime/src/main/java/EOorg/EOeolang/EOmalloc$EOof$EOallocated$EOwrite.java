@@ -25,10 +25,14 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -36,33 +40,30 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * IF.
- *
+ * Malloc.of.allocated.write object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "if")
-public final class EOif extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.of.allocated.write")
+final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOif(final Phi sigma) {
+    EOmalloc$EOof$EOallocated$EOwrite(final Phi sigma) {
         super(sigma);
-        this.add("condition", new AtVoid("condition"));
-        this.add("left", new AtVoid("left"));
-        this.add("right", new AtVoid("right"));
+        this.add("offset", new AtVoid("offset"));
+        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() {
-        final Phi out;
-        if (new Param(this, "condition").strong(Boolean.class)) {
-            out = this.take("left");
-        } else {
-            out = this.take("right");
-        }
-        return out;
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.write(
+            Math.toIntExact(new Param(this.take(Attr.RHO), "id").strong(Long.class)),
+            Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+            new Dataized(this.take("data")).take()
+        );
+        return new Data.ToPhi(true);
     }
 }

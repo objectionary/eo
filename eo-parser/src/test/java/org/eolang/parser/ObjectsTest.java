@@ -43,7 +43,7 @@ final class ObjectsTest {
         objs.data("xxx");
         objs.leave();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -65,7 +65,7 @@ final class ObjectsTest {
         objs.leave();
         objs.leave();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o",
@@ -84,7 +84,7 @@ final class ObjectsTest {
         objs.enter();
         objs.prop("z", "a");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             new XMLDocument(new Xembler(objs).domQuietly()),
             XhtmlMatchers.hasXPaths(
                 "/o/o",

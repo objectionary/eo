@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,7 +48,8 @@ final class DcsEachWithoutTransitiveTest {
             () -> new DcsEachWithoutTransitive(
                 new DcsFake(),
                 dep -> new DcsFake(100)
-            ).iterator().next()
+            ).iterator().next(),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -55,7 +57,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependenciesThatHaveTeStDependenciesAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.randDep("test"))
@@ -68,7 +70,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasTheSameDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new DcsEachWithoutTransitive(
                 original,
                 DcsFake::new
@@ -81,7 +83,7 @@ final class DcsEachWithoutTransitiveTest {
     void keepsDependencyThatHasRuntimeDependencyAsTransitive() {
         final DcsFake original = new DcsFake();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new DcsEachWithoutTransitive(
                 original,
                 dep -> Collections.singleton(DcsFake.runtimeDep())

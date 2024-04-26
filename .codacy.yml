@@ -1,9 +1,8 @@
 # @todo #1326:30min Enable only necessary tests. Several checks
 #  are not available for the project. For example a lot of
 #  package name contains capital letter and such names are conventional.
+---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$EOencaged$EOencage.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/Cages.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$EOencaged$EOφ.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOcage$φ.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/CagesTest.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmalloc$EOof$EOallocated$EOread.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmalloc$EOof$EOallocated$EOwrite.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOmallocTest.java"

@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -46,6 +47,7 @@ public final class EOintTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             left.hashCode(),
             Matchers.not(Matchers.equalTo(right.hashCode()))
         );
@@ -55,6 +57,7 @@ public final class EOintTest {
     void hasHashEvenWithoutData() {
         final Phi phi = new EOint(Phi.Φ);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -65,6 +68,7 @@ public final class EOintTest {
         final Phi raw = new EOint(Phi.Φ);
         final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             raw.hashCode(),
             Matchers.not(initialized.hashCode())
         );

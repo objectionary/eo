@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.cactoos.experimental.Threads;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +47,7 @@ final class ChRemoteTest {
     void getsCommitHashTag() {
         final String hash = new ChRemote("0.26.0").value();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             hash,
             Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
         );
@@ -56,7 +57,7 @@ final class ChRemoteTest {
     void getsCommitHashOldTag() {
         final String hash = new ChRemote("0.23.19").value();
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             hash,
             Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
         );
@@ -66,7 +67,8 @@ final class ChRemoteTest {
     void throwsCommitHashException() {
         Assertions.assertThrows(
             ChText.NotFound.class,
-            () -> new ChRemote("nonsense").value()
+            () -> new ChRemote("nonsense").value(),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 

@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/expand-aliases.xsl
 tests:
@@ -7,7 +8,7 @@ tests:
 eo: |
   +alias org.eolang.txt.scanner
   +alias stdin org.eolang.io.stdin
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [args] > main
     and

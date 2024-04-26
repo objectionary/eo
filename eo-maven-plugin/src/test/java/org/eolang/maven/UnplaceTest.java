@@ -47,7 +47,7 @@ final class UnplaceTest {
         final String name
     ) {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new Unplace(Paths.get(base)).make(
                 Paths.get(source)
             ),

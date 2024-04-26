@@ -38,7 +38,7 @@
 #   [g]
 #     seq > @
 #       *
-#         g.forward TRUE
+#         g.forward true
 #         stdout "Will never be printed"
 # ```
 #
@@ -54,18 +54,20 @@
 # ```
 # Go to.
 [] > go
-  (malloc 1).id.as-bytes > id
+  malloc.of > id!
+    8
+    m.put m.id > [m]
 
   # To.
   [body] > to
     try > @
       body token
       [e]
-        if > @
+        if. > @
           &.^.id.eq e.id
           e.value
           error e
-      TRUE
+      true
 
     # Token.
     [] > token

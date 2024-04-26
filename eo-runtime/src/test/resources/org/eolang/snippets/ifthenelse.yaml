@@ -1,3 +1,4 @@
+---
 out:
   - ".*greater.*"
 file: org/eolang/snippets/ifthenelse.eo
@@ -10,10 +11,9 @@ eo: |
   [args] > ifthenelse
     # This is the default 64+ symbols comment in front of named abstract object.
     [n] > f
-      if > @
+      if. > @
         n.lt 0
         "smaller"
         "greater"
     stdout > @
       f 17
-

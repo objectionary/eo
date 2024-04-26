@@ -1,3 +1,4 @@
+---
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [a] > main
@@ -11,7 +12,7 @@ eo: |
           main 5 > five
           a > b
           d > e
-phi: |
+phi: |-
   {
     ⟦
       main ↦ ⟦

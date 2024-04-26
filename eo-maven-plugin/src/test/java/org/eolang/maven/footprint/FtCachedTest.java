@@ -26,6 +26,7 @@ package org.eolang.maven.footprint;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -37,11 +38,6 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 1.0
  */
 final class FtCachedTest {
-
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
 
     /**
      * Default content.
@@ -69,12 +65,12 @@ final class FtCachedTest {
         final String program = "org.eolang.txt.format";
         cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            FtCachedTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             cached.load(program, FtCachedTest.EXTENSION),
             Matchers.equalTo(FtCachedTest.CONTENT.value())
         );
         MatcherAssert.assertThat(
-            FtCachedTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             temp.resolve(FtCachedTest.CACHE).toFile(),
             FileMatchers.anExistingDirectory()
         );
@@ -86,12 +82,12 @@ final class FtCachedTest {
         final String program = "org.eolang.txt.regex";
         cached.save(program, FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            FtCachedTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             cached.load(program, FtCachedTest.EXTENSION),
             Matchers.equalTo(FtCachedTest.CONTENT.value())
         );
         MatcherAssert.assertThat(
-            FtCachedTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             temp.resolve(FtCachedTest.CACHE).toFile(),
             Matchers.not(FileMatchers.anExistingFileOrDirectory())
         );
@@ -102,7 +98,7 @@ final class FtCachedTest {
         final Footprint footprint = FtCachedTest.footprint("0.22.1", temp);
         footprint.save("prog", FtCachedTest.EXTENSION, FtCachedTest.CONTENT);
         MatcherAssert.assertThat(
-            FtCachedTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             footprint.list(FtCachedTest.EXTENSION),
             Matchers.hasItem(temp.resolve(FtCachedTest.TARGET).resolve("prog.xmir"))
         );
