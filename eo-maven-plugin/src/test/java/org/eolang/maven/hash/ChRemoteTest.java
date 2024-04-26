@@ -84,9 +84,8 @@ final class ChRemoteTest {
                     Stream.generate(
                         () -> new ChRemote("0.23.19")
                     ).limit(threads).collect(Collectors.toList())
-                ).spliterator(), false)
-                .filter(str -> !sample.equals(str))
-                .collect(Collectors.toList()),
+                ).spliterator(), false
+            ).filter(str -> !sample.equals(str)).collect(Collectors.toList()),
             Matchers.empty()
         );
     }
