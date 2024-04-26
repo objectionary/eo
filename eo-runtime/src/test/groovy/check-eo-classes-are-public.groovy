@@ -39,7 +39,7 @@ Collection<JavaClass> violations = stream_of(sources)
     it.toFile().getName().startsWith("EO")
   })
   .map(path -> new ClassParser(path.toString()).parse())
-  .filter (clazz -> IsEoClass(clazz))
+  .filter (clazz -> is_eo_class(clazz))
   .filter (clazz -> {
     return !clazz.isPublic()
   })
@@ -47,10 +47,10 @@ Collection<JavaClass> violations = stream_of(sources)
   .collect(Collectors.toList())
 if (!violations.isEmpty()) {
   throw new IllegalStateException(
-  String.format(
-    "Not all EO classes are public: %s\n",
-    violations
-  )
+    String.format(
+      "Not all EO classes are public: %s\n",
+      violations
+    )
   )
 }
 
@@ -65,7 +65,7 @@ static Stream<Path> stream_of(Path[] paths) {
   return accum
 }
 
-static boolean IsEoClass(JavaClass clazz) {
+static boolean is_eo_class(JavaClass clazz) {
   return clazz.className.startsWith("EO") &&
     ("org.eolang.Phi" in clazz.getInterfaceNames() ||
       "org.eolang.PhDefault" == clazz.getSuperclassName()) &&
