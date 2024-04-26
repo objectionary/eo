@@ -1,8 +1,11 @@
 [default]
 extend-ignore-identifiers-re = [
-  "[D,d]atas*", # valid variable names
   "Olt*",       # false positive
   "Onot",       # false positive
+  "BA",         # false positive
+  "thi",        # false positive
+  "lowcase",    # false positive
+  "[D,d]atas*", # valid variable names
   "thr",        # valid variable name
   "cutted",     # valid variable name
   "splitted",   # valid variable name
