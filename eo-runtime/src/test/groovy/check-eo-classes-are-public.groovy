@@ -31,45 +31,47 @@ import java.util.stream.Stream
 
 println 'Verify that all java classes named with EO are public'
 Path[] sources = [
-    basedir.toPath().resolve("target").resolve("classes"),
-    basedir.toPath().resolve("target").resolve("test-classes"),
+  basedir.toPath().resolve("target").resolve("classes"),
+  basedir.toPath().resolve("target").resolve("test-classes"),
 ]
 Collection<JavaClass> violations = stream_of(sources)
   .filter(it -> {
-    println(it.toString())
-    it.toString().endsWith(".class") &&
-      it.toFile().getName().startsWith("EO")
+  return it.toString().endsWith(".class") &&
+    it.toFile().getName().startsWith("EO")
   })
   .map(path -> new ClassParser(path.toString()).parse())
-  .filter (clazz -> should_be_public(clazz))
-  .filter (clazz -> !clazz.isPublic())
+  .filter (clazz -> IsEoClass(clazz))
+  .filter (clazz -> {
+    return !clazz.isPublic()
+  })
   .collect(Collectors.toList())
 if (!violations.isEmpty()) {
   throw new IllegalStateException(
-    String.format(
-      "Not all EO classes are public: %s\n",
-      violations
-    )
+  String.format(
+    "Not all EO classes are public: %s\n",
+    violations
+  )
   )
 }
 
 static Stream<Path> stream_of(Path[] paths) {
-    println("start")
-    Stream<Path> accum = Stream.empty()
+  println("start")
+  Stream<Path> accum = Stream.empty()
+  println("mid")
+  for (path in paths) {
+    accum = Stream.concat(
+      accum,
+      Files.walk(path)
+    )
     println("mid")
-    for (path in paths) {
-        accum = Stream.concat(
-            accum,
-            Files.walk(path)
-        )
-        println("mid")
-    }
-    println("finish")
-    return accum
+  }
+  println("finish")
+  return accum
 }
 
-static boolean should_be_public(JavaClass clazz) {
-    return clazz.className.startsWith("EO") &&
-      !clazz.isNested() &&
-      !clazz.className.endsWith("Test")
+static boolean IsEoClass(JavaClass clazz) {
+  return clazz.className.startsWith("EO") &&
+    ("org.eolang.Phi" in clazz.getInterfaceNames() ||
+      "org.eolang.PhDefault" == clazz.getSuperclassName()) &&
+    !clazz.isNested()
 }
