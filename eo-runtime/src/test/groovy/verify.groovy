@@ -33,7 +33,8 @@ Path folder = basedir.toPath().resolve("src").resolve("test").resolve("groovy")
 tests = [
   'check-folders-numbering.groovy',
   'check-all-java-classes-compiled.groovy',
-  'check-runtime-deps.groovy'
+  'check-runtime-deps.groovy',
+  'check-eo-classes-are-public.groovy'
 ]
 for (it in tests) {
   def res = evaluate folder.resolve(it).toFile()
