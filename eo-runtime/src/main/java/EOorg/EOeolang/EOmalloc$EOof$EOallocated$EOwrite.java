@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.of.allocated.write")
-final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
+public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
