@@ -1,11 +1,11 @@
 [default]
 extend-ignore-identifiers-re = [
-  "[D,d]atas*",
-  "Olt*",
-  "Onot",
-  "thr",
-  "cutted",
-  "splitted",
-  "scrpt",
-  "fle"
+  "[D,d]atas*", # valid variable names
+  "Olt*",       # false positive
+  "Onot",       # false positive
+  "thr",        # valid variable name
+  "cutted",     # valid variable name
+  "splitted",   # valid variable name
+  "scrpt",      # valid variable name
+  "fle"         # valid variable name
 ]
