@@ -29,12 +29,17 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrFast;
+import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import org.eolang.parser.StEoLogged;
 
 /**
  * Optimisation train of XLS`s.
  * @since 0.28.12
+ * @todo #3115:30min Return constant-folding.xsl when it's ready. This optimization was removed from
+ *  the train because it's not really ready and works only with `bool` object which was removed. We
+ *  need to make this optimization great again and add to the train.
  */
 public final class OptTrain implements Optimization {
 
@@ -47,19 +52,21 @@ public final class OptTrain implements Optimization {
      * the hood in {@link TrClasspath}, is not thread-safe.
      */
     static final Train<Shift> DEFAULT_TRAIN = new TrFast(
-        new TrClasspath<>(
-            new TrDefault<>(),
-            "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
-            "/org/eolang/parser/optimize/remove-refs.xsl",
-            "/org/eolang/parser/optimize/abstracts-float-up.xsl",
-            "/org/eolang/parser/optimize/remove-levels.xsl",
-            "/org/eolang/parser/add-refs.xsl",
-            "/org/eolang/parser/optimize/fix-missed-names.xsl",
-            "/org/eolang/parser/add-refs.xsl",
-            "/org/eolang/parser/errors/broken-refs.xsl",
-            "/org/eolang/parser/optimize/constant-folding.xsl",
-            "/org/eolang/parser/set-locators.xsl"
-        ).back(),
+        new TrLambda(
+            new TrClasspath<>(
+                new TrDefault<>(),
+                "/org/eolang/parser/optimize/globals-to-abstracts.xsl",
+                "/org/eolang/parser/optimize/remove-refs.xsl",
+                "/org/eolang/parser/optimize/abstracts-float-up.xsl",
+                "/org/eolang/parser/optimize/remove-levels.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/optimize/fix-missed-names.xsl",
+                "/org/eolang/parser/add-refs.xsl",
+                "/org/eolang/parser/errors/broken-refs.xsl",
+                "/org/eolang/parser/set-locators.xsl"
+            ).back(),
+            StEoLogged::new
+        ),
         TrFast.class,
         500L
     );

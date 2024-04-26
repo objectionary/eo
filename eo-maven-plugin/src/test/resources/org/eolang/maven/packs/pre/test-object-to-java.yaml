@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/maven/pre/classes.xsl
@@ -18,5 +19,5 @@ eo: |
   # Test.
   [] > compares-two-bools
   eq. > @
-    TRUE
-    TRUE
+    true
+    true

@@ -2,7 +2,7 @@
 name: reports-check
 on:
   issues:
-    types: [opened]
+    types: [ opened ]
 permissions:
   issues: write
   contents: read

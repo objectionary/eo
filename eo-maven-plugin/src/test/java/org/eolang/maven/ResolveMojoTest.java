@@ -62,12 +62,12 @@ final class ResolveMojoTest {
             .resolve(ResolveMojo.DIR)
             .resolve("org.eolang/eo-runtime/-/0.7.0");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             path.toFile(),
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             path.resolve("eo-runtime-0.7.0.jar").toFile(),
             FileMatchers.anExistingFile()
         );
@@ -88,12 +88,12 @@ final class ResolveMojoTest {
             .resolve(ResolveMojo.DIR)
             .resolve("org.eolang/eo-runtime/-/");
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             path.toFile(),
             FileMatchers.anExistingDirectory()
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             path,
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -104,7 +104,7 @@ final class ResolveMojoTest {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -117,7 +117,7 @@ final class ResolveMojoTest {
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
@@ -130,7 +130,7 @@ final class ResolveMojoTest {
             .withProgram("+rt jvm org.eolang:eo-runtime:0.22.1", "", "[] > main")
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.22.1.jar")
         );
@@ -145,7 +145,7 @@ final class ResolveMojoTest {
             .with("withRuntimeDependency", false)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.jar"))
         );
@@ -164,7 +164,7 @@ final class ResolveMojoTest {
             .with("project", project)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-0.7.0.jar")
         );
@@ -181,7 +181,7 @@ final class ResolveMojoTest {
             )
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );
@@ -209,7 +209,8 @@ final class ResolveMojoTest {
                         dependency
                     )
                 )
-                .execute(new FakeMaven.Resolve())
+                .execute(new FakeMaven.Resolve()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -239,7 +240,7 @@ final class ResolveMojoTest {
             () -> maven.execute(new FakeMaven.Resolve())
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             excpt.getCause().getCause().getMessage(),
             Matchers.containsString(
                 "1 conflicting dependencies are found: {org.eolang:eo-runtime:jar:=[0.22.0, 0.22.1]}"
@@ -266,7 +267,7 @@ final class ResolveMojoTest {
         maven.with("ignoreVersionConflicts", true)
             .execute(new FakeMaven.Resolve());
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             maven.targetPath(),
             new ContainsFiles("**/eo-runtime-*.jar")
         );

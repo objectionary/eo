@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhMethod;
@@ -56,6 +57,7 @@ final class EOintEOminusTest {
             0, right
         );
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(sub).take(Long.class),
             Matchers.equalTo(29L)
         );

@@ -1,0 +1,12 @@
+---
+
+extends: default
+
+rules:
+  line-length: disable
+  brackets:
+    min-spaces-inside: 1
+    max-spaces-inside: 2
+  truthy:
+    level: warning
+    allowed-values: [ 'on', 'true', 'false', 'yes', 'no' ]

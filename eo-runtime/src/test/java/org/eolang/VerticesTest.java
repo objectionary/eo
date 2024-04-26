@@ -45,6 +45,7 @@ final class VerticesTest {
     @Test
     void makesNext() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Vertices().next(),
             Matchers.greaterThan(0)
         );
@@ -67,6 +68,7 @@ final class VerticesTest {
         );
         new Threads<>(threads, tasks).forEach(hashes::add);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             hashes.size(),
             Matchers.equalTo(threads)
         );

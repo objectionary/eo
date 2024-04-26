@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.number.SumOf;
+import org.eolang.AtCompositeTest;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -40,7 +41,7 @@ import org.eolang.ExAbstract;
 import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
-import org.eolang.PhTracedLocator;
+import org.eolang.PhTraced;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -62,6 +63,7 @@ final class EOcageTest {
     void encagesViaApplication() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -72,6 +74,7 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         EOcageTest.encageTo(cage, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -86,6 +89,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -97,6 +101,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -108,6 +113,7 @@ final class EOcageTest {
         final Phi second = first.copy();
         EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(first).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -117,11 +123,13 @@ final class EOcageTest {
     void writesAndRewritesPrimitive() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
         EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
         );
@@ -132,7 +140,8 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world"))
+            () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world")),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -147,7 +156,8 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(five);
         Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> EOcageTest.encageTo(cage, ten)
+            () -> EOcageTest.encageTo(cage, ten),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -158,7 +168,8 @@ final class EOcageTest {
             () -> EOcageTest.encageTo(
                 EOcageTest.encaged(dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
-            )
+            ),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -200,13 +211,13 @@ final class EOcageTest {
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
+                PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, String.valueOf(MAX_DEPTH)
             );
         }
 
         @AfterEach
         void clearDepth() {
-            System.clearProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
+            System.clearProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME);
         }
 
         @Test
@@ -218,6 +229,7 @@ final class EOcageTest {
             );
             final int threads = 500;
             MatcherAssert.assertThat(
+                AtCompositeTest.TO_ADD_MESSAGE,
                 new SumOf(
                     new Threads<>(
                         threads,
@@ -244,7 +256,7 @@ final class EOcageTest {
         @Test
         void rewritesItselfToItselfViaDummy() {
             System.setProperty(
-                PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
+                PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
             );
             final Phi cage = EOcageTest.encaged(
                 new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
@@ -282,8 +294,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -303,8 +315,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );
@@ -322,8 +334,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
-                    PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
-                    System.getProperty(PhTracedLocator.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
+                    PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME,
+                    System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME),
                     ExAbstract.class
                 )
             );

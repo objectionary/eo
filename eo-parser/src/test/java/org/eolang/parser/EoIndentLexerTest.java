@@ -34,11 +34,17 @@ import org.junit.jupiter.api.Test;
  *
  * @since 1.0
  */
-final class EoIndentLexerTest {
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
+public final class EoIndentLexerTest {
     /**
      * Empty message for JUnit Assertions.
+     *
+     * @todo #2297:60m Replace all appearances of {@link EoIndentLexerTest#TO_ADD_MESSAGE} field in
+     *  eo-parser with meaningful assert messages. Don't forget to remove
+     *  {@link EoIndentLexerTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  no longer need.
      */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
+    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void emitsTab() throws IOException {
@@ -47,7 +53,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -61,7 +67,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.getGrammarFileName(),
             Matchers.is(
                 "Eo.g4"
@@ -76,7 +82,7 @@ final class EoIndentLexerTest {
         );
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.TAB
@@ -93,7 +99,7 @@ final class EoIndentLexerTest {
         lexer.nextToken();
         lexer.nextToken();
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.UNTAB
@@ -107,7 +113,7 @@ final class EoIndentLexerTest {
             new TextOf("")
         );
         MatcherAssert.assertThat(
-            EoIndentLexerTest.EMPTY_MSG,
+            EoIndentLexerTest.TO_ADD_MESSAGE,
             lexer.nextToken().getType(),
             Matchers.is(
                 EoParser.EOF

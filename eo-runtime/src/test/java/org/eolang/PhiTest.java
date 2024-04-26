@@ -37,6 +37,7 @@ final class PhiTest {
     @Test
     void takesPackage() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhCopy(
                     new PhMethod(
@@ -67,6 +68,7 @@ final class PhiTest {
     @Test
     void takesStandardPackage() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhCopy(
                     new PhMethod(
@@ -85,6 +87,7 @@ final class PhiTest {
     @Test
     void takesDirectly() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 Phi.Φ.take("org").take("eolang").take("nan").take("gt")
             ).take(Boolean.class),
@@ -95,6 +98,7 @@ final class PhiTest {
     @Test
     void getsLocation() {
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new PhLocated(
                 Phi.Φ,
                 123,

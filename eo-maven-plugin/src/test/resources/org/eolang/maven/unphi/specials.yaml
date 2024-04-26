@@ -1,3 +1,4 @@
+---
 tests:
   - /program/objects/o[@name='main']
   - /program/objects/o[@name='main']/o[@base='$']/following-sibling::o[@base='.^' and @method]/following-sibling::o[@base='.x' and @method and @name='x']

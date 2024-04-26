@@ -34,7 +34,7 @@ import org.eolang.parser.xmir.Xmir;
  *
  * @since 0.30
  */
-final class StEoLogged implements Shift {
+public final class StEoLogged implements Shift {
 
     /**
      * Origin shift.
@@ -50,7 +50,7 @@ final class StEoLogged implements Shift {
      * Ctor.
      * @param shift Origin shift
      */
-    StEoLogged(final Shift shift) {
+    public StEoLogged(final Shift shift) {
         this(shift, message -> Logger.error(StEoLogged.class, message));
     }
 

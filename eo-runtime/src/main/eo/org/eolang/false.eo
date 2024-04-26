@@ -26,38 +26,20 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Boolean.
-[as-bytes] > bool
-  as-bytes > @
+# False.
+[] > false
+  00- > @
+  true > not
 
-  # Equal to another object?
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+  # Control structure that allows for conditional execution of code.
+  # Since $ is FALSE - behaves as `right` object.
+  [left right] > if
+    right > @
 
-  # NOT.
-  [] > not
-    eq. > @
-      FALSE
-      ^
-
-  # AND.
+  # And.
   [x] > and
-    if > @
-      ^
-      if
-        x
-        TRUE
-        FALSE
-      FALSE
+    ^ > @
 
-  # OR.
+  # Or.
   [x] > or
-    if > @
-      ^
-      TRUE
-      if
-        x
-        TRUE
-        FALSE
+    01-.eq x > @

@@ -28,39 +28,42 @@
 
 package EOorg.EOeolang;
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.φ object.
+ * Malloc.of.allocated.write object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.@")
-public final class EOmalloc$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.of.allocated.write")
+final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    EOmalloc$EOφ(final Phi sigma) {
+    EOmalloc$EOof$EOallocated$EOwrite(final Phi sigma) {
         super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("data", new AtVoid("data"));
     }
 
     @Override
-    public Phi lambda() {
-        final Phi size = this.take(Attr.RHO).take("size");
-        final int identifier = Heaps.INSTANCE.malloc(
-            this, new Dataized(size).take(Long.class).intValue()
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.write(
+            Math.toIntExact(new Param(this.take(Attr.RHO), "id").strong(Long.class)),
+            Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+            new Dataized(this.take("data")).take()
         );
-        final Phi pointer = this.take(Attr.RHO).take("memory-block-pointer").copy();
-        pointer.put("id", new Data.ToPhi((long) identifier));
-        return pointer;
+        return new Data.ToPhi(true);
     }
 }

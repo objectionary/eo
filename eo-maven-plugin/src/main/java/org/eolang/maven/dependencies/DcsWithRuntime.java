@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -142,15 +143,17 @@ public final class DcsWithRuntime implements Iterable<Dependency> {
      */
     private static Unchecked<Dependency> dependency(final String version) {
         return new Unchecked<>(
-            new Sticky<>(
-                () -> {
-                    final Dependency dependency = new Dependency();
-                    dependency.setGroupId("org.eolang");
-                    dependency.setArtifactId("eo-runtime");
-                    dependency.setVersion(version);
-                    dependency.setClassifier("");
-                    return dependency;
-                }
+            new Synced<>(
+                new Sticky<>(
+                    () -> {
+                        final Dependency dependency = new Dependency();
+                        dependency.setGroupId("org.eolang");
+                        dependency.setArtifactId("eo-runtime");
+                        dependency.setVersion(version);
+                        dependency.setClassifier("");
+                        return dependency;
+                    }
+                )
             )
         );
     }

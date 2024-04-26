@@ -45,10 +45,11 @@ final class SafeMojoTest {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")
-                .execute(new FakeMaven.Parse())
+                .execute(new FakeMaven.Parse()),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             String.join("\n", out.captured()),
             Matchers.containsString("Failed to parse")
         );

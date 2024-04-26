@@ -31,7 +31,7 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Param;
 import org.eolang.PhDefault;
-import org.eolang.PhTracedLocator;
+import org.eolang.PhTraced;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
@@ -57,7 +57,7 @@ public final class EOcage$EOencaged$EOφ extends PhDefault implements Atom {
         final int locator = Math.toIntExact(
             new Param(this.take(Attr.RHO), "locator").strong(Long.class)
         );
-        return new PhTracedLocator(
+        return new PhTraced(
             Cages.INSTANCE.get(locator),
             locator
         );

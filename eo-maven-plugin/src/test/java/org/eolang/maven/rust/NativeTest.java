@@ -26,6 +26,7 @@ package org.eolang.maven.rust;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,7 +46,7 @@ final class NativeTest {
         final Native java = new Native("name", target.toString());
         java.save(new FtDefault(temp.resolve(target)));
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 temp.resolve(target.resolve("name.java"))
             ).asString(),
