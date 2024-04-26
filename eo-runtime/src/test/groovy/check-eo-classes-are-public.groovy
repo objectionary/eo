@@ -66,7 +66,7 @@ static Stream<Path> stream_of(Path[] paths) {
 }
 
 static boolean is_eo_class(JavaClass clazz) {
-  return clazz.className.startsWith("EO") &&
+  return clazz.getClassName().startsWith("EO") &&
     ("org.eolang.Phi" in clazz.getInterfaceNames() ||
       "org.eolang.PhDefault" == clazz.getSuperclassName()) &&
     !clazz.isNested()
