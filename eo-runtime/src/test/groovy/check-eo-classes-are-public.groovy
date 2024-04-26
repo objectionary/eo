@@ -29,7 +29,6 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-println 'Verify that all java classes named with EO are public'
 Path[] sources = [
   basedir.toPath().resolve("target").resolve("classes"),
   basedir.toPath().resolve("target").resolve("test-classes"),
@@ -44,6 +43,7 @@ Collection<JavaClass> violations = stream_of(sources)
   .filter (clazz -> {
     return !clazz.isPublic()
   })
+  .map (clazz -> clazz.getClassName())
   .collect(Collectors.toList())
 if (!violations.isEmpty()) {
   throw new IllegalStateException(
@@ -55,17 +55,13 @@ if (!violations.isEmpty()) {
 }
 
 static Stream<Path> stream_of(Path[] paths) {
-  println("start")
   Stream<Path> accum = Stream.empty()
-  println("mid")
   for (path in paths) {
     accum = Stream.concat(
       accum,
       Files.walk(path)
     )
-    println("mid")
   }
-  println("finish")
   return accum
 }
 
