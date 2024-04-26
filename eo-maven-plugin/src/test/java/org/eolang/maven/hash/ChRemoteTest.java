@@ -25,17 +25,15 @@
 package org.eolang.maven.hash;
 
 import com.yegor256.WeAreOnline;
-import org.cactoos.Scalar;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Test case for {@link ChRemote}.
@@ -77,12 +75,14 @@ final class ChRemoteTest {
         final int threads = 200;
         final String sample = new ChRemote("0.23.19").value();
         MatcherAssert.assertThat(
-            StreamSupport.stream(new Threads<>(
-                threads,
-                Stream.generate(
-                    () -> new ChRemote("0.23.19")
-                ).limit(threads).collect(Collectors.toList())
-            ).spliterator(), false)
+            "You can use this class concurrently",
+            StreamSupport.stream(
+                new Threads<>(
+                    threads,
+                    Stream.generate(
+                        () -> new ChRemote("0.23.19")
+                    ).limit(threads).collect(Collectors.toList())
+                ).spliterator(), false)
                 .filter(str -> !sample.equals(str))
                 .collect(Collectors.toList()),
             Matchers.empty()
