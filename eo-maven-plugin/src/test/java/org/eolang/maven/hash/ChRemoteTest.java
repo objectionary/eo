@@ -25,6 +25,10 @@
 package org.eolang.maven.hash;
 
 import com.yegor256.WeAreOnline;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import org.cactoos.experimental.Threads;
 import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -65,6 +69,24 @@ final class ChRemoteTest {
             ChText.NotFound.class,
             () -> new ChRemote("nonsense").value(),
             BinarizeParseTest.TO_ADD_MESSAGE
+        );
+    }
+
+    @Test
+    void isThreadSafe() {
+        final int threads = 200;
+        final String sample = new ChRemote("0.23.19").value();
+        MatcherAssert.assertThat(
+            "You can use this class concurrently",
+            StreamSupport.stream(
+                new Threads<>(
+                    threads,
+                    Stream.generate(
+                        () -> new ChRemote("0.23.19")
+                    ).limit(threads).collect(Collectors.toList())
+                ).spliterator(), false
+            ).filter(str -> !sample.equals(str)).collect(Collectors.toList()),
+            Matchers.empty()
         );
     }
 }

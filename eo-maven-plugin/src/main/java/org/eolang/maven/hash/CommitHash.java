@@ -23,12 +23,15 @@
  */
 package org.eolang.maven.hash;
 
+import org.cactoos.Scalar;
+
 /**
  * Hash of tag.
  *
  * @since 0.28.11
  */
-public interface CommitHash {
+@FunctionalInterface
+public interface CommitHash extends Scalar<String> {
 
     /**
      * SHA Hash.
