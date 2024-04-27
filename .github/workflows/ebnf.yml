@@ -28,8 +28,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+          key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-20-maven-
       - run: |
           mkdir -p "$CONVERT_PATH"
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip
