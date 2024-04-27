@@ -66,7 +66,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
-final class SnippetCaseTest {
+final class SnippetTestCase {
     @ParameterizedTest
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
@@ -85,7 +85,7 @@ final class SnippetCaseTest {
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
-                SnippetCaseTest.copySources(f, "src/main/eo");
+                SnippetTestCase.copySources(f, "src/main/eo");
                 final Path runtime = Paths.get(System.getProperty("user.dir"))
                     .resolve("src/main/eo");
                 final Collection<Path> sources = Files.walk(runtime)
@@ -142,8 +142,8 @@ final class SnippetCaseTest {
     void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                SnippetCaseTest.copySources(f, "src/main");
-                SnippetCaseTest.copySources(f, "src/test/eo");
+                SnippetTestCase.copySources(f, "src/main");
+                SnippetTestCase.copySources(f, "src/test/eo");
                 f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
@@ -271,7 +271,7 @@ final class SnippetCaseTest {
      *  dependencies to rust-tests after phi->unphi (see:
      *  <a href="https://github.com/objectionary/eo/issues/3145">this</a> for details).
      *  When it's resolved we need to remove the filter and make sure the snippet test
-     *  {@link SnippetCaseTest#runsTestsAfterPhiAndUnphi(Path)} still works.
+     *  {@link SnippetTestCase#runsTestsAfterPhiAndUnphi(Path)} still works.
      */
     private static void copySources(final Farea farea, final String target) throws IOException {
         final Path runtime = Paths.get(System.getProperty("user.dir"))
