@@ -1,6 +1,6 @@
 ---
 name: markdown-lint
-on:
+'on':
   push:
     branches:
       - master
@@ -8,9 +8,6 @@ on:
     branches:
       - master
     paths-ignore: [ 'paper/**', 'sandbox/**' ]
-concurrency:
-  group: markdown-lint-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   markdown-lint:
     runs-on: ubuntu-22.04
