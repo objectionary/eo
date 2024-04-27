@@ -1,5 +1,6 @@
 ---
-name: markdown-lint
+
+name: typos
 'on':
   push:
     branches:
@@ -7,10 +8,9 @@ name: markdown-lint
   pull_request:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
-  markdown-lint:
+  typos:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: articulate/actions-markdownlint@v1
+      - uses: crate-ci/typos@master

@@ -8,23 +8,27 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+      - uses: actions/checkout@v4
       - uses: teatimeguest/setup-texlive-action@v3.2.1
         with:
           update-all-packages: true
           packages: scheme-basic geometry xcolor naive-ebnf microtype etoolbox
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 20
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+            ${{ runner.os }}-jdk-20-maven-
       - run: |
           # Clean the test classes to avoid caching issues and prepare testing environment
           # without running the tests
           mvn clean install -Pqulice -DskipTests -DskipITs -Dinvoker.skip=true
           # Find script
-          SCRIPT="${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh"
+          SCRIPT=${GITHUB_WORKSPACE}/src/test/scripts/test-repetition.sh
           # Check that script is exists
           if [ ! -f "${SCRIPT}" ]; then
               echo "Script ${SCRIPT} not found"
@@ -33,15 +37,15 @@ jobs:
           # Make script runnable
           chmod +x "${SCRIPT}"
           # Test eo-parser
-          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-parser
+          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-parser"
           # Test eo-maven-plugin
-          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-maven-plugin
+          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-maven-plugin"
           # Test eo-runtime
-          ${SCRIPT} --max 10 --folder ${GITHUB_WORKSPACE}/eo-runtime --compilation true
+          "${SCRIPT}" --max 10 --folder "${GITHUB_WORKSPACE}/eo-runtime" --compilation true
   report-fail:
     name: Create issue on failure
     needs: build
-    if: failure() && github.even.pull_request == null
+    if: failure() && github.event.pull_request == null
     runs-on: ubuntu-22.04
     steps:
       - uses: jayqi/failed-build-issue-action@v1

@@ -63,7 +63,7 @@ interface Objects extends Iterable<Directive> {
     Objects prop(String key, Object value);
 
     /**
-     * Empty propery.
+     * Empty property.
      * @param key Key.
      * @return Self.
      */

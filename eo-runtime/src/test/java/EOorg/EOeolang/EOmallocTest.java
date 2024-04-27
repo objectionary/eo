@@ -63,7 +63,7 @@ public final class EOmallocTest {
     }
 
     @Test
-    void freesMemoryIfErrorIsOccured() {
+    void freesMemoryIfErrorIsOccurred() {
         final ErrorDummy dummy = new ErrorDummy();
         final Phi phi = EOmallocTest.allocated(
             new Data.ToPhi(1L),

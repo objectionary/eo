@@ -95,7 +95,7 @@ final class PrintMojoTest {
     void printsInReversedNotation(final String pack, @TempDir final Path temp) throws Exception {
         final Map<String, Object> yaml = new Yaml().load(pack);
         MatcherAssert.assertThat(
-            "PrintMojo should print EO in reveresed notation, but it didn't",
+            "PrintMojo should print EO in reversed notation, but it didn't",
             PrintMojoTest.printed(yaml, temp, true).asString(),
             Matchers.equalTo((String) yaml.get("reversed"))
         );
