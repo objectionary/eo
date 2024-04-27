@@ -9,12 +9,8 @@ name: typos
     branches:
       - master
 jobs:
-  run:
-    name: Spell Check with Typos
-    runs-on: ubuntu-latest
+  typos:
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Actions Repository
-        uses: actions/checkout@v4
-
-      - name: Check spelling of all files
-        uses: crate-ci/typos@master
+      - uses: actions/checkout@v4
+      - uses: crate-ci/typos@master
