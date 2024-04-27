@@ -98,10 +98,8 @@ class PhLoggedTest {
     private static final class Dummy extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        private Dummy(final Phi sigma) {
-            super(sigma);
+        private Dummy() {
             this.add("x", new AtVoid("x"));
         }
     }

@@ -44,15 +44,6 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "string.length")
 public final class EOstring$EOlength extends PhDefault implements Atom {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOstring$EOlength(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

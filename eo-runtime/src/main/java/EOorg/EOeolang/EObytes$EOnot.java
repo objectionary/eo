@@ -44,15 +44,6 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.not")
 public final class EObytes$EOnot extends PhDefault implements Atom {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EObytes$EOnot(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

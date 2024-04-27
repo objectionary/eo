@@ -26,8 +26,7 @@ package org.eolang;
 
 /**
  * The attribute tries to copy object and set \rho to it.
- * If the name of the attribute is {@link Attr#RHO} or {@link Attr#SIGMA} - just object is
- * returned.
+ * If the name of the attribute is {@link Attr#RHO} - just object is returned.
  *
  * @since 0.36.0
  */
@@ -53,7 +52,7 @@ final class AtSetRho extends AtEnvelope {
             new AtGetOnly(
                 () -> {
                     Phi ret = attr.get();
-                    if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
+                    if (!name.equals(Attr.RHO)) {
                         final Phi copy = ret.copy();
                         if (copy.put(Attr.RHO, rho)) {
                             ret = copy;

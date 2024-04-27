@@ -155,11 +155,11 @@ eo: |
       .while
         [i]:0
           $
-          .&
+          .^
           .x
           .write > @
             $
-            .&
+            .^
             .x
             .as-int
             .plus:0
@@ -386,11 +386,11 @@ eo: |
                     .tuple
                     .empty:0
                     $
-                    .&
+                    .^
                     .m
                     .write:1
                       $
-                      .&
+                      .^
                       .m
                       .as-int
                       .minus:0
@@ -474,11 +474,11 @@ eo: |
               .tuple
               .empty:0
               $
-              .&
+              .^
               .x
               .write:1
                 $
-                .&
+                .^
                 .x
                 .as-int
                 .plus:0
@@ -492,7 +492,7 @@ eo: |
                     .bytes:0
                       00-00-00-00-00-00-00-01
             $
-            .&
+            .^
             .x
             .as-int:1
     .eq > @
@@ -554,11 +554,11 @@ eo: |
               .tuple
               .empty:0
               $
-              .&
+              .^
               .x
               .write:1
                 $
-                .&
+                .^
                 .x
                 .as-int
                 .plus:0
@@ -572,7 +572,7 @@ eo: |
                     .bytes:0
                       00-00-00-00-00-00-00-01
             $
-            .&
+            .^
             .x:1
     .eq > @
       Q
@@ -758,26 +758,26 @@ eo: |
                       .tuple
                       .empty:0
                       $
-                      .&
+                      .^
                       .acc
                       .write:1
                         $
-                        .&
+                        .^
                         .acc
                         .as-int
                         .plus:0
                           $
-                          .&
+                          .^
                           .arr
                           .at:0
                             $
                             .i:0
                     $
-                    .&
+                    .^
                     .iter
                     .write:1
                       $
-                      .&
+                      .^
                       .iter
                       .as-int
                       .plus:0
@@ -971,28 +971,28 @@ eo: |
                       .tuple
                       .empty:0
                       $
-                      .&
+                      .^
                       .acc
                       .write:1
                         $
-                        .&
+                        .^
                         .acc
                         .as-int
                         .plus:0
                           $
-                          .&
+                          .^
                           .arr
                           .at:0
                             $
-                            .&
+                            .^
                             .iter
                             .as-int:0
                     $
-                    .&
+                    .^
                     .iter
                     .write:1
                       $
-                      .&
+                      .^
                       .iter
                       .as-int
                       .plus:0
@@ -1129,12 +1129,12 @@ eo: |
           .empty:0
           []
             $
-            .&
+            .^
             .iter
             .as-int
             .lt
               $
-              .&
+              .^
               .max:0
             .if > @
               Q
@@ -1159,28 +1159,28 @@ eo: |
                       .tuple
                       .empty:0
                       $
-                      .&
+                      .^
                       .acc
                       .write:1
                         $
-                        .&
+                        .^
                         .acc
                         .as-int
                         .plus:0
                           $
-                          .&
+                          .^
                           .arr
                           .at:0
                             $
-                            .&
+                            .^
                             .iter
                             .as-int:0
                     $
-                    .&
+                    .^
                     .iter
                     .write:1
                       $
-                      .&
+                      .^
                       .iter
                       .as-int
                       .plus:0
@@ -1292,12 +1292,12 @@ eo: |
           .empty:0
           []
             $
-            .&
+            .^
             .iter
             .as-int
             .lt
               $
-              .&
+              .^
               .max:0
             .if > @
               Q
@@ -1322,28 +1322,28 @@ eo: |
                       .tuple
                       .empty:0
                       $
-                      .&
+                      .^
                       .acc
                       .write:1
                         $
-                        .&
+                        .^
                         .acc
                         .as-int
                         .plus:0
                           $
-                          .&
+                          .^
                           .arr
                           .at:0
                             $
-                            .&
+                            .^
                             .iter
                             .as-int:0
                     $
-                    .&
+                    .^
                     .iter
                     .write:1
                       $
-                      .&
+                      .^
                       .iter
                       .as-int
                       .plus:0

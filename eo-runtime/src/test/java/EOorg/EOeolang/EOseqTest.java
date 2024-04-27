@@ -49,11 +49,11 @@ public final class EOseqTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
-                    new EOseq(Phi.Φ),
+                    new EOseq(),
                     0,
                     new PhWith(
                         new PhWith(
-                            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
+                            new EOtuple$EOempty().take("with").copy(),
                             0, new Data.ToPhi(0L)
                         ).take("with").copy(),
                         0, new Data.ToPhi(1L)
@@ -70,11 +70,11 @@ public final class EOseqTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
-                    new EOseq(Phi.Φ),
+                    new EOseq(),
                     0,
                     new PhWith(
                         new PhWith(
-                            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
+                            new EOtuple$EOempty().take("with").copy(),
                             0, new Data.ToPhi(0L)
                         ).take("with").copy(),
                         0, new Data.ToPhi("Hello!")

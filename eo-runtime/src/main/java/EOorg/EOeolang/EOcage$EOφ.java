@@ -43,17 +43,9 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "cage.@")
 final class EOcage$EOφ extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    EOcage$EOφ(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() throws Exception {
-        final Phi encaged = this.take(Attr.SIGMA).take("encaged").copy();
+        final Phi encaged = this.take(Attr.RHO).take("encaged").copy();
         encaged.put(
             "locator",
             new Data.ToPhi(

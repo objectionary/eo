@@ -56,10 +56,10 @@ public final class EOtryTest {
                 new PhWith(
                     new PhWith(
                         new PhWith(
-                            new EOtry(Phi.Φ),
-                            0, new Broken(Phi.Φ)
+                            new EOtry(),
+                            0, new Broken()
                         ),
-                        1, new Catcher(Phi.Φ)
+                        1, new Catcher()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -74,10 +74,10 @@ public final class EOtryTest {
         final Phi body = new PhWith(
             new PhWith(
                 new PhWith(
-                    new EOtry(Phi.Φ),
-                    0, new Broken(Phi.Φ)
+                    new EOtry(),
+                    0, new Broken()
                 ),
-                1, new Catcher(Phi.Φ)
+                1, new Catcher()
             ),
             2,
             new Data.ToPhi(true)
@@ -94,10 +94,10 @@ public final class EOtryTest {
         final Phi body = new PhWith(
             new PhWith(
                 new PhWith(
-                    new EOtry(Phi.Φ),
-                    0, new Broken(Phi.Φ)
+                    new EOtry(),
+                    0, new Broken()
                 ),
-                1, new Catcher(Phi.Φ)
+                1, new Catcher()
             ),
             2,
             new Data.ToPhi(true)
@@ -117,10 +117,10 @@ public final class EOtryTest {
                 new PhWith(
                     new PhWith(
                         new PhWith(
-                            new EOtry(Phi.Φ),
-                            0, new Main(Phi.Φ)
+                            new EOtry(),
+                            0, new Main()
                         ),
-                        1, new Catcher(Phi.Φ)
+                        1, new Catcher()
                     ),
                     2,
                     new Data.ToPhi(true)
@@ -132,10 +132,10 @@ public final class EOtryTest {
 
     @Test
     public void doesNotDataizeBodyTwice() {
-        final Phi trier = new EOtry(Phi.Φ);
+        final Phi trier = new EOtry();
         final MainWithCounter main = new MainWithCounter();
         trier.put(0, main);
-        trier.put(1, new Catcher(Phi.Φ));
+        trier.put(1, new Catcher());
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
@@ -159,7 +159,7 @@ public final class EOtryTest {
          * Ctor.
          */
         MainWithCounter() {
-            super(Phi.Φ);
+            super();
             this.add(
                 Attr.PHI,
                 new AtComposite(
@@ -181,10 +181,8 @@ public final class EOtryTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        Main(final Phi sigma) {
-            super(sigma);
+        Main() {
             this.add(
                 "φ",
                 new AtComposite(
@@ -204,10 +202,8 @@ public final class EOtryTest {
     private static class Broken extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma.
          */
-        Broken(final Phi sigma) {
-            super(sigma);
+        Broken() {
             this.add(
                 "φ",
                 new AtComposite(
@@ -227,10 +223,8 @@ public final class EOtryTest {
     private static class Catcher extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        Catcher(final Phi sigma) {
-            super(sigma);
+        Catcher() {
             this.add("ex", new AtVoid("ex"));
             this.add(
                 "φ",

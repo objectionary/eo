@@ -45,15 +45,6 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "string.as-bytes")
 public final class EOstring$EOas_bytes extends PhDefault implements Atom {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOstring$EOas_bytes(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

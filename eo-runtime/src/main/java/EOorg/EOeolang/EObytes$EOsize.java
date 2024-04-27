@@ -44,15 +44,6 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.size")
 public final class EObytes$EOsize extends PhDefault implements Atom {
-
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EObytes$EOsize(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         return new Data.ToPhi((long) new Param(this).strong(byte[].class).length);

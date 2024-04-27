@@ -74,9 +74,10 @@
   # and the data are written into memory.
   [object scope] > for
     (dataized object).as-bytes > bts
-    &.of > @
+    malloc.of > @
       bts.size
-      [m]
+      # Outer scope.
+      [m] > outer-scope
         seq > @
           *
             m.write 0 bts

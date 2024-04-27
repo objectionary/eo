@@ -63,7 +63,7 @@ public final class EOstdoutTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         final Phi ret = copy.take("at").copy();
         ret.put(0, new Data.ToPhi(0L));
-        final Phi stdout = new EOstdout(Phi.Φ, new PrintStream(stream));
+        final Phi stdout = new EOstdout(new PrintStream(stream));
         stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
@@ -77,7 +77,7 @@ public final class EOstdoutTest {
     public void printsString() {
         final Phi format = new Data.ToPhi("Hello, world!\n");
         final Phi phi = new PhWith(
-            new PhCopy(new EOstdout(Phi.Φ)),
+            new PhCopy(new EOstdout()),
             "text",
             format
         );
@@ -101,7 +101,7 @@ public final class EOstdoutTest {
                 ),
                 new Data.ToPhi(2L),
                 new PhWith(
-                    new EOstdout(Phi.Φ, new PrintStream(stream)),
+                    new EOstdout(new PrintStream(stream)),
                     "text",
                     new Data.ToPhi(str)
                 )
@@ -127,7 +127,7 @@ public final class EOstdoutTest {
                 ),
                 new Data.ToPhi(3.0),
                 new PhWith(
-                    new EOstdout(Phi.Φ, new PrintStream(stream)),
+                    new EOstdout(new PrintStream(stream)),
                     "text",
                     new Data.ToPhi(str)
                 )
@@ -160,7 +160,7 @@ public final class EOstdoutTest {
          * @param stdout Phi object with printing a string via {@link EOstdout} object
          */
         PrintWithCmp(final Phi method, final Phi value, final Phi stdout) {
-            super(Phi.Φ);
+            super();
             this.add(
                 "φ",
                 new AtOnce(
@@ -172,11 +172,11 @@ public final class EOstdoutTest {
                                     method,
                                     0,
                                     new PhWith(
-                                        new EOseq(Phi.Φ),
+                                        new EOseq(),
                                         0,
                                         new PhWith(
                                             new PhWith(
-                                                new EOtuple$EOempty(Phi.Φ)
+                                                new EOtuple$EOempty()
                                                     .take("with")
                                                     .copy(),
                                                 0,

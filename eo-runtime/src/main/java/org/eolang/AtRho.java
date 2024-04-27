@@ -29,19 +29,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Special attribute for \rho.
  * The attribute can be set only once, and it ignores all other puts.
- * When attribute is copied, the \rho inside isn't copied.
- * It allows to have the same \rho if objects were copied recursively:
- * <p>
- * {@code
- * [] > x
- *   [] > y
- * x.y.^ # absent
- * x' > x1
- * x1.y.^ # refers to x1
- * x1' > x2
- * x2.y.^ # refers to x1
- * }
- * </p>
  * @since 0.36.0
  */
 final class AtRho implements Attr {

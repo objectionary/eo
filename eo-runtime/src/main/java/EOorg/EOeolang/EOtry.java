@@ -49,10 +49,8 @@ import org.eolang.XmirObject;
 public final class EOtry extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOtry(final Phi sigma) {
-        super(sigma);
+    public EOtry() {
         this.add("main", new AtVoid("main"));
         this.add("catch", new AtVoid("catch"));
         this.add("finally", new AtVoid("finally"));

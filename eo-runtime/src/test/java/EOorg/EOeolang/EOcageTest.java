@@ -84,7 +84,7 @@ final class EOcageTest {
     void overwritesCagedObject() {
         final Phi cage = EOcageTest.encaged(
             new PhWith(
-                new EOcageTest.Dummy(Phi.Φ),
+                new EOcageTest.Dummy(),
                 0, new Data.ToPhi(1L)
             )
         );
@@ -96,7 +96,7 @@ final class EOcageTest {
         EOcageTest.encageTo(
             cage,
             new PhWith(
-                new EOcageTest.Dummy(Phi.Φ),
+                new EOcageTest.Dummy(),
                 0, new Data.ToPhi(2L)
             )
         );
@@ -163,7 +163,7 @@ final class EOcageTest {
 
     @Test
     void writesBoundedCopyOfTheSameBase() {
-        final Phi dummy = new Dummy(Phi.Φ);
+        final Phi dummy = new Dummy();
         Assertions.assertDoesNotThrow(
             () -> EOcageTest.encageTo(
                 EOcageTest.encaged(dummy),
@@ -259,9 +259,9 @@ final class EOcageTest {
                 PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "2"
             );
             final Phi cage = EOcageTest.encaged(
-                new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, new Data.ToPhi(1L))
+                new PhWith(new EOcageTest.Dummy(), 0, new Data.ToPhi(1L))
             );
-            EOcageTest.encageTo(cage, new PhWith(new EOcageTest.Dummy(Phi.Φ), 0, cage.copy()));
+            EOcageTest.encageTo(cage, new PhWith(new EOcageTest.Dummy(), 0, cage.copy()));
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -401,10 +401,8 @@ final class EOcageTest {
     private static final class Dummy extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        Dummy(final Phi sigma) {
-            super(sigma);
+        Dummy() {
             this.add("x", new AtVoid("x"));
         }
     }

@@ -46,13 +46,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "int.div")
 public final class EOint$EOdiv extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOint$EOdiv(final Phi sigma) {
-        super(sigma);
+    public EOint$EOdiv() {
         this.add("x", new AtVoid("x"));
     }
 

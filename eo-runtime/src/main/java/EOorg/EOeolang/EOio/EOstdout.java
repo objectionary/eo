@@ -58,19 +58,16 @@ public final class EOstdout extends PhDefault implements Atom {
 
     /**
      * Default ctor.
-     * @param sigma Sigma
      */
-    public EOstdout(final Phi sigma) {
-        this(sigma, EOstdout.OUT);
+    public EOstdout() {
+        this(EOstdout.OUT);
     }
 
     /**
      * Ctor for the tests.
-     * @param sigma Sigma
      * @param out Stream to print
      */
-    EOstdout(final Phi sigma, final PrintStream out) {
-        super(sigma);
+    EOstdout(final PrintStream out) {
         this.out = out;
         this.add("text", new AtVoid("text"));
     }

@@ -3,7 +3,6 @@ eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     ^.x > x
-    y.& > h
     $.a > a
     @.@ > phi
 phi: |-
@@ -11,7 +10,6 @@ phi: |-
     ⟦
       main ↦ ⟦
         x ↦ ξ.ρ.x,
-        h ↦ Φ.org.eolang.y.σ,
         a ↦ ξ.a,
         phi ↦ ξ.φ.φ
       ⟧

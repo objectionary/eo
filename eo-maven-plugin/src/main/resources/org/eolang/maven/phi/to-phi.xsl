@@ -42,9 +42,6 @@ SOFTWARE.
   <xsl:variable name="rho">
     <select>ρ</select>
   </xsl:variable>
-  <xsl:variable name="sigma">
-    <select>σ</select>
-  </xsl:variable>
   <xsl:variable name="program">
     <select>Φ</select>
   </xsl:variable>
@@ -104,14 +101,6 @@ SOFTWARE.
       <xsl:when test="$n='.^'">
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$rho"/>
-      </xsl:when>
-      <xsl:when test="$n='&amp;'">
-        <xsl:value-of select="eo:add-xi(not($is-name))"/>
-        <xsl:value-of select="$sigma"/>
-      </xsl:when>
-      <xsl:when test="$n='.&amp;'">
-        <xsl:text>.</xsl:text>
-        <xsl:value-of select="$sigma"/>
       </xsl:when>
       <xsl:when test="$n='$'">
         <xsl:value-of select="$xi"/>
@@ -245,14 +234,14 @@ SOFTWARE.
   <xsl:template match="*" mode="path">
     <xsl:param name="find"/>
     <xsl:variable name="parent" select="parent::*"/>
-    <xsl:variable name="sigma-dot">
-      <xsl:value-of select="eo:specials('&amp;', true())"/>
+    <xsl:variable name="rho-dot">
+      <xsl:value-of select="eo:specials('^', true())"/>
       <xsl:text>.</xsl:text>
     </xsl:variable>
     <xsl:choose>
       <xsl:when test="$parent[@abstract]">
         <xsl:if test="not($parent/o[@name=$find])">
-          <xsl:value-of select="$sigma-dot"/>
+          <xsl:value-of select="$rho-dot"/>
           <xsl:apply-templates select="$parent" mode="path">
             <xsl:with-param name="find" select="$find"/>
           </xsl:apply-templates>

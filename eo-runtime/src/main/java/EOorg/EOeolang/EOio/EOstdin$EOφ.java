@@ -41,14 +41,6 @@ import org.eolang.Versionized;
  */
 @Versionized
 public final class EOstdin$EOφ extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOstdin$EOφ(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         return new Data.ToPhi(

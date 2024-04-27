@@ -41,7 +41,7 @@ final class PhWithTest {
     @Test
     void comparesTwoObjects() {
         final Phi dummy = new PhWith(
-            new PhMethod(new PhWithTest.Dummy(Phi.Φ), "plus"),
+            new PhMethod(new PhWithTest.Dummy(), "plus"),
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
@@ -63,7 +63,7 @@ final class PhWithTest {
 
     @Test
     void passesToSubObject() {
-        final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
+        final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
@@ -78,7 +78,7 @@ final class PhWithTest {
 
     @Test
     void printsToString() {
-        final Phi dummy = new PhWithTest.Dummy(Phi.Φ);
+        final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhWith(
@@ -93,7 +93,7 @@ final class PhWithTest {
     @ValueSource(strings = {"hello", "bye", "", "привет"})
     void runsInThreads(final String data) {
         final String attr = "foo";
-        final Phi ref = new PhWith(new DummyWithAtFree(attr, Phi.Φ), 0, new Data.ToPhi(data));
+        final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
         final Func<Phi, Boolean> actual = phi -> {
             MatcherAssert.assertThat(
                 AtCompositeTest.TO_ADD_MESSAGE,
@@ -114,7 +114,7 @@ final class PhWithTest {
 
     @Test
     void hasTheSameFormaWithBoundAttribute() {
-        final Phi dummy = new DummyWithAtFree("x", Phi.Φ);
+        final Phi dummy = new DummyWithAtFree("x");
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             dummy.forma(),
@@ -133,10 +133,8 @@ final class PhWithTest {
         /**
          * Ctor.
          * @param attr Free attribute name
-         * @param sigma Sigma
          */
-        DummyWithAtFree(final String attr, final Phi sigma) {
-            super(sigma);
+        DummyWithAtFree(final String attr) {
             this.add(attr, new AtVoid(attr));
         }
     }
@@ -149,10 +147,8 @@ final class PhWithTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        Dummy(final Phi sigma) {
-            super(sigma);
+        Dummy() {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }
     }

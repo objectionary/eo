@@ -128,10 +128,8 @@ public final class EOrust extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOrust(final Phi sigma) {
-        super(sigma);
+    public EOrust() {
         this.add("code", new AtVoid("code"));
         this.add("portal", new AtVoid("portal"));
         this.add("params", new AtVoid("params"));

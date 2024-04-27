@@ -55,7 +55,7 @@ public final class EOintTest {
 
     @Test
     void hasHashEvenWithoutData() {
-        final Phi phi = new EOint(Phi.Φ);
+        final Phi phi = new EOint();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             phi.hashCode(),
@@ -65,7 +65,7 @@ public final class EOintTest {
 
     @Test
     void hasDifferentHash() {
-        final Phi raw = new EOint(Phi.Φ);
+        final Phi raw = new EOint();
         final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,

@@ -249,8 +249,6 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             attr = "@";
         } else if (ctx.RHO() != null) {
             attr = "^";
-        } else if (ctx.SIGMA() != null) {
-            attr = "&";
         } else if (ctx.LABEL() != null) {
             attr = ctx.LABEL().getText();
         } else if (ctx.alphaAttr() != null) {

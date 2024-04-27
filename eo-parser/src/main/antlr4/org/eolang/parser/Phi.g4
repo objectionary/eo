@@ -43,7 +43,6 @@ alphaBinding
 attribute
     : PHI
     | RHO
-    | SIGMA
     | LABEL
     | alphaAttr
     ;
@@ -115,9 +114,6 @@ EMPTY
 PHI : 'φ'
     ;
 RHO : 'ρ'
-    ;
-SIGMA
-    : 'σ'
     ;
 DELTA
     : 'Δ'

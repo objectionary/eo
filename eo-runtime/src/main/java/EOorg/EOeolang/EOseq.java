@@ -48,10 +48,8 @@ public final class EOseq extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOseq(final Phi sigma) {
-        super(sigma);
+    public EOseq() {
         this.add("steps", new AtVoid("steps"));
     }
 

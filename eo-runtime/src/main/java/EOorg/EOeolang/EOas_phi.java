@@ -44,13 +44,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "as-phi")
 public final class EOas_phi extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOas_phi(final Phi sigma) {
-        super(sigma);
+    public EOas_phi() {
         this.add("x", new AtVoid("x"));
     }
 

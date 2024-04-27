@@ -489,7 +489,6 @@ finisher
     : NAME
     | PHI
     | RHO
-    | SIGMA
     ;
 
 // Beginner or finisher
@@ -572,9 +571,6 @@ COLON
     ;
 ARROW
     : '>'
-    ;
-SIGMA
-    : '&'
     ;
 XI  : '$'
     ;

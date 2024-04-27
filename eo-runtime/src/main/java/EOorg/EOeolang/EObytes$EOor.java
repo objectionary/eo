@@ -45,14 +45,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.or")
 public final class EObytes$EOor extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     *
-     * @param sigma Sigma
      */
-    public EObytes$EOor(final Phi sigma) {
-        super(sigma);
+    public EObytes$EOor() {
         this.add("b", new AtVoid("b"));
     }
 

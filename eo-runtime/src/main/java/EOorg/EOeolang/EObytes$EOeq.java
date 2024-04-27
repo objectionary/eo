@@ -47,13 +47,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.eq")
 public final class EObytes$EOeq extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EObytes$EOeq(final Phi sigma) {
-        super(sigma);
+    public EObytes$EOeq() {
         this.add("b", new AtVoid("b"));
     }
 

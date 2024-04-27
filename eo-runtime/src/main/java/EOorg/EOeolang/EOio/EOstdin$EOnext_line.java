@@ -43,14 +43,6 @@ import org.eolang.Versionized;
  */
 @Versionized
 public final class EOstdin$EOnext_line extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    public EOstdin$EOnext_line(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         try {

@@ -76,7 +76,7 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Phi wrong = new PhIncorrect(Phi.Φ);
+        final Phi wrong = new PhIncorrect();
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
                 IllegalStateException.class,
@@ -109,7 +109,7 @@ final class DataizedTest {
             () -> {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
-                final Phi phi = new PhiDec(Phi.Φ);
+                final Phi phi = new PhiDec();
                 new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
@@ -140,7 +140,7 @@ final class DataizedTest {
             () -> {
                 final String property = System.getProperty("max.dataization.log");
                 System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
-                final Phi phi = new PhiDec(Phi.Φ);
+                final Phi phi = new PhiDec();
                 new Dataized(phi, log).take();
                 if (property != null) {
                     System.getProperties().setProperty("max.dataization.log", property);
@@ -167,10 +167,8 @@ final class DataizedTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
-        PhIncorrect(final Phi sigma) {
-            super(sigma);
+        PhIncorrect() {
             this.add(
                 "Δ",
                 new AtComposite(
@@ -190,11 +188,8 @@ final class DataizedTest {
 
         /**
          * Ctor.
-         *
-         * @param sigma Sigma
          */
-        PhiDec(final Phi sigma) {
-            super(sigma);
+        PhiDec() {
             this.add(
                 "φ",
                 new AtOnce(

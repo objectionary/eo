@@ -33,7 +33,7 @@
   # Tests that $ = x.
   [x] > eq
     eq. > @
-      &.as-bytes
+      ^.as-bytes
       x.as-bytes
 
   # Tests that $ < x.
@@ -42,7 +42,7 @@
 
   # Tests that $ ≤ x.
   [x] > lte
-    &.eq x > @
+    ^.eq x > @
 
   # Tests that $ > x.
   [x] > gt
@@ -50,7 +50,7 @@
     not. > @
       or.
         value.eq nan.as-bytes
-        &.eq value
+        ^.eq value
 
   # Tests that $ ≥ x.
   [x] > gte
@@ -80,9 +80,8 @@
     # Tests if given number is greater than float or integer zero.
     [num] > is-num-gt-zero
       try > @
-        []
-          0.lt num > @
-        [e]
+        0.lt num
+        [e] > ex
           0.0.lt num > @
         false
     if. > @
@@ -142,9 +141,8 @@
     # Tests if given number is greater or equal to float or integer zero.
     [num] > is-num-gte-zero
       try > @
-        []
-          0.lte num > @
-        [e]
+        0.lte num
+        [e] > ex
           0.0.lte num > @
         false
     if. > @
