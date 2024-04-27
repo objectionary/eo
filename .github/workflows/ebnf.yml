@@ -13,7 +13,7 @@ jobs:
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+      - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
