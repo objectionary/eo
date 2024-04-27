@@ -109,9 +109,11 @@ final class SnippetTestCase {
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
+                final String log = f.log();
+                Logger.debug(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
-                    f.log(),
+                    log,
                     Matchers.allOf(
                         new Mapped<>(
                             ptn -> Matchers.matchesPattern(
