@@ -81,22 +81,11 @@ final class SnippetTestCase {
                 f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
+                SnippetTestCase.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
-                SnippetTestCase.copySources(f, "src/main/eo");
-                final Path runtime = Paths.get(System.getProperty("user.dir"))
-                    .resolve("src/main/eo");
-                final Collection<Path> sources = Files.walk(runtime)
-                    .filter(src -> !src.toFile().isDirectory())
-                    .collect(Collectors.toList());
-                for (final Path src : sources) {
-                    f.files()
-                        .file(String.format("src/main/eo/%s", runtime.relativize(src)))
-                        .write(new UncheckedText(new TextOf(src)).asString())
-                        .show();
-                }
                 f.dependencies().appendItself();
                 f.build()
                     .plugins()
