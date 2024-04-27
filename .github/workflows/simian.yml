@@ -16,12 +16,10 @@ jobs:
   simian:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
-      - run: |
-          wget --quiet http://public.yegor256.com/simian.jar -O /tmp/simian.jar
-      - run: |
-          java -jar /tmp/simian.jar -threshold=19 -excludes=**/gen -excludes=**/it **/*.java
+      - run: wget --quiet http://public.yegor256.com/simian.jar -O /tmp/simian.jar
+      - run: java -jar /tmp/simian.jar -threshold=19 "-excludes=**/gen" "-excludes=**/it" "**/*.java"

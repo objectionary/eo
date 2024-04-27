@@ -251,7 +251,7 @@ final class VerifyMojoTest {
     /**
      * Apply XSL transformation.
      * @param xsl Path to XSL within classpath
-     * @param xml Path to XML to be tranformed
+     * @param xml Path to XML to be transformed
      */
     private static void applyXsl(final String xsl, final Path xml) throws Exception {
         final XML output = new Xsline(

@@ -275,7 +275,7 @@ vapplicationArgUnboundCurrent
 vapplicationArgUnboundNext
     : vapplicationArgVanonymUnbound // vertical anonym object
     | vapplicationHeadNamed vapplicationArgs // vertical application
-    | reversed oname? vapplicationArgsReversed // reversed verical application
+    | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
 
 // Horizontal application as argument of vertical application
@@ -351,7 +351,7 @@ onlyphiTail: spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
-// Does not contan elements in vertical notation
+// Does not contain elements in vertical notation
 hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
@@ -390,7 +390,7 @@ hmethodExtended
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
 // The division of elements into regular and versioned ones is due to
-// the presence of horizontal application where head or agruments can't
+// the presence of horizontal application where head or arguments can't
 // contain version
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned
