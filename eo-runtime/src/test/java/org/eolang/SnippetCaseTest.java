@@ -271,7 +271,7 @@ final class SnippetCaseTest {
      *  dependencies to rust-tests after phi->unphi (see:
      *  <a href="https://github.com/objectionary/eo/issues/3145">this</a> for details).
      *  When it's resolved we need to remove the filter and make sure the snippet test
-     *  {@link SnippetCaseTest#runTestsAfterPhiAndUnphi} still works.
+     *  {@link SnippetCaseTest#runsTestsAfterPhiAndUnphi(Path)} still works.
      */
     private static void copySources(final Farea farea, final String target) throws IOException {
         final Path runtime = Paths.get(System.getProperty("user.dir"))
