@@ -27,7 +27,7 @@ eo: |
 
   500.43.@ > one
 
-  # This is just a simple string
+  # This is the default 64+ symbols comment in front of abstract object.
   "Hello, друг!" > hello!
 
   # This is the default 64+ symbols comment in front of abstract object.
@@ -84,7 +84,6 @@ eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > obj
     "some" > @
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > foo
       ^.@ > @
 
@@ -104,12 +103,8 @@ eo: |
 
   # This is the default 64+ symbols comment in front of abstract object.
   [] > ooo
-    # This is one
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > o-1 /?
 
-    # This is two
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > o2
 
   -2.4E3 > x
