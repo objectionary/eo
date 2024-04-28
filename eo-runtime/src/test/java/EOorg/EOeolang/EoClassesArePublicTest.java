@@ -45,6 +45,7 @@ import org.junit.jupiter.api.Test;
 public class EoClassesArePublicTest {
 
     @Test
+    @SuppressWarnings("JTCOP.RulePresentTense")
     public void arePublic() throws IOException {
         final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
             .getAllClasses()
@@ -69,7 +70,6 @@ public class EoClassesArePublicTest {
      * @param clazz Class.
      * @return True if is.
      */
-    @SuppressWarnings("JTCOP.RulePresentTense")
     private static boolean isEoClass(final Class<?> clazz) {
         return clazz.getSimpleName().startsWith("EO")
             && Phi.class.isAssignableFrom(clazz);
