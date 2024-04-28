@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
  * Test that all EO.. classes are public.
  * @since 0.38
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public class EoClassesArePublicTest {
 
     @Test
@@ -55,6 +56,7 @@ public class EoClassesArePublicTest {
         assert !clazzes.isEmpty();
         Logger.info(this.getClass(), "Found %d EO classes", clazzes.size());
         MatcherAssert.assertThat(
+            "All EO.. classes should be public",
             clazzes.stream()
                 .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
                 .collect(Collectors.toList()),
@@ -67,6 +69,7 @@ public class EoClassesArePublicTest {
      * @param clazz Class.
      * @return True if is.
      */
+    @SuppressWarnings("JTCOP.RulePresentTense")
     private static boolean isEoClass(final Class<?> clazz) {
         return clazz.getSimpleName().startsWith("EO")
             && Phi.class.isAssignableFrom(clazz);
