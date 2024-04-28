@@ -26,7 +26,6 @@ package org.eolang.maven.rust;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
