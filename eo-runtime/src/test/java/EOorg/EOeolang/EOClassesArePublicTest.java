@@ -53,7 +53,7 @@ public class EOClassesArePublicTest {
         Logger.info(this.getClass(), "Found %d EO classes", clazzes.size());
         MatcherAssert.assertThat(
         clazzes.stream()
-            .filter(clazz -> Modifier.isPublic(clazz.getModifiers()))
+            .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
             .collect(Collectors.toList()),
             Matchers.empty()
         );
