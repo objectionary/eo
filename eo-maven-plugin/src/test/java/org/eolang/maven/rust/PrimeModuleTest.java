@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link Module}.
+ * Test case for {@link PrimeModule}.
  *
  * @since 0.1
  */
@@ -45,12 +45,12 @@ final class PrimeModuleTest {
         final String name = "name";
         new PrimeModule(method, name).save(new FtDefault(temp));
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "Check that PrimeModule is saved correctly",
             new TextOf(
                 temp.resolve(Paths.get(name.concat(".rs")))
             ).asString(),
             Matchers.stringContainsInOrder(
-                String.format("Java_EOrust_natives_%s_%s", method, method),
+                "Java_EOrust_natives_my_1method_my_1method",
                 "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray"
             )
         );

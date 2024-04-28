@@ -52,7 +52,7 @@ public final class Names {
     /**
      * Prefix for the names.
      */
-    public static final String PREFIX = "NATIVE";
+    public static final String PREFIX = "native";
 
     /**
      * Target directory.
@@ -95,7 +95,7 @@ public final class Names {
         return cached.computeIfAbsent(
             loc,
             key -> String.format(
-                "%s%dx%s",
+                "%s%d_%s",
                 Names.PREFIX,
                 cached.size(),
                 Names.trim(key)
@@ -146,11 +146,16 @@ public final class Names {
         );
     }
 
+    /**
+     * Format loc: Remove non-ascii symbols, replace Φ.org.eolang with QQ
+     * and limit length of name characters.
+     * @param loc Locator of Rust insert.
+     * @return Formatted name.
+     */
     private static String trim(final String loc) {
-        final String[] split = {loc};
-        final String replaced = split[split.length-1]
-            .replaceAll("[^a-zA-Z0-9.-]", "").toUpperCase().replaceAll("[. -]", "x");
-        return replaced.substring(Math.max(replaced.length() - 16, 0));
+        final String replaced = loc.replace("Φ.org.eolang", "QQ")
+            .replaceAll("[^a-zA-Z0-9.-]", "").replaceAll("[. -]", "_");
+        return replaced.substring(Math.max(replaced.length() - 64, 0));
     }
 
     /**

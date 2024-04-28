@@ -65,7 +65,7 @@ public final class BinarizeParseTest {
             BinarizeMojoTest.SRC.resolve("simple-rust.eo")
         );
         final String function = String.format(
-            "%s0",
+            "%s0_QQ_custom_creates_object_r_0",
             Names.PREFIX
         );
         final String rust = String.format(
@@ -73,11 +73,11 @@ public final class BinarizeParseTest {
             function
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "The program exists",
             res, Matchers.hasKey(rust)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "Correct content of Rust file",
             new TextOf(res.get(rust)).asString(),
             Matchers.stringContainsInOrder(
                 "use rand::Rng;",
@@ -90,7 +90,7 @@ public final class BinarizeParseTest {
             )
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "Correct content of Java file",
             new TextOf(
                 res.get(
                     String.format(
@@ -110,11 +110,11 @@ public final class BinarizeParseTest {
             BinarizeMojoTest.SRC.resolve("twice-rust.eo")
         );
         final String one = String.format(
-            "target/Lib/%s0/src/foo.rs",
+            "target/Lib/%s0_QQ_custom_hello_world_1_r_0/src/foo.rs",
             Names.PREFIX
         );
         final String two = String.format(
-            "target/Lib/%s1/src/foo.rs",
+            "target/Lib/%s1_QQ_custom_hello_world_2_r_0/src/foo.rs",
             Names.PREFIX
         );
         MatcherAssert.assertThat(
@@ -165,7 +165,7 @@ public final class BinarizeParseTest {
             BinarizeMojoTest.SRC.resolve("twice-rust.eo")
         );
         final String dir = String.format(
-            "target/Lib/%s1/",
+            "target/Lib/%s1_QQ_custom_hello_world_2_r_0/",
             Names.PREFIX
         );
         final String cargo = dir.concat("Cargo.toml");

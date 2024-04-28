@@ -47,7 +47,7 @@ public class PrimeModule extends Module {
                 "use eo::eo_enum::EO::EOError;",
                 "#[no_mangle]",
                 "pub extern \"system\" fn",
-                String.format("Java_EOrust_natives_%s_%s", method, method),
+                translate(method),
                 "<'local> (env: JNIEnv<'local>, _class: JClass<'local>, universe: JObject<'local>) -> JByteArray<'local>",
                 "{ let mut eo = Portal::new(env, _class, universe); ",
                 "let arr = foo(&mut eo)",
@@ -56,6 +56,34 @@ public class PrimeModule extends Module {
                 "eo.java_env.byte_array_from_slice(&arr.as_slice()).unwrap() }"
             ),
             file
+        );
+    }
+
+    /**
+     * Translates ("mangles") Java method name to native method name.
+     * @param jname Name of this function (and class) in Java.
+     * @return How it named in Rust.
+     */
+    private static String translate(final String jname) {
+        return PrimeModule.translate(
+            "EOrust.natives.".concat(jname),
+            jname
+        );
+    }
+
+    /**
+     * Translates ("mangles") Java method name to native method name according to
+     * <a href="https://docs.oracle.com/javase/1.5.0/docs/guide/jni/spec/design.html">documentation</a>
+     * or <a href="https://stackoverflow.com/questions/32470463/what-is-the-naming-convention-for-java-native-interface-method-and-module-name">stackoverflow</a>.
+     * @param clazz Simple name of class.
+     * @param method Name of method.
+     * @return How it named in Rust.
+     */
+    private static String translate(final String clazz, final String method) {
+        return String.format(
+            "Java_%s_%s",
+            clazz.replace("_", "_1").replace(".", "_"),
+            method.replace("_", "_1")
         );
     }
 }
