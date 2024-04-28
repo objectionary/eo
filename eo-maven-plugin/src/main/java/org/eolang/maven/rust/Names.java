@@ -52,7 +52,7 @@ public final class Names {
     /**
      * Prefix for the names.
      */
-    public static final String PREFIX = "native";
+    public static final String PREFIX = "NATIVE";
 
     /**
      * Target directory.
@@ -95,9 +95,10 @@ public final class Names {
         return cached.computeIfAbsent(
             loc,
             key -> String.format(
-                "%s%d",
+                "%s%dx%s",
                 Names.PREFIX,
-                cached.size()
+                cached.size(),
+                Names.trim(key)
             )
         );
     }
@@ -143,6 +144,13 @@ public final class Names {
             new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8),
             this.dest.getFileName()
         );
+    }
+
+    private static String trim(final String loc) {
+        final String[] split = {loc};
+        final String replaced = split[split.length-1]
+            .replaceAll("[^a-zA-Z0-9.-]", "").toUpperCase().replaceAll("[. -]", "x");
+        return replaced.substring(Math.max(replaced.length() - 16, 0));
     }
 
     /**
