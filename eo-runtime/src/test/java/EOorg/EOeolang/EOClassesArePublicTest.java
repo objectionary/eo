@@ -21,23 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
 package EOorg.EOeolang;
 
 import com.google.common.reflect.ClassPath;
 import com.jcabi.log.Logger;
-import org.eolang.Phi;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.eolang.Phi;
+import org.junit.jupiter.api.Test;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
  * Test that all EO.. classes are public.
+ * @since 0.38
  */
-public class EOClassesArePublicTest {
+public class EoClassesArePublicTest {
 
     @Test
     public void arePublic() throws IOException {
@@ -47,14 +51,14 @@ public class EOClassesArePublicTest {
             .filter(clazz -> clazz.getPackageName()
                 .equalsIgnoreCase("EOorg.EOeolang"))
             .map(ClassPath.ClassInfo::load)
-            .filter(EOClassesArePublicTest::isEoClass)
+            .filter(EoClassesArePublicTest::isEoClass)
             .collect(Collectors.toSet());
         assert !clazzes.isEmpty();
         Logger.info(this.getClass(), "Found %d EO classes", clazzes.size());
         MatcherAssert.assertThat(
-        clazzes.stream()
-            .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
-            .collect(Collectors.toList()),
+            clazzes.stream()
+                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+                .collect(Collectors.toList()),
             Matchers.empty()
         );
     }
@@ -62,10 +66,10 @@ public class EOClassesArePublicTest {
     /**
      * Is EO.. class and is instance of {@link Phi}.
      * @param clazz Class.
-     * @return true if is.
+     * @return True if is.
      */
     private static boolean isEoClass(final Class<?> clazz) {
-        return clazz.getSimpleName().startsWith("EO") &&
-            Phi.class.isAssignableFrom(clazz);
+        return clazz.getSimpleName().startsWith("EO")
+            && Phi.class.isAssignableFrom(clazz);
     }
 }
