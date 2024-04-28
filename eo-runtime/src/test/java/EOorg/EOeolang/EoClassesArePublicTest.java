@@ -33,9 +33,9 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eolang.Phi;
-import org.junit.jupiter.api.Test;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test that all EO.. classes are public.
@@ -48,8 +48,7 @@ public class EoClassesArePublicTest {
         final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
             .getAllClasses()
             .stream()
-            .filter(clazz -> clazz.getPackageName()
-                .equalsIgnoreCase("EOorg.EOeolang"))
+            .filter(clazz -> clazz.getPackageName().equals("EOorg.EOeolang"))
             .map(ClassPath.ClassInfo::load)
             .filter(EoClassesArePublicTest::isEoClass)
             .collect(Collectors.toSet());
