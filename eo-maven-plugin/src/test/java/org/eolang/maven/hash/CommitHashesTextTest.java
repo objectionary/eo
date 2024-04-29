@@ -38,7 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link CommitHashesText}.
  *
  * @since 0.37.0
- * @todo #3122:60min Enable the test CommitHashesTextTest#isThreadSafe
+ * @todo #3122:60min Add "Reload" to the test CommitHashesTextTest#isThreadSafe
  *  when issue about "Reload" annotation will be solved.
  *  We need to reinitialize some static fields of the class
  *  before the test will be executed.
@@ -55,7 +55,6 @@ final class CommitHashesTextTest {
         );
     }
 
-    @Disabled
     @Test
     void isThreadSafe() {
         final int threads = 200;
