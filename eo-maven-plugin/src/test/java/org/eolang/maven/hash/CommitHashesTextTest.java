@@ -30,7 +30,6 @@ import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
