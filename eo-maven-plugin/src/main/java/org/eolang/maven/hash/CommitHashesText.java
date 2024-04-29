@@ -49,7 +49,7 @@ final class CommitHashesText extends TextEnvelope {
     /**
      * Cache.
      */
-    private static final Text CACHE = new Sticky(
+    private static final Text CACHE = zzzznew Sticky(
         CommitHashesText.asText(CommitHashesText.HOME)
     );
 
