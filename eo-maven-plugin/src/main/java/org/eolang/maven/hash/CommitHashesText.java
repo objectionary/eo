@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.Sticky;
-import org.cactoos.text.Synced;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
@@ -50,10 +49,8 @@ final class CommitHashesText extends TextEnvelope {
     /**
      * Cache.
      */
-    private static final Text CACHE = new Synced(
-        new Sticky(
-            CommitHashesText.asText(CommitHashesText.HOME)
-        )
+    private static final Text CACHE = new Sticky(
+        CommitHashesText.asText(CommitHashesText.HOME)
     );
 
     /**
