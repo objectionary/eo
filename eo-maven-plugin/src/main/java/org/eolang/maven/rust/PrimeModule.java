@@ -61,6 +61,9 @@ public class PrimeModule extends Module {
 
     /**
      * Translates ("mangles") Java method name to native method name.
+     * For example, translated "native0_custom" to
+     * Java_EOrust_natives_native0_1custom_native0_1custom.
+     * See {@link PrimeModule#translate(String, String)} for motivation.
      * @param jname Name of this function (and class) in Java.
      * @return How it named in Rust.
      */
