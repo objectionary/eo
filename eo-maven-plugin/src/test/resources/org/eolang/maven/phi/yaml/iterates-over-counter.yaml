@@ -1,3 +1,4 @@
+---
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > iterates-over-simple-counter
@@ -13,7 +14,7 @@ eo: |
             x.write > @
               x.as-int.plus 1
         11
-phi: |
+phi: |-
   {
     ⟦
       iterates-over-simple-counter ↦ ⟦

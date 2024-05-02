@@ -34,7 +34,17 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
-final class AtCompositeTest {
+public final class AtCompositeTest {
+
+    /**
+     * Empty message for JUnit Assertions.
+     *
+     * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
+     *  eo-runtime with meaningful assert messages. Don't forget to remove
+     *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
+     *  no longer need.
+     */
+    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
     void decoratesCheckedException() {
@@ -45,7 +55,8 @@ final class AtCompositeTest {
                 self -> {
                     throw new InstantiationException("intended checked");
                 }
-            ).get()
+            ).get(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -58,7 +69,8 @@ final class AtCompositeTest {
                 self -> {
                     throw new IllegalStateException("intended unchecked");
                 }
-            ).get()
+            ).get(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
     }
 
@@ -67,6 +79,7 @@ final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(phi).take(Double.class),
             Matchers.equalTo(
                 new Dataized(phi).take(Double.class)

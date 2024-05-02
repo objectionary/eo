@@ -1,3 +1,4 @@
+---
 xsls:
   - /org/eolang/parser/add-default-package.xsl
   - /org/eolang/parser/explicit-data.xsl
@@ -7,7 +8,7 @@ xsls:
   - /org/eolang/maven/pre/to-java.xsl
 tests:
   - /program/errors[count(*)=0]
-  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x01});')]
+  - //java[contains(text(), '.take("org").take("eolang").take("true")')]
   - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x00});')]
   - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x2A});')]
   - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
@@ -15,10 +16,10 @@ tests:
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > t
-    TRUE > @
+    true > @
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > f
-    bool FALSE > @
+    bool 00- > @
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > i
     42 > @

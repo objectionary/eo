@@ -30,15 +30,15 @@
 [head tail] > tuple
   # Empty tuple.
   [] > empty
-    # Take one element from the tuple, at the given position.
+    0 > length
+
     [i] > at
       error "Can't get an object from the empty tuple" > @
-    # Take one element from the tuple, at the given position.
+
     [x] > with
       tuple > @
         tuple.empty
         x
-    0 > length
 
   # Obtain the length of the tuple.
   [] > length
@@ -48,21 +48,20 @@
   # Take one element from the tuple, at the given position.
   [i] > at
     ^.length > len
-    if > index!
+    if. > index!
       0.gt
         i > idx!
       len.plus idx
       idx
-    if > @
+    if. > @
       or.
         0.gt index
         len.lte index
       error "Given index is out of tuple bounds"
       at-fast ^ len
 
-    # Fast recursive obtaining element from tuple.
     [tup len] > at-fast
-      if > @
+      if. > @
         (len.plus -1).gt ^.index
         ^.at-fast
           tup.head

@@ -27,6 +27,7 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.CommitHash;
@@ -46,7 +47,7 @@ final class OyRemoteTest {
     @Test
     void buildsCorrectUrl() throws Exception {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            "OyRemove.UrlOy generates correct URL",
             new OyRemote.UrlOy(
                 "https://raw/objectionary/home/%s/objects/%s.eo",
                 "abcde"
@@ -64,7 +65,8 @@ final class OyRemoteTest {
             () -> new OyRemote.UrlOy(
                 "hts:raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 "abcde"
-            ).value("org.eolang.app")
+            ).value("org.eolang.app"),
+            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 
@@ -74,7 +76,7 @@ final class OyRemoteTest {
         final CommitHash hash = new ChRemote("master");
         final Objectionary objectionary = new OyRemote(hash);
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            "OyRemote positively checks the presence of the object in Objectionary",
             objectionary.contains("org.eolang.io.stdout"),
             Matchers.is(true)
         );

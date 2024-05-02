@@ -287,38 +287,43 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
+    public void enterDeltaBinding(final PhiParser.DeltaBindingContext ctx) {
         if (ctx.EMPTY() != null) {
-            throw new ParsingException(
-                "It's impossible to represent Δ ⤍ ∅ binding in EO",
-                new IllegalStateException(),
-                ctx.getStart().getLine()
-            );
+            if (!"org.eolang".equals(String.join(".", this.packages))
+                && !"bytes".equals(this.attributes.peek())
+            ) {
+                throw new ParsingException(
+                    "It's impossible to represent Δ ⤍ ∅ binding in EO",
+                    new IllegalStateException(),
+                    ctx.getStart().getLine()
+                );
+            }
+        } else {
+            this.objects()
+                .start()
+                .prop("data", "bytes")
+                .prop("base", "org.eolang.bytes");
+            if (!"--".equals(ctx.BYTES().getText())) {
+                this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
+            }
+            this.objects().leave();
         }
-        this.objects()
-            .start()
-            .prop("data", "bytes")
-            .prop("base", "org.eolang.bytes");
-        if (!"--".equals(ctx.BYTES().getText())) {
-            this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
-        }
-        this.objects().leave();
     }
 
     @Override
-    public void exitDeltaBidning(final PhiParser.DeltaBidningContext ctx) {
+    public void exitDeltaBinding(final PhiParser.DeltaBindingContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
+    public void enterLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         if (!XePhiListener.LAMBDA_PACKAGE.equals(ctx.FUNCTION().getText())) {
             this.objects().prop("atom");
         }
     }
 
     @Override
-    public void exitLambdaBidning(final PhiParser.LambdaBidningContext ctx) {
+    public void exitLambdaBinding(final PhiParser.LambdaBindingContext ctx) {
         // Nothing here
     }
 
@@ -410,7 +415,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
         return ctx.binding()
             .stream()
             .anyMatch(
-                context -> context.lambdaBidning() != null && context.lambdaBidning()
+                context -> context.lambdaBinding() != null && context.lambdaBinding()
                     .FUNCTION()
                     .getText()
                     .equals(XePhiListener.LAMBDA_PACKAGE)

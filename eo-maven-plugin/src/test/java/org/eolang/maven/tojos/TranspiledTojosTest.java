@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -50,11 +51,6 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.30
  */
 final class TranspiledTojosTest {
-
-    /**
-     * Empty message for JUnit Assertions.
-     */
-    private static final String EMPTY_MSG = "TO ADD ASSERTION MESSAGE";
 
     /**
      * Transpiled files.
@@ -99,7 +95,7 @@ final class TranspiledTojosTest {
     void adds() {
         this.tojos.add(this.transpiled.get(0), Paths.get("first.optimized.xmir"));
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(1)
         );
@@ -113,22 +109,22 @@ final class TranspiledTojosTest {
         this.tojos.add(this.transpiled.get(1), first);
         this.tojos.add(this.transpiled.get(2), second);
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.tojos.remove(first),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.tojos.remove(second),
             Matchers.equalTo(1L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(1)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(3)
         );
@@ -137,17 +133,17 @@ final class TranspiledTojosTest {
     @Test
     void removesAbsent() {
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.tojos.remove(Paths.get("absent.xmir")),
             Matchers.equalTo(0L)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.temp.toFile().listFiles(File::isFile),
             Matchers.arrayWithSize(3)
         );
         MatcherAssert.assertThat(
-            TranspiledTojosTest.EMPTY_MSG,
+            BinarizeParseTest.TO_ADD_MESSAGE,
             this.original.select(all -> true),
             Matchers.hasSize(0)
         );

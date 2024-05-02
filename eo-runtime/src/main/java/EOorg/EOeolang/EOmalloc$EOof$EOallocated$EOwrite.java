@@ -21,45 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.hash;
 
-import java.net.URL;
-import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.TextEnvelope;
-import org.cactoos.text.TextOf;
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
+
+package EOorg.EOeolang;
+
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Param;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * CommitHashes which we download from Objectionary.
- *
- * @since 0.30
+ * Malloc.of.allocated.write object.
+ * @since 0.36.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-final class ObjectionaryCommitHashes extends TextEnvelope {
-
+@Versionized
+@XmirObject(oname = "malloc.of.allocated.write")
+final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
     /**
-     * Tags.
+     * Ctor.
+     * @param sigma Sigma
      */
-    private static final String HOME = "https://home.objectionary.com/tags.txt";
-
-    /**
-     * Constructor.
-     */
-    ObjectionaryCommitHashes() {
-        this(ObjectionaryCommitHashes.HOME);
+    EOmalloc$EOof$EOallocated$EOwrite(final Phi sigma) {
+        super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("data", new AtVoid("data"));
     }
 
-    /**
-     * Constructor.
-     * @param tags The url from which to download tags list.
-     */
-    private ObjectionaryCommitHashes(final String tags) {
-        this(new Unchecked<>(() -> new URL(tags)).value());
-    }
-
-    /**
-     * Constructor.
-     * @param tags The url from which to download tags list.
-     */
-    private ObjectionaryCommitHashes(final URL tags) {
-        super(new TextOf(tags));
+    @Override
+    public Phi lambda() throws Exception {
+        Heaps.INSTANCE.write(
+            Math.toIntExact(new Param(this.take(Attr.RHO), "id").strong(Long.class)),
+            Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+            new Dataized(this.take("data")).take()
+        );
+        return new Data.ToPhi(true);
     }
 }

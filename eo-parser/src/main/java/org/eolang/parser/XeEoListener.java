@@ -30,6 +30,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -232,7 +233,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentOptional(final EoParser.CommentOptionalContext ctx) {
-        // Nothing here
+        this.validateComment(ctx, ctx.comment());
     }
 
     @Override
@@ -242,52 +243,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterCommentMandatory(final EoParser.CommentMandatoryContext ctx) {
-        if(this.tests) {
-            return;
-        }
-        final String comment = String.join(
-            "",
-            ctx.comment().COMMENTARY().getText().substring(1).trim(),
-            ctx.commentOptional().comment().stream().map(
-                context -> context.COMMENTARY().getText().substring(1).trim()
-            ).collect(Collectors.joining(""))
-        );
-        final String length = String.format(
-            "Comment must be at least %d characters long",
-            XeEoListener.MIN_COMMENT_LENGTH
-        );
-        final String warning = "warning";
-        if (comment.isEmpty()) {
-            this.addError(ctx, "comment-length-check", warning, length);
-        } else {
-            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
-                this.addError(ctx, "comment-length-check", warning, length);
-            }
-            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
-                this.addError(
-                    ctx,
-                    "comment-content-check",
-                    warning,
-                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
-                );
-            }
-            if (!Character.isUpperCase(comment.charAt(0))) {
-                this.addError(
-                    ctx,
-                    "comment-start-character-check",
-                    warning,
-                    "Comment must start with capital letter"
-                );
-            }
-            if (comment.charAt(comment.length() - 1) != '.') {
-                this.addError(
-                    ctx,
-                    "comment-ending-check",
-                    warning,
-                    "Comment must end with dot"
-                );
-            }
-        }
+        this.validateComment(ctx, ctx.comment());
     }
 
     @Override
@@ -322,6 +278,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitMaster(final EoParser.MasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterSubMaster(final EoParser.SubMasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSubMaster(final EoParser.SubMasterContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterMasterBody(final EoParser.MasterBodyContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitMasterBody(final EoParser.MasterBodyContext ctx) {
         // Nothing here
     }
 
@@ -829,6 +805,26 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterOnlyphi(final EoParser.OnlyphiContext ctx) {
+        this.startAbstract(ctx).enter();
+    }
+
+    @Override
+    public void exitOnlyphi(final EoParser.OnlyphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
+        this.objects.enter().prop("name", "@").leave().leave();
+    }
+
+    @Override
+    public void exitOnlyphiTail(final EoParser.OnlyphiTailContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterHanonymInner(final EoParser.HanonymInnerContext ctx) {
         this.objects.enter();
     }
@@ -974,12 +970,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
     public void exitMethodTailOptional(final EoParser.MethodTailOptionalContext ctx) {
-     // Nothing here   
+        // Nothing here
     }
 
     @Override
@@ -1143,6 +1139,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
+    public void enterSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitSpacedArrow(final EoParser.SpacedArrowContext ctx) {
+        // Nothing here
+    }
+
+    @Override
     public void enterScope(final EoParser.ScopeContext ctx) {
         // Nothing here
     }
@@ -1195,14 +1201,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             type = "bytes";
             base = "bytes";
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
-        } else if (ctx.BOOL() != null) {
-            type = "bytes";
-            base = "bool";
-            if (Boolean.parseBoolean(text)) {
-                data = XeEoListener.bytesToHex((byte) 0x01);
-            } else {
-                data = XeEoListener.bytesToHex((byte) 0x00);
-            }
         } else if (ctx.FLOAT() != null) {
             type = "bytes";
             base = "float";
@@ -1314,10 +1312,66 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * Start abstract object.
      *
      * @param ctx Context
-     * @return Xembly objects after creating abstract object 
+     * @return Xembly objects after creating abstract object
      */
     private Objects startAbstract(final ParserRuleContext ctx) {
         return this.startObject(ctx).prop("abstract").leave();
+    }
+
+    /**
+     * Validate comment in front of abstract objects.
+     * @param ctx Context
+     * @param comments List of comment contexts
+     */
+    private void validateComment(
+        final ParserRuleContext ctx,
+        final List<EoParser.CommentContext> comments
+    ) {
+        if(this.tests || comments.isEmpty()) {
+            return;
+        }
+        final String comment = String.join(
+            "",
+            comments.stream().map(
+                context -> context.COMMENTARY().getText().substring(1).trim()
+            ).collect(Collectors.joining(""))
+        );
+        final String length = String.format(
+            "Comment must be at least %d characters long",
+            XeEoListener.MIN_COMMENT_LENGTH
+        );
+        final String warning = "warning";
+        if (comment.isEmpty()) {
+            this.addError(ctx, "comment-length-check", warning, length);
+        } else {
+            if (comment.length() < XeEoListener.MIN_COMMENT_LENGTH) {
+                this.addError(ctx, "comment-length-check", warning, length);
+            }
+            if (comment.chars().anyMatch(chr -> chr < 32 || chr > 127)) {
+                this.addError(
+                    ctx,
+                    "comment-content-check",
+                    warning,
+                    "Comment must contain only ASCII printable characters: 0x20-0x7f"
+                );
+            }
+            if (!Character.isUpperCase(comment.charAt(0))) {
+                this.addError(
+                    ctx,
+                    "comment-start-character-check",
+                    warning,
+                    "Comment must start with capital letter"
+                );
+            }
+            if (comment.charAt(comment.length() - 1) != '.') {
+                this.addError(
+                    ctx,
+                    "comment-ending-check",
+                    warning,
+                    "Comment must end with dot"
+                );
+            }
+        }
     }
 
     /**

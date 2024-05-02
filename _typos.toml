@@ -1,0 +1,14 @@
+[default]
+extend-ignore-identifiers-re = [
+  "Olt*",       # false positive
+  "Onot",       # false positive
+  "BA",         # false positive
+  "thi",        # false positive
+  "lowcase",    # false positive
+  "[D,d]atas*", # valid variable names
+  "thr",        # valid variable name
+  "cutted",     # valid variable name
+  "splitted",   # valid variable name
+  "scrpt",      # valid variable name
+  "fle"         # valid variable name
+]

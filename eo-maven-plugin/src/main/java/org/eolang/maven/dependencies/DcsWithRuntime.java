@@ -23,13 +23,16 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import org.apache.maven.model.Dependency;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -104,6 +107,7 @@ public final class DcsWithRuntime implements Iterable<Dependency> {
      *
      * @return Runtime dependency from Maven Central.
      */
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static Unchecked<Dependency> mavenDependency() {
         final String url = String.format(
             "https://repo.maven.apache.org/maven2/%s/maven-metadata.xml",
@@ -139,15 +143,17 @@ public final class DcsWithRuntime implements Iterable<Dependency> {
      */
     private static Unchecked<Dependency> dependency(final String version) {
         return new Unchecked<>(
-            new Sticky<>(
-                () -> {
-                    final Dependency dependency = new Dependency();
-                    dependency.setGroupId("org.eolang");
-                    dependency.setArtifactId("eo-runtime");
-                    dependency.setVersion(version);
-                    dependency.setClassifier("");
-                    return dependency;
-                }
+            new Synced<>(
+                new Sticky<>(
+                    () -> {
+                        final Dependency dependency = new Dependency();
+                        dependency.setGroupId("org.eolang");
+                        dependency.setArtifactId("eo-runtime");
+                        dependency.setVersion(version);
+                        dependency.setClassifier("");
+                        return dependency;
+                    }
+                )
             )
         );
     }

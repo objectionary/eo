@@ -86,7 +86,7 @@
     eq.
       -1.as-bytes.left 3
       7.as-bytes
-    FALSE
+    false
 
 # Test.
 [] > left-with-even-neg
@@ -142,7 +142,7 @@
     eq.
       36.as-bytes.right 2
       -10.as-bytes
-    FALSE
+    false
 
 # Test.
 [] > right-with-odd-plus
@@ -261,7 +261,7 @@
       53.as-bytes.not
 
 # Test.
-[] > conjuction-of-bytes
+[] > conjunction-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   eq. > @
@@ -286,7 +286,7 @@
     1
 
 # Test.
-[] > convertable-to-bool
+[] > convertible-to-bool
   not. > @
     eq.
       01-.as-bool
@@ -311,8 +311,8 @@
 
 # Test.
 [] > concat-bools-as-bytes
-  TRUE.as-bytes > b1
-  FALSE.as-bytes > b2
+  true.as-bytes > b1
+  false.as-bytes > b2
   eq. > @
     concat.
       b1
@@ -423,3 +423,17 @@
   eq. > @
     (-4294967296.as-bytes.or 1.as-bytes).as-int
     -4294967295
+
+# Test.
+[] > bytes-of-wrong-size-as-int-of-returns-error
+  try > @
+    01-01-01-01.as-int
+    QQ.io.stdout e > [e]
+    false
+
+# Test.
+[] > bytes-of-wrong-size-as-float-returns-error
+  try > @
+    01-01-01-01.as-float
+    QQ.io.stdout e > [e]
+    false

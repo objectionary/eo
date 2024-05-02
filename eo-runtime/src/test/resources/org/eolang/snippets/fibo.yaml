@@ -1,3 +1,4 @@
+---
 skip: true
 file: org/eolang/snippets/fibo.eo
 out:
@@ -11,7 +12,7 @@ eo: |
   [args] > fibo
     # This is the default 64+ symbols comment in front of named abstract object.
     [n] > f
-      if > @
+      if. > @
         n.lt 2
         n
         plus.
@@ -22,4 +23,3 @@ eo: |
         "%d is the %dth number\n"
         8
         f 6
-

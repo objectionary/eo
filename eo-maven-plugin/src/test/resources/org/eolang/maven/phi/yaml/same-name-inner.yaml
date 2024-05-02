@@ -1,3 +1,4 @@
+---
 eo: |
   # Test.
   [] > compiles-correctly-with-long-duplicate-names
@@ -11,8 +12,8 @@ eo: |
           [] > long-object-name
             # Long object 5.
             [] > long-object-name
-    TRUE > @
-phi: |
+    true > @
+phi: |-
   {
     ⟦
       compiles-correctly-with-long-duplicate-names ↦ ⟦
@@ -25,11 +26,7 @@ phi: |
             ⟧
           ⟧
         ⟧,
-        φ ↦ Φ.org.eolang.bool(
-          α0 ↦ Φ.org.eolang.bytes(
-            Δ ⤍ 01-
-          )
-        )
+        φ ↦ Φ.org.eolang.true
       ⟧
     ⟧
   }

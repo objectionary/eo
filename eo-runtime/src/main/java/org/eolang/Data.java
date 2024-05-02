@@ -146,46 +146,37 @@ public interface Data {
          */
         private static Phi toPhi(final Object obj) {
             final Phi phi;
-            final byte[] bytes;
-            final boolean delta;
             final Phi eolang = Phi.Φ.take("org").take("eolang");
             if (obj instanceof Boolean) {
-                phi = eolang.take("bool").copy();
-                delta = false;
                 if (obj.equals(true)) {
-                    bytes = new byte[] {0x01};
+                    phi = eolang.take("true");
                 } else {
-                    bytes = new byte[] {0x00};
+                    phi = eolang.take("false");
                 }
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
-                delta = true;
-                bytes = (byte[]) obj;
-            } else if (obj instanceof Long) {
-                phi = eolang.take("int").copy();
-                delta = false;
-                bytes = new BytesOf((Long) obj).take();
-            } else if (obj instanceof String) {
-                phi = eolang.take("string").copy();
-                delta = false;
-                bytes = Data.ToPhi.unescapeJavaString(
-                    (String) obj
-                ).getBytes(StandardCharsets.UTF_8);
-            } else if (obj instanceof Double) {
-                phi = eolang.take("float").copy();
-                delta = false;
-                bytes = new BytesOf((Double) obj).take();
+                phi.attach((byte[]) obj);
             } else {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Unknown type of data: %s",
-                        obj.getClass().getCanonicalName()
-                    )
-                );
-            }
-            if (delta) {
-                phi.attach(bytes);
-            } else {
+                final byte[] bytes;
+                if (obj instanceof Long) {
+                    phi = eolang.take("int").copy();
+                    bytes = new BytesOf((Long) obj).take();
+                } else if (obj instanceof String) {
+                    phi = eolang.take("string").copy();
+                    bytes = Data.ToPhi.unescapeJavaString(
+                        (String) obj
+                    ).getBytes(StandardCharsets.UTF_8);
+                } else if (obj instanceof Double) {
+                    phi = eolang.take("float").copy();
+                    bytes = new BytesOf((Double) obj).take();
+                } else {
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Unknown type of data: %s",
+                            obj.getClass().getCanonicalName()
+                        )
+                    );
+                }
                 final Phi bts = eolang.take("bytes").copy();
                 bts.attach(bytes);
                 phi.put(0, bts);

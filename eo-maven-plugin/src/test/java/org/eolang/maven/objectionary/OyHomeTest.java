@@ -26,6 +26,7 @@ package org.eolang.maven.objectionary;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,7 +48,7 @@ final class OyHomeTest {
             Paths.get("pulled/master/org/example/main.eo")
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyHome("master", path)
                     .get("org.example.main")
@@ -64,7 +65,7 @@ final class OyHomeTest {
             Paths.get("pulled/master/org/example/main.eo")
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(
                 new OyHome("master", path)
                     .get("org.example.main")
@@ -72,7 +73,7 @@ final class OyHomeTest {
             Matchers.is(content)
         );
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new OyHome("master", path)
                 .contains("org.example.main"),
             Matchers.is(true)

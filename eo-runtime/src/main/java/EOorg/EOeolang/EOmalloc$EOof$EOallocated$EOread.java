@@ -25,8 +25,10 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
+
 package EOorg.EOeolang;
 
+import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -37,27 +39,33 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.pointer.free object.
- *
+ * Malloc.of.allocated.read object.
  * @since 0.36.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.pointer.free")
-public final class EOmalloc$EOmemory_block_pointer$EOfree extends PhDefault implements Atom {
+@XmirObject(oname = "malloc.of.allocated.read")
+final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
      */
-    public EOmalloc$EOmemory_block_pointer$EOfree(final Phi sigma) {
+    EOmalloc$EOof$EOallocated$EOread(final Phi sigma) {
         super(sigma);
+        this.add("offset", new AtVoid("offset"));
+        this.add("length", new AtVoid("length"));
     }
 
     @Override
-    public Phi lambda() {
-        Heaps.INSTANCE.free(
-            new Param(this.take(Attr.RHO), "id").strong(Long.class).intValue()
+    public Phi lambda() throws Exception {
+        final Phi rho = this.take(Attr.RHO);
+        final int length = Math.toIntExact(new Param(this, "length").strong(Long.class));
+        return new Data.ToPhi(
+            Heaps.INSTANCE.read(
+                Math.toIntExact(new Param(rho, "id").strong(Long.class)),
+                Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+                length
+            )
         );
-        return new Data.ToPhi(true);
     }
 }

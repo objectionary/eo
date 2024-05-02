@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -52,6 +53,7 @@ final class EOintEOltTest {
         final Phi less = left.take("lt");
         less.put(0, right);
         MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(less).take(Boolean.class),
             Matchers.equalTo(false)
         );

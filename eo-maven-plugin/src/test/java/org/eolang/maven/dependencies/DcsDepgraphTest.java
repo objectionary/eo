@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.LengthOf;
+import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,7 +54,7 @@ final class DcsDepgraphTest {
         @TempDir final Path tmp
     ) throws Exception {
         MatcherAssert.assertThat(
-            "TO ADD ASSERTION MESSAGE",
+            BinarizeParseTest.TO_ADD_MESSAGE,
             new LengthOf(new DcsDepgraph.DcsJson(this.file(tmp, name))).value(),
             Matchers.equalTo(number)
         );

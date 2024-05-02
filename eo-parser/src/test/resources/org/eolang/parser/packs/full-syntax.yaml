@@ -1,10 +1,11 @@
-xsls: []
+---
+xsls: [ ]
 tests:
   - /program/errors[count(error)=0]
   - /program/license[text()!='']
   - /program/metas[count(meta)=4]
   - /program/metas/meta[head='foo' and tail='']
-  - //o[@base='bool']
+  - //o[@base='true']
   - //o[@base='string']
   - //o[@name='hello' and @const]
   - //o[@as='i']
@@ -26,7 +27,7 @@ eo: |
 
   500.43.@ > one
 
-  # This is just a simple string
+  # This is the default 64+ symbols comment in front of abstract object.
   "Hello, друг!" > hello!
 
   # This is the default 64+ symbols comment in front of abstract object.
@@ -45,7 +46,7 @@ eo: |
         f
           12:foo
           ((t r 8.54 "yes" "\t").print 88 0x1f):hey
-          TRUE:vtx
+          true:vtx
           false:fle > a!
             []
               Q.x.f.d Q Q
@@ -79,11 +80,10 @@ eo: |
       @.
         b
     oops
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [] > obj
     "some" > @
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > foo
       ^.@ > @
 
@@ -103,12 +103,8 @@ eo: |
 
   # This is the default 64+ symbols comment in front of abstract object.
   [] > ooo
-    # This is one
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > o-1 /?
 
-    # This is two
-    # This is the default 64+ symbols comment in front of abstract object.
     [] > o2
 
   -2.4E3 > x

@@ -36,7 +36,7 @@ commentOptional
     ;
 
 commentMandatory
-    : comment commentOptional
+    : comment+
     ;
 
 // Object
@@ -55,7 +55,16 @@ slave
 // Indeprendent objects that may have slaves (except atom)
 // Ends on the next line
 master
-    : commentMandatory (formation | (atom | hanonym oname) EOL)
+    : commentMandatory masterBody
+    ;
+
+subMaster
+    : commentOptional masterBody
+    ;
+
+masterBody
+    : formation
+    | (atom | hanonym oname) EOL
     ;
 
 // Just an object reference without name
@@ -92,7 +101,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB object (slave | EOL? master)* UNTAB
+    : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
@@ -265,6 +274,7 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
+    | onlyphi // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -274,7 +284,7 @@ vapplicationArgUnboundCurrent
 vapplicationArgUnboundNext
     : vapplicationArgVanonymUnbound // vertical anonym object
     | vapplicationHeadNamed vapplicationArgs // vertical application
-    | reversed oname? vapplicationArgsReversed // reversed verical application
+    | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
 
 // Horizontal application as argument of vertical application
@@ -297,14 +307,14 @@ formationNameless
 
 // Formation with or without name
 formationNamedOrNameless
-    : commentMandatory formation
+    : commentOptional formation
     | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentMandatory formationBound
+    : commentOptional formationBound
     | formationBoundNameless
     ;
 
@@ -322,12 +332,12 @@ vapplicationArgHanonymBoundBody
 
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
-    : commentMandatory vapplicationArgHanonymBoundBody oname
+    : commentOptional vapplicationArgHanonymBoundBody oname
     | vapplicationArgHanonymBoundBody
     ;
 
 vapplicationArgHanonymUnbound
-    : commentMandatory hanonym oname
+    : commentOptional hanonym oname
     | hanonym
     ;
 
@@ -336,8 +346,21 @@ hanonym
     : attributes hanonymInner+
     ;
 
+// Unnamed abstract object with only @-bound attribute
+// x.y.z > [i]          -> [i] (x.y.z > @)
+// x y z > [i]          -> [i] (x y z > @)
+// [a] (b > c) > [i]    -> [i] ([a] (b > c) > @)
+// x > [i]              -> [i] (x > @)
+onlyphi
+    : (hmethod | happlication | hanonym | just) onlyphiTail
+    ;
+
+// Tail of the unnamed abstract object with only @-bound attribute
+onlyphiTail: spacedArrow attributes
+    ;
+
 // Inner object of horizontal anonym object
-// Does not contan elements in vertical notation
+// Does not contain elements in vertical notation
 hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
@@ -376,7 +399,7 @@ hmethodExtended
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
 // The division of elements into regular and versioned ones is due to
-// the presence of horizontal application where head or agruments can't
+// the presence of horizontal application where head or arguments can't
 // contain version
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned
@@ -424,11 +447,12 @@ vmethodOptional
 // 2. vertical application
 // 3. just an object reference
 // 4. vertical formation
+// 5. unnamed abstract object with only @-bound attribute
 // Ends on the next line
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | justNamed EOL
+    | (justNamed | onlyphi) EOL
     | formationNamedOrNameless
     ;
 
@@ -501,14 +525,18 @@ oname
 
 // Suffix
 suffix
-    : SPACE ARROW SPACE (PHI | NAME)
+    : spacedArrow (PHI | NAME)
+    ;
+
+spacedArrow
+    : SPACE ARROW SPACE
     ;
 
 // Simple scope
 // Does not contain elements in vertical notation
 // Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hanonym) RB
+    : LB (happlication | hanonym | onlyphi) RB
     ;
 
 // Version
@@ -522,7 +550,6 @@ as  : COLON (NAME | INT)
 
 // Data
 data: BYTES
-    | BOOL
     | TEXT
     | STRING
     | INT
@@ -617,10 +644,6 @@ BYTES
     : EMPTY_BYTES
     | BYTE MINUS
     | LINE_BYTES (MINUS EOL LINE_BYTES)*
-    ;
-
-BOOL: 'TRUE'
-    | 'FALSE'
     ;
 
 fragment ESCAPE_SEQUENCE
