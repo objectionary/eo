@@ -32,10 +32,10 @@ SOFTWARE.
       <rusts>
         <xsl:comment>"Rust inserts"</xsl:comment>
         <xsl:for-each select="//o">
-          <xsl:if test="../attribute(base) = '.rust' and attribute(base) = 'org.eolang.string'">
+          <xsl:if test="(../attribute(base) = 'org.eolang.rust' or (../attribute(base) = '.rust' and ../o[1]/attribute(base) = '.eolang' and ../o[1]/o[1]/attribute(base) = '.org' and ../o[1]/o[1]/o[1]/attribute(base) = 'Q')) and (attribute(base) = 'org.eolang.string' or (attribute(base) = '.string' and o[1]/attribute(base) = '.eolang' and o[1]/o[1]/attribute(base) = '.org' and o[1]/o[1]/o[1]/attribute(base) = 'Q'))">
             <rust>
               <xsl:attribute name="code">
-                <xsl:value-of select="./o/text()"/>
+                <xsl:value-of select="./o[@data = 'bytes']/text()"/>
               </xsl:attribute>
               <xsl:attribute name="code_loc">
                 <xsl:value-of select="attribute(loc)"/>
