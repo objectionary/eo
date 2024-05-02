@@ -33,7 +33,6 @@ import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
-import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
@@ -51,6 +50,9 @@ public final class HmBase implements Home {
      */
     private final Path cwd;
 
+    /**
+     * Home with "save" functionality.
+     */
     private final Home origin;
 
     /**
@@ -69,7 +71,7 @@ public final class HmBase implements Home {
      */
     public HmBase(final Path pth) {
         this.cwd = pth;
-        this.origin = new HmNew(
+        this.origin = new HmSave(
             (input, path) -> {
                 final Path target = this.absolute(this.onlyRelative(path));
                 if (target.toFile().getParentFile().mkdirs()) {
@@ -104,54 +106,26 @@ public final class HmBase implements Home {
         );
     }
 
-    /**
-     * Saving string.
-     *
-     * @param str String
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
     @Override
     public void save(final String str, final Path path) throws IOException {
         this.origin.save(str, path);
     }
 
-    /**
-     * Saving text.
-     *
-     * @param txt Text
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
     @Override
     public void save(final Text txt, final Path path) throws IOException {
         this.origin.save(txt, path);
     }
 
-    /**
-     * Saving stream.
-     *
-     * @param stream Input stream
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
     @Override
     public void save(final InputStream stream, final Path path) throws IOException  {
         this.origin.save(stream, path);
     }
 
-    /**
-     * Saving bytes.
-     *
-     * @param bytes Byte array
-     * @param path Cwd-relative path to file
-     * @throws IOException If fails
-     */
     @Override
     public void save(final byte[] bytes, final Path path) throws IOException  {
         this.origin.save(bytes, path);
     }
-    
+
     @Override
     public void save(final Input input, final Path path) throws IOException {
         this.origin.save(input, path);

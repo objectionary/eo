@@ -42,7 +42,7 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(final String str, final Path path) throws IOException;
+    void save(String str, Path path) throws IOException;
 
     /**
      * Saving text.
@@ -51,7 +51,7 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(final Text txt, final Path path) throws IOException;
+    void save(Text txt, Path path) throws IOException;
 
     /**
      * Saving stream.
@@ -60,7 +60,7 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(final InputStream stream, final Path path) throws IOException;
+    void save(InputStream stream, Path path) throws IOException;
 
     /**
      * Saving bytes.
@@ -69,7 +69,7 @@ public interface Home {
      * @param path Cwd-relative path to file
      * @throws IOException If fails
      */
-    void save(final byte[] bytes, final Path path) throws IOException;
+    void save(byte[] bytes, Path path) throws IOException;
 
     /**
      * Saving input.
