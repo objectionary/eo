@@ -98,7 +98,7 @@ final class SnippetTestCase {
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
-                    .set("failOnWarnings", "true ");
+                    .set("failOnWarnings", "true");
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
