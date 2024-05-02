@@ -40,7 +40,7 @@ final class CommitHashesTextTest {
     @ExtendWith(WeAreOnline.class)
     void downloadsDefaultList() throws Exception {
         MatcherAssert.assertThat(
-            "CommitHashesText  downloads the default list of hashes from Objectionary",
+            "CommitHashesText downloads the default list of hashes from Objectionary",
             new CommitHashesText().asString(),
             Matchers.containsString("master")
         );
