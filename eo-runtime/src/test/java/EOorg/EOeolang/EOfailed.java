@@ -40,5 +40,5 @@ import org.eolang.PhDefault;
     "JTCOP.RuleCorrectTestName",
     "JTCOP.RuleInheritanceInTests"
 })
-final class EOfailed extends PhDefault {
+public final class EOfailed extends PhDefault {
 }
