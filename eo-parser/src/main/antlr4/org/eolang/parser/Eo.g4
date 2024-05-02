@@ -36,7 +36,7 @@ commentOptional
     ;
 
 commentMandatory
-    : comment commentOptional
+    : comment+
     ;
 
 // Object
@@ -55,7 +55,16 @@ slave
 // Indeprendent objects that may have slaves (except atom)
 // Ends on the next line
 master
-    : commentMandatory (formation | (atom | hanonym oname) EOL)
+    : commentMandatory masterBody
+    ;
+
+subMaster
+    : commentOptional masterBody
+    ;
+
+masterBody
+    : formation
+    | (atom | hanonym oname) EOL
     ;
 
 // Just an object reference without name
@@ -92,7 +101,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB object (slave | EOL? master)* UNTAB
+    : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
@@ -298,14 +307,14 @@ formationNameless
 
 // Formation with or without name
 formationNamedOrNameless
-    : commentMandatory formation
+    : commentOptional formation
     | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentMandatory formationBound
+    : commentOptional formationBound
     | formationBoundNameless
     ;
 
@@ -323,12 +332,12 @@ vapplicationArgHanonymBoundBody
 
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
-    : commentMandatory vapplicationArgHanonymBoundBody oname
+    : commentOptional vapplicationArgHanonymBoundBody oname
     | vapplicationArgHanonymBoundBody
     ;
 
 vapplicationArgHanonymUnbound
-    : commentMandatory hanonym oname
+    : commentOptional hanonym oname
     | hanonym
     ;
 

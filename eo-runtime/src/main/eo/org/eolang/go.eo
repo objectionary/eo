@@ -58,7 +58,6 @@
     8
     m.put m.id > [m]
 
-  # To.
   [body] > to
     try > @
       body token
@@ -69,7 +68,6 @@
           error e
       true
 
-    # Token.
     [] > token
       # Backward jump.
       error > backward
@@ -77,7 +75,6 @@
           &.^.^.to &.^.body > value
           &.^.^.id > id
 
-      # Forward jump.
       [res] > forward
         error > @
           []
