@@ -38,8 +38,6 @@
   # Object encaged by locator.
   [locator] > encaged
     $ > self
-
-    # Retrieved encaged object by locator.
     [] > @ /?
 
     # Encage new object by locator.

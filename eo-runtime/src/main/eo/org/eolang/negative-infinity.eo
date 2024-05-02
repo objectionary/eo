@@ -63,20 +63,16 @@
   [x] > times
     x > value!
 
-    # Tests if given number is greater than float or integer zero.
     [num] > is-num-gt-zero
       try > @
-        []
-          0.lt num > @
+        0.lt num
         [e]
           0.0.lt num > @
         false
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
 
-    # Tests if given number is equal to nan, float or integer zero.
     [num] > is-nan-or-zero
       or. > @
         or.
@@ -98,7 +94,6 @@
     positive-infinity.as-bytes > pos-inf-as-bytes!
     x > value!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
     if. > @
@@ -113,7 +108,6 @@
     x > value!
     negative-infinity > neg-inf-as-bytes!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
     if. > @
@@ -126,11 +120,10 @@
   # Quotient of the division of $ by x
   [x] > div
     x > value!
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
+
     [num] > is-nan
       num.eq nan.as-bytes > @
 
-    # Tests if given number is equal to nan, positive or negative infinity.
     [num] > is-nan-or-infinite
       or. > @
         or.
@@ -138,11 +131,9 @@
           num.eq positive-infinity
         num.eq negative-infinity
 
-    # Tests if given number is greater or equal to float or integer zero.
     [num] > is-num-gte-zero
       try > @
-        []
-          0.lte num > @
+        0.lte num
         [e]
           0.0.lte num > @
         false

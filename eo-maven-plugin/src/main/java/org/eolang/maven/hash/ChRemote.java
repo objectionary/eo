@@ -25,7 +25,6 @@ package org.eolang.maven.hash;
 
 import com.jcabi.log.Logger;
 import org.cactoos.Text;
-import org.cactoos.text.Sticky;
 
 /**
  * Hash of tag from objectionary.
@@ -37,7 +36,7 @@ public final class ChRemote implements CommitHash {
     /**
      * Cached text of hashes.
      */
-    private static final Text CACHE = new Sticky(new CommitHashesText());
+    private static final Text CACHE = new CommitHashesText();
 
     /**
      * Tag.

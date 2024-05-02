@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "cage.encaged.encage")
-final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
+public final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
     /**
      * Ctor.
      * @param sigma Sigma
