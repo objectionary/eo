@@ -24,14 +24,63 @@
 package org.eolang.maven.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
+import org.cactoos.Input;
+import org.cactoos.Text;
 
 /**
  * Location for the files.
  * @since 0.32.0
  */
-public interface Home extends DataSaved {
+public interface Home {
+    /**
+     * Saving string.
+     *
+     * @param str String
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    void save(final String str, final Path path) throws IOException;
+
+    /**
+     * Saving text.
+     *
+     * @param txt Text
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    void save(final Text txt, final Path path) throws IOException;
+
+    /**
+     * Saving stream.
+     *
+     * @param stream Input stream
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    void save(final InputStream stream, final Path path) throws IOException;
+
+    /**
+     * Saving bytes.
+     *
+     * @param bytes Byte array
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    void save(final byte[] bytes, final Path path) throws IOException;
+
+    /**
+     * Saving input.
+     *
+     * @param input Input
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     * @throws IllegalArgumentException If given path is absolute
+     */
+    void save(Input input, Path path) throws IOException;
+
     /**
      * Check if exists.
      *

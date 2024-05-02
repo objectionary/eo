@@ -25,9 +25,12 @@ package org.eolang.maven.util;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
+import org.cactoos.Text;
+import org.cactoos.io.InputOf;
 
 /**
  * Location for files that saves optionally.
@@ -39,6 +42,8 @@ public final class HmOptional implements Home {
      * Original home.
      */
     private final Home origin;
+
+    private final Home call;
 
     /**
      * Rewrite files or not.
@@ -54,16 +59,70 @@ public final class HmOptional implements Home {
     public HmOptional(final Home home, final boolean rwte) {
         this.origin = home;
         this.rewrite = rwte;
+        this.call = new HmNew(
+            (input, path) -> {
+                final Path target = this.absolute(this.onlyRelative(path));
+                if (!target.toFile().exists() || this.rewrite) {
+                    this.origin.save(input, path);
+                } else {
+                    Logger.info(this, "Rewriting of the %s file was skipped", target);
+                }
+            }
+        );
+    }
+
+
+    /**
+     * Saving string.
+     *
+     * @param str String
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final String str, final Path path) throws IOException {
+        this.call.save(str, path);
+    }
+
+    /**
+     * Saving text.
+     *
+     * @param txt Text
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final Text txt, final Path path) throws IOException {
+        this.call.save(txt, path);
+    }
+
+    /**
+     * Saving stream.
+     *
+     * @param stream Input stream
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final InputStream stream, final Path path) throws IOException  {
+        this.call.save(stream, path);
+    }
+
+    /**
+     * Saving bytes.
+     *
+     * @param bytes Byte array
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final byte[] bytes, final Path path) throws IOException  {
+        this.call.save(bytes, path);
     }
 
     @Override
     public void save(final Input input, final Path path) throws IOException {
-        final Path target = this.absolute(this.onlyRelative(path));
-        if (!target.toFile().exists() || this.rewrite) {
-            this.origin.save(input, path);
-        } else {
-            Logger.info(this, "Rewriting of the %s file was skipped", target);
-        }
+        this.call.save(input, path);
     }
 
     @Override

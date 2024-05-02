@@ -26,11 +26,14 @@ package org.eolang.maven.util;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
+import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
@@ -48,6 +51,8 @@ public final class HmBase implements Home {
      */
     private final Path cwd;
 
+    private final Home origin;
+
     /**
      * Ctor.
      *
@@ -60,43 +65,96 @@ public final class HmBase implements Home {
     /**
      * Ctor.
      *
-     * @param path Path
+     * @param pth Path
      */
-    public HmBase(final Path path) {
-        this.cwd = path;
+    public HmBase(final Path pth) {
+        this.cwd = pth;
+        this.origin = new HmNew(
+            (input, path) -> {
+                final Path target = this.absolute(this.onlyRelative(path));
+                if (target.toFile().getParentFile().mkdirs()) {
+                    Logger.debug(
+                        this, "Directory created: %s",
+                        new Rel(target.getParent())
+                    );
+                }
+                try {
+                    final long bytes = new IoChecked<>(
+                        new LengthOf(
+                            new TeeInput(
+                                input,
+                                new OutputTo(target)
+                            )
+                        )
+                    ).value();
+                    Logger.debug(
+                        HmBase.class, "File %s saved (%d bytes)",
+                        target, bytes
+                    );
+                } catch (final IOException ex) {
+                    throw new IOException(
+                        String.format(
+                            "Failed while trying to save to %s",
+                            target
+                        ),
+                        ex
+                    );
+                }
+            }
+        );
     }
 
+    /**
+     * Saving string.
+     *
+     * @param str String
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final String str, final Path path) throws IOException {
+        this.origin.save(str, path);
+    }
+
+    /**
+     * Saving text.
+     *
+     * @param txt Text
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final Text txt, final Path path) throws IOException {
+        this.origin.save(txt, path);
+    }
+
+    /**
+     * Saving stream.
+     *
+     * @param stream Input stream
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final InputStream stream, final Path path) throws IOException  {
+        this.origin.save(stream, path);
+    }
+
+    /**
+     * Saving bytes.
+     *
+     * @param bytes Byte array
+     * @param path Cwd-relative path to file
+     * @throws IOException If fails
+     */
+    @Override
+    public void save(final byte[] bytes, final Path path) throws IOException  {
+        this.origin.save(bytes, path);
+    }
+    
     @Override
     public void save(final Input input, final Path path) throws IOException {
-        final Path target = this.absolute(this.onlyRelative(path));
-        if (target.toFile().getParentFile().mkdirs()) {
-            Logger.debug(
-                this, "Directory created: %s",
-                new Rel(target.getParent())
-            );
-        }
-        try {
-            final long bytes = new IoChecked<>(
-                new LengthOf(
-                    new TeeInput(
-                        input,
-                        new OutputTo(target)
-                    )
-                )
-            ).value();
-            Logger.debug(
-                HmBase.class, "File %s saved (%d bytes)",
-                target, bytes
-            );
-        } catch (final IOException ex) {
-            throw new IOException(
-                String.format(
-                    "Failed while trying to save to %s",
-                    target
-                ),
-                ex
-            );
-        }
+        this.origin.save(input, path);
     }
 
     @Override
