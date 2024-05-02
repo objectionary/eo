@@ -84,7 +84,7 @@ final class SnippetTestCase {
                 SnippetTestCase.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
-                    .write(String.format("%s\n", map.get("eo")))
+                    .write(String.formt("%s\n", map.get("eo")))
                     .show();
                 f.dependencies().appendItself();
                 f.build()
