@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * Test that all EO.. classes are public.
  * @since 0.38
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.PackageCase"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public class EoClassesArePublicTest {
 
     @Test
