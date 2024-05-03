@@ -24,40 +24,46 @@
 /*
  * @checkstyle PackageNameCheck (10 lines)
  */
-package EOorg.EOeolang;
+package org.eolang;
 
 import com.google.common.reflect.ClassPath;
-import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test that all EO.. classes are public.
+ * Test case for {@link XmirObject}.
+ *
  * @since 0.38
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-public class EoClassesArePublicTest {
+public class XmirObjectTest {
 
     @Test
-    @SuppressWarnings("JTCOP.RulePresentTense")
-    public void arePublic() throws IOException {
+    public void annotatesOnlyPublicClasses() throws IOException {
         final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
             .getAllClasses()
             .stream()
             .filter(clazz -> clazz.getPackageName().equals("EOorg.EOeolang"))
             .map(ClassPath.ClassInfo::load)
-            .filter(EoClassesArePublicTest::isEoClass)
+            .filter(
+                clazz -> clazz.getSimpleName().startsWith("EO")
+                    && Phi.class.isAssignableFrom(clazz)
+            )
             .collect(Collectors.toSet());
         assert !clazzes.isEmpty();
-        Logger.info(this.getClass(), "Found %d EO classes", clazzes.size());
         MatcherAssert.assertThat(
-            "All EO.. classes should be public",
+            "Some EOxx classes are found",
+            clazzes.stream()
+                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+                .collect(Collectors.toList()),
+            Matchers.empty()
+        );
+        MatcherAssert.assertThat(
+            "All EOxx classes are public",
             clazzes.stream()
                 .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
                 .collect(Collectors.toList()),
@@ -65,13 +71,4 @@ public class EoClassesArePublicTest {
         );
     }
 
-    /**
-     * Is EO.. class and is instance of {@link Phi}.
-     * @param clazz Class.
-     * @return True if is.
-     */
-    private static boolean isEoClass(final Class<?> clazz) {
-        return clazz.getSimpleName().startsWith("EO")
-            && Phi.class.isAssignableFrom(clazz);
-    }
 }
