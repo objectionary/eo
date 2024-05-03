@@ -76,12 +76,11 @@
     (dataized object).as-bytes > bts
     malloc.of > @
       bts.size
-      # Outer scope.
       [m] > outer-scope
         seq > @
           *
-            m.write 0 bts
-            scope m
+            m.write 0 ^.bts
+            ^.scope m
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.

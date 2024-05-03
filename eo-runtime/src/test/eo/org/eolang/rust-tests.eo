@@ -138,7 +138,7 @@
       )
     }
     """
-    []
+    [] > p
     *
   not. > @
     lt.
@@ -159,7 +159,7 @@
       Some(EOVertex(v))
     }
     """
-    []
+    [] > p
     *
   eq. > @
     read
@@ -202,10 +202,8 @@
   eq. > @
     slice.
       try
-        []
-          put > @
-        [e]
-          e > @
+        put
+        e > [e]
         true
       0
       length.
@@ -230,13 +228,11 @@
       Some(EOInt(0 as i64))
     }
     """
-    []
+    [] > p
     *
   try > res
-    []
-      insert > @
-    [e]
-      e > @
+    insert
+    e > [e]
     true
   eq. > @
     res.slice
@@ -259,7 +255,7 @@
       Some(EOVertex(copy))
     }
     """
-    []
+    [] > p
     *
   eq. > @
     copy
@@ -280,7 +276,7 @@
       Some(EOInt(v as i64))
     }
     """
-    []
+    [] > p
     *
   not. > @
     lt.
@@ -310,7 +306,7 @@
       Some(EOInt(a + b))
     }
     """
-    []
+    [] > p
     *
       "byteorder:1.4.3"
   eq. > @
@@ -333,10 +329,8 @@
     []
     *
   try > res
-    []
-      err > @
-    [e]
-      e > @
+    err
+    e > [e]
     true
   eq. > @
     slice.
@@ -386,7 +380,7 @@
       Some(EOVertex(copy))
     }
     """
-    []
+    [] > p
     *
   eq. > @
     applied.content

@@ -30,10 +30,10 @@
 [] > seq-single-dataization-float-less
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0.0
-        [m]
+        [m] > float-scope
           b.put > @
             lt.
               seq
@@ -46,10 +46,10 @@
 [] > seq-single-dataization-float-greater
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0.0
-        [m]
+        [m] > float-scope
           b.put > @
             gt.
               seq
@@ -62,10 +62,10 @@
 [] > seq-single-dataization-int-less
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0
-        [m]
+        [m] > int-scope
           b.put > @
             lt.
               seq
@@ -78,10 +78,10 @@
 [] > seq-single-dataization-int-less-or-equal
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0
-        [m]
+        [m] > int-scope
           b.put > @
             lte.
               seq
@@ -143,10 +143,10 @@
 [] > seq-single-dataization-int-equal-to-test
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0
-        [m]
+        [m] > int-scope
           b.put > @
             eq.
               seq
@@ -160,10 +160,10 @@
 [] > seq-single-dataization-int-equal-to-cache-problem-test
   malloc.of > @
     1
-    [b]
+    [b] > bool-scope
       malloc.for > @
         0
-        [m]
+        [m] > int-scope
           b.put > @
             eq.
               seq

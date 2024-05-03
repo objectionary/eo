@@ -41,4 +41,11 @@ import org.eolang.PhDefault;
     "JTCOP.RuleInheritanceInTests"
 })
 public final class EOfailed extends PhDefault {
+    /**
+     * Ctor.
+     * @param arg Argument
+     */
+    public EOfailed(final String arg) {
+        super();
+    }
 }
