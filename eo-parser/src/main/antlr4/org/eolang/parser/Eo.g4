@@ -36,7 +36,7 @@ commentOptional
     ;
 
 commentMandatory
-    : comment commentOptional
+    : comment+
     ;
 
 // Object
@@ -55,7 +55,16 @@ slave
 // Indeprendent objects that may have slaves (except atom)
 // Ends on the next line
 master
-    : commentMandatory (formation | (atom | hanonym oname) EOL)
+    : commentMandatory masterBody
+    ;
+
+subMaster
+    : commentOptional masterBody
+    ;
+
+masterBody
+    : formation
+    | (atom | hanonym oname) EOL
     ;
 
 // Just an object reference without name
@@ -92,7 +101,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB object (slave | EOL? master)* UNTAB
+    : EOL TAB (slave | subMaster) (slave | EOL? subMaster)* UNTAB
     ;
 
 // Attributes of an abstract object, atom or horizontal anonym object
@@ -275,7 +284,7 @@ vapplicationArgUnboundCurrent
 vapplicationArgUnboundNext
     : vapplicationArgVanonymUnbound // vertical anonym object
     | vapplicationHeadNamed vapplicationArgs // vertical application
-    | reversed oname? vapplicationArgsReversed // reversed verical application
+    | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
 
 // Horizontal application as argument of vertical application
@@ -298,14 +307,14 @@ formationNameless
 
 // Formation with or without name
 formationNamedOrNameless
-    : commentMandatory formation
+    : commentOptional formation
     | formationNameless
     ;
 
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentMandatory formationBound
+    : commentOptional formationBound
     | formationBoundNameless
     ;
 
@@ -323,12 +332,12 @@ vapplicationArgHanonymBoundBody
 
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
-    : commentMandatory vapplicationArgHanonymBoundBody oname
+    : commentOptional vapplicationArgHanonymBoundBody oname
     | vapplicationArgHanonymBoundBody
     ;
 
 vapplicationArgHanonymUnbound
-    : commentMandatory hanonym oname
+    : commentOptional hanonym oname
     | hanonym
     ;
 
@@ -351,7 +360,7 @@ onlyphiTail: spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
-// Does not contan elements in vertical notation
+// Does not contain elements in vertical notation
 hanonymInner
     : SPACE LB (hmethod | hmethodVersioned | happlication | hanonym | just) oname RB
     ;
@@ -390,7 +399,7 @@ hmethodExtended
 // The whole method is written in one line
 // The head does not contain elements in vertical notation
 // The division of elements into regular and versioned ones is due to
-// the presence of horizontal application where head or agruments can't
+// the presence of horizontal application where head or arguments can't
 // contain version
 hmethodVersioned
     : hmethodHead methodTail* methodTailVersioned

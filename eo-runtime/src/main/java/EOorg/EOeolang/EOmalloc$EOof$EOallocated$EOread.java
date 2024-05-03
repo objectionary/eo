@@ -45,7 +45,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.of.allocated.read")
-final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
+public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      */

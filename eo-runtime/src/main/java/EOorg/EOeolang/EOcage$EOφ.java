@@ -42,7 +42,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "cage.@")
-final class EOcage$EOφ extends PhDefault implements Atom {
+public final class EOcage$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         final Phi encaged = this.take(Attr.RHO).take("encaged").copy();

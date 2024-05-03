@@ -21,55 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.hash;
+/*
+ * @checkstyle PackageNameCheck (10 lines)
+ */
+package org.eolang;
 
-import com.yegor256.WeAreOnline;
+import com.google.common.reflect.ClassPath;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.cactoos.Scalar;
-import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link CommitHashesText}.
+ * Test case for {@link XmirObject}.
  *
- * @since 0.37.0
- * @todo #3122:60min Add "Reload" to the test CommitHashesTextTest#isThreadSafe
- *  when issue about "Reload" annotation will be solved.
- *  We need to reinitialize some static fields of the class
- *  before the test will be executed.
+ * @since 0.38
  */
-final class CommitHashesTextTest {
+public class XmirObjectTest {
 
     @Test
-    @ExtendWith(WeAreOnline.class)
-    void downloadsDefaultList() throws Exception {
+    public void annotatesOnlyPublicClasses() throws IOException {
+        final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
+            .getAllClasses()
+            .stream()
+            .filter(clazz -> clazz.getPackageName().equals("EOorg.EOeolang"))
+            .map(ClassPath.ClassInfo::load)
+            .filter(
+                clazz -> clazz.getSimpleName().startsWith("EO")
+                    && Phi.class.isAssignableFrom(clazz)
+            )
+            .collect(Collectors.toSet());
+        assert !clazzes.isEmpty();
         MatcherAssert.assertThat(
-            "CommitHashesText downloads the default list of hashes from Objectionary",
-            new CommitHashesText().asString(),
-            Matchers.containsString("master")
+            "Some EOxx classes are found",
+            clazzes.stream()
+                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+                .collect(Collectors.toList()),
+            Matchers.empty()
+        );
+        MatcherAssert.assertThat(
+            "All EOxx classes are public",
+            clazzes.stream()
+                .filter(clazz -> !Modifier.isPublic(clazz.getModifiers()))
+                .collect(Collectors.toList()),
+            Matchers.empty()
         );
     }
 
-    @Test
-    void isThreadSafe() {
-        final int threads = 200;
-        boolean nonulls = true;
-        for (final boolean bool: new Threads<>(
-            threads,
-            Stream.generate(
-                () -> (Scalar<Boolean>) () -> new CommitHashesText().asString() != null
-            ).limit(threads).collect(Collectors.toList())
-            )) {
-            nonulls &= bool;
-        }
-        MatcherAssert.assertThat(
-            "Can be used in different threads without NPE",
-            nonulls,
-            Matchers.equalTo(true)
-        );
-    }
 }

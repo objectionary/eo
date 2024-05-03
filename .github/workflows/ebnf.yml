@@ -13,7 +13,7 @@ jobs:
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+      - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
           sudo apt-get -y install ghostscript imagemagick texlive-extra-utils pdf2svg inkscape
@@ -28,8 +28,8 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+          key: ${{ runner.os }}-jdk-20-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-20-maven-
       - run: |
           mkdir -p "$CONVERT_PATH"
           wget --quiet http://public.yegor256.com/convert.zip -O /tmp/convert.zip

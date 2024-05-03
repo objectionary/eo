@@ -23,8 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EObytes;
-
 /**
  * Bytes.
  *

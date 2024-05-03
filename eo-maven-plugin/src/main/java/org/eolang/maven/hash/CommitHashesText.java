@@ -26,9 +26,7 @@ package org.eolang.maven.hash;
 import com.jcabi.aspects.RetryOnFailure;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
-import org.cactoos.Text;
 import org.cactoos.scalar.Unchecked;
-import org.cactoos.text.Sticky;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 
@@ -49,15 +47,13 @@ final class CommitHashesText extends TextEnvelope {
     /**
      * Cache.
      */
-    private static final Text CACHE = new Sticky(
-        CommitHashesText.asText(CommitHashesText.HOME)
-    );
+    private static final String CACHE = CommitHashesText.asText(CommitHashesText.HOME);
 
     /**
      * Constructor.
      */
     CommitHashesText() {
-        super(CommitHashesText.CACHE);
+        super(() -> CommitHashesText.CACHE);
     }
 
     /**
@@ -66,10 +62,9 @@ final class CommitHashesText extends TextEnvelope {
      * @return The body of the web page
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static Text asText(final String url) {
-        final String body = new Unchecked<>(
+    private static String asText(final String url) {
+        return new Unchecked<>(
             () -> new TextOf(new URL(url)).asString()
         ).value();
-        return new TextOf(body);
     }
 }

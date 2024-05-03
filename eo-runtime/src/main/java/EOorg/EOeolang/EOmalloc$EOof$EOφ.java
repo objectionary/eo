@@ -44,7 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.of.@")
-final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
+public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);

@@ -58,7 +58,7 @@ final class Cages {
     /**
      * Encage object for the first time.
      * When object is encaged - locator will be generated.
-     * @param object Object ot encage
+     * @param object Object to encage
      * @return Locator to the object in cage
      */
     int init(final Phi object) {

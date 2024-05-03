@@ -86,8 +86,6 @@
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
   [size scope] > of
-    # Allocates a memory block, initializes it, pass it to the `scope` and dataizes `scope` and
-    # at the end, even if the error is occurred, clears the block.
     [] > @ /bytes
 
     # Allocated block in memory that provides an API for writing and reading.

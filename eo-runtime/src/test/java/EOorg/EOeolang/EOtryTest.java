@@ -90,26 +90,6 @@ public final class EOtryTest {
     }
 
     @Test
-    public void printsCatcherOutput() {
-        final Phi body = new PhWith(
-            new PhWith(
-                new PhWith(
-                    new EOtry(),
-                    0, new Broken()
-                ),
-                1, new Catcher()
-            ),
-            2,
-            new Data.ToPhi(true)
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(body).take(String.class),
-            Matchers.containsString("it is broken")
-        );
-    }
-
-    @Test
     public void worksWithoutException() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,

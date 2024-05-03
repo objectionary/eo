@@ -167,7 +167,7 @@ public final class PhiMojo extends SafeMojo {
 
     /**
      * Translate given xmir to phi calculus expression.
-     * @param train Train that optimize and traslates given xmir
+     * @param train Train that optimize and translates given xmir
      * @param xmir Text of xmir
      * @return Translated xmir
      * @throws ImpossibleToPhiTranslationException If fails to translate given XMIR to phi
