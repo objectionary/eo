@@ -1,0 +1,146 @@
+---
+sheets:
+  - /org/eolang/maven/add_rust/add_rust.xsl
+document:
+  <!--Check the case if string has base ".string" instead of "org.eolang.string"-->
+  <program>
+     <objects>
+        <o abstract=""
+           line="29"
+           loc="Φ.org.eolang.rust-with-string-fqn"
+           name="rust-with-string-fqn"
+           original-name="rust-with-string-fqn"
+           pos="0">
+           <o base=".rust"
+              line="33"
+              loc="Φ.org.eolang.rust-with-string-fqn.r"
+              name="r"
+              pos="2">
+              <o base=".eolang"
+                 line="32"
+                 loc="Φ.org.eolang.rust-with-string-fqn.r.ρ"
+                 pos="2">
+                 <o base=".org"
+                    line="31"
+                    loc="Φ.org.eolang.rust-with-string-fqn.r.ρ.ρ"
+                    pos="2">
+                    <o base="Q"
+                       line="30"
+                       loc="Φ.org.eolang.rust-with-string-fqn.r.ρ.ρ.ρ"
+                       pos="2"/>
+                 </o>
+              </o>
+              <o as="0"
+                 base=".string"
+                 line="37"
+                 loc="Φ.org.eolang.rust-with-string-fqn.r.α0"
+                 pos="4">
+                 <o base=".eolang"
+                    line="36"
+                    loc="Φ.org.eolang.rust-with-string-fqn.r.α0.ρ"
+                    pos="4">
+                    <o base=".org"
+                       line="35"
+                       loc="Φ.org.eolang.rust-with-string-fqn.r.α0.ρ.ρ"
+                       pos="4">
+                       <o base="Q"
+                          line="34"
+                          loc="Φ.org.eolang.rust-with-string-fqn.r.α0.ρ.ρ.ρ"
+                          pos="4"/>
+                    </o>
+                 </o>
+                 <o as="0"
+                    base="org.eolang.bytes"
+                    data="bytes"
+                    line="41"
+                    loc="Φ.org.eolang.rust-with-string-fqn.r.α0.α0"
+                    pos="6">75 73 65 20 65 6F 3A 3A 50 6F 72 74 61 6C 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3A 3A 7B 45 4F 49 6E 74 7D 3B 0A 0A 70 75 62 20 66 6E 20 66 6F 6F 28 5F 70 6F 72 74 61 6C 3A 20 26 6D 75 74 20 50 6F 72 74 61 6C 29 20 2D 3E 20 4F 70 74 69 6F 6E 3C 45 4F 3E 20 7B 0A 20 20 70 72 69 6E 74 6C 6E 21 28 22 48 65 6C 6C 6F 20 77 6F 72 6C 64 20 66 72 6F 6D 20 72 75 73 74 22 29 3B 0A 20 20 53 6F 6D 65 28 45 4F 49 6E 74 28 32 29 29 0A 7D</o>
+              </o>
+              <o as="1"
+                 base="rust-with-string-fqn$t0$a2"
+                 cut="8"
+                 line="43"
+                 loc="Φ.org.eolang.rust-with-string-fqn.r.α1"
+                 pos="4"
+                 ref="43"/>
+              <o as="2"
+                 base=".empty"
+                 line="48"
+                 loc="Φ.org.eolang.rust-with-string-fqn.r.α2"
+                 pos="4">
+                 <o base=".tuple"
+                    line="47"
+                    loc="Φ.org.eolang.rust-with-string-fqn.r.α2.ρ"
+                    pos="4">
+                    <o base=".eolang"
+                       line="46"
+                       loc="Φ.org.eolang.rust-with-string-fqn.r.α2.ρ.ρ"
+                       pos="4">
+                       <o base=".org"
+                          line="45"
+                          loc="Φ.org.eolang.rust-with-string-fqn.r.α2.ρ.ρ.ρ"
+                          pos="4">
+                          <o base="Q"
+                             line="44"
+                             loc="Φ.org.eolang.rust-with-string-fqn.r.α2.ρ.ρ.ρ.ρ"
+                             pos="4"/>
+                       </o>
+                    </o>
+                 </o>
+              </o>
+           </o>
+           <o base=".eq"
+              line="51"
+              loc="Φ.org.eolang.rust-with-string-fqn.φ"
+              name="@"
+              pos="2">
+              <o base=".r"
+                 line="50"
+                 loc="Φ.org.eolang.rust-with-string-fqn.φ.ρ"
+                 pos="2">
+                 <o base="$"
+                    line="49"
+                    loc="Φ.org.eolang.rust-with-string-fqn.φ.ρ.ρ"
+                    pos="2"/>
+              </o>
+              <o as="0"
+                 base=".int"
+                 line="55"
+                 loc="Φ.org.eolang.rust-with-string-fqn.φ.α0"
+                 pos="4">
+                 <o base=".eolang"
+                    line="54"
+                    loc="Φ.org.eolang.rust-with-string-fqn.φ.α0.ρ"
+                    pos="4">
+                    <o base=".org"
+                       line="53"
+                       loc="Φ.org.eolang.rust-with-string-fqn.φ.α0.ρ.ρ"
+                       pos="4">
+                       <o base="Q"
+                          line="52"
+                          loc="Φ.org.eolang.rust-with-string-fqn.φ.α0.ρ.ρ.ρ"
+                          pos="4"/>
+                    </o>
+                 </o>
+                 <o as="0"
+                    base="org.eolang.bytes"
+                    data="bytes"
+                    line="59"
+                    loc="Φ.org.eolang.rust-with-string-fqn.φ.α0.α0"
+                    pos="6">00 00 00 00 00 00 00 02</o>
+              </o>
+           </o>
+        </o>
+        <o abstract=""
+           ancestors="1"
+           as="1"
+           line="43"
+           loc="Φ.org.eolang.rust-with-string-fqn$t0$a2"
+           name="rust-with-string-fqn$t0$a2"
+           parent="rust-with-string-fqn"
+           pos="4"/>
+     </objects>
+  </program>
+asserts:
+  - /program/rusts/rust[@code_loc='Φ.org.eolang.rust-with-string-fqn.r.α0' and @code='75 73 65 20 65 6F 3A 3A 50 6F 72 74 61 6C 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3A 3A 7B 45 4F 49 6E 74 7D 3B 0A 0A 70 75 62 20 66 6E 20 66 6F 6F 28 5F 70 6F 72 74 61 6C 3A 20 26 6D 75 74 20 50 6F 72 74 61 6C 29 20 2D 3E 20 4F 70 74 69 6F 6E 3C 45 4F 3E 20 7B 0A 20 20 70 72 69 6E 74 6C 6E 21 28 22 48 65 6C 6C 6F 20 77 6F 72 6C 64 20 66 72 6F 6D 20 72 75 73 74 22 29 3B 0A 20 20 53 6F 6D 65 28 45 4F 49 6E 74 28 32 29 29 0A 7D']
+
