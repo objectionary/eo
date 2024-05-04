@@ -59,15 +59,13 @@
         x > value!
 
   # Change the sign of the number.
-  [] > neg
-    ^.times -1 > @
+  ^.times -1 > [] > neg
 
   # Add to the current one.
   [x] > plus /int
 
   # Subtract from the current one.
-  [x] > minus
-    ^.plus x.neg > @
+  ^.plus x.neg > [x] > minus
 
   # Multiplication this one by another int.
   [x] > times /int

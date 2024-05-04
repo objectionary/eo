@@ -1,17 +1,17 @@
 ---
 xsls: [ ]
 tests:
-  - //o[@base='a']/o[@abstract and not(@name) and o[@name='@' and @base='.b'] and o[not(@base) and @name='i']]
-  - //o[@base='a']/o[@abstract and not(@name) and o[@name='@' and @base='a' and o[@base='b']]]
-  - //o[@base='a']/o[@abstract and not(@name) and o[@abstract and @name='@' and o[@base='a' and @name='b']] and o[@name='c']]
-  - //o[@base='a']/o[@abstract and not(@name) and o[@base='d' and @name='@']]
+  - //o[@base='p']/o[@abstract and @name='first' and o[@name='@' and @base='.b'] and o[not(@base) and @name='i']]
+  - //o[@base='p']/o[@abstract and not(@name) and o[@name='@' and @base='a' and o[@base='b']]]
+  - //o[@base='p']/o[@abstract and @name='second' and o[@abstract and @name='@' and o[@base='a' and @name='b']] and o[@name='c']]
+  - //o[@base='p']/o[@abstract and not(@name) and o[@base='d' and @name='@']]
   - //o[@abstract and o[@base='z' and @name='@']]/following-sibling::o[@base='.x' and @method]
   - //o[@base='m']/o[@abstract and not(@name) and o[@name='q' and not(@base)] and o[@base='q' and @name='@']]
 eo: |
-  a > x
-    a.b > [i]
+  p > x
+    a.b > [i] > first
     a b > []
-    [o] (a > b) > [c]
+    [o] (a > b) > [c] > second
     d > []
   z > []
   .x

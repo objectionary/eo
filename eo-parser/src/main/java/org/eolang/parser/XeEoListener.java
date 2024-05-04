@@ -772,8 +772,18 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterHanonym(final EoParser.HanonymContext ctx) {
+    public void enterHformation(final EoParser.HformationContext ctx) {
         this.startAbstract(ctx);
+    }
+
+    @Override
+    public void exitHformation(final EoParser.HformationContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterHanonym(final EoParser.HanonymContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -788,16 +798,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitOnlyphi(final EoParser.OnlyphiContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void enterOnlyphiNamed(final EoParser.OnlyphiNamedContext ctx) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitOnlyphiNamed(final EoParser.OnlyphiNamedContext ctx) {
         // Nothing here
     }
 
@@ -1098,7 +1098,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterAutoOname(final EoParser.AutoOnameContext ctx) {
+    public void enterAname(final EoParser.AnameContext ctx) {
         this.objects
             .enter()
             .prop(
@@ -1109,7 +1109,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void exitAutoOname(final EoParser.AutoOnameContext ctx) {
+    public void exitAname(final EoParser.AnameContext ctx) {
         // Nothing here
     }
 

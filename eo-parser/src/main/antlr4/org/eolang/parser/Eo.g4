@@ -274,7 +274,6 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
-    | onlyphiNamed // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -297,7 +296,7 @@ vapplicationArgHapplicationUnbound
     ;
 
 formationNameless
-    : attributes autoOname? innersOrEol
+    : attributes aname? innersOrEol
     ;
 
 // Formation with or without name
@@ -310,7 +309,7 @@ formationNamedOrNameless
 // Ends on the next line
 vapplicationArgVanonymBound
     : commentOptional attributesAs oname innersOrEol
-    | attributesAs autoOname? innersOrEol
+    | attributesAs aname? innersOrEol
     ;
 
 attributesAs
@@ -324,35 +323,39 @@ vapplicationArgHanonymBoundBody
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
     : commentOptional vapplicationArgHanonymBoundBody oname
-    | vapplicationArgHanonymBoundBody
+    | vapplicationArgHanonymBoundBody aname?
     ;
 
 vapplicationArgHanonymUnbound
     : commentOptional hanonym oname
-    | hanonym
+    | hanonym aname?
+    ;
+
+// Horizontal formation
+hformation
+    : attributes hanonymInner+
     ;
 
 // Horizontal anonym object
 hanonym
-    : attributes hanonymInner+
+    : hformation
+    | onlyphi
     ;
 
 // Unnamed abstract object with only @-bound attribute
 // x.y.z > [i]          -> [i] (x.y.z > @)
 // x y z > [i]          -> [i] (x y z > @)
 // [a] (b > c) > [i]    -> [i] ([a] (b > c) > @)
+// a > [i] > [j]        -> [j] ([i] (a > @) > @)
 // x > [i]              -> [i] (x > @)
 onlyphi
-    : (hmethod | happlication | hanonym | just) onlyphiTail
-    ;
-
-// Only-@-bound object with name
-onlyphiNamed
-    : onlyphi oname?
+    : (hmethod | happlication | hformation | just) onlyphiTail
+    | onlyphi onlyphiTail
     ;
 
 // Tail of the unnamed abstract object with only @-bound attribute
-onlyphiTail: spacedArrow attributes
+onlyphiTail
+    : spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
@@ -448,7 +451,7 @@ vmethodOptional
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | onlyphiNamed) EOL
+    | (justNamed | hanonym (oname | aname)?) EOL
     | formationNamedOrNameless
     ;
 
@@ -514,14 +517,14 @@ reversed
     : finisher DOT
     ;
 
-// Automatic name of the object
-autoOname
-    : SPACE ARROW ARROW
-    ;
-
 // Object name
 oname
     : suffix CONST?
+    ;
+
+// Automatic name of the object
+aname
+    : SPACE ARROW ARROW
     ;
 
 // Suffix
@@ -537,7 +540,7 @@ spacedArrow
 // Does not contain elements in vertical notation
 // Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hanonym | onlyphi) RB
+    : LB (happlication | hanonym) RB
     ;
 
 // Version

@@ -99,8 +99,7 @@
       [offset data] > write /true
 
       # Just get all the data from the allocated block in memory.
-      [] > get
-        ^.read 0 ^.size > @
+      ^.read 0 ^.size > [] > get
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
