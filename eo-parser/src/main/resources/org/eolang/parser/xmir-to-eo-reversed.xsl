@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="xmir-to-eo-reversed" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="xmir-to-eo-reversed" version="2.0">
   <!--
   This one maps XMIR to EO original syntax in reversed notation.
   It's used in XmirReversed.java class.
@@ -34,6 +34,11 @@ SOFTWARE.
     <xsl:value-of select="$eol"/>
   </xsl:variable>
   <xsl:output method="text" encoding="UTF-8"/>
+  <!-- Check if given name is auto-generated -->
+  <xsl:function name="eo:is-auto-generated" as="xs:boolean">
+    <xsl:param name="name"/>
+    <xsl:sequence select="starts-with($name,'OBJ-') and string-length($name)=40"/>
+  </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="program">
     <eo>
@@ -108,7 +113,7 @@ SOFTWARE.
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[not(@data) and not(@base)]" mode="head">
     <xsl:param name="indent"/>
-    <xsl:if test="@name">
+    <xsl:if test="@name and not(eo:is-auto-generated(@name))">
       <xsl:value-of select="$comment"/>
       <xsl:value-of select="$indent"/>
     </xsl:if>
@@ -128,15 +133,24 @@ SOFTWARE.
       <xsl:value-of select="@as"/>
     </xsl:if>
     <xsl:if test="@name">
-      <xsl:text> &gt; </xsl:text>
-      <xsl:value-of select="@name"/>
-      <xsl:if test="@const">
-        <xsl:text>!</xsl:text>
-      </xsl:if>
-      <xsl:if test="@atom">
-        <xsl:text> /</xsl:text>
-        <xsl:value-of select="@atom"/>
-      </xsl:if>
+      <xsl:choose>
+        <!-- Auto-generated name -->
+        <xsl:when test="eo:is-auto-generated(@name)">
+          <xsl:text> &gt;&gt;</xsl:text>
+        </xsl:when>
+        <!-- Regular case -->
+        <xsl:otherwise>
+          <xsl:text> &gt; </xsl:text>
+          <xsl:value-of select="@name"/>
+          <xsl:if test="@const">
+            <xsl:text>!</xsl:text>
+          </xsl:if>
+          <xsl:if test="@atom">
+            <xsl:text> /</xsl:text>
+            <xsl:value-of select="@atom"/>
+          </xsl:if>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
   </xsl:template>
   <!-- DATA -->

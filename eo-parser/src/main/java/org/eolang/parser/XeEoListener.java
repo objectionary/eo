@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -689,20 +690,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterVapplicationArgVanonymUnbound(
-        final EoParser.VapplicationArgVanonymUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
-    public void exitVapplicationArgVanonymUnbound(
-        final EoParser.VapplicationArgVanonymUnboundContext ctx
-    ) {
-        // Nothing here
-    }
-
-    @Override
     public void enterFormationNameless(final EoParser.FormationNamelessContext ctx) {
         this.startAbstract(ctx);
     }
@@ -726,7 +713,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     public void enterVapplicationArgVanonymBound(
         final EoParser.VapplicationArgVanonymBoundContext ctx
     ) {
-        // Nothing here
+        this.startAbstract(ctx);
     }
 
     @Override
@@ -737,22 +724,12 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     }
 
     @Override
-    public void enterFormationBound(final EoParser.FormationBoundContext ctx) {
-        this.startAbstract(ctx);
-    }
-
-    @Override
-    public void exitFormationBound(final EoParser.FormationBoundContext ctx) {
+    public void enterAttributesAs(final EoParser.AttributesAsContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void enterFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
-        this.startAbstract(ctx);
-    }
-
-    @Override
-    public void exitFormationBoundNameless(final EoParser.FormationBoundNamelessContext ctx) {
+    public void exitAttributesAs(final EoParser.AttributesAsContext ctx) {
         // Nothing here
     }
 
@@ -811,6 +788,16 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void exitOnlyphi(final EoParser.OnlyphiContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void enterOnlyphiNamed(final EoParser.OnlyphiNamedContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitOnlyphiNamed(final EoParser.OnlyphiNamedContext ctx) {
         // Nothing here
     }
 
@@ -1108,6 +1095,22 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     public void exitReversed(final EoParser.ReversedContext ctx) {
         this.objects.enter().xprop("base", "concat('.',@base)").leave();
+    }
+
+    @Override
+    public void enterAutoOname(final EoParser.AutoOnameContext ctx) {
+        this.objects
+            .enter()
+            .prop(
+                "name",
+                String.format("OBJ-%s", UUID.randomUUID())
+            )
+            .leave();
+    }
+
+    @Override
+    public void exitAutoOname(final EoParser.AutoOnameContext ctx) {
+        // Nothing here
     }
 
     @Override

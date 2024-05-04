@@ -274,7 +274,7 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
-    | onlyphi // unnamed abstract object with only @-bound attribute
+    | onlyphiNamed // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -282,7 +282,7 @@ vapplicationArgUnboundCurrent
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
-    : vapplicationArgVanonymUnbound // vertical anonym object
+    : formationNamedOrNameless // vertical abstract object
     | vapplicationHeadNamed vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
@@ -296,13 +296,8 @@ vapplicationArgHapplicationUnbound
     : happlicationExtended oname?
     ;
 
-// Vertical anonym object as argument of vertical application
-vapplicationArgVanonymUnbound
-    : formationNamedOrNameless
-    ;
-
 formationNameless
-    : attributes innersOrEol
+    : attributes autoOname? innersOrEol
     ;
 
 // Formation with or without name
@@ -314,16 +309,12 @@ formationNamedOrNameless
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentOptional formationBound
-    | formationBoundNameless
+    : commentOptional attributesAs oname innersOrEol
+    | attributesAs autoOname? innersOrEol
     ;
 
-formationBound
-    : attributes as oname innersOrEol
-    ;
-
-formationBoundNameless
-    : attributes as innersOrEol
+attributesAs
+    : attributes as
     ;
 
 vapplicationArgHanonymBoundBody
@@ -353,6 +344,11 @@ hanonym
 // x > [i]              -> [i] (x > @)
 onlyphi
     : (hmethod | happlication | hanonym | just) onlyphiTail
+    ;
+
+// Only-@-bound object with name
+onlyphiNamed
+    : onlyphi oname?
     ;
 
 // Tail of the unnamed abstract object with only @-bound attribute
@@ -452,7 +448,7 @@ vmethodOptional
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | onlyphi) EOL
+    | (justNamed | onlyphiNamed) EOL
     | formationNamedOrNameless
     ;
 
@@ -516,6 +512,11 @@ versioned
 // Only finisher can be used in reversed notation
 reversed
     : finisher DOT
+    ;
+
+// Automatic name of the object
+autoOname
+    : SPACE ARROW ARROW
     ;
 
 // Object name
