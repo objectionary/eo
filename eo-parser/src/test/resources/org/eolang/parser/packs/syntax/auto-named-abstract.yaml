@@ -1,5 +1,5 @@
 ---
-xsls: []
+xsls: [ ]
 tests:
   - //errors[count(error)=0]
   - //o[@abstract and starts-with(@name,'OBJ-') and o[@name='five']]
