@@ -451,7 +451,7 @@ vmethodOptional
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | hanonym (oname | aname)?) EOL
+    | (justNamed | hanonym oname?) EOL
     | formationNamedOrNameless
     ;
 
