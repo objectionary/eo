@@ -42,6 +42,7 @@ jobs:
             -o -name "*.xsd" \
             -o -name "*.ini" \
             -o -name "*.java" \
+            -o -name "*.properties" \
             -o -name "*.groovy" \) > files.txt
           header="Copyright (c) 2016-$(date +%Y) Objectionary.com"
           failed="false"
