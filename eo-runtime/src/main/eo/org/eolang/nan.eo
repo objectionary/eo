@@ -31,41 +31,31 @@
   0.0.div 0.0 > @
 
   # Tests that $ = x.
-  [x] > eq
-    false > @
+  false > [x] > eq
 
   # Tests that $ < x.
-  [x] > lt
-    false > @
+  false > [x] > lt
 
   # Tests that $ ≤ x.
-  [x] > lte
-    false > @
+  false > [x] > lte
 
   # Tests that $ > x.
-  [x] > gt
-    false > @
+  false > [x] > gt
 
   # Tests that $ ≥ x.
-  [x] > gte
-    false > @
+  false > [x] > gte
 
   # Multiplication of $ and x.
-  [x] > times
-    ^ > @
+  ^ > [x] > times
 
   # Sum of $ and x.
-  [x] > plus
-    ^ > @
+  ^ > [x] > plus
 
   # Negation of $.
-  [] > neg
-    ^ > @
+  ^ > [] > neg
 
   # Difference between $ and x.
-  [x] > minus
-    ^ > @
+  ^ > [x] > minus
 
   # Quotient of the division of $ by x.
-  [x] > div
-    ^ > @
+  ^ > [x] > div

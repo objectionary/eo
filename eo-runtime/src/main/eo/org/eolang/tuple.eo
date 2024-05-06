@@ -69,7 +69,4 @@
         tup.tail
 
   # Create a new tuple with this element added to the end of it.
-  [x] > with
-    tuple > @
-      ^
-      x
+  tuple ^ x > [x] > with

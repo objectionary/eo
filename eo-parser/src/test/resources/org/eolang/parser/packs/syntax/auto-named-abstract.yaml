@@ -1,0 +1,17 @@
+---
+xsls: [ ]
+tests:
+  - //errors[count(error)=0]
+  - //o[@abstract and starts-with(@name,'OBJ-') and o[@name='five']]
+  - //o[@abstract and starts-with(@name,'OBJ-') and o[@name='ten']]
+  - //o[@abstract and starts-with(@name,'OBJ-') and @as='hello' and o[@name='eleven']]
+eo: |
+  x > first
+    [] >>
+      5 > five
+  [] >>
+    10 > ten
+  .ten > second
+  y
+    []:hello >>
+      11 > eleven

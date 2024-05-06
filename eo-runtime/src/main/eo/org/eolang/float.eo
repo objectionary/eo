@@ -97,12 +97,10 @@
   [x] > plus /float
 
   # Negation of $.
-  [] > neg
-    ^.times -1.0 > @
+  ^.times -1.0 > [] > neg
 
   # Difference between $ and x.
-  [x] > minus
-    ^.plus x.neg > @
+  ^.plus x.neg > [x] > minus
 
   # Quotient of the division of $ by x.
   [x] > div /float
