@@ -35,6 +35,7 @@ jobs:
           set -e
           find . -type f \( \
             -name "*.yml" \
+            -o -name "*.yaml" \
             -o -name "*.eo" \
             -o -name "*.xml" \
             -o -name "*.java" \
