@@ -157,6 +157,7 @@ final class PhPackageTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     void findsAttributesConcurrently() throws InterruptedException {
         final int threads = Runtime.getRuntime().availableProcessors() + 10;
         final ExecutorService service = Executors.newFixedThreadPool(threads);
