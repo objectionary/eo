@@ -20,17 +20,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
-  - /org/eolang/parser/errors/self-naming.xsl
-tests:
-  - /program/errors[count(error)=0]
-eo: |
-  # This is the default 64+ symbols comment in front of abstract object.
-  [] > first
-    5.plus a > a
-    ^.size > size
-  # This is the default 64+ symbols comment in front of abstract object.
-  [size] > more
-    # This is the default 64+ symbols comment in front of abstract object.
-    [] > inner
-      ^.size > size
+name: license
+on:
+  push:
+  pull_request:
+jobs:
+  license:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          set -e
+          find . -type f \( \
+            -name "LICENSE.*" \
+            -o -name "*.sh" \
+            -o -name "*.yml" \
+            -o -name "*.yaml" \
+            -o -name "*.eo" \
+            -o -name "*.xmir" \
+            -o -name "*.xml" \
+            -o -name "*.xsl" \
+            -o -name "*.xsd" \
+            -o -name "*.ini" \
+            -o -name "*.java" \
+            -o -name "*.g4" \
+            -o -name "*.properties" \
+            -o -name "*.groovy" \) > files.txt
+          header="Copyright (c) 2016-$(date +%Y) Objectionary.com"
+          failed="false"
+          while IFS= read -r file; do
+            if ! grep -q "$header" "$file"; then
+              failed="true"
+              echo "No license in: $file"
+            fi
+          done < files.txt
+          if [ "${failed}" == "true" ]; then
+            exit 1
+          fi
