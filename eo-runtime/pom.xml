@@ -131,13 +131,18 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
-      <version>0.0.14</version>
+      <version>0.0.17</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>jucs</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

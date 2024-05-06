@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.tojos.PlacedTojo;
 import org.eolang.maven.tojos.PlacedTojos;
@@ -41,6 +42,9 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link UnplaceMojo}.
@@ -129,74 +133,46 @@ final class UnplaceMojoTest {
         );
     }
 
-    @Test
-    void unplacesWithKeepAndRemoveBinariesParamTogether(@TempDir final Path temp) throws Exception {
+    @ParameterizedTest
+    @MethodSource("testArgsProvider")
+    void unplacesWithKeepOrRemoveBinariesParam(final String[] params, @TempDir final Path temp)
+        throws Exception {
         final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res.values().stream().noneMatch(UnplaceMojoTest::isClass),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new TextOf(res.get(placed.getFileName().toString())).asString(),
-            Matchers.allOf(
-                Matchers.not(Matchers.containsString("false")),
-                Matchers.containsString("true")
-            )
-        );
-    }
-
-    @Test
-    void unplacesWithRemoveBinariesParam(@TempDir final Path temp) throws Exception {
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("removeBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res.values().stream().noneMatch(UnplaceMojoTest::isClass),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new TextOf(res.get(placed.getFileName().toString())).asString(),
-            Matchers.allOf(
-                Matchers.not(Matchers.containsString("false")),
-                Matchers.containsString("true")
-            )
-        );
-    }
-
-    @Test
-    void unplacesWithKeepBinariesParam(@TempDir final Path temp) throws Exception {
-        final Path placed = UnplaceMojoTest.placeClass(temp, UnplaceMojoTest.clazz(temp));
-        final Map<String, Path> res = new FakeMaven(temp)
-            .with("placed", placed.toFile())
-            .with("keepBinaries", UnplaceMojoTest.GLOB_PATTERN)
-            .execute(UnplaceMojo.class)
-            .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res.values().stream().anyMatch(UnplaceMojoTest::isClass),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            new TextOf(res.get(placed.getFileName().toString())).asString(),
-            Matchers.allOf(
-                Matchers.containsString("false"),
-                Matchers.not(Matchers.containsString("true"))
-            )
-        );
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("placed", placed.toFile());
+        for (final String param : params) {
+            maven.with(param, UnplaceMojoTest.GLOB_PATTERN);
+        }
+        final Map<String, Path> res = maven.execute(UnplaceMojo.class).result();
+        if (params.length == 1 && "keepBinaries".equals(params[0])) {
+            MatcherAssert.assertThat(
+                BinarizeParseTest.TO_ADD_MESSAGE,
+                res.values().stream().anyMatch(UnplaceMojoTest::isClass),
+                Matchers.is(true)
+            );
+            MatcherAssert.assertThat(
+                BinarizeParseTest.TO_ADD_MESSAGE,
+                new TextOf(res.get(placed.getFileName().toString())).asString(),
+                Matchers.allOf(
+                    Matchers.containsString("false"),
+                    Matchers.not(Matchers.containsString("true"))
+                )
+            );
+        } else {
+            MatcherAssert.assertThat(
+                BinarizeParseTest.TO_ADD_MESSAGE,
+                res.values().stream().noneMatch(UnplaceMojoTest::isClass),
+                Matchers.is(true)
+            );
+            MatcherAssert.assertThat(
+                BinarizeParseTest.TO_ADD_MESSAGE,
+                new TextOf(res.get(placed.getFileName().toString())).asString(),
+                Matchers.allOf(
+                    Matchers.not(Matchers.containsString("false")),
+                    Matchers.containsString("true")
+                )
+            );
+        }
     }
 
     @Test
@@ -306,6 +282,20 @@ final class UnplaceMojoTest {
      */
     private static boolean isClass(final Path path) {
         return path.toString().endsWith(".class");
+    }
+
+    /**
+     * Input arguments for unit tests.
+     *
+     * @return Stream of arguments.
+     */
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
+    private static Stream<Arguments> testArgsProvider() {
+        return Stream.of(
+            Arguments.of((Object) new String[]{"keepBinaries"}),
+            Arguments.of((Object) new String[]{"removeBinaries"}),
+            Arguments.of((Object) new String[]{"keepBinaries", "removeBinaries"})
+        );
     }
 }
 

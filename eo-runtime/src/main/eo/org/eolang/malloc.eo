@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -99,8 +99,7 @@
       [offset data] > write /true
 
       # Just get all the data from the allocated block in memory.
-      [] > get
-        ^.read 0 ^.size > @
+      ^.read 0 ^.size > [] > get
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put
