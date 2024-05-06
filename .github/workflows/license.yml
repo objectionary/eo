@@ -34,7 +34,9 @@ jobs:
       - run: |
           set -e
           find . -type f \( \
-            -name "*.yml" \
+            -name "LICENSE.*" \
+            -o -name "*.sh" \
+            -o -name "*.yml" \
             -o -name "*.yaml" \
             -o -name "*.eo" \
             -o -name "*.xmir" \
