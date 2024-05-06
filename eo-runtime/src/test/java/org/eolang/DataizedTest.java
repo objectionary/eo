@@ -35,6 +35,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Dataized}.
@@ -101,42 +103,9 @@ final class DataizedTest {
         );
     }
 
-    @Test
-    void printsShortLogs() throws InterruptedException {
-        final Logger log = Logger.getLogger("printsShortLogs");
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        final Thread thread = new Thread(
-            () -> {
-                final String property = System.getProperty(DataizedTest.DATAIZATION_LOG);
-                System.getProperties().setProperty(
-                    DataizedTest.DATAIZATION_LOG,
-                    String.valueOf(1)
-                );
-                final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi, log).take();
-                if (property != null) {
-                    System.getProperties().setProperty(DataizedTest.DATAIZATION_LOG, property);
-                } else {
-                    System.clearProperty(DataizedTest.DATAIZATION_LOG);
-                }
-            });
-        thread.start();
-        thread.join();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            logs.size(),
-            Matchers.equalTo(1)
-        );
-    }
-
-    @Test
-    void printsLongLogs() throws InterruptedException {
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2})
+    void printsShortLogs(final int level) throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
@@ -148,7 +117,7 @@ final class DataizedTest {
                 final String property = System.getProperty(DataizedTest.DATAIZATION_LOG);
                 System.getProperties().setProperty(
                     DataizedTest.DATAIZATION_LOG,
-                    String.valueOf(2)
+                    String.valueOf(level)
                 );
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi, log).take();
@@ -162,11 +131,19 @@ final class DataizedTest {
         thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            logs.size(),
-            Matchers.greaterThan(1)
-        );
+        if (level == 1) {
+            MatcherAssert.assertThat(
+                "Number of log records should be 1 in case of short logs",
+                logs.size(),
+                Matchers.equalTo(1)
+            );
+        } else if (level == 2) {
+            MatcherAssert.assertThat(
+                "Number of log records should be greater than 1 in case of long logs",
+                logs.size(),
+                Matchers.greaterThan(1)
+            );
+        }
     }
 
     /**
