@@ -32,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -1103,7 +1102,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             .enter()
             .prop(
                 "name",
-                String.format("OBJ-%s", UUID.randomUUID())
+                String.format("OBJ-%d", ctx.getStart().getLine())
             )
             .leave();
     }

@@ -37,7 +37,7 @@ SOFTWARE.
   <!-- Check if given name is auto-generated -->
   <xsl:function name="eo:is-auto-generated" as="xs:boolean">
     <xsl:param name="name"/>
-    <xsl:sequence select="starts-with($name,'OBJ-') and string-length($name)=40"/>
+    <xsl:sequence select="starts-with($name,'OBJ-')"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="program">
