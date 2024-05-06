@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          find . -type f \( 
+          find . -type f \( \
             -name "*.yml" \
             -o -name "*.eo" \
             -o -name "*.xml" \
