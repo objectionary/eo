@@ -54,14 +54,14 @@
 # ```
 # Go to.
 [] > go
-  malloc.of > id
+  malloc.of > id!
     8
     m.put m.id > [m]
 
   [body] > to
     try > @
       body token
-      [e] > ex
+      [e] >>
         if. > @
           ^.^.id.eq e.id
           e.value
@@ -78,5 +78,5 @@
 
       [res] > forward
         error > @
-          jump
+          ^.jump
             res

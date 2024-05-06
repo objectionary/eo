@@ -105,10 +105,10 @@
   eq. > @
     malloc.of
       8
-      [f1] > first
+      [f1] >>
         malloc.of > @
           8
-          [f0] > second
+          [f0] >>
             seq > @
               *
                 f0.put 1
@@ -130,7 +130,7 @@
   eq. > @
     malloc.for
       4
-      [m] > scope
+      [m] >>
         ^.func m > @
     0
 
@@ -226,7 +226,7 @@
   eq. > @
     malloc.for
       7
-      [m] > scope
+      [m] >>
         int > num
           ^.inc m > n!
         m.put > @

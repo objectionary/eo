@@ -42,18 +42,19 @@
 
 # Test.
 [] > malloc-scope-is-dataized-twice
-  malloc.for > first
-    0
-    [f]
-      malloc.of > second
-        1
-        [s] > scope
-          f.put (f.as-int.plus 1) > @
-      seq > @
-        *
-          second
-          second
-  first.eq 2 > @
+  eq. > @
+    2
+    malloc.for
+      0
+      [f]
+        malloc.of > second
+          1
+          [s] >>
+            f.put (f.as-int.plus 1) > @
+        seq > @
+          *
+            second
+            second
 
 # Test.
 [] > malloc-for-writes-first-init-value
@@ -161,7 +162,7 @@
     [b]
       malloc.of > @
         10
-        [m] > scope
+        [m] >>
           b.put (m.size.eq 10) > @
 
 # Test.
@@ -171,7 +172,7 @@
     [b]
       malloc.of > @
         12
-        [m] > string-scope
+        [m] >>
           seq > @
             *
               m.write 0 "Hello, "
@@ -188,7 +189,7 @@
     [b]
       malloc.of > @
         3
-        [m] > scope
+        [m] >>
           seq > @
             *
               m.write 0 "XXX"
@@ -212,7 +213,7 @@
     [b]
       malloc.of > @
         10
-        [m] > scope
+        [m] >>
           seq > @
             *
               m.write 2 "Hello"

@@ -37,7 +37,7 @@
           *
             i.put 1
             go.to
-              [g] > block
+              [g] >>
                 seq > @
                   *
                     i.put (i.as-int.plus 1)
@@ -53,9 +53,9 @@
   [x] > div
     malloc.for > @
       0
-      [r] > scope
+      [r] >>
         go.to > @
-          [g] > block
+          [g] >>
             seq > @
               *
                 if.
@@ -75,7 +75,7 @@
 [] > returns-from-method-body
   [a b] > max
     go.to > @
-      [g] > block
+      [g] >>
         seq > @
           *
             if.
@@ -95,7 +95,7 @@
         seq > @
           *
             go.to
-              [g2] > block
+              [g2] >>
                 g1.forward 42 > @
             7
     42

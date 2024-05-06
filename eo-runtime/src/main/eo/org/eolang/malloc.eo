@@ -76,7 +76,7 @@
     (dataized object).as-bytes > bts
     malloc.of > @
       bts.size
-      [m] > outer-scope
+      [m] >>
         seq > @
           *
             m.write 0 ^.bts

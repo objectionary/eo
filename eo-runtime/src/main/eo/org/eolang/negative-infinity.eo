@@ -66,8 +66,7 @@
     [num] > is-num-gt-zero
       try > @
         0.lt num
-        [e] > ex
-          0.0.lt ^.num > @
+        0.0.lt ^.num > [e] >>
         false
 
     [num] > is-nan
@@ -134,8 +133,7 @@
     [num] > is-num-gte-zero
       try > @
         0.lte num
-        [e] > ex
-          0.0.lte ^.num > @
+        0.0.lte ^.num > [e] >>
         false
     if. > @
       is-nan-or-infinite value

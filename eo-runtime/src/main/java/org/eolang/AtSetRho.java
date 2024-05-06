@@ -54,8 +54,13 @@ final class AtSetRho extends AtEnvelope {
                     Phi ret = attr.get();
                     if (!name.equals(Attr.RHO)) {
                         final Phi copy = ret.copy();
-                        if (copy.put(Attr.RHO, rho)) {
-                            ret = copy;
+                        try {
+                            if (copy.put(Attr.RHO, rho)) {
+                                ret = copy;
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e);
+                            throw e;
                         }
                     }
                     return ret;
