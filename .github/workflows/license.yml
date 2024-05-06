@@ -38,6 +38,9 @@ jobs:
             -o -name "*.yaml" \
             -o -name "*.eo" \
             -o -name "*.xml" \
+            -o -name "*.xsl" \
+            -o -name "*.xsd" \
+            -o -name "*.ini" \
             -o -name "*.java" \
             -o -name "*.groovy" \) > files.txt
           header="Copyright (c) 2016-$(date +%Y) Objectionary.com"
