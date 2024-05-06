@@ -37,6 +37,7 @@ jobs:
             -name "*.yml" \
             -o -name "*.yaml" \
             -o -name "*.eo" \
+            -o -name "*.xmir" \
             -o -name "*.xml" \
             -o -name "*.xsl" \
             -o -name "*.xsd" \
