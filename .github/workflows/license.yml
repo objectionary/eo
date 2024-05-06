@@ -32,6 +32,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
+          set -e
           find . -type f \( \
             -name "*.yml" \
             -o -name "*.eo" \
@@ -46,7 +47,7 @@ jobs:
               echo "No license in: $file"
             fi
           done < files.txt
-          if [ "${failed}" -eq "true" ]; then
+          if [ "${failed}" == "true" ]; then
             exit 1
           fi
 
