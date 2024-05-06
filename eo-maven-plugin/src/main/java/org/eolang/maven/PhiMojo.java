@@ -27,8 +27,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
@@ -62,7 +63,15 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Extension of the file where we put phi-calculus expression (.phi).
      */
-    public static final String EXT = "phi";
+    static final String EXT = "phi";
+
+    /**
+     * Sheets for converting to phi.
+     */
+    private static final String[] SHEETS = {
+        "/org/eolang/maven/phi/decapitalize-auto-named.xsl",
+        "/org/eolang/maven/phi/to-phi.xsl",
+    };
 
     /**
      * The directory where to take xmir files for translation from.
@@ -98,12 +107,18 @@ public final class PhiMojo extends SafeMojo {
     @Override
     public void exec() {
         final Home home = new HmBase(this.phiOutputDir);
-        final Train<Shift> train;
+        final Train<Shift> def;
         if (this.phiOptimize) {
-            train = new ParsingTrain();
+            def = new ParsingTrain();
         } else {
-            train = new TrDefault<>();
+            def = new TrDefault<>();
         }
+        final Train<Shift> train = new TrJoined<>(
+            def,
+            new TrClasspath<>(
+                PhiMojo.SHEETS
+            ).back()
+        );
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -174,9 +189,7 @@ public final class PhiMojo extends SafeMojo {
      */
     private static String translated(final Train<Shift> train, final XML xmir)
         throws ImpossibleToPhiTranslationException {
-        final XML translated = new Xsline(
-            train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
-        ).pass(xmir);
+        final XML translated = new Xsline(train).pass(xmir);
         Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
         final List<String> phi = translated.xpath("phi/text()");
         if (phi.isEmpty()) {
