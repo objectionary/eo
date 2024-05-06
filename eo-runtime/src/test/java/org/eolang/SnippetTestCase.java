@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import com.jcabi.log.Logger;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
@@ -41,6 +42,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,9 +57,7 @@ import org.yaml.snakeyaml.Yaml;
  * Central. Thus, when changes are made, it is recommended to disable this test.
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
- *
  * @since 0.1
- *
  * @todo #2718:30min One snippets is disabled now, in
  *  the "src/test/resources/snippets/*.yaml". It needs
  *  "sprintf" object in objectionary (fibo.yaml).
@@ -65,53 +65,28 @@ import org.yaml.snakeyaml.Yaml;
  *  it (by removing the "skip" attribute from the YAML file).
  */
 @ExtendWith(WeAreOnline.class)
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 final class SnippetTestCase {
-
-    /**
-     * Temp dir.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @TempDir
-    public Path temp;
-
-    /**
-     * Integration test.
-     * @param yml The YAML
-     * @throws IOException If fails
-     */
     @ParameterizedTest
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
-    @SuppressWarnings("unchecked")
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
-    void runsAllSnippets(final String yml) throws IOException {
+    void runsAllSnippets(final String yml, final @TempDir Path temp) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final String file = map.get("file").toString();
         Assumptions.assumeFalse(map.containsKey("skip"));
-        new Farea(this.temp).together(
+        new Farea(temp).together(
             f -> {
                 f.properties()
                     .set("project.build.sourceEncoding", "UTF-8")
                     .set("project.reporting.outputEncoding", "UTF-8");
+                SnippetTestCase.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
                     .show();
-                final Path runtime = Paths.get(System.getProperty("user.dir"))
-                    .resolve("src/main/eo");
-                final Collection<Path> sources = Files.walk(runtime)
-                    .filter(src -> !src.toFile().isDirectory())
-                    .collect(Collectors.toList());
-                for (final Path src : sources) {
-                    f.files()
-                        .file(String.format("src/main/eo/%s", runtime.relativize(src)))
-                        .write(new UncheckedText(new TextOf(src)).asString())
-                        .show();
-                }
-                f.dependencies()
-                    .appendItself();
+                f.dependencies().appendItself();
                 f.build()
                     .plugins()
                     .append(
@@ -119,6 +94,7 @@ final class SnippetTestCase {
                         "eo-maven-plugin",
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
+                    .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
@@ -126,15 +102,18 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
+                    .execution("run")
                     .phase("test")
                     .goals("java")
                     .configuration()
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
+                final String log = f.log();
+                Logger.debug(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
-                    f.log(),
+                    log,
                     Matchers.allOf(
                         new Mapped<>(
                             ptn -> Matchers.matchesPattern(
@@ -146,5 +125,157 @@ final class SnippetTestCase {
                 );
             }
         );
+    }
+
+    @Test
+    @Tag("slow")
+    @ExtendWith(WeAreOnline.class)
+    void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
+        new Farea(temp).together(
+            f -> {
+                SnippetTestCase.copySources(f, "src/main");
+                SnippetTestCase.copySources(f, "src/test/eo");
+                f.properties()
+                    .set("project.build.sourceEncoding", "UTF-8")
+                    .set("project.reporting.outputEncoding", "UTF-8");
+                f.dependencies().append(
+                    "net.sf.saxon",
+                    "Saxon-HE",
+                    "12.4"
+                );
+                f.build()
+                    .plugins()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
+                    .execution("phi-unphi")
+                    .phase("compile")
+                    .goals(
+                        "register",
+                        "parse",
+                        "optimize",
+                        "xmir-to-phi",
+                        "phi-to-xmir",
+                        "print"
+                    )
+                    .configuration()
+                    .set("sourcesDir", "${project.basedir}/src/test/eo")
+                    .set("targetDir", "${project.build.directory}/eo-test")
+                    .set("phiInputDir", "${project.build.directory}/eo-test/2-optimize")
+                    .set("phiOutputDir", "${project.build.directory}/phi")
+                    .set("unphiInputDir", "${project.build.directory}/phi")
+                    .set("unphiOutputDir", "${project.build.directory}/generated-eo-test/1-parse")
+                    .set("unphiMetas", new String[]{"+tests"})
+                    .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
+                    .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
+                    .set("printReversed", "true");
+                f.exec("clean", "compile");
+                final String phi = f.log();
+                MatcherAssert.assertThat(
+                    "Converting to phi and back was not successful",
+                    phi,
+                    Matchers.containsString("BUILD SUCCESS")
+                );
+                f.files().file("pom.xml").delete();
+                f.properties()
+                    .set("project.build.sourceEncoding", "UTF-8")
+                    .set("project.reporting.outputEncoding", "UTF-8");
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-api",
+                    "5.10.2"
+                );
+                f.build()
+                    .plugins()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
+                    .execution("compile")
+                    .goals(
+                        "register",
+                        "assemble",
+                        "verify",
+                        "transpile",
+                        "copy",
+                        "unplace",
+                        "unspile"
+                    )
+                    .configuration()
+                    .set("foreign", "${project.basedir}/target/eo-foreign.csv")
+                    .set("foreignFormat", "csv")
+                    .set("failOnWarning", "false")
+                    .set("offline", "true")
+                    .set("withRuntimeDependency", "false")
+                    .set("placeBinariesThatHaveSources", "true");
+                f.build()
+                    .plugins()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
+                    .execution("tests")
+                    .phase("generate-test-sources")
+                    .goals(
+                        "register",
+                        "assemble",
+                        "verify",
+                        "transpile",
+                        "binarize"
+                    )
+                    .configuration()
+                    .set("foreign", "${project.basedir}/target/eo-foreign.csv")
+                    .set("foreignFormat", "csv")
+                    .set("failOnWarning", "false")
+                    .set("offline", "true")
+                    .set("scope", "test")
+                    .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
+                    .set("targetDir", "${project.basedir}/target/eo-test")
+                    .set("addSourcesRoot", "false")
+                    .set("addTestSourcesRoot", "true")
+                    .set("failOnWarning", "false")
+                    .set("generatedDir", "${project.basedir}/target/generated-test-sources")
+                    .set("withRuntimeDependency", "false")
+                    .set("placeBinariesThatHaveSources", "true");
+                f.exec("clean", "test");
+                final String log = f.log();
+                Logger.debug(this, log);
+                MatcherAssert.assertThat(
+                    "Some tests weren't passed after converting to phi and back",
+                    log,
+                    Matchers.containsString("BUILD SUCCESS")
+                );
+            }
+        );
+    }
+
+    /**
+     * Copy EO sources.
+     * @param farea Farea instance
+     * @param target Directory to copy from
+     * @throws IOException If fails to copy files
+     * @todo #3092:30min Remove filter with "rust-tests.eo". BinarizeMojo does not add rust
+     *  dependencies to rust-tests after phi->unphi (see:
+     *  <a href="https://github.com/objectionary/eo/issues/3145">this</a> for details).
+     *  When it's resolved we need to remove the filter and make sure the snippet test
+     *  {@link SnippetTestCase#runsTestsAfterPhiAndUnphi(Path)} still works.
+     */
+    private static void copySources(final Farea farea, final String target) throws IOException {
+        final Path runtime = Paths.get(System.getProperty("user.dir"))
+            .resolve(target);
+        final Collection<Path> sources = Files.walk(runtime)
+            .filter(src -> !src.toFile().isDirectory())
+            .filter(src -> !src.endsWith("rust-tests.eo"))
+            .collect(Collectors.toList());
+        for (final Path src : sources) {
+            farea.files()
+                .file(String.format("%s/%s", target, runtime.relativize(src)))
+                .write(new UncheckedText(new TextOf(src)).asString())
+                .show();
+        }
     }
 }

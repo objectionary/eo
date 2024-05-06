@@ -33,13 +33,10 @@
 
   # Control structure that allows for conditional execution of code.
   # Since $ is FALSE - behaves as `right` object.
-  [left right] > if
-    right > @
+  right > [left right] > if
 
   # And.
-  [x] > and
-    ^ > @
+  ^ > [x] > and
 
   # Or.
-  [x] > or
-    01-.eq x > @
+  01-.eq x > [x] > or

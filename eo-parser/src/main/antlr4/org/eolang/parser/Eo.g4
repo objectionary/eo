@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2024 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 grammar Eo;
 
 tokens { TAB, UNTAB }
@@ -274,7 +297,6 @@ vapplicationArgUnbound
 vapplicationArgUnboundCurrent
     : vapplicationArgHapplicationUnbound // horizontal application
     | vapplicationArgHanonymUnbound // horizontal anonym object
-    | onlyphi // unnamed abstract object with only @-bound attribute
     | justNamed // just an object reference
     | methodNamed // method
     ;
@@ -282,7 +304,7 @@ vapplicationArgUnboundCurrent
 // Vertical application arguments without bindings
 // Ends on the next line
 vapplicationArgUnboundNext
-    : vapplicationArgVanonymUnbound // vertical anonym object
+    : formationNamedOrNameless // vertical abstract object
     | vapplicationHeadNamed vapplicationArgs // vertical application
     | reversed oname? vapplicationArgsReversed // reversed vertical application
     ;
@@ -296,13 +318,8 @@ vapplicationArgHapplicationUnbound
     : happlicationExtended oname?
     ;
 
-// Vertical anonym object as argument of vertical application
-vapplicationArgVanonymUnbound
-    : formationNamedOrNameless
-    ;
-
 formationNameless
-    : attributes innersOrEol
+    : attributes aname? innersOrEol
     ;
 
 // Formation with or without name
@@ -314,16 +331,12 @@ formationNamedOrNameless
 // Bound vertical anonym abstract object as argument of vertical application argument
 // Ends on the next line
 vapplicationArgVanonymBound
-    : commentOptional formationBound
-    | formationBoundNameless
+    : commentOptional attributesAs oname innersOrEol
+    | attributesAs aname? innersOrEol
     ;
 
-formationBound
-    : attributes as oname innersOrEol
-    ;
-
-formationBoundNameless
-    : attributes as innersOrEol
+attributesAs
+    : attributes as
     ;
 
 vapplicationArgHanonymBoundBody
@@ -333,30 +346,39 @@ vapplicationArgHanonymBoundBody
 // Horizontal anonym abstract object as argument of vertical application
 vapplicationArgHanonymBound
     : commentOptional vapplicationArgHanonymBoundBody oname
-    | vapplicationArgHanonymBoundBody
+    | vapplicationArgHanonymBoundBody aname?
     ;
 
 vapplicationArgHanonymUnbound
     : commentOptional hanonym oname
-    | hanonym
+    | hanonym aname?
+    ;
+
+// Horizontal formation
+hformation
+    : attributes hanonymInner+
     ;
 
 // Horizontal anonym object
 hanonym
-    : attributes hanonymInner+
+    : hformation
+    | onlyphi
     ;
 
 // Unnamed abstract object with only @-bound attribute
 // x.y.z > [i]          -> [i] (x.y.z > @)
 // x y z > [i]          -> [i] (x y z > @)
 // [a] (b > c) > [i]    -> [i] ([a] (b > c) > @)
+// a > [i] > [j]        -> [j] ([i] (a > @) > @)
 // x > [i]              -> [i] (x > @)
 onlyphi
-    : (hmethod | happlication | hanonym | just) onlyphiTail
+    : (hmethod | happlication | hformation | just) onlyphiTail
+    | onlyphi onlyphiTail
     ;
 
 // Tail of the unnamed abstract object with only @-bound attribute
-onlyphiTail: spacedArrow attributes
+onlyphiTail
+    : spacedArrow attributes
     ;
 
 // Inner object of horizontal anonym object
@@ -452,7 +474,7 @@ vmethodOptional
 vmethodHead
     : vmethodHead methodTailOptional vmethodHeadApplicationTail
     | vmethodHeadVapplication
-    | (justNamed | onlyphi) EOL
+    | (justNamed | hanonym oname?) EOL
     | formationNamedOrNameless
     ;
 
@@ -523,6 +545,11 @@ oname
     : suffix CONST?
     ;
 
+// Automatic name of the object
+aname
+    : SPACE ARROW ARROW
+    ;
+
 // Suffix
 suffix
     : spacedArrow (PHI | NAME)
@@ -536,7 +563,7 @@ spacedArrow
 // Does not contain elements in vertical notation
 // Is used in happlicationArg, hmethodHead
 scope
-    : LB (happlication | hanonym | onlyphi) RB
+    : LB (happlication | hanonym) RB
     ;
 
 // Version

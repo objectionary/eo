@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import org.cactoos.Bytes;
 import org.cactoos.Input;
 import org.cactoos.Text;
-import org.cactoos.io.InputOf;
 
 /**
  * Location for files that saves optionally.
@@ -42,6 +41,11 @@ public final class HmOptional implements Home {
      * Original home.
      */
     private final Home origin;
+
+    /**
+     * Home with "save" functionality.
+     */
+    private final Home sve;
 
     /**
      * Rewrite files or not.
@@ -57,36 +61,41 @@ public final class HmOptional implements Home {
     public HmOptional(final Home home, final boolean rwte) {
         this.origin = home;
         this.rewrite = rwte;
+        this.sve = new HmSave(
+            (input, path) -> {
+                final Path target = this.absolute(this.onlyRelative(path));
+                if (!target.toFile().exists() || this.rewrite) {
+                    this.origin.save(input, path);
+                } else {
+                    Logger.info(this, "Rewriting of the %s file was skipped", target);
+                }
+            }
+        );
     }
 
     @Override
     public void save(final String str, final Path path) throws IOException {
-        this.save(new InputOf(str), path);
+        this.sve.save(str, path);
     }
 
     @Override
     public void save(final Text txt, final Path path) throws IOException {
-        this.save(new InputOf(txt), path);
+        this.sve.save(txt, path);
     }
 
     @Override
-    public void save(final InputStream stream, final Path path) throws IOException {
-        this.save(new InputOf(stream), path);
+    public void save(final InputStream stream, final Path path) throws IOException  {
+        this.sve.save(stream, path);
     }
 
     @Override
-    public void save(final byte[] bytes, final Path path) throws IOException {
-        this.save(new InputOf(bytes), path);
+    public void save(final byte[] bytes, final Path path) throws IOException  {
+        this.sve.save(bytes, path);
     }
 
     @Override
     public void save(final Input input, final Path path) throws IOException {
-        final Path target = this.absolute(this.onlyRelative(path));
-        if (!target.toFile().exists() || this.rewrite) {
-            this.origin.save(input, path);
-        } else {
-            Logger.info(this, "Rewriting of the %s file was skipped", target);
-        }
+        this.sve.save(input, path);
     }
 
     @Override
