@@ -35,8 +35,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Dataized}.
@@ -49,7 +47,8 @@ final class DataizedTest {
     /**
      * System property for maximum dataization log level.
      */
-    private static final String DATAIZATION_LOG = "max.dataization.log";
+    @SuppressWarnings("PMD.LongVariable")
+    private static final String MAX_DATAIZATION_LOG_PROPERTY = "max.dataization.log";
 
     @Test
     @Disabled
@@ -103,45 +102,78 @@ final class DataizedTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2})
-    void printsShortLogs(final int level) throws InterruptedException {
+    @Test
+    void printsShortLogs() throws InterruptedException {
+        final Logger log = Logger.getLogger("printsShortLogs");
+        final Level before = log.getLevel();
+        log.setLevel(Level.ALL);
+        final List<LogRecord> logs = new LinkedList<>();
+        final Handler hnd = new Hnd(logs);
+        log.addHandler(hnd);
+        final Thread thread = new DataizedLoggerThread(log, 1);
+        thread.start();
+        thread.join();
+        log.setLevel(before);
+        log.removeHandler(hnd);
+        MatcherAssert.assertThat(
+            "Number of log records should be equal to 1 in the case of short logs",
+            logs.size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void printsLongLogs() throws InterruptedException {
         final Logger log = Logger.getLogger(Dataized.class.getName());
         final Level before = log.getLevel();
         log.setLevel(Level.ALL);
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Thread thread = new Thread(
-            () -> {
-                final String property = System.getProperty(DataizedTest.DATAIZATION_LOG);
-                System.getProperties().setProperty(
-                    DataizedTest.DATAIZATION_LOG,
-                    String.valueOf(level)
-                );
-                final Phi phi = new PhiDec(Phi.Φ);
-                new Dataized(phi, log).take();
-                if (property != null) {
-                    System.getProperties().setProperty(DataizedTest.DATAIZATION_LOG, property);
-                } else {
-                    System.clearProperty(DataizedTest.DATAIZATION_LOG);
-                }
-            });
+        final Thread thread = new DataizedLoggerThread(log, 2);
         thread.start();
         thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
-        if (level == 1) {
-            MatcherAssert.assertThat(
-                "Number of log records should be 1 in case of short logs",
-                logs.size(),
-                Matchers.equalTo(1)
-            );
-        } else if (level == 2) {
-            MatcherAssert.assertThat(
-                "Number of log records should be greater than 1 in case of long logs",
-                logs.size(),
-                Matchers.greaterThan(1)
+        MatcherAssert.assertThat(
+            "Number of log records should be greater than 1 the in case of long logs",
+            logs.size(),
+            Matchers.greaterThan(1)
+        );
+    }
+
+    /**
+     * Thread that logs dataization process with specified log level.
+     * @since 1.0
+     */
+    private static class DataizedLoggerThread extends Thread {
+        /**
+         * Ctor.
+         *
+         * @param logger Logger.
+         * @param level Log level.
+         */
+        DataizedLoggerThread(final Logger logger, final int level) {
+            super(
+                () -> {
+                    final String property = System.getProperty(
+                        DataizedTest.MAX_DATAIZATION_LOG_PROPERTY
+                    );
+                    System.getProperties().setProperty(
+                        DataizedTest.MAX_DATAIZATION_LOG_PROPERTY,
+                        String.valueOf(level)
+                    );
+                    final Phi phi = new PhiDec(Phi.Φ);
+                    new Dataized(phi, logger).take();
+                    if (property != null) {
+                        System.getProperties().setProperty(
+                            DataizedTest.MAX_DATAIZATION_LOG_PROPERTY,
+                            property
+                        );
+                    } else {
+                        System.clearProperty(DataizedTest.MAX_DATAIZATION_LOG_PROPERTY);
+                    }
+                }
             );
         }
     }
