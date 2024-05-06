@@ -20,17 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: pdd
+name: year
 on:
   push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
 jobs:
-  pdd:
+  license:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: volodya-lombrozo/pdd-action@master
+        with:
+          fetch-depth: 0
+      - run: |
+          find . -type f \( 
+            -name "*.yml" \
+            -o -name "*.eo" \
+            -o -name "*.xml" \
+            -o -name "*.java" \
+            -o -name "*.groovy" \) > files.txt
+          header="Copyright (c) 2016-$(date +%Y) Objectionary.com"
+          failed="false"
+          while IFS= read -r file; do
+            if ! grep -q "$header" "$file"; then
+              failed="true"
+              echo "No license in: $file"
+            fi
+          done < files.txt
+          if [ "${failed}" -eq "true" ]; then
+            exit 1
+          fi
+
