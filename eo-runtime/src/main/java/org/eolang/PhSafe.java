@@ -33,6 +33,7 @@ import EOorg.EOeolang.EOerror;
  * @since 0.26
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 public final class PhSafe implements Phi {
 
     /**

@@ -52,6 +52,7 @@ public final class PhWrite extends PhDefault implements Atom {
      * @param attr Attribute name
      * @param ret Return value function
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhWrite(
         final Phi sigma,
         final String attr,

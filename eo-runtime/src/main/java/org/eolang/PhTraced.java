@@ -35,11 +35,13 @@ import java.util.function.Supplier;
  * @since 0.36
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 public final class PhTraced implements Phi {
 
     /**
      * Name of property that responsible for keeping max depth.
      */
+    @SuppressWarnings("PMD.LongVariable")
     public static final String
         MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
 
@@ -58,6 +60,7 @@ public final class PhTraced implements Phi {
     /**
      * Locator of encaged object.
      */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private final Integer locator;
 
     /**

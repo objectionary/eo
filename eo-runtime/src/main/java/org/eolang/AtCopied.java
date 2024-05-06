@@ -39,10 +39,10 @@ final class AtCopied extends AtEnvelope {
             new AtGetOnly(
                 () -> {
                     final Phi ret;
-                    if (!name.equals(Attr.RHO) && !name.equals(Attr.SIGMA)) {
-                        ret = attr.get().copy();
-                    } else {
+                    if (name.equals(Attr.RHO) || name.equals(Attr.SIGMA)) {
                         ret = attr.get();
+                    } else {
+                        ret = attr.get().copy();
                     }
                     return ret;
                 }

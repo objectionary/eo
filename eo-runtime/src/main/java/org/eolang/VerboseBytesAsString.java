@@ -44,6 +44,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
      * Ctor.
      * @param data Data.
      */
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public VerboseBytesAsString(final byte[] data) {
         this.data = data;
     }
@@ -81,6 +82,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
                     Arrays.toString(this.data),
                     new String(this.data, StandardCharsets.UTF_8)
                 );
+                break;
         }
         return result;
     }

@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 0.22
  */
 @Versionized
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
 final class PhPackage implements Phi {
 
     /**

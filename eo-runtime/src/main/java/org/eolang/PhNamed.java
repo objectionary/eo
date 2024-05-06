@@ -30,6 +30,7 @@ package org.eolang;
  * @since 0.17
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhNamed implements Phi {
 
     /**

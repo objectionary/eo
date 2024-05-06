@@ -47,18 +47,17 @@ class SafeFunc<T> implements Supplier<T> {
     }
 
     @Override
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.AvoidRethrowingException"})
     public T get() {
         try {
             return this.origin.call();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            throw new ExInterrupted();
-        } catch (final ExAbstract ex) {
-            throw ex;
+            throw new ExInterrupted(ex);
             // @checkstyle IllegalCatchCheck (3 line)
         } catch (final RuntimeException ex) {
             throw ex;
-        } catch (final Throwable ex) {
+        } catch (final Exception ex) {
             throw new ExFailure(
                 String.format(
                     "Unexpected error '%s' of type %s",

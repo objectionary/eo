@@ -33,6 +33,7 @@ import java.util.Arrays;
  * @since 1.0
  */
 @Versionized
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public final class BytesOf implements Bytes {
 
     /**
@@ -44,6 +45,7 @@ public final class BytesOf implements Bytes {
      * Ctor.
      * @param data Data.
      */
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public BytesOf(final byte[] data) {
         this.data = data;
     }
@@ -108,6 +110,7 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    @SuppressWarnings("PMD.ShortMethodName")
     public Bytes or(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
@@ -128,6 +131,7 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public Bytes shift(final int bits) {
         // @checkstyle MethodBodyCommentsCheck (3 lines)
         // @checkstyle NestedIfDepthCheck (40 lines)

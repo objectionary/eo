@@ -33,6 +33,7 @@ import java.util.function.Supplier;
  * @since 0.1
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 class PhOnce implements Phi {
 
     /**

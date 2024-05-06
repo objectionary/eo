@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
 @Versionized
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization", "PMD.GodClass"})
 public abstract class PhDefault implements Phi, Cloneable {
 
     /**
@@ -310,15 +310,6 @@ public abstract class PhDefault implements Phi, Cloneable {
     @Override
     public String forma() {
         return this.form;
-    }
-
-    /**
-     * Clean up resources.
-     * This includes call of {@link ThreadLocal#remove()} method to prevent
-     * memory leaks.
-     */
-    public static void cleanUp() {
-        PhDefault.NESTING.remove();
     }
 
     /**

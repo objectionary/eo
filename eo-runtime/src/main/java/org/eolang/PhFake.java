@@ -47,6 +47,7 @@ public final class PhFake extends PhDefault {
      * Ctor.
      * @param sup The function to return the real object
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhFake(final Supplier<Phi> sup) {
         super(Phi.Φ);
         this.add("args", new AtVoid("args"));
