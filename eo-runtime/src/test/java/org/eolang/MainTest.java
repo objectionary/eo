@@ -30,7 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -44,6 +43,7 @@ import org.junit.jupiter.api.Test;
  *  tupled-stdout.eo was removed from eo-runtime tests because it wasn't working in CI.
  *  Need to refactor them and enable
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class MainTest {
 
     @Test

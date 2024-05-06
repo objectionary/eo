@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.36.0
  */
-class PhLocatedTest {
+final class PhLocatedTest {
 
     @Test
     void savesLocationAfterCopying() {

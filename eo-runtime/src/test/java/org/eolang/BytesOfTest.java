@@ -35,6 +35,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 1.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class BytesOfTest {
 
     @Test

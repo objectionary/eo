@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29.0
  */
-class PhLoggedTest {
+final class PhLoggedTest {
 
     @Test
     void convertsToOriginTerm() {
@@ -100,6 +100,7 @@ class PhLoggedTest {
          * Ctor.
          * @param sigma Sigma
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         private Dummy(final Phi sigma) {
             super(sigma);
             this.add("x", new AtVoid("x"));

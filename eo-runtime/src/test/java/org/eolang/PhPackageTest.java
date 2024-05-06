@@ -47,6 +47,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.24
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackageTest {
 
     /**

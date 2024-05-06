@@ -44,6 +44,10 @@ import org.junit.jupiter.api.Test;
  *  became immutable. Need to find out what's going on and resolve the tests.
  */
 final class DataizedTest {
+    /**
+     * System property for maximum dataization log level.
+     */
+    private static final String DATAIZATION_LOG = "max.dataization.log";
 
     @Test
     @Disabled
@@ -107,14 +111,17 @@ final class DataizedTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                final String property = System.getProperty("max.dataization.log");
-                System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
+                final String property = System.getProperty(DataizedTest.DATAIZATION_LOG);
+                System.getProperties().setProperty(
+                    DataizedTest.DATAIZATION_LOG,
+                    String.valueOf(1)
+                );
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi, log).take();
                 if (property != null) {
-                    System.getProperties().setProperty("max.dataization.log", property);
+                    System.getProperties().setProperty(DataizedTest.DATAIZATION_LOG, property);
                 } else {
-                    System.clearProperty("max.dataization.log");
+                    System.clearProperty(DataizedTest.DATAIZATION_LOG);
                 }
             });
         thread.start();
@@ -138,14 +145,17 @@ final class DataizedTest {
         log.addHandler(hnd);
         final Thread thread = new Thread(
             () -> {
-                final String property = System.getProperty("max.dataization.log");
-                System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
+                final String property = System.getProperty(DataizedTest.DATAIZATION_LOG);
+                System.getProperties().setProperty(
+                    DataizedTest.DATAIZATION_LOG,
+                    String.valueOf(2)
+                );
                 final Phi phi = new PhiDec(Phi.Φ);
                 new Dataized(phi, log).take();
                 if (property != null) {
-                    System.getProperties().setProperty("max.dataization.log", property);
+                    System.getProperties().setProperty(DataizedTest.DATAIZATION_LOG, property);
                 } else {
-                    System.clearProperty("max.dataization.log");
+                    System.clearProperty(DataizedTest.DATAIZATION_LOG);
                 }
             });
         thread.start();
@@ -169,6 +179,7 @@ final class DataizedTest {
          * Ctor.
          * @param sigma Sigma
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhIncorrect(final Phi sigma) {
             super(sigma);
             this.add(
@@ -193,6 +204,7 @@ final class DataizedTest {
          *
          * @param sigma Sigma
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhiDec(final Phi sigma) {
             super(sigma);
             this.add(
@@ -242,7 +254,7 @@ final class DataizedTest {
         }
 
         @Override
-        public void close() throws SecurityException {
+        public void close() {
             throw new UnsupportedOperationException("#close()");
         }
 

@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.29
  */
-class AtLoggedTest {
+final class AtLoggedTest {
 
     /**
      * Testable object.

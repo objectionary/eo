@@ -35,6 +35,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class VerboseBytesAsStringTest {
 
     @ParameterizedTest
@@ -118,9 +119,9 @@ public final class VerboseBytesAsStringTest {
          */
         public Stream<Object> getTestSources() {
             return Stream.of(
-                12345L,
+                12_345L,
                 "qwerty",
-                12.34567D,
+                12.345_67D,
                 true,
                 false,
                 new byte[]{},
