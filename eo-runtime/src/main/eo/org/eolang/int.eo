@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -59,15 +59,13 @@
         x > value!
 
   # Change the sign of the number.
-  [] > neg
-    ^.times -1 > @
+  ^.times -1 > [] > neg
 
   # Add to the current one.
   [x] > plus /int
 
   # Subtract from the current one.
-  [x] > minus
-    ^.plus x.neg > @
+  ^.plus x.neg > [x] > minus
 
   # Multiplication this one by another int.
   [x] > times /int

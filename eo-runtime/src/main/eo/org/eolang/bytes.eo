@@ -28,6 +28,9 @@
 
 # Bytes.
 [] > bytes
+  # Return itself.
+  $ > as-bytes
+
   # Equals to another object.
   [b] > eq /bool
 
@@ -38,8 +41,7 @@
   [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8.
-  [] > as-string
-    string ^ > @
+  string ^ > [] > as-string
 
   # Turn this chain of eight bytes into an integer.
   # If there are less or more than eight bytes, there will
@@ -72,19 +74,13 @@
   [] > not /bytes
 
   # Calculate bitwise left shift.
-  [x] > left
-    ^.right x.neg > @
+  ^.right x.neg > [x] > left
 
   # Calculate bitwise right shift.
   [x] > right /bytes
 
   # Converts to bool.
-  [] > as-bool
-    ^.eq 01- > @
-
-  # Return itself.
-  [] > as-bytes
-    ^ > @
+  ^.eq 01- > [] > as-bool
 
   # Concatenation of two byte sequences:
   # the current and the provided one,
