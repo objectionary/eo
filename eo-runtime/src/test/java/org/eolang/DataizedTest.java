@@ -54,7 +54,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -76,14 +76,14 @@ final class DataizedTest {
             i -> Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(wrong).take(),
-                AtCompositeTest.TO_ADD_MESSAGE
+                "Expected failure with ExFailure exception on incorrect object dataization"
             )
         );
         new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
