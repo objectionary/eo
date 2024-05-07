@@ -33,20 +33,16 @@ import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Dataized}.
  *
  * @since 0.22
- * @todo #2931:30min Enable the disabled tests. The tests were disabled after \rho attribute
- *  became immutable. Need to find out what's going on and resolve the tests.
  */
 final class DataizedTest {
 
     @Test
-    @Disabled
     void logsCorrectly() {
         final Logger log = Logger.getLogger("logsCorrectly");
         final Level before = log.getLevel();
@@ -68,7 +64,6 @@ final class DataizedTest {
     }
 
     @Test
-    @Disabled
     void logsWhenException() {
         final Logger log = Logger.getLogger("logsWhenException");
         final Level before = log.getLevel();
@@ -79,7 +74,7 @@ final class DataizedTest {
         final Phi wrong = new PhIncorrect(Phi.Φ);
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
-                IllegalStateException.class,
+                ExFailure.class,
                 () -> new Dataized(wrong).take(),
                 AtCompositeTest.TO_ADD_MESSAGE
             )
