@@ -26,7 +26,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Storage of data in memory.
+# The `malloc` object is an abstraction of a storage of data in heap
+# memory. The implementation of `malloc` is platform dependent. It may
+# use either OS-level or VM-level memory management mechanism.
 #
 # There are two ways of usage `malloc`:
 #
