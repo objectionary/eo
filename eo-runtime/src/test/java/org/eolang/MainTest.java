@@ -40,9 +40,6 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link Main}.
  *
  * @since 0.1
- * @todo #2931:30min Enable all disabled test in the class. The tests were disabled because object
- *  tupled-stdout.eo was removed from eo-runtime tests because it wasn't working in CI.
- *  Need to refactor them and enable
  */
 final class MainTest {
 
@@ -68,13 +65,12 @@ final class MainTest {
     }
 
     @Test
-    @Disabled
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            MainTest.exec("org.eolang.io.tupled-stdout", "Hello!"),
+            "Incorrect output when dataizing \"true\" object",
+            MainTest.exec("org.eolang.true"),
             Matchers.stringContainsInOrder(
-                String.format("Hello!%n---%n"),
+                String.format("%n---%n"),
                 "true",
                 String.format("%n")
             )
@@ -82,16 +78,14 @@ final class MainTest {
     }
 
     @Test
-    @Disabled
     void executesJvmFullRun() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            MainTest.exec("--verbose", "org.eolang.io.tupled-stdout", "Hello, dude!"),
+            "Incorrect verbose output when dataizing \"false\" object",
+            MainTest.exec("--verbose", "org.eolang.false"),
             Matchers.allOf(
                 Matchers.containsString("EOLANG"),
-                Matchers.containsString("Hello, "),
                 Matchers.containsString("\uD835\uDD3B( "),
-                Matchers.containsString("string")
+                Matchers.containsString("false")
             )
         );
     }
