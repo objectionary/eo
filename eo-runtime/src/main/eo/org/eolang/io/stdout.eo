@@ -26,5 +26,12 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Stdout.
+# The `stdout` object, when it's being dataized, dataizes its only
+# argument and prints everything to the console. For example:
+#
+# ```
+# [args] > app
+#   QQ.io.stdout > @
+#     "Hello, world!\n"
+# ```
 [text] > stdout /true
