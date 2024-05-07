@@ -43,7 +43,7 @@
         int
           x > value!
 
-  # Tests that $ ≤ x.
+  # Tests that $ <= x.
   [x] > lte
     not. > @
       ^.gt
@@ -52,7 +52,7 @@
   # Tests that $ > x.
   [x] > gt /bool
 
-  # Tests that $ ≥ x.
+  # Tests that $ >= x.
   [x] > gte
     not. > @
       ^.lt

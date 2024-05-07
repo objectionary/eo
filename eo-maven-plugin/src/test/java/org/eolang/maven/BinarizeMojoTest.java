@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,6 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
+@ExtendWith(WeAreOnline.class)
 final class BinarizeMojoTest {
 
     /**
