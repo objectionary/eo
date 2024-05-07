@@ -26,6 +26,10 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Compile Time Instruction.
-# Make possible to highlight deprecated methods.
+# Compile Time Instruction (CTI).
+#
+# The object may be used to add compile time information to
+# other objects. This mechanism is somehow similar to annotations in,
+# for example, Java and C#. For example, the object makes it possible
+# to highlight deprecated methods.
 delegate > [delegate level message] > cti

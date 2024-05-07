@@ -26,7 +26,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Bytes.
+# The object encapsulates a chain of bytes, adding a few
+# convenient operations to it. Objects like `int`, `string`,
+# and `float` encapsulate `bytes`.
 [] > bytes
   # Return itself.
   $ > as-bytes

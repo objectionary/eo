@@ -27,7 +27,7 @@
 +version 0.0.0
 
 # Try, catch and finally. This object helps catch errors created by the
-# object 'error'. When being dataized, such objects will crash the problem.
-# Decorate them with 'try' and errors will be caught by the 'catch'
-# abstract object here and the enclosure of the 'error' will be passed to it.
+# `error` object. When being dataized, such objects will crash the problem.
+# Decorate them with `try` and errors will be caught by the `catch`
+# abstract object here and the enclosure of the `error` will be passed to it.
 [main catch finally] > try /?

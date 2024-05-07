@@ -26,7 +26,8 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Integer.
+# The `int` object is an abstraction of a 64-bit signed integer that
+# internally is a chain of eight bytes.
 [as-bytes] > int
   as-bytes > @
 

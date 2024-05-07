@@ -30,5 +30,5 @@
 # due to an error. Just make a copy of it with any encapsulated object.
 # The first attempt to dataize it will lead to runtime error and program
 # termination. The only way to catch such an error is by using
-# the object 'try'.
+# the `try` object.
 [message] > error /?
