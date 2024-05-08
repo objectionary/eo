@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import com.jcabi.log.Logger;
 import org.eolang.PhDefault;
 
 /**
@@ -47,5 +48,6 @@ public final class EOfailed extends PhDefault {
      */
     public EOfailed(final String arg) {
         super();
+        Logger.info(this, "EOfailed %s", arg);
     }
 }
