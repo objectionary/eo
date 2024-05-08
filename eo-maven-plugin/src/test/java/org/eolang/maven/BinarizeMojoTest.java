@@ -162,19 +162,19 @@ final class BinarizeMojoTest {
         }
         maven.execute(new FakeMaven.Binarize());
         final File executable = cache
-            .resolve("Lib/native0/target/debug/")
+            .resolve("Lib/native0_QQ_custom_creates_object_r_0/target/debug/")
             .resolve(RustNode.LIB)
             .toFile();
         final long first = executable.lastModified();
         maven.execute(new FakeMaven.Binarize());
         final long second = executable.lastModified();
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "Check that file exists",
             first,
             Matchers.not(0L)
         );
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "The cached program should not be recompiled",
             second,
             Matchers.equalTo(first)
         );
