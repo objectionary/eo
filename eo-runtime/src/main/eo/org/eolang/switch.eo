@@ -26,11 +26,12 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Allow to choose right options according to cases conditions.
+# The object allows to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
 # consist of condition bool value and expected value, if this
-# condition is true.
-# e.g.
+# condition is true. For example:
+#
+# ```
 # switch
 #   *
 #     *
@@ -39,6 +40,7 @@
 #     *
 #       false
 #       "this value will be skipped"
+# ```
 #
 # This object returns value of only first truly statement.
 [cases] > switch

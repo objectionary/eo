@@ -151,7 +151,7 @@ public final class BinarizeParseTest {
     @ClasspathSource(value = "org/eolang/maven/binarize/add_rust/", glob = "**.yaml")
     void createsDependenciesSection(final String yaml) {
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "Yaml tests should pass",
             new XaxStory(yaml),
             Matchers.is(true)
         );

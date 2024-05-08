@@ -26,5 +26,9 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Turns an object into a φ-term.
+# Turns an object into a phi-term printable to console.
+#
+# This object is mostly used for testing/debugging, when it's necessary
+# to inspect the structure of an object. The output will omit recursive
+# links.
 [x] > as-phi /string

@@ -58,6 +58,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * Test cases for {@link EOcage}.
  * @since 0.19
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOcageTest {
     @Test
     void encagesViaApplication() {
