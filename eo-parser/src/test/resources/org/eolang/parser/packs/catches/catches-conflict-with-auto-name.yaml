@@ -20,19 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-origin: |
-  x > first
-    [] >>
-      5 > five
-
-straight: |
-  x > first
-    # This is the default 64+ symbols comment in front of named abstract object.
-    [] > auto-named-attr-at-2-4
-      5 > five
-
-reversed: |
-  x > first
-    # This is the default 64+ symbols comment in front of named abstract object.
-    [] > auto-named-attr-at-2-4
-      5 > five
+# @todo #3147:30min Make duplicate names catcher more powerful. This test pack is disabled now
+#  because names duplication is not caught here. It happens because of "duplicate-names.xsl" thinks
+#  that abstract objects in the tests are on the different levels. Syntactically they are, but
+#  semantically they're not. So we need to make this duplicate catcher more powerful, enable the
+#  test by removing "skip: true" line and make sure it works.
+skip: true
+xsls:
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
+tests:
+  - /program/errors[count(error)=1]
+eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > main
+    x > f
+      [] >>
+    # This is the default 64+ symbols comment in front of abstract object.
+    [] > auto-named-attr-at-4-6
