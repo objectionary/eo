@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.AtVoid;
@@ -139,9 +140,9 @@ public final class EOrust extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        final String name = NAMES.get(
-            this.take("code").locator().split(":")[0]
-        );
+        final String locator = this.take("code").locator().split(":")[0];
+        final String name = Optional.ofNullable(NAMES.get(locator))
+            .orElseThrow(() -> new ExNative("No native function for %s", locator));
         final Method method = Class.forName(
             String.format(
                 "EOrust.natives.%s",
