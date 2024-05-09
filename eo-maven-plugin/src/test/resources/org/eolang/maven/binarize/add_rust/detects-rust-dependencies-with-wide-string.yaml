@@ -1,0 +1,275 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+sheets:
+  - /org/eolang/maven/add_rust/add_rust.xsl
+document:
+  <!--Check the case if tuple of dependencies and dependencies are wide.-->
+  <program>
+     <objects>
+        <o abstract=""
+           line="29"
+           loc="Φ.org.eolang.rust-unwrapped-plus"
+           name="rust-unwrapped-plus"
+           original-name="rust-unwrapped-plus"
+           pos="0">
+           <o base=".int"
+              line="30"
+              loc="Φ.org.eolang.rust-unwrapped-plus.a"
+              name="a"
+              pos="2">
+              <o base=".eolang"
+                 line="31"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.a.ρ"
+                 pos="4">
+                 <o base=".org"
+                    line="32"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.a.ρ.ρ"
+                    pos="6">
+                    <o base="Q"
+                       line="33"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.a.ρ.ρ.ρ"
+                       pos="8"/>
+                 </o>
+              </o>
+              <o as="0"
+                 base="org.eolang.bytes"
+                 data="bytes"
+                 line="34"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.a.α0"
+                 pos="4">00 00 00 00 00 00 00 05</o>
+           </o>
+           <o base=".int"
+              line="39"
+              loc="Φ.org.eolang.rust-unwrapped-plus.b"
+              name="b"
+              pos="2">
+              <o base=".eolang"
+                 line="40"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.b.ρ"
+                 pos="4">
+                 <o base=".org"
+                    line="41"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.b.ρ.ρ"
+                    pos="6">
+                    <o base="Q"
+                       line="42"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.b.ρ.ρ.ρ"
+                       pos="8"/>
+                 </o>
+              </o>
+              <o as="0"
+                 base="org.eolang.bytes"
+                 data="bytes"
+                 line="43"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.b.α0"
+                 pos="4">00 00 00 00 00 00 00 0A</o>
+           </o>
+           <o base=".rust"
+              line="48"
+              loc="Φ.org.eolang.rust-unwrapped-plus.plus"
+              name="plus"
+              pos="2">
+              <o base=".eolang"
+                 line="49"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.plus.ρ"
+                 pos="4">
+                 <o base=".org"
+                    line="50"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.ρ.ρ"
+                    pos="6">
+                    <o base="Q"
+                       line="51"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.ρ.ρ.ρ"
+                       pos="8"/>
+                 </o>
+              </o>
+              <o as="0"
+                 base=".string"
+                 line="52"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.plus.α0"
+                 pos="4">
+                 <o base=".eolang"
+                    line="53"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α0.ρ"
+                    pos="6">
+                    <o base=".org"
+                       line="54"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.α0.ρ.ρ"
+                       pos="8">
+                       <o base="Q"
+                          line="55"
+                          loc="Φ.org.eolang.rust-unwrapped-plus.plus.α0.ρ.ρ.ρ"
+                          pos="10"/>
+                    </o>
+                 </o>
+                 <o as="0"
+                    base="org.eolang.bytes"
+                    data="bytes"
+                    line="56"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α0.α0"
+                    pos="6">75 73 65 20 65 6F 3A 3A 50 6F 72 74 61 6C 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3A 3A 7B 45 4F 49 6E 74 7D 3B 0A 75 73 65 20 62 79 74 65 6F 72 64 65 72 3A 3A 7B 42 69 67 45 6E 64 69 61 6E 2C 20 52 65 61 64 42 79 74 65 73 45 78 74 7D 3B 0A 0A 70 75 62 20 66 6E 20 66 6F 6F 28 70 6F 72 74 61 6C 3A 20 26 6D 75 74 20 50 6F 72 74 61 6C 29 20 2D 3E 20 4F 70 74 69 6F 6E 3C 45 4F 3E 20 7B 0A 20 20 6C 65 74 20 61 20 3D 20 70 6F 72 74 61 6C 2E 66 69 6E 64 28 22 24 2E 5E 2E 61 22 29 3F 3B 0A 20 20 6C 65 74 20 62 79 74 65 73 5F 61 20 3D 20 70 6F 72 74 61 6C 2E 64 61 74 61 69 7A 65 28 61 29 3F 3B 0A 20 20 6C 65 74 20 61 20 3D 20 62 79 74 65 73 5F 61 2E 61 73 5F 73 6C 69 63 65 28 29 2E 72 65 61 64 5F 69 36 34 3A 3A 3C 42 69 67 45 6E 64 69 61 6E 3E 28 29 2E 6F 6B 28 29 3F 3B 0A 0A 20 20 6C 65 74 20 62 20 3D 20 70 6F 72 74 61 6C 2E 66 69 6E 64 28 22 24 2E 5E 2E 62 22 29 3F 3B 0A 20 20 6C 65 74 20 62 79 74 65 73 5F 62 20 3D 20 70 6F 72 74 61 6C 2E 64 61 74 61 69 7A 65 28 62 29 3F 3B 0A 20 20 6C 65 74 20 62 20 3D 20 62 79 74 65 73 5F 62 2E 61 73 5F 73 6C 69 63 65 28 29 2E 72 65 61 64 5F 69 36 34 3A 3A 3C 42 69 67 45 6E 64 69 61 6E 3E 28 29 2E 6F 6B 28 29 3F 3B 0A 20 20 70 72 69 6E 74 6C 6E 21 28 22 73 75 6D 20 35 20 2B 20 31 30 20 3D 20 7B 7D 22 2C 20 61 20 2B 20 62 29 3B 0A 20 20 53 6F 6D 65 28 45 4F 49 6E 74 28 61 20 2B 20 62 29 29 0A 7D</o>
+              </o>
+              <o as="1"
+                 base=".auto-named-attr-at-327-6"
+                 line="61"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.plus.α1"
+                 pos="4">
+                 <o base="$"
+                    line="62"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α1.ρ"
+                    pos="6"/>
+              </o>
+              <o as="2"
+                 base=".tuple"
+                 line="63"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2"
+                 pos="4">
+                 <o base=".eolang"
+                    line="64"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.ρ"
+                    pos="6">
+                    <o base=".org"
+                       line="65"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.ρ.ρ"
+                       pos="8">
+                       <o base="Q"
+                          line="66"
+                          loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.ρ.ρ.ρ"
+                          pos="10"/>
+                    </o>
+                 </o>
+                 <o as="0"
+                    base=".empty"
+                    line="67"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α0"
+                    pos="6">
+                    <o base=".tuple"
+                       line="68"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α0.ρ"
+                       pos="8">
+                       <o base=".eolang"
+                          line="69"
+                          loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α0.ρ.ρ"
+                          pos="10">
+                          <o base=".org"
+                             line="70"
+                             loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α0.ρ.ρ.ρ"
+                             pos="12">
+                             <o base="Q"
+                                line="71"
+                                loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α0.ρ.ρ.ρ.ρ"
+                                pos="14"/>
+                          </o>
+                       </o>
+                    </o>
+                 </o>
+                 <o as="1"
+                    base=".string"
+                    line="72"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α1"
+                    pos="6">
+                    <o base=".eolang"
+                       line="73"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α1.ρ"
+                       pos="8">
+                       <o base=".org"
+                          line="74"
+                          loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α1.ρ.ρ"
+                          pos="10">
+                          <o base="Q"
+                             line="75"
+                             loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α1.ρ.ρ.ρ"
+                             pos="12"/>
+                       </o>
+                    </o>
+                    <o as="0"
+                       base="org.eolang.bytes"
+                       data="bytes"
+                       line="76"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.plus.α2.α1.α0"
+                       pos="8">62 79 74 65 6F 72 64 65 72 3A 31 2E 34 2E 33</o>
+                 </o>
+              </o>
+           </o>
+           <o base=".eq"
+              line="81"
+              loc="Φ.org.eolang.rust-unwrapped-plus.φ"
+              name="@"
+              pos="2">
+              <o base=".plus"
+                 line="82"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.φ.ρ"
+                 pos="4">
+                 <o base="$"
+                    line="83"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.φ.ρ.ρ"
+                    pos="6"/>
+              </o>
+              <o as="0"
+                 base=".int"
+                 line="84"
+                 loc="Φ.org.eolang.rust-unwrapped-plus.φ.α0"
+                 pos="4">
+                 <o base=".eolang"
+                    line="85"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.φ.α0.ρ"
+                    pos="6">
+                    <o base=".org"
+                       line="86"
+                       loc="Φ.org.eolang.rust-unwrapped-plus.φ.α0.ρ.ρ"
+                       pos="8">
+                       <o base="Q"
+                          line="87"
+                          loc="Φ.org.eolang.rust-unwrapped-plus.φ.α0.ρ.ρ.ρ"
+                          pos="10"/>
+                    </o>
+                 </o>
+                 <o as="0"
+                    base="org.eolang.bytes"
+                    data="bytes"
+                    line="88"
+                    loc="Φ.org.eolang.rust-unwrapped-plus.φ.α0.α0"
+                    pos="6">00 00 00 00 00 00 00 0F</o>
+              </o>
+           </o>
+           <o base="rust-unwrapped-plus$auto-named-attr-at-327-6"
+              cut="43"
+              line="94"
+              loc="Φ.org.eolang.rust-unwrapped-plus.auto-named-attr-at-327-6"
+              name="auto-named-attr-at-327-6"
+              pos="2"
+              ref="94"/>
+        </o>
+        <o abstract=""
+           ancestors="1"
+           line="94"
+           loc="Φ.org.eolang.rust-unwrapped-plus$auto-named-attr-at-327-6"
+           name="rust-unwrapped-plus$auto-named-attr-at-327-6"
+           original-name="auto-named-attr-at-327-6"
+           parent="rust-unwrapped-plus"
+           pos="2"/>
+     </objects>
+  </program>
+asserts:
+  - /program/rusts/rust[@code_loc='Φ.org.eolang.rust-unwrapped-plus.plus.α0' and @code='75 73 65 20 65 6F 3A 3A 50 6F 72 74 61 6C 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3B 0A 75 73 65 20 65 6F 3A 3A 65 6F 5F 65 6E 75 6D 3A 3A 45 4F 3A 3A 7B 45 4F 49 6E 74 7D 3B 0A 75 73 65 20 62 79 74 65 6F 72 64 65 72 3A 3A 7B 42 69 67 45 6E 64 69 61 6E 2C 20 52 65 61 64 42 79 74 65 73 45 78 74 7D 3B 0A 0A 70 75 62 20 66 6E 20 66 6F 6F 28 70 6F 72 74 61 6C 3A 20 26 6D 75 74 20 50 6F 72 74 61 6C 29 20 2D 3E 20 4F 70 74 69 6F 6E 3C 45 4F 3E 20 7B 0A 20 20 6C 65 74 20 61 20 3D 20 70 6F 72 74 61 6C 2E 66 69 6E 64 28 22 24 2E 5E 2E 61 22 29 3F 3B 0A 20 20 6C 65 74 20 62 79 74 65 73 5F 61 20 3D 20 70 6F 72 74 61 6C 2E 64 61 74 61 69 7A 65 28 61 29 3F 3B 0A 20 20 6C 65 74 20 61 20 3D 20 62 79 74 65 73 5F 61 2E 61 73 5F 73 6C 69 63 65 28 29 2E 72 65 61 64 5F 69 36 34 3A 3A 3C 42 69 67 45 6E 64 69 61 6E 3E 28 29 2E 6F 6B 28 29 3F 3B 0A 0A 20 20 6C 65 74 20 62 20 3D 20 70 6F 72 74 61 6C 2E 66 69 6E 64 28 22 24 2E 5E 2E 62 22 29 3F 3B 0A 20 20 6C 65 74 20 62 79 74 65 73 5F 62 20 3D 20 70 6F 72 74 61 6C 2E 64 61 74 61 69 7A 65 28 62 29 3F 3B 0A 20 20 6C 65 74 20 62 20 3D 20 62 79 74 65 73 5F 62 2E 61 73 5F 73 6C 69 63 65 28 29 2E 72 65 61 64 5F 69 36 34 3A 3A 3C 42 69 67 45 6E 64 69 61 6E 3E 28 29 2E 6F 6B 28 29 3F 3B 0A 20 20 70 72 69 6E 74 6C 6E 21 28 22 73 75 6D 20 35 20 2B 20 31 30 20 3D 20 7B 7D 22 2C 20 61 20 2B 20 62 29 3B 0A 20 20 53 6F 6D 65 28 45 4F 49 6E 74 28 61 20 2B 20 62 29 29 0A 7D']
+  - /program/rusts/rust[@code_loc='Φ.org.eolang.rust-unwrapped-plus.plus.α0']/dependencies/dependency[@name="62 79 74 65 6F 72 64 65 72 3A 31 2E 34 2E 33"]
