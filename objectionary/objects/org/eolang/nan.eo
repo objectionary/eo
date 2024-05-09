@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,49 +23,39 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
 # Not a number.
 [] > nan
   0.0.div 0.0 > @
 
   # Tests that $ = x.
-  [x] > eq
-    false > @
+  false > [x] > eq
 
   # Tests that $ < x.
-  [x] > lt
-    false > @
+  false > [x] > lt
 
   # Tests that $ ≤ x.
-  [x] > lte
-    false > @
+  false > [x] > lte
 
   # Tests that $ > x.
-  [x] > gt
-    false > @
+  false > [x] > gt
 
   # Tests that $ ≥ x.
-  [x] > gte
-    false > @
+  false > [x] > gte
 
   # Multiplication of $ and x.
-  [x] > times
-    & > @
+  ^ > [x] > times
 
   # Sum of $ and x.
-  [x] > plus
-    & > @
+  ^ > [x] > plus
 
   # Negation of $.
-  [] > neg
-    & > @
+  ^ > [] > neg
 
   # Difference between $ and x.
-  [x] > minus
-    & > @
+  ^ > [x] > minus
 
   # Quotient of the division of $ by x.
-  [x] > div
-    & > @
+  ^ > [x] > div

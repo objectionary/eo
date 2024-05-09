@@ -23,21 +23,25 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
 # The object dataizes `target`, makes new instance of `bytes` from given data and behaves as result
 # `bytes`.
 # The object is used as implementation of caching syntax (`!`).
 # The next two lines of code behaves identically:
+#
 # ```
 # some-object > cached!
 # (dataized some-object).as-bytes > cached
 # ```
+#
 # Dataization is a process of retrieving data (bytes) from an object, by taking its \Delta
 # attribute.
 # An example of usage:
+#
 # ```
+# # Some 64+ characters comment should be here.
 # [] > foo
 #   [] > @
 #     ^.inner.five > @
@@ -47,6 +51,7 @@
 # (dataized foo).as-bytes > result # result is 00-00-00-00-00-00-00-05
 # result.as-int > f                # f is 5
 # ```
+#
 # Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`) from the object `foo`
 # and returns them. The `.as-bytes` is used to prevent double dataization.
 [target] > dataized /bytes

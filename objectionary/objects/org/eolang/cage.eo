@@ -23,12 +23,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# This object is doing exactly the same as "memory", but allows
-# you to store objects, not only data. In other words, it doesn't
-# do dataization when objects are being stored.
+# This object is doing exactly the same as `memory`, but allows
+# to store objects, not only data. In other words, it doesn't
+# do dataization when objects are being stored. Also, when the
+# encaged object is retrieved, not the bytes gets out, but the
+# object that was put there.
+#
+# The `cage` object is considered a bad practice in EO and most
+# probably will be removed in the next versions of the language.
+# It is not recommended to use it, unless for debugging and
+# transition purposes (from another language to EO).
 [object] > cage
   @.self > new
 
@@ -38,8 +45,6 @@
   # Object encaged by locator.
   [locator] > encaged
     $ > self
-
-    # Retrieved encaged object by locator.
     [] > @ /?
 
     # Encage new object by locator.

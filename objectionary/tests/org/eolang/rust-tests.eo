@@ -23,7 +23,25 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
+
+# Works with long names correctly.
+[] > rust-long-variable
+  QQ.rust > very-looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong
+    """
+    use eo::Portal;
+    use eo::eo_enum::EO;
+    use eo::eo_enum::EO::{EOInt};
+
+    pub fn foo(_portal: &mut Portal) -> Option<EO> {
+      Some(EOInt(0))
+    }
+    """
+    []
+    *
+  eq. > @
+    very-looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong
+    0
 
 # Test
 [] > rust-returns-positive-int
@@ -134,11 +152,11 @@
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       Some(
-        EOInt(portal.find("$.&.a")? as i64)
+        EOInt(portal.find("$.^.a")? as i64)
       )
     }
     """
-    []
+    [] >>
     *
   not. > @
     lt.
@@ -155,11 +173,11 @@
     use eo::eo_enum::EO::{EOVertex};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.&.book")?;
+      let v = portal.find("$.^.book")?;
       Some(EOVertex(v))
     }
     """
-    []
+    [] >>
     *
   eq. > @
     read
@@ -202,10 +220,8 @@
   eq. > @
     slice.
       try
-        []
-          put > @
-        [e]
-          e > @
+        put
+        e > [e]
         true
       0
       length.
@@ -224,19 +240,17 @@
     use eo::eo_enum::EO::{EOInt};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v1 = portal.find("$.&.a")?;
-      let v2 = portal.find("$.&.b")?;
+      let v1 = portal.find("$.^.a")?;
+      let v2 = portal.find("$.^.b")?;
       portal.bind(v1 , v2, "EO-att")?;
       Some(EOInt(0 as i64))
     }
     """
-    []
+    [] >>
     *
   try > res
-    []
-      insert > @
-    [e]
-      e > @
+    insert
+    e > [e]
     true
   eq. > @
     res.slice
@@ -254,12 +268,12 @@
     use eo::eo_enum::EO::{EOVertex};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.&.a")?;
+      let v = portal.find("$.^.a")?;
       let copy = portal.copy(v)?;
       Some(EOVertex(copy))
     }
     """
-    []
+    [] >>
     *
   eq. > @
     copy
@@ -275,12 +289,12 @@
     use eo::eo_enum::EO::{EOInt};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let v = portal.find("$.&.a")?;
+      let v = portal.find("$.^.a")?;
       let _bytes = portal.dataize(v)?;
       Some(EOInt(v as i64))
     }
     """
-    []
+    [] >>
     *
   not. > @
     lt.
@@ -299,18 +313,18 @@
     use byteorder::{BigEndian, ReadBytesExt};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let a = portal.find("$.&.a")?;
+      let a = portal.find("$.^.a")?;
       let bytes_a = portal.dataize(a)?;
       let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
 
-      let b = portal.find("$.&.b")?;
+      let b = portal.find("$.^.b")?;
       let bytes_b = portal.dataize(b)?;
       let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
       println!("sum 5 + 10 = {}", a + b);
       Some(EOInt(a + b))
     }
     """
-    []
+    [] >>
     *
       "byteorder:1.4.3"
   eq. > @
@@ -333,10 +347,8 @@
     []
     *
   try > res
-    []
-      err > @
-    [e]
-      e > @
+    err
+    e > [e]
     true
   eq. > @
     slice.
@@ -379,15 +391,83 @@
     use eo::eo_enum::EO::{EOVertex};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
-      let eobook = portal.find("$.&.book")?;
+      let eobook = portal.find("$.^.book")?;
       let copy = portal.copy(eobook)?;
-      let eoline = portal.find("$.&.line")?;
+      let eoline = portal.find("$.^.line")?;
       portal.bind(copy.clone(), eoline, "content")?;
       Some(EOVertex(copy))
     }
     """
-    []
+    [] >>
     *
   eq. > @
     applied.content
     "qwerty"
+
+# This is the default 64+ symbols comment in front of named abstract object.
+[] > rust-with-string-fqn
+  Q
+  .org
+  .eolang
+  .rust > r
+    Q
+    .org
+    .eolang
+    .string:0
+      Q
+      .org
+      .eolang
+      .bytes:0
+        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-49-6E-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-49-6E-74-28-32-29-29-0A-7D
+    []:1
+    Q
+    .org
+    .eolang
+    .tuple
+    .empty:2
+  $
+  .r
+  .eq > @
+    Q
+    .org
+    .eolang
+    .int:0
+      Q
+      .org
+      .eolang
+      .bytes:0
+        00-00-00-00-00-00-00-02
+
+# This is the default 64+ symbols comment in front of named abstract object.
+[] > rust-reversed-notation
+  rust. > r
+    eolang.
+      org.
+        Q
+    string.:0
+      eolang.
+        org.
+          Q
+      bytes.:0
+        eolang.
+          org.
+            Q
+        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-49-6E-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-49-6E-74-28-32-29-29-0A-7D
+    []:1
+    empty.:2
+      tuple.
+        eolang.
+          org.
+            Q
+  eq. > @
+    r.
+      $
+    int.:0
+      eolang.
+        org.
+          Q
+      bytes.:0
+        eolang.
+          org.
+            Q
+        00-00-00-00-00-00-00-02

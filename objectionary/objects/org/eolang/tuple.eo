@@ -23,22 +23,22 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
 # Tuple.
 [head tail] > tuple
   # Empty tuple.
   [] > empty
-    # Take one element from the tuple, at the given position.
+    0 > length
+
     [i] > at
       error "Can't get an object from the empty tuple" > @
-    # Take one element from the tuple, at the given position.
+
     [x] > with
       tuple > @
         tuple.empty
         x
-    0 > length
 
   # Obtain the length of the tuple.
   [] > length
@@ -60,7 +60,6 @@
       error "Given index is out of tuple bounds"
       at-fast ^ len
 
-    # Fast recursive obtaining element from tuple.
     [tup len] > at-fast
       if. > @
         (len.plus -1).gt ^.index
@@ -70,7 +69,4 @@
         tup.tail
 
   # Create a new tuple with this element added to the end of it.
-  [x] > with
-    tuple > @
-      ^
-      x
+  tuple ^ x > [x] > with

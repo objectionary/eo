@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,28 +23,21 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# While.
+# The `while` object is very similar to a loop with a pre-condition.
 [condition body] > while
   if. > @
-    condition.as-bool
-    start 0
+    (condition 0).as-bool
+    loop 0
     false
 
-  # First loop iteration that does not check condition.
-  [index] > start
-    seq > @
-      *
-        ^.body index
-        ^.loop (index.plus 1)
-
-  # Recursive
+  # Recursive loop.
   [index] > loop
     ^.body index > current
     if. > @
-      ^.condition.as-bool
+      (^.condition (index.plus 1)).as-bool
       seq
         *
           current

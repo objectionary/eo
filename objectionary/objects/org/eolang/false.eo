@@ -23,23 +23,20 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# False.
+# The object is a FALSE boolean state.
 [] > false
   00- > @
   true > not
 
   # Control structure that allows for conditional execution of code.
   # Since $ is FALSE - behaves as `right` object.
-  [left right] > if
-    right > @
+  right > [left right] > if
 
   # And.
-  [x] > and
-    ^ > @
+  ^ > [x] > and
 
   # Or.
-  [x] > or
-    01-.eq x > @
+  01-.eq x > [x] > or

@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > takes-part-of-bytes
@@ -261,7 +261,7 @@
       53.as-bytes.not
 
 # Test.
-[] > conjuction-of-bytes
+[] > conjunction-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
   eq. > @
@@ -286,7 +286,7 @@
     1
 
 # Test.
-[] > convertable-to-bool
+[] > convertible-to-bool
   not. > @
     eq.
       01-.as-bool

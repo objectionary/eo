@@ -24,52 +24,44 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > simple-division-by-zero
   try > @
-    []
-      42.div 0 > @
-    [e]
-      QQ.io.stdout > @
-        e
-    []
-      QQ.io.stdout > @
-        "\nfinally"
+    42.div 0
+    QQ.io.stdout e > [e]
+    QQ.io.stdout
+      "\nfinally"
 
 # Test.
 [] > catches-simple-exception
   try > @
-    []
-      slice. > @
-        "some string"
-        7
-        5
+    slice.
+      "some string"
+      7
+      5
     QQ.io.stdout e > [e]
-    false > []
+    false
 
 # Test.
 [] > two-nested-try-blocks
   try > @
-    []
-      try > @
-        []
-          slice. > @
-            "some string"
-            7
-            5
-        error e > [e]
-        true
-    [e]
-      QQ.io.stdout e > @
+    try
+      slice.
+        "some string"
+        7
+        5
+      error e > [e]
+      true
+    QQ.io.stdout e > [e]
     true
 
 # Test.
 [] > try-without-error-block
   eq. > @
     try
-      30.plus 2 > []
+      30.plus 2
       e > [e]
       true
     32
@@ -84,11 +76,10 @@
           *
             m.put 1
             try
-              []
-                seq > @
-                  *
-                    5.div 0
-                    m.put (m.plus 1)
+              seq
+                *
+                  5.div 0
+                  m.put (m.plus 1)
               e > [e]
               false
     1

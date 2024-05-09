@@ -23,11 +23,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# Bytes.
+# The object encapsulates a chain of bytes, adding a few
+# convenient operations to it. Objects like `int`, `string`,
+# and `float` encapsulate `bytes`.
 [] > bytes
+  # Return itself.
+  $ > as-bytes
+
   # Equals to another object.
   [b] > eq /bool
 
@@ -38,8 +43,7 @@
   [start len] > slice /bytes
 
   # Turn this chain of bytes into a string in UTF-8.
-  [] > as-string
-    string ^ > @
+  string ^ > [] > as-string
 
   # Turn this chain of eight bytes into an integer.
   # If there are less or more than eight bytes, there will
@@ -72,19 +76,13 @@
   [] > not /bytes
 
   # Calculate bitwise left shift.
-  [x] > left
-    ^.right x.neg > @
+  ^.right x.neg > [x] > left
 
   # Calculate bitwise right shift.
   [x] > right /bytes
 
   # Converts to bool.
-  [] > as-bool
-    ^.eq 01- > @
-
-  # Return itself.
-  [] > as-bytes
-    ^ > @
+  ^.eq 01- > [] > as-bool
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

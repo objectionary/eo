@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# Allow to choose right options according to cases conditions.
+# The object allows to choose right options according to cases conditions.
 # Parameter cases is the array of two dimensional array, which
 # consist of condition bool value and expected value, if this
-# condition is true.
-# e.g.
+# condition is true. For example:
+#
+# ```
 # switch
 #   *
 #     *
@@ -39,6 +40,7 @@
 #     *
 #       false
 #       "this value will be skipped"
+# ```
 #
 # This object returns value of only first truly statement.
 [cases] > switch

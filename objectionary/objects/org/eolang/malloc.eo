@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,37 +23,48 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# Storage of data in memory.
+# The `malloc` object is an abstraction of a storage of data in heap
+# memory. The implementation of `malloc` is platform dependent. It may
+# use either OS-level or VM-level memory management mechanism.
 #
 # There are two ways of usage `malloc`:
-# 1. of size:
+#
+# First, when the size of required memory block is known upfront:
+#
 # ```
 # malloc.of
 #   8
 #   [m]
 #     m.put 10 > @
 # ```
+#
 # Here, the first argument is a size of allocated block in memory, the second argument
 # is the scope where memory block is available for reading and writing. When `malloc.of` is
 # dataized it dataizes the scope, take the data from the block in memory, clears the block and
 # returns the data. So there's no need for end-user to care about clearing memory after allocation.
 #
-# 2. for object
+# Second, when the size is not known upfront, but there exists
+# an object ready to be dataized and placed into the memory block
+# (the size of the block will be equal to the amount of bytes
+# produced by the dataization of the object):
+#
 # ```
 # malloc.for
 #   "Hello world!"
 #   [m]
 #     m.put "Hello, Jeff!" > @
 # ```
+#
 # Here, the first argument is an object which will be dataized, then a block in memory of given data
 # size is allocated and the data is written to the block. The second argument is the same scope as
 # in the p.1.
 #
 # The void attribute in the scope object is memory-block object which provides API to write and read
 # data to the memory.
+#
 # ```
 # malloc.of
 #   8                         # allocate 8 bytes length block in memory
@@ -68,25 +79,22 @@
 #         m.id                # get identifier of the block
 #         m.@                 # the same as m.get
 # ```
-# Malloc.
 [] > malloc
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data are written into memory.
   [object scope] > for
     (dataized object).as-bytes > bts
-    &.of > @
+    malloc.of > @
       bts.size
-      [m]
+      [m] >>
         seq > @
           *
-            m.write 0 bts
-            scope m
+            m.write 0 ^.bts
+            ^.scope m
 
   # Allocates block in memory of given `size`. After allocation the `size` zero bytes bytes are
   # written into memory.
   [size scope] > of
-    # Allocates a memory block, initializes it, pass it to the `scope` and dataizes `scope` and
-    # at the end, even if the error is occurred, clears the block.
     [] > @ /bytes
 
     # Allocated block in memory that provides an API for writing and reading.
@@ -101,8 +109,7 @@
       [offset data] > write /true
 
       # Just get all the data from the allocated block in memory.
-      [] > get
-        ^.read 0 ^.size > @
+      ^.read 0 ^.size > [] > get
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

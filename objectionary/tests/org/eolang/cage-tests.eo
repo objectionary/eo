@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > encages-into-cage
@@ -71,25 +71,17 @@
 # Test.
 [] > multi-layer-volatility
   (cage a).new > ca
-  # Layer A.
   [] > a
-    # Layer A.phi.
     [] > @
-      # Layer A.phi.phi.
       [] > @
-        # Layer A.phi.phi.phi.
         [] > @
           malloc.for > @
             0
             ma.put (ma.as-int.plus 1) > [ma]
   (cage b).new > cb
-  # Layer B.
   [] > b
-    # Layer B.phi.
     [] > @
-      # Layer B.phi.phi.
       [] > @
-        # Layer B.phi.phi.phi.
         [] > @
           malloc.for > z
             0
@@ -106,11 +98,9 @@
 
 # Test.
 [] > infinite-loop-check
-  # Recursive sum object.
   [value] > pyint
-    # Add.
     [y] > add
-      pyint (^.value.plus y.value) > @
+      ^.^.pyint (^.value.plus y.value) > @
   (cage pyint).new > x
   (cage x.add).new > tmp
   seq > @
@@ -130,7 +120,7 @@
     *
       try
         cge.encage "Hello world"
-        [e]
+        [e] > ex
           cge.encage 10 > @
         true
       cge.eq 10
@@ -140,15 +130,13 @@
 [] > catches-stack-overflow
   (cage int.plus).new > cge
   try > @
-    []
-      seq > @
-        *
-          cge.write
-            0.plus cge
-          cge
-          false
-    [stack-overflow-message]
-      QQ.io.stdout stack-overflow-message > @
+    seq
+      *
+        cge.write
+          0.plus cge
+        cge
+        false
+    QQ.io.stdout stack-overflow-message > [stack-overflow-message]
     false
 
 # Test.
@@ -156,7 +144,6 @@
   new. > c
     cage
       []
-        # Func.
         [x] > func
           2.plus x > @
   eq. > @

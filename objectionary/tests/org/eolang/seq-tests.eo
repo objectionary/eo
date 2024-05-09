@@ -12,7 +12,7 @@
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EcounterPRESS OR
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > seq-single-dataization-float-less
@@ -33,7 +33,7 @@
     [b]
       malloc.for > @
         0.0
-        [m]
+        [m] >>
           b.put > @
             lt.
               seq
@@ -49,7 +49,7 @@
     [b]
       malloc.for > @
         0.0
-        [m]
+        [m] >>
           b.put > @
             gt.
               seq
@@ -65,7 +65,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             lt.
               seq
@@ -81,7 +81,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             lte.
               seq
@@ -146,7 +146,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             eq.
               seq
@@ -163,7 +163,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             eq.
               seq

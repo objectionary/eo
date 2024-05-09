@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > writes-into-memory-of
@@ -42,17 +42,19 @@
 
 # Test.
 [] > malloc-scope-is-dataized-twice
-  malloc.for > first
-    0
-    [f]
-      malloc.of > second
-        1
-        f.put (f.as-int.plus 1) > [s]
-      seq > @
-        *
-          second
-          second
-  first.eq 2 > @
+  eq. > @
+    2
+    malloc.for
+      0
+      [f]
+        malloc.of > second
+          1
+          [s] >>
+            f.put (f.as-int.plus 1) > @
+        seq > @
+          *
+            second
+            second
 
 # Test.
 [] > malloc-for-writes-first-init-value
@@ -160,7 +162,8 @@
     [b]
       malloc.of > @
         10
-        b.put (m.size.eq 10) > [m]
+        [m] >>
+          b.put (m.size.eq 10) > @
 
 # Test.
 [] > malloc-writes-and-reads
@@ -169,7 +172,7 @@
     [b]
       malloc.of > @
         12
-        [m]
+        [m] >>
           seq > @
             *
               m.write 0 "Hello, "
@@ -186,7 +189,7 @@
     [b]
       malloc.of > @
         3
-        [m]
+        [m] >>
           seq > @
             *
               m.write 0 "XXX"
@@ -210,7 +213,7 @@
     [b]
       malloc.of > @
         10
-        [m]
+        [m] >>
           seq > @
             *
               m.write 2 "Hello"

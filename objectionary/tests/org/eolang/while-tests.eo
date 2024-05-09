@@ -24,13 +24,24 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
+
+# Test.
+[] > while-dataizes-only-first-cycle
+  eq. > @
+    0
+    malloc.for
+      42
+      [m]
+        while > @
+          i.eq 0 > [i]
+          m.put i > [i] >>
 
 # Test.
 [] > simple-while-with-false-first
   not. > @
     while > res
-      false
+      false > [i]
       true > [i]
 
 # Test.
@@ -40,8 +51,8 @@
       true
       [m]
         while > @
-          m
-          m.put false > [i]
+          m > [i] >>
+          m.put false > [i] >>
     false
 
 # Test.
@@ -51,15 +62,15 @@
       0
       [m]
         while > @
-          2.gt m
-          m.put (m.as-int.plus 1) > [i]
+          2.gt m > [i] >>
+          m.put (m.as-int.plus 1) > [i] >>
     3
 
 # Test.
 [] > last-while-dataization-object-with-false-condition
   not. > @
     while
-      1.gt 2
+      1.gt 2 > [i]
       true > [i]
 
 # Test.
@@ -68,18 +79,18 @@
   arr.length.plus -1 > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           if. > @
             max.eq 0
             acc.put
               acc.as-int.plus
                 arr.at 0
             while
-              max.gt iter
-              [i]
+              max.gt iter > [i] >>
+              [i] >>
                 seq > @
                   *
                     acc.put
@@ -95,13 +106,13 @@
   arr.length.plus -1 > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            max.gt iter
-            [i]
+            max.gt iter > [i] >>
+            [i] >>
               seq > @
                 *
                   acc.put
@@ -117,12 +128,12 @@
   arr.length > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            []
+            [i] >>
               if. > @
                 max.gt iter
                 seq
@@ -144,12 +155,12 @@
   arr.length > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            []
+            [i] >>
               if. > @
                 max.gt iter
                 seq

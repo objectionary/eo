@@ -24,11 +24,10 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > understands-this-correctly
-  # Abstract a.
   [x] > a
     $.x > @
   eq. > @
@@ -37,9 +36,7 @@
 
 # Test.
 [] > takes-parent-object
-  # Abstract a.
   [x] > a
-    # Take.
     [] > take
       ^.x > @
     take > @
@@ -49,7 +46,6 @@
 
 # Test.
 [] > makes-object-a-constant
-  # Foo.
   [] > foo
     times. > @
       50
@@ -63,11 +59,8 @@
 [] > takes-parent-through-attribute
   42 > x
   $ > this
-  # Phi1.
   [] > @
-    # Phi2.
     [] > @
-      # Phi3.
       [] > @
         eq. > @
           this.x
@@ -75,7 +68,6 @@
 
 # Test.
 [] > throws-when-applies-to-closed-object
-  # A.
   [x] > a
     x > @
   a false > closed
@@ -86,7 +78,6 @@
   eq. > @
     x 5
     0
-  # X.
   [i] > x
     if. > @
       i.lt 0
@@ -99,8 +90,7 @@
   eq. > @
     malloc.for
       0
-      [m]
-        # A.
+      [m] > x
         [] > a
           seq > @
             *
@@ -115,10 +105,10 @@
   eq. > @
     malloc.of
       8
-      [f1]
+      [f1] >>
         malloc.of > @
           8
-          [f0]
+          [f0] >>
             seq > @
               *
                 f0.put 1
@@ -129,7 +119,6 @@
 
 # Test.
 [] > recursion-without-arguments
-  # Func.
   [n] > func
     if. > @
       n.as-int.gt 0
@@ -141,20 +130,16 @@
   eq. > @
     malloc.for
       4
-      func m > [m]
+      [m] >>
+        ^.func m > @
     0
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
-  # Long object 1.
   [] > long-object-name
-    # Long object 2.
     [] > long-object-name
-      # Long object 3.
       [] > long-object-name
-        # Long object 4.
         [] > long-object-name
-          # Long object 5.
           [] > long-object-name
   true > @
 
@@ -162,15 +147,12 @@
 [] > named-inner-abstract-object
   seq > @
     *
-      # A.
       [] > a
         true > @
 
 # Test.
 [] > app-that-calls-func
-  # App.
   [] > app
-    # App.f.
     [args] > f
       1 > a
       2 > @
@@ -223,11 +205,9 @@
 
 # Test.
 [] > extract-attribute-from-decoratee
-  # Return.
   [foo] > return
-  # A.
   [] > a
-    return > @
+    ^.return > @
       plus.
         42
         1
@@ -237,7 +217,6 @@
 
 # Test.
 [] > constant-defends-against-side-effects
-  # Increment.
   [x] > inc
     seq > @
       *
@@ -247,9 +226,9 @@
   eq. > @
     malloc.for
       7
-      [m]
+      [m] >>
         int > num
-          inc m > n!
+          ^.inc m > n!
         m.put > @
           times.
             num
@@ -259,9 +238,7 @@
 # Test.
 [] > parent-in-vertical-notation
   5 > m
-  # Value.
   [] > value
-    # Phi.
     [] > @
       m. > @
         ^.
@@ -273,9 +250,7 @@
 # Test.
 [] > parent-in-horizontal-notation
   5 > m
-  # Value.
   [] > value
-    # Phi.
     [] > @
       ^.^.m > @
   eq. > @
@@ -284,9 +259,7 @@
 
 # Test.
 [] > phi-in-vertical-notation
-  # Value.
   [] > value
-    # Phi.
     [] > @
       100 > @
   eq. > @
@@ -296,9 +269,7 @@
 
 # Test.
 [] > phi-in-horizontal-notation
-  # Value.
   [] > value
-    # Phi.
     [] > @
       100 > @
   eq. > @
@@ -310,12 +281,9 @@
   # Bool mock
   [value] > pybool
     value > @
-  # Integer mock.
   [value] > pyint
-    # Equal.
     [x] > eq
-      pybool (^.value.eq x.value) > @
-    # Add.
+      ^.^.pybool (^.value.eq x.value) > @
     [x] > add
       ^.^.pyint (^.value.plus x.value) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
@@ -332,7 +300,6 @@
 
 # Test.
 [] > correctly-handles-same-name-attrs-simplified
-  # Calculate.
   [first second] > calc
     plus. > @
       first
@@ -341,19 +308,16 @@
     calc
       []
         build 1 > @
-        # Build first.
         [x] > build
           x > @
       []
         build 2 > @
-        # Build second.
         [y] > build
           y > @
     3
 
 # Test.
 [] > correctly-handles-same-name-attrs
-  # Calculate.
   [f s] > calc
     plus. > @
       f.next
@@ -361,19 +325,17 @@
   eq. > @
     calc
       []
-        # Build first.
         [x] > build
           x.plus 1 > @
-          build > next
+          ^.build > next
             plus.
               x
               1
         build 1 > @
       []
-        # Build second.
         [y] > build
           y.plus 2 > @
-          build > next
+          ^.build > next
             plus.
               y
               2

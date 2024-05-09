@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.37.0
++version 0.38.0
 
 # Test.
 [] > switch-simple-case
@@ -87,34 +87,30 @@
 [] > switch-case-with-error
   try > @
     switch *
-    [ex]
-      QQ.io.stdout ex > @
-    true
+    QQ.io.stdout ex > [ex]
+    false
 
 # Test.
 [] > switch-complex-case
-  # Inner object 1.
   [] > c1
     false > @
-  # Inner object 1.
   [] > c2
     "1".eq "2" > @
-  # Inner object 1.
   [] > c3
     true > @
   eq. > @
     switch
       *
         *
-          []
+          [] >>
             c1 > @
           22.0
         *
-          []
+          [] >>
             c2 > @
           0.0
         *
-          []
+          [] >>
             c3 > @
           []
             "true case" > @

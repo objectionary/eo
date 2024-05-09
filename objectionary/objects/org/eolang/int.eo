@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
-# Integer.
+# The `int` object is an abstraction of a 64-bit signed integer that
+# internally is a chain of eight bytes.
 [as-bytes] > int
   as-bytes > @
 
@@ -43,7 +44,7 @@
         int
           x > value!
 
-  # Tests that $ ≤ x.
+  # Tests that $ <= x.
   [x] > lte
     not. > @
       ^.gt
@@ -52,22 +53,20 @@
   # Tests that $ > x.
   [x] > gt /bool
 
-  # Tests that $ ≥ x.
+  # Tests that $ >= x.
   [x] > gte
     not. > @
       ^.lt
         x > value!
 
   # Change the sign of the number.
-  [] > neg
-    ^.times -1 > @
+  ^.times -1 > [] > neg
 
   # Add to the current one.
   [x] > plus /int
 
   # Subtract from the current one.
-  [x] > minus
-    ^.plus x.neg > @
+  ^.plus x.neg > [x] > minus
 
   # Multiplication this one by another int.
   [x] > times /int

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-#  2016-2022 Objectionary.com
+# Copyright (c) 2016-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.37.0
-+version 0.37.0
++rt jvm org.eolang:eo-runtime:0.38.0
++version 0.38.0
 
 # Positive infinity.
 [] > positive-infinity
@@ -33,7 +33,7 @@
   # Tests that $ = x.
   [x] > eq
     eq. > @
-      &.as-bytes
+      ^.as-bytes
       x.as-bytes
 
   # Tests that $ < x.
@@ -42,7 +42,7 @@
 
   # Tests that $ ≤ x.
   [x] > lte
-    &.eq x > @
+    ^.eq x > @
 
   # Tests that $ > x.
   [x] > gt
@@ -50,7 +50,7 @@
     not. > @
       or.
         value.eq nan.as-bytes
-        &.eq value
+        ^.eq value
 
   # Tests that $ ≥ x.
   [x] > gte
@@ -63,11 +63,9 @@
   [x] > times
     x > value!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
 
-    # Tests if given number is equal to nan, float or integer zero.
     [num] > is-nan-or-zero
       or. > @
         or.
@@ -77,13 +75,10 @@
           num.eq 0.0
         num.eq 0
 
-    # Tests if given number is greater than float or integer zero.
     [num] > is-num-gt-zero
       try > @
-        []
-          0.lt num > @
-        [e]
-          0.0.lt num > @
+        0.lt num
+        0.0.lt ^.num > [e] >>
         false
     if. > @
       is-nan-or-zero value
@@ -98,7 +93,6 @@
     x > value!
     negative-infinity > neg-inf-as-bytes!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
     if. > @
@@ -113,7 +107,6 @@
     x > value!
     positive-infinity > pos-inf-as-bytes!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
     if. > @
@@ -127,11 +120,9 @@
   [x] > div
     x > value!
 
-    # Here we check if 'num' is nan by comparing it with nan bytes, because 'num' is cached bytes.
     [num] > is-nan
       num.eq nan.as-bytes > @
 
-    # Tests if given number is equal to nan, positive or negative infinity.
     [num] > is-nan-or-infinite
       or. > @
         or.
@@ -139,13 +130,10 @@
           num.eq positive-infinity
         num.eq negative-infinity
 
-    # Tests if given number is greater or equal to float or integer zero.
     [num] > is-num-gte-zero
       try > @
-        []
-          0.lte num > @
-        [e]
-          0.0.lte num > @
+        0.lte num
+        0.0.lte ^.num > [e] >>
         false
     if. > @
       is-nan-or-infinite value
