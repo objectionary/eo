@@ -42,10 +42,10 @@ SOFTWARE.
               </xsl:attribute>
               <dependencies>
                 <xsl:for-each select="following-sibling::o/o">
-                  <xsl:if test="parent::o[@base = 'org.eolang.tuple'] and @base = 'org.eolang.string'">
+                  <xsl:if test="(parent::o/attribute(base) = 'org.eolang.tuple' or (parent::o/attribute(base) = '.tuple' and parent::o/o[1]/attribute(base) = '.eolang' and parent::o/o[1]/o[1]/attribute(base) = '.org' and parent::o/o[1]/o[1]/o[1]/attribute(base) = 'Q')) and (attribute(base) = 'org.eolang.string' or (attribute(base) = '.string' and o[1]/attribute(base) = '.eolang' and o[1]/o[1]/attribute(base) = '.org' and o[1]/o[1]/o[1]/attribute(base) = 'Q'))">
                     <dependency>
                       <xsl:attribute name="name">
-                        <xsl:value-of select="./o/text()"/>
+                        <xsl:value-of select="./o[@data = 'bytes']/text()"/>
                       </xsl:attribute>
                     </dependency>
                   </xsl:if>
