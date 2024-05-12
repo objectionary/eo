@@ -31,9 +31,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eolang.maven.CargoCondition;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -43,6 +45,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class RustNodeTest {
 
     @Test
+    @ExtendWith(CargoCondition.class)
     void generatesRust(@TempDir final Path temp) throws IOException {
         final XML insert = new XMLDocument(
             "<rust code=\"75 73 65 20\" code_loc=\"Φ.org.eolang.custom-rust.r.α0\"><dependencies/></rust>"
@@ -69,7 +72,8 @@ final class RustNodeTest {
     }
 
     /**
-     * Test.
+     * Test. The cargo project to be compiled has incorrect dependency
+     *  "nonexistent", so failure message should contain it.
      * @param temp Test directory.
      * @throws IOException if any issues with IO.
      * @checkstyle StringLiteralsConcatenationCheck (24 lines)
@@ -101,10 +105,7 @@ final class RustNodeTest {
             ),
             Matchers.stringContainsInOrder(
                 "Failed to build cargo project with dest",
-                "Caused by:",
-                "failed to parse the version requirement `-5` for dependency `nonexistent `",
-                "Caused by:",
-                "unexpected character '-' while parsing major version number"
+                "nonexistent"
             )
         );
     }

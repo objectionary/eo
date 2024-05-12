@@ -44,7 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@ExtendWith(WeAreOnline.class)
+@ExtendWith({WeAreOnline.class, CargoCondition.class})
 final class BinarizeMojoTest {
 
     /**
@@ -59,7 +59,6 @@ final class BinarizeMojoTest {
      */
     @Test
     @Tag("slow")
-    @ExtendWith(CargoCondition.class)
     void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
