@@ -114,13 +114,12 @@ final class RustNodeTest {
      * Get message of exception to be thrown.
      * @param exec Something that should throw exception of specified type.
      * @param type Subtype of {@link Exception} to be thrown.
-     * @param <T> Subtype of {@link Exception}.
      * @return Message retrieved from exception.
      * @checkstyle IllegalCatchCheck (16 lines)
      */
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    private static <T extends Exception>
-        String getExceptionMessage(final Runnable exec, final Class<T> type) {
+    private static String
+        getExceptionMessage(final Runnable exec, final Class<? extends Exception> type) {
         try {
             exec.run();
             throw new IllegalStateException("Should have thrown an exception");
