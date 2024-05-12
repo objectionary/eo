@@ -221,17 +221,21 @@ public final class RustNode implements Buildable {
             ) {
                 final VerboseProcess.Result result = proc.waitFor();
                 if (result.code() != 0) {
-                    throw new BuildFailureException(result.stdout());
+                    throw new BuildFailureException(
+                        String.format(
+                            "Failed to build cargo project with dest = %s: %s",
+                            project,
+                            result.stdout()
+                        )
+                    );
                 }
-            } catch (final InterruptedException | BuildFailureException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
-                throw new BuildFailureException(
+                throw new IllegalStateException(
                     String.format(
-                        "Failed to build cargo project with dest = %s: %s",
-                        project,
-                        ex.getMessage()
-                    ),
-                    ex
+                        "Thread was interrupted while building cargo project %s",
+                        project
+                    ), ex
                 );
             }
             Logger.info(
