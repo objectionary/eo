@@ -24,8 +24,8 @@
 package org.eolang.maven.rust;
 
 import com.jcabi.log.Logger;
+import com.jcabi.log.VerboseProcess;
 import com.jcabi.xml.XML;
-import com.yegor256.Jaxec;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -211,13 +212,24 @@ public final class RustNode implements Buildable {
                 FileUtils.copyDirectory(cached, target);
             }
             Logger.info(this, "Building %s rust project..", project.getName());
-            try {
-                new Jaxec("cargo", "build").withHome(project).execUnsafe();
-            } catch (final IOException | IllegalArgumentException ex) {
+            try (
+                VerboseProcess proc = new VerboseProcess(
+                    new ProcessBuilder("cargo", "build")
+                        .directory(project).redirectErrorStream(true),
+                    Level.FINE, Level.WARNING
+                )
+            ) {
+                final VerboseProcess.Result result = proc.waitFor();
+                if (result.code() != 0) {
+                    throw new BuildFailureException(result.stdout());
+                }
+            } catch (final InterruptedException | BuildFailureException ex) {
+                Thread.currentThread().interrupt();
                 throw new BuildFailureException(
                     String.format(
-                        "Failed to build cargo project with dest = %s",
-                        project
+                        "Failed to build cargo project with dest = %s: %s",
+                        project,
+                        ex.getMessage()
                     ),
                     ex
                 );

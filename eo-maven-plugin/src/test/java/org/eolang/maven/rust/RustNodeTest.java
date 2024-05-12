@@ -67,4 +67,67 @@ final class RustNodeTest {
             )
         );
     }
+
+    /**
+     * Test.
+     * @param temp Test directory.
+     * @throws IOException if any issues with IO.
+     * @checkstyle StringLiteralsConcatenationCheck (24 lines)
+     * @checkstyle LineLengthCheck (24 lines)
+     */
+    @Test
+    void printsCauseWhenFailsToBuild(@TempDir final Path temp) throws IOException {
+        final XML insert = new XMLDocument(
+            "<rust code=\"75 73 65 20 72 61 6E 64 3A 3A 52 6E 67 3B 0A 75 73 65 20 6E 6F 6E 65 78 69 73 74 65 6E 74 3A 3A 66 75 6E 0A 0A 70 75 62 20 66 6E 20 66 6F 6F 28 29 20 2D 3E 20 69 33 32 20 7B 0A 20 20 6C 65 74 20 6D 75 74 20 72 6E 67 20 3D 20 72 61 6E 64 3A 3A 74 68 72 65 61 64 5F 72 6E 67 28 29 3B 0A 20 20 70 72 69 6E 74 21 28 22 48 65 6C 6C 6F 20 77 6F 72 6C 64 22 29 3B 0A 20 20 6C 65 74 20 69 20 3D 20 72 6E 67 2E 67 65 6E 3A 3A 3C 69 33 32 3E 28 29 3B 0A 20 20 69 0A 7D\"\n"
+                + "  code_loc=\"Φ.org.eolang.custom.incorrect-code.r.α0\">\n"
+                + "  <dependencies>\n"
+                + "    <dependency name=\"6E 6F 6E 65 78 69 73 74 65 6E 74 20 3D 20 2D 35\"/>\n"
+                + "  </dependencies>\n"
+                + "</rust>\n"
+        ).nodes("rust").get(0);
+        final Buildable node = new RustNode(
+            insert,
+            new Names(temp.resolve("names")),
+            temp.resolve("Lib"),
+            Paths.get("../eo-runtime/src/main/rust/eo"),
+            temp.resolve("generated")
+        );
+        node.generate();
+        MatcherAssert.assertThat(
+            "It should print error message why cargo project failed",
+            RustNodeTest.getExceptionMessage(
+                () -> node.build(temp.resolve(".eo")),
+                BuildFailureException.class
+            ),
+            Matchers.stringContainsInOrder(
+                "Failed to build cargo project with dest",
+                "Caused by:",
+                "failed to parse the version requirement `-5` for dependency `nonexistent `",
+                "Caused by:",
+                "unexpected character '-' while parsing major version number"
+            )
+        );
+    }
+
+    /**
+     * Get message of exception to be thrown.
+     * @param exec Something that should throw exception of specified type.
+     * @param type Subtype of {@link Exception} to be thrown.
+     * @param <T> Subtype of {@link Exception}.
+     * @return Message retrieved from exception.
+     * @checkstyle IllegalCatchCheck (16 lines)
+     */
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    private static <T extends Exception>
+        String getExceptionMessage(final Runnable exec, final Class<T> type) {
+        try {
+            exec.run();
+            throw new IllegalStateException("Should have thrown an exception");
+        } catch (final Exception ex) {
+            if (type.isAssignableFrom(ex.getClass())) {
+                return ex.getMessage();
+            }
+            throw new IllegalStateException(ex);
+        }
+    }
 }
