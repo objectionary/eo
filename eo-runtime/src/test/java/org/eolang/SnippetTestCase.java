@@ -258,18 +258,12 @@ final class SnippetTestCase {
      * @param farea Farea instance
      * @param target Directory to copy from
      * @throws IOException If fails to copy files
-     * @todo #3092:30min Remove filter with "rust-tests.eo". BinarizeMojo does not add rust
-     *  dependencies to rust-tests after phi->unphi (see:
-     *  <a href="https://github.com/objectionary/eo/issues/3145">this</a> for details).
-     *  When it's resolved we need to remove the filter and make sure the snippet test
-     *  {@link SnippetTestCase#runsTestsAfterPhiAndUnphi(Path)} still works.
      */
     private static void copySources(final Farea farea, final String target) throws IOException {
         final Path runtime = Paths.get(System.getProperty("user.dir"))
             .resolve(target);
         final Collection<Path> sources = Files.walk(runtime)
             .filter(src -> !src.toFile().isDirectory())
-            .filter(src -> !src.endsWith("rust-tests.eo"))
             .collect(Collectors.toList());
         for (final Path src : sources) {
             farea.files()
