@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.eolang.maven.CargoCondition;
+import org.eolang.maven.WeHaveCargo;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class RustNodeTest {
 
     @Test
-    @ExtendWith(CargoCondition.class)
+    @ExtendWith(WeHaveCargo.class)
     void generatesRust(@TempDir final Path temp) throws IOException {
         final XML insert = new XMLDocument(
             "<rust code=\"75 73 65 20\" code_loc=\"Φ.org.eolang.custom-rust.r.α0\"><dependencies/></rust>"

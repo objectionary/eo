@@ -44,7 +44,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.1
  */
-@ExtendWith({WeAreOnline.class, CargoCondition.class})
+@ExtendWith({WeAreOnline.class, WeHaveCargo.class})
 final class BinarizeMojoTest {
 
     /**

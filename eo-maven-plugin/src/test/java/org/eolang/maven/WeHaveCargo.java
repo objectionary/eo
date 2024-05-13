@@ -35,12 +35,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * JUnit's extension to skip a test if there is no cargo.
- * Cargo is a build system for rust so it is required for rust inserts.
+ * Cargo is a build system for rust. so it is required for rust inserts.
  *
  * @since 0.30
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-public final class CargoCondition implements ExecutionCondition {
+public final class WeHaveCargo implements ExecutionCondition {
+
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(
         final ExtensionContext context) {
