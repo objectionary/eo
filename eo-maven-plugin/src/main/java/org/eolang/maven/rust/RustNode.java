@@ -222,11 +222,9 @@ public final class RustNode implements Buildable {
                 final VerboseProcess.Result result = proc.waitFor();
                 if (result.code() != 0) {
                     throw new BuildFailureException(
-                        String.format(
-                            "Failed to build cargo project with dest = %s: %s",
-                            project,
-                            result.stdout()
-                        )
+                        "Failed to build cargo project with dest = %s: %s",
+                        project,
+                        result.stdout()
                     );
                 }
             } catch (final InterruptedException ex) {
