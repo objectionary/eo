@@ -52,13 +52,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "error")
 public final class EOerror extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOerror(final Phi sigma) {
-        super(sigma);
+    public EOerror() {
         this.add("message", new AtVoid("message"));
     }
 

@@ -45,13 +45,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "int.plus")
 public final class EOint$EOplus extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOint$EOplus(final Phi sigma) {
-        super(sigma);
+    public EOint$EOplus() {
         this.add("x", new AtVoid("x"));
     }
 

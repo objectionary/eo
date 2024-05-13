@@ -68,8 +68,8 @@ phi: |-
           ).while(
             α0 ↦ ⟦
               i ↦ ∅,
-              φ ↦ ξ.σ.x.write(
-                α0 ↦ ξ.σ.x.as-int.plus(
+              φ ↦ ξ.ρ.x.write(
+                α0 ↦ ξ.ρ.x.as-int.plus(
                   α0 ↦ Φ.org.eolang.int(
                     α0 ↦ Φ.org.eolang.bytes(
                       Δ ⤍ 00-00-00-00-00-00-00-01

@@ -1051,8 +1051,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             base = "@";
         } else if (ctx.RHO() != null) {
             base = "^";
-        } else if (ctx.SIGMA() != null) {
-            base = "&";
         } else {
             base = "";
         }
@@ -1103,7 +1101,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             .prop(
                 "name",
                 String.format(
-                    "OBJ-%d-%d",
+                    "auto-named-attr-at-%d-%d",
                     ctx.getStart().getLine(),
                     ctx.getStart().getCharPositionInLine()
                 )

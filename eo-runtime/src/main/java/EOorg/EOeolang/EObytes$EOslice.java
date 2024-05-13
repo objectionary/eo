@@ -46,13 +46,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.slice")
 public final class EObytes$EOslice extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EObytes$EOslice(final Phi sigma) {
-        super(sigma);
+    public EObytes$EOslice() {
         this.add("start", new AtVoid("start"));
         this.add("len", new AtVoid("len"));
     }

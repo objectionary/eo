@@ -33,7 +33,7 @@
     [b]
       malloc.for > @
         0.0
-        [m]
+        [m] >>
           b.put > @
             lt.
               seq
@@ -49,7 +49,7 @@
     [b]
       malloc.for > @
         0.0
-        [m]
+        [m] >>
           b.put > @
             gt.
               seq
@@ -65,7 +65,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             lt.
               seq
@@ -81,7 +81,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             lte.
               seq
@@ -146,7 +146,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             eq.
               seq
@@ -163,7 +163,7 @@
     [b]
       malloc.for > @
         0
-        [m]
+        [m] >>
           b.put > @
             eq.
               seq

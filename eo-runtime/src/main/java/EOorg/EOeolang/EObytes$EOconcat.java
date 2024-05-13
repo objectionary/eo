@@ -45,13 +45,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "bytes.concat")
 public final class EObytes$EOconcat extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EObytes$EOconcat(final Phi sigma) {
-        super(sigma);
+    public EObytes$EOconcat() {
         this.add("b", new AtVoid("b"));
     }
 

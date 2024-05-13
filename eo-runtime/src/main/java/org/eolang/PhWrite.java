@@ -32,7 +32,6 @@ import java.util.function.Function;
 
 /**
  * Object that writes other object to own \rho.
- * (see {@link EOorg.EOeolang.EOcage$EOnew} and {@link EOorg.EOeolang.EOmemory$EOalloc}).
  * @since 0.36.0
  */
 public final class PhWrite extends PhDefault implements Atom {
@@ -48,17 +47,14 @@ public final class PhWrite extends PhDefault implements Atom {
 
     /**
      * Ctor.
-     * @param sigma Sigma
      * @param attr Attribute name
      * @param ret Return value function
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhWrite(
-        final Phi sigma,
         final String attr,
         final Function<Phi, Phi> ret
     ) {
-        super(sigma);
         this.attribute = attr;
         this.add(this.attribute, new AtVoid(this.attribute));
         this.value = ret;

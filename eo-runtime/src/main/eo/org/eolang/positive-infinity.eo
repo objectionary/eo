@@ -33,7 +33,7 @@
   # Tests that $ = x.
   [x] > eq
     eq. > @
-      &.as-bytes
+      ^.as-bytes
       x.as-bytes
 
   # Tests that $ < x.
@@ -42,7 +42,7 @@
 
   # Tests that $ ≤ x.
   [x] > lte
-    &.eq x > @
+    ^.eq x > @
 
   # Tests that $ > x.
   [x] > gt
@@ -50,7 +50,7 @@
     not. > @
       or.
         value.eq nan.as-bytes
-        &.eq value
+        ^.eq value
 
   # Tests that $ ≥ x.
   [x] > gte
@@ -78,8 +78,7 @@
     [num] > is-num-gt-zero
       try > @
         0.lt num
-        [e]
-          0.0.lt num > @
+        0.0.lt ^.num > [e] >>
         false
     if. > @
       is-nan-or-zero value
@@ -134,8 +133,7 @@
     [num] > is-num-gte-zero
       try > @
         0.lte num
-        [e]
-          0.0.lte num > @
+        0.0.lte ^.num > [e] >>
         false
     if. > @
       is-nan-or-infinite value

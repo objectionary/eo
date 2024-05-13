@@ -160,9 +160,6 @@ public final class UniverseDefault implements Universe {
                 case '@':
                     builder.append(Attr.PHI);
                     break;
-                case '&':
-                    builder.append(Attr.SIGMA);
-                    break;
                 default:
                     builder.append(cur);
                     break;

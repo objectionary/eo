@@ -59,7 +59,7 @@ final class EOerrorTest {
             EOerror.ExError.class,
             () -> new Dataized(
                 new PhWith(
-                    new EOerror(Phi.Φ),
+                    new EOerror(),
                     "message",
                     new Data.ToPhi("intentional error")
                 )

@@ -61,7 +61,7 @@ final class Input {
      * GetInstance.
      * @return The pointer to input
      */
-    public static synchronized Input getInstance() {
+    static synchronized Input getInstance() {
         if (instance == null) {
             instance = new Input();
         }
@@ -72,7 +72,7 @@ final class Input {
      * GetLine.
      * @return First read line from system input
      */
-    public String getLine() {
+    String getLine() {
         this.scanner.useDelimiter(System.lineSeparator());
         final String line = this.scanner.next();
         this.scanner.reset();
@@ -83,7 +83,7 @@ final class Input {
      * GetAllLines.
      * @return All read lines from system input
      */
-    public String getAllLines() {
+    String getAllLines() {
         final StringBuilder builder = new StringBuilder();
         while (this.scanner.hasNextLine()) {
             builder.append(this.scanner.nextLine()).append(System.lineSeparator());

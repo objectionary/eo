@@ -24,6 +24,7 @@
 package org.eolang.maven.hash;
 
 import com.jcabi.aspects.RetryOnFailure;
+import com.jcabi.log.Logger;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.scalar.Unchecked;
@@ -32,8 +33,9 @@ import org.cactoos.text.TextOf;
 
 /**
  * Commit hashes table as text from objectionary.
- * This class serves the purpose of the global cache in order to avoid
- * downloading the list of tags multiple times from objectionary.
+ *
+ * <p>This class serves the purpose of the global cache in order to avoid
+ * downloading the list of tags multiple times from objectionary.</p>
  *
  * @since 0.29.6
  */
@@ -64,7 +66,20 @@ final class CommitHashesText extends TextEnvelope {
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static String asText(final String url) {
         return new Unchecked<>(
-            () -> new TextOf(new URL(url)).asString()
+            () -> {
+                String hashes;
+                try {
+                    hashes = new TextOf(new URL(url)).asString();
+                } catch (final java.net.UnknownHostException ex) {
+                    Logger.warn(
+                        CommitHashesText.class,
+                        "Can't load hashes: %[exception]s",
+                        ex
+                    );
+                    hashes = CommitHashesMap.FAKES;
+                }
+                return hashes;
+            }
         ).value();
     }
 }

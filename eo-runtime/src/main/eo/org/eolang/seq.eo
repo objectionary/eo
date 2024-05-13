@@ -26,5 +26,6 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# Dataizes all provided steps and returns the last one.
+# The object, when being dataized, dataizes all provided
+# "steps" (except the last one) and returns the last one.
 [steps] > seq /?

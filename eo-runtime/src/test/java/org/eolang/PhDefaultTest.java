@@ -220,17 +220,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void doesNotCopySigmaWhileDispatch() {
-        final Phi phi = new PhDefaultTest.Int();
-        final Phi plus = phi.take(PhDefaultTest.PLUS_ATT);
-        MatcherAssert.assertThat(
-            String.format("%s attributes should not be copied while dispatch", Attr.SIGMA),
-            plus.take(Attr.SIGMA),
-            Matchers.equalTo(plus.take(Attr.SIGMA))
-        );
-    }
-
-    @Test
     void copiesUnsetVoidAttribute() {
         final Phi phi = new PhDefaultTest.Int();
         final Phi copy = phi.copy();
@@ -355,7 +344,7 @@ final class PhDefaultTest {
     @Test
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
-        final Phi phi = new PhDefaultTest.Foo(Phi.Φ);
+        final Phi phi = new PhDefaultTest.Foo();
         phi.put(0, num);
         Assertions.assertThrows(
             ExReadOnly.class,
@@ -366,7 +355,7 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        final Phi phi = new PhDefaultTest.EndlessRecursion(Phi.Φ);
+        final Phi phi = new PhDefaultTest.EndlessRecursion();
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -377,7 +366,7 @@ final class PhDefaultTest {
 
     @Test
     void cachesPhiRecursively() {
-        final Phi phi = new PhDefaultTest.RecursivePhi(Phi.Φ);
+        final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -388,7 +377,7 @@ final class PhDefaultTest {
 
     @Test
     void cachesPhiViaNewRecursively() {
-        final Phi phi = new PhDefaultTest.RecursivePhiViaNew(Phi.Φ);
+        final Phi phi = new PhDefaultTest.RecursivePhiViaNew();
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -399,7 +388,7 @@ final class PhDefaultTest {
 
     @Test
     void refersToOriginalObjectAndDoesNotResetCache() {
-        final Phi phi = new PhDefaultTest.Dummy(Phi.Φ);
+        final Phi phi = new PhDefaultTest.Dummy();
         phi.take(PhDefaultTest.PLUS_ATT);
         final Phi copy = phi.copy();
         copy.take(PhDefaultTest.PLUS_ATT);
@@ -413,7 +402,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotReadMultipleTimes() {
-        final Phi phi = new PhDefaultTest.Counter(Phi.Φ);
+        final Phi phi = new PhDefaultTest.Counter();
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -477,7 +466,7 @@ final class PhDefaultTest {
             new PhMethod(
                 new PhWith(
                     new PhMethod(
-                        new Rnd(Phi.Φ), PhDefaultTest.PLUS_ATT
+                        new Rnd(), PhDefaultTest.PLUS_ATT
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -508,11 +497,9 @@ final class PhDefaultTest {
     private static class Rnd extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Rnd(final Phi sigma) {
-            super(sigma);
+        Rnd() {
             this.add(
                 "φ",
                 new AtComposite(
@@ -535,9 +522,8 @@ final class PhDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Int() {
-            super(Phi.Φ);
             this.add(PhDefaultTest.VOID_ATT, new AtVoid(PhDefaultTest.VOID_ATT));
-            this.add(PhDefaultTest.PLUS_ATT, new AtSimple(new Plus(this)));
+            this.add(PhDefaultTest.PLUS_ATT, new AtSimple(new PhDefault()));
             this.add(
                 Attr.PHI,
                 new AtOnce(
@@ -566,43 +552,18 @@ final class PhDefaultTest {
     }
 
     /**
-     * Plus.
-     * @since 0.36.0
-     */
-    private static class Plus extends PhDefault {
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
-        Plus(final Phi sigma) {
-            super(sigma);
-        }
-    }
-
-    /**
      * Foo.
      * @since 1.0
      */
     public static class Foo extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
-         */
-        Foo(final Phi sigma) {
-            this(sigma, 5L);
-        }
-
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         * @param data Data
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Foo(final Phi sigma, final Object data) {
-            super(sigma);
+        Foo() {
             this.add("x", new AtVoid("x"));
-            this.add("kid", new AtSimple(new PhDefaultTest.Kid(this)));
-            this.add("φ", new AtSimple(new Data.ToPhi(data)));
+            this.add("kid", new AtSimple(new PhDefaultTest.Kid()));
+            this.add("φ", new AtSimple(new Data.ToPhi(5L)));
         }
     }
 
@@ -618,11 +579,9 @@ final class PhDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Dummy(final Phi sigma) {
-            super(sigma);
+        Dummy() {
             this.add(
                 Attr.PHI,
                 new AtFormed(
@@ -647,11 +606,9 @@ final class PhDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Counter(final Phi sigma) {
-            super(sigma);
+        Counter() {
             this.add(
                 Attr.PHI,
                 new AtFormed(
@@ -672,13 +629,11 @@ final class PhDefaultTest {
     public static class Kid extends PhDefault {
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Kid(final Phi sigma) {
-            super(sigma);
+        Kid() {
             this.add("z", new AtVoid("z"));
-            this.add(Attr.PHI, new AtSimple(new EOstdout(Phi.Φ)));
+            this.add(Attr.PHI, new AtSimple(new EOstdout()));
         }
     }
 
@@ -694,11 +649,9 @@ final class PhDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        EndlessRecursion(final Phi sigma) {
-            super(sigma);
+        EndlessRecursion() {
             this.add(
                 Attr.PHI,
                 new AtComposite(
@@ -709,7 +662,7 @@ final class PhDefaultTest {
                         if (PhDefaultTest.EndlessRecursion.count <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
-                            result = new PhCopy(new PhDefaultTest.EndlessRecursion(self));
+                            result = new PhCopy(new PhDefaultTest.EndlessRecursion());
                         }
                         return result;
                     }
@@ -730,11 +683,9 @@ final class PhDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        RecursivePhi(final Phi sigma) {
-            super(sigma);
+        RecursivePhi() {
             this.add(
                 "φ",
                 new AtComposite(
@@ -766,11 +717,9 @@ final class PhDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        RecursivePhiViaNew(final Phi sigma) {
-            super(sigma);
+        RecursivePhiViaNew() {
             this.add(
                 "φ",
                 new AtFormed(
@@ -782,7 +731,7 @@ final class PhDefaultTest {
                         } else {
                             result = new Data.ToPhi(
                                 new Dataized(
-                                    new RecursivePhiViaNew(Phi.Φ)
+                                    new RecursivePhiViaNew()
                                 ).take(Long.class)
                             );
                         }

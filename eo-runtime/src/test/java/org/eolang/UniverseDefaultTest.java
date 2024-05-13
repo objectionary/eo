@@ -71,7 +71,7 @@ final class UniverseDefaultTest {
 
     @Test
     void findsLongAtt() {
-        final Phi phi = new DummyWithStructure(Phi.Φ);
+        final Phi phi = new DummyWithStructure();
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -107,7 +107,7 @@ final class UniverseDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new UniverseDefault(
-                new DummyWithStructure(Phi.Φ)
+                new DummyWithStructure()
             ).find("$.wrong-name"),
             AtCompositeTest.TO_ADD_MESSAGE
         );
@@ -133,7 +133,7 @@ final class UniverseDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new UniverseDefault(
-                new DummyWithStructure(Phi.Φ)
+                new DummyWithStructure()
             ).dataize(-1),
             AtCompositeTest.TO_ADD_MESSAGE
         );
@@ -178,7 +178,7 @@ final class UniverseDefaultTest {
 
     @Test
     void bindsCopyToAbstract() {
-        final Phi dummy = new DummyAbstract(Phi.Φ);
+        final Phi dummy = new DummyAbstract();
         final Map<Integer, Phi> indexed = new MapOf<>(dummy.hashCode(), dummy);
         final Universe universe = new UniverseDefault(dummy, indexed);
         final int eobytes = universe.find("Q.org.eolang.bytes");
@@ -208,10 +208,9 @@ final class UniverseDefaultTest {
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAt(final Phi sigma) {
-            super(sigma);
             this.add(
                 UniverseDefaultTest.ABSTRACT_ATT,
-                new AtComposite(sigma, self -> new EOint(Phi.Φ))
+                new AtComposite(sigma, self -> new EOint())
             );
             this.add(
                 UniverseDefaultTest.VALUE_ATT,
@@ -228,11 +227,9 @@ final class UniverseDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        DummyWithStructure(final Phi sigma) {
-            super(sigma);
+        DummyWithStructure() {
             this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtComposite(this, DummyWithAt::new));
         }
     }
@@ -245,11 +242,9 @@ final class UniverseDefaultTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        DummyAbstract(final Phi sigma) {
-            super(sigma);
+        DummyAbstract() {
             this.add(
                 UniverseDefaultTest.ABSTRACT_ATT,
                 new AtVoid(UniverseDefaultTest.ABSTRACT_ATT)

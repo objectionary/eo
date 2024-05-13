@@ -24,7 +24,6 @@
 package org.eolang;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,12 +43,11 @@ import java.util.stream.Collectors;
  */
 @Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization", "PMD.GodClass"})
-public abstract class PhDefault implements Phi, Cloneable {
-
+public class PhDefault implements Phi, Cloneable {
     /**
      * Vertices.
      */
-    protected static final Vertices VTX = new Vertices();
+    private static final Vertices VTX = new Vertices();
 
     /**
      * Logger.
@@ -70,7 +68,7 @@ public abstract class PhDefault implements Phi, Cloneable {
      * Identity of it (the ID of the vertex).
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    protected int vertex;
+    private int vertex;
 
     /**
      * Data.
@@ -96,23 +94,13 @@ public abstract class PhDefault implements Phi, Cloneable {
     /**
      * Ctor.
      */
-    public PhDefault() {
-        this(Phi.Φ);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param sigma Sigma
-     */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public PhDefault(final Phi sigma) {
+    public PhDefault() {
         this.vertex = PhDefault.VTX.next();
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());
-        this.add(Attr.SIGMA, new AtFixed(sigma));
     }
 
     @Override
@@ -137,7 +125,7 @@ public abstract class PhDefault implements Phi, Cloneable {
             );
         }
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
-            e -> !Arrays.asList(Attr.RHO, Attr.SIGMA).contains(e.getKey())
+            e -> !e.getKey().equals(Attr.RHO)
         ).collect(Collectors.toList())) {
             final String attr = String.format(
                 format,

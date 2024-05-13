@@ -47,21 +47,8 @@ final class PhDataTest {
         final byte[] data = {0x2A, 0x3B};
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new PhData(new Dummy(), data).delta(),
+            new PhData(new PhDefault(), data).delta(),
             Matchers.equalTo(data)
         );
-    }
-
-    /**
-     * Dummy.
-     * @since 0.36.0
-     */
-    private static final class Dummy extends PhDefault {
-        /**
-         * Ctor.
-         */
-        Dummy() {
-            super(Phi.Φ);
-        }
     }
 }

@@ -45,13 +45,10 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "int.times")
 public final class EOint$EOtimes extends PhDefault implements Atom {
-
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    public EOint$EOtimes(final Phi sigma) {
-        super(sigma);
+    public EOint$EOtimes() {
         this.add("x", new AtVoid("x"));
     }
 

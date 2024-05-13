@@ -48,10 +48,8 @@ import org.eolang.XmirObject;
 public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    EOmalloc$EOof$EOallocated$EOread(final Phi sigma) {
-        super(sigma);
+    EOmalloc$EOof$EOallocated$EOread() {
         this.add("offset", new AtVoid("offset"));
         this.add("length", new AtVoid("length"));
     }

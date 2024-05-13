@@ -113,8 +113,8 @@ phi: |-
               ).while(
                 α0 ↦ ⟦
                   i ↦ ∅,
-                  φ ↦ ξ.σ.x.write(
-                    α0 ↦ ξ.σ.x.as-int.plus(
+                  φ ↦ ξ.ρ.x.write(
+                    α0 ↦ ξ.ρ.x.as-int.plus(
                       α0 ↦ Φ.org.eolang.int(
                         α0 ↦ Φ.org.eolang.bytes(
                           Δ ⤍ 00-00-00-00-00-00-00-01
@@ -239,8 +239,8 @@ phi: |-
                         α0 ↦ Φ.org.eolang.tuple(
                           α0 ↦ Φ.org.eolang.tuple(
                             α0 ↦ Φ.org.eolang.tuple.empty,
-                            α1 ↦ ξ.σ.m.write(
-                              α0 ↦ ξ.σ.m.as-int.minus(
+                            α1 ↦ ξ.ρ.m.write(
+                              α0 ↦ ξ.ρ.m.as-int.minus(
                                 α0 ↦ Φ.org.eolang.int(
                                   α0 ↦ Φ.org.eolang.bytes(
                                     Δ ⤍ 00-00-00-00-00-00-00-01
@@ -289,8 +289,8 @@ phi: |-
                   α0 ↦ Φ.org.eolang.tuple(
                     α0 ↦ Φ.org.eolang.tuple(
                       α0 ↦ Φ.org.eolang.tuple.empty,
-                      α1 ↦ ξ.σ.x.write(
-                        α0 ↦ ξ.σ.x.as-int.plus(
+                      α1 ↦ ξ.ρ.x.write(
+                        α0 ↦ ξ.ρ.x.as-int.plus(
                           α0 ↦ Φ.org.eolang.int(
                             α0 ↦ Φ.org.eolang.bytes(
                               Δ ⤍ 00-00-00-00-00-00-00-01
@@ -299,7 +299,7 @@ phi: |-
                         )
                       )
                     ),
-                    α1 ↦ ξ.σ.x.as-int
+                    α1 ↦ ξ.ρ.x.as-int
                   )
                 )
               ⟧
@@ -332,8 +332,8 @@ phi: |-
                   α0 ↦ Φ.org.eolang.tuple(
                     α0 ↦ Φ.org.eolang.tuple(
                       α0 ↦ Φ.org.eolang.tuple.empty,
-                      α1 ↦ ξ.σ.x.write(
-                        α0 ↦ ξ.σ.x.as-int.plus(
+                      α1 ↦ ξ.ρ.x.write(
+                        α0 ↦ ξ.ρ.x.as-int.plus(
                           α0 ↦ Φ.org.eolang.int(
                             α0 ↦ Φ.org.eolang.bytes(
                               Δ ⤍ 00-00-00-00-00-00-00-01
@@ -342,7 +342,7 @@ phi: |-
                         )
                       )
                     ),
-                    α1 ↦ ξ.σ.x
+                    α1 ↦ ξ.ρ.x
                   )
                 )
               ⟧
@@ -436,16 +436,16 @@ phi: |-
                           α0 ↦ Φ.org.eolang.tuple(
                             α0 ↦ Φ.org.eolang.tuple(
                               α0 ↦ Φ.org.eolang.tuple.empty,
-                              α1 ↦ ξ.σ.acc.write(
-                                α0 ↦ ξ.σ.acc.as-int.plus(
-                                  α0 ↦ ξ.σ.arr.at(
+                              α1 ↦ ξ.ρ.acc.write(
+                                α0 ↦ ξ.ρ.acc.as-int.plus(
+                                  α0 ↦ ξ.ρ.arr.at(
                                     α0 ↦ ξ.i
                                   )
                                 )
                               )
                             ),
-                            α1 ↦ ξ.σ.iter.write(
-                              α0 ↦ ξ.σ.iter.as-int.plus(
+                            α1 ↦ ξ.ρ.iter.write(
+                              α0 ↦ ξ.ρ.iter.as-int.plus(
                                 α0 ↦ Φ.org.eolang.int(
                                   α0 ↦ Φ.org.eolang.bytes(
                                     Δ ⤍ 00-00-00-00-00-00-00-01
@@ -547,16 +547,16 @@ phi: |-
                           α0 ↦ Φ.org.eolang.tuple(
                             α0 ↦ Φ.org.eolang.tuple(
                               α0 ↦ Φ.org.eolang.tuple.empty,
-                              α1 ↦ ξ.σ.acc.write(
-                                α0 ↦ ξ.σ.acc.as-int.plus(
-                                  α0 ↦ ξ.σ.arr.at(
-                                    α0 ↦ ξ.σ.iter.as-int
+                              α1 ↦ ξ.ρ.acc.write(
+                                α0 ↦ ξ.ρ.acc.as-int.plus(
+                                  α0 ↦ ξ.ρ.arr.at(
+                                    α0 ↦ ξ.ρ.iter.as-int
                                   )
                                 )
                               )
                             ),
-                            α1 ↦ ξ.σ.iter.write(
-                              α0 ↦ ξ.σ.iter.as-int.plus(
+                            α1 ↦ ξ.ρ.iter.write(
+                              α0 ↦ ξ.ρ.iter.as-int.plus(
                                 α0 ↦ Φ.org.eolang.int(
                                   α0 ↦ Φ.org.eolang.bytes(
                                     Δ ⤍ 00-00-00-00-00-00-00-01
@@ -631,24 +631,24 @@ phi: |-
                 α0 ↦ Φ.org.eolang.tuple(
                   α0 ↦ Φ.org.eolang.tuple.empty,
                   α1 ↦ ⟦
-                    φ ↦ ξ.σ.iter.as-int.lt(
-                      α0 ↦ ξ.σ.max
+                    φ ↦ ξ.ρ.iter.as-int.lt(
+                      α0 ↦ ξ.ρ.max
                     ).if(
                       α0 ↦ Φ.org.eolang.seq(
                         α0 ↦ Φ.org.eolang.tuple(
                           α0 ↦ Φ.org.eolang.tuple(
                             α0 ↦ Φ.org.eolang.tuple(
                               α0 ↦ Φ.org.eolang.tuple.empty,
-                              α1 ↦ ξ.σ.acc.write(
-                                α0 ↦ ξ.σ.acc.as-int.plus(
-                                  α0 ↦ ξ.σ.arr.at(
-                                    α0 ↦ ξ.σ.iter.as-int
+                              α1 ↦ ξ.ρ.acc.write(
+                                α0 ↦ ξ.ρ.acc.as-int.plus(
+                                  α0 ↦ ξ.ρ.arr.at(
+                                    α0 ↦ ξ.ρ.iter.as-int
                                   )
                                 )
                               )
                             ),
-                            α1 ↦ ξ.σ.iter.write(
-                              α0 ↦ ξ.σ.iter.as-int.plus(
+                            α1 ↦ ξ.ρ.iter.write(
+                              α0 ↦ ξ.ρ.iter.as-int.plus(
                                 α0 ↦ Φ.org.eolang.int(
                                   α0 ↦ Φ.org.eolang.bytes(
                                     Δ ⤍ 00-00-00-00-00-00-00-01
@@ -709,24 +709,24 @@ phi: |-
                 α0 ↦ Φ.org.eolang.tuple(
                   α0 ↦ Φ.org.eolang.tuple.empty,
                   α1 ↦ ⟦
-                    φ ↦ ξ.σ.iter.as-int.lt(
-                      α0 ↦ ξ.σ.max
+                    φ ↦ ξ.ρ.iter.as-int.lt(
+                      α0 ↦ ξ.ρ.max
                     ).if(
                       α0 ↦ Φ.org.eolang.seq(
                         α0 ↦ Φ.org.eolang.tuple(
                           α0 ↦ Φ.org.eolang.tuple(
                             α0 ↦ Φ.org.eolang.tuple(
                               α0 ↦ Φ.org.eolang.tuple.empty,
-                              α1 ↦ ξ.σ.acc.write(
-                                α0 ↦ ξ.σ.acc.as-int.plus(
-                                  α0 ↦ ξ.σ.arr.at(
-                                    α0 ↦ ξ.σ.iter.as-int
+                              α1 ↦ ξ.ρ.acc.write(
+                                α0 ↦ ξ.ρ.acc.as-int.plus(
+                                  α0 ↦ ξ.ρ.arr.at(
+                                    α0 ↦ ξ.ρ.iter.as-int
                                   )
                                 )
                               )
                             ),
-                            α1 ↦ ξ.σ.iter.write(
-                              α0 ↦ ξ.σ.iter.as-int.plus(
+                            α1 ↦ ξ.ρ.iter.write(
+                              α0 ↦ ξ.ρ.iter.as-int.plus(
                                 α0 ↦ Φ.org.eolang.int(
                                   α0 ↦ Φ.org.eolang.bytes(
                                     Δ ⤍ 00-00-00-00-00-00-00-01

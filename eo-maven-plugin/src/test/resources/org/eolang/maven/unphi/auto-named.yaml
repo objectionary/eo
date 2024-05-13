@@ -20,24 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
-  - /org/eolang/parser/add-default-package.xsl
-  - /org/eolang/maven/pre/classes.xsl
-  - /org/eolang/maven/pre/attrs.xsl
-  - /org/eolang/maven/pre/data.xsl
-  - /org/eolang/maven/pre/to-java.xsl
 tests:
-  - /program/errors[count(*)=0]
-  - //java/text()[not(contains(., '&amp;'))]
-
-eo: |
-  # This is the default 64+ symbols comment in front of named abstract object.
-  [] > foo
-    5 > five
-    a > @
-
-    # This is the default 64+ symbols comment in front of named abstract object.
-    [] > a
-      # This is the default 64+ symbols comment in front of named abstract object.
-      [] > @
-        &.&.five > @
+  - /program/objects/o[@name='main' and @atom and @abstract]
+  - /program/objects/o[@name='outer' and @abstract]
+  - /program/objects/o[@name='outer' and @abstract]/o[@name='inner' and @atom and @abstract]
+phi:
+  "{⟦main ↦ ⟦λ ⤍ Lambda⟧, outer ↦ ⟦inner ↦ ⟦λ ⤍ Lambda⟧⟧⟧}"

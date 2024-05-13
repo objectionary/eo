@@ -95,9 +95,10 @@ public final class Names {
         return cached.computeIfAbsent(
             loc,
             key -> String.format(
-                "%s%d",
+                "%s%d_%s",
                 Names.PREFIX,
-                cached.size()
+                cached.size(),
+                Names.trim(key)
             )
         );
     }
@@ -143,6 +144,18 @@ public final class Names {
             new String(Base64.getEncoder().encode(baos.toByteArray()), StandardCharsets.UTF_8),
             this.dest.getFileName()
         );
+    }
+
+    /**
+     * Format loc: Remove non-ascii symbols, replace Φ.org.eolang with QQ
+     * and limit length of name characters.
+     * @param loc Locator of Rust insert.
+     * @return Formatted name.
+     */
+    private static String trim(final String loc) {
+        final String replaced = loc.replace("Φ.org.eolang", "QQ")
+            .replaceAll("[^a-zA-Z0-9.-]", "").replaceAll("[. -]", "_");
+        return replaced.substring(Math.max(replaced.length() - 64, 0));
     }
 
     /**

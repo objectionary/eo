@@ -19,19 +19,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
-+version 0.0.0
-
-# Compile Time Instruction (CTI).
-#
-# The object may be used to add compile time information to
-# other objects. This mechanism is somehow similar to annotations in,
-# for example, Java and C#. For example, the object makes it possible
-# to highlight deprecated methods. EO compiler, when it meets the
-# `cli` object, takes its `message` and prints to the log/console
-# with the `level` severity level (use `INFO`, `WARN`, or `ERROR`).
-delegate > [delegate level message] > cti
+---
+# @todo #3147:30min Make duplicate names catcher more powerful. This test pack is disabled now
+#  because names duplication is not caught here. It happens because of "duplicate-names.xsl" thinks
+#  that abstract objects in the tests are on the different levels. Syntactically they are, but
+#  semantically they're not. So we need to make this duplicate catcher more powerful, enable the
+#  test by removing "skip: true" line and make sure it works.
+skip: true
+xsls:
+  - /org/eolang/parser/critical-errors/duplicate-names.xsl
+tests:
+  - /program/errors[count(error)=1]
+eo: |
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > main
+    x > f
+      [] >>
+    # This is the default 64+ symbols comment in front of abstract object.
+    [] > auto-named-attr-at-4-6

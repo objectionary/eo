@@ -54,7 +54,7 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiJustOnce() {
-        final Dummy dummy = new Dummy(Phi.Φ);
+        final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "φ");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
@@ -69,7 +69,7 @@ final class PhMethodTest {
 
     @Test
     void calculatesLocalJustOnce() {
-        final Dummy dummy = new Dummy(Phi.Φ);
+        final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "foo");
         final int total = 10;
         for (int idx = 0; idx < total; ++idx) {
@@ -84,7 +84,7 @@ final class PhMethodTest {
 
     @Test
     void calculatesPhiOnce() {
-        final Dummy dummy = new Dummy(Phi.Φ);
+        final Dummy dummy = new Dummy();
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
         MatcherAssert.assertThat(
@@ -121,17 +121,8 @@ final class PhMethodTest {
         /**
          * Ctor.
          */
-        Dummy() {
-            this(Phi.Φ);
-        }
-
-        /**
-         * Ctor.
-         * @param sigma Sigma
-         */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        Dummy(final Phi sigma) {
-            super(sigma);
+        Dummy() {
             this.add(
                 "φ",
                 new AtOnce(

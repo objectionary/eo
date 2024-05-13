@@ -61,22 +61,22 @@
   [body] > to
     try > @
       body token
-      [e]
+      [e] >>
         if. > @
-          &.^.id.eq e.id
+          ^.^.id.eq e.id
           e.value
           error e
       true
 
     [] > token
-      # Backward jump.
       error > backward
-        []
-          &.^.^.to &.^.body > value
-          &.^.^.id > id
+        jump
+          ^.^.to ^.body
+
+      [value] > jump
+        ^.^.^.id > id
 
       [res] > forward
         error > @
-          []
-            res > value
-            &.^.^.^.id > id
+          ^.jump
+            res

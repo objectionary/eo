@@ -45,14 +45,6 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "malloc.of.@")
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     * @param sigma Sigma
-     */
-    EOmalloc$EOof$EOφ(final Phi sigma) {
-        super(sigma);
-    }
-
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);

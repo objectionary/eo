@@ -35,7 +35,7 @@
       [m]
         while > @
           i.eq 0 > [i]
-          m.put i > [i]
+          m.put i > [i] >>
 
 # Test.
 [] > simple-while-with-false-first
@@ -51,8 +51,8 @@
       true
       [m]
         while > @
-          m > [i]
-          m.put false > [i]
+          m > [i] >>
+          m.put false > [i] >>
     false
 
 # Test.
@@ -62,8 +62,8 @@
       0
       [m]
         while > @
-          2.gt m > [i]
-          m.put (m.as-int.plus 1) > [i]
+          2.gt m > [i] >>
+          m.put (m.as-int.plus 1) > [i] >>
     3
 
 # Test.
@@ -79,18 +79,18 @@
   arr.length.plus -1 > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           if. > @
             max.eq 0
             acc.put
               acc.as-int.plus
                 arr.at 0
             while
-              max.gt iter > [i]
-              [i]
+              max.gt iter > [i] >>
+              [i] >>
                 seq > @
                   *
                     acc.put
@@ -106,13 +106,13 @@
   arr.length.plus -1 > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            max.gt iter > [i]
-            [i]
+            max.gt iter > [i] >>
+            [i] >>
               seq > @
                 *
                   acc.put
@@ -128,12 +128,12 @@
   arr.length > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            [i]
+            [i] >>
               if. > @
                 max.gt iter
                 seq
@@ -155,12 +155,12 @@
   arr.length > max
   malloc.for > data
     0
-    [acc]
+    [acc] >>
       malloc.for > @
         0
-        [iter]
+        [iter] >>
           while > @
-            [i]
+            [i] >>
               if. > @
                 max.gt iter
                 seq

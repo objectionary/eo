@@ -20,29 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-xsls:
-  - /org/eolang/parser/wrap-method-calls.xsl
-  - /org/eolang/parser/optimize/globals-to-abstracts.xsl
-  - /org/eolang/parser/optimize/remove-refs.xsl
-  - /org/eolang/parser/optimize/abstracts-float-up.xsl
-  - /org/eolang/parser/optimize/remove-levels.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/optimize/fix-missed-names.xsl
-  - /org/eolang/parser/add-refs.xsl
-  - /org/eolang/parser/errors/broken-refs.xsl
-  - /org/eolang/maven/pre/classes.xsl
-  - /org/eolang/maven/pre/attrs.xsl
-  - /org/eolang/maven/pre/data.xsl
-  - /org/eolang/maven/pre/to-java.xsl
-tests:
-  - /program/errors[count(*)=0]
-  - //java[contains(text(), 'PhMethod(new PhMethod(rho, "σ"), "σ")')]
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
-  [x] > foo
-    $ > this
-    # This is the default 64+ symbols comment in front of named abstract object.
-    [] > xyz
-      # This is the default 64+ symbols comment in front of named abstract object.
-      [] > bar
-        this.x > @
+  [] > object
+    x > first
+      [] >>
+        01- > b
+phi: |-
+  {
+    ⟦
+      object ↦ ⟦
+        first ↦ Φ.org.eolang.x(
+          α0 ↦ ξ.auto-named-attr-at-4-6
+        ),
+        auto-named-attr-at-4-6 ↦ ⟦
+          b ↦ Φ.org.eolang.bytes(
+            Δ ⤍ 01-
+          )
+        ⟧
+      ⟧
+    ⟧
+  }

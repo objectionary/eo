@@ -30,14 +30,7 @@ SOFTWARE.
       <xsl:variable name="t">
         <xsl:choose>
           <xsl:when test="@base">
-            <xsl:choose>
-              <xsl:when test="@cut">
-                <xsl:text>formed</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:text>bound</xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:text>bound</xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>void</xsl:text>

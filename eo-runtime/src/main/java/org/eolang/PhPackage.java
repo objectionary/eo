@@ -158,8 +158,8 @@ final class PhPackage implements Phi {
         try {
             res = Optional.of(
                 (Phi) Class.forName(target)
-                    .getConstructor(Phi.class)
-                    .newInstance(Phi.Φ)
+                    .getConstructor()
+                    .newInstance()
             );
         } catch (final ClassNotFoundException notfound) {
             res = Optional.empty();

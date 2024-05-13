@@ -45,10 +45,8 @@ import org.eolang.XmirObject;
 public final class EOdataized extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma.
      */
-    public EOdataized(final Phi sigma) {
-        super(sigma);
+    public EOdataized() {
         this.add("target", new AtVoid("target"));
     }
 

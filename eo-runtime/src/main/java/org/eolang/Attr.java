@@ -52,11 +52,6 @@ public interface Attr extends Term {
     String RHO = "ρ";
 
     /**
-     * Sigma attribute.
-     */
-    String SIGMA = "σ";
-
-    /**
      * Make a copy of it.
      *
      * @param self The object that this attribute will belong to

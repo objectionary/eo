@@ -46,6 +46,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.1
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 public final class EOmallocTest {
     @Test
     void freesMemory() {
@@ -108,7 +109,6 @@ public final class EOmallocTest {
          * Ctor.
          */
         Dummy() {
-            super(Phi.Φ);
             this.add("m", new AtVoid("m"));
             this.add(
                 Attr.PHI,
@@ -139,7 +139,6 @@ public final class EOmallocTest {
          * Ctor.
          */
         ErrorDummy() {
-            super(Phi.Φ);
             this.add("m", new AtVoid("m"));
             this.add(
                 Attr.PHI,

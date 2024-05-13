@@ -26,8 +26,15 @@ SOFTWARE.
   <xsl:import href="/org/eolang/parser/_datas.xsl"/>
   <xsl:param name="disclaimer"/>
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- VARIABLES -->
   <xsl:variable name="TAB">
     <xsl:text>  </xsl:text>
+  </xsl:variable>
+  <xsl:variable name="RHO">
+    <xsl:text>ρ</xsl:text>
+  </xsl:variable>
+  <xsl:variable name="PHI">
+    <xsl:text>φ</xsl:text>
   </xsl:variable>
   <!-- FUNCTIONS -->
   <!-- EOL -->
@@ -58,7 +65,7 @@ SOFTWARE.
   <!-- Get clean escaped object name  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(replace(replace(replace($n, '_', '__'), '-', '_'), '@', 'φ'), 'α', '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', replace(replace(replace(replace(replace($n, '_', '__'), '-', '_'), '@', $PHI), 'α', '_'), '\$', '\$EO'))"/>
   </xsl:function>
   <!-- Get object name with suffix -->
   <xsl:function name="eo:suffix" as="xs:string">
@@ -104,10 +111,10 @@ SOFTWARE.
     <xsl:param name="n" as="xs:string"/>
     <xsl:choose>
       <xsl:when test="$n='@'">
-        <xsl:text>φ</xsl:text>
+        <xsl:value-of select="$PHI"/>
       </xsl:when>
       <xsl:when test="$n='^'">
-        <xsl:text>ρ</xsl:text>
+        <xsl:value-of select="$RHO"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="concat('', $n)"/>
@@ -191,19 +198,10 @@ SOFTWARE.
         <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
         <xsl:text>() {</xsl:text>
       </xsl:when>
-      <xsl:when test="@ancestors">
-        <xsl:text>public </xsl:text>
-        <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>(final Phi sigma) {</xsl:text>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>super(sigma);</xsl:text>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:text>public </xsl:text>
         <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>(final Phi sigma) {</xsl:text>
-        <xsl:value-of select="eo:eol(2)"/>
-        <xsl:text>super(sigma);</xsl:text>
+        <xsl:text>() {</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:apply-templates select="attr">
@@ -235,22 +233,6 @@ SOFTWARE.
     <xsl:value-of select="$name"/>
     <xsl:text>")</xsl:text>
   </xsl:template>
-  <!-- Formed attribute -->
-  <xsl:template match="formed">
-    <xsl:text>new AtFormed(() -&gt; {</xsl:text>
-    <xsl:value-of select="eo:eol(0)"/>
-    <xsl:apply-templates select="*">
-      <xsl:with-param name="name" select="'ret'"/>
-      <xsl:with-param name="indent">
-        <xsl:value-of select="eo:tabs(3)"/>
-      </xsl:with-param>
-      <xsl:with-param name="rho" select="'this'"/>
-    </xsl:apply-templates>
-    <xsl:value-of select="eo:tabs(3)"/>
-    <xsl:text>return ret;</xsl:text>
-    <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>})</xsl:text>
-  </xsl:template>
   <!-- Bound attribute -->
   <xsl:template match="bound">
     <xsl:text>new AtOnce(</xsl:text>
@@ -261,7 +243,6 @@ SOFTWARE.
       <xsl:with-param name="indent">
         <xsl:value-of select="eo:tabs(3)"/>
       </xsl:with-param>
-      <xsl:with-param name="rho" select="'rho'"/>
     </xsl:apply-templates>
     <xsl:value-of select="eo:tabs(3)"/>
     <xsl:text>return ret;</xsl:text>
@@ -286,7 +267,6 @@ SOFTWARE.
   <xsl:template match="o[@base and not(starts-with(@base, '.'))]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:param name="rho"/>
     <xsl:variable name="current" select="."/>
     <xsl:variable name="source" select="//*[generate-id()!=generate-id($current) and @name=$current/@base and @line=$current/@ref]"/>
     <!-- Terminate -->
@@ -320,24 +300,21 @@ SOFTWARE.
         <xsl:text>.copy()</xsl:text>
       </xsl:when>
       <xsl:when test="@base='$'">
-        <xsl:value-of select="$rho"/>
+        <xsl:text>rho</xsl:text>
       </xsl:when>
       <xsl:when test="@base='Q'">
         <xsl:text>Phi.Φ</xsl:text>
       </xsl:when>
       <xsl:when test="@base='^'">
-        <xsl:text>new PhMethod(rho, "ρ")</xsl:text>
-      </xsl:when>
-      <xsl:when test="@base='&amp;'">
-        <xsl:text>new PhMethod(rho, "σ")</xsl:text>
+        <xsl:text>new PhMethod(rho, "</xsl:text>
+        <xsl:value-of select="$RHO"/>
+        <xsl:text>")</xsl:text>
       </xsl:when>
       <!-- TBD -->
       <xsl:when test="$source/@ancestors">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($source/@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>(</xsl:text>
-        <xsl:value-of select="$rho"/>
-        <xsl:text>)</xsl:text>
+        <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:when test="$source and name($source)='class'">
         <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
@@ -348,7 +325,9 @@ SOFTWARE.
         </xsl:for-each>
         <xsl:text>rho</xsl:text>
         <xsl:for-each select="1 to $source/@level">
-          <xsl:text>, "σ")</xsl:text>
+          <xsl:text>, "</xsl:text>
+          <xsl:value-of select="$RHO"/>
+          <xsl:text>")</xsl:text>
         </xsl:for-each>
         <xsl:text>, "</xsl:text>
         <xsl:value-of select="$source/@name"/>
@@ -368,7 +347,6 @@ SOFTWARE.
     <xsl:apply-templates select="." mode="application">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
-      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
@@ -379,7 +357,6 @@ SOFTWARE.
   <xsl:template match="o[starts-with(@base, '.') and *]">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:param name="rho"/>
     <xsl:apply-templates select="*[1]">
       <xsl:with-param name="name">
         <xsl:value-of select="$name"/>
@@ -388,7 +365,6 @@ SOFTWARE.
       <xsl:with-param name="indent">
         <xsl:value-of select="$indent"/>
       </xsl:with-param>
-      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
     <xsl:value-of select="$indent"/>
     <xsl:text>Phi </xsl:text>
@@ -399,10 +375,7 @@ SOFTWARE.
     <xsl:variable name="method" select="substring-after(@base, '.')"/>
     <xsl:choose>
       <xsl:when test="$method='^'">
-        <xsl:text>ρ</xsl:text>
-      </xsl:when>
-      <xsl:when test="$method='&amp;'">
-        <xsl:text>σ</xsl:text>
+        <xsl:value-of select="$RHO"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="eo:attr-name($method)"/>
@@ -418,7 +391,6 @@ SOFTWARE.
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="skip" select="1"/>
-      <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
   </xsl:template>
   <!-- Location of object -->
@@ -448,7 +420,6 @@ SOFTWARE.
     <xsl:param name="indent"/>
     <xsl:param name="skip" select="0"/>
     <xsl:param name="name" select="'o'"/>
-    <xsl:param name="rho"/>
     <xsl:for-each select="./*[name()!='value' and name()!='tuple' and position() &gt; $skip][not(@level)]">
       <xsl:if test="position() = 1">
         <xsl:value-of select="$indent"/>
@@ -470,7 +441,6 @@ SOFTWARE.
           <xsl:value-of select="$indent"/>
           <xsl:value-of select="eo:tabs(1)"/>
         </xsl:with-param>
-        <xsl:with-param name="rho" select="$rho"/>
       </xsl:apply-templates>
     </xsl:for-each>
     <xsl:for-each select="./*[name()!='value' and position() &gt; $skip][not(@level)]">

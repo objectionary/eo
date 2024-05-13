@@ -35,7 +35,7 @@ final class ExInterruptedTest {
 
     @Test
     void throwsRightException() {
-        final EOthrow phi = new EOthrow(new Data.ToPhi(true));
+        final EOthrow phi = new EOthrow();
         Assertions.assertThrows(
             ExInterrupted.class,
             () -> new Dataized(phi.take(Attr.PHI)).take(),
@@ -51,11 +51,9 @@ final class ExInterruptedTest {
     private static class EOthrow extends PhDefault {
         /**
          * CTor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        EOthrow(final Phi sigma) {
-            super(sigma);
+        EOthrow() {
             this.add(
                 "φ",
                 new AtComposite(

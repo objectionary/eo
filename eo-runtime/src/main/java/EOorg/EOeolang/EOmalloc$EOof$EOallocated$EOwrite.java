@@ -49,10 +49,8 @@ import org.eolang.XmirObject;
 public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    EOmalloc$EOof$EOallocated$EOwrite(final Phi sigma) {
-        super(sigma);
+    EOmalloc$EOof$EOallocated$EOwrite() {
         this.add("offset", new AtVoid("offset"));
         this.add("data", new AtVoid("data"));
     }

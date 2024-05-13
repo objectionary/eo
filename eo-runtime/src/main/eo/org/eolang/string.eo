@@ -26,7 +26,8 @@
 +rt jvm org.eolang:eo-runtime:0.0.0
 +version 0.0.0
 
-# String.
+# The `string` object is an abstraction of a text string, which
+# internally is a chain of bytes.
 [as-bytes] > string
   as-bytes > @
 

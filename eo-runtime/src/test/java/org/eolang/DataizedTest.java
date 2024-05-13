@@ -33,15 +33,12 @@ import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Dataized}.
  *
  * @since 0.22
- * @todo #2931:30min Enable the disabled tests. The tests were disabled after \rho attribute
- *  became immutable. Need to find out what's going on and resolve the tests.
  */
 final class DataizedTest {
     /**
@@ -51,7 +48,6 @@ final class DataizedTest {
     private static final String MAX_DATAIZATION_LOG_PROPERTY = "max.dataization.log";
 
     @Test
-    @Disabled
     void logsCorrectly() {
         final Logger log = Logger.getLogger("logsCorrectly");
         final Level before = log.getLevel();
@@ -63,7 +59,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -73,7 +69,6 @@ final class DataizedTest {
     }
 
     @Test
-    @Disabled
     void logsWhenException() {
         final Logger log = Logger.getLogger("logsWhenException");
         final Level before = log.getLevel();
@@ -81,19 +76,19 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Phi wrong = new PhIncorrect(Phi.Φ);
+        final Phi wrong = new PhIncorrect();
         IntStream.range(0, 5).forEach(
             i -> Assertions.assertThrows(
-                IllegalStateException.class,
+                ExFailure.class,
                 () -> new Dataized(wrong).take(),
-                AtCompositeTest.TO_ADD_MESSAGE
+                "Expected failure with ExFailure exception on incorrect object dataization"
             )
         );
         new Dataized(new Data.ToPhi(1L), log).take();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("intν"),
@@ -163,7 +158,7 @@ final class DataizedTest {
                         DataizedTest.MAX_DATAIZATION_LOG_PROPERTY,
                         String.valueOf(level)
                     );
-                    final Phi phi = new PhiDec(Phi.Φ);
+                    final Phi phi = new PhiDec();
                     new Dataized(phi, logger).take();
                     if (property != null) {
                         System.getProperties().setProperty(
@@ -186,11 +181,9 @@ final class DataizedTest {
 
         /**
          * Ctor.
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        PhIncorrect(final Phi sigma) {
-            super(sigma);
+        PhIncorrect() {
             this.add(
                 "Δ",
                 new AtComposite(
@@ -210,12 +203,9 @@ final class DataizedTest {
 
         /**
          * Ctor.
-         *
-         * @param sigma Sigma
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        PhiDec(final Phi sigma) {
-            super(sigma);
+        PhiDec() {
             this.add(
                 "φ",
                 new AtOnce(

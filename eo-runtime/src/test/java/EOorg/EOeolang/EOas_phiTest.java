@@ -50,7 +50,7 @@ final class EOas_phiTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new PhWith(
-                    new EOas_phi(Phi.Φ),
+                    new EOas_phi(),
                     0, new Data.ToPhi(1L)
                 )
             ).take(String.class),

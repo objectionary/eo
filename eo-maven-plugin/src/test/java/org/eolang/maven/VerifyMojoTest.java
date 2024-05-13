@@ -31,12 +31,14 @@ import com.yegor256.xsline.StXSL;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.nio.file.Path;
+import java.util.Arrays;
 import org.cactoos.io.ResourceOf;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -50,11 +52,6 @@ import org.junit.jupiter.api.io.TempDir;
  *  /org/eolang/parser/warnings/mandatory-version-meta.xsl and
  *  /org/eolang/parser/warnings/mandatory-home-meta.xsl.
  *  After you need fix {@code createRegEx()}.
- * @todo #2890:30min Fix this {@link VerifyMojoTest#detectsErrorsSuccessfully}
- *  flaky test and enable it. It failed in ci
- *  <a href="https://github.com/objectionary/eo/actions/runs/8041230784/job/21960239171?pr=2892">here</a>
- *  without providing the regex and message. Also may be it would be cleaner to fix
- *  error Assertion since now it is hard to get why it failed.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class VerifyMojoTest {
@@ -70,7 +67,6 @@ final class VerifyMojoTest {
     }
 
     @Test
-    @Disabled
     @CaptureLogs
     void detectsErrorsSuccessfully(
         @TempDir final Path temp,
@@ -88,10 +84,10 @@ final class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
-        final String message = this.getMessage(out, "Errors identified");
-        Assertions.assertTrue(
-            message.matches(this.createRegEx(temp, "Errors identified")),
-            "Errors message should have program name and error line number"
+        MatcherAssert.assertThat(
+            "Errors message should have program name and error line number",
+            this.getMessage(out, "Errors identified", temp.toString()),
+            Matchers.matchesPattern(this.createRegEx(temp, "Errors identified"))
         );
     }
 
@@ -99,7 +95,7 @@ final class VerifyMojoTest {
     @CaptureLogs
     void detectsCriticalErrorsSuccessfully(
         @TempDir final Path temp,
-        final Logs out) throws Exception {
+        final Logs out) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -112,7 +108,7 @@ final class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Wrong program should have failed or error, but it didn't"
         );
-        final String message = this.getMessage(out, "Critical error identified");
+        final String message = this.getMessage(out, "Critical error identified", temp.toString());
         Assertions.assertTrue(
             message.matches(this.createRegEx(temp, "Critical error identified")),
             "Critical error message should have program name and error line number"
@@ -139,7 +135,7 @@ final class VerifyMojoTest {
                 .execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
-        final String message = this.getMessage(out, "Warnings identified");
+        final String message = this.getMessage(out, "Warnings identified", temp.toString());
         Assertions.assertTrue(
             message.matches(this.createRegEx(temp, "Warnings identified")),
             "Warnings message should have program name and error line number"
@@ -268,12 +264,12 @@ final class VerifyMojoTest {
     /**
      * Parse the error message to program name and error line number for checking.
      * @param logs Logs logs
-     * @param error String needed error message
+     * @param parts String needed error message
      */
-    private String getMessage(final Logs logs, final String error) {
+    private String getMessage(final Logs logs, final String... parts) {
         return String.valueOf(logs.captured().stream()
             .filter(
-                log -> log.contains(error)
+                log -> Arrays.stream(parts).allMatch(log::contains)
             ).findFirst()
         );
     }

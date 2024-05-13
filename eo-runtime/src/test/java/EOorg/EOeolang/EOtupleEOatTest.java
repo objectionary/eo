@@ -50,6 +50,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  * @checkstyle TypeNameCheck (2 lines)
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOtupleEOatTest {
 
     @Test
@@ -57,7 +58,7 @@ final class EOtupleEOatTest {
         final String txt = "Hello, world!";
         final Phi str = new Data.ToPhi(txt);
         final Phi tuple = new PhWith(
-            new EOtuple$EOempty(Phi.Φ).take("with").copy(),
+            new EOtuple$EOempty().take("with").copy(),
             0, str
         );
         final Phi idx = new Data.ToPhi(0L);
@@ -100,13 +101,13 @@ final class EOtupleEOatTest {
 
     @Test
     void returnsGivenArgument() {
-        final Phi tuple = new EOtuple(Phi.Φ);
+        final Phi tuple = new EOtuple();
         final Phi empty = tuple.take("empty");
         final Phi copy = tuple.copy();
         copy.put(0, empty);
         copy.put(1, new Data.ToPhi(10L));
         final Phi phi = new PhWith(
-            new Parenting(Phi.Φ),
+            new Parenting(),
             "args", copy
         );
         MatcherAssert.assertThat(
@@ -121,7 +122,7 @@ final class EOtupleEOatTest {
         final String second = "second";
         final Phi tuple = new PhWith(
             new PhWith(
-                new EOtuple$EOempty(Phi.Φ).take("with").copy(),
+                new EOtuple$EOempty().take("with").copy(),
                 0, new Data.ToPhi(first)
             ).take("with").copy(),
             0, new Data.ToPhi(second)
@@ -137,10 +138,12 @@ final class EOtupleEOatTest {
      * @since 0.36.0
      */
     private static class Parenting extends PhDefault {
-        Parenting(final Phi sigma) {
-            super(sigma);
+        /**
+         * Ctor.
+         */
+        Parenting() {
             this.add("args", new AtVoid("args"));
-            this.add("take", new AtSimple(new Take(this)));
+            this.add("take", new AtSimple(new Take()));
             this.add(
                 Attr.PHI,
                 new AtOnce(
@@ -155,8 +158,10 @@ final class EOtupleEOatTest {
      * @since 0.36.0
      */
     private static class Take extends PhDefault {
-        Take(final Phi sigma) {
-            super(sigma);
+        /**
+         * Ctor.
+         */
+        Take() {
             this.add(
                 Attr.PHI,
                 new AtComposite(

@@ -19,19 +19,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-+architect yegor256@gmail.com
-+home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
-+version 0.0.0
-
-# Compile Time Instruction (CTI).
-#
-# The object may be used to add compile time information to
-# other objects. This mechanism is somehow similar to annotations in,
-# for example, Java and C#. For example, the object makes it possible
-# to highlight deprecated methods. EO compiler, when it meets the
-# `cli` object, takes its `message` and prints to the log/console
-# with the `level` severity level (use `INFO`, `WARN`, or `ERROR`).
-delegate > [delegate level message] > cti
+---
+xsls:
+  - /org/eolang/parser/wrap-method-calls.xsl
+  - /org/eolang/parser/optimize/globals-to-abstracts.xsl
+  - /org/eolang/parser/optimize/remove-refs.xsl
+  - /org/eolang/parser/optimize/abstracts-float-up.xsl
+  - /org/eolang/parser/optimize/remove-levels.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/optimize/fix-missed-names.xsl
+  - /org/eolang/parser/add-refs.xsl
+  - /org/eolang/parser/errors/broken-refs.xsl
+  - /org/eolang/maven/pre/classes.xsl
+  - /org/eolang/maven/pre/attrs.xsl
+  - /org/eolang/maven/pre/data.xsl
+  - /org/eolang/maven/pre/to-java.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - //java[contains(text(), 'PhMethod(new PhMethod(rho, "ρ"), "ρ")')]
+eo: |
+  # This is the default 64+ symbols comment in front of named abstract object.
+  [x] > foo
+    $ > this
+    # This is the default 64+ symbols comment in front of named abstract object.
+    [] > xyz
+      # This is the default 64+ symbols comment in front of named abstract object.
+      [] > bar
+        this.x > @

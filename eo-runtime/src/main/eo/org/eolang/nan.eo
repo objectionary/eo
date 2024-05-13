@@ -46,16 +46,16 @@
   false > [x] > gte
 
   # Multiplication of $ and x.
-  & > [x] > times
+  ^ > [x] > times
 
   # Sum of $ and x.
-  & > [x] > plus
+  ^ > [x] > plus
 
   # Negation of $.
-  & > [] > neg
+  ^ > [] > neg
 
   # Difference between $ and x.
-  & > [x] > minus
+  ^ > [x] > minus
 
   # Quotient of the division of $ by x.
-  & > [x] > div
+  ^ > [x] > div

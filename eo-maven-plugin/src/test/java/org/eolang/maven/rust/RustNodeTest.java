@@ -61,9 +61,9 @@ final class RustNodeTest {
             "Check that necessary files are created",
             out,
             Matchers.hasItems(
-                lib.resolve("native0/src/foo.rs"),
-                lib.resolve("native0/src/lib.rs"),
-                gen.resolve("native0.java")
+                lib.resolve("native0_QQ_custom_rust_r_0/src/foo.rs"),
+                lib.resolve("native0_QQ_custom_rust_r_0/src/lib.rs"),
+                gen.resolve("native0_QQ_custom_rust_r_0.java")
             )
         );
     }

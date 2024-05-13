@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang;
 
+import com.jcabi.log.Logger;
 import org.eolang.PhDefault;
 
 /**
@@ -41,4 +42,12 @@ import org.eolang.PhDefault;
     "JTCOP.RuleInheritanceInTests"
 })
 public final class EOfailed extends PhDefault {
+    /**
+     * Ctor.
+     * @param arg Argument
+     */
+    public EOfailed(final String arg) {
+        super();
+        Logger.info(this, "EOfailed %s", arg);
+    }
 }

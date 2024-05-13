@@ -47,10 +47,8 @@ import org.eolang.XmirObject;
 public final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
     /**
      * Ctor.
-     * @param sigma Sigma
      */
-    EOcage$EOencaged$EOencage(final Phi sigma) {
-        super(sigma);
+    EOcage$EOencaged$EOencage() {
         this.add("object", new AtVoid("object"));
     }
 
