@@ -21,9 +21,6 @@
 # SOFTWARE.
 ---
 name: mvn
-env:
-  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF8"
-  JAVA_OPTS: "%JAVA_OPTS% -Dfile.encoding=UTF-8"
 on:
   push:
     branches:
