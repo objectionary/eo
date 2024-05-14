@@ -57,7 +57,7 @@ final class EOintEOminusTest {
             0, right
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(sub).take(Long.class),
             Matchers.equalTo(29L)
         );

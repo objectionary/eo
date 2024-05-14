@@ -48,7 +48,7 @@ public final class EOintTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             left.hashCode(),
             Matchers.not(Matchers.equalTo(right.hashCode()))
         );
@@ -58,7 +58,7 @@ public final class EOintTest {
     void hasHashEvenWithoutData() {
         final Phi phi = new EOint();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -69,7 +69,7 @@ public final class EOintTest {
         final Phi raw = new EOint();
         final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             raw.hashCode(),
             Matchers.not(initialized.hashCode())
         );

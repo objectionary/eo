@@ -60,7 +60,7 @@ final class EOintEOeqTest {
             0, right
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(eql).take(Boolean.class),
             Matchers.equalTo(false)
         );

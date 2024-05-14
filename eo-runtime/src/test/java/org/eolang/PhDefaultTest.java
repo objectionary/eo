@@ -239,7 +239,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.Int();
         phi.put("void", new Data.ToPhi(10L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             phi.take("void"),
             Matchers.equalTo(phi.take("void"))
         );
@@ -249,7 +249,7 @@ final class PhDefaultTest {
     void doesNotCopyContextAttributeWithRho() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             phi.take("context"),
             Matchers.equalTo(phi.take("context"))
         );
@@ -261,12 +261,12 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> phi.take(Attr.PHI),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         phi.put("void", new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Attr.PHI),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -286,7 +286,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         final Phi phi = new PhDefaultTest.Int();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             phi.hashCode(),
             Matchers.greaterThan(0)
         );
@@ -303,7 +303,7 @@ final class PhDefaultTest {
             ).limit(threads).collect(Collectors.toList())
         ).forEach(objects::add);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             objects,
             Matchers.hasSize(threads)
         );
@@ -314,7 +314,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Data.ToPhi("Hey").take("missing-attr"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -325,7 +325,7 @@ final class PhDefaultTest {
         phi.put(0, new Data.ToPhi(data));
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(copy).take(String.class),
             Matchers.equalTo(data)
         );
@@ -339,7 +339,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExReadOnly.class,
             () -> phi.put(0, num),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -348,7 +348,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.EndlessRecursion();
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -359,7 +359,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -370,7 +370,7 @@ final class PhDefaultTest {
         final Phi phi = new PhDefaultTest.RecursivePhiViaNew();
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(0L)
         );
@@ -384,7 +384,7 @@ final class PhDefaultTest {
         copy.take("plus");
         phi.take("plus");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             PhDefaultTest.Dummy.count,
             Matchers.equalTo(1)
         );
@@ -398,7 +398,7 @@ final class PhDefaultTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(new PhMethod(phi, "count")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -407,7 +407,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithBoundedData() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Data.ToPhi(5L).forma(),
             Matchers.equalTo(new Data.ToPhi(6L).forma())
         );
@@ -417,7 +417,7 @@ final class PhDefaultTest {
     void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             five.forma(),
             Matchers.not(
                 Matchers.equalTo(
@@ -434,7 +434,7 @@ final class PhDefaultTest {
     @Test
     void hasTheSameFormaWithDifferentInstances() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhWith(
                 new Data.ToPhi(5L).take("plus").copy(),
                 "x",
@@ -465,7 +465,7 @@ final class PhDefaultTest {
             0, new Data.ToPhi(1.2)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(rnd).take(Double.class),
             Matchers.equalTo(new Dataized(rnd).take(Double.class))
         );
@@ -474,7 +474,7 @@ final class PhDefaultTest {
     @Test
     void injectsDeltaIntoTerm() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Data.ToPhi(new byte[] {0x01, 0x02, 0x03}).φTerm(),
             Matchers.containsString("Δ ↦ 01-02-03")
         );

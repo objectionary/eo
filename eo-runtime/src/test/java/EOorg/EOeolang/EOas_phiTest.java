@@ -47,7 +47,7 @@ final class EOas_phiTest {
     @Test
     void printsAndReturns() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new EOas_phi(),

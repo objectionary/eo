@@ -45,7 +45,7 @@ final class PhWithTest {
             0, new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy, Matchers.equalTo(dummy)
         );
     }
@@ -53,7 +53,7 @@ final class PhWithTest {
     @Test
     void takesMethod() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new Data.ToPhi("Hello, world!")
             ).take(String.class),
@@ -65,7 +65,7 @@ final class PhWithTest {
     void passesToSubObject() {
         final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new PhCopy(new PhMethod(dummy, "plus")),
@@ -80,7 +80,7 @@ final class PhWithTest {
     void printsToString() {
         final Phi dummy = new PhWithTest.Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhWith(
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
@@ -96,14 +96,14 @@ final class PhWithTest {
         final Phi ref = new PhWith(new DummyWithAtFree(attr), 0, new Data.ToPhi(data));
         final Func<Phi, Boolean> actual = phi -> {
             MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
+                AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
                 new Dataized(phi.take(attr)).take(String.class),
                 Matchers.is(data)
             );
             return true;
         };
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             actual,
             new RunsInThreads<>(
                 ref,
@@ -116,7 +116,7 @@ final class PhWithTest {
     void hasTheSameFormaWithBoundAttribute() {
         final Phi dummy = new DummyWithAtFree("x");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy.forma(),
             Matchers.equalTo(
                 new PhWith(dummy, "x", new Data.ToPhi(5L)).forma()

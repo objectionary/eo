@@ -64,7 +64,7 @@ final class EOerrorTest {
                     new Data.ToPhi("intentional error")
                 )
             ).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -79,7 +79,7 @@ final class EOerrorTest {
         }
         assert error != null;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             error.toString(),
             Matchers.containsString(
                 new VerboseBytesAsStringTest.ArgumentsUtils().toString(cnst)

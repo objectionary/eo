@@ -48,7 +48,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.get(locator),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -58,7 +58,7 @@ class CagesTest {
         Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.init(phi),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -69,7 +69,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(first);
         Cages.INSTANCE.encage(locator, second);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             Cages.INSTANCE.get(locator).hashCode(),
             Matchers.equalTo(second.hashCode())
         );
@@ -81,7 +81,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(phi.hashCode(), phi),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -91,7 +91,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L)),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -100,7 +100,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.get(new PhFake().hashCode()),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 }

@@ -42,7 +42,7 @@ final class BytesOfTest {
         final String text = "abc";
         final Bytes bytes = new BytesOf(text);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.not().not(),
             Matchers.equalTo(new BytesOf(text))
         );
@@ -52,7 +52,7 @@ final class BytesOfTest {
     void negatesOnce() {
         final Bytes bytes = new BytesOf(-128L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.not(),
             Matchers.equalTo(new BytesOf(127L))
         );
@@ -62,7 +62,7 @@ final class BytesOfTest {
     void checksAnd() {
         final Bytes bytes = new BytesOf(127L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.and(bytes.not()),
             Matchers.equalTo(new BytesOf(0L))
         );
@@ -72,7 +72,7 @@ final class BytesOfTest {
     void checksOr() {
         final Bytes bytes = new BytesOf(127L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.or(bytes.not()),
             Matchers.equalTo(new BytesOf(-1L))
         );
@@ -81,7 +81,7 @@ final class BytesOfTest {
     @Test
     void checksPositiveInfinity() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new BytesOf(1.0d / 0.0d).asNumber(Double.class),
             Matchers.equalTo(Double.POSITIVE_INFINITY)
         );
@@ -90,7 +90,7 @@ final class BytesOfTest {
     @Test
     void checksNegativeInfinity() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new BytesOf(-1.0d / 0.0d).asNumber(Double.class),
             Matchers.equalTo(Double.NEGATIVE_INFINITY)
         );
@@ -100,7 +100,7 @@ final class BytesOfTest {
     void checksXor() {
         final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.xor(new BytesOf(-512L)),
             Matchers.equalTo(new BytesOf(-1024L))
         );
@@ -110,7 +110,7 @@ final class BytesOfTest {
     void checksAsNumberLong() {
         final Bytes bytes = new BytesOf(512L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.asNumber(Long.class),
             Matchers.equalTo(512L)
         );
@@ -122,7 +122,7 @@ final class BytesOfTest {
         Assertions.assertThrows(
             UnsupportedOperationException.class,
             () -> bytes.asNumber(Long.class),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -139,7 +139,7 @@ final class BytesOfTest {
     void checksShift(final long num, final int bits, final long expected) {
         final Bytes bytes = new BytesOf(num);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             bytes.shift(bits).asNumber(Long.class),
             Matchers.equalTo(expected)
         );
@@ -161,7 +161,7 @@ final class BytesOfTest {
         final Bytes bytes = new BytesOf((int) num);
         final int actual = bytes.sshift(bits).asNumber(Integer.class);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             actual,
             Matchers.equalTo((int) expected)
         );
@@ -173,7 +173,7 @@ final class BytesOfTest {
         Assertions.assertThrows(
             UnsupportedOperationException.class,
             () -> bytes.sshift(-1),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 }

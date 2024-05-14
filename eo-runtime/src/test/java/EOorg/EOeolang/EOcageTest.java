@@ -64,7 +64,7 @@ final class EOcageTest {
     void encagesViaApplication() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -75,7 +75,7 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         EOcageTest.encageTo(cage, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -90,7 +90,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -102,7 +102,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -114,7 +114,7 @@ final class EOcageTest {
         final Phi second = first.copy();
         EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(first).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -124,13 +124,13 @@ final class EOcageTest {
     void writesAndRewritesPrimitive() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
         EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
         );
@@ -142,7 +142,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world")),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -158,7 +158,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, ten),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -170,7 +170,7 @@ final class EOcageTest {
                 EOcageTest.encaged(dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             ),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -230,7 +230,7 @@ final class EOcageTest {
             );
             final int threads = 500;
             MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
+                AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
                 new SumOf(
                     new Threads<>(
                         threads,

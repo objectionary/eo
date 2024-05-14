@@ -67,7 +67,7 @@ public final class EOstdoutTest {
         stdout.put(0, ret);
         new Dataized(stdout).take(Boolean.class);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             stream.toString(),
             Matchers.equalTo("Hello")
         );
@@ -82,7 +82,7 @@ public final class EOstdoutTest {
             format
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Boolean.class),
             Matchers.equalTo(true)
         );
@@ -108,7 +108,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             stream.toString(),
             Matchers.equalTo(str)
         );
@@ -134,7 +134,7 @@ public final class EOstdoutTest {
             )
         ).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             stream.toString(),
             Matchers.equalTo(str)
         );

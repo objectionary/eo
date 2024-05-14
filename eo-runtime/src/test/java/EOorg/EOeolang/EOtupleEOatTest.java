@@ -65,12 +65,12 @@ final class EOtupleEOatTest {
         final Phi get = tuple.take("at").copy();
         get.put(0, idx);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(get).take(String.class),
             Matchers.equalTo(txt)
         );
@@ -79,12 +79,12 @@ final class EOtupleEOatTest {
     @Test
     void checksNegativeIndex() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(this.get(-1L)).take(String.class),
             Matchers.equalTo("second")
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(this.get(-2L)).take(String.class),
             Matchers.equalTo("first")
         );
@@ -95,7 +95,7 @@ final class EOtupleEOatTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(this.get(-3L)).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -111,7 +111,7 @@ final class EOtupleEOatTest {
             "args", copy
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Long.class),
             Matchers.equalTo(10L)
         );

@@ -38,7 +38,7 @@ class PhLocatedTest {
     void savesLocationAfterCopying() {
         final Phi located = new PhLocated(new Data.ToPhi(0L), 123, 124, "qwerty");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             located.copy().locator(),
             Matchers.equalTo(located.locator())
         );

@@ -46,7 +46,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturns() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new EOseq(),
@@ -67,7 +67,7 @@ public final class EOseqTest {
     @Test
     public void calculatesAndReturnsObject() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new EOseq(),

@@ -52,7 +52,7 @@ public final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 10);
         Assertions.assertDoesNotThrow(
             () -> HeapsTest.HEAPS.read(idx, 0, 10),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -64,7 +64,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.malloc(phi, 10),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -73,7 +73,7 @@ public final class HeapsTest {
     void allocatesAndReadsEmptyBytes() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
@@ -86,7 +86,7 @@ public final class HeapsTest {
         final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             HeapsTest.HEAPS.read(idx, 0, bytes.length),
             Matchers.equalTo(bytes)
         );
@@ -98,7 +98,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(new PhFake().hashCode(), 0, new byte[] {0x01}),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -107,7 +107,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(new PhFake().hashCode(), 0, 1),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -117,7 +117,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 1, 3),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -126,7 +126,7 @@ public final class HeapsTest {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             HeapsTest.HEAPS.read(idx, 1, 3),
             Matchers.equalTo(new byte[] {2, 3, 4})
         );
@@ -139,7 +139,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 0, bytes),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -151,7 +151,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 1, bytes),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         HeapsTest.HEAPS.free(idx);
     }
@@ -162,7 +162,7 @@ public final class HeapsTest {
         HeapsTest.HEAPS.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
         HeapsTest.HEAPS.write(idx, 2, new byte[] {2, 2});
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             HeapsTest.HEAPS.read(idx, 0, 5),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
         );
@@ -176,7 +176,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.read(idx, 0, 5),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -185,7 +185,7 @@ public final class HeapsTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.free(new PhFake().hashCode()),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 }

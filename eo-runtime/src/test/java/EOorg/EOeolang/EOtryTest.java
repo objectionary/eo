@@ -51,7 +51,7 @@ public final class EOtryTest {
     @Test
     public void catchesException() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -83,7 +83,7 @@ public final class EOtryTest {
             new Data.ToPhi(true)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(body).take(String.class),
             Matchers.containsString("it is broken")
         );
@@ -92,7 +92,7 @@ public final class EOtryTest {
     @Test
     public void worksWithoutException() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(
                 new PhWith(
                     new PhWith(
@@ -119,7 +119,7 @@ public final class EOtryTest {
         trier.put(2, new Data.ToPhi(true));
         new Dataized(trier).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             main.count,
             Matchers.equalTo(1)
         );

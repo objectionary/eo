@@ -38,7 +38,7 @@ final class PhMethodTest {
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             num.take("plus"),
             Matchers.not(Matchers.equalTo(num.take("plus")))
         );
@@ -47,7 +47,7 @@ final class PhMethodTest {
     @Test
     void convertsSafeToString() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhMethod(Phi.Φ, "hello").toString(),
             Matchers.endsWith(".hello")
         );
@@ -62,7 +62,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -77,7 +77,7 @@ final class PhMethodTest {
             new Dataized(phi).take();
         }
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -89,7 +89,7 @@ final class PhMethodTest {
         final Phi phi = new PhMethod(dummy, "neg");
         new Dataized(phi).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy.count,
             Matchers.equalTo(1)
         );
@@ -99,7 +99,7 @@ final class PhMethodTest {
     void hasDifferentFormasWithOwnMethod() {
         final Phi dummy = new Dummy();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             dummy.forma(),
             Matchers.not(
                 Matchers.equalTo(

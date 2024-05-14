@@ -49,7 +49,7 @@ final class EOstringEOasBytesTest {
         final Phi str = new Data.ToPhi("Hello, друг!");
         final Phi phi = str.take("as-bytes");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(byte[].class).length,
             Matchers.equalTo(16)
         );

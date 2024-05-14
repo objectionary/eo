@@ -52,7 +52,7 @@ final class EOintEOnegTest {
         final Phi left = new Data.ToPhi(42L);
         final Phi neg = new PhMethod(left, "neg");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(neg).take(Long.class),
             Matchers.equalTo(-42L)
         );

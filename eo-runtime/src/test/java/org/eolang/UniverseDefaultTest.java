@@ -59,7 +59,7 @@ final class UniverseDefaultTest {
         final Phi phi = new DummyWithAt(Phi.Φ);
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             universe.find(
                 String.format("%s.%s.%s", "$", UniverseDefaultTest.ABSTRACT_ATT, Attr.RHO)
             ),
@@ -74,7 +74,7 @@ final class UniverseDefaultTest {
         final Phi phi = new DummyWithStructure();
         final UniverseDefault universe = new UniverseDefault(phi);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             universe.find(
                 String.format(
                     "$.%s.%s.%s.%s",
@@ -96,7 +96,7 @@ final class UniverseDefaultTest {
         final UniverseDefault universe = new UniverseDefault(Phi.Φ, indexed);
         final int vertex = universe.find("Q.org.eolang.seq");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             indexed.get(vertex).getClass(),
             Matchers.equalTo(EOseq.class)
         );
@@ -109,7 +109,7 @@ final class UniverseDefaultTest {
             () -> new UniverseDefault(
                 new DummyWithStructure()
             ).find("$.wrong-name"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -122,7 +122,7 @@ final class UniverseDefaultTest {
             "$.".concat(UniverseDefaultTest.VALUE_ATT)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             universe.dataize(vertex),
             Matchers.equalTo(new BytesOf(1L).take())
         );
@@ -135,7 +135,7 @@ final class UniverseDefaultTest {
             () -> new UniverseDefault(
                 new DummyWithStructure()
             ).dataize(-1),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -147,12 +147,12 @@ final class UniverseDefaultTest {
         final int origin = universe.find("$");
         final int copy = universe.copy(origin);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             copy,
             Matchers.not(origin)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             universe.dataize(copy),
             Matchers.equalTo(
                 universe.dataize(origin)
@@ -168,7 +168,7 @@ final class UniverseDefaultTest {
         final int copy = universe.copy(eobytes);
         universe.put(copy, UniverseDefaultTest.DATA);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(indexed.get(copy)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA
@@ -188,7 +188,7 @@ final class UniverseDefaultTest {
             dummy.hashCode(), copy, UniverseDefaultTest.ABSTRACT_ATT
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(dummy.take(UniverseDefaultTest.ABSTRACT_ATT)).take(),
             Matchers.equalTo(
                 UniverseDefaultTest.DATA

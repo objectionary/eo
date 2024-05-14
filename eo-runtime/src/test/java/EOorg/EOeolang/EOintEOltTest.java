@@ -53,7 +53,7 @@ final class EOintEOltTest {
         final Phi less = left.take("lt");
         less.put(0, right);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(less).take(Boolean.class),
             Matchers.equalTo(false)
         );

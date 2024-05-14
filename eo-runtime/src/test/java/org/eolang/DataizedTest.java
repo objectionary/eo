@@ -117,7 +117,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             logs.size(),
             Matchers.equalTo(1)
         );
@@ -148,7 +148,7 @@ final class DataizedTest {
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             logs.size(),
             Matchers.greaterThan(1)
         );
