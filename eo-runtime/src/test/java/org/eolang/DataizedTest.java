@@ -44,8 +44,7 @@ final class DataizedTest {
     /**
      * System property for maximum dataization log level.
      */
-    @SuppressWarnings("PMD.LongVariable")
-    private static final String MAX_DATAIZATION_LOG_PROPERTY = "max.dataization.log";
+    private static final String MAX_DATAIZATION = "max.dataization.log";
 
     @Test
     void logsCorrectly() {
@@ -152,21 +151,21 @@ final class DataizedTest {
             super(
                 () -> {
                     final String property = System.getProperty(
-                        DataizedTest.MAX_DATAIZATION_LOG_PROPERTY
+                        DataizedTest.MAX_DATAIZATION
                     );
                     System.getProperties().setProperty(
-                        DataizedTest.MAX_DATAIZATION_LOG_PROPERTY,
+                        DataizedTest.MAX_DATAIZATION,
                         String.valueOf(level)
                     );
                     final Phi phi = new PhiDec();
                     new Dataized(phi, logger).take();
                     if (property != null) {
                         System.getProperties().setProperty(
-                            DataizedTest.MAX_DATAIZATION_LOG_PROPERTY,
+                            DataizedTest.MAX_DATAIZATION,
                             property
                         );
                     } else {
-                        System.clearProperty(DataizedTest.MAX_DATAIZATION_LOG_PROPERTY);
+                        System.clearProperty(DataizedTest.MAX_DATAIZATION);
                     }
                 }
             );
