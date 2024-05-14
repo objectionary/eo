@@ -44,9 +44,8 @@ public final class VerboseBytesAsString implements Supplier<String> {
      * Ctor.
      * @param data Data.
      */
-    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public VerboseBytesAsString(final byte[] data) {
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     @Override

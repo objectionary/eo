@@ -45,9 +45,8 @@ public final class BytesOf implements Bytes {
      * Ctor.
      * @param data Data.
      */
-    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public BytesOf(final byte[] data) {
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     /**
