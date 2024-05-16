@@ -197,6 +197,10 @@ public interface Data {
          * @checkstyle JavaNCSSCheck (100 lines)
          * @checkstyle NestedIfDepthCheck (100 lines)
          * @checkstyle ModifiedControlVariableCheck (100 lines)
+         * @todo #3160:90min This method should be refactored because it has high cognitive
+         *  complexity and other problems. All {@code @checkstyle} warnings suppression and
+         *  {@code SuppressWarnings("PMD.WarningName")} annotations for this method should be
+         *  removed as a result of refactoring.
          */
         @SuppressWarnings({
             "PMD.AvoidReassigningLoopVariables",

@@ -31,6 +31,11 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
+ * @todo #3160:90min This class requires refactoring. As a result of refactoring you should remove
+ *  {@code @SuppressWarnings("PMD.GodClass")} from this class and
+ *  {@code @SuppressWarnings("PMD.CognitiveComplexity")} from {@link BytesOf#shift} method. You can
+ *  check description of this rules here
+ *  <a href="https://pmd.github.io/pmd/pmd_rules_java_design">pmd.github.io</a>
  */
 @Versionized
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
