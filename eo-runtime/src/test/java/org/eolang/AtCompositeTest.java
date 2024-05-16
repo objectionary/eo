@@ -24,9 +24,7 @@
 package org.eolang;
 
 import java.security.SecureRandom;
-import java.util.Optional;
 import java.util.function.Supplier;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -41,40 +39,39 @@ public final class AtCompositeTest {
 
     /**
      * Supplier for failed assert messages.
-     *
+     * <p>
      * {@link AtCompositeTest#FAILED_ASSERT_MESSAGE_SUPPLIER} field in
-     *  eo-runtime for getting failed assert messages with class and test
+     * eo-runtime for getting failed assert messages with class and test
      */
-    public static final Supplier<String> FAILED_ASSERT_MESSAGE_SUPPLIER =
-            () -> "Failed " + Thread.currentThread().getStackTrace()[2].getClassName()
-                    + '.'
-                    + Thread.currentThread().getStackTrace()[2].getMethodName();
+    public static final Supplier<String> FAILED_ASSERT_MESSAGE_SUPPLIER = () -> String.format("Failed %s.%s",
+        Thread.currentThread().getStackTrace()[2].getClassName(),
+        Thread.currentThread().getStackTrace()[2].getMethodName());
 
     @Test
     void decoratesCheckedException() {
         Assertions.assertThrows(
-            ExFailure.class,
-            () -> new AtComposite(
-                Phi.Φ,
-                self -> {
-                    throw new InstantiationException("intended checked");
-                }
-            ).get(),
-            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+                ExFailure.class,
+                () -> new AtComposite(
+                        Phi.Φ,
+                        self -> {
+                            throw new InstantiationException("intended checked");
+                        }
+                ).get(),
+                FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
     @Test
     void decoratesUncheckedException() {
         Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new AtComposite(
-                Phi.Φ,
-                self -> {
-                    throw new IllegalStateException("intended unchecked");
-                }
-            ).get(),
-            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+                IllegalStateException.class,
+                () -> new AtComposite(
+                        Phi.Φ,
+                        self -> {
+                            throw new IllegalStateException("intended unchecked");
+                        }
+                ).get(),
+                FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -83,16 +80,17 @@ public final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
-            FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
-            new Dataized(phi).take(Double.class),
-            Matchers.equalTo(
-                new Dataized(phi).take(Double.class)
-            )
+                FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+                new Dataized(phi).take(Double.class),
+                Matchers.equalTo(
+                        new Dataized(phi).take(Double.class)
+                )
         );
     }
 
     /**
      * Rnd.
+     *
      * @since 1.0
      */
     private static class Rnd extends PhDefault {
@@ -102,11 +100,11 @@ public final class AtCompositeTest {
         Rnd() {
             super();
             this.add(
-                Attr.LAMBDA,
-                new AtComposite(
-                    this,
-                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
-                )
+                    Attr.LAMBDA,
+                    new AtComposite(
+                            this,
+                            rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                    )
             );
         }
     }
