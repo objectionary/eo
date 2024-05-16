@@ -44,7 +44,8 @@ public final class AtCompositeTest {
      * eo-runtime for getting failed assert messages with class and test
      */
     public static final Supplier<String> FAILED_ASSERT_MESSAGE_SUPPLIER =
-        () -> String.format("Failed %s.%s",
+        () -> String.format(
+            "Failed %s.%s",
             Thread.currentThread().getStackTrace()[2].getClassName(),
             Thread.currentThread().getStackTrace()[2].getMethodName()
         );
