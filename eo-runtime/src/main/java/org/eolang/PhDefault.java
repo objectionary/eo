@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
 @Versionized
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization", "PMD.GodClass"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public class PhDefault implements Phi, Cloneable {
     /**
      * Vertices.
@@ -74,7 +74,7 @@ public class PhDefault implements Phi, Cloneable {
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    private AtomicReference<byte[]> data = new AtomicReference<>(null);
+    private AtomicReference<byte[]> data;
 
     /**
      * Forma of it.
@@ -96,6 +96,7 @@ public class PhDefault implements Phi, Cloneable {
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault() {
+        this.data = new AtomicReference<>(null);
         this.vertex = PhDefault.VTX.next();
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);

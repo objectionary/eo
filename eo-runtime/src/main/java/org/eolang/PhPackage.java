@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 0.22
  */
 @Versionized
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ConstructorShouldDoInitialization"})
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackage implements Phi {
 
     /**
@@ -46,9 +46,7 @@ final class PhPackage implements Phi {
     /**
      * All of them.
      */
-    private final ThreadLocal<Map<String, Phi>> objects = ThreadLocal.withInitial(
-        () -> new ConcurrentHashMap<>(0)
-    );
+    private final ThreadLocal<Map<String, Phi>> objects;
 
     /**
      * Ctor.
@@ -56,6 +54,9 @@ final class PhPackage implements Phi {
      */
     PhPackage(final String name) {
         this.pkg = name;
+        this.objects = ThreadLocal.withInitial(
+            () -> new ConcurrentHashMap<>(0)
+        );
     }
 
     @Override
