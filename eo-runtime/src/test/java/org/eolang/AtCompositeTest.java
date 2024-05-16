@@ -52,28 +52,28 @@ public final class AtCompositeTest {
     @Test
     void decoratesCheckedException() {
         Assertions.assertThrows(
-                ExFailure.class,
-                () -> new AtComposite(
-                        Phi.Φ,
-                        self -> {
-                            throw new InstantiationException("intended checked");
-                        }
-                ).get(),
-                FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            ExFailure.class,
+            () -> new AtComposite(
+                Phi.Φ,
+                self -> {
+                    throw new InstantiationException("intended checked");
+                }
+            ).get(),
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
     @Test
     void decoratesUncheckedException() {
         Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new AtComposite(
-                        Phi.Φ,
-                        self -> {
-                            throw new IllegalStateException("intended unchecked");
-                        }
-                ).get(),
-                FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            IllegalStateException.class,
+            () -> new AtComposite(
+                Phi.Φ,
+                self -> {
+                    throw new IllegalStateException("intended unchecked");
+                }
+            ).get(),
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -82,11 +82,11 @@ public final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
-                FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
-                new Dataized(phi).take(Double.class),
-                Matchers.equalTo(
-                        new Dataized(phi).take(Double.class)
-                )
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            new Dataized(phi).take(Double.class),
+            Matchers.equalTo(
+                new Dataized(phi).take(Double.class)
+            )
         );
     }
 
@@ -102,11 +102,11 @@ public final class AtCompositeTest {
         Rnd() {
             super();
             this.add(
-                    Attr.LAMBDA,
-                    new AtComposite(
-                            this,
-                            rho -> new Data.ToPhi(new SecureRandom().nextDouble())
-                    )
+                Attr.LAMBDA,
+                new AtComposite(
+                    this,
+                    rho -> new Data.ToPhi(new SecureRandom().nextDouble())
+                )
             );
         }
     }
