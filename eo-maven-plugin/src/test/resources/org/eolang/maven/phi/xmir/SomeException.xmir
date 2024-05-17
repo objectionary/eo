@@ -62,36 +62,6 @@ SOFTWARE.
       </o>
       <o abstract="" name="new">
         <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 01</o>
-        <o base="string" data="bytes" name="descriptor">28 4C 6A 61 76 61 2F 6C 61 6E 67 2F 53 74 72 69 6E 67 3B 29 56</o>
-        <o base="string" data="bytes" name="signature"/>
-        <o base="tuple" name="exceptions" star=""/>
-        <o abstract="" name="arg__Ljava/lang/String;__0"/>
-        <o base="seq" name="@">
-          <o base="tuple" star="">
-            <o base="label" data="bytes">65 31 35 31 61 36 34 65 2D 30 64 39 37 2D 34 66 64 34 2D 62 37 61 34 2D 63 64 35 35 30 35 61 63 39 65 37 31</o>
-            <o base="opcode" line="999" name="ALOAD-83">
-              <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-              <o base="int" data="bytes">00 00 00 00 00 00 00 00</o>
-            </o>
-            <o base="opcode" line="999" name="ALOAD-84">
-              <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-              <o base="int" data="bytes">00 00 00 00 00 00 00 01</o>
-            </o>
-            <o base="opcode" line="999" name="INVOKESPECIAL-85">
-              <o base="int" data="bytes">00 00 00 00 00 00 00 B7</o>
-              <o base="string" data="bytes">6F 72 67 2F 65 6F 6C 61 6E 67 2F 69 6E 68 65 72 69 74 61 6E 63 65 2F 4F 72 69 67 69 6E 61 6C 45 78 63 65 70 74 69 6F 6E</o>
-              <o base="string" data="bytes">3C 69 6E 69 74 3E</o>
-              <o base="string" data="bytes">28 4C 6A 61 76 61 2F 6C 61 6E 67 2F 53 74 72 69 6E 67 3B 29 56</o>
-            </o>
-            <o base="opcode" line="999" name="RETURN-86">
-              <o base="int" data="bytes">00 00 00 00 00 00 00 B1</o>
-            </o>
-            <o base="label" data="bytes">66 33 30 35 34 34 63 65 2D 39 38 61 30 2D 34 32 30 62 2D 62 38 36 61 2D 30 61 38 66 38 34 35 31 32 63 37 34</o>
-          </o>
-        </o>
-      </o>
-      <o abstract="" name="new">
-        <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 01</o>
         <o base="string" data="bytes" name="descriptor">28 4C 6A 61 76 61 2F 6C 61 6E 67 2F 53 74 72 69 6E 67 3B 4C 6A 61 76 61 2F 6C 61 6E 67 2F 54 68 72 6F 77 61 62 6C 65 3B 29 56</o>
         <o base="string" data="bytes" name="signature"/>
         <o base="tuple" name="exceptions" star=""/>

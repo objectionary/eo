@@ -27,8 +27,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
@@ -92,6 +93,7 @@ public final class PhiMojo extends SafeMojo {
      * in {@link OptimizeMojo} and here.
      * @checkstyle MemberNameCheck (5 lines)
      */
+    @Parameter(property = "eo.phiOptimize", required = true, defaultValue = "true")
     @SuppressWarnings("PMD.ImmutableField")
     private boolean phiOptimize = true;
 
@@ -175,7 +177,15 @@ public final class PhiMojo extends SafeMojo {
     private static String translated(final Train<Shift> train, final XML xmir)
         throws ImpossibleToPhiTranslationException {
         final XML translated = new Xsline(
-            train.with(new StClasspath("/org/eolang/maven/phi/to-phi.xsl"))
+            new TrJoined<>(
+                train,
+                new TrClasspath<>(
+                    "/org/eolang/parser/critical-errors/duplicate-names.xsl",
+                    "/org/eolang/maven/phi/incorrect-inners.xsl",
+                    "/org/eolang/parser/fail-on-critical.xsl",
+                    "/org/eolang/maven/phi/to-phi.xsl"
+                ).back()
+            )
         ).pass(xmir);
         Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
         final List<String> phi = translated.xpath("phi/text()");
