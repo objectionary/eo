@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.number.SumOf;
-import org.eolang.AtCompositeTest;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -64,7 +63,7 @@ final class EOcageTest {
     void encagesViaApplication() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the encage via application will be done",
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -75,7 +74,7 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         EOcageTest.encageTo(cage, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the encage and free afterwards will be done",
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -90,7 +89,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the encage will be done",
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(1L)
         );
@@ -102,7 +101,7 @@ final class EOcageTest {
             )
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the overwrite of object will be done",
             new Dataized(new PhMethod(cage, "x")).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -114,7 +113,7 @@ final class EOcageTest {
         final Phi second = first.copy();
         EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the encage of object for copying will be done",
             new Dataized(first).take(Long.class),
             Matchers.equalTo(2L)
         );
@@ -124,13 +123,13 @@ final class EOcageTest {
     void writesAndRewritesPrimitive() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the writing of primitive will be done",
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(1L)
         );
         EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the rewriting of primitive will be done",
             new Dataized(cage).take(Long.class),
             Matchers.equalTo(5L)
         );
@@ -142,7 +141,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world")),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the writing of formed differently primitive will be done"
         );
     }
 
@@ -158,7 +157,7 @@ final class EOcageTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> EOcageTest.encageTo(cage, ten),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the writing of bounded method will be done"
         );
     }
 
@@ -170,7 +169,7 @@ final class EOcageTest {
                 EOcageTest.encaged(dummy),
                 new PhWith(new PhCopy(dummy), "x", new Data.ToPhi("Hello world"))
             ),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the writing of bounded copy of different base will be done"
         );
     }
 
@@ -230,7 +229,7 @@ final class EOcageTest {
             );
             final int threads = 500;
             MatcherAssert.assertThat(
-                AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+                "Dataizes concurrent threads failed",
                 new SumOf(
                     new Threads<>(
                         threads,

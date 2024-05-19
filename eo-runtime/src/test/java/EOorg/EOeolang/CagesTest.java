@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.PhFake;
@@ -48,7 +47,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.get(locator),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the first time initialization will be done"
         );
     }
 
@@ -58,7 +57,7 @@ class CagesTest {
         Cages.INSTANCE.init(phi);
         Assertions.assertDoesNotThrow(
             () -> Cages.INSTANCE.init(phi),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the reinitialization will be done"
         );
     }
 
@@ -69,7 +68,7 @@ class CagesTest {
         final int locator = Cages.INSTANCE.init(first);
         Cages.INSTANCE.encage(locator, second);
         MatcherAssert.assertThat(
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
+            "We expect the encage with locator will be done",
             Cages.INSTANCE.get(locator).hashCode(),
             Matchers.equalTo(second.hashCode())
         );
@@ -81,17 +80,17 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(phi.hashCode(), phi),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the encage when object was initialized will be done"
         );
     }
 
     @Test
-    void failsToEncageObjectOfDifferentForma() {
+    void failsToEncageObjectOfDifferentFormat() {
         final int locator = Cages.INSTANCE.init(new PhFake());
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.encage(locator, new Data.ToPhi(5L)),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect the encage with object of different format will be done"
         );
     }
 
@@ -100,7 +99,7 @@ class CagesTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Cages.INSTANCE.get(new PhFake().hashCode()),
-            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
+            "We expect that getting of not initialization object will be done"
         );
     }
 }
