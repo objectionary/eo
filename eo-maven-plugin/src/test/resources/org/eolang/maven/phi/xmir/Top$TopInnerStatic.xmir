@@ -54,31 +54,6 @@ SOFTWARE.
          <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 20</o>
          <o base="string" data="bytes" name="supername">6A 61 76 61 2F 6C 61 6E 67 2F 4F 62 6A 65 63 74</o>
          <o base="tuple" name="interfaces" star=""/>
-         <o abstract="" name="new">
-            <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 02</o>
-            <o base="string" data="bytes" name="descriptor">28 29 56</o>
-            <o base="string" data="bytes" name="signature"/>
-            <o base="tuple" name="exceptions" star=""/>
-            <o base="seq" name="@">
-               <o base="tuple" star="">
-                  <o base="label" data="bytes">34 38 38 31 37 37 61 64 2D 66 32 30 61 2D 34 62 36 65 2D 61 38 61 34 2D 35 63 35 64 61 63 34 62 31 39 37 61</o>
-                  <o base="opcode" line="999" name="ALOAD-64">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 00</o>
-                  </o>
-                  <o base="opcode" line="999" name="INVOKESPECIAL-65">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 B7</o>
-                     <o base="string" data="bytes">6A 61 76 61 2F 6C 61 6E 67 2F 4F 62 6A 65 63 74</o>
-                     <o base="string" data="bytes">3C 69 6E 69 74 3E</o>
-                     <o base="string" data="bytes">28 29 56</o>
-                  </o>
-                  <o base="opcode" line="999" name="RETURN-66">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 B1</o>
-                  </o>
-                  <o base="label" data="bytes">32 38 37 61 66 38 63 34 2D 66 30 34 32 2D 34 31 36 38 2D 38 36 30 66 2D 37 39 66 36 61 34 64 35 62 33 36 32</o>
-               </o>
-            </o>
-         </o>
          <o abstract="" name="j$print">
             <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 01</o>
             <o base="string" data="bytes" name="descriptor">28 29 56</o>

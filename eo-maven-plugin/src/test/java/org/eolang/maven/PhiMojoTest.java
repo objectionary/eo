@@ -68,9 +68,25 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
-    void convertsXmirsToPhiWithoutErrors(final String xmir, @TempDir final Path temp)
-        throws IOException {
-        final FakeMaven maven = new FakeMaven(temp);
+    void convertsXmirsToPhiWithoutErrorsWithoutOptimizations(
+        final String xmir,
+        @TempDir final Path temp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).with("phiOptimize", false);
+        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(PhiMojo.class),
+            BinarizeParseTest.TO_ADD_MESSAGE
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
+    void convertsXmirsToPhiWithoutErrorsWithOptimizations(
+        final String xmir,
+        @TempDir final Path temp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).with("phiOptimize", true);
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
         Assertions.assertDoesNotThrow(
             () -> maven.execute(PhiMojo.class),

@@ -60,46 +60,6 @@ SOFTWARE.
             <o base="string" data="bytes"/>
             <o base="string" data="bytes"/>
          </o>
-         <o abstract="" name="new">
-            <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 02</o>
-            <o base="string" data="bytes" name="descriptor">28 4C 6F 72 67 2F 65 6F 6C 61 6E 67 2F 69 6E 6E 65 72 63 6C 61 73 73 65 73 2F 54 6F 70 3B 29 56</o>
-            <o base="string" data="bytes" name="signature"/>
-            <o base="tuple" name="exceptions" star=""/>
-            <o abstract="" name="arg__Lorg/eolang/innerclasses/Top;__0"/>
-            <o base="seq" name="@">
-               <o base="tuple" star="">
-                  <o base="label" data="bytes">35 31 37 37 30 31 32 31 2D 66 36 31 32 2D 34 32 35 37 2D 61 36 37 38 2D 35 35 38 61 39 33 33 62 37 33 38 61</o>
-                  <o base="opcode" line="999" name="ALOAD-56">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 00</o>
-                  </o>
-                  <o base="opcode" line="999" name="ALOAD-57">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 01</o>
-                  </o>
-                  <o base="opcode" line="999" name="PUTFIELD-58">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 B5</o>
-                     <o base="string" data="bytes">6F 72 67 2F 65 6F 6C 61 6E 67 2F 69 6E 6E 65 72 63 6C 61 73 73 65 73 2F 54 6F 70 24 54 6F 70 49 6E 6E 65 72 49 6E 73 74 61 6E 63 65</o>
-                     <o base="string" data="bytes">74 68 69 73 24 30</o>
-                     <o base="string" data="bytes">4C 6F 72 67 2F 65 6F 6C 61 6E 67 2F 69 6E 6E 65 72 63 6C 61 73 73 65 73 2F 54 6F 70 3B</o>
-                  </o>
-                  <o base="opcode" line="999" name="ALOAD-59">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 19</o>
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 00</o>
-                  </o>
-                  <o base="opcode" line="999" name="INVOKESPECIAL-5A">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 B7</o>
-                     <o base="string" data="bytes">6A 61 76 61 2F 6C 61 6E 67 2F 4F 62 6A 65 63 74</o>
-                     <o base="string" data="bytes">3C 69 6E 69 74 3E</o>
-                     <o base="string" data="bytes">28 29 56</o>
-                  </o>
-                  <o base="opcode" line="999" name="RETURN-5B">
-                     <o base="int" data="bytes">00 00 00 00 00 00 00 B1</o>
-                  </o>
-                  <o base="label" data="bytes">66 63 63 64 64 61 35 31 2D 39 34 65 32 2D 34 33 30 37 2D 39 39 35 34 2D 35 33 65 62 61 38 61 61 63 37 62 66</o>
-               </o>
-            </o>
-         </o>
          <o abstract="" name="j$print">
             <o base="int" data="bytes" name="access">00 00 00 00 00 00 00 01</o>
             <o base="string" data="bytes" name="descriptor">28 29 56</o>
