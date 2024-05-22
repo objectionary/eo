@@ -80,6 +80,62 @@ final class PhiMojoTest {
         );
     }
 
+    @Test
+    void doesNotFailOnCritical(@TempDir final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("phiFailOnCritical", false)
+                .withProgram(
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "[] > with-duplicates",
+                    "  true > x",
+                    "  false > x"
+                )
+                .execute(new FakeMaven.Phi()),
+            "PhiMojo should not fail on critical errors with 'phiFailsOnCritical' = false"
+        );
+    }
+
+    @Test
+    void skipsFailedOnCriticalError(@TempDir final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("phiFailOnCritical", true)
+                .with("phiSkipFailed", true)
+                .withProgram(
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "[] > with-duplicates",
+                    "  true > x",
+                    "  false > x"
+                )
+                .execute(new FakeMaven.Phi()),
+            "PhiMojo should not fail on critical errors with 'phiSkipFailed' = true"
+        );
+    }
+
+    @Test
+    void doesNotSaveSkippedFile(@TempDir final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "Skipped file should not be saved after PhiMojo is done",
+            new FakeMaven(temp)
+                .with("phiFailOnCritical", true)
+                .with("phiSkipFailed", true)
+                .withProgram(
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "[] > with-duplicates",
+                    "  true > x",
+                    "  false > x"
+                )
+                .execute(new FakeMaven.Phi())
+                .result(),
+            Matchers.not(
+                Matchers.hasKey(
+                    String.format("target/phi/foo/x/main.%s", PhiMojo.EXT)
+                )
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
     void convertsXmirsToPhiWithoutErrorsWithOptimizations(
