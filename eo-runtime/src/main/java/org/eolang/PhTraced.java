@@ -41,9 +41,7 @@ public final class PhTraced implements Phi {
     /**
      * Name of property that responsible for keeping max depth.
      */
-    @SuppressWarnings("PMD.LongVariable")
-    public static final String
-        MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
+    public static final String RECURSION_THRESHOLD = "EO_MAX_CAGE_RECURSION_DEPTH";
 
     /**
      * Cages that are currently being dataized. If one cage is being datazed, and
@@ -77,7 +75,7 @@ public final class PhTraced implements Phi {
             object,
             locator,
             Integer.parseInt(
-                System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
+                System.getProperty(PhTraced.RECURSION_THRESHOLD, "100")
             )
         );
     }
