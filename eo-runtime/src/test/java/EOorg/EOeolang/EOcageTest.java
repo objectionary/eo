@@ -212,13 +212,13 @@ final class EOcageTest {
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTraced.RECURSION_THRESHOLD, String.valueOf(MAX_DEPTH)
+                PhTraced.RECURSION_LIMIT, String.valueOf(MAX_DEPTH)
             );
         }
 
         @AfterEach
         void clearDepth() {
-            System.clearProperty(PhTraced.RECURSION_THRESHOLD);
+            System.clearProperty(PhTraced.RECURSION_LIMIT);
         }
 
         @Test
@@ -257,7 +257,7 @@ final class EOcageTest {
         @Test
         void rewritesItselfToItselfViaDummy() {
             System.setProperty(
-                PhTraced.RECURSION_THRESHOLD, "2"
+                PhTraced.RECURSION_LIMIT, "2"
             );
             final Phi cage = EOcageTest.encaged(
                 new PhWith(new EOcageTest.Dummy(), 0, new Data.ToPhi(1L))
@@ -295,8 +295,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is less than property %s = %s does not throw %s",
-                    PhTraced.RECURSION_THRESHOLD,
-                    System.getProperty(PhTraced.RECURSION_THRESHOLD),
+                    PhTraced.RECURSION_LIMIT,
+                    System.getProperty(PhTraced.RECURSION_LIMIT),
                     ExAbstract.class
                 )
             );
@@ -316,8 +316,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is equal to property %s = %s does not throw %s",
-                    PhTraced.RECURSION_THRESHOLD,
-                    System.getProperty(PhTraced.RECURSION_THRESHOLD),
+                    PhTraced.RECURSION_LIMIT,
+                    System.getProperty(PhTraced.RECURSION_LIMIT),
                     ExAbstract.class
                 )
             );
@@ -335,8 +335,8 @@ final class EOcageTest {
                 () -> new Dataized(cage).take(),
                 String.format(
                     "We expect that dataizing of nested cage which recursion depth is more than property %s = %s does not throw %s",
-                    PhTraced.RECURSION_THRESHOLD,
-                    System.getProperty(PhTraced.RECURSION_THRESHOLD),
+                    PhTraced.RECURSION_LIMIT,
+                    System.getProperty(PhTraced.RECURSION_LIMIT),
                     ExAbstract.class
                 )
             );
