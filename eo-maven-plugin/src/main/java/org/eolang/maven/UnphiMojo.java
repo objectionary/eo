@@ -25,6 +25,8 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +37,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.io.UncheckedInput;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
@@ -59,6 +63,15 @@ import org.xembly.Directives;
     threadSafe = true
 )
 public final class UnphiMojo extends SafeMojo {
+    /**
+     * Byte wrapping transformation.
+     */
+    private static final XSL WRAP_BYTES = new XSLDocument(
+        new UncheckedInput(
+            new ResourceOf("org/eolang/maven/unphi/wrap-bytes.xsl")
+        ).stream()
+    );
+
     /**
      * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
@@ -106,18 +119,20 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        final XML parsed = new PhiSyntax(
-                            phi.getFileName().toString().replace(".phi", ""),
-                            new TextOf(phi),
-                            metas
-                        ).parsed();
-                        home.save(parsed.toString(), xmir);
+                        final XML result = UnphiMojo.WRAP_BYTES.transform(
+                            new PhiSyntax(
+                                phi.getFileName().toString().replace(".phi", ""),
+                                new TextOf(phi),
+                                metas
+                            ).parsed()
+                        );
+                        home.save(result.toString(), xmir);
                         Logger.info(
                             this,
                             "Parsed to xmir: %s -> %s",
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
-                        if (parsed.nodes("//errors[count(error)=0]").isEmpty()) {
+                        if (result.nodes("//errors[count(error)=0]").isEmpty()) {
                             errors.add(relative);
                         }
                         return 1;

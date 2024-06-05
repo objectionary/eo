@@ -363,7 +363,17 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterTermination(final PhiParser.TerminationContext ctx) {
-        // Nothing here
+        this.objects()
+            .prop("base", "org.eolang.error")
+            .start()
+            .prop("base", "org.eolang.string")
+            .start()
+            .prop("base", "org.eolang.bytes")
+            .prop("data", "bytes")
+            .data("55 6E 6B 6E 6F 77 6E 20 65 72 72 6F 72")
+            .leave()
+            .leave()
+            .leave();
     }
 
     @Override
