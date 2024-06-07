@@ -22,8 +22,8 @@
 ---
 name: code-review
 on:
- pull_request_review:
-   types: submitted
+  pull_request_review:
+    types: [ submitted ]
 permissions:
   pull-requests: write
   contents: read
