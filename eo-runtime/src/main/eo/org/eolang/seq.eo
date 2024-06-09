@@ -28,4 +28,20 @@
 
 # The object, when being dataized, dataizes all provided
 # "steps" (except the last one) and returns the last one.
-[steps] > seq /?
+[steps] > seq
+  if. > @
+    steps.length.eq 0
+    true
+    loop 0
+
+  [index] > loop
+    if. > @
+      and.
+        index.lt (steps.length.minus 1)
+        or.
+          (dataized (steps.at index)).as-bool
+          true
+      ^.loop
+        index.plus 1
+      steps.at index
+
