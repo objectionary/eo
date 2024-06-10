@@ -125,8 +125,18 @@ public final class PullMojo extends SafeMojo {
                     )
                 );
                 names.add(name);
-                tojo.withSource(this.pull(name).toAbsolutePath())
-                    .withHash(new ChNarrow(name.hash()));
+                try {
+                    tojo.withSource(this.pull(name).toAbsolutePath())
+                        .withHash(new ChNarrow(name.hash()));
+                } catch (final IOException exception) {
+                    throw new IOException(
+                        String.format(
+                            "Failed to pull object discovered at %s",
+                            tojo.discoveredAt()
+                        ),
+                        exception
+                    );
+                }
             }
             Logger.info(
                 this,
