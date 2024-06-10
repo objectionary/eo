@@ -21,29 +21,13 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/objects/o[@base='Q']
-  - /program/objects/o[@method and @base='.org']
-  - /program/objects/o[@method and @base='.eolang']
-  - /program/objects/o[@method and @base='.x']
-
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='Q']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.org' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.eolang' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.y' and @method and @as='attr']
-
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@name='z' and not(@base)]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='Q']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.org' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.eolang' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.w' and @method and @name='@']
-
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='Q']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.org' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.eolang' and @method]
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.bytes' and @method and @as='0']
-  - /program/objects/o[@method and @base='.x' and @name='xyz']/o[@base='.int' and @method and @as='five']/o[@base='.bytes' and @method and @as='0']/text()
+  - //o[@base='.x' and @name='xyz']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[@base='.y' and @as='attr']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@name='z' and not(@base)]
+  - //o[@base='.x' and @name='xyz']/o[@abstract and @as='abs']/o[@base='.w' and @name='@']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
+  - //o[@base='.x' and @name='xyz']/o[@base='.int' and @as='five']/o[@as='0' and @base='.bytes']/o[@base='org.eolang.bytes' and @data and text()!='']
 phi: |-
   {
     ⟦

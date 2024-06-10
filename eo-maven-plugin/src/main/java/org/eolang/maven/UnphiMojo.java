@@ -25,8 +25,8 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,8 +37,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.io.UncheckedInput;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
@@ -64,12 +62,14 @@ import org.xembly.Directives;
 )
 public final class UnphiMojo extends SafeMojo {
     /**
-     * Byte wrapping transformation.
+     * Unphi transformations.
      */
-    private static final XSL WRAP_BYTES = new XSLDocument(
-        new UncheckedInput(
-            new ResourceOf("org/eolang/maven/unphi/wrap-bytes.xsl")
-        ).stream()
+    private static final Xsline TRANSFORMATIONS = new Xsline(
+        new TrClasspath<>(
+            "/org/eolang/maven/unphi/wrap-bytes.xsl",
+            "/org/eolang/parser/wrap-method-calls.xsl",
+            "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
+        ).back()
     );
 
     /**
@@ -119,7 +119,7 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        final XML result = UnphiMojo.WRAP_BYTES.transform(
+                        final XML result = TRANSFORMATIONS.pass(
                             new PhiSyntax(
                                 phi.getFileName().toString().replace(".phi", ""),
                                 new TextOf(phi),
