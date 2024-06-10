@@ -38,6 +38,8 @@ import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.hash.CommitHashesMap;
+import org.eolang.maven.log.CaptureLogs;
+import org.eolang.maven.log.Logs;
 import org.eolang.maven.name.ObjectName;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
@@ -46,6 +48,7 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -291,6 +294,39 @@ final class PullMojoTest {
             String.format(format, PullMojo.DIR, string),
             result.containsKey(String.format("%s/%s", PullMojo.DIR, string)),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    @CaptureLogs
+    void showsWhereNotFoundWasDiscoveredAt(@TempDir final Path tmp, final Logs out) {
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+                new FakeMaven(tmp)
+                    .withProgram(
+                        "+package com.example\n",
+                        "# This is the default 64+ symbols comment in front of named abstract object.",
+                        "[] > main",
+                        "  org.eolang.org > @"
+                    )
+                    .with(
+                        "objectionaries",
+                        new Objectionaries.Fake(
+                            new OyRemote(
+                                new ChRemote("master")
+                            )
+                        )
+                    )
+                    .execute(new FakeMaven.Pull());
+            },
+            "Pull mojo should fail, but it does not"
+        );
+        Assertions.assertTrue(
+            out.captured().stream().anyMatch(
+                line -> line.contains("Failed to pull object discovered at")
+            ),
+            "Log should contain info where failed to pull object was discovered at, but it does not"
         );
     }
 
