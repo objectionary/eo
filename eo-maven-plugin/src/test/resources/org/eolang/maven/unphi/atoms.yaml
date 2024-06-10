@@ -21,8 +21,19 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/objects/o[@name='main' and @atom='?' and @abstract]
+  - /program/objects/o[@name='main' and @atom='Lambda' and @abstract]
   - /program/objects/o[@name='outer' and @abstract]
-  - /program/objects/o[@name='outer' and @abstract]/o[@name='inner' and @atom='?' and @abstract]
-phi:
-  "{⟦main ↦ ⟦λ ⤍ Lambda⟧, outer ↦ ⟦inner ↦ ⟦λ ⤍ Lambda⟧⟧⟧}"
+  - /program/objects/o[@name='outer' and @abstract]/o[@name='inner' and @atom='Lambda' and @abstract]
+phi: |
+  {
+    ⟦
+      main ↦ ⟦
+        λ ⤍ Lambda
+      ⟧,
+      outer ↦ ⟦
+        inner ↦ ⟦
+          λ ⤍ Lambda
+        ⟧
+      ⟧
+    ⟧
+  }
