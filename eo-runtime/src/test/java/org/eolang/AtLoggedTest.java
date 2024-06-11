@@ -26,6 +26,7 @@ package org.eolang;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -87,7 +88,7 @@ class AtLoggedTest {
     @Test
     void convertsToStringAsOrigin() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.logged.toString(),
             Matchers.equalTo(this.origin.toString())
         );
@@ -96,7 +97,7 @@ class AtLoggedTest {
     @Test
     void convertsToPhiTermAsOrigin() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.logged.φTerm(),
             Matchers.equalTo(this.origin.φTerm())
         );
@@ -106,12 +107,12 @@ class AtLoggedTest {
     void copiesWithLogging() {
         this.logged.copy(Phi.Φ);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.copy()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.copy()!", this.label))
         );
@@ -120,17 +121,17 @@ class AtLoggedTest {
     @Test
     void getsWithLogging() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.logged.get(),
             Matchers.equalTo(this.origin.get())
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.get()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.get()!", this.label))
         );
@@ -140,12 +141,12 @@ class AtLoggedTest {
     void putsWithLogging() {
         this.put.put(Phi.Φ);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.put()...", this.label))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             this.log(),
             Matchers.containsString(String.format("  %s.put()!", this.label))
         );

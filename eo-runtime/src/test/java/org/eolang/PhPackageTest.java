@@ -57,7 +57,7 @@ final class PhPackageTest {
     @Test
     void copiesObject() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             Phi.Φ.take("org").take("eolang").take("seq"),
             Matchers.not(
                 Matchers.equalTo(
@@ -72,7 +72,7 @@ final class PhPackageTest {
         final Phi eolang = Phi.Φ.take("org").take("eolang");
         final Phi seq = eolang.take("seq");
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             seq.take(Attr.RHO),
             Matchers.equalTo(eolang)
         );
@@ -81,7 +81,7 @@ final class PhPackageTest {
     @Test
     void findsLongClass() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             Phi.Φ.take("org")
                 .take("eolang")
                 .take("bytes$eq").copy(),
@@ -95,7 +95,7 @@ final class PhPackageTest {
         final Phi parent = new PhPackage(PhPackageTest.DEFAULT_PACKAGE);
         final Phi actual = parent.take(attribute);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             actual,
             Matchers.instanceOf(expected)
         );
@@ -106,7 +106,7 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).take("failed"),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -115,7 +115,7 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).copy(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -124,14 +124,14 @@ final class PhPackageTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhPackage(PhPackageTest.DEFAULT_PACKAGE).forma(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
     @Test
     void convertsToPhiTerm() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).φTerm(),
             Matchers.equalTo("Φ.org.eolang")
         );
@@ -140,7 +140,7 @@ final class PhPackageTest {
     @Test
     void returnsLocator() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).locator(),
             Matchers.equalTo("?:?")
         );
@@ -149,7 +149,7 @@ final class PhPackageTest {
     @Test
     void convertsToString() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new PhPackage(PhPackageTest.DEFAULT_PACKAGE).toString(),
             Matchers.equalTo("Φ.org.eolang")
         );
@@ -180,7 +180,7 @@ final class PhPackageTest {
         service.shutdown();
         if (service.awaitTermination(1, TimeUnit.SECONDS)) {
             MatcherAssert.assertThat(
-                AtCompositeTest.TO_ADD_MESSAGE,
+                AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
                 basket.size(),
                 Matchers.equalTo(threads)
             );

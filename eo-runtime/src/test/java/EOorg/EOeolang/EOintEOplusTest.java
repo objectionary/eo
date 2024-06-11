@@ -50,7 +50,7 @@ final class EOintEOplusTest {
         final Phi add = left.take("plus");
         add.put(0, right);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(add).take(Long.class),
             Matchers.equalTo(55L)
         );

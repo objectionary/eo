@@ -27,11 +27,9 @@
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,7 @@ final class EOas_phiTest {
     @Test
     void printsAndReturns() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "We expect that print will be done",
             new Dataized(
                 new PhWith(
                     new EOas_phi(),

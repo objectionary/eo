@@ -44,7 +44,7 @@ final class AtNamedTest {
             () -> phi.take("x").take("anything")
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(error.enclosure()).take(String.class),
             Matchers.allOf(
                 Matchers.containsString(

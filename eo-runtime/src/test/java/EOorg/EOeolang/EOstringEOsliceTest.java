@@ -58,7 +58,7 @@ final class EOstringEOsliceTest {
             new Data.ToPhi(1L)
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(String.class),
             Matchers.equalTo("ㄤ")
         );

@@ -59,7 +59,7 @@ public final class EOmallocTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -73,12 +73,12 @@ public final class EOmallocTest {
         Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(phi).take(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
         Assertions.assertThrows(
             ExFailure.class,
             () -> Heaps.INSTANCE.free((int) dummy.id),
-            AtCompositeTest.TO_ADD_MESSAGE
+            AtCompositeTest.FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 

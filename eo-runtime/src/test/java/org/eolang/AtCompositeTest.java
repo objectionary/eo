@@ -24,6 +24,7 @@
 package org.eolang;
 
 import java.security.SecureRandom;
+import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -37,14 +38,17 @@ import org.junit.jupiter.api.Test;
 public final class AtCompositeTest {
 
     /**
-     * Empty message for JUnit Assertions.
-     *
-     * @todo #2297:60m Replace all appearances of {@link AtCompositeTest#TO_ADD_MESSAGE} field in
-     *  eo-runtime with meaningful assert messages. Don't forget to remove
-     *  {@link AtCompositeTest#TO_ADD_MESSAGE} field and remove public modifier from this class if
-     *  no longer need.
+     * Supplier for failed assert messages.
+     * <p>
+     * {@link AtCompositeTest#FAILED_ASSERT_MESSAGE_SUPPLIER} field in
+     * eo-runtime for getting failed assert messages with class and test
      */
-    public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
+    public static final Supplier<String> FAILED_ASSERT_MESSAGE_SUPPLIER =
+        () -> String.format(
+            "Failed %s.%s",
+            Thread.currentThread().getStackTrace()[2].getClassName(),
+            Thread.currentThread().getStackTrace()[2].getMethodName()
+        );
 
     @Test
     void decoratesCheckedException() {
@@ -56,7 +60,7 @@ public final class AtCompositeTest {
                     throw new InstantiationException("intended checked");
                 }
             ).get(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -70,7 +74,7 @@ public final class AtCompositeTest {
                     throw new IllegalStateException("intended unchecked");
                 }
             ).get(),
-            AtCompositeTest.TO_ADD_MESSAGE
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get()
         );
     }
 
@@ -79,7 +83,7 @@ public final class AtCompositeTest {
         final Phi rnd = new Rnd();
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            FAILED_ASSERT_MESSAGE_SUPPLIER.get(),
             new Dataized(phi).take(Double.class),
             Matchers.equalTo(
                 new Dataized(phi).take(Double.class)
@@ -89,6 +93,7 @@ public final class AtCompositeTest {
 
     /**
      * Rnd.
+     *
      * @since 1.0
      */
     private static class Rnd extends PhDefault {
