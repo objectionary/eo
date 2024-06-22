@@ -31,18 +31,19 @@ public class BuildFailureException extends RuntimeException {
 
     /**
      * Ctor.
-     * @param message The detail message.
+     * @param cause Cause.
+     * @param args Args.
      */
-    public BuildFailureException(final String message) {
-        super(message);
+    public BuildFailureException(final String cause, final Object... args) {
+        super(String.format(cause, args));
     }
 
     /**
      * Ctor.
-     * @param message The detail message.
+     * @param cause The detail message.
      * @param root Root cause exception.
      */
-    public BuildFailureException(final String message, final Throwable root) {
-        super(message, root);
+    public BuildFailureException(final String cause, final Throwable root) {
+        super(cause, root);
     }
 }
