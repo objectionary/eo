@@ -25,6 +25,8 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,6 +61,17 @@ import org.xembly.Directives;
     threadSafe = true
 )
 public final class UnphiMojo extends SafeMojo {
+    /**
+     * Unphi transformations.
+     */
+    private static final Xsline TRANSFORMATIONS = new Xsline(
+        new TrClasspath<>(
+            "/org/eolang/maven/unphi/wrap-bytes.xsl",
+            "/org/eolang/parser/wrap-method-calls.xsl",
+            "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
+        ).back()
+    );
+
     /**
      * The directory where to take phi files for parsing from.
      * @checkstyle MemberNameCheck (10 lines)
@@ -106,18 +119,20 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        final XML parsed = new PhiSyntax(
-                            phi.getFileName().toString().replace(".phi", ""),
-                            new TextOf(phi),
-                            metas
-                        ).parsed();
-                        home.save(parsed.toString(), xmir);
+                        final XML result = TRANSFORMATIONS.pass(
+                            new PhiSyntax(
+                                phi.getFileName().toString().replace(".phi", ""),
+                                new TextOf(phi),
+                                metas
+                            ).parsed()
+                        );
+                        home.save(result.toString(), xmir);
                         Logger.info(
                             this,
                             "Parsed to xmir: %s -> %s",
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
-                        if (parsed.nodes("//errors[count(error)=0]").isEmpty()) {
+                        if (result.nodes("//errors[count(error)=0]").isEmpty()) {
                             errors.add(relative);
                         }
                         return 1;

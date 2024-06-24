@@ -36,6 +36,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import net.sf.saxon.expr.instruct.TerminationException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -88,6 +89,21 @@ public final class PhiMojo extends SafeMojo {
     private File phiOutputDir;
 
     /**
+     * Whether {@link PhiMojo} should fail on critical errors or not.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @Parameter(property = "eo.phiFailOnCritical", required = true, defaultValue = "true")
+    @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
+    private boolean phiFailOnCritical = true;
+
+    /**
+     * Whether {@link PhiMojo} should skip XMIRs that failed on critical errors.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @Parameter(property = "eo.phiSkipFailed", required = true, defaultValue = "false")
+    private boolean phiSkipFailed;
+
+    /**
      * Pass XMIR to Optimizations train or not.
      * This flag is used for test in order not to optimize XMIR twice:
      * in {@link OptimizeMojo} and here.
@@ -100,12 +116,7 @@ public final class PhiMojo extends SafeMojo {
     @Override
     public void exec() {
         final Home home = new HmBase(this.phiOutputDir);
-        final Train<Shift> train;
-        if (this.phiOptimize) {
-            train = new ParsingTrain();
-        } else {
-            train = new TrDefault<>();
-        }
+        final Train<Shift> train = this.train();
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -127,8 +138,18 @@ public final class PhiMojo extends SafeMojo {
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );
+                        int amount;
                         try {
                             home.save(PhiMojo.translated(train, xml), relative);
+                            Logger.info(
+                                this,
+                                "Translated to phi: %[file]s (%[size]s) -> %[file]s (%[size]s)",
+                                processed,
+                                xmir.toFile().length(),
+                                relative,
+                                this.phiOutputDir.toPath().resolve(relative).toFile().length()
+                            );
+                            amount = 1;
                         } catch (final ImpossibleToPhiTranslationException exception) {
                             Logger.debug(
                                 this,
@@ -139,16 +160,20 @@ public final class PhiMojo extends SafeMojo {
                                 String.format("Couldn't translate %s to phi", processed),
                                 exception
                             );
+                        } catch (final IllegalArgumentException exception) {
+                            if (exception.getCause() instanceof TerminationException
+                                && this.phiSkipFailed) {
+                                Logger.info(
+                                    this,
+                                    "%[file]s failed on critical error, but skipped because phiSkipFailed=true",
+                                    processed
+                                );
+                                amount = 0;
+                            } else {
+                                throw exception;
+                            }
                         }
-                        Logger.info(
-                            this,
-                            "Translated to phi: %[file]s (%[size]s) -> %[file]s (%[size]s)",
-                            processed,
-                            xmir.toFile().length(),
-                            relative,
-                            this.phiOutputDir.toPath().resolve(relative).toFile().length()
-                        );
-                        return 1;
+                        return amount;
                     },
                     new Walk(this.phiInputDir.toPath())
                 )
@@ -168,6 +193,36 @@ public final class PhiMojo extends SafeMojo {
     }
 
     /**
+     * Build transformations train depends on flags.
+     * @return Transformations train
+     */
+    private Train<Shift> train() {
+        final Train<Shift> train;
+        if (this.phiOptimize) {
+            train = new ParsingTrain();
+        } else {
+            train = new TrDefault<>();
+        }
+        final Train.Temporary<Shift> dependent;
+        if (this.phiFailOnCritical) {
+            dependent = new TrClasspath<>(
+                "/org/eolang/parser/fail-on-critical.xsl",
+                "/org/eolang/maven/phi/to-phi.xsl"
+            );
+        } else {
+            dependent = new TrClasspath<>("/org/eolang/maven/phi/to-phi.xsl");
+        }
+        return new TrJoined<>(
+            train,
+            new TrClasspath<>(
+                "/org/eolang/parser/critical-errors/duplicate-names.xsl",
+                "/org/eolang/maven/phi/incorrect-inners.xsl"
+            ).back(),
+            dependent.back()
+        );
+    }
+
+    /**
      * Translate given xmir to phi calculus expression.
      * @param train Train that optimize and translates given xmir
      * @param xmir Text of xmir
@@ -176,17 +231,7 @@ public final class PhiMojo extends SafeMojo {
      */
     private static String translated(final Train<Shift> train, final XML xmir)
         throws ImpossibleToPhiTranslationException {
-        final XML translated = new Xsline(
-            new TrJoined<>(
-                train,
-                new TrClasspath<>(
-                    "/org/eolang/parser/critical-errors/duplicate-names.xsl",
-                    "/org/eolang/maven/phi/incorrect-inners.xsl",
-                    "/org/eolang/parser/fail-on-critical.xsl",
-                    "/org/eolang/maven/phi/to-phi.xsl"
-                ).back()
-            )
-        ).pass(xmir);
+        final XML translated = new Xsline(train).pass(xmir);
         Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
         final List<String> phi = translated.xpath("phi/text()");
         if (phi.isEmpty()) {

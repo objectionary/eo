@@ -20,7 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-tests:
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='org.eolang.bytes' and text()='A2']
-phi: "{⟦bts ↦ Φ.org.eolang.bytes(Δ ⤍ A2-)⟧}"
+
+name: trufflehog-oss
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  trufflehog:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Secret Scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified

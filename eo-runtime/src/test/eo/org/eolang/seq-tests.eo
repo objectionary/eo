@@ -174,3 +174,21 @@
                   m.put (m.as-int.plus 1)
                   m
               1
+
+# Test.
+[] > seq-calculates-and-returns
+  eq. > @
+    1
+    seq
+      *
+        0
+        1
+
+# Test.
+[] > seq-calculates-and-returns-object
+  eq. > @
+    "Hello!"
+    seq
+      *
+        0
+        "Hello!"

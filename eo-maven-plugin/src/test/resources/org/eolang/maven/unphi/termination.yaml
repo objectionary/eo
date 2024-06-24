@@ -21,6 +21,16 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='org.eolang.bytes' and text()='A2']
-phi: "{⟦bts ↦ Φ.org.eolang.bytes(Δ ⤍ A2-)⟧}"
+  - //o[@base='org.eolang.error' and @name='x']/o[@base='org.eolang.string']/o[@base='org.eolang.bytes' and @data and text()!='']
+phi: |
+  {
+  	⟦
+      org ↦ ⟦
+        eolang ↦ ⟦
+          x ↦ ⊥,
+          λ ⤍ Package
+        ⟧,
+        λ ⤍ Package
+      ⟧
+  	⟧
+  }

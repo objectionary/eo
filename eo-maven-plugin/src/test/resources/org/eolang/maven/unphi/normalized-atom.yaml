@@ -21,6 +21,27 @@
 # SOFTWARE.
 ---
 tests:
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='.eolang']/o[@base='.org']/o[@base='Q']
-  - /program/objects/o[@base='.bytes' and @name='bts']/o[@base='org.eolang.bytes' and text()='A2']
-phi: "{⟦bts ↦ Φ.org.eolang.bytes(Δ ⤍ A2-)⟧}"
+  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']
+  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='text' and @base='.bytes']
+  - //o[@base='org.eolang.io.stdout' and not(@abstract) and @name='x']/o[@as='size' and @base='.int']
+phi: |
+  {
+    ⟦
+      org ↦ ⟦
+        eolang ↦ ⟦
+          io ↦ ⟦
+            x ↦ ⟦
+              text ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A),
+              size ↦ Φ.org.eolang.int(
+                as-bytes ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A)
+              ),
+              λ ⤍ Lorg_eolang_io_stdout
+            ⟧,
+            λ ⤍ Package
+          ⟧,
+          λ ⤍ Package
+        ⟧,
+        λ ⤍ Package
+      ⟧
+    ⟧
+  }

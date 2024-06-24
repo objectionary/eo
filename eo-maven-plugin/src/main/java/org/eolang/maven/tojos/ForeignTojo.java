@@ -37,7 +37,7 @@ import org.eolang.maven.util.Rel;
  *
  * @since 0.30
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public final class ForeignTojo {
 
     /**
@@ -135,6 +135,14 @@ public final class ForeignTojo {
      */
     public String probed() {
         return this.attribute(ForeignTojos.Attribute.PROBED);
+    }
+
+    /**
+     * The discovered at location.
+     * @return The discovered at.
+     */
+    public String discoveredAt() {
+        return this.attribute(ForeignTojos.Attribute.DISCOVERED_AT);
     }
 
     /**

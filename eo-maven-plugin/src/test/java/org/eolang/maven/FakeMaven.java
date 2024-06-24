@@ -239,6 +239,8 @@ public final class FakeMaven {
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiOptimize", false);
+            this.params.putIfAbsent("phiFailOnCritical", true);
+            this.params.putIfAbsent("phiSkipFailed", false);
             this.params.putIfAbsent(
                 "eoPortalDir",
                 new File("../eo-runtime/src/main/rust/eo")
