@@ -238,4 +238,13 @@ public final class PhTraced implements Phi {
             }
         }
     }
+
+    /**
+     * Clean up resources.
+     * This includes call of {@link ThreadLocal#remove()} method to prevent
+     * memory leaks.
+     */
+    public static void cleanUp() {
+        PhTraced.DATAIZING_CAGES.remove();
+    }
 }

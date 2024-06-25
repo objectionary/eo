@@ -177,4 +177,13 @@ final class PhPackage implements Phi {
         }
         return res;
     }
+
+    /**
+     * Clean up resources.
+     * This includes call of {@link ThreadLocal#remove()} method to prevent
+     * memory leaks.
+     */
+    public void cleanUp() {
+        this.objects.remove();
+    }
 }
