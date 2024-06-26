@@ -60,7 +60,7 @@ public final class OnDefault implements ObjectName {
 
     @Override
     public CommitHash hash() {
-        return new CommitHash.ChConstant(this.name.label().get());
+        return new CommitHash.ChConstant(this.name.label().orElse(""));
     }
 
     @Override

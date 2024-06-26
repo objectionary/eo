@@ -95,7 +95,7 @@ public final class DcsFake implements Iterable<Dependency> {
         return DcsFake.dep(
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
-            String.valueOf(Math.abs(rand.nextInt())),
+            String.valueOf(rand.nextInt(Integer.MAX_VALUE)),
             scope
         );
     }
@@ -125,7 +125,7 @@ public final class DcsFake implements Iterable<Dependency> {
         return DcsFake.dep(
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
-            String.valueOf(Math.abs(rand.nextInt())),
+            String.valueOf(rand.nextInt(Integer.MAX_VALUE)),
             scope
         );
     }

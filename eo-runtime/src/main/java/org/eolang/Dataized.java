@@ -50,11 +50,21 @@ public final class Dataized {
 
     /**
      * Dataization level.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link Dataized#LEVEL} variables to prevent memory leaks. We should either find a place
+     *  where this variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Integer> LEVEL = ThreadLocal.withInitial(() -> 0);
 
     /**
      * Max dataization level.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link Dataized#MAX_LEVEL} variables to prevent memory leaks. We should either find a place
+     *  where this variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Integer> MAX_LEVEL =
         ThreadLocal.withInitial(() -> Integer.getInteger("max.dataization.log", 3));
