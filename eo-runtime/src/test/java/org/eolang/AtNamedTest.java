@@ -64,6 +64,7 @@ final class AtNamedTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             super();
             this.add(

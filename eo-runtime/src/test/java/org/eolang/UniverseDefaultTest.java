@@ -52,7 +52,7 @@ final class UniverseDefaultTest {
     /**
      * Data byte array.
      */
-    private static final byte[] DATA = new BytesOf(123456789L).take();
+    private static final byte[] DATA = new BytesOf(123_456_789L).take();
 
     @Test
     void findsSimpleAtt() {
@@ -206,6 +206,7 @@ final class UniverseDefaultTest {
          * Ctor.
          * @param sigma Sigma.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAt(final Phi sigma) {
             this.add(
                 UniverseDefaultTest.ABSTRACT_ATT,
@@ -227,6 +228,7 @@ final class UniverseDefaultTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithStructure() {
             this.add(UniverseDefaultTest.ABSTRACT_ATT, new AtComposite(this, DummyWithAt::new));
         }
@@ -241,6 +243,7 @@ final class UniverseDefaultTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyAbstract() {
             this.add(
                 UniverseDefaultTest.ABSTRACT_ATT,

@@ -47,6 +47,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.24
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhPackageTest {
 
     /**
@@ -156,6 +157,7 @@ final class PhPackageTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     void findsAttributesConcurrently() throws InterruptedException {
         final int threads = Runtime.getRuntime().availableProcessors() + 10;
         final ExecutorService service = Executors.newFixedThreadPool(threads);

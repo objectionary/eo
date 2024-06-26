@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @checkstyle IllegalCatchCheck (200 lines)
  */
 @Versionized
+@SuppressWarnings("PMD.AvoidCatchingThrowable")
 public final class UniverseSafe implements Universe {
 
     /**

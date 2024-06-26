@@ -29,6 +29,7 @@ package org.eolang;
  *
  * @since 0.21
  */
+@SuppressWarnings("PMD.TooManyMethods")
 @Versionized
 public final class PhLocated implements Phi {
 

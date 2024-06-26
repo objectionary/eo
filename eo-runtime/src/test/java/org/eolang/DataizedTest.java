@@ -41,6 +41,10 @@ import org.junit.jupiter.api.Test;
  * @since 0.22
  */
 final class DataizedTest {
+    /**
+     * System property for maximum dataization log level.
+     */
+    private static final String MAX_DATAIZATION = "max.dataization.log";
 
     @Test
     void logsCorrectly() {
@@ -100,24 +104,13 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Thread thread = new Thread(
-            () -> {
-                final String property = System.getProperty("max.dataization.log");
-                System.getProperties().setProperty("max.dataization.log", String.valueOf(1));
-                final Phi phi = new PhiDec();
-                new Dataized(phi, log).take();
-                if (property != null) {
-                    System.getProperties().setProperty("max.dataization.log", property);
-                } else {
-                    System.clearProperty("max.dataization.log");
-                }
-            });
+        final Thread thread = new DataizedLoggerThread(log, 1);
         thread.start();
         thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Number of log records should be equal to 1 in the case of short logs",
             logs.size(),
             Matchers.equalTo(1)
         );
@@ -131,27 +124,52 @@ final class DataizedTest {
         final List<LogRecord> logs = new LinkedList<>();
         final Handler hnd = new Hnd(logs);
         log.addHandler(hnd);
-        final Thread thread = new Thread(
-            () -> {
-                final String property = System.getProperty("max.dataization.log");
-                System.getProperties().setProperty("max.dataization.log", String.valueOf(2));
-                final Phi phi = new PhiDec();
-                new Dataized(phi, log).take();
-                if (property != null) {
-                    System.getProperties().setProperty("max.dataization.log", property);
-                } else {
-                    System.clearProperty("max.dataization.log");
-                }
-            });
+        final Thread thread = new DataizedLoggerThread(log, 2);
         thread.start();
         thread.join();
         log.setLevel(before);
         log.removeHandler(hnd);
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Number of log records should be greater than 1 the in case of long logs",
             logs.size(),
             Matchers.greaterThan(1)
         );
+    }
+
+    /**
+     * Thread that logs dataization process with specified log level.
+     * @since 1.0
+     */
+    private static class DataizedLoggerThread extends Thread {
+        /**
+         * Ctor.
+         *
+         * @param logger Logger.
+         * @param level Log level.
+         */
+        DataizedLoggerThread(final Logger logger, final int level) {
+            super(
+                () -> {
+                    final String property = System.getProperty(
+                        DataizedTest.MAX_DATAIZATION
+                    );
+                    System.getProperties().setProperty(
+                        DataizedTest.MAX_DATAIZATION,
+                        String.valueOf(level)
+                    );
+                    final Phi phi = new PhiDec();
+                    new Dataized(phi, logger).take();
+                    if (property != null) {
+                        System.getProperties().setProperty(
+                            DataizedTest.MAX_DATAIZATION,
+                            property
+                        );
+                    } else {
+                        System.clearProperty(DataizedTest.MAX_DATAIZATION);
+                    }
+                }
+            );
+        }
     }
 
     /**
@@ -163,6 +181,7 @@ final class DataizedTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhIncorrect() {
             this.add(
                 "Δ",
@@ -184,6 +203,7 @@ final class DataizedTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PhiDec() {
             this.add(
                 "φ",
@@ -232,7 +252,7 @@ final class DataizedTest {
         }
 
         @Override
-        public void close() throws SecurityException {
+        public void close() {
             throw new UnsupportedOperationException("#close()");
         }
 

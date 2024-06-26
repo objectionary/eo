@@ -31,8 +31,14 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
+ * @todo #3160:90min This class requires refactoring. As a result of refactoring you should remove
+ *  {@code @SuppressWarnings("PMD.GodClass")} from this class and
+ *  {@code @SuppressWarnings("PMD.CognitiveComplexity")} from {@link BytesOf#shift} method. You can
+ *  check description of this rules here
+ *  <a href="https://pmd.github.io/pmd/pmd_rules_java_design">pmd.github.io</a>
  */
 @Versionized
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public final class BytesOf implements Bytes {
 
     /**
@@ -45,7 +51,7 @@ public final class BytesOf implements Bytes {
      * @param data Data.
      */
     public BytesOf(final byte[] data) {
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     /**
@@ -108,6 +114,7 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    @SuppressWarnings("PMD.ShortMethodName")
     public Bytes or(final Bytes other) {
         final byte[] first = this.take();
         final byte[] second = other.take();
@@ -128,6 +135,7 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public Bytes shift(final int bits) {
         // @checkstyle MethodBodyCommentsCheck (3 lines)
         // @checkstyle NestedIfDepthCheck (40 lines)

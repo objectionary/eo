@@ -49,6 +49,7 @@ import java.util.logging.Logger;
  * @since 0.1
  */
 @Versionized
+@SuppressWarnings("PMD.MoreThanOneLogger")
 public final class Main {
 
     /**
@@ -182,7 +183,8 @@ public final class Main {
                 .newInstance();
         } catch (final ClassNotFoundException ex) {
             throw new ExUnset(
-                String.format("Can not find '%s' object", opts.get(0))
+                String.format("Can not find '%s' object", opts.get(0)),
+                ex
             );
         }
         if (opts.size() > 1) {

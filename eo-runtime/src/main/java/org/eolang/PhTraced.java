@@ -35,13 +35,13 @@ import java.util.function.Supplier;
  * @since 0.36
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 public final class PhTraced implements Phi {
 
     /**
      * Name of property that responsible for keeping max depth.
      */
-    public static final String
-        MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME = "EO_MAX_CAGE_RECURSION_DEPTH";
+    public static final String RECURSION_LIMIT = "EO_MAX_CAGE_RECURSION_DEPTH";
 
     /**
      * Cages that are currently being dataized. If one cage is being datazed, and
@@ -63,7 +63,7 @@ public final class PhTraced implements Phi {
     /**
      * Locator of encaged object.
      */
-    private final Integer locator;
+    private final Integer locatr;
 
     /**
      * Max depth of cage recursion.
@@ -80,7 +80,7 @@ public final class PhTraced implements Phi {
             object,
             locator,
             Integer.parseInt(
-                System.getProperty(PhTraced.MAX_CAGE_RECURSION_DEPTH_PROPERTY_NAME, "100")
+                System.getProperty(PhTraced.RECURSION_LIMIT, "100")
             )
         );
     }
@@ -93,13 +93,13 @@ public final class PhTraced implements Phi {
      */
     public PhTraced(final Phi object, final Integer locator, final int depth) {
         this.object = object;
-        this.locator = locator;
+        this.locatr = locator;
         this.depth = depth;
     }
 
     @Override
     public Phi copy() {
-        return new PhTraced(this.object.copy(), this.locator);
+        return new PhTraced(this.object.copy(), this.locatr);
     }
 
     @Override
@@ -193,13 +193,13 @@ public final class PhTraced implements Phi {
          */
         private Integer incrementCageCounter() {
             return PhTraced.DATAIZING_CAGES.get().compute(
-                PhTraced.this.locator, (key, counter) -> {
+                PhTraced.this.locatr, (key, counter) -> {
                     final int ret = this.incremented(counter);
                     if (ret > PhTraced.this.depth) {
                         throw new ExFailure(
                             "The cage %s with locator %d has reached the maximum nesting depth = %d",
                             PhTraced.this.object,
-                            PhTraced.this.locator,
+                            PhTraced.this.locatr,
                             PhTraced.this.depth
                         );
                     }
@@ -234,11 +234,11 @@ public final class PhTraced implements Phi {
             final int decremented = incremented - 1;
             if (decremented == 0) {
                 PhTraced.DATAIZING_CAGES.get().remove(
-                    PhTraced.this.locator
+                    PhTraced.this.locatr
                 );
             } else {
                 PhTraced.DATAIZING_CAGES.get().put(
-                    PhTraced.this.locator, decremented
+                    PhTraced.this.locatr, decremented
                 );
             }
         }

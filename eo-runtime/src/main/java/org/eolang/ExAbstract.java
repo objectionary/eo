@@ -42,13 +42,6 @@ public abstract class ExAbstract extends RuntimeException {
 
     /**
      * Ctor.
-     */
-    public ExAbstract() {
-        this(null);
-    }
-
-    /**
-     * Ctor.
      * @param cause Exception cause
      */
     public ExAbstract(final String cause) {
@@ -60,7 +53,15 @@ public abstract class ExAbstract extends RuntimeException {
      * @param cause Exception cause
      * @param root Root cause exception
      */
-    ExAbstract(final String cause, final Throwable root) {
+    public ExAbstract(final String cause, final Throwable root) {
         super(cause, root);
+    }
+
+    /**
+     * Ctor.
+     * @param root Root cause exception
+     */
+    public ExAbstract(final Throwable root) {
+        super(root);
     }
 }

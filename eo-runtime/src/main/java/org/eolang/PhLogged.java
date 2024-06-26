@@ -34,6 +34,7 @@ import java.util.Arrays;
  * @since 0.24
  */
 @Versionized
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.SystemPrintln"})
 public final class PhLogged implements Phi {
 
     /**

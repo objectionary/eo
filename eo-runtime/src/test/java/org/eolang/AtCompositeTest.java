@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.16
  */
+@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 public final class AtCompositeTest {
 
     /**
@@ -95,6 +96,7 @@ public final class AtCompositeTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Rnd() {
             super();
             this.add(

@@ -44,6 +44,7 @@ public interface Phi extends Term, Data {
      * @checkstyle ConstantNameCheck (5 lines)
      * @checkstyle AnonInnerLengthCheck (30 lines)
      */
+    @SuppressWarnings("PMD.FieldNamingConventions")
     Phi Φ = new Phi() {
         /**
          * Default package.

@@ -32,6 +32,7 @@ import java.nio.charset.StandardCharsets;
  * @since 0.1
  */
 @Versionized
+@SuppressWarnings("PMD.TooManyMethods")
 public interface Data {
     /**
      * Attach data to the object.
@@ -192,11 +193,20 @@ public interface Data {
          * </ul>
          * @param str A string optionally containing standard java escape sequences.
          * @return The translated string
+         * @todo #3160:90min This method should be refactored because it has high cognitive
+         *  complexity and other problems. All {@code @checkstyle} warnings suppression and
+         *  {@code SuppressWarnings("PMD.WarningName")} annotations for this method should be
+         *  removed as a result of refactoring.
          * @checkstyle CyclomaticComplexityCheck (100 lines)
          * @checkstyle JavaNCSSCheck (100 lines)
          * @checkstyle NestedIfDepthCheck (100 lines)
          * @checkstyle ModifiedControlVariableCheck (100 lines)
          */
+        @SuppressWarnings({
+            "PMD.AvoidReassigningLoopVariables",
+            "PMD.CognitiveComplexity",
+            "PMD.NPathComplexity"
+        })
         private static String unescapeJavaString(final String str) {
             final StringBuilder unescaped = new StringBuilder(str.length());
             for (int idx = 0; idx < str.length(); ++idx) {
@@ -209,19 +219,19 @@ public interface Data {
                         next = str.charAt(idx + 1);
                     }
                     if (next >= '0' && next <= '7') {
-                        String code = String.valueOf(next);
+                        final StringBuilder code = new StringBuilder(String.valueOf(next));
                         ++idx;
                         if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                             && str.charAt(idx + 1) <= '7') {
-                            code += str.charAt(idx + 1);
+                            code.append(str.charAt(idx + 1));
                             ++idx;
                             if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
                                 && str.charAt(idx + 1) <= '7') {
-                                code += str.charAt(idx + 1);
+                                code.append(str.charAt(idx + 1));
                                 ++idx;
                             }
                         }
-                        unescaped.append((char) Integer.parseInt(code, 8));
+                        unescaped.append((char) Integer.parseInt(code.toString(), 8));
                         continue;
                     }
                     switch (next) {

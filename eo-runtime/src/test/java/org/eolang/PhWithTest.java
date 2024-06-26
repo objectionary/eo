@@ -134,6 +134,7 @@ final class PhWithTest {
          * Ctor.
          * @param attr Free attribute name
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         DummyWithAtFree(final String attr) {
             this.add(attr, new AtVoid(attr));
         }
@@ -148,6 +149,7 @@ final class PhWithTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.add("φ", new AtComposite(this, self -> new Data.ToPhi(1L)));
         }

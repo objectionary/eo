@@ -38,8 +38,9 @@ public class ExInterrupted extends ExAbstract {
 
     /**
      * Ctor.
+     * @param root Root cause exception
      */
-    public ExInterrupted() {
-        super(null);
+    public ExInterrupted(final InterruptedException root) {
+        super(root);
     }
 }

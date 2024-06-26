@@ -67,6 +67,22 @@ import org.yaml.snakeyaml.Yaml;
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 final class SnippetTestCase {
+
+    /**
+     * True.
+     */
+    private static final String TRUE = "true";
+
+    /**
+     * False.
+     */
+    private static final String FALSE = "false";
+
+    /**
+     * UTF-8.
+     */
+    private static final String UTF_8 = "UTF-8";
+
     @ParameterizedTest
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
@@ -79,8 +95,8 @@ final class SnippetTestCase {
         new Farea(temp).together(
             f -> {
                 f.properties()
-                    .set("project.build.sourceEncoding", "UTF-8")
-                    .set("project.reporting.outputEncoding", "UTF-8");
+                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
                 SnippetTestCase.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
@@ -98,7 +114,7 @@ final class SnippetTestCase {
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
-                    .set("failOnWarnings", "true");
+                    .set("failOnWarnings", SnippetTestCase.TRUE);
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
@@ -136,8 +152,8 @@ final class SnippetTestCase {
                 SnippetTestCase.copySources(f, "src/main");
                 SnippetTestCase.copySources(f, "src/test/eo");
                 f.properties()
-                    .set("project.build.sourceEncoding", "UTF-8")
-                    .set("project.reporting.outputEncoding", "UTF-8");
+                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
                 f.dependencies().append(
                     "net.sf.saxon",
                     "Saxon-HE",
@@ -170,7 +186,7 @@ final class SnippetTestCase {
                     .set("unphiMetas", new String[]{"+tests"})
                     .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
-                    .set("printReversed", "true");
+                    .set("printReversed", SnippetTestCase.TRUE);
                 f.exec("clean", "compile");
                 final String phi = f.log();
                 MatcherAssert.assertThat(
@@ -180,8 +196,8 @@ final class SnippetTestCase {
                 );
                 f.files().file("pom.xml").delete();
                 f.properties()
-                    .set("project.build.sourceEncoding", "UTF-8")
-                    .set("project.reporting.outputEncoding", "UTF-8");
+                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
                 f.dependencies().append(
                     "org.junit.jupiter",
                     "junit-jupiter-api",
@@ -207,10 +223,10 @@ final class SnippetTestCase {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", "false")
-                    .set("offline", "true")
-                    .set("withRuntimeDependency", "false")
-                    .set("placeBinariesThatHaveSources", "true");
+                    .set("failOnWarning", SnippetTestCase.FALSE)
+                    .set("offline", SnippetTestCase.TRUE)
+                    .set("withRuntimeDependency", SnippetTestCase.FALSE)
+                    .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
                 f.build()
                     .plugins()
                     .append(
@@ -230,17 +246,17 @@ final class SnippetTestCase {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", "false")
-                    .set("offline", "true")
+                    .set("failOnWarning", SnippetTestCase.FALSE)
+                    .set("offline", SnippetTestCase.TRUE)
                     .set("scope", "test")
                     .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
                     .set("targetDir", "${project.basedir}/target/eo-test")
-                    .set("addSourcesRoot", "false")
-                    .set("addTestSourcesRoot", "true")
-                    .set("failOnWarning", "false")
+                    .set("addSourcesRoot", SnippetTestCase.FALSE)
+                    .set("addTestSourcesRoot", SnippetTestCase.TRUE)
+                    .set("failOnWarning", SnippetTestCase.FALSE)
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("withRuntimeDependency", "false")
-                    .set("placeBinariesThatHaveSources", "true");
+                    .set("withRuntimeDependency", SnippetTestCase.FALSE)
+                    .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
                 f.exec("clean", "test");
                 final String log = f.log();
                 Logger.debug(this, log);

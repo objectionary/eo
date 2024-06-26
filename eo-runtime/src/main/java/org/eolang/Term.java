@@ -42,6 +42,7 @@ public interface Term {
      * @return The expression in φ-calculus
      * @checkstyle MethodNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.MethodNamingConventions")
     String φTerm();
 
 }

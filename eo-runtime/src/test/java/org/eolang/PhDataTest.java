@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhData}.
  * @since 0.36.0
  */
-public class PhDataTest {
+final class PhDataTest {
     @Test
     void addsApplicationWithDelta() {
         MatcherAssert.assertThat(
@@ -44,7 +44,7 @@ public class PhDataTest {
 
     @Test
     void returnsData() {
-        final byte[] data = new byte[] {0x2A, 0x3B};
+        final byte[] data = {0x2A, 0x3B};
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new PhData(new PhDefault(), data).delta(),

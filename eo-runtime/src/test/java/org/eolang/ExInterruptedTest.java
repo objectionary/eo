@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.28.3
  */
-public class ExInterruptedTest {
+final class ExInterruptedTest {
 
     @Test
     void throwsRightException() {
@@ -52,6 +52,7 @@ public class ExInterruptedTest {
         /**
          * CTor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         EOthrow() {
             this.add(
                 "φ",

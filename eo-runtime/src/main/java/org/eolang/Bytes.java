@@ -51,8 +51,9 @@ public interface Bytes {
      * OR operation.
      * @param other Bytes.
      * @return Bytes.
-     * @checkstyle MethodNameCheck (2 lines)
+     * @checkstyle MethodNameCheck (3 lines)
      */
+    @SuppressWarnings("PMD.ShortMethodName")
     Bytes or(Bytes other);
 
     /**

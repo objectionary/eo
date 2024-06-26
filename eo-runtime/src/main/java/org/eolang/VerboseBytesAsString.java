@@ -45,7 +45,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
      * @param data Data.
      */
     public VerboseBytesAsString(final byte[] data) {
-        this.data = data;
+        this.data = Arrays.copyOf(data, data.length);
     }
 
     @Override
@@ -81,6 +81,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
                     Arrays.toString(this.data),
                     new String(this.data, StandardCharsets.UTF_8)
                 );
+                break;
         }
         return result;
     }

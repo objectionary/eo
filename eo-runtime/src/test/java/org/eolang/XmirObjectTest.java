@@ -40,14 +40,14 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.38
  */
-public class XmirObjectTest {
+final class XmirObjectTest {
 
     @Test
-    public void annotatesOnlyPublicClasses() throws IOException {
+    void annotatesOnlyPublicClasses() throws IOException {
         final Set<Class<?>> clazzes =  ClassPath.from(ClassLoader.getSystemClassLoader())
             .getAllClasses()
             .stream()
-            .filter(clazz -> clazz.getPackageName().equals("EOorg.EOeolang"))
+            .filter(clazz -> "EOorg.EOeolang".equals(clazz.getPackageName()))
             .map(ClassPath.ClassInfo::load)
             .filter(
                 clazz -> clazz.getSimpleName().startsWith("EO")
