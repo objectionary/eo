@@ -93,6 +93,8 @@ public final class TranspileMojo extends SafeMojo {
             "/org/eolang/maven/pre/package.xsl",
             "/org/eolang/maven/pre/tests.xsl",
             "/org/eolang/maven/pre/rename-tests-inners.xsl",
+            "/org/eolang/maven/pre/align-test-classes.xsl",
+            "/org/eolang/maven/pre/remove-high-level-inner-classes.xsl",
             "/org/eolang/maven/pre/attrs.xsl",
             "/org/eolang/maven/pre/data.xsl"
         ).back(),
