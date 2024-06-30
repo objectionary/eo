@@ -66,7 +66,7 @@ final class OptimizeMojoTest {
             );
         }
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "All yaml tests in packs/ should pass",
             check.failures(),
             Matchers.empty()
         );

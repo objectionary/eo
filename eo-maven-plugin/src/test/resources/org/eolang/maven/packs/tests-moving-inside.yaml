@@ -25,13 +25,16 @@ xsls:
   - /org/eolang/maven/pre/classes.xsl
   - /org/eolang/parser/remove-noise.xsl
   - /org/eolang/maven/pre/tests.xsl
+  - /org/eolang/maven/pre/align-test-classes.xsl
+  - /org/eolang/maven/pre/remove-high-level-inner-classes.xsl
   - /org/eolang/maven/pre/rename-tests-inners.xsl
 tests:
   - /program/errors[count(*)=0]
-  - /program[count(//class)=5]
   - /program/objects[count(class)=1]
-  - //class[@name='ω3t0$a0' and @parent='ω2c']
-  - //o[@base='ω2c' and @name='c']
+  - /program/objects/class[count(class)=4]
+  - /program[count(objects/class/class//class)=0]
+  - //class[starts-with(@name, 'ω3t0$a0-hash-') and starts-with(@parent, 'ω2c-hash-')]
+  - //o[starts-with(@base, 'ω2c-hash-') and @name='c']
 eo: |
   +tests
 

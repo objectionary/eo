@@ -39,6 +39,8 @@ SOFTWARE.
           <xsl:text>ω</xsl:text>
           <xsl:value-of select="$class/@ancestors"/>
           <xsl:value-of select="substring-after($class/@name, concat($class/@parent, '$'))"/>
+          <xsl:text>-hash-</xsl:text>
+          <xsl:value-of select="generate-id($class)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$class/@name"/>
