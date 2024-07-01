@@ -32,17 +32,6 @@ public class CStdLibMojo extends SafeMojo {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private File cEoStdLibDir;
 
-    /**
-     * OS name.
-     */
-    private static final String OS_NAME = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-
-    private static final Map<String, String> OsToDirectory = new MapOf<>(
-        new MapEntry<>("linux", "linux"),
-        new MapEntry<>("mac", "darwin"),
-        new MapEntry<>("windows", "windows")
-    );
-
     private final Path LIB_TARGET_DIR = Paths.get("Lib/native_cstdlib");
 
     @Override
@@ -51,37 +40,10 @@ public class CStdLibMojo extends SafeMojo {
         new File(target.toString()).mkdirs();
         // TODO: check if there is no files in directory
         for (File source : this.cEoStdLibDir.listFiles()) {
-            // TODO: replace by paths
-            final String cc = System.getenv("CC");
-            final String home = System.getProperty("java.home");
-            final String common = String.format("%s/include", home);
-            final String specific = String.format("%s/%s", common, specificIncludeDirName());
-            System.out.println(
-                new Jaxec(
-                    cc,
-                    String.format("-I%s", common),
-                    String.format("-I%s", specific),
-                    source.getPath(),
-                    "-shared",
-                    "-o",
-                    target.resolve(
-                        FilenameUtils.removeExtension(source.getName())
-                    ).toString()
-                ).withCheck(false).execUnsafe()
+            new CompiledCJniLib(
+                source.toPath(),
+                target.resolve(FilenameUtils.removeExtension(source.getName()))
             );
         }
-    }
-
-    /**
-     * The name of the directory that contains the platform-specific C header for JNI.
-     * @link <a href="https://mail.openjdk.org/pipermail/discuss/2011-June/001918.html">Where to find jni_md.h</a>
-     */
-    private String specificIncludeDirName() {
-        for (Map.Entry<String, String> entry : OsToDirectory.entrySet()) {
-            if (CStdLibMojo.OS_NAME.contains(entry.getKey())) {
-                return entry.getValue();
-            }
-        }
-        throw new IllegalStateException("Unavailable OS for native C standard lib usage");
     }
 }
