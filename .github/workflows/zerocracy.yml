@@ -52,4 +52,5 @@ jobs:
         with:
           branch: gh-pages
           folder: pages
+          target-folder: zerocracy
           clean: false
