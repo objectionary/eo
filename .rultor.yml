@@ -66,7 +66,8 @@ release:
     git commit -am "XMIR XSD ${tag}"
     rm -rf objectionary
     cp -R /tmp/objectionary .
-    find objectionary -name '*.eo' | xargs sed -i "s/0\.0\.0/${tag}/g"
+    find objectionary -name '*.eo' | xargs sed -i "s/jvm org.eolang:eo-runtime:0\.0\.0/jvm org.eolang:eo-runtime:${tag}/g"
+    find objectionary -name '*.eo' | xargs sed -i "s/version 0\.0\.0/version ${tag}/g"
     git add objectionary
     find objectionary -name '*.eo' > objectionary.lst
     git add objectionary.lst
