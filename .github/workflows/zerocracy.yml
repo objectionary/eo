@@ -25,8 +25,8 @@ name: zerocracy
   push:
     branches:
       - master
-  schedule:
-    - cron: '0 * * * *'
+  # schedule:
+  #   - cron: '0 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
