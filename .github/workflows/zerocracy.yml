@@ -43,7 +43,7 @@ jobs:
             summary_url=https://objectionary.github.io/eo/zerocracy.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.15
+      - uses: zerocracy/pages-action@0.0.16
         with:
           factbase: objectionary.fb
           output: pages
