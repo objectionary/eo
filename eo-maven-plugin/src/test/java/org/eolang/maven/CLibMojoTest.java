@@ -110,7 +110,7 @@ final class CLibMojoTest {
     void throwsExceptionOnInvalidCSource(@TempDir final Path temp) throws IOException {
         final String source = "invalid.c";
         new File(temp.toString(), source);
-        Files.write(temp.resolve(source), "INVLAID".getBytes());
+        Files.write(temp.resolve(source), "INVALID".getBytes());
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp).with(
