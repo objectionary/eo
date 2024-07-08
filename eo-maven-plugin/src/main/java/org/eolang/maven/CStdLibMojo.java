@@ -1,17 +1,12 @@
 package org.eolang.maven;
 
-import com.yegor256.Jaxec;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
 import org.apache.commons.io.FilenameUtils;
 
 @Mojo(

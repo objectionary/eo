@@ -14,6 +14,11 @@ public class CompiledCJniLib {
 
     private final Path target;
 
+    /**
+     * Ctor.
+     * @param source Path to C source of native function.
+     * @param target Path to the target file where the resulting native library will be compiled.
+     */
     public CompiledCJniLib(final Path source, final Path target) {
         this.source = source;
         this.target = target;
