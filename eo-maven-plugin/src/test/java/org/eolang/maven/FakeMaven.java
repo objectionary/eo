@@ -246,8 +246,8 @@ public final class FakeMaven {
                 new File("../eo-runtime/src/main/rust/eo")
             );
             this.params.putIfAbsent(
-                "cEoStdLibDir",
-                new File("../eo-runtime/src/main/c/eo/stdlib")
+                "cEoLibDir",
+                new File("../eo-runtime/src/main/c/eo/lib")
             );
             this.params.putIfAbsent("namesDir", this.generatedPath().resolve("names").toFile());
             this.params.putIfAbsent(
