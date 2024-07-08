@@ -1,15 +1,42 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016-2024 Objectionary.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.eolang.maven;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
-import org.eolang.maven.clib.JniStub;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-class NativeCLibTest {
+/**
+ * Test case for {@link org.eolang.maven.NativeCLib}.
+ *
+ * @since 0.38
+ */
+final class NativeCLibTest {
     /**
      * Folder with source C files for tests.
      */
@@ -26,20 +53,23 @@ class NativeCLibTest {
     private static final String COMPILE_ERROR = "compile-error.c";
 
     @Test
-    public void compilesCorrectSource(@TempDir final Path temp) {
+    void compilesCorrectSource(@TempDir final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new NativeCLib(
-                SRC.resolve(CORRECT_SOURCE),
-                temp.resolve(FilenameUtils.removeExtension(CORRECT_SOURCE))
-            ).build(),
+                NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
+                temp.resolve(FilenameUtils.removeExtension(NativeCLibTest.CORRECT_SOURCE))
+            ).compile(),
             "Exception shouldn't been thrown while compiling native library"
         );
     }
 
     @Test
-    public void loadsCorrectSource(@TempDir final Path temp) {
-        String target = FilenameUtils.removeExtension(CORRECT_SOURCE);
-        new NativeCLib(SRC.resolve(CORRECT_SOURCE), temp.resolve(target)).build();
+    void loadsCorrectSource(@TempDir final Path temp) {
+        final String target = FilenameUtils.removeExtension(NativeCLibTest.CORRECT_SOURCE);
+        new NativeCLib(
+            NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
+            temp.resolve(target)
+        ).compile();
         Assertions.assertDoesNotThrow(
             () -> System.load(temp.resolve(target).toString()),
             "Exception shouldn't been thrown while loading native library"
@@ -47,10 +77,13 @@ class NativeCLibTest {
     }
 
     @Test
-    public void runsCompiledCorrectSource(@TempDir final Path temp) {
-        int value = 10;
-        String target = FilenameUtils.removeExtension(CORRECT_SOURCE);
-        new NativeCLib(SRC.resolve(CORRECT_SOURCE), temp.resolve(target)).build();
+    void runsCompiledCorrectSource(@TempDir final Path temp) {
+        final int value = 10;
+        final String target = FilenameUtils.removeExtension(NativeCLibTest.CORRECT_SOURCE);
+        new NativeCLib(
+            NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
+            temp.resolve(target)
+        ).compile();
         System.load(temp.resolve(target).toString());
         Assertions.assertDoesNotThrow(
             () -> JniStub.returnParam(value),
@@ -64,13 +97,13 @@ class NativeCLibTest {
     }
 
     @Test
-    public void failsOnSourceCompilationError(@TempDir final Path temp) {
+    void failsOnSourceCompilationError(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new NativeCLib(
-                SRC.resolve(COMPILE_ERROR),
-                temp.resolve(FilenameUtils.removeExtension(COMPILE_ERROR))
-            ).build(),
+                NativeCLibTest.SRC.resolve(NativeCLibTest.COMPILE_ERROR),
+                temp.resolve(FilenameUtils.removeExtension(NativeCLibTest.COMPILE_ERROR))
+            ).compile(),
             "Exception shouldn't been thrown while compiling native library"
         );
     }
