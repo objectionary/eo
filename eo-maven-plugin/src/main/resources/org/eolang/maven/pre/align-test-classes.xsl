@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="align-test-classes" version="2.0">
+  <!-- Copies all high-level nesting classes inside the main class. -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
