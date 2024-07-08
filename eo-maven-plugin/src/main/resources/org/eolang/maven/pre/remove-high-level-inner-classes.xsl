@@ -31,7 +31,7 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <xsl:template match="program/objects/class/class//class">
-    <xsl:if test="not(//meta[head='tests' or head='junit'])">
+    <xsl:if test="not(//meta[head='tests'])">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>

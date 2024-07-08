@@ -29,7 +29,7 @@ SOFTWARE.
   could be too long class names.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="tests" select="exists(//meta[head='junit' or head='tests'])"/>
+  <xsl:variable name="tests" select="exists(//meta[head='tests'])"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="class" as="node()"/>
     <xsl:variable name="ret">

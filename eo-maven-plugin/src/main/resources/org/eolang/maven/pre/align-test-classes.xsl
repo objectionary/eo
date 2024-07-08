@@ -33,7 +33,7 @@ SOFTWARE.
   <xsl:template match="program/objects/class">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='tests' or head='junit']">
+      <xsl:if test="//meta[head='tests']">
         <xsl:for-each select="class//class">
           <xsl:copy>
             <xsl:apply-templates select="node()|@*"/>
