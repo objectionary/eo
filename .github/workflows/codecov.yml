@@ -36,6 +36,8 @@ concurrency:
 jobs:
   codecov:
     runs-on: ubuntu-22.04
+    env:
+      CC: gcc
     steps:
       - uses: actions/checkout@v4
       - uses: teatimeguest/setup-texlive-action@v3.3.0
