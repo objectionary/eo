@@ -30,6 +30,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -65,6 +67,7 @@ final class NativeCLibTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void loadsCorrectSource(@TempDir final Path temp) {
         final Path target = new NativeCLib(
             NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
@@ -77,6 +80,7 @@ final class NativeCLibTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void runsCompiledCorrectSource(@TempDir final Path temp) {
         final int value = 10;
         final Path target = new NativeCLib(
