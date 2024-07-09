@@ -84,6 +84,16 @@ public class NativeCLib {
                     ).withCheck(false).exec()
                 )
             );
+            Logger.info(
+                this,
+                String.format(
+                    "$JAVA_HOME/include contents: %s",
+                    new Jaxec(
+                        "ls",
+                        CJniInfo.COMMON_HEADER
+                    ).withCheck(false).exec()
+                )
+            );
         } catch (final IllegalArgumentException ex) {
             throw new IllegalArgumentException(
                 "An error occurred while compiling the source code of the C native library",
