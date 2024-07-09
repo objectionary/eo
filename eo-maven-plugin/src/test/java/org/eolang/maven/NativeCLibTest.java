@@ -104,7 +104,7 @@ final class NativeCLibTest {
                 NativeCLibTest.SRC.resolve(NativeCLibTest.COMPILE_ERROR),
                 temp.resolve(FilenameUtils.removeExtension(NativeCLibTest.COMPILE_ERROR))
             ).compile(),
-            "Exception shouldn't been thrown while compiling native library"
+            "Exception should be thrown due to compilation error of C source"
         );
     }
 }
