@@ -43,10 +43,17 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     * @param bytes Bytes.
+     */
+    public BytesOf(final Bytes bytes) {
+        this.bytes = bytes;
+    }
+    /**
+     * Ctor.
      * @param data Data.
      */
     public BytesOf(final byte[] data) {
-        this.bytes = new BytesRaw(Arrays.copyOf(data, data.length));
+        this(new BytesRaw(Arrays.copyOf(data, data.length)));
     }
 
     /**
