@@ -46,7 +46,7 @@ public final class CJniInfo {
     private static final Map<String, String> OS_TO_DIRECTORY = new MapOf<>(
         new MapEntry<>("linux", "linux"),
         new MapEntry<>("mac", "darwin"),
-        new MapEntry<>("windows", "windows")
+        new MapEntry<>("windows", "win32")
     );
 
     /**
