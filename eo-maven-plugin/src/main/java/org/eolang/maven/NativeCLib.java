@@ -24,6 +24,7 @@
 
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.yegor256.Jaxec;
 import java.nio.file.Path;
 import jdk.internal.org.jline.utils.Log;
@@ -66,7 +67,8 @@ public class NativeCLib {
             );
         }
         try {
-            Log.debug(
+            Logger.debug(
+                this,
                 new Jaxec(
                     ccompiler,
                     String.format("-I%s", CJniInfo.COMMON_HEADER),
