@@ -59,6 +59,11 @@ public class NativeCLib {
      */
     public void compile() {
         final String ccompiler = System.getenv("CC");
+        if (ccompiler == null) {
+            throw new IllegalStateException(
+                "There is no environment variable \"CC\" with the proper specified C compiler path"
+            );
+        }
         try {
             new Jaxec(
                 ccompiler,
