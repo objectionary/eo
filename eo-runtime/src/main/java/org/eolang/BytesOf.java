@@ -48,6 +48,7 @@ public final class BytesOf implements Bytes {
     public BytesOf(final Bytes bytes) {
         this.bytes = bytes;
     }
+
     /**
      * Ctor.
      * @param data Data.
