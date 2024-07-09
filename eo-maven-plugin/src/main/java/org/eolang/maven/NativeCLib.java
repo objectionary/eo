@@ -69,7 +69,7 @@ public class NativeCLib {
             );
         }
         try {
-            Logger.debug(
+            Logger.info(
                 this,
                 String.format(
                     "Compiler output: %s",
