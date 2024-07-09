@@ -27,6 +27,8 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.Jaxec;
 import java.nio.file.Path;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.eolang.maven.util.CJniInfo;
 
 /**
@@ -48,17 +50,18 @@ public class NativeCLib {
     /**
      * Ctor.
      * @param source Path to C source of native function.
-     * @param target Path to the target file where the resulting native library will be compiled.
+     * @param path Path to the directory where compiled native library will be placed.
      */
-    public NativeCLib(final Path source, final Path target) {
+    public NativeCLib(final Path source, final Path path) {
         this.source = source;
-        this.target = target;
+        this.target = path.resolve(NativeCLib.libName(source.getFileName().toString()));
     }
 
     /**
      * Compiles C native libraries.
+     * @return Path to the target file where the resulting native library will be compiled.
      */
-    public void compile() {
+    public Path compile() {
         final String ccompiler = System.getenv("CC");
         if (ccompiler == null) {
             throw new IllegalStateException(
@@ -84,5 +87,31 @@ public class NativeCLib {
                 ex
             );
         }
+        return this.target;
+    }
+
+    /**
+     * Builds platform specific dynamic library name for given source.
+     * @param source Source.
+     * @return Platform-specific dynamic library name.
+     */
+    private static String libName(final String source) {
+        final String raw = FilenameUtils.removeExtension(source);
+        final String lib;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            lib = String.format("%s.dll", raw);
+        } else if (SystemUtils.IS_OS_LINUX) {
+            lib = String.format("lib%s.so", raw);
+        } else if (SystemUtils.IS_OS_MAC) {
+            lib = String.format("lib%s.dylib", raw);
+        } else {
+            throw new UnsupportedOperationException(
+                String.format(
+                    "Native C libraries are not supported by %s os. Only windows, linux and macos are allowed.",
+                    System.getProperty("os.name")
+                )
+            );
+        }
+        return lib;
     }
 }

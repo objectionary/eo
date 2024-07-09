@@ -66,10 +66,9 @@ final class NativeCLibTest {
 
     @Test
     void loadsCorrectSource(@TempDir final Path temp) {
-        final String target = FilenameUtils.removeExtension(NativeCLibTest.CORRECT_SOURCE);
-        new NativeCLib(
+        final Path target = new NativeCLib(
             NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
-            temp.resolve(target)
+            temp
         ).compile();
         Assertions.assertDoesNotThrow(
             () -> System.load(temp.resolve(target).toString()),
@@ -80,10 +79,9 @@ final class NativeCLibTest {
     @Test
     void runsCompiledCorrectSource(@TempDir final Path temp) {
         final int value = 10;
-        final String target = FilenameUtils.removeExtension(NativeCLibTest.CORRECT_SOURCE);
-        new NativeCLib(
+        final Path target = new NativeCLib(
             NativeCLibTest.SRC.resolve(NativeCLibTest.CORRECT_SOURCE),
-            temp.resolve(target)
+            temp
         ).compile();
         System.load(temp.resolve(target).toString());
         Assertions.assertDoesNotThrow(
