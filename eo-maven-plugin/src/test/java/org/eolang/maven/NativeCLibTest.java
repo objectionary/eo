@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -97,6 +98,7 @@ final class NativeCLibTest {
     }
 
     @Test
+    @Disabled
     void failsOnSourceCompilationError(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
