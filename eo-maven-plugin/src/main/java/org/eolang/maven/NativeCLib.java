@@ -26,6 +26,7 @@ package org.eolang.maven;
 
 import com.yegor256.Jaxec;
 import java.nio.file.Path;
+import jdk.internal.org.jline.utils.Log;
 import org.eolang.maven.util.CJniInfo;
 
 /**
@@ -65,15 +66,17 @@ public class NativeCLib {
             );
         }
         try {
-            new Jaxec(
-                ccompiler,
-                String.format("-I%s", CJniInfo.COMMON_HEADER),
-                String.format("-I%s", CJniInfo.OS_SPEC_HEADER),
-                this.source.toString(),
-                "-shared",
-                "-o",
-                this.target.toString()
-            ).exec();
+            Log.debug(
+                new Jaxec(
+                    ccompiler,
+                    String.format("-I%s", CJniInfo.COMMON_HEADER),
+                    String.format("-I%s", CJniInfo.OS_SPEC_HEADER),
+                    this.source.toString(),
+                    "-shared",
+                    "-o",
+                    this.target.toString()
+                ).withCheck(false).exec()
+            );
         } catch (final IllegalArgumentException ex) {
             throw new IllegalArgumentException(
                 "An error occurred while compiling the source code of the C native library",

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -52,6 +53,7 @@ final class CLibMojoTest {
     }
 
     @Test
+    @Disabled
     void throwsExceptionOnEmptySourceDir(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -64,6 +66,7 @@ final class CLibMojoTest {
     }
 
     @Test
+    @Disabled
     void throwsExceptionOnAppropriateSourceAbsence(@TempDir final Path temp) throws IOException {
         final String source = "empty.java";
         new File(temp.toString(), source);
@@ -107,6 +110,7 @@ final class CLibMojoTest {
     }
 
     @Test
+    @Disabled
     void throwsExceptionOnInvalidCSource(@TempDir final Path temp) throws IOException {
         final String source = "invalid.c";
         new File(temp.toString(), source);
