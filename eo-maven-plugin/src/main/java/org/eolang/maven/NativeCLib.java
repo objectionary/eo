@@ -27,7 +27,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.yegor256.Jaxec;
 import java.nio.file.Path;
-import jdk.internal.org.jline.utils.Log;
 import org.eolang.maven.util.CJniInfo;
 
 /**
