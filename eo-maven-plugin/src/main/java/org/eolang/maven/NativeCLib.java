@@ -71,15 +71,18 @@ public class NativeCLib {
         try {
             Logger.debug(
                 this,
-                new Jaxec(
-                    ccompiler,
-                    String.format("-I%s", CJniInfo.COMMON_HEADER),
-                    String.format("-I%s", CJniInfo.OS_SPEC_HEADER),
-                    this.source.toString(),
-                    "-shared",
-                    "-o",
-                    this.target.toString()
-                ).withCheck(false).exec()
+                String.format(
+                    "Compiler output: %s",
+                    new Jaxec(
+                        ccompiler,
+                        String.format("-I%s", CJniInfo.COMMON_HEADER),
+                        String.format("-I%s", CJniInfo.OS_SPEC_HEADER),
+                        this.source.toString(),
+                        "-shared",
+                        "-o",
+                        this.target.toString()
+                    ).withCheck(false).exec()
+                )
             );
         } catch (final IllegalArgumentException ex) {
             throw new IllegalArgumentException(
