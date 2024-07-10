@@ -214,9 +214,9 @@
       ^
       *
       [a x i]
-        a.with (memory i) > @
-    memory 0 > i
-    memory 0 > j
+        a.with (malloc i) > @
+    malloc 0 > i
+    malloc 0 > j
     while. > sorting-process!
       (i.as-int.plus 1).lt res.length
       [iter-i]
