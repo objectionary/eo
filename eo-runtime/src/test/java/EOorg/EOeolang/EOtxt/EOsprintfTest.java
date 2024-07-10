@@ -48,13 +48,18 @@ final class EOsprintfTest {
     void returnsValidFormattedString() {
         final Phi sprintf = new EOsprintf();
         sprintf.put(0, new Data.ToPhi("string %s, bytes %x, float %f, int %d, bool %b"));
-        sprintf.put(1, new Data.ToPhi(new Phi[] {
-            new Data.ToPhi("Jeff"),
-            new Data.ToPhi("Jeff".getBytes(StandardCharsets.UTF_8)),
-            new Data.ToPhi(42.3),
-            new Data.ToPhi(14L),
-            new Data.ToPhi(false)
-        }));
+        sprintf.put(
+            1,
+            new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi("Jeff"),
+                    new Data.ToPhi("Jeff".getBytes(StandardCharsets.UTF_8)),
+                    new Data.ToPhi(42.3),
+                    new Data.ToPhi(14L),
+                    new Data.ToPhi(false),
+                }
+            )
+        );
         MatcherAssert.assertThat(
             "All types should be formatted successfully",
             new Dataized(sprintf).take(String.class),
@@ -68,9 +73,7 @@ final class EOsprintfTest {
     void failsIfAmountOfArgumentsDoesNotMatch() {
         final Phi sprintf = new EOsprintf();
         sprintf.put(0, new Data.ToPhi("%s%s"));
-        sprintf.put(1, new Data.ToPhi(new Phi[] {
-            new Data.ToPhi("Hey")
-        }));
+        sprintf.put(1, new Data.ToPhi(new Phi[] {new Data.ToPhi("Hey")}));
         final Throwable exception = Assertions.assertThrows(
             EOerror.ExError.class,
             () -> new Dataized(sprintf).take(),
@@ -89,10 +92,15 @@ final class EOsprintfTest {
     void doesNotFailIfArgumentsMoreThanFormats() {
         final Phi sprintf = new EOsprintf();
         sprintf.put(0, new Data.ToPhi("%s"));
-        sprintf.put(1, new Data.ToPhi(new Phi[] {
-            new Data.ToPhi("Hey"),
-            new Data.ToPhi("Hey")
-        }));
+        sprintf.put(
+            1,
+            new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi("Hey"),
+                    new Data.ToPhi("Hey"),
+                }
+            )
+        );
         MatcherAssert.assertThat(
             "The second argument should be ignored",
             new Dataized(sprintf).take(String.class),

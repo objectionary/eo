@@ -27,8 +27,8 @@
  */
 
 /**
- * EO-io, tests.
+ * EO-txt, tests.
  *
- * @since 0.1
+ * @since 0.39
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOtxt;

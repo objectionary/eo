@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (20 lines)
- */
-
 /**
- * EO-io, tests.
+ * EO runtime, TXT.
  *
- * @since 0.1
+ * @since 0.39
+ * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOtxt;

@@ -142,6 +142,7 @@ public interface Data {
          * @param obj Object to convert
          * @return Constructed Phi
          */
+        @SuppressWarnings("PMD.CognitiveComplexity")
         private static Phi toPhi(final Object obj) {
             final Phi phi;
             final Phi eolang = Phi.Φ.take("org").take("eolang");
@@ -219,7 +220,6 @@ public interface Data {
             "PMD.NPathComplexity"
         })
         private static String unescapeJavaString(final String str) {
-
             final StringBuilder unescaped = new StringBuilder(str.length());
             for (int idx = 0; idx < str.length(); ++idx) {
                 char chr = str.charAt(idx);

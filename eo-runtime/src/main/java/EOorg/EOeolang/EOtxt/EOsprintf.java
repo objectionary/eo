@@ -57,6 +57,44 @@ public final class EOsprintf extends PhDefault implements Atom {
         this.add("args", new AtVoid("args"));
     }
 
+    @Override
+    public Phi lambda() throws Exception {
+        final String format = new Param(this, "format").strong(String.class);
+        final Phi args = this.take("args");
+        final Phi retriever = args.take("at");
+        final Long length = new Param(args, "length").strong(Long.class);
+        final List<Object> arguments = new ArrayList<>(0);
+        String pattern = format;
+        long index = 0;
+        while (true) {
+            final int idx = pattern.indexOf('%');
+            if (idx == -1) {
+                break;
+            }
+            if (index == length) {
+                throw new ExFailure(
+                    String.format(
+                        "The amount of arguments %d does not match the amount of format occurrences %d",
+                        length,
+                        EOsprintf.percents(format)
+                    )
+                );
+            }
+            final char sym = pattern.charAt(idx + 1);
+            final Phi taken = retriever.copy();
+            taken.put(0, new Data.ToPhi(++index));
+            arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
+            pattern = pattern.substring(idx + 1);
+        }
+        return new ToPhi(
+            String.format(
+                Locale.US,
+                format.replaceAll("%x", "%s"),
+                arguments.toArray()
+            )
+        );
+    }
+
     /**
      * Convert byte array to hex string.
      * @param bytes Byte array
@@ -113,49 +151,11 @@ public final class EOsprintf extends PhDefault implements Atom {
      */
     private static int percents(final String str) {
         int count = 0;
-        for (int i = 0; i < str.length(); ++i) {
-            if (str.charAt(i) == '%') {
-                count++;
+        for (int idx = 0; idx < str.length(); ++idx) {
+            if (str.charAt(idx) == '%') {
+                ++count;
             }
         }
         return count;
-    }
-
-    @Override
-    public Phi lambda() throws Exception {
-        final String format = new Param(this, "format").strong(String.class);
-        final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final Long length = new Param(args, "length").strong(Long.class);
-        final List<Object> arguments = new ArrayList<>(0);
-        String pattern = format;
-        long index = 0;
-        while (true) {
-            final int idx = pattern.indexOf('%');
-            if (idx == -1) {
-                break;
-            }
-            if (index == length) {
-                throw new ExFailure(
-                    String.format(
-                        "The amount of arguments %d does not match the amount of format occurrences %d",
-                        length,
-                        EOsprintf.percents(format)
-                    )
-                );
-            }
-            final char sym = pattern.charAt(idx + 1);
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(index++));
-            arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
-            pattern = pattern.substring(idx + 1);
-        }
-        return new ToPhi(
-            String.format(
-                Locale.US,
-                format.replaceAll("%x", "%s"),
-                arguments.toArray()
-            )
-        );
     }
 }
