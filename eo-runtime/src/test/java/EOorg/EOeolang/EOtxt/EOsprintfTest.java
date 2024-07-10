@@ -27,13 +27,10 @@
  */
 package EOorg.EOeolang.EOtxt;
 
-import EOorg.EOeolang.EOas_phi;
 import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
-import org.eolang.AtCompositeTest;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

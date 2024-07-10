@@ -163,15 +163,14 @@
 [] > complex-objects-list-comparison
   list > res
     *
+      list (* 0 1)
+      list (* 4 0)
+      list (* 7 3)
+  .eq > @
+    *
       * 0 1
       * 4 0
       * 7 3
-  res.eq > @
-    list
-      *
-        list (* 0 1)
-        list (* 4 0)
-        list (* 7 3)
 
 # Test.
 [] > list-mappedi-should-work
