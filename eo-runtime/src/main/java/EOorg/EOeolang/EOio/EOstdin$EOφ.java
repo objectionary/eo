@@ -32,6 +32,7 @@ import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
  * Standard Input. Consumes all data.
@@ -40,6 +41,7 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
+@XmirObject(oname = "stdin.@")
 public final class EOstdin$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {

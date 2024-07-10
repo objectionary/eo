@@ -151,6 +151,17 @@ public interface Data {
                 } else {
                     phi = eolang.take("false");
                 }
+            } else if (obj instanceof Phi[]) {
+                final Phi tuple = eolang.take("tuple");
+                Phi argument = tuple.take("empty");
+                Phi tup;
+                for (final Phi element : (Phi[]) obj) {
+                    tup = tuple.copy();
+                    tup.put(0, argument);
+                    tup.put(1, element);
+                    argument = tup;
+                }
+                phi = argument;
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
                 phi.attach((byte[]) obj);
@@ -208,6 +219,7 @@ public interface Data {
             "PMD.NPathComplexity"
         })
         private static String unescapeJavaString(final String str) {
+
             final StringBuilder unescaped = new StringBuilder(str.length());
             for (int idx = 0; idx < str.length(); ++idx) {
                 char chr = str.charAt(idx);

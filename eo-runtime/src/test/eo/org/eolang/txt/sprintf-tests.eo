@@ -20,53 +20,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
++tests
++package org.eolang.txt
 +version 0.0.0
 
-# Tuple.
-[head tail] > tuple
-  # Empty tuple.
-  [] > empty
-    0 > length
+# Test.
+[] > prints-simple-string
+  eq. > @
+    "Hello, Jeffrey!"
+    sprintf
+      "Hello, %s!"
+      * "Jeffrey"
 
-    error "Can't get an object from the empty tuple" > [i] > at
+# Test.
+[] > prints-complex-string
+  eq. > @
+    "Привет 3.140000 Jeff X!"
+    sprintf
+      "Привет %s %s!"
+      * 3.14 "Jeff" "X"
 
-    [x] > with
-      tuple > @
-        tuple.empty
-        x
-
-  # Obtain the length of the tuple.
-  [] > length
-    int > @
-      ^.head.length.plus 1 > len!
-
-  # Take one element from the tuple, at the given position.
-  [i] > at
-    ^.length > len
-    if. > index!
-      0.gt
-        i > idx!
-      len.plus idx
-      idx
-    if. > @
-      or.
-        0.gt index
-        len.lte index
-      error "Given index is out of tuple bounds"
-      at-fast ^ len
-
-    [tup len] > at-fast
-      if. > @
-        (len.plus -1).gt ^.index
-        ^.at-fast
-          tup.head
-          len.plus -1
-        tup.tail
-
-  # Create a new tuple with this element added to the end of it.
-  tuple ^ x > [x] > with
+# Test.
+[] > prints-bytes-string
+  eq. > @
+    "00-00-00-00-00-00-00-42"
+    sprintf
+      "%x"
+      * 42.as-bytes

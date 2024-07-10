@@ -28,7 +28,7 @@ SOFTWARE.
     <xsl:choose>
       <xsl:when test="count(o)=0">
         <xsl:choose>
-          <xsl:when test="count(following-sibling::o)=0 or following-sibling::o[position()=1 and @base!='.empty']">
+          <xsl:when test="count(following-sibling::o)=0 or following-sibling::o[1][not(@base) or @base!='.empty']">
             <o>
               <xsl:for-each select="@*[name()!='star' and name()!='name']">
                 <xsl:attribute name="{name()}">

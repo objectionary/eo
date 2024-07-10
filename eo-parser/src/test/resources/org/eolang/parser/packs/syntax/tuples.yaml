@@ -43,6 +43,7 @@ tests:
   - //o[@base='tuple' and @line=5]/o[@base='tuple']/o[@base='tuple']/o[@base='.empty' and @method]
   - //o[@base='arr']/o[@base='tuple' and @line=9 and @pos=5]
   - //o[@base='arr']/o[@base='.empty' and @line=9 and @pos=6]
+  - //o[@name='y' and @base='.reduced']/o[@base='tuple' and not(@star)]/following-sibling::o[@base='.empty' and @method]
 eo: |
   * > xs
   * 1 > xl
@@ -53,3 +54,7 @@ eo: |
     d.e.f
     g.h.i
   (arr *).elements
+  list
+  .reduced > y
+    *
+    [x]
