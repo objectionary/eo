@@ -209,45 +209,7 @@
   #  to eo-runtime this is the only method which does not work because it's quite
   #  hard to implement properly, especially after big changes in EO semantic.
   #  We need to get it done and write some tests for it.
-  [] > sorted
-    reducedi. > res!
-      ^
-      *
-      [a x i]
-        a.with (malloc i) > @
-    malloc 0 > i
-    malloc 0 > j
-    while. > sorting-process!
-      (i.as-int.plus 1).lt res.length
-      [iter-i]
-        seq > @
-          j.write 0
-          i.write (i.as-int.plus 1)
-          while.
-            (j.as-int.plus 2).lt res.length
-            [iter-j]
-              seq > @
-                if.
-                  lt.
-                    arr.at (res.at (j.as-int.plus 1)).as-int
-                    arr.at (res.at j.as-int).as-int
-                  swap (res.at j.as-int) (res.at (j.as-int.plus 1))
-                  true
-                j.write (j.as-int.plus 1)
-    seq > @
-      sorting-process
-      reduced.
-        list
-          res
-        *
-        [a x]
-          a.with (arr.at x.as-int) > @
-
-    [a b] > swap
-      seq > @
-        a.as-int > temp!
-        a.write b.as-int
-        b.write temp
+  ^ > [] > sorted
 
   # Filter list with index with the function `func`.
   # Here `func` must be an abstract
