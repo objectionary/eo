@@ -82,9 +82,10 @@ public final class EOsprintf extends PhDefault implements Atom {
             }
             final char sym = pattern.charAt(idx + 1);
             final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(++index));
+            taken.put(0, new Data.ToPhi(index));
             arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
             pattern = pattern.substring(idx + 1);
+            ++index;
         }
         return new ToPhi(
             String.format(
