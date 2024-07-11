@@ -27,7 +27,7 @@
  */
 
 /**
- * EO runtime, tests.
+ * EO-io, tests.
  *
  * @since 0.1
  */

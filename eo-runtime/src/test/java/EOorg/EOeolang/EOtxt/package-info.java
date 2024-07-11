@@ -23,30 +23,12 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (20 lines)
  */
-package EOorg.EOeolang.EOio;
-
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
 
 /**
- * Standard Input. Consumes all data.
+ * EO-txt, tests.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.39
  */
-@Versionized
-@XmirObject(oname = "stdin.@")
-public final class EOstdin$EOφ extends PhDefault implements Atom {
-    @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            Input.getInstance().getAllLines()
-        );
-    }
-}
+package EOorg.EOeolang.EOtxt;

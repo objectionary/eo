@@ -34,6 +34,7 @@ import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
  * Standard Input. Consumes only one line.
@@ -42,6 +43,7 @@ import org.eolang.Versionized;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
+@XmirObject(oname = "stdin.next-line")
 public final class EOstdin$EOnext_line extends PhDefault implements Atom {
     @Override
     public Phi lambda() {

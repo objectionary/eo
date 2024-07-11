@@ -33,8 +33,7 @@
   [] > empty
     0 > length
 
-    [i] > at
-      error "Can't get an object from the empty tuple" > @
+    error "Can't get an object from the empty tuple" > [i] > at
 
     [x] > with
       tuple > @

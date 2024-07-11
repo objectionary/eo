@@ -306,6 +306,7 @@ SOFTWARE.
             <exclude>rewritten_sources/pom.xml</exclude>
             <exclude>duplicate_classes/pom.xml</exclude>
             <exclude>simple/pom.xml</exclude>
+            <exclude>hash_package_layer/pom.xml</exclude>
           </pomExcludes>
         </configuration>
       </plugin>

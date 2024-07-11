@@ -142,6 +142,7 @@ public interface Data {
          * @param obj Object to convert
          * @return Constructed Phi
          */
+        @SuppressWarnings("PMD.CognitiveComplexity")
         private static Phi toPhi(final Object obj) {
             final Phi phi;
             final Phi eolang = Phi.Φ.take("org").take("eolang");
@@ -151,6 +152,17 @@ public interface Data {
                 } else {
                     phi = eolang.take("false");
                 }
+            } else if (obj instanceof Phi[]) {
+                final Phi tuple = eolang.take("tuple");
+                Phi argument = tuple.take("empty");
+                Phi tup;
+                for (final Phi element : (Phi[]) obj) {
+                    tup = tuple.copy();
+                    tup.put(0, argument);
+                    tup.put(1, element);
+                    argument = tup;
+                }
+                phi = argument;
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
                 phi.attach((byte[]) obj);
