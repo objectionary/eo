@@ -37,7 +37,7 @@ jobs:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           options: |
             github_token=${{ secrets.GITHUB_TOKEN }}
-            summary_url=https://www.eolang.org/zerocracy/objectionary.html
+            pages_url=https://www.eolang.org/zerocracy/objectionary.html
             repositories=objectionary/*
           factbase: objectionary.fb
       - uses: zerocracy/pages-action@0.0.16
