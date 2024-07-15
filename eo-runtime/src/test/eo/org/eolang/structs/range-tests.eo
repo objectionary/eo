@@ -20,52 +20,59 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.range
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
++tests
++package org.eolang.structs
 +version 0.0.0
 
-# Tuple.
-[head tail] > tuple
-  # Empty tuple.
-  [] > empty
-    0 > length
+# Test.
+[] > simple-range-from-one-to-ten
+  range > rng
+    []
+      [i] > build
+        i > @
+        ^.build (1.plus @) > next
+      build 1 > @
+    10
+  eq. > @
+    rng
+    * 1 2 3 4 5 6 7 8 9
 
-    # Take one element from the tuple, at the given position.
-    error "Can't get an object from the empty tuple" > [i] > at
+# Test.
+[] > simple-range-with-floats-from-one-to-five
+  range > rng
+    []
+      [i] > x
+        i > @
+        ^.x (0.5.plus @) > next
+      x 1.0 > @
+    5.0
+  eq. > @
+    rng
+    * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
 
-    # Create a new tuple with this element added to the end of it.
-    tuple ^ x > [x] > with
+# Test.
+[] > range-with-out-of-bounds
+  range > rng
+    []
+      [num] > b
+        num > @
+        ^.b (5.plus @) > next
+      b 1 > @
+    10
+  eq. > @
+    rng
+    * 1 6
 
-  # Obtain the length of the tuple.
-  [] > length
-    int > @
-      ^.head.length.plus 1 > len!
-
-  # Take one element from the tuple, at the given position.
-  [i] > at
-    ^.length > len
-    if. > index!
-      0.gt
-        i > idx!
-      len.plus idx
-      idx
-    if. > @
-      or.
-        0.gt index
-        len.lte index
-      error "Given index is out of tuple bounds"
-      at-fast ^ len
-
-    [tup len] > at-fast
-      if. > @
-        (len.plus -1).gt ^.index
-        ^.at-fast
-          tup.head
-          len.plus -1
-        tup.tail
-
-  # Create a new tuple with this element added to the end of it.
-  tuple ^ x > [x] > with
+# Test.
+[] > range-with-wrong-items-is-an-empty-array
+  range > rng
+    []
+      [num] > y
+        num > @
+        [] > next
+      y 10 > @
+    1
+  rng.is-empty > @
