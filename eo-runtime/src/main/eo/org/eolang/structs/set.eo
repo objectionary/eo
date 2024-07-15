@@ -20,52 +20,44 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.list
++alias org.eolang.structs.map
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
++package org.eolang.structs
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Tuple.
-[head tail] > tuple
-  # Empty tuple.
-  [] > empty
-    0 > length
+# Set - is an unordered `list` of unique objects.
+[lst] > set
+  initialized. > @
+    initialized
+      map
+        list
+          lst
+        .mapped
+          map.entry item true > [item]
+        .origin
 
-    # Take one element from the tuple, at the given position.
-    error "Can't get an object from the empty tuple" > [i] > at
+  # Initialized set with rebuilt unique sequence.
+  [map] > initialized
+    $ > initialized
+    $.map.keys > @
+    $.map.size > size
 
-    # Create a new tuple with this element added to the end of it.
-    tuple ^ x > [x] > with
+    # Append new `item` to set. It must be possible to get
+    # hash code of `item` so `item` must be dataizable.
+    [item] > with
+      set.initialized > @
+        ^.map.with item true
 
-  # Obtain the length of the tuple.
-  [] > length
-    int > @
-      ^.head.length.plus 1 > len!
+    # Remove `item` from `set`. If `item` is not present,
+    # the set wont be changed.
+    [item] > without
+      set.initialized > @
+        ^.map.without item
 
-  # Take one element from the tuple, at the given position.
-  [i] > at
-    ^.length > len
-    if. > index!
-      0.gt
-        i > idx!
-      len.plus idx
-      idx
-    if. > @
-      or.
-        0.gt index
-        len.lte index
-      error "Given index is out of tuple bounds"
-      at-fast ^ len
-
-    [tup len] > at-fast
-      if. > @
-        (len.plus -1).gt ^.index
-        ^.at-fast
-          tup.head
-          len.plus -1
-        tup.tail
-
-  # Create a new tuple with this element added to the end of it.
-  tuple ^ x > [x] > with
+    # Check if given `item` exists in set.
+    [item] > has
+      ^.map.has item > @
