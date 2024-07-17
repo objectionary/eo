@@ -20,74 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang.txt
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Test.
-[] > prints-simple-string
-  eq. > @
-    "Hello, Jeffrey!"
-    sprintf
-      "Hello, %s!"
-      * "Jeffrey"
-
-# Test.
-[] > prints-complex-string
-  eq. > @
-    "Привет 3.140000 Jeff X!"
-    sprintf
-      "Привет %f %s %s!"
-      * 3.14 "Jeff" "X"
-
-# Test.
-[] > prints-bytes-string
-  eq. > @
-    "00-00-00-00-00-00-00-2A"
-    sprintf
-      "%x"
-      * 42.as-bytes
-
-# Test.
-[] > formats-all-objects
-  eq. > @
-    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    sprintf
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      * "Jeff" "Jeff".as-bytes 42.3 14 false
-
-# Test.
-[] > sprintf-fails-if-amount-of-arguments-does-not-match
-  try > @
-    sprintf
-      "%s%s"
-      * "Jeff"
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-does-not-fail-if-arguments-more-than-formats
-  eq. > @
-    "Hey"
-    sprintf
-      "%s"
-      * "Hey" "Jeff"
-
-# Test.
-[] > fails-on-unsupported-format
-  try > @
-    sprintf "%o" *
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-prints-percents
-  eq. > @
-    "%Jeff"
-    sprintf
-      "%%%s"
-      * "Jeff"
+# Reads formatted input from a string.
+# This object has two free attributes:
+# 1. `format` - is a formatter string (e.g. "Hello, %s!")
+# 2. `read` - is a string where data exists (e.g. "Hello, John!")
+# returns a `tuple` of formatted values (e.g. * "John").
+[format read] > sscanf /tuple

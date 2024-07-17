@@ -58,11 +58,6 @@ import org.yaml.snakeyaml.Yaml;
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
- * @todo #2718:30min One snippets is disabled now, in
- *  the "src/test/resources/snippets/*.yaml". It needs
- *  "sprintf" object in objectionary (fibo.yaml).
- *  When "sprintf" is in objectionary again - we need to enable
- *  it (by removing the "skip" attribute from the YAML file).
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -126,7 +121,7 @@ final class SnippetTestCase {
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
                 final String log = f.log();
-                Logger.debug(this, log);
+                Logger.info(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     log,
