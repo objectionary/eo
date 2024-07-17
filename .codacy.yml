@@ -25,7 +25,4 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOtxt/EOsprintfTest.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOtxt/package-info.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOtxt/EOsprintf.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOtxt/package-info.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOtxt/EOsscanf.java"
