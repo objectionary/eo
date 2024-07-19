@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.1.1" size="434808">
+<fb version="0.1.1" size="441126">
   <f>
     <added t="I">8</added>
-    <cycles t="I">3</cycles>
-    <error t="S">end of file reached</error>
+    <cycles t="I">2</cycles>
     <removed t="I">8</removed>
-    <seconds t="F">646.741743806</seconds>
+    <seconds t="F">520.981502281</seconds>
     <version t="S">0.17.0</version>
     <what t="S">judges-summary</what>
-    <when t="T">2024-07-19T06:23:21Z</when>
+    <when t="T">2024-07-19T07:18:46Z</when>
   </f>
   <f>
     <_id t="I">55</_id>
@@ -19610,8 +19609,8 @@
     <why t="S">Push to default branch 'master' in objectionary/eo</why>
   </f>
   <f>
-    <_id t="I">258638</_id>
-    <_time t="T">2024-07-19T05:17:02Z</_time>
+    <_id t="I">259262</_id>
+    <_time t="T">2024-07-19T06:23:39Z</_time>
     <_version t="S">0.1.1/0.18.1/</_version>
     <area t="S">hr</area>
     <bad_branch_name_was_punished t="S">(award (explain 'If a branch has a name that doesn\'t obey the convention, a penalty is given to the author') (aka (let fee -10) (give fee 'as a basis') 'deduct ${fee} points'))</bad_branch_name_was_punished>
@@ -19625,8 +19624,303 @@
     <what t="S">pmp</what>
   </f>
   <f>
-    <_id t="I">258839</_id>
-    <_time t="T">2024-07-19T06:16:16Z</_time>
+    <_id t="I">259272</_id>
+    <_time t="T">2024-07-19T07:10:21Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <comments t="I">1</comments>
+    <details t="S">The pull request objectionary/eo#3280 has been reviewed by @github-actions[bot] with 2 HoC and 1 comments.</details>
+    <event_id t="I">40285269208</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <hoc t="I">2</hoc>
+    <is_human t="I">0</is_human>
+    <issue t="I">3280</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2024-07-19T06:24:32Z</when>
+    <where t="S">github</where>
+    <who t="I">41898282</who>
+    <who_name t="S">github-actions[bot]</who_name>
+  </f>
+  <f>
+    <_id t="I">259273</_id>
+    <_time t="T">2024-07-19T07:10:23Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <branch t="S">renovate/zerocracy-judges-action-0.x</branch>
+    <details t="S">The pull request objectionary/eo#3280 has been opened by @renovate[bot].</details>
+    <event_id t="I">40285262302</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">0</is_human>
+    <issue t="I">3280</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2024-07-19T06:24:15Z</when>
+    <where t="S">github</where>
+    <who t="I">29139614</who>
+    <who_name t="S">renovate[bot]</who_name>
+  </f>
+  <f>
+    <_id t="I">259312</_id>
+    <_time t="T">2024-07-19T07:11:25Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <commit t="S">0a712545faf7a5f1ec01a4f4b2e4fd50ad3c3668</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #19386485540 has arrived to objectionary/normalizer, made by @fizruk (default branch is 'master').</details>
+    <event_id t="I">40282498501</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">19386485540</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">731438612</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2024-07-19T03:45:31Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259313</_id>
+    <_time t="T">2024-07-19T07:11:25Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <branch t="S">renovate/baptiste0928-cargo-install-3.x</branch>
+    <comments t="I">0</comments>
+    <details t="S">The pull request objectionary/normalizer#424 has been closed by @fizruk, with 2 HoC and 0 comments.</details>
+    <event_id t="I">40282498427</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">424</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2024-07-19T03:45:31Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259314</_id>
+    <_time t="T">2024-07-19T07:11:26Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <comments t="I">0</comments>
+    <details t="S">The pull request objectionary/normalizer#424 has been reviewed by @fizruk with 2 HoC and 0 comments.</details>
+    <event_id t="I">40282497151</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <hoc t="I">2</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">424</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2024-07-19T03:45:25Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259315</_id>
+    <_time t="T">2024-07-19T07:11:28Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <commit t="S">be68febe049ceb191eaffa02284aa66982f11a84</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #19386482200 has arrived to objectionary/normalizer, made by @fizruk (default branch is 'master').</details>
+    <event_id t="I">40282492455</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">19386482200</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">731438612</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2024-07-19T03:45:05Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259316</_id>
+    <_time t="T">2024-07-19T07:11:28Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <branch t="S">fix-r-miss-duplicate</branch>
+    <comments t="I">1</comments>
+    <details t="S">The pull request objectionary/normalizer#435 has been closed by @fizruk, with 13 HoC and 1 comments.</details>
+    <event_id t="I">40282492343</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <hoc t="I">13</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">435</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2024-07-19T03:45:04Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259317</_id>
+    <_time t="T">2024-07-19T07:11:29Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <comments t="I">1</comments>
+    <details t="S">The pull request objectionary/normalizer#435 has been reviewed by @fizruk with 13 HoC and 1 comments.</details>
+    <event_id t="I">40282488000</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <hoc t="I">13</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">435</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2024-07-19T03:44:45Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259318</_id>
+    <_time t="T">2024-07-19T07:11:30Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <commit t="S">6d0440abcc22be41b8abc055cd91b4ba8df80efd</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #19386472016 has arrived to objectionary/normalizer, made by @fizruk (default branch is 'master').</details>
+    <event_id t="I">40282473881</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">19386472016</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">731438612</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2024-07-19T03:43:41Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259319</_id>
+    <_time t="T">2024-07-19T07:11:30Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <branch t="S">renovate/prettier-3.x-lockfile</branch>
+    <comments t="I">4</comments>
+    <details t="S">The pull request objectionary/normalizer#434 has been closed by @fizruk, with 8 HoC and 4 comments.</details>
+    <event_id t="I">40282473784</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <hoc t="I">8</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">434</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2024-07-19T03:43:40Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259320</_id>
+    <_time t="T">2024-07-19T07:11:31Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <comments t="I">4</comments>
+    <details t="S">The pull request objectionary/normalizer#434 has been reviewed by @fizruk with 8 HoC and 4 comments.</details>
+    <event_id t="I">40282472699</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <hoc t="I">8</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">434</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2024-07-19T03:43:35Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259321</_id>
+    <_time t="T">2024-07-19T07:11:35Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <details t="S">The issue objectionary/normalizer#437 has been opened by @0pdd.</details>
+    <event_id t="I">40282468993</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">437</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2024-07-19T03:43:19Z</when>
+    <where t="S">github</where>
+    <who t="I">24456188</who>
+    <who_name t="S">0pdd</who_name>
+  </f>
+  <f>
+    <_id t="I">259322</_id>
+    <_time t="T">2024-07-19T07:11:39Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <details t="S">The issue objectionary/normalizer#406 has been closed by @fizruk.</details>
+    <event_id t="I">40282467099</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">406</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2024-07-19T03:43:10Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259323</_id>
+    <_time t="T">2024-07-19T07:11:40Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <commit t="S">c2ce147a261b6adccbdd5682b063149f1a7463f5</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #19386468410 has arrived to objectionary/normalizer, made by @fizruk (default branch is 'master').</details>
+    <event_id t="I">40282467021</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">19386468410</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">731438612</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2024-07-19T03:43:10Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259324</_id>
+    <_time t="T">2024-07-19T07:11:41Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <branch t="S">406-support-enablingdisabling-particular-atoms</branch>
+    <comments t="I">9</comments>
+    <details t="S">The pull request objectionary/normalizer#426 has been closed by @fizruk, with 2236 HoC and 9 comments.</details>
+    <event_id t="I">40282466938</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <hoc t="I">2236</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">426</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-merged</what>
+    <when t="T">2024-07-19T03:43:09Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259325</_id>
+    <_time t="T">2024-07-19T07:11:41Z</_time>
+    <_version t="S">0.0.60/0.17.0/0.0.30</_version>
+    <comments t="I">9</comments>
+    <details t="S">The pull request objectionary/normalizer#426 has been reviewed by @fizruk with 2236 HoC and 9 comments.</details>
+    <event_id t="I">40282465302</event_id>
+    <event_type t="S">PullRequestReviewEvent</event_type>
+    <hoc t="I">2236</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">426</issue>
+    <repository t="I">731438612</repository>
+    <what t="S">pull-was-reviewed</what>
+    <when t="T">2024-07-19T03:43:02Z</when>
+    <where t="S">github</where>
+    <who t="I">686582</who>
+    <who_name t="S">fizruk</who_name>
+  </f>
+  <f>
+    <_id t="I">259479</_id>
+    <_time t="T">2024-07-19T07:14:13Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <details t="S">The '#enhancement' label was attached by @yegor256 to the issue objectionary/eo#3251.</details>
     <is_human t="I">1</is_human>
@@ -19640,8 +19934,8 @@
     <who_name t="S">yegor256</who_name>
   </f>
   <f>
-    <_id t="I">259039</_id>
-    <_time t="T">2024-07-19T06:19:22Z</_time>
+    <_id t="I">259512</_id>
+    <_time t="T">2024-07-19T07:14:44Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">37994384112</latest>
     <repository t="I">490221501</repository>
@@ -19649,8 +19943,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259040</_id>
-    <_time t="T">2024-07-19T06:19:24Z</_time>
+    <_id t="I">259513</_id>
+    <_time t="T">2024-07-19T07:14:46Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40215035695</latest>
     <repository t="I">552394123</repository>
@@ -19658,8 +19952,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259041</_id>
-    <_time t="T">2024-07-19T06:19:25Z</_time>
+    <_id t="I">259514</_id>
+    <_time t="T">2024-07-19T07:14:47Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40212479349</latest>
     <repository t="I">581460427</repository>
@@ -19667,8 +19961,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259042</_id>
-    <_time t="T">2024-07-19T06:19:26Z</_time>
+    <_id t="I">259515</_id>
+    <_time t="T">2024-07-19T07:14:49Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39908080196</latest>
     <repository t="I">733919301</repository>
@@ -19676,8 +19970,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259043</_id>
-    <_time t="T">2024-07-19T06:19:28Z</_time>
+    <_id t="I">259516</_id>
+    <_time t="T">2024-07-19T07:14:50Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39681324063</latest>
     <repository t="I">518891717</repository>
@@ -19685,8 +19979,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259044</_id>
-    <_time t="T">2024-07-19T06:19:29Z</_time>
+    <_id t="I">259517</_id>
+    <_time t="T">2024-07-19T07:14:51Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">559427983</repository>
@@ -19694,8 +19988,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259045</_id>
-    <_time t="T">2024-07-19T06:19:30Z</_time>
+    <_id t="I">259518</_id>
+    <_time t="T">2024-07-19T07:14:53Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39907482850</latest>
     <repository t="I">483303722</repository>
@@ -19703,8 +19997,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259046</_id>
-    <_time t="T">2024-07-19T06:19:32Z</_time>
+    <_id t="I">259519</_id>
+    <_time t="T">2024-07-19T07:14:54Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40211062834</latest>
     <repository t="I">575859928</repository>
@@ -19712,8 +20006,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259047</_id>
-    <_time t="T">2024-07-19T06:19:33Z</_time>
+    <_id t="I">259520</_id>
+    <_time t="T">2024-07-19T07:14:55Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39683596016</latest>
     <repository t="I">562850967</repository>
@@ -19721,17 +20015,17 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259048</_id>
-    <_time t="T">2024-07-19T06:19:36Z</_time>
+    <_id t="I">259521</_id>
+    <_time t="T">2024-07-19T07:14:58Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
-    <latest t="I">40283892075</latest>
+    <latest t="I">40285269263</latest>
     <repository t="I">73056727</repository>
     <what t="S">events-were-scanned</what>
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259049</_id>
-    <_time t="T">2024-07-19T06:19:37Z</_time>
+    <_id t="I">259522</_id>
+    <_time t="T">2024-07-19T07:14:59Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39910943746</latest>
     <repository t="I">565789755</repository>
@@ -19739,8 +20033,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259050</_id>
-    <_time t="T">2024-07-19T06:19:38Z</_time>
+    <_id t="I">259523</_id>
+    <_time t="T">2024-07-19T07:15:00Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40213471039</latest>
     <repository t="I">518778730</repository>
@@ -19748,8 +20042,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259051</_id>
-    <_time t="T">2024-07-19T06:19:39Z</_time>
+    <_id t="I">259524</_id>
+    <_time t="T">2024-07-19T07:15:02Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39681879940</latest>
     <repository t="I">413449383</repository>
@@ -19757,8 +20051,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259052</_id>
-    <_time t="T">2024-07-19T06:19:41Z</_time>
+    <_id t="I">259525</_id>
+    <_time t="T">2024-07-19T07:15:03Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">38963709178</latest>
     <repository t="I">403396472</repository>
@@ -19766,8 +20060,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259053</_id>
-    <_time t="T">2024-07-19T06:19:42Z</_time>
+    <_id t="I">259526</_id>
+    <_time t="T">2024-07-19T07:15:04Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">396732517</repository>
@@ -19775,8 +20069,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259054</_id>
-    <_time t="T">2024-07-19T06:19:43Z</_time>
+    <_id t="I">259527</_id>
+    <_time t="T">2024-07-19T07:15:06Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39682872669</latest>
     <repository t="I">483719118</repository>
@@ -19784,8 +20078,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259055</_id>
-    <_time t="T">2024-07-19T06:19:45Z</_time>
+    <_id t="I">259528</_id>
+    <_time t="T">2024-07-19T07:15:07Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40211649888</latest>
     <repository t="I">570457023</repository>
@@ -19793,8 +20087,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259056</_id>
-    <_time t="T">2024-07-19T06:19:46Z</_time>
+    <_id t="I">259529</_id>
+    <_time t="T">2024-07-19T07:15:08Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39317730383</latest>
     <repository t="I">492899189</repository>
@@ -19802,8 +20096,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259057</_id>
-    <_time t="T">2024-07-19T06:19:47Z</_time>
+    <_id t="I">259530</_id>
+    <_time t="T">2024-07-19T07:15:10Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">38998211696</latest>
     <repository t="I">362152931</repository>
@@ -19811,8 +20105,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259058</_id>
-    <_time t="T">2024-07-19T06:19:49Z</_time>
+    <_id t="I">259531</_id>
+    <_time t="T">2024-07-19T07:15:11Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39680872060</latest>
     <repository t="I">482612876</repository>
@@ -19820,8 +20114,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259059</_id>
-    <_time t="T">2024-07-19T06:19:50Z</_time>
+    <_id t="I">259532</_id>
+    <_time t="T">2024-07-19T07:15:12Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39681093711</latest>
     <repository t="I">493398326</repository>
@@ -19829,8 +20123,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259060</_id>
-    <_time t="T">2024-07-19T06:19:51Z</_time>
+    <_id t="I">259533</_id>
+    <_time t="T">2024-07-19T07:15:14Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40215121421</latest>
     <repository t="I">504739774</repository>
@@ -19838,8 +20132,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259061</_id>
-    <_time t="T">2024-07-19T06:19:53Z</_time>
+    <_id t="I">259534</_id>
+    <_time t="T">2024-07-19T07:15:15Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40214761189</latest>
     <repository t="I">516751637</repository>
@@ -19847,8 +20141,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259062</_id>
-    <_time t="T">2024-07-19T06:19:54Z</_time>
+    <_id t="I">259535</_id>
+    <_time t="T">2024-07-19T07:15:16Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40216373990</latest>
     <repository t="I">516771558</repository>
@@ -19856,8 +20150,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259063</_id>
-    <_time t="T">2024-07-19T06:19:55Z</_time>
+    <_id t="I">259536</_id>
+    <_time t="T">2024-07-19T07:15:18Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40216071662</latest>
     <repository t="I">510102039</repository>
@@ -19865,8 +20159,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259064</_id>
-    <_time t="T">2024-07-19T06:19:57Z</_time>
+    <_id t="I">259537</_id>
+    <_time t="T">2024-07-19T07:15:19Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">38924997103</latest>
     <repository t="I">510082372</repository>
@@ -19874,8 +20168,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259065</_id>
-    <_time t="T">2024-07-19T06:19:58Z</_time>
+    <_id t="I">259538</_id>
+    <_time t="T">2024-07-19T07:15:20Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">38457988952</latest>
     <repository t="I">519246071</repository>
@@ -19883,8 +20177,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259066</_id>
-    <_time t="T">2024-07-19T06:20:00Z</_time>
+    <_id t="I">259539</_id>
+    <_time t="T">2024-07-19T07:15:22Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40276663912</latest>
     <repository t="I">551486781</repository>
@@ -19892,8 +20186,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259067</_id>
-    <_time t="T">2024-07-19T06:20:01Z</_time>
+    <_id t="I">259540</_id>
+    <_time t="T">2024-07-19T07:15:24Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">38963863308</latest>
     <repository t="I">568705267</repository>
@@ -19901,8 +20195,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259068</_id>
-    <_time t="T">2024-07-19T06:20:04Z</_time>
+    <_id t="I">259541</_id>
+    <_time t="T">2024-07-19T07:15:26Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40111659403</latest>
     <repository t="I">798766850</repository>
@@ -19910,8 +20204,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259069</_id>
-    <_time t="T">2024-07-19T06:20:05Z</_time>
+    <_id t="I">259542</_id>
+    <_time t="T">2024-07-19T07:15:27Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39451602895</latest>
     <repository t="I">373900298</repository>
@@ -19919,8 +20213,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259070</_id>
-    <_time t="T">2024-07-19T06:20:08Z</_time>
+    <_id t="I">259543</_id>
+    <_time t="T">2024-07-19T07:15:30Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40245399580</latest>
     <repository t="I">489321585</repository>
@@ -19928,8 +20222,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259071</_id>
-    <_time t="T">2024-07-19T06:20:09Z</_time>
+    <_id t="I">259544</_id>
+    <_time t="T">2024-07-19T07:15:31Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39321329766</latest>
     <repository t="I">784310467</repository>
@@ -19937,8 +20231,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259072</_id>
-    <_time t="T">2024-07-19T06:20:10Z</_time>
+    <_id t="I">259545</_id>
+    <_time t="T">2024-07-19T07:15:33Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39910964919</latest>
     <repository t="I">546194972</repository>
@@ -19946,8 +20240,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259073</_id>
-    <_time t="T">2024-07-19T06:20:12Z</_time>
+    <_id t="I">259546</_id>
+    <_time t="T">2024-07-19T07:15:34Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">721163716</repository>
@@ -19955,8 +20249,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259074</_id>
-    <_time t="T">2024-07-19T06:20:13Z</_time>
+    <_id t="I">259547</_id>
+    <_time t="T">2024-07-19T07:15:35Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40211629367</latest>
     <repository t="I">624420387</repository>
@@ -19964,8 +20258,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259075</_id>
-    <_time t="T">2024-07-19T06:20:14Z</_time>
+    <_id t="I">259548</_id>
+    <_time t="T">2024-07-19T07:15:37Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">501942888</repository>
@@ -19973,8 +20267,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259076</_id>
-    <_time t="T">2024-07-19T06:20:15Z</_time>
+    <_id t="I">259549</_id>
+    <_time t="T">2024-07-19T07:15:38Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">593092058</repository>
@@ -19982,8 +20276,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259077</_id>
-    <_time t="T">2024-07-19T06:20:17Z</_time>
+    <_id t="I">259550</_id>
+    <_time t="T">2024-07-19T07:15:40Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40193194575</latest>
     <repository t="I">13623548</repository>
@@ -19991,8 +20285,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259078</_id>
-    <_time t="T">2024-07-19T06:20:19Z</_time>
+    <_id t="I">259551</_id>
+    <_time t="T">2024-07-19T07:15:41Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">397765244</repository>
@@ -20000,8 +20294,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259079</_id>
-    <_time t="T">2024-07-19T06:20:20Z</_time>
+    <_id t="I">259552</_id>
+    <_time t="T">2024-07-19T07:15:42Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">397762789</repository>
@@ -20009,8 +20303,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259080</_id>
-    <_time t="T">2024-07-19T06:20:21Z</_time>
+    <_id t="I">259553</_id>
+    <_time t="T">2024-07-19T07:15:43Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">37527640104</latest>
     <repository t="I">531151981</repository>
@@ -20018,8 +20312,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259081</_id>
-    <_time t="T">2024-07-19T06:20:23Z</_time>
+    <_id t="I">259554</_id>
+    <_time t="T">2024-07-19T07:15:45Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39906738138</latest>
     <repository t="I">709214061</repository>
@@ -20027,8 +20321,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259082</_id>
-    <_time t="T">2024-07-19T06:20:25Z</_time>
+    <_id t="I">259555</_id>
+    <_time t="T">2024-07-19T07:15:47Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39008120972</latest>
     <repository t="I">659628214</repository>
@@ -20036,8 +20330,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259083</_id>
-    <_time t="T">2024-07-19T06:20:27Z</_time>
+    <_id t="I">259556</_id>
+    <_time t="T">2024-07-19T07:15:50Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40213026595</latest>
     <repository t="I">671896902</repository>
@@ -20045,8 +20339,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259084</_id>
-    <_time t="T">2024-07-19T06:20:29Z</_time>
+    <_id t="I">259557</_id>
+    <_time t="T">2024-07-19T07:15:51Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40216294599</latest>
     <repository t="I">574459304</repository>
@@ -20054,8 +20348,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259085</_id>
-    <_time t="T">2024-07-19T06:20:30Z</_time>
+    <_id t="I">259558</_id>
+    <_time t="T">2024-07-19T07:15:53Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39843294982</latest>
     <repository t="I">501259435</repository>
@@ -20063,17 +20357,17 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259086</_id>
-    <_time t="T">2024-07-19T06:20:33Z</_time>
+    <_id t="I">259559</_id>
+    <_time t="T">2024-07-19T07:15:56Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
-    <latest t="I">40250941644</latest>
+    <latest t="I">40284123741</latest>
     <repository t="I">731438612</repository>
     <what t="S">events-were-scanned</what>
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259087</_id>
-    <_time t="T">2024-07-19T06:20:35Z</_time>
+    <_id t="I">259560</_id>
+    <_time t="T">2024-07-19T07:15:58Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40213332404</latest>
     <repository t="I">731090851</repository>
@@ -20081,8 +20375,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259088</_id>
-    <_time t="T">2024-07-19T06:20:37Z</_time>
+    <_id t="I">259561</_id>
+    <_time t="T">2024-07-19T07:15:59Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">490157985</repository>
@@ -20090,8 +20384,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259089</_id>
-    <_time t="T">2024-07-19T06:20:38Z</_time>
+    <_id t="I">259562</_id>
+    <_time t="T">2024-07-19T07:16:00Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39777243482</latest>
     <repository t="I">499536612</repository>
@@ -20099,8 +20393,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259090</_id>
-    <_time t="T">2024-07-19T06:20:41Z</_time>
+    <_id t="I">259563</_id>
+    <_time t="T">2024-07-19T07:16:03Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40275494685</latest>
     <repository t="I">721146770</repository>
@@ -20108,8 +20402,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259091</_id>
-    <_time t="T">2024-07-19T06:20:42Z</_time>
+    <_id t="I">259564</_id>
+    <_time t="T">2024-07-19T07:16:05Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39694045547</latest>
     <repository t="I">447446664</repository>
@@ -20117,8 +20411,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259092</_id>
-    <_time t="T">2024-07-19T06:20:44Z</_time>
+    <_id t="I">259565</_id>
+    <_time t="T">2024-07-19T07:16:06Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39642039652</latest>
     <repository t="I">731516758</repository>
@@ -20126,8 +20420,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259093</_id>
-    <_time t="T">2024-07-19T06:20:45Z</_time>
+    <_id t="I">259566</_id>
+    <_time t="T">2024-07-19T07:16:07Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39907885448</latest>
     <repository t="I">493235807</repository>
@@ -20135,8 +20429,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259094</_id>
-    <_time t="T">2024-07-19T06:20:46Z</_time>
+    <_id t="I">259567</_id>
+    <_time t="T">2024-07-19T07:16:09Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39694250635</latest>
     <repository t="I">519299365</repository>
@@ -20144,8 +20438,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259095</_id>
-    <_time t="T">2024-07-19T06:20:48Z</_time>
+    <_id t="I">259568</_id>
+    <_time t="T">2024-07-19T07:16:10Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39282116296</latest>
     <repository t="I">490258619</repository>
@@ -20153,8 +20447,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259096</_id>
-    <_time t="T">2024-07-19T06:20:49Z</_time>
+    <_id t="I">259569</_id>
+    <_time t="T">2024-07-19T07:16:12Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">39923808523</latest>
     <repository t="I">543969974</repository>
@@ -20162,8 +20456,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259097</_id>
-    <_time t="T">2024-07-19T06:20:51Z</_time>
+    <_id t="I">259570</_id>
+    <_time t="T">2024-07-19T07:16:13Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40212492247</latest>
     <repository t="I">558766137</repository>
@@ -20171,8 +20465,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259098</_id>
-    <_time t="T">2024-07-19T06:20:52Z</_time>
+    <_id t="I">259571</_id>
+    <_time t="T">2024-07-19T07:16:15Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40244220632</latest>
     <repository t="I">386420319</repository>
@@ -20180,8 +20474,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259099</_id>
-    <_time t="T">2024-07-19T06:20:54Z</_time>
+    <_id t="I">259572</_id>
+    <_time t="T">2024-07-19T07:16:16Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">40213567212</latest>
     <repository t="I">574534248</repository>
@@ -20189,8 +20483,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259100</_id>
-    <_time t="T">2024-07-19T06:20:55Z</_time>
+    <_id t="I">259573</_id>
+    <_time t="T">2024-07-19T07:16:18Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">490221501</repository>
@@ -20198,8 +20492,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259101</_id>
-    <_time t="T">2024-07-19T06:20:56Z</_time>
+    <_id t="I">259574</_id>
+    <_time t="T">2024-07-19T07:16:19Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">552394123</repository>
@@ -20207,8 +20501,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259102</_id>
-    <_time t="T">2024-07-19T06:20:57Z</_time>
+    <_id t="I">259575</_id>
+    <_time t="T">2024-07-19T07:16:20Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">581460427</repository>
@@ -20216,8 +20510,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259103</_id>
-    <_time t="T">2024-07-19T06:20:58Z</_time>
+    <_id t="I">259576</_id>
+    <_time t="T">2024-07-19T07:16:21Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">733919301</repository>
@@ -20225,8 +20519,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259104</_id>
-    <_time t="T">2024-07-19T06:20:59Z</_time>
+    <_id t="I">259577</_id>
+    <_time t="T">2024-07-19T07:16:22Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">518891717</repository>
@@ -20234,8 +20528,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259105</_id>
-    <_time t="T">2024-07-19T06:20:59Z</_time>
+    <_id t="I">259578</_id>
+    <_time t="T">2024-07-19T07:16:22Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">559427983</repository>
@@ -20243,8 +20537,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259106</_id>
-    <_time t="T">2024-07-19T06:21:00Z</_time>
+    <_id t="I">259579</_id>
+    <_time t="T">2024-07-19T07:16:23Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">483303722</repository>
@@ -20252,8 +20546,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259107</_id>
-    <_time t="T">2024-07-19T06:21:01Z</_time>
+    <_id t="I">259580</_id>
+    <_time t="T">2024-07-19T07:16:24Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">575859928</repository>
@@ -20261,8 +20555,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259108</_id>
-    <_time t="T">2024-07-19T06:21:02Z</_time>
+    <_id t="I">259581</_id>
+    <_time t="T">2024-07-19T07:16:25Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">562850967</repository>
@@ -20270,8 +20564,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259110</_id>
-    <_time t="T">2024-07-19T06:21:04Z</_time>
+    <_id t="I">259583</_id>
+    <_time t="T">2024-07-19T07:16:27Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">565789755</repository>
@@ -20279,8 +20573,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259112</_id>
-    <_time t="T">2024-07-19T06:21:06Z</_time>
+    <_id t="I">259585</_id>
+    <_time t="T">2024-07-19T07:16:29Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">413449383</repository>
@@ -20288,8 +20582,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259113</_id>
-    <_time t="T">2024-07-19T06:21:07Z</_time>
+    <_id t="I">259586</_id>
+    <_time t="T">2024-07-19T07:16:30Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">403396472</repository>
@@ -20297,8 +20591,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259114</_id>
-    <_time t="T">2024-07-19T06:21:08Z</_time>
+    <_id t="I">259587</_id>
+    <_time t="T">2024-07-19T07:16:30Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">396732517</repository>
@@ -20306,8 +20600,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259115</_id>
-    <_time t="T">2024-07-19T06:21:09Z</_time>
+    <_id t="I">259588</_id>
+    <_time t="T">2024-07-19T07:16:31Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">483719118</repository>
@@ -20315,8 +20609,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259116</_id>
-    <_time t="T">2024-07-19T06:21:09Z</_time>
+    <_id t="I">259589</_id>
+    <_time t="T">2024-07-19T07:16:32Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">570457023</repository>
@@ -20324,8 +20618,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259118</_id>
-    <_time t="T">2024-07-19T06:21:11Z</_time>
+    <_id t="I">259591</_id>
+    <_time t="T">2024-07-19T07:16:34Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">362152931</repository>
@@ -20333,8 +20627,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259119</_id>
-    <_time t="T">2024-07-19T06:21:12Z</_time>
+    <_id t="I">259592</_id>
+    <_time t="T">2024-07-19T07:16:35Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">482612876</repository>
@@ -20342,8 +20636,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259120</_id>
-    <_time t="T">2024-07-19T06:21:13Z</_time>
+    <_id t="I">259593</_id>
+    <_time t="T">2024-07-19T07:16:36Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">493398326</repository>
@@ -20351,8 +20645,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259121</_id>
-    <_time t="T">2024-07-19T06:21:14Z</_time>
+    <_id t="I">259594</_id>
+    <_time t="T">2024-07-19T07:16:37Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">504739774</repository>
@@ -20360,8 +20654,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259122</_id>
-    <_time t="T">2024-07-19T06:21:15Z</_time>
+    <_id t="I">259595</_id>
+    <_time t="T">2024-07-19T07:16:37Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">516751637</repository>
@@ -20369,8 +20663,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259123</_id>
-    <_time t="T">2024-07-19T06:21:15Z</_time>
+    <_id t="I">259596</_id>
+    <_time t="T">2024-07-19T07:16:38Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">516771558</repository>
@@ -20378,8 +20672,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259124</_id>
-    <_time t="T">2024-07-19T06:21:16Z</_time>
+    <_id t="I">259597</_id>
+    <_time t="T">2024-07-19T07:16:39Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">510102039</repository>
@@ -20387,8 +20681,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259125</_id>
-    <_time t="T">2024-07-19T06:21:17Z</_time>
+    <_id t="I">259598</_id>
+    <_time t="T">2024-07-19T07:16:40Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">510082372</repository>
@@ -20396,8 +20690,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259126</_id>
-    <_time t="T">2024-07-19T06:21:18Z</_time>
+    <_id t="I">259599</_id>
+    <_time t="T">2024-07-19T07:16:41Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">519246071</repository>
@@ -20405,8 +20699,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259127</_id>
-    <_time t="T">2024-07-19T06:21:19Z</_time>
+    <_id t="I">259600</_id>
+    <_time t="T">2024-07-19T07:16:42Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">551486781</repository>
@@ -20414,8 +20708,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259130</_id>
-    <_time t="T">2024-07-19T06:21:22Z</_time>
+    <_id t="I">259603</_id>
+    <_time t="T">2024-07-19T07:16:45Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">373900298</repository>
@@ -20423,8 +20717,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259133</_id>
-    <_time t="T">2024-07-19T06:21:25Z</_time>
+    <_id t="I">259606</_id>
+    <_time t="T">2024-07-19T07:16:48Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">546194972</repository>
@@ -20432,8 +20726,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259134</_id>
-    <_time t="T">2024-07-19T06:21:26Z</_time>
+    <_id t="I">259607</_id>
+    <_time t="T">2024-07-19T07:16:49Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">721163716</repository>
@@ -20441,8 +20735,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259135</_id>
-    <_time t="T">2024-07-19T06:21:27Z</_time>
+    <_id t="I">259608</_id>
+    <_time t="T">2024-07-19T07:16:50Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">624420387</repository>
@@ -20450,8 +20744,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259136</_id>
-    <_time t="T">2024-07-19T06:21:27Z</_time>
+    <_id t="I">259609</_id>
+    <_time t="T">2024-07-19T07:16:50Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">501942888</repository>
@@ -20459,8 +20753,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259137</_id>
-    <_time t="T">2024-07-19T06:21:28Z</_time>
+    <_id t="I">259610</_id>
+    <_time t="T">2024-07-19T07:16:51Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">593092058</repository>
@@ -20468,8 +20762,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259138</_id>
-    <_time t="T">2024-07-19T06:21:29Z</_time>
+    <_id t="I">259611</_id>
+    <_time t="T">2024-07-19T07:16:52Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">13623548</repository>
@@ -20477,8 +20771,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259139</_id>
-    <_time t="T">2024-07-19T06:21:30Z</_time>
+    <_id t="I">259612</_id>
+    <_time t="T">2024-07-19T07:16:53Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">397765244</repository>
@@ -20486,8 +20780,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259140</_id>
-    <_time t="T">2024-07-19T06:21:31Z</_time>
+    <_id t="I">259613</_id>
+    <_time t="T">2024-07-19T07:16:54Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">397762789</repository>
@@ -20495,8 +20789,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259141</_id>
-    <_time t="T">2024-07-19T06:21:32Z</_time>
+    <_id t="I">259614</_id>
+    <_time t="T">2024-07-19T07:16:55Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">531151981</repository>
@@ -20504,8 +20798,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259143</_id>
-    <_time t="T">2024-07-19T06:21:34Z</_time>
+    <_id t="I">259616</_id>
+    <_time t="T">2024-07-19T07:16:57Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">659628214</repository>
@@ -20513,8 +20807,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259148</_id>
-    <_time t="T">2024-07-19T06:21:39Z</_time>
+    <_id t="I">259621</_id>
+    <_time t="T">2024-07-19T07:17:02Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">731090851</repository>
@@ -20522,8 +20816,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259149</_id>
-    <_time t="T">2024-07-19T06:21:40Z</_time>
+    <_id t="I">259622</_id>
+    <_time t="T">2024-07-19T07:17:03Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">490157985</repository>
@@ -20531,8 +20825,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259152</_id>
-    <_time t="T">2024-07-19T06:21:43Z</_time>
+    <_id t="I">259625</_id>
+    <_time t="T">2024-07-19T07:17:06Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">447446664</repository>
@@ -20540,8 +20834,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259154</_id>
-    <_time t="T">2024-07-19T06:21:45Z</_time>
+    <_id t="I">259627</_id>
+    <_time t="T">2024-07-19T07:17:08Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">493235807</repository>
@@ -20549,8 +20843,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259156</_id>
-    <_time t="T">2024-07-19T06:21:47Z</_time>
+    <_id t="I">259629</_id>
+    <_time t="T">2024-07-19T07:17:10Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">490258619</repository>
@@ -20558,8 +20852,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259157</_id>
-    <_time t="T">2024-07-19T06:21:47Z</_time>
+    <_id t="I">259630</_id>
+    <_time t="T">2024-07-19T07:17:11Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">543969974</repository>
@@ -20567,8 +20861,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259158</_id>
-    <_time t="T">2024-07-19T06:21:48Z</_time>
+    <_id t="I">259631</_id>
+    <_time t="T">2024-07-19T07:17:11Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">558766137</repository>
@@ -20576,8 +20870,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259159</_id>
-    <_time t="T">2024-07-19T06:21:49Z</_time>
+    <_id t="I">259632</_id>
+    <_time t="T">2024-07-19T07:17:12Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">386420319</repository>
@@ -20585,8 +20879,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259160</_id>
-    <_time t="T">2024-07-19T06:21:49Z</_time>
+    <_id t="I">259633</_id>
+    <_time t="T">2024-07-19T07:17:12Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">574534248</repository>
@@ -20594,8 +20888,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259162</_id>
-    <_time t="T">2024-07-19T06:21:51Z</_time>
+    <_id t="I">259635</_id>
+    <_time t="T">2024-07-19T07:17:14Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">518778730</repository>
@@ -20603,8 +20897,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259163</_id>
-    <_time t="T">2024-07-19T06:21:51Z</_time>
+    <_id t="I">259636</_id>
+    <_time t="T">2024-07-19T07:17:15Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">492899189</repository>
@@ -20612,8 +20906,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259164</_id>
-    <_time t="T">2024-07-19T06:21:52Z</_time>
+    <_id t="I">259637</_id>
+    <_time t="T">2024-07-19T07:17:15Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">568705267</repository>
@@ -20621,8 +20915,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259167</_id>
-    <_time t="T">2024-07-19T06:21:54Z</_time>
+    <_id t="I">259640</_id>
+    <_time t="T">2024-07-19T07:17:18Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">784310467</repository>
@@ -20630,8 +20924,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259170</_id>
-    <_time t="T">2024-07-19T06:21:56Z</_time>
+    <_id t="I">259643</_id>
+    <_time t="T">2024-07-19T07:17:20Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">574459304</repository>
@@ -20639,8 +20933,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259184</_id>
-    <_time t="T">2024-07-19T06:22:10Z</_time>
+    <_id t="I">259657</_id>
+    <_time t="T">2024-07-19T07:17:34Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">499536612</repository>
@@ -20648,8 +20942,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259187</_id>
-    <_time t="T">2024-07-19T06:22:13Z</_time>
+    <_id t="I">259660</_id>
+    <_time t="T">2024-07-19T07:17:36Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">519299365</repository>
@@ -20657,8 +20951,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259200</_id>
-    <_time t="T">2024-07-19T06:22:25Z</_time>
+    <_id t="I">259673</_id>
+    <_time t="T">2024-07-19T07:17:48Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">709214061</repository>
@@ -20666,8 +20960,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259208</_id>
-    <_time t="T">2024-07-19T06:22:32Z</_time>
+    <_id t="I">259681</_id>
+    <_time t="T">2024-07-19T07:17:55Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">489321585</repository>
@@ -20675,8 +20969,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259217</_id>
-    <_time t="T">2024-07-19T06:22:40Z</_time>
+    <_id t="I">259690</_id>
+    <_time t="T">2024-07-19T07:18:04Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">501259435</repository>
@@ -20684,8 +20978,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259240</_id>
-    <_time t="T">2024-07-19T06:23:02Z</_time>
+    <_id t="I">259713</_id>
+    <_time t="T">2024-07-19T07:18:25Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">798766850</repository>
@@ -20693,8 +20987,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259243</_id>
-    <_time t="T">2024-07-19T06:23:04Z</_time>
+    <_id t="I">259716</_id>
+    <_time t="T">2024-07-19T07:18:28Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">721146770</repository>
@@ -20702,8 +20996,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259244</_id>
-    <_time t="T">2024-07-19T06:23:05Z</_time>
+    <_id t="I">259717</_id>
+    <_time t="T">2024-07-19T07:18:29Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">731516758</repository>
@@ -20711,8 +21005,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259247</_id>
-    <_time t="T">2024-07-19T06:23:08Z</_time>
+    <_id t="I">259723</_id>
+    <_time t="T">2024-07-19T07:18:34Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">731438612</repository>
@@ -20720,8 +21014,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259260</_id>
-    <_time t="T">2024-07-19T06:23:20Z</_time>
+    <_id t="I">259734</_id>
+    <_time t="T">2024-07-19T07:18:45Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">73056727</repository>
@@ -20729,8 +21023,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259261</_id>
-    <_time t="T">2024-07-19T06:23:21Z</_time>
+    <_id t="I">259735</_id>
+    <_time t="T">2024-07-19T07:18:46Z</_time>
     <_version t="S">0.0.60/0.17.0/0.0.30</_version>
     <latest t="I">0</latest>
     <repository t="I">671896902</repository>
@@ -20738,8 +21032,8 @@
     <where t="S">github</where>
   </f>
   <f>
-    <_id t="I">259262</_id>
-    <_time t="T">2024-07-19T06:23:27Z</_time>
+    <_id t="I">259736</_id>
+    <_time t="T">2024-07-19T07:18:51Z</_time>
     <_version t="S">0.1.1/0.18.1/</_version>
     <html t="S">&lt;div&gt;&lt;p&gt;When a bug is resolved, the person who was assigned to it gets a bonus. Here is how it&amp;#39;s calculated: First, assume that &lt;em&gt;hours&lt;/em&gt; is how many hours it took to resolve the bug. Then, set &lt;em&gt;days&lt;/em&gt; to &lt;em&gt;hours&lt;/em&gt; ÷ &lt;strong&gt;24&lt;/strong&gt;, and award 30 points. Then, add 10 if it was resolved in less than 24. Then, deduct 1 for each day of delay in resolving the problem, but no more than -20.&lt;/p&gt;
 &lt;p&gt;When someone pushes directly to the default branch, they get a penalty. Here is how it&amp;#39;s calculated: Just -20 points.&lt;/p&gt;
