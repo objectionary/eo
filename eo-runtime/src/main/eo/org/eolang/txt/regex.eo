@@ -74,7 +74,7 @@
       #
       # The block provides the next API to work with matched string subsequence:
       # - `groups-count`  - to get amount of matched groups
-      # - `exists`        - to check if matched block is not emtpy
+      # - `exists`        - to check if matched block is not empty
       # - `next`          - to get next matched block
       # - `text`          - to get matched subsequence as `string`
       # - `group {index}` - to get string subsequence captured by `index`-th group.
