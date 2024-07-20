@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="//o[count(o[@name and not(@base) and not(@atom) and count(o)=0]) &gt; 4]">
+      <xsl:for-each select="//o[count(o[@name and not(@base) and not(@atom) and count(o)=0]) &gt; 5]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>too-many-attributes</xsl:text>
@@ -42,7 +42,7 @@ SOFTWARE.
           <xsl:text>"</xsl:text>
           <xsl:value-of select="@name"/>
           <xsl:text>" </xsl:text>
-          <xsl:text>has more than four free attributes, it's too many</xsl:text>
+          <xsl:text>has more than five free attributes, it's too many</xsl:text>
         </xsl:element>
       </xsl:for-each>
     </xsl:copy>

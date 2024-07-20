@@ -121,7 +121,7 @@ final class SnippetTestCase {
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
                 final String log = f.log();
-                Logger.info(this, log);
+                Logger.debug(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
                     log,
