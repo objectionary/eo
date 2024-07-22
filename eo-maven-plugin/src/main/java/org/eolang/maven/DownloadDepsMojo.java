@@ -34,6 +34,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 
+/**
+ * Downloads dependencies.
+ *
+ * @since 0.38
+ */
 @Mojo(
     name = "deps",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
@@ -41,7 +46,24 @@ import org.cactoos.list.ListOf;
 )
 public final class DownloadDepsMojo extends SafeMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}/classes", readonly = true, required = true)
+    /**
+     * Dependencies to download.
+     */
+    private static final Collection<Dependency> DEPS = new ListOf<>(
+        new DepBuilder().withGroupId("net.java.dev.jna").withArtifactId("jna")
+            .withVersion("5.14.0").withScope("compile").build()
+    );
+
+    /**
+     * Directory where classes are stored in target.
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        defaultValue = "${project.build.directory}/classes",
+        readonly = true,
+        required = true
+    )
+    @SuppressWarnings("PMD.UnusedPrivateField")
     private File classesDir;
 
     /**
@@ -50,58 +72,83 @@ public final class DownloadDepsMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
-    private final static Collection<Dependency> deps = new ListOf<>(
-        new DepBuilder(
-            "net.java.dev.jna",
-            "jna",
-            "5.14.0"
-        ).withScope("compile").build()
-    );
-
     @Override
     void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        for (final Dependency dep: deps) {
+        for (final Dependency dep: DownloadDepsMojo.DEPS) {
             this.central.accept(dep, this.classesDir.toPath());
         }
     }
 
-    static class DepBuilder {
+    /**
+     * Object for building {@link Dependency} inplace.
+     *
+     * @since 0.38
+     */
+    private static class DepBuilder {
+        /**
+         * Dependency.
+         */
         private final Dependency dep;
 
+        /**
+         * Ctor.
+         */
         DepBuilder() {
             this.dep = new Dependency();
         }
 
-        DepBuilder(final String group, final String artifact, final String version) {
-            this.dep = new Dependency();
-            this.dep.setGroupId(group);
-            this.dep.setArtifactId(artifact);
-            this.dep.setVersion(version);
-        }
-
+        /**
+         * Set groupId.
+         *
+         * @param group The groupId
+         * @return This object.
+         */
         public DepBuilder withGroupId(final String group) {
             this.dep.setGroupId(group);
             return this;
         }
 
+        /**
+         * Set artifactId.
+         *
+         * @param artifact The artifactId
+         * @return This object.
+         */
         public DepBuilder withArtifactId(final String artifact) {
             this.dep.setArtifactId(artifact);
             return this;
         }
 
+        /**
+         * Set version.
+         *
+         * @param version The version.
+         * @return This object.
+         */
         public DepBuilder withVersion(final String version) {
             this.dep.setVersion(version);
             return this;
         }
 
+        /**
+         * Set scope.
+         *
+         * @param scope The scope.
+         * @return This object.
+         */
         public DepBuilder withScope(final String scope) {
             this.dep.setScope(scope);
             return this;
         }
 
+        /**
+         * Build dependency.
+         *
+         * @return Dependency instance.
+         */
         public Dependency build() {
             return this.dep;
         }
