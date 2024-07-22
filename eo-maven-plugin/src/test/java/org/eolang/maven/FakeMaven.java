@@ -272,8 +272,8 @@ public final class FakeMaven {
                 ).toFile()
             );
             this.params.putIfAbsent(
-                "jnaOutputDir",
-                this.workspace.absolute(Paths.get("target")).toFile()
+                "classesDir",
+                this.workspace.absolute(Paths.get("target/classes")).toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);

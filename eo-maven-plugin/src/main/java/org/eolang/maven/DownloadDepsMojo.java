@@ -23,11 +23,9 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
@@ -37,14 +35,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 
 @Mojo(
-    name = "jna",
+    name = "deps",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
 public final class DownloadDepsMojo extends SafeMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
-    private File jnaOutputDir;
+    @Parameter(defaultValue = "${project.build.directory}/classes", readonly = true, required = true)
+    private File classesDir;
 
     /**
      * The central.
@@ -52,7 +50,7 @@ public final class DownloadDepsMojo extends SafeMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private BiConsumer<Dependency, Path> central;
 
-    private final Collection<Dependency> deps = new ListOf<>(
+    private final static Collection<Dependency> deps = new ListOf<>(
         new DepBuilder(
             "net.java.dev.jna",
             "jna",
@@ -65,15 +63,8 @@ public final class DownloadDepsMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        Path outputPath = Paths.get(this.jnaOutputDir.getPath(), "classes");
         for (final Dependency dep: deps) {
-            this.central.accept(dep, outputPath);
-            Logger.info(
-                this,
-                "Unpacked dependency with groupId %s into directory %s",
-                dep.getGroupId(),
-                outputPath
-            );
+            this.central.accept(dep, this.classesDir.toPath());
         }
     }
 
