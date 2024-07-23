@@ -36,7 +36,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * Test case for {@link DownloadDepsMojo}.
  *
- * @since 0.38
+ * @since 0.39
  */
 final class DownloadDepsMojoTest {
 

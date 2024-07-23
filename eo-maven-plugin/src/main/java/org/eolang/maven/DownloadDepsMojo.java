@@ -37,7 +37,7 @@ import org.cactoos.list.ListOf;
 /**
  * Downloads dependencies.
  *
- * @since 0.38
+ * @since 0.39
  */
 @Mojo(
     name = "deps",
@@ -85,7 +85,7 @@ public final class DownloadDepsMojo extends SafeMojo {
     /**
      * Object for building {@link Dependency} inplace.
      *
-     * @since 0.38
+     * @since 0.39
      */
     private static class DepBuilder {
         /**
