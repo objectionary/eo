@@ -90,12 +90,12 @@ public final class DownloadDepsMojo extends SafeMojo {
         /**
          * The groupId.
          */
-        private final String groupId;
+        private final String group;
 
         /**
          * The artifactId.
          */
-        private final String artifactId;
+        private final String artifact;
 
         /**
          * The version.
@@ -110,8 +110,8 @@ public final class DownloadDepsMojo extends SafeMojo {
          * @param version The version.
          */
         DepSupplier(final String group, final String artifact, final String version) {
-            this.groupId = group;
-            this.artifactId = artifact;
+            this.group = group;
+            this.artifact = artifact;
             this.version = version;
         }
 
@@ -122,8 +122,8 @@ public final class DownloadDepsMojo extends SafeMojo {
          */
         public Dependency take() {
             final Dependency dep = new Dependency();
-            dep.setGroupId(this.groupId);
-            dep.setArtifactId(this.artifactId);
+            dep.setGroupId(this.group);
+            dep.setArtifactId(this.artifact);
             dep.setVersion(this.version);
             return dep;
         }
