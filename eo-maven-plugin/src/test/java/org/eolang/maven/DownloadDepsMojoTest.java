@@ -70,7 +70,7 @@ final class DownloadDepsMojoTest {
     @Test
     void downloadsCorrectly(@TempDir final Path temp) throws IOException {
         new FakeMaven(temp).execute(DownloadDepsMojo.class);
-        for (final String dep: DownloadDepsMojoTest.DEPS_NAMES) {
+        for (final String dep : DownloadDepsMojoTest.DEPS_NAMES) {
             Assertions.assertTrue(
                 Files.exists(temp.resolve(DownloadDepsMojoTest.OUT).resolve(dep)),
                 String.format(

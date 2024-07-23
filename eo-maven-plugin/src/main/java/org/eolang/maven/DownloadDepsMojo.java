@@ -77,7 +77,7 @@ public final class DownloadDepsMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        for (final Dependency dep: DownloadDepsMojo.DEPS) {
+        for (final Dependency dep : DownloadDepsMojo.DEPS) {
             this.central.accept(dep, this.classesDir.toPath());
         }
     }
