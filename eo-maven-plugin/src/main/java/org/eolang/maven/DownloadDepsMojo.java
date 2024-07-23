@@ -49,9 +49,8 @@ public final class DownloadDepsMojo extends SafeMojo {
     /**
      * Dependencies to download.
      */
-    private static final Collection<Dependency> DEPS = new ListOf<>(
-        new DepBuilder().withGroupId("net.java.dev.jna").withArtifactId("jna")
-            .withVersion("5.14.0").withScope("compile").build()
+    private static final Collection<DepSupplier> DEPS = new ListOf<>(
+        new DepSupplier("net.java.dev.jna", "jna", "5.14.0")
     );
 
     /**
@@ -77,80 +76,56 @@ public final class DownloadDepsMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        for (final Dependency dep : DownloadDepsMojo.DEPS) {
-            this.central.accept(dep, this.classesDir.toPath());
+        for (final DepSupplier dep : DownloadDepsMojo.DEPS) {
+            this.central.accept(dep.take(), this.classesDir.toPath());
         }
     }
 
     /**
-     * Object for building {@link Dependency} inplace.
+     * Object for lazy building {@link Dependency} inplace.
      *
      * @since 0.39
      */
-    private static class DepBuilder {
+    private static class DepSupplier {
         /**
-         * Dependency.
+         * The groupId.
          */
-        private final Dependency dep;
+        private final String groupId;
+
+        /**
+         * The artifactId.
+         */
+        private final String artifactId;
+
+        /**
+         * The version.
+         */
+        private final String version;
 
         /**
          * Ctor.
-         */
-        DepBuilder() {
-            this.dep = new Dependency();
-        }
-
-        /**
-         * Set groupId.
          *
-         * @param group The groupId
-         * @return This object.
-         */
-        public DepBuilder withGroupId(final String group) {
-            this.dep.setGroupId(group);
-            return this;
-        }
-
-        /**
-         * Set artifactId.
-         *
-         * @param artifact The artifactId
-         * @return This object.
-         */
-        public DepBuilder withArtifactId(final String artifact) {
-            this.dep.setArtifactId(artifact);
-            return this;
-        }
-
-        /**
-         * Set version.
-         *
+         * @param group The groupId.
+         * @param artifact The artifactId.
          * @param version The version.
-         * @return This object.
          */
-        public DepBuilder withVersion(final String version) {
-            this.dep.setVersion(version);
-            return this;
+        DepSupplier(final String group, final String artifact, final String version) {
+            this.groupId = group;
+            this.artifactId = artifact;
+            this.version = version;
         }
 
         /**
-         * Set scope.
-         *
-         * @param scope The scope.
-         * @return This object.
-         */
-        public DepBuilder withScope(final String scope) {
-            this.dep.setScope(scope);
-            return this;
-        }
-
-        /**
-         * Build dependency.
+         * Makes dependency and returns it.
          *
          * @return Dependency instance.
          */
-        public Dependency build() {
-            return this.dep;
+        public Dependency take() {
+            final Dependency dep = new Dependency();
+            dep.setGroupId(this.groupId);
+            dep.setArtifactId(this.artifactId);
+            dep.setVersion(this.version);
+            return dep;
         }
     }
 }
