@@ -40,7 +40,7 @@ jobs:
             pages_url=https://www.eolang.org/zerocracy/objectionary.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.21
+      - uses: zerocracy/pages-action@0.0.22
         with:
           factbase: objectionary.fb
           output: pages
