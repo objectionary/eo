@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -49,8 +50,8 @@ public final class DownloadDepsMojo extends SafeMojo {
     /**
      * Dependencies to download.
      */
-    private static final Collection<DepSupplier> DEPS = new ListOf<>(
-        new DepSupplier("net.java.dev.jna", "jna", "5.14.0")
+    private static final Collection<DepFunc> DEPS = new ListOf<>(
+        new DepFunc("net.java.dev.jna", "jna", "5.14.0")
     );
 
     /**
@@ -76,8 +77,8 @@ public final class DownloadDepsMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        for (final DepSupplier dep : DownloadDepsMojo.DEPS) {
-            this.central.accept(dep.take(), this.classesDir.toPath());
+        for (final DepFunc dep : DownloadDepsMojo.DEPS) {
+            this.central.accept(dep.get(), this.classesDir.toPath());
         }
     }
 
@@ -86,7 +87,7 @@ public final class DownloadDepsMojo extends SafeMojo {
      *
      * @since 0.39
      */
-    private static class DepSupplier {
+    private static class DepFunc implements Supplier<Dependency> {
         /**
          * The groupId.
          */
@@ -109,18 +110,14 @@ public final class DownloadDepsMojo extends SafeMojo {
          * @param artifact The artifactId.
          * @param version The version.
          */
-        DepSupplier(final String group, final String artifact, final String version) {
+        DepFunc(final String group, final String artifact, final String version) {
             this.group = group;
             this.artifact = artifact;
             this.version = version;
         }
 
-        /**
-         * Makes dependency and returns it.
-         *
-         * @return Dependency instance.
-         */
-        public Dependency take() {
+        @Override
+        public Dependency get() {
             final Dependency dep = new Dependency();
             dep.setGroupId(this.group);
             dep.setArtifactId(this.artifact);
