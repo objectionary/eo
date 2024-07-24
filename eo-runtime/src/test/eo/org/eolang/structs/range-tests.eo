@@ -20,74 +20,59 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
++alias org.eolang.structs.range
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
-+package org.eolang.txt
++package org.eolang.structs
 +version 0.0.0
 
 # Test.
-[] > prints-simple-string
+[] > simple-range-from-one-to-ten
+  range > rng
+    []
+      [i] > build
+        i > @
+        ^.build (1.plus @) > next
+      build 1 > @
+    10
   eq. > @
-    "Hello, Jeffrey!"
-    sprintf
-      "Hello, %s!"
-      * "Jeffrey"
+    rng
+    * 1 2 3 4 5 6 7 8 9
 
 # Test.
-[] > prints-complex-string
+[] > simple-range-with-floats-from-one-to-five
+  range > rng
+    []
+      [i] > x
+        i > @
+        ^.x (0.5.plus @) > next
+      x 1.0 > @
+    5.0
   eq. > @
-    "Привет 3.140000 Jeff X!"
-    sprintf
-      "Привет %f %s %s!"
-      * 3.14 "Jeff" "X"
+    rng
+    * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
 
 # Test.
-[] > prints-bytes-string
+[] > range-with-out-of-bounds
+  range > rng
+    []
+      [num] > b
+        num > @
+        ^.b (5.plus @) > next
+      b 1 > @
+    10
   eq. > @
-    "00-00-00-00-00-00-00-2A"
-    sprintf
-      "%x"
-      * 42.as-bytes
+    rng
+    * 1 6
 
 # Test.
-[] > formats-all-objects
-  eq. > @
-    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    sprintf
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      * "Jeff" "Jeff".as-bytes 42.3 14 false
-
-# Test.
-[] > sprintf-fails-if-amount-of-arguments-does-not-match
-  try > @
-    sprintf
-      "%s%s"
-      * "Jeff"
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-does-not-fail-if-arguments-more-than-formats
-  eq. > @
-    "Hey"
-    sprintf
-      "%s"
-      * "Hey" "Jeff"
-
-# Test.
-[] > fails-on-unsupported-format
-  try > @
-    sprintf "%o" *
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-prints-percents
-  eq. > @
-    "%Jeff"
-    sprintf
-      "%%%s"
-      * "Jeff"
+[] > range-with-wrong-items-is-an-empty-array
+  range > rng
+    []
+      [num] > y
+        num > @
+        [] > next
+      y 10 > @
+    1
+  rng.is-empty > @

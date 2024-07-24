@@ -29,7 +29,7 @@ SOFTWARE.
   could be too long class names.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="tests" select="exists(//meta[head='junit' or head='tests'])"/>
+  <xsl:variable name="tests" select="exists(//meta[head='tests'])"/>
   <xsl:function name="eo:name-of" as="xs:string">
     <xsl:param name="class" as="node()"/>
     <xsl:variable name="ret">
@@ -39,6 +39,8 @@ SOFTWARE.
           <xsl:text>ω</xsl:text>
           <xsl:value-of select="$class/@ancestors"/>
           <xsl:value-of select="substring-after($class/@name, concat($class/@parent, '$'))"/>
+          <xsl:text>-hash-</xsl:text>
+          <xsl:value-of select="generate-id($class)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$class/@name"/>

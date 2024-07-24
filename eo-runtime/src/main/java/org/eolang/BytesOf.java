@@ -31,27 +31,30 @@ import java.util.Arrays;
  * Bytes.
  *
  * @since 1.0
- * @todo #3160:90min This class requires refactoring. As a result of refactoring you should remove
- *  {@code @SuppressWarnings("PMD.GodClass")} from this class and
- *  {@code @SuppressWarnings("PMD.CognitiveComplexity")} from {@link BytesOf#shift} method. You can
- *  check description of this rules here
- *  <a href="https://pmd.github.io/pmd/pmd_rules_java_design">pmd.github.io</a>
  */
 @Versionized
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@SuppressWarnings("PMD.TooManyMethods")
 public final class BytesOf implements Bytes {
 
     /**
-     * Binary data.
+     * Bytes.
      */
-    private final byte[] data;
+    private final Bytes bytes;
+
+    /**
+     * Ctor.
+     * @param bytes Bytes.
+     */
+    public BytesOf(final Bytes bytes) {
+        this.bytes = bytes;
+    }
 
     /**
      * Ctor.
      * @param data Data.
      */
     public BytesOf(final byte[] data) {
-        this.data = Arrays.copyOf(data, data.length);
+        this(new BytesRaw(Arrays.copyOf(data, data.length)));
     }
 
     /**
@@ -96,200 +99,64 @@ public final class BytesOf implements Bytes {
 
     @Override
     public Bytes not() {
-        final byte[] copy = this.take();
-        for (int index = 0; index < copy.length; index += 1) {
-            copy[index] = (byte) ~copy[index];
-        }
-        return new BytesOf(copy);
+        return this.bytes.not();
     }
 
     @Override
     public Bytes and(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
-            first[index] = (byte) (first[index] & second[index]);
-        }
-        return new BytesOf(first);
+        return this.bytes.and(other);
     }
 
     @Override
     @SuppressWarnings("PMD.ShortMethodName")
     public Bytes or(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
-            first[index] = (byte) (first[index] | second[index]);
-        }
-        return new BytesOf(first);
+        return this.bytes.or(other);
     }
 
     @Override
     public Bytes xor(final Bytes other) {
-        final byte[] first = this.take();
-        final byte[] second = other.take();
-        for (int index = 0; index < Math.min(first.length, second.length); index += 1) {
-            first[index] = (byte) (first[index] ^ second[index]);
-        }
-        return new BytesOf(first);
+        return this.bytes.xor(other);
     }
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
     public Bytes shift(final int bits) {
-        // @checkstyle MethodBodyCommentsCheck (3 lines)
-        // @checkstyle NestedIfDepthCheck (40 lines)
-        final byte[] bytes = this.take();
-        final int mod = Math.abs(bits) % Byte.SIZE;
-        final int offset = Math.abs(bits) / Byte.SIZE;
-        if (bits < 0) {
-            final byte carry = (byte) ((0x01 << mod) - 1);
-            for (int index = 0; index < bytes.length; index += 1) {
-                final int source = index + offset;
-                if (source >= bytes.length) {
-                    bytes[index] = 0;
-                } else {
-                    byte dst = (byte) (bytes[source] << mod);
-                    if (source + 1 < bytes.length) {
-                        dst |= bytes[source + 1] >>> (Byte.SIZE - mod) & (carry & 0xFF);
-                    }
-                    bytes[index] = dst;
-                }
-            }
-        } else {
-            final byte carry = (byte) (0xFF << (Byte.SIZE - mod));
-            for (int index = bytes.length - 1; index >= 0; index -= 1) {
-                final int source = index - offset;
-                if (source < 0) {
-                    bytes[index] = 0;
-                } else {
-                    byte dst = (byte) ((0xff & bytes[source]) >>> mod);
-                    if (source - 1 >= 0) {
-                        dst |= bytes[source - 1] << (Byte.SIZE - mod) & (carry & 0xFF);
-                    }
-                    bytes[index] = dst;
-                }
-            }
-        }
-        return new BytesOf(bytes);
+        return this.bytes.shift(bits);
     }
 
     @Override
     public Bytes sshift(final int bits) {
-        if (bits < 0) {
-            throw new UnsupportedOperationException("right sshift is NYI");
-        }
-        final byte[] bytes = this.shift(bits).take();
-        if (this.take()[0] < 0) {
-            for (int index = 0; index < bytes.length; index += 1) {
-                final int zeros = BytesOf.numberOfLeadingZeros(
-                    bytes[index]
-                );
-                bytes[index] = (byte) (bytes[index] & 0xFF ^ (-1 << (Byte.SIZE - zeros)));
-                if (zeros != Byte.SIZE) {
-                    break;
-                }
-            }
-        }
-        return new BytesOf(bytes);
+        return this.bytes.sshift(bits);
     }
 
     @Override
     public <T extends Number> T asNumber(final Class<T> type) {
-        final byte[] ret = this.take();
-        final Object res;
-        final ByteBuffer buf = ByteBuffer.wrap(ret);
-        if (Long.class.equals(type)
-            && ret.length == Long.BYTES) {
-            res = buf.getLong();
-        } else if (Integer.class.equals(type)
-            && ret.length == Integer.BYTES
-        ) {
-            res = buf.getInt();
-        } else if (Double.class.equals(type)
-            && ret.length == Double.BYTES
-        ) {
-            res = buf.getDouble();
-        } else {
-            throw new UnsupportedOperationException(
-                String.format(
-                    "Unsupported conversion to '%s' for %d bytes",
-                    type,
-                    ret.length
-                )
-            );
-        }
-        return type.cast(res);
+        return this.bytes.asNumber(type);
     }
 
     @Override
     public String asString() {
-        final StringBuilder out = new StringBuilder(0);
-        for (final byte bte : this.data) {
-            if (out.length() > 0) {
-                out.append('-');
-            }
-            out.append(String.format("%02X", bte));
-        }
-        if (this.data.length == 0) {
-            out.append("--");
-        }
-        return out.toString();
+        return this.bytes.asString();
     }
 
     @Override
     public byte[] take() {
-        return Arrays.copyOf(this.data, this.data.length);
+        return this.bytes.take();
     }
 
     @Override
     public String toString() {
-        return String.format("BytesOf{%s}", Arrays.toString(this.data));
+        return this.bytes.toString();
     }
 
     @Override
     public boolean equals(final Object other) {
-        final boolean result;
-        if (this == other) {
-            result = true;
-        } else if (other instanceof Bytes) {
-            result = Arrays.equals(this.data, ((Bytes) other).take());
-        } else {
-            result = false;
-        }
-        return result;
+        return this.bytes.equals(other);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(this.data);
-    }
-
-    /**
-     * Count leading zero bits.
-     * @param num Byte.
-     * @return Number between 0 and 8.
-     */
-    private static byte numberOfLeadingZeros(final byte num) {
-        final byte result;
-        if (num == 0) {
-            result = (byte) Byte.SIZE;
-        } else if (num < 0) {
-            result = (byte) 0;
-        } else {
-            byte temp = num;
-            int bts = Byte.SIZE - 1;
-            if (temp >= 1 << 4) {
-                bts -= 4;
-                temp >>>= 4;
-            }
-            if (temp >= 1 << 2) {
-                bts -= 2;
-                temp >>>= 2;
-            }
-            result = (byte) (bts - (temp >>> 1));
-        }
-        return result;
+        return this.bytes.hashCode();
     }
 
 }

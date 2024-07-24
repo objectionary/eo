@@ -47,7 +47,7 @@ SOFTWARE.
   <xsl:template match="class/@name">
     <xsl:attribute name="name">
       <xsl:choose>
-        <xsl:when test="//meta[head='tests' or head='junit']">
+        <xsl:when test="//meta[head='tests']">
           <xsl:value-of select="eo:name(.)"/>
         </xsl:when>
         <xsl:otherwise>
@@ -61,7 +61,7 @@ SOFTWARE.
     <xsl:variable name="ourRef" select="parent::o/@ref"/>
     <xsl:attribute name="{name()}">
       <xsl:choose>
-        <xsl:when test="//meta[head='tests' or head='junit']">
+        <xsl:when test="//meta[head='tests']">
           <xsl:choose>
             <xsl:when test="//class[@name=$a and @line=$ourRef]">
               <xsl:value-of select="eo:name($a)"/>
@@ -81,7 +81,7 @@ SOFTWARE.
     <xsl:variable name="a" select="."/>
     <xsl:attribute name="{name()}">
       <xsl:choose>
-        <xsl:when test="//meta[head='tests' or head='junit']">
+        <xsl:when test="//meta[head='tests']">
           <xsl:choose>
             <xsl:when test="//class[@name=$a]">
               <xsl:value-of select="eo:name($a)"/>
@@ -100,7 +100,7 @@ SOFTWARE.
   <xsl:template match="class" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:if test="//meta[head='tests' or head='junit']">
+      <xsl:if test="//meta[head='tests']">
         <xsl:variable name="c" select="."/>
         <xsl:apply-templates select="//class[@parent=$c/@name]" mode="copy"/>
       </xsl:if>
@@ -108,7 +108,7 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="objects/class[@parent]" mode="#default">
     <xsl:choose>
-      <xsl:when test="//meta[head='tests' or head='junit']">
+      <xsl:when test="//meta[head='tests']">
         <!-- kill them -->
       </xsl:when>
       <xsl:otherwise>

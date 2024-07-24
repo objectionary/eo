@@ -20,74 +20,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sprintf
++alias org.eolang.structs.list
++alias org.eolang.structs.bytes-as-array
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
-+package org.eolang.txt
++package org.eolang.structs
 +version 0.0.0
 
 # Test.
-[] > prints-simple-string
+[] > converts-bytes-to-array
   eq. > @
-    "Hello, Jeffrey!"
-    sprintf
-      "Hello, %s!"
-      * "Jeffrey"
+    list
+      bytes-as-array
+        20-1F-EE-B5-FF
+    * 20- 1F- EE- B5- FF-
 
 # Test.
-[] > prints-complex-string
+[] > single-byte-to-array
   eq. > @
-    "Привет 3.140000 Jeff X!"
-    sprintf
-      "Привет %f %s %s!"
-      * 3.14 "Jeff" "X"
+    list
+      bytes-as-array
+        1F-
+    * 1F-
 
 # Test.
-[] > prints-bytes-string
+[] > zero-bytes-to-array
   eq. > @
-    "00-00-00-00-00-00-00-2A"
-    sprintf
-      "%x"
-      * 42.as-bytes
-
-# Test.
-[] > formats-all-objects
-  eq. > @
-    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    sprintf
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      * "Jeff" "Jeff".as-bytes 42.3 14 false
-
-# Test.
-[] > sprintf-fails-if-amount-of-arguments-does-not-match
-  try > @
-    sprintf
-      "%s%s"
-      * "Jeff"
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-does-not-fail-if-arguments-more-than-formats
-  eq. > @
-    "Hey"
-    sprintf
-      "%s"
-      * "Hey" "Jeff"
-
-# Test.
-[] > fails-on-unsupported-format
-  try > @
-    sprintf "%o" *
-    stdout ex > [ex]
-    false
-
-# Test.
-[] > sprintf-prints-percents
-  eq. > @
-    "%Jeff"
-    sprintf
-      "%%%s"
-      * "Jeff"
+    list
+      bytes-as-array
+        --
+    *

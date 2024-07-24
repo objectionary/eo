@@ -22,6 +22,8 @@
 
 +alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++alias org.eolang.structs.list
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -29,65 +31,91 @@
 +version 0.0.0
 
 # Test.
-[] > prints-simple-string
+[] > sscanf-with-string
   eq. > @
-    "Hello, Jeffrey!"
-    sprintf
-      "Hello, %s!"
-      * "Jeffrey"
+    "hello"
+    tail.
+      sscanf "%s" "hello"
 
 # Test.
-[] > prints-complex-string
+[] > sscanf-with-int
   eq. > @
-    "Привет 3.140000 Jeff X!"
-    sprintf
-      "Привет %f %s %s!"
-      * 3.14 "Jeff" "X"
+    33
+    tail.
+      sscanf "%d" "33"
 
 # Test.
-[] > prints-bytes-string
+[] > sscanf-with-float
   eq. > @
-    "00-00-00-00-00-00-00-2A"
-    sprintf
-      "%x"
-      * 42.as-bytes
+    0.24
+    tail.
+      sscanf "%f" "0.24"
 
 # Test.
-[] > formats-all-objects
-  eq. > @
-    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    sprintf
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      * "Jeff" "Jeff".as-bytes 42.3 14 false
-
-# Test.
-[] > sprintf-fails-if-amount-of-arguments-does-not-match
+[] > sscanf-with-error
   try > @
-    sprintf
-      "%s%s"
-      * "Jeff"
+    sscanf "%l" "error"
     stdout ex > [ex]
     false
 
 # Test.
-[] > sprintf-does-not-fail-if-arguments-more-than-formats
+[] > sscanf-with-string-int-float
   eq. > @
-    "Hey"
-    sprintf
-      "%s"
-      * "Hey" "Jeff"
+    list
+      sscanf
+        "%s %d %f"
+        "hello 33 0.24"
+    * "hello" 33 0.24
 
 # Test.
-[] > fails-on-unsupported-format
-  try > @
-    sprintf "%o" *
-    stdout ex > [ex]
-    false
+[] > sscanf-with-string-with-ending
+  eq. > @
+    "hello"
+    tail.
+      sscanf "%s!" "hello!"
 
 # Test.
-[] > sprintf-prints-percents
+[] > sscanf-with-complex-string
   eq. > @
-    "%Jeff"
-    sprintf
-      "%%%s"
-      * "Jeff"
+    "test"
+    tail.
+      sscanf "some%sstring" "someteststring"
+
+# Test.
+[] > sscanf-with-complex-int
+  eq. > @
+    734987259
+    tail.
+      sscanf "!%d!" "!734987259!"
+
+# Test.
+[] > sscanf-with-complex-float
+  eq. > @
+    1991.01
+    tail.
+      sscanf "this will be=%f" "this will be=1991.01"
+
+# Test.
+[] > sscanf-with-sprintf
+  eq. > @
+    list
+      sscanf
+        "%s is about %d?"
+        sprintf
+          "%s is about %d?"
+          * "This" 8
+    * "This" 8
+
+# Test.
+[] > sscanf-complex-case
+  eq. > @
+    list
+      sscanf
+        "Im%d %s old and this is! Let's calculate %f + %f= %f"
+        "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    *
+      18
+      "years"
+      99999999.99
+      0.01
+      100000000.0

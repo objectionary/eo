@@ -32,15 +32,15 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.20
+      - uses: zerocracy/judges-action@0.0.35
         with:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           options: |
             github_token=${{ secrets.GITHUB_TOKEN }}
-            summary_url=https://www.eolang.org/zerocracy/objectionary.html
+            vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.16
+      - uses: zerocracy/pages-action@0.0.23
         with:
           factbase: objectionary.fb
           output: pages
