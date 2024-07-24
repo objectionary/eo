@@ -50,7 +50,7 @@ public final class DownloadDepsMojo extends SafeMojo {
     /**
      * Dependencies to download.
      */
-    private static final Collection<DepFunc> DEPS = new ListOf<>(
+    private static final Collection<Supplier<Dependency>> DEPS = new ListOf<>(
         new DepFunc("net.java.dev.jna", "jna", "5.14.0")
     );
 
@@ -77,7 +77,7 @@ public final class DownloadDepsMojo extends SafeMojo {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
-        for (final DepFunc dep : DownloadDepsMojo.DEPS) {
+        for (final Supplier<Dependency> dep : DownloadDepsMojo.DEPS) {
             this.central.accept(dep.get(), this.classesDir.toPath());
         }
     }
