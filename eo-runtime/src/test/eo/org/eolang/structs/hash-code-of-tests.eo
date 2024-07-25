@@ -28,20 +28,12 @@
 +version 0.0.0
 
 # Test.
-[] > hash-code-of-bools-is-integer
-  hash-code-of true > true-code!
-  hash-code-of false > false-code!
+[] > hash-code-of-bools-is-number
+  hash-code-of true > true-code
+  hash-code-of false > false-code
   and. > @
-    eq.
-      1
-      div.
-        int true-code
-        int true-code
-    eq.
-      1
-      div.
-        int false-code
-        int false-code
+    true-code.as-bytes.size.eq 8
+    false-code.as-bytes.size.eq 8
 
 # Test.
 [] > hash-code-of-int-is-int
@@ -49,8 +41,8 @@
   eq. > @
     1
     div.
-      int num-code
-      int num-code
+      number num-code
+      number num-code
 
 # Test.
 [] > hash-codes-of-the-same-big-ints-are-equal
@@ -85,8 +77,8 @@
   eq. > @
     1
     div.
-      int str-code
-      int str-code
+      number str-code
+      number str-code
 
 # Test.
 [] > hash-codes-of-the-same-strings-are-equal
@@ -96,11 +88,10 @@
 
 # Test.
 [] > hash-codes-of-same-length-strings-are-not-equal
-  not. > res
+  not. > @
     eq.
       hash-code-of "one"
       hash-code-of "two"
-  res > @
 
 # Test.
 [] > hash-codes-of-different-strings-are-not-equal
@@ -117,8 +108,8 @@
   eq. > @
     1
     div.
-      int obj-code
-      int obj-code
+      number obj-code
+      number obj-code
 
 # Test.
 [] > hash-codes-of-the-same-abstract-objects-are-equal
@@ -144,8 +135,8 @@
   eq. > @
     1
     div.
-      int float-code
-      int float-code
+      number float-code
+      number float-code
 
 # Test.
 [] > hash-codes-of-the-same-floats-are-equal

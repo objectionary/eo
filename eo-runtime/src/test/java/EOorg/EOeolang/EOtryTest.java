@@ -64,7 +64,7 @@ public final class EOtryTest {
                     2,
                     new Data.ToPhi(true)
                 )
-            ).take(String.class),
+            ).asString(),
             Matchers.containsString("it is brok")
         );
     }
@@ -84,7 +84,7 @@ public final class EOtryTest {
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(body).take(String.class),
+            new Dataized(body).asString(),
             Matchers.containsString("it is broken")
         );
     }
@@ -105,8 +105,8 @@ public final class EOtryTest {
                     2,
                     new Data.ToPhi(true)
                 )
-            ).take(Long.class),
-            Matchers.equalTo(42L)
+            ).asNumber(),
+            Matchers.equalTo(42.0)
         );
     }
 

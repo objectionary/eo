@@ -23,43 +23,41 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtCompositeTest;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
-import org.eolang.PhWith;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOint$EOminus}.
- * {@link EOint$EOminus} is the generated class. This is the reason
- * why we disable jtcop check.
+ * Number.times object.
  *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.39.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOintEOminusTest {
+@Versionized
+@XmirObject(oname = "number.times")
+public final class EOnumber$EOtimes extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     */
+    public EOnumber$EOtimes() {
+        this.add("x", new AtVoid("x"));
+    }
 
-    @Test
-    void subtractsNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi sub = new PhWith(
-            new PhMethod(left, "minus"),
-            0, right
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(sub).take(Long.class),
-            Matchers.equalTo(29L)
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Dataized(this.take(Attr.RHO)).asNumber()
+                * new Dataized(this.take("x")).asNumber()
         );
     }
 }

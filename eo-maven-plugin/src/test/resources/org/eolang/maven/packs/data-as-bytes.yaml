@@ -31,7 +31,7 @@ tests:
   - /program/errors[count(*)=0]
   - //java[contains(text(), '.take("org").take("eolang").take("true")')]
   - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x00});')]
-  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x2A});')]
+  - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
   - //java[contains(text(), 'ret_1 = new PhData(ret_1, new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
   - //java[contains(text(), 'ret = new PhData(ret, new byte[] {(byte) 0x01, (byte) 0xAF});')]
 eo: |
@@ -46,7 +46,7 @@ eo: |
     42 > @
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > f
-    float 3.5 > @
+    number 3.5 > @
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > b
     01-AF > @

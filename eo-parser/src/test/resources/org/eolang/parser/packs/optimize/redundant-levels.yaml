@@ -32,10 +32,10 @@ tests:
   - //o[@name='another']/o[@base='.eq' and @name='@']/o[@base='another$t0$second' and @name='second']
   # 'another$t0$first' object
   - //o[@name='another$t0$first' and count(o)=1]
-  - //o[@name='another$t0$first']/o[@base='int' and @name='@']
+  - //o[@name='another$t0$first']/o[@base='number' and @name='@']
   # 'another$t0$second' object
   - //o[@name='another$t0$second' and count(o)=1]
-  - //o[@name='another$t0$second']/o[@base='int' and @name='@']
+  - //o[@name='another$t0$second']/o[@base='number' and @name='@']
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > another

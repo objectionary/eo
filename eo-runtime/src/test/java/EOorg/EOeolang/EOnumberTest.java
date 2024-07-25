@@ -23,40 +23,55 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
+import org.eolang.AtCompositeTest;
 import org.eolang.Data;
-import org.eolang.Param;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * GT.
+ * Test case for {@link EOnumber}.
  *
- * @since 1.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.1
+ * @checkstyle TypeNameCheck (4 lines)
  */
-@Versionized
-@XmirObject(oname = "float.gt")
-public final class EOfloat$EOgt extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    public EOfloat$EOgt() {
-        this.add("x", new AtVoid("x"));
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+public final class EOnumberTest {
+
+    @Test
+    void hasDifferentHashes() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(42L);
+        MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
+            left.hashCode(),
+            Matchers.not(Matchers.equalTo(right.hashCode()))
+        );
     }
 
-    @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            new Param(this).strong(Double.class)
-                > new Param(this, "x").strong(Double.class)
+    @Test
+    void hasHashEvenWithoutData() {
+        final Phi phi = new EOnumber();
+        MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
+            phi.hashCode(),
+            Matchers.greaterThan(0)
+        );
+    }
+
+    @Test
+    void hasDifferentHash() {
+        final Phi raw = new EOnumber();
+        final Phi initialized = new Data.ToPhi(0L);
+        MatcherAssert.assertThat(
+            AtCompositeTest.TO_ADD_MESSAGE,
+            raw.hashCode(),
+            Matchers.not(initialized.hashCode())
         );
     }
 }

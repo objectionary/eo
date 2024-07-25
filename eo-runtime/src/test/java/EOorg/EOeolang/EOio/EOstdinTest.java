@@ -89,7 +89,7 @@ final class EOstdinTest {
     void dataizesNextLineOneLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        final String actual = new Dataized(phi).take(String.class);
+        final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
@@ -102,7 +102,7 @@ final class EOstdinTest {
     void dataizesStdinOneLine(final StdIn stdin) {
         final String expected = "this is a testing input!".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin());
-        final String actual = new Dataized(phi).take(String.class);
+        final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
@@ -115,7 +115,7 @@ final class EOstdinTest {
     void dataizesNextLineMultiLine(final StdIn stdin) {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        final String actual = new Dataized(phi).take(String.class);
+        final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
@@ -129,11 +129,11 @@ final class EOstdinTest {
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
         final EOerror.ExError error = Assertions.assertThrows(
             EOerror.ExError.class,
-            () -> new Dataized(phi).take(String.class)
+            () -> new Dataized(phi).asString()
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(error.enclosure()).take(String.class),
+            new Dataized(error.enclosure()).asString(),
             Matchers.containsString(
                 "There is no line in the standard input stream to consume"
             )
@@ -145,7 +145,7 @@ final class EOstdinTest {
     void dataizesEmptyStdin(final StdIn stdin) {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(new EOstdin()).take(String.class),
+            new Dataized(new EOstdin()).asString(),
             Matchers.equalTo(System.lineSeparator())
         );
     }
@@ -157,7 +157,7 @@ final class EOstdinTest {
         final String second = "another line".concat(System.lineSeparator());
         final String third = "yet another line".concat(System.lineSeparator());
         final Phi phi = new PhCopy(new EOstdin());
-        final String actual = new Dataized(phi).take(String.class);
+        final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
@@ -172,21 +172,21 @@ final class EOstdinTest {
         final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
         Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        String actual = new Dataized(phi).take(String.class);
+        String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(first)
         );
         phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        actual = new Dataized(phi).take(String.class);
+        actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(second)
         );
         phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        actual = new Dataized(phi).take(String.class);
+        actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
@@ -200,21 +200,21 @@ final class EOstdinTest {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
         Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        String actual = new Dataized(phi).take(String.class);
+        String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(first)
         );
         phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        actual = new Dataized(phi).take(String.class);
+        actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo("")
         );
         phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        actual = new Dataized(phi).take(String.class);
+        actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,

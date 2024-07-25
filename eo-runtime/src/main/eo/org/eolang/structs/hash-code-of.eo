@@ -27,27 +27,24 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Hash code - the pseudo-unique integer
+# Hash code - the pseudo-unique float numeric
 # representation of an object.
 #
-# Here `h` must be an object that can be converted to bytes
+# Here `input` must be an object that can be converted to bytes
 # via `as-bytes` object.
-[h] > hash-code-of
-  h.as-bytes > h-as-bytes!
+[input] > hash-code-of
+  input.as-bytes > input-as-bytes!
 
   [] > @
-    0 > zero!
-    rec-hash-code 5381 0 > @
+    rec-hash-code 0.as-bytes 0 > @
 
     [acc index] > rec-hash-code
       if. > @
-        index.eq ^.^.h-as-bytes.size
+        index.eq ^.^.input-as-bytes.size
         acc
         ^.rec-hash-code
           plus.
-            33.times acc
-            as-int.
-              concat.
-                00-00-00-00-00-00-00
-                h-as-bytes.slice index 1
+            31.times acc
+            00-00-00-00-00-00-00.concat
+              ^.^.input-as-bytes.slice index 1
           index.plus 1

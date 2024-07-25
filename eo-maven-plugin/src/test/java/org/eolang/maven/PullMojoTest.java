@@ -97,11 +97,7 @@ final class PullMojoTest {
                 "# This is the default 64+ symbols comment in front of named abstract object.",
                 "[] > main",
                 "  QQ.io.stdout > @",
-                "    QQ.txt.sprintf",
-                "      \"I am %d years old\"",
-                "      plus.",
-                "        1337",
-                "        228"
+                "    \"I am 18 years old\""
             )
             .with(
                 "objectionaries",

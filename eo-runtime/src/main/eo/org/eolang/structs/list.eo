@@ -66,12 +66,12 @@
       if. > @
         eq.
           1.plus > next-index!
-            index.as-int > idx-as-int
+            index.as-number > idx-as-number
           ^.origin-len
         ^.func > accumulated
           accum
-          ^.^.origin.at idx-as-int
-          idx-as-int
+          ^.^.origin.at idx-as-number
+          idx-as-number
         ^.rec-reduced
           accumulated
           next-index
@@ -230,7 +230,7 @@
         ^.rec-filtered
           as-bytes.
             1.plus
-              idx-as-bytes.as-int > index
+              idx-as-bytes.as-number > index
           if.
             ^.func
               ^.^.origin.at index > item
@@ -257,7 +257,7 @@
           list *
         *
           0.gt idx
-          ^.tail index.as-int.neg
+          ^.tail index.as-number.neg
         *
           ^.origin.length.lte idx
           ^
@@ -275,7 +275,7 @@
   # Get the last `index` elements from the end of the list.
   [index] > tail
     index > idx!
-    ^.origin.length.minus idx.as-int > start!
+    ^.origin.length.minus idx.as-number > start!
     if. > @
       0.gt start
       ^

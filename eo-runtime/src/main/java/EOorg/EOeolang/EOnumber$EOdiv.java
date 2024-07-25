@@ -29,36 +29,35 @@ package EOorg.EOeolang;
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * PLUS.
+ * Number.div object.
  *
- * @since 0.23
+ * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "int.plus")
-public final class EOint$EOplus extends PhDefault implements Atom {
+@XmirObject(oname = "number.div")
+public final class EOnumber$EOdiv extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    public EOint$EOplus() {
+    public EOnumber$EOdiv() {
         this.add("x", new AtVoid("x"));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Long.sum(
-                new Param(this).strong(Long.class),
-                new Param(this, "x").strong(Long.class)
-            )
+            new Dataized(this.take(Attr.RHO)).asNumber()
+                / new Dataized(this.take("x")).asNumber()
         );
     }
 }

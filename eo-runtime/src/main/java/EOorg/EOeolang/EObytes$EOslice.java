@@ -30,8 +30,9 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -56,12 +57,11 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final long start = new Param(this, "start").strong(Long.class);
-        final long length = new Param(this, "len").strong(Long.class);
-        final byte[] array = new Param(this).strong(byte[].class);
-        final byte[] target = Arrays.copyOfRange(
-            array, (int) start, (int) (start + length)
+        final int start = new Dataized(this.take("start")).asNumber().intValue();
+        final int length = new Dataized(this.take("len")).asNumber().intValue();
+        final byte[] array = new Dataized(this.take(Attr.RHO)).take();
+        return new Data.ToPhi(
+            Arrays.copyOfRange(array, start, start + length)
         );
-        return new Data.ToPhi(target);
     }
 }

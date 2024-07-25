@@ -32,4 +32,8 @@
 # 1. `format` - is a formatter string (e.g. "Hello, %s!")
 # 2. `read` - is a string where data exists (e.g. "Hello, John!")
 # returns a `tuple` of formatted values (e.g. * "John").
+# Supported formatters are:
+# - %d - parse as integer and convert to `number`
+# - %f - parse as float and convert to `number`
+# - %s - parse as string and convert to `string`.
 [format read] > sscanf /tuple

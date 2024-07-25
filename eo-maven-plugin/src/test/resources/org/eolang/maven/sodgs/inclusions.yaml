@@ -23,8 +23,8 @@
 inclusion:
   - foo.x.*
 locators:
-  - .a .x .α0 .α0 .Δ δ=00-00-00-00-00-00-00-2A
-  - .b .y .α0 .α0 .Δ δ=00-00-00-00-00-00-01-00
+  - .a .x .α0 .α0 .Δ δ=40-45-00-00-00-00-00-00
+  - .b .y .α0 .α0 .Δ δ=40-70-00-00-00-00-00-00
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [f] > a

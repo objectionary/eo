@@ -64,13 +64,6 @@ public final class UniverseDefault implements Universe {
         );
     }
 
-    /**
-     * Ctor.
-     */
-    public UniverseDefault() {
-        this(Phi.Φ);
-    }
-
     @Override
     public int find(final String name) {
         if (name == null) {
