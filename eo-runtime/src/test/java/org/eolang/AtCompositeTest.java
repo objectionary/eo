@@ -81,9 +81,9 @@ public final class AtCompositeTest {
         final Phi phi = new PhMethod(rnd, Attr.LAMBDA);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(Double.class),
+            new Dataized(phi).asNumber(),
             Matchers.equalTo(
-                new Dataized(phi).take(Double.class)
+                new Dataized(phi).asNumber()
             )
         );
     }

@@ -30,7 +30,7 @@ tests:
   - /program/errors[count(*)=0]
   - //java[contains(text(), '  @Test')]
   - //java[contains(text(), '  public void works() throws java.lang.Exception {')]
-  - //java[contains(text(), '    Boolean obj = new Dataized(new EOcompares_two_bools()).take(Boolean.class);')]
+  - //java[contains(text(), '    Boolean obj = new Dataized(new EOcompares_two_bools()).asBool();')]
   - //java[contains(text(), '    Assertions.assertTrue(obj);')]
   - //java[contains(text(), '  }')]
 eo: |

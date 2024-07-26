@@ -103,7 +103,7 @@ public final class EOmallocTest {
         /**
          * Id.
          */
-        private long id;
+        private double id;
 
         /**
          * Ctor.
@@ -117,7 +117,7 @@ public final class EOmallocTest {
                     rho -> {
                         this.id = new Dataized(
                             rho.take("m").take("id")
-                        ).take(Long.class);
+                        ).asNumber();
                         return new Data.ToPhi(true);
                     }
                 )
@@ -133,7 +133,7 @@ public final class EOmallocTest {
         /**
          * Id.
          */
-        private long id;
+        private double id;
 
         /**
          * Ctor.
@@ -147,7 +147,7 @@ public final class EOmallocTest {
                     rho -> {
                         this.id = new Dataized(
                             this.take("m").take("id")
-                        ).take(Long.class);
+                        ).asNumber();
                         return new PhWith(
                             new PhCopy(
                                 Phi.Φ.take("org.eolang.error")

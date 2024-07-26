@@ -41,7 +41,7 @@
 
   # Obtain the length of the tuple.
   [] > length
-    int > @
+    number > @
       ^.head.length.plus 1 > len!
 
   # Take one element from the tuple, at the given position.

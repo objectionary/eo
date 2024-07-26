@@ -130,6 +130,11 @@ public final class BytesOf implements Bytes {
     }
 
     @Override
+    public Double asNumber() {
+        return this.bytes.asNumber();
+    }
+
+    @Override
     public <T extends Number> T asNumber(final Class<T> type) {
         return this.bytes.asNumber(type);
     }
@@ -158,5 +163,4 @@ public final class BytesOf implements Bytes {
     public int hashCode() {
         return this.bytes.hashCode();
     }
-
 }

@@ -33,10 +33,10 @@ tests:
   - //o[@name='main']/o[@base='.eq' and @name='sibling']/o[@base='main$t1$second' and @name='second' and count(o)=0]
   # 'main$t1$first' object
   - //o[@name='main$t1$first' and count(o)=1]
-  - //o[@name='main$t1$first']/o[@base='int' and @name='@']
+  - //o[@name='main$t1$first']/o[@base='number' and @name='@']
   # 'main$t1$second' object
   - //o[@name='main$t1$second' and count(o)=1]
-  - //o[@name='main$t1$second']/o[@base='int' and @name='@']
+  - //o[@name='main$t1$second']/o[@base='number' and @name='@']
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > main

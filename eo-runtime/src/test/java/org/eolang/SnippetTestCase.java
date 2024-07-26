@@ -40,6 +40,7 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -254,11 +255,13 @@ final class SnippetTestCase {
                     .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
                 f.exec("clean", "test");
                 final String log = f.log();
-                Logger.debug(this, log);
-                MatcherAssert.assertThat(
-                    "Some tests weren't passed after converting to phi and back",
-                    log,
-                    Matchers.containsString("BUILD SUCCESS")
+                final boolean success = log.contains("BUILD SUCCESS");
+                if (!success) {
+                    Logger.info(this, log);
+                }
+                Assertions.assertTrue(
+                    success,
+                    "Some tests weren't passed after converting to phi and back"
                 );
             }
         );

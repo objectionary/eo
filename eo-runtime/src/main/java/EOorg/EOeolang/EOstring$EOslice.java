@@ -29,9 +29,10 @@ package EOorg.EOeolang;
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -56,9 +57,9 @@ public final class EOstring$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final String str = new Param(this).strong(String.class);
-        final int start = new Param(this, "start").strong(Long.class).intValue();
-        final int length = new Param(this, "len").strong(Long.class).intValue();
+        final String str = new Dataized(this.take(Attr.RHO)).asString();
+        final int start = new Dataized(this.take("start")).asNumber().intValue();
+        final int length = new Dataized(this.take("len")).asNumber().intValue();
         final int end = length + start;
         if (start < 0) {
             throw new ExFailure(

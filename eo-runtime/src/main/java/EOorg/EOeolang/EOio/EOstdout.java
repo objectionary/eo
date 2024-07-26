@@ -31,7 +31,7 @@ import java.io.PrintStream;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -74,9 +74,7 @@ public final class EOstdout extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        this.out.print(
-            new Param(this, "text").strong(String.class)
-        );
+        this.out.print(new Dataized(this.take("text")).asString());
         return new Data.ToPhi(true);
     }
 }

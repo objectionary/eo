@@ -50,24 +50,13 @@ public final class StUnhex extends StEnvelope {
                 new StSequence(
                     StUnhex.class.getSimpleName(),
                     new StXPath(
-                        StUnhex.xpath("float"),
+                        StUnhex.xpath("number"),
                         xml -> StUnhex.append(
-                            "float",
-                            Double.toString(
+                            "number",
+                            StUnhex.number(
                                 StUnhex.buffer(
                                     StUnhex.unspace(xml.xpath("./o/text()").get(0))
                                 ).getDouble()
-                            )
-                        )
-                    ),
-                    new StXPath(
-                        StUnhex.xpath("int"),
-                        xml -> StUnhex.append(
-                            "int",
-                            Long.toString(
-                                StUnhex.buffer(
-                                    StUnhex.unspace(xml.xpath("./o/text()").get(0))
-                                ).getLong()
                             )
                         )
                     ),
@@ -92,6 +81,22 @@ public final class StUnhex extends StEnvelope {
                 )
             )
         );
+    }
+
+    /**
+     * Convert given number to string.
+     * Prints as int if fractional part of number is 0.
+     * @param num Number to convert
+     * @return Number converted to string
+     */
+    private static String number(final Double num) {
+        final String str;
+        if (num % 1 == 0) {
+            str = Long.toString(num.longValue());
+        } else {
+            str = Double.toString(num);
+        }
+        return str;
     }
 
     /**
@@ -143,8 +148,7 @@ public final class StUnhex extends StEnvelope {
      * @param after Value after
      * @return Dirs
      */
-    private static Iterable<Directive> append(final String type,
-        final String after) {
+    private static Iterable<Directive> append(final String type, final String after) {
         return new Directives().set(after).attr("data", type);
     }
 }

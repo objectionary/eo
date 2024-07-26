@@ -84,8 +84,8 @@ public final class BinarizeParseTest {
                 "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "  let mut rng = rand::thread_rng();",
                 "  print!(\"Hello world\");",
-                "  let i = rng.gen::<i64>();",
-                "  Some(EOInt(i))",
+                "  let i = rng.gen::<f64>();",
+                "  Some(EONumber(i))",
                 "}"
             )
         );
@@ -130,7 +130,7 @@ public final class BinarizeParseTest {
             new TextOf(res.get(one)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
-                "use eo::eo_enum::EO::{EOInt};",
+                "use eo::eo_enum::EO::{EONumber};",
                 "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "println!(\"{}\", x);"
             )
@@ -140,7 +140,7 @@ public final class BinarizeParseTest {
             new TextOf(res.get(two)).asString(),
             Matchers.stringContainsInOrder(
                 "use eo::eo_enum::EO;",
-                "use eo::eo_enum::EO::{EOInt};",
+                "use eo::eo_enum::EO::{EONumber};",
                 "pub fn foo(_portal: &Portal) -> Option<EO> {",
                 "print!(\"Hello 大 2\");"
             )

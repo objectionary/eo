@@ -42,10 +42,10 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>01 02 E4 F3 04 67 32 E1</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>43 70 2E 4F 30 46 73 2E</o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='72872276393407201' and @data='int']")
+            XhtmlMatchers.hasXPaths("//o[text()='72872276393407200' and @data='number']")
         );
     }
 
@@ -55,10 +55,10 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='int'><o base='org.eolang.bytes' data='bytes'>FF FF FF FF FF FF FF FF</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>FF FF FF FF FF FF FF FF</o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='-1' and @data='int']")
+            XhtmlMatchers.hasXPaths("//o[text()='NaN' and @data='number']")
         );
     }
 
@@ -103,11 +103,11 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='float'><o base='org.eolang.bytes' data='bytes'>41 42 43 67 AE CD 3E FD</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>41 42 43 67 AE CD 3E FD</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[text()='2393807.3656386123' and @data='float']"
+                "//o[text()='2393807.3656386123' and @data='number']"
             )
         );
     }

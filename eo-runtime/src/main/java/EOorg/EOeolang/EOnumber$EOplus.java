@@ -23,45 +23,43 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang;
 
-import org.eolang.AtCompositeTest;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOstring}.
+ * Number.plus.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.39.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOstringEOsliceTest {
-
-    @Test
-    void slicesString() {
-        final Phi str = new Data.ToPhi("строка ㄤㄠ");
-        final Phi phi = new PhWith(
-            new PhWith(
-                str.take("slice").copy(),
-                "start",
-                new Data.ToPhi(7L)
-            ),
-            "len",
-            new Data.ToPhi(1L)
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(String.class),
-            Matchers.equalTo("ㄤ")
-        );
+@Versionized
+@XmirObject(oname = "number.plus")
+public final class EOnumber$EOplus extends PhDefault implements Atom {
+    /**
+     * Ctor.
+     */
+    public EOnumber$EOplus() {
+        this.add("x", new AtVoid("x"));
     }
 
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            Double.sum(
+                new Dataized(this.take(Attr.RHO)).asNumber(),
+                new Dataized(this.take("x")).asNumber()
+            )
+        );
+    }
 }

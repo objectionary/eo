@@ -68,10 +68,9 @@ public final class VerboseBytesAsString implements Supplier<String> {
             case 8:
                 final Bytes bytes = new BytesOf(this.data);
                 result = String.format(
-                    "%s = %s, or %s, or \"%s\")",
+                    "%s = %s, or \"%s\")",
                     Arrays.toString(this.data),
-                    bytes.asNumber(Long.class),
-                    bytes.asNumber(Double.class),
+                    bytes.asNumber(),
                     new String(this.data, StandardCharsets.UTF_8)
                 );
                 break;

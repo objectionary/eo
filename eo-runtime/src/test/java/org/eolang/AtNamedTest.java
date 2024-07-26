@@ -45,7 +45,7 @@ final class AtNamedTest {
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(error.enclosure()).take(String.class),
+            new Dataized(error.enclosure()).asString(),
             Matchers.allOf(
                 Matchers.containsString(
                     "Error at \"org.eolang.AtNamedTest.Dummy#x\" attribute"

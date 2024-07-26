@@ -119,7 +119,6 @@ public final class VerboseBytesAsStringTest {
          */
         public Stream<Object> getTestSources() {
             return Stream.of(
-                12_345L,
                 "qwerty",
                 12.345_67D,
                 true,

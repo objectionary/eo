@@ -25,8 +25,8 @@ tests:
   - /program/errors[count(*)=0]
   - //o[@base='.if' and o[@base='string' and @as='0']]
   - //o[@base='.if' and o[@base='string' and @as='1']]
-  - //o[@base='.if' and o[@base='int' and @as='a']]
-  - //o[@base='.if' and o[@base='int' and @as='b']]
+  - //o[@base='.if' and o[@base='number' and @as='a']]
+  - //o[@base='.if' and o[@base='number' and @as='b']]
 eo: |
   if. > first
     true

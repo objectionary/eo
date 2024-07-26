@@ -25,10 +25,10 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="explicit-data" version="2.0">
   <!--
   Here we transform just data into application
-  - 5             => int 5
-  - int 5         => int 5
-  - 42.2          => float 42.2
-  - float 22.4    => float 22.4
+  - 5             => number 5
+  - number 5      => number 5
+  - 42.2          => number 42.2
+  - number 22.4   => number 22.4
   - "Hey"         => string "Hey"
   - QQ.string "H" => QQ.string "H"
 
@@ -36,18 +36,18 @@ SOFTWARE.
   - <o base="org.eolang.bytes" data="bytes">         <o base="org.eolang.bytes" data="bytes">
       22-32                                      =>    22-32
     </o>                                             </o>
-  - <o base="org.eolang.int" name="num">             <o base="org.eolang.int" name="num">
-      <o base="org.eolang.int" data="bytes">           <o base=org.eolang.bytes data="bytes">
+  - <o base="org.eolang.number" name="num">          <o base="org.eolang.number" name="num">
+      <o base="org.eolang.number" data="bytes">        <o base=org.eolang.bytes data="bytes">
         00 00 00 00 00 00 00 01                  =>      00 00 00 00 00 00 00 01
       </o>                                             </o>
     </o>                                             </o>
-  - <o base=".int" name="b">                        <o base=".int" name="b">
+  - <o base=".number" name="b">                      <o base=".number" name="b">
       <o base=".eolang">                               <o base=".eolang">
         <o base=".org">                                  <o base="org">
           <o base="Q"></o>                                 <o base="Q"/>
         </o>                                             </o>
       </o>                                             </o>
-      <o base="org.eolang.int" data="bytes">    =>    <o base="org.eolang.bytes" data="bytes">
+      <o base="org.eolang.number" data="bytes">  =>  <o base="org.eolang.bytes" data="bytes">
         01                                               01
       </o>                                             </o>
     </o>                                             </o>

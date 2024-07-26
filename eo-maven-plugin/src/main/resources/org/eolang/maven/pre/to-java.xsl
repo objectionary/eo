@@ -531,7 +531,7 @@ SOFTWARE.
     <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Boolean obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()).take(Boolean.class);</xsl:text>
+    <xsl:text>()).asBool();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
     <xsl:text>Assertions.assertTrue(obj);</xsl:text>
   </xsl:template>

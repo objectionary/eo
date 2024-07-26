@@ -50,7 +50,7 @@
 #     5 > five
 #
 # (dataized foo).as-bytes > result # result is 00-00-00-00-00-00-00-05
-# result.as-int > f                # f is 5
+# result.as-number > f                # f is 5
 # ```
 #
 # Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`) from the object `foo`

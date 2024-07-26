@@ -59,7 +59,7 @@ final class EObytesEOconcatTest {
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(String.class),
+            new Dataized(phi).asString(),
             Matchers.equalTo("привет mr. ㄤㄠ!")
         );
     }

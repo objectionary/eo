@@ -83,7 +83,7 @@ final class BytesOfTest {
     void checksPositiveInfinity() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new BytesOf(1.0d / 0.0d).asNumber(Double.class),
+            new BytesOf(1.0d / 0.0d).asNumber(),
             Matchers.equalTo(Double.POSITIVE_INFINITY)
         );
     }
@@ -122,7 +122,7 @@ final class BytesOfTest {
         final Bytes bytes = new BytesOf("A");
         Assertions.assertThrows(
             UnsupportedOperationException.class,
-            () -> bytes.asNumber(Long.class),
+            bytes::asNumber,
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }

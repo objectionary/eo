@@ -1207,29 +1207,29 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             data = text.replaceAll("\\s+", "").replace("-", " ").trim();
         } else if (ctx.FLOAT() != null) {
             type = "bytes";
-            base = "float";
+            base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
-                    .allocate(Long.BYTES)
+                    .allocate(Double.BYTES)
                     .putDouble(Double.parseDouble(text))
                     .array()
             );
         } else if (ctx.INT() != null) {
             type = "bytes";
-            base = "int";
+            base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
-                    .allocate(Long.BYTES)
-                    .putLong(Long.parseLong(text))
+                    .allocate(Double.BYTES)
+                    .putDouble(((Long) Long.parseLong(text)).doubleValue())
                     .array()
             );
         } else if (ctx.HEX() != null) {
             type = "bytes";
-            base = "int";
+            base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
-                    .allocate(Long.BYTES)
-                    .putLong(Long.parseLong(text.substring(2), 16))
+                    .allocate(Double.BYTES)
+                    .putDouble(((Long) Long.parseLong(text.substring(2), 16)).doubleValue())
                     .array()
             );
         } else if (ctx.STRING() != null) {

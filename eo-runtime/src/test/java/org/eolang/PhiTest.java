@@ -60,7 +60,7 @@ final class PhiTest {
                         "text"
                     )
                 )
-            ).take(String.class),
+            ).asString(),
             Matchers.startsWith("Hello")
         );
     }
@@ -79,7 +79,7 @@ final class PhiTest {
                         "text"
                     )
                 )
-            ).take(String.class),
+            ).asString(),
             Matchers.startsWith("Hello")
         );
     }
@@ -90,7 +90,7 @@ final class PhiTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 Phi.Φ.take("org").take("eolang").take("nan").take("gt")
-            ).take(Boolean.class),
+            ).asBool(),
             Matchers.equalTo(false)
         );
     }

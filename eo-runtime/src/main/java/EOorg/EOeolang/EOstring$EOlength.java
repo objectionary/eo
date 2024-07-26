@@ -28,15 +28,16 @@
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * LENGTH.
+ * String.length.
  *
  * @since 1.0
  * @checkstyle TypeNameCheck (5 lines)
@@ -47,7 +48,7 @@ public final class EOstring$EOlength extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            (long) new Param(this).strong(String.class).length()
+            new Dataized(this.take(Attr.RHO)).asString().length()
         );
     }
 }

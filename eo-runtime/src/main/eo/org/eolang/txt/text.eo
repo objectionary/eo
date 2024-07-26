@@ -22,6 +22,7 @@
 
 +alias org.eolang.structs.list
 +alias org.eolang.structs.bytes-as-array
++alias org.eolang.txt.regex
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
 +architect yegor256@gmail.com
@@ -34,6 +35,17 @@
 # Text.
 [origin] > text
   origin > @
+
+  # Check that all signs in string are numbers or letters.
+  # Works only for english letters.
+  (regex "/^[A-Za-z0-9]+$/").matches ^.origin > [] > is-alphanumeric
+
+  # Check that all signs in string are letters.
+  # Works only for english letters.
+  (regex "/^[a-zA-Z]+$/").matches ^.origin > [] > is-alpha
+
+  # Check that all signs in string are ASCII characters.
+  (regex "/^[\\x00-\\x7F]*$/").matches ^.origin > [] > is-ascii
 
   # Takes a piece of a `text` as another `text`.
   # Here `start` must be an integer index to start slicing from,
@@ -50,7 +62,7 @@
       ^
       ^.slice
         first-non-space-index 0 > idx!
-        (int len).minus (int idx)
+        (number len).minus (number idx)
 
     [index] > first-non-space-index
       ^.^.origin.slice index 1 > char!
@@ -72,7 +84,7 @@
       ^.slice
         0
         first-non-space-index
-          (int len).plus -1
+          (number len).plus -1
 
     [index] > first-non-space-index
       ^.^.origin.slice index 1 > char!
@@ -174,10 +186,10 @@
     ^.origin.length > self-len!
     size. > sub-len!
       substring > substr!
-    (int self-len).minus (int sub-len) > end!
+    (number self-len).minus (number sub-len) > end!
     if. > @
       or.
-        (int sub-len).gt self-len
+        (number sub-len).gt self-len
         and.
           sub-len.eq self-len
           (substr.eq ^.origin).not
@@ -207,13 +219,13 @@
       substring > substr!
     if. > @
       or.
-        (int sub-len).gt self-len
+        (number sub-len).gt self-len
         and.
           sub-len.eq self-len
           (substr.eq ^.origin).not
       -1
       rec-index-of-substr
-        (int self-len).minus (int sub-len)
+        (number self-len).minus (number sub-len)
 
     [idx] > rec-index-of-substr
       if. > @
@@ -234,7 +246,7 @@
   [] > up-cased
     ascii "z" > ascii-z!
     minus. > distance
-      int
+      number
         ascii "a" > ascii-a!
       ascii "A"
     text > @
@@ -259,7 +271,7 @@
                 byte
 
     [char] > ascii
-      as-int. > @
+      as-number. > @
         concat.
           00-00-00-00-00-00-00
           char.as-bytes
@@ -296,12 +308,12 @@
     if. > index!
       0.gt
         i > idx!
-      (int len).plus idx
+      (number len).plus idx
       idx
     if. > @
       or.
         0.gt index
-        (int index).gte len
+        (number index).gte len
       error
         sprintf
           "Given index %d is out of text bounds"
@@ -315,21 +327,8 @@
   #  write some tests when object is implemented.
   ^ > [target replacement] > replaced
 
-  # Returns the original `text` as `int`.
-  [] > as-int
-    if. > @
-      eq.
-        0
-        length.
-          sscanf "%d" ^.origin > scanned
-      error
-        sprintf
-          "Can't convert text %s to int"
-          * ^.origin
-      scanned.tail
-
-  # Returns the original `text` as `float`.
-  [] > as-float
+  # Returns the original `text` as `number`.
+  [] > as-number
     if. > @
       eq.
         0
@@ -337,7 +336,7 @@
           sscanf "%f" ^.origin > scanned
       error
         sprintf
-          "Can't convert text %s to float"
+          "Can't convert text %s to number"
           * ^.origin
       scanned.tail
 
@@ -371,72 +370,6 @@
             accum
             start
             current.plus 1
-
-  # Check that all signs in string are numbers or letters.
-  # Works only for english letters
-  [] > is-alphabetic
-    reduced. > @
-      list
-        bytes-as-array
-          ^.low-cased.as-bytes
-      true
-      [accum byte] >>
-        and. > @
-          accum
-          ^.int-is-alphabetic
-            concat.
-              00-00-00-00-00-00-00
-              byte
-
-    [bte] > int-is-alphabetic
-      or. > @
-        and.
-          48.lte bte
-          57.gte bte
-        and.
-          97.lte bte
-          122.gte bte
-
-  # Check that all signs in string are letters.
-  # Works only for english letters.
-  [] > is-alpha
-    reduced. > @
-      list
-        bytes-as-array
-          ^.low-cased.as-bytes
-      true
-      [accum byte] >>
-        and. > @
-          accum
-          ^.int-is-alpha
-            concat.
-              00-00-00-00-00-00-00
-              byte
-
-    [bte] > int-is-alpha
-      and. > @
-        97.lte bte
-        122.gte bte
-
-  # Check that all signs in string are ASCII characters.
-  [] > is-ascii
-    reduced. > @
-      list
-        bytes-as-array
-          ^.origin.as-bytes
-      true
-      [accum byte] >>
-        and. > @
-          accum
-          ^.int-is-ascii
-            concat.
-              00-00-00-00-00-00-00
-              byte
-
-    [bte] > int-is-ascii
-      and. > @
-        0.lte bte
-        127.gte bte
 
   # Returns concatenation of all `other` strings.
   # Here `other` must be a `tuple` of `strings`.

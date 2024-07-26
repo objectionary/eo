@@ -39,7 +39,6 @@ import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -57,11 +56,11 @@ public final class EOsprintf extends PhDefault implements Atom {
      */
     private static final Map<Character, Function<Dataized, Object>> CONVERSION =
         new HashMap<Character, Function<Dataized, Object>>(5) {{
-            put('s', element -> element.take(String.class));
-            put('d', element -> element.take(Long.class));
-            put('f', element -> element.take(Double.class));
+            put('s', Dataized::asString);
+            put('d', element -> element.asNumber().longValue());
+            put('f', Dataized::asNumber);
             put('x', element -> EOsprintf.bytesToHex(element.take()));
-            put('b', element -> element.take(Boolean.class));
+            put('b', Dataized::asBool);
         }};
 
     /**
@@ -79,10 +78,10 @@ public final class EOsprintf extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        final String format = new Param(this, "format").strong(String.class);
+        final String format = new Dataized(this.take("format")).asString();
         final Phi args = this.take("args");
         final Phi retriever = args.take("at");
-        final Long length = new Param(args, "length").strong(Long.class);
+        final long length = new Dataized(args.take("length")).asNumber().longValue();
         final List<Object> arguments = new ArrayList<>(0);
         String pattern = format;
         long index = 0;

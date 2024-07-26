@@ -147,7 +147,7 @@ SOFTWARE.
         <xsl:value-of select="text()"/>
         <xsl:text>"</xsl:text>
       </xsl:when>
-      <xsl:when test="@data='int' or @data='float'">
+      <xsl:when test="@data='number'">
         <xsl:value-of select="text()"/>
       </xsl:when>
       <xsl:when test="@data='bytes'">

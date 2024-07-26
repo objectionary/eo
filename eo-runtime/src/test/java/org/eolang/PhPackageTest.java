@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EObytes$EOas_int;
+import EOorg.EOeolang.EObytes$EOas_number;
 import EOorg.EOeolang.EObytes$EOeq;
 import EOorg.EOeolang.EOgo;
 import java.util.Collections;
@@ -200,7 +200,7 @@ final class PhPackageTest {
     private static Stream<Arguments> attributes() {
         return Stream.of(
             Arguments.of("absent", PhPackage.class),
-            Arguments.of("bytes$as-int", EObytes$EOas_int.class),
+            Arguments.of("bytes$as-number", EObytes$EOas_number.class),
             Arguments.of("bytes$eq", EObytes$EOeq.class),
             Arguments.of("go", EOgo.class)
         );
