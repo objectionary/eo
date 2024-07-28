@@ -196,8 +196,18 @@ final class SnippetTestCase {
                     .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
                 f.dependencies().append(
                     "org.junit.jupiter",
+                    "junit-jupiter-engine",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-params",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
                     "junit-jupiter-api",
-                    "5.10.2"
+                    "5.10.3"
                 );
                 f.dependencies().append(
                     "org.junit-pioneer",
