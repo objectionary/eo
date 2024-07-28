@@ -27,17 +27,29 @@
  */
 package EOorg.EOeolang;
 
+import EOorg.EOeolang.EOio.EOconsole$EOwrite$EOwritten_bytes;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
+import org.eolang.AtOnce;
 import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.PhMethod;
+import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link EOnumber}.
  *
- * @since 0.1
+ * @since 0.39
  * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -73,5 +85,90 @@ public final class EOnumberTest {
             raw.hashCode(),
             Matchers.not(initialized.hashCode())
         );
+    }
+
+    @ParameterizedTest()
+    @CsvSource({"lt", "gt", "lte", "gte"})
+    void doesNotDataizeArgumentTwiceComparisonMethods(final String method) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintStream out = new PrintStream(baos);
+        final String str = "Hello world";
+        new Dataized(
+            new EOnumberTest.PrintWithCmp(
+                new PhMethod(
+                    new Data.ToPhi(1.0),
+                    method
+                ),
+                new Data.ToPhi(3.0),
+                new PhWith(
+                    new EOconsole$EOwrite$EOwritten_bytes(out),
+                    "buffer",
+                    new Data.ToPhi(str)
+                )
+            )
+        ).take();
+        MatcherAssert.assertThat(
+            String.format(
+                "The object `number.%s` should have not dataize its argument twice, but it did",
+                method
+            ),
+            baos.toString(),
+            Matchers.equalTo(str)
+        );
+        out.close();
+    }
+
+    /**
+     * PrintWithCmp Phi.
+     *
+     * @since 1.0
+     */
+    private static class PrintWithCmp extends PhDefault {
+        /**
+         * Ctor.
+         * E.g.
+         * 1.lt
+         *   seq
+         *     *
+         *       stdout "Hello world"
+         *       3
+         *
+         * @param method Comparison PhMethod ("lt", "gt", "lte", "gte")
+         * @param value Phi value to be compared
+         * @param stdout Object that can print
+         */
+        PrintWithCmp(final Phi method, final Phi value, final Phi stdout) {
+            super();
+            this.add(
+                "φ",
+                new AtOnce(
+                    new AtComposite(
+                        this,
+                        self -> new ToPhi(
+                            new Dataized(
+                                new PhWith(
+                                    method,
+                                    0,
+                                    new PhWith(
+                                        new EOseq(),
+                                        0,
+                                        new PhWith(
+                                            new PhWith(
+                                                new EOtuple$EOempty()
+                                                    .take("with")
+                                                    .copy(),
+                                                0,
+                                                stdout
+                                            ).take("with").copy(),
+                                            0, value
+                                        )
+                                    )
+                                )
+                            ).take()
+                        )
+                    )
+                )
+            );
+        }
     }
 }

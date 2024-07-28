@@ -22,73 +22,56 @@
  * SOFTWARE.
  */
 
-/**
- * EO org.eolang.io package.
- *
- * @since 0.28.0
+/*
  * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOio;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * All system inputs.
+ * Console.write.written-bytes.
  *
- * @since 0.28.0
+ * @since 0.39
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-final class Input {
+@XmirObject(oname = "console.write.written-bytes")
+public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implements Atom {
     /**
-     * Default input.
+     * Stream to write out.
      */
-    private static Input instance;
+    private final OutputStream out;
 
     /**
-     * Scanner.
+     * Default ctor.
      */
-    private final Scanner scanner;
-
-    /**
-     * Ctor.
-     */
-    private Input() {
-        this.scanner = new Scanner(System.in);
+    public EOconsole$EOwrite$EOwritten_bytes() {
+        this(System.out);
     }
 
     /**
-     * GetInstance.
-     * @return The pointer to input
+     * Ctor for the tests.
+     * @param out Stream to print
      */
-    static synchronized Input getInstance() {
-        if (instance == null) {
-            instance = new Input();
-        }
-        return instance;
+    public EOconsole$EOwrite$EOwritten_bytes(final OutputStream out) {
+        this.out = out;
+        this.add("buffer", new AtVoid("buffer"));
     }
 
-    /**
-     * GetLine.
-     * @return First read line from system input
-     */
-    String getLine() {
-        this.scanner.useDelimiter(System.lineSeparator());
-        final String line = this.scanner.next();
-        this.scanner.reset();
-        return line;
-    }
-
-    /**
-     * GetAllLines.
-     * @return All read lines from system input
-     */
-    String getAllLines() {
-        final StringBuilder builder = new StringBuilder();
-        while (this.scanner.hasNextLine()) {
-            builder.append(this.scanner.nextLine()).append(System.lineSeparator());
-        }
-        this.scanner.reset();
-        return builder.toString();
+    @Override
+    public Phi lambda() throws IOException {
+        this.out.write(new Dataized(this.take("buffer")).take());
+        return new Data.ToPhi(true);
     }
 }

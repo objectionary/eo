@@ -31,8 +31,8 @@
 # convenient operations to it. Objects like `int`, `string`,
 # and `float` encapsulate `bytes`.
 [] > bytes
-  # Return itself.
   $ > as-bytes
+  $.eq 01- > as-bool
 
   # Equals to another object.
   [b] > eq /bool
@@ -72,9 +72,6 @@
 
   # Calculate bitwise right shift.
   [x] > right /bytes
-
-  # Converts to bool.
-  ^.eq 01- > [] > as-bool
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

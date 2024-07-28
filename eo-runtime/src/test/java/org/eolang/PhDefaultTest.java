@@ -24,7 +24,7 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
-import EOorg.EOeolang.EOio.EOstdout;
+import EOorg.EOeolang.EOio.EOconsole$EOwrite$EOwritten_bytes;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -633,7 +633,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
             this.add("z", new AtVoid("z"));
-            this.add(Attr.PHI, new AtSimple(new EOstdout()));
+            this.add(Attr.PHI, new AtSimple(new EOconsole$EOwrite$EOwritten_bytes()));
         }
     }
 

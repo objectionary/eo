@@ -34,41 +34,32 @@
 
   # Tests that $ = x.
   [x] > eq
+    x > x-as-bytes!
+    nan > nan-as-bytes!
+    ^.as-bytes > self-as-bytes
+    0.0 > pos-zero-as-bytes!
+    -0.0 > neg-zero-as-bytes!
     if. > @
       or.
-        eq.
-          x > x-as-bytes!
-          nan > nan-as-bytes!
-        eq.
-          ^.as-bytes > self-as-bytes
-          nan-as-bytes
+        x-as-bytes.eq nan-as-bytes
+        self-as-bytes.eq nan-as-bytes
       false
       or.
         and.
           or.
-            eq.
-              x-as-bytes
-              0.0 > pos-zero-as-bytes!
-            eq.
-              x-as-bytes
-              -0.0 > neg-zero-as-bytes!
+            x-as-bytes.eq pos-zero-as-bytes
+            x-as-bytes.eq neg-zero-as-bytes
           or.
-            eq.
-              self-as-bytes
-              pos-zero-as-bytes
-            eq.
-              self-as-bytes
-              neg-zero-as-bytes
-        eq.
-          self-as-bytes
-          x-as-bytes
+            self-as-bytes.eq pos-zero-as-bytes
+            self-as-bytes.eq neg-zero-as-bytes
+        self-as-bytes.eq x-as-bytes
 
   # Tests that $ < x.
   [x] > lt
+    x > value!
     0.0.gt > @
       ^.minus
-        number
-          x > value!
+        number value
 
   # Tests that $ ≤ x.
   [x] > lte

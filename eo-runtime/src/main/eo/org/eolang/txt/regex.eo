@@ -46,12 +46,22 @@
   compiled > @
 
   # Compile regular expression into pattern.
+  # Compilation step is mandatory for usage of `regex` object.
+  # But since `regex` object decorates `compiled` object,
+  # it's not mandatory to write it in EO.
+  # ```
+  # (regex "/[a-z]+/").compiled.matches "hello"
+  # (regex "/[a-z]+").matches "hello"
+  # ```
+  # The two lines of code above works the same.
   [] > compiled /pattern
 
   # Regular expression compiled into pattern.
   # Here `serialized` is `bytes` which represents serialized structure in memory
   # that is built after compilation.
   [serialized] > pattern
+    # Returns `true` of given `txt` matches against
+    # the provided regular expression pattern.
     (^.match txt).next.exists > [txt] > matches
 
     # Creates a `matcher` that will match the given input against the pattern.
@@ -61,6 +71,9 @@
       # Get `position`-th block matched from `start` position.
       # If string subsequence is found - returns `matched` object,
       # returns `not-matched` otherwise.
+      #
+      # Attention! The object is for internal usage only, please
+      # don't use the object programmatically outside of `regex` object.
       [position start] > matched-from-index /matched
 
       # Block matched the pattern.

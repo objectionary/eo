@@ -44,7 +44,7 @@
 # Here the first argument is an abstract object that has a default value - 1 and
 # it also has object `next`. The next object after first is decorator of
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have
-# object `lt` by default
+# object `lt` by default.
 [start end] > range
   list > @
     if.
@@ -54,6 +54,10 @@
         start.next
       *
 
+  # Constructor of range.
+  #
+  # Attention! The object is for internal usage only, please
+  # don't use the object programmatically outside of `range` object.
   [acc current] > appended
     if. > @
       current.lt ^.end
