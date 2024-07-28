@@ -123,14 +123,18 @@ final class EOconsoleTest {
     @StdIo("Hello")
     void readsOnlyAvailableBytes(final StdIn input) {
         MatcherAssert.assertThat(
-            "The object `console.read.read-bytes` should have read only available bytes from standard input, but it didn't",
+            String.join(
+                "",
+                "The object `console.read.read-bytes` should have read only available bytes ",
+                "with line separator from standard input, but it didn't"
+            ),
             new Dataized(
                 new PhWith(
                     new EOconsole$EOread$EOread_bytes(),
                     0, new Data.ToPhi(10)
                 )
             ).asString(),
-            Matchers.equalTo("Hello\n")
+            Matchers.equalTo("Hello".concat(System.lineSeparator()))
         );
     }
 
@@ -138,14 +142,18 @@ final class EOconsoleTest {
     @StdIo("")
     void readsOnlyNewLineFromEmptyInput() {
         MatcherAssert.assertThat(
-            "The object `console.read.read-bytes` should have returned empty bytes read from empty input, but it didn't",
+            String.join(
+                "",
+                "The object `console.read.read-bytes` should have returned only line separator ",
+                "from empty input, but it didn't"
+            ),
             new Dataized(
                 new PhWith(
                     new EOconsole$EOread$EOread_bytes(),
                     0, new Data.ToPhi(10)
                 )
             ).asString(),
-            Matchers.equalTo("\n")
+            Matchers.equalTo(System.lineSeparator())
         );
     }
 
