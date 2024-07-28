@@ -199,6 +199,11 @@ final class SnippetTestCase {
                     "junit-jupiter-api",
                     "5.10.2"
                 );
+                f.dependencies().append(
+                    "org.junit-pioneer",
+                    "junit-pioneer",
+                    "2.2.0"
+                );
                 f.build()
                     .plugins()
                     .append(
