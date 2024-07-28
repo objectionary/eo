@@ -107,7 +107,6 @@ final class EOconsoleTest {
     @Test
     @StdIo("Hello, world!")
     void readsBytesFromStandardInput(final StdIn input) {
-        final String data = "Hello, world!";
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read all bytes from standard input, but it didn't",
             new Dataized(
@@ -153,19 +152,25 @@ final class EOconsoleTest {
     @Test
     @StdIo("Hello world")
     void readsByPortionsFromInput() {
-        final Phi read = new PhWith(
-            new EOconsole$EOread$EOread_bytes(),
-            0, new Data.ToPhi(5)
-        );
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read first 5 bytes from standard input, but it didn't",
-            new Dataized(read).asString(),
+            new Dataized(
+                new PhWith(
+                    new EOconsole$EOread$EOread_bytes(),
+                    0, new Data.ToPhi(5)
+                )
+            ).asString(),
             Matchers.equalTo("Hello")
         );
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read second 5 bytes from standard input, but it didn't",
-            new Dataized(read).asString(),
-            Matchers.equalTo(" worl")
+            new Dataized(
+                new PhWith(
+                    new EOconsole$EOread$EOread_bytes(),
+                    0, new Data.ToPhi(6)
+                )
+            ).asString(),
+            Matchers.equalTo(" world")
         );
     }
 
@@ -173,23 +178,22 @@ final class EOconsoleTest {
     @StdIo("Hello world")
     void readsSequentiallyFromInputBlock() {
         final Phi console = Phi.Φ.take("org.eolang.io.console");
-        final Phi size = new Data.ToPhi(5);
         final Phi first = new PhWith(
             new PhCopy(
                 new PhMethod(console, "read")
             ),
-            0, size
+            0, new Data.ToPhi(5)
         );
         final Phi second = new PhWith(
             new PhCopy(
                 new PhMethod(first, "read")
             ),
-            0, size
+            0, new Data.ToPhi(6)
         );
         MatcherAssert.assertThat(
             "The `console.read` object should have return input block ready to `read` again, but it didn't",
             new Dataized(second).asString(),
-            Matchers.equalTo(" worl")
+            Matchers.equalTo(" world")
         );
     }
 }

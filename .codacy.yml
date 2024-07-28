@@ -25,9 +25,6 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOtimes.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOdiv.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOplus.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOgt.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOfloor.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnumberTest.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOread$EOread_bytes.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOwrite$EOwritten_bytes.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOio/EOconsoleTest.java"
