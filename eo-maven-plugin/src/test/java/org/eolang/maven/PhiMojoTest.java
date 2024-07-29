@@ -44,6 +44,12 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.34.0
  */
 final class PhiMojoTest {
+    /**
+     * Comment.
+     */
+    private static final String COMMENT =
+        "# This is the default 64+ symbols comment in front of named abstract object.";
+
     @Test
     void createsFiles(@TempDir final Path temp) throws Exception {
         MatcherAssert.assertThat(
@@ -53,7 +59,7 @@ final class PhiMojoTest {
             ),
             new FakeMaven(temp)
                 .withProgram(
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    PhiMojoTest.COMMENT,
                     "[] > cart",
                     "  memory 0 > total",
                     "  [i] > add",
@@ -68,11 +74,29 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
-    void convertsXmirsToPhiWithoutErrorsWithoutOptimizations(
+    void convertsXmirsToPhiWithoutCriticalErrorsWithoutOptimizations(
         final String xmir,
         @TempDir final Path temp
     ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).with("phiOptimize", false);
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("phiFailOnError", false)
+            .with("phiOptimize", false);
+        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
+        Assertions.assertDoesNotThrow(
+            () -> maven.execute(PhiMojo.class),
+            BinarizeParseTest.TO_ADD_MESSAGE
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
+    void convertsXmirsToPhiWithoutCriticalErrorsWithOptimizations(
+        final String xmir,
+        @TempDir final Path temp
+    ) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("phiFailOnError", false)
+            .with("phiOptimize", true);
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
         Assertions.assertDoesNotThrow(
             () -> maven.execute(PhiMojo.class),
@@ -86,7 +110,7 @@ final class PhiMojoTest {
             () -> new FakeMaven(temp)
                 .with("phiFailOnCritical", false)
                 .withProgram(
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    PhiMojoTest.COMMENT,
                     "[] > with-duplicates",
                     "  true > x",
                     "  false > x"
@@ -103,13 +127,60 @@ final class PhiMojoTest {
                 .with("phiFailOnCritical", true)
                 .with("phiSkipFailed", true)
                 .withProgram(
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    PhiMojoTest.COMMENT,
                     "[] > with-duplicates",
                     "  true > x",
                     "  false > x"
                 )
                 .execute(new FakeMaven.Phi()),
             "PhiMojo should not fail on critical errors with 'phiSkipFailed' = true"
+        );
+    }
+
+    @Test
+    void failsOnError(@TempDir final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    PhiMojoTest.COMMENT,
+                    "[] > without-name",
+                    "  true"
+                )
+                .execute(new FakeMaven.Phi()),
+            "PhiMojo should fail on errors with 'phiFailOnError' = true"
+        );
+    }
+
+    @Test
+    void doesNotFailOnError(@TempDir final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("phiFailOnError", false)
+                .withProgram(
+                    PhiMojoTest.COMMENT,
+                    "[] > without-name",
+                    "  true"
+                )
+                .execute(new FakeMaven.Phi()),
+            "PhiMojo should not fail on errors with 'phiFailOnError' = false"
+        );
+    }
+
+    @Test
+    void skipsFailedOnError(@TempDir final Path temp) {
+        Assertions.assertDoesNotThrow(
+            () -> new FakeMaven(temp)
+                .with("phiFailOnCritical", false)
+                .with("phiFailOnError", true)
+                .with("phiSkipFailed", true)
+                .withProgram(
+                    PhiMojoTest.COMMENT,
+                    "[] > without-name",
+                    "  true"
+                )
+                .execute(new FakeMaven.Phi()),
+            "PhiMojo should not fail on errors with 'phiSkipFailed' = true"
         );
     }
 
@@ -121,7 +192,7 @@ final class PhiMojoTest {
                 .with("phiFailOnCritical", true)
                 .with("phiSkipFailed", true)
                 .withProgram(
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    PhiMojoTest.COMMENT,
                     "[] > with-duplicates",
                     "  true > x",
                     "  false > x"
@@ -133,20 +204,6 @@ final class PhiMojoTest {
                     String.format("target/phi/foo/x/main.%s", PhiMojo.EXT)
                 )
             )
-        );
-    }
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
-    void convertsXmirsToPhiWithoutErrorsWithOptimizations(
-        final String xmir,
-        @TempDir final Path temp
-    ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).with("phiOptimize", true);
-        new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
-        Assertions.assertDoesNotThrow(
-            () -> maven.execute(PhiMojo.class),
-            BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
 

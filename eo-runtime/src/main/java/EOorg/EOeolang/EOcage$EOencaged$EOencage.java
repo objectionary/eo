@@ -31,7 +31,7 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -55,9 +55,7 @@ public final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         Cages.INSTANCE.encage(
-            Math.toIntExact(
-                new Param(this.take(Attr.RHO), "locator").strong(Long.class)
-            ),
+            new Dataized(this.take(Attr.RHO).take("locator")).asNumber().intValue(),
             this.take("object")
         );
         return new Data.ToPhi(true);

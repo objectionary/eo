@@ -102,6 +102,7 @@ final class PhPackage implements Phi {
         } else {
             res = new AtSetRho(this.objects.get().get(key), this, key).get();
         }
+        this.objects.remove();
         return res;
     }
 

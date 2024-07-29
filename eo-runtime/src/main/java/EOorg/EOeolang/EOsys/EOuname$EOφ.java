@@ -21,33 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// @checkstyle PackageNameCheck (1 line)
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOsys;
 
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Uname φ.
- *
- * @since 0.1
+ * Uname.@.
+ * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
 @XmirObject(oname = "uname.@")
 public final class EOuname$EOφ extends PhDefault implements Atom {
-
     /**
-     * Name of the OS.
+     * Operating system name as {@link Phi}.
      */
-    public static final String NAME = System.getProperty("os.name");
+    private static final Phi OS_NAME = new Data.ToPhi(System.getProperty("os.name"));
 
     @Override
     public Phi lambda() throws Exception {
-        return new Data.ToPhi(EOuname$EOφ.NAME);
+        return EOuname$EOφ.OS_NAME;
     }
 }

@@ -23,43 +23,55 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOio;
 
-import org.eolang.AtCompositeTest;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhMethod;
-import org.eolang.PhWith;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOint$EOminus}.
- * {@link EOint$EOminus} is the generated class. This is the reason
- * why we disable jtcop check.
+ * Console.write.written-bytes.
  *
- * @since 0.1
- * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.39
+ * @checkstyle TypeNameCheck (5 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOintEOminusTest {
+@Versionized
+@XmirObject(oname = "console.write.written-bytes")
+public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implements Atom {
+    /**
+     * Stream to write out.
+     */
+    private final OutputStream out;
 
-    @Test
-    void subtractsNumber() {
-        final Phi left = new Data.ToPhi(42L);
-        final Phi right = new Data.ToPhi(13L);
-        final Phi sub = new PhWith(
-            new PhMethod(left, "minus"),
-            0, right
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(sub).take(Long.class),
-            Matchers.equalTo(29L)
-        );
+    /**
+     * Default ctor.
+     */
+    public EOconsole$EOwrite$EOwritten_bytes() {
+        this(System.out);
+    }
+
+    /**
+     * Ctor for the tests.
+     * @param out Stream to print
+     */
+    public EOconsole$EOwrite$EOwritten_bytes(final OutputStream out) {
+        this.out = out;
+        this.add("buffer", new AtVoid("buffer"));
+    }
+
+    @Override
+    public Phi lambda() throws IOException {
+        this.out.write(new Dataized(this.take("buffer")).take());
+        return new Data.ToPhi(true);
     }
 }

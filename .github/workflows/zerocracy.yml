@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.35
+      - uses: zerocracy/judges-action@0.0.37
         with:
           token: ${{ secrets.ZEROCRACY_TOKEN }}
           options: |
@@ -40,7 +40,7 @@ jobs:
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.23
+      - uses: zerocracy/pages-action@0.0.26
         with:
           factbase: objectionary.fb
           output: pages

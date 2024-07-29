@@ -37,7 +37,6 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -54,7 +53,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
      * Ctor.
      */
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
-        this.add("number", new AtVoid("number"));
+        this.add("position", new AtVoid("position"));
         this.add("start", new AtVoid("start"));
     }
 
@@ -65,24 +64,23 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             new Dataized(match.take(Attr.RHO).take("serialized")).take()
         );
         final Matcher matcher = ((Pattern) new ObjectInputStream(bais).readObject()).matcher(
-            new Param(match, "txt").strong(String.class)
+            new Dataized(match.take("txt")).asString()
         );
         final Phi start = this.take("start");
-        final Long from = new Dataized(this.take("start")).take(Long.class);
-        final boolean found = matcher.find(Math.toIntExact(from));
+        final Double from = new Dataized(this.take("start")).asNumber();
+        final boolean found = matcher.find(from.intValue());
         final Phi result;
         if (found) {
             result = match.take("matched");
-            result.put("number", this.take("number"));
+            result.put("position", this.take("position"));
             result.put("start", start);
-            result.put("from", new Data.ToPhi((long) matcher.start()));
-            result.put("to", new Data.ToPhi((long) matcher.end()));
+            result.put("from", new Data.ToPhi(matcher.start()));
+            result.put("to", new Data.ToPhi(matcher.end()));
             final Phi[] groups;
             if (matcher.groupCount() > 0) {
                 groups = new Phi[matcher.groupCount() + 1];
                 for (int idx = 0; idx < groups.length; ++idx) {
                     groups[idx] = new Data.ToPhi(matcher.group(idx));
-                    System.out.printf("%d: %s\n", idx, matcher.group(idx));
                 }
             } else {
                 groups = new Phi[] {new Data.ToPhi(matcher.group())};
@@ -90,7 +88,7 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             result.put("groups", new Data.ToPhi(groups));
         } else {
             result = match.take("not-matched");
-            result.put("number", this.take("number"));
+            result.put("position", this.take("position"));
         }
         return result;
     }

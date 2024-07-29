@@ -22,73 +22,42 @@
  * SOFTWARE.
  */
 
-/**
- * EO org.eolang.io package.
- *
- * @since 0.28.0
+/*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang;
 
-import java.util.Scanner;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * All system inputs.
+ * Number.times object.
  *
- * @since 0.28.0
+ * @since 0.39.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-final class Input {
-    /**
-     * Default input.
-     */
-    private static Input instance;
-
-    /**
-     * Scanner.
-     */
-    private final Scanner scanner;
-
+@XmirObject(oname = "number.times")
+public final class EOnumber$EOtimes extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    private Input() {
-        this.scanner = new Scanner(System.in);
+    public EOnumber$EOtimes() {
+        this.add("x", new AtVoid("x"));
     }
 
-    /**
-     * GetInstance.
-     * @return The pointer to input
-     */
-    static synchronized Input getInstance() {
-        if (instance == null) {
-            instance = new Input();
-        }
-        return instance;
-    }
-
-    /**
-     * GetLine.
-     * @return First read line from system input
-     */
-    String getLine() {
-        this.scanner.useDelimiter(System.lineSeparator());
-        final String line = this.scanner.next();
-        this.scanner.reset();
-        return line;
-    }
-
-    /**
-     * GetAllLines.
-     * @return All read lines from system input
-     */
-    String getAllLines() {
-        final StringBuilder builder = new StringBuilder();
-        while (this.scanner.hasNextLine()) {
-            builder.append(this.scanner.nextLine()).append(System.lineSeparator());
-        }
-        this.scanner.reset();
-        return builder.toString();
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            new Dataized(this.take(Attr.RHO)).asNumber()
+                * new Dataized(this.take("x")).asNumber()
+        );
     }
 }

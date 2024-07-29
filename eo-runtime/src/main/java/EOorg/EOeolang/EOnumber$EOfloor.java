@@ -25,28 +25,30 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang;
 
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Standard Input. Consumes all data.
+ * Number.floor object.
  *
- * @since 0.23
+ * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "stdin.@")
-public final class EOstdin$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "number.floor")
+public final class EOnumber$EOfloor extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Input.getInstance().getAllLines()
+            new Dataized(this.take(Attr.RHO)).asNumber().longValue()
         );
     }
 }

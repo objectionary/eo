@@ -21,13 +21,13 @@
 # SOFTWARE.
 ---
 locators:
-  - .org .eolang .int
+  - .org .eolang .number
   - .org .eolang .true
   - .boom
   - .foo
   - .bar
   - .simple .φ .ρ .φ .ρ .φ .α0 .α0 .ε
-  - .simple .φ .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2A
+  - .simple .φ .α1 .α0 .Δ δ=40-45-00-00-00-00-00-00
   - .simple .φ .α1 .π >int
   - .simple .φ .α2 >boom
 eo: |

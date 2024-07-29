@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -78,7 +78,7 @@ public final class EOsscanf extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        final String format = new Param(this, "format").strong(String.class);
+        final String format = new Dataized(this.take("format")).asString();
         final List<Phi> output = new ArrayList<>(0);
         final StringBuilder regex = new StringBuilder();
         boolean literal = false;
@@ -98,7 +98,7 @@ public final class EOsscanf extends PhDefault implements Atom {
                             regex.append("(\\d+)");
                             break;
                         case 'f':
-                            regex.append("([+-]?\\d*\\.\\d+)");
+                            regex.append("([+-]?\\d+(?:\\.\\d+)?)");
                             break;
                         case 's':
                             regex.append("(\\S+)");
@@ -113,7 +113,7 @@ public final class EOsscanf extends PhDefault implements Atom {
             }
         }
         final Matcher matcher = Pattern.compile(regex.toString()).matcher(
-            new Param(this, "read").strong(String.class)
+            new Dataized(this.take("read")).asString()
         );
         String frmt = format;
         if (matcher.find()) {

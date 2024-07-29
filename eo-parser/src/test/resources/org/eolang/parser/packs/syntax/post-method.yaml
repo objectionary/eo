@@ -24,8 +24,8 @@ xsls: [ ]
 tests:
   - //o[@base='one' and @name='test']
   - //o[@base='one' and count(o)=1]
-  - //o[@base='.two' and @method and o[@base='int']]
-  - //o[@base='.three' and @method and o[@base='int']]
+  - //o[@base='.two' and @method and o[@base='number']]
+  - //o[@base='.three' and @method and o[@base='number']]
 eo: |
   one > test
     "hello"

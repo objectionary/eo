@@ -23,7 +23,7 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOint;
+import EOorg.EOeolang.EOnumber;
 import EOorg.EOeolang.EOseq;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +124,7 @@ final class UniverseDefaultTest {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             universe.dataize(vertex),
-            Matchers.equalTo(new BytesOf(1L).take())
+            Matchers.equalTo(new BytesOf(1.0).take())
         );
     }
 
@@ -210,7 +210,7 @@ final class UniverseDefaultTest {
         DummyWithAt(final Phi sigma) {
             this.add(
                 UniverseDefaultTest.ABSTRACT_ATT,
-                new AtComposite(sigma, self -> new EOint())
+                new AtComposite(sigma, self -> new EOnumber())
             );
             this.add(
                 UniverseDefaultTest.VALUE_ATT,

@@ -29,19 +29,17 @@ tests:
   # 'main' object
   - //o[@name='main']
   - //o[@name='main' and count(o)=2]
-  - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[@base='int']
-  - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[not(@base='int')]
-  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]
-  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple' and count(o)=1]/o[@base='int']
+  - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[@base='number']
+  - //o[@name='main']/o[@base='tuple' and @name='arr' and count(o)=2]/o[not(@base='number')]
+  - //o[@name='main']/o[@base='eq' and @name='@' and count(o)=2]/o[@base='tuple' and count(o)=1]/o[@base='number']
   # The first tuple - argument of arr from the example below
   - //o[@base='tuple' and count(o)=2]
-  - //o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '1')]
-  - //o[@base='tuple' and count(o)=2]/o[@base='int' and contains(text(), '2')]
+  - //o[@base='tuple' and count(o[@base='number'])=2]
   # The second tuple - first argument of eq from the example below
-  - //o[@base='tuple' and count(o)=1]/o[@base='.at' and count(o)=2]/o[@base='int' and contains(text(), '1')]
+  - //o[@base='tuple' and count(o)=1]/o[@base='.at' and count(o)=2]/o[@base='number']
   - //o[@base='tuple' and count(o)=1]/o[@base='.at' and count(o)=2]/o[@base='.at' and count(o)=2]/o[@base='arr']
   # The third tuple - second argument of eq from the example below
-  - //o[@base='tuple' and count(o)=1]/o[@base='int' and contains(text(), '2')]
+  - //o[@base='tuple' and count(o)=1]/o[@base='number']
 # Currently the test converts the code from the snippet to:
 # ____
 # [] > main

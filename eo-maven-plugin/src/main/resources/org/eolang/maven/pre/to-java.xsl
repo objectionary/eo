@@ -503,6 +503,8 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>@Test</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@WritesStdIo</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public void works() throws java.lang.Exception {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:choose>
@@ -531,7 +533,7 @@ SOFTWARE.
     <xsl:value-of select="eo:tabs($indent)"/>
     <xsl:text>Boolean obj = new Dataized(new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()).take(Boolean.class);</xsl:text>
+    <xsl:text>()).asBool();</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
     <xsl:text>Assertions.assertTrue(obj);</xsl:text>
   </xsl:template>
@@ -548,6 +550,8 @@ SOFTWARE.
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import org.junitpioneer.jupiter.WritesStdIo;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- License with disclaimer  -->

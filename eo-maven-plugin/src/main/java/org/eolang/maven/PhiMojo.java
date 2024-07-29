@@ -42,6 +42,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
@@ -95,6 +96,14 @@ public final class PhiMojo extends SafeMojo {
     @Parameter(property = "eo.phiFailOnCritical", required = true, defaultValue = "true")
     @SuppressWarnings({"PMD.ImmutableField", "PMD.LongVariable"})
     private boolean phiFailOnCritical = true;
+
+    /**
+     * Whether {@link PhiMojo} should fail on errors or not.
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @Parameter(property = "eo.phiFailOnError", required = true, defaultValue = "true")
+    @SuppressWarnings("PMD.ImmutableField")
+    private boolean phiFailOnError = true;
 
     /**
      * Whether {@link PhiMojo} should skip XMIRs that failed on critical errors.
@@ -203,22 +212,20 @@ public final class PhiMojo extends SafeMojo {
         } else {
             train = new TrDefault<>();
         }
-        final Train.Temporary<Shift> dependent;
-        if (this.phiFailOnCritical) {
-            dependent = new TrClasspath<>(
-                "/org/eolang/parser/fail-on-critical.xsl",
-                "/org/eolang/maven/phi/to-phi.xsl"
-            );
-        } else {
-            dependent = new TrClasspath<>("/org/eolang/maven/phi/to-phi.xsl");
+        final List<String> dependent = new ListOf<>(
+            "/org/eolang/parser/critical-errors/duplicate-names.xsl",
+            "/org/eolang/maven/phi/incorrect-inners.xsl"
+        );
+        if (this.phiFailOnError) {
+            dependent.add("/org/eolang/parser/fail-on-errors.xsl");
         }
+        if (this.phiFailOnCritical) {
+            dependent.add("/org/eolang/parser/fail-on-critical.xsl");
+        }
+        dependent.add("/org/eolang/maven/phi/to-phi.xsl");
         return new TrJoined<>(
             train,
-            new TrClasspath<>(
-                "/org/eolang/parser/critical-errors/duplicate-names.xsl",
-                "/org/eolang/maven/phi/incorrect-inners.xsl"
-            ).back(),
-            dependent.back()
+            new TrClasspath<>(dependent.toArray(new String[0])).back()
         );
     }
 
@@ -233,7 +240,7 @@ public final class PhiMojo extends SafeMojo {
         throws ImpossibleToPhiTranslationException {
         final XML translated = new Xsline(train).pass(xmir);
         Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
-        final List<String> phi = translated.xpath("phi/text()");
+        final List<String> phi = translated.xpath("program/phi/text()");
         if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
                 "Xpath 'phi/text()' is not found in translated XMIR"

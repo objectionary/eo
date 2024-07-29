@@ -46,6 +46,11 @@ public final class PhTraced implements Phi {
     /**
      * Cages that are currently being dataized. If one cage is being datazed, and
      * it needs to be dataized inside current dataization, the locator of current object be here.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link PhTraced#DATAIZING_CAGES} to prevent memory leaks. We should either find a
+     *  place where this variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Map<Integer, Integer>> DATAIZING_CAGES = ThreadLocal
         .withInitial(HashMap::new);

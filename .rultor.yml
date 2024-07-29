@@ -23,7 +23,7 @@
 architect:
   - yegor256
 ec2:
-  type: t2.large
+  type: t2.xlarge
 docker:
   image: yegor256/rultor-image:1.23.1
 assets:

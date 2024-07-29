@@ -25,5 +25,10 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOtxt/EOregex$EOpattern$EOmatch$EOmatched_from_index.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOtxt/EOregex$EOcompiled.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOread$EOread_bytes.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOwrite$EOwritten_bytes.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOio/EOconsoleTest.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/EOuname$EOφ.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/package-info.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnumberTest.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/package-info.java"

@@ -25,119 +25,97 @@
 /*
  * @checkstyle PackageNameCheck (10 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang;
 
-import EOorg.EOeolang.EOseq;
-import EOorg.EOeolang.EOtuple;
-import EOorg.EOeolang.EOtuple$EOempty;
+import EOorg.EOeolang.EOio.EOconsole$EOwrite$EOwritten_bytes;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
 import org.eolang.AtOnce;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhMethod;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link EOstdout}.
- * @since 0.1
+ * Test case for {@link EOnumber}.
+ *
+ * @since 0.39
+ * @checkstyle TypeNameCheck (4 lines)
  */
-public final class EOstdoutTest {
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+public final class EOnumberTest {
+
     @Test
-    public void printsFromTuple() {
-        final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
-        final Phi copy = tuple.copy();
-        copy.put(0, tuple.take("empty"));
-        copy.put(1, new Data.ToPhi("Hello"));
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final Phi ret = copy.take("at").copy();
-        ret.put(0, new Data.ToPhi(0L));
-        final Phi stdout = new EOstdout(new PrintStream(stream));
-        stdout.put(0, ret);
-        new Dataized(stdout).take(Boolean.class);
+    void hasDifferentHashes() {
+        final Phi left = new Data.ToPhi(42L);
+        final Phi right = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            stream.toString(),
-            Matchers.equalTo("Hello")
+            left.hashCode(),
+            Matchers.not(Matchers.equalTo(right.hashCode()))
         );
     }
 
     @Test
-    public void printsString() {
-        final Phi format = new Data.ToPhi("Hello, world!\n");
-        final Phi phi = new PhWith(
-            new PhCopy(new EOstdout()),
-            "text",
-            format
-        );
+    void hasHashEvenWithoutData() {
+        final Phi phi = new EOnumber();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(Boolean.class),
-            Matchers.equalTo(true)
+            phi.hashCode(),
+            Matchers.greaterThan(0)
         );
     }
 
-    @ParameterizedTest
-    @CsvSource({"lt", "gt", "lte", "gte", "eq"})
-    public void doesNotPrintTwiceOnIntComparisonMethods(final String method) {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        final String str = "Hello world";
-        new Dataized(
-            new PrintWithCmp(
-                new PhMethod(
-                    new Data.ToPhi(1L),
-                    method
-                ),
-                new Data.ToPhi(2L),
-                new PhWith(
-                    new EOstdout(new PrintStream(stream)),
-                    "text",
-                    new Data.ToPhi(str)
-                )
-            )
-        ).take();
+    @Test
+    void hasDifferentHash() {
+        final Phi raw = new EOnumber();
+        final Phi initialized = new Data.ToPhi(0L);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            stream.toString(),
-            Matchers.equalTo(str)
+            raw.hashCode(),
+            Matchers.not(initialized.hashCode())
         );
     }
 
     @ParameterizedTest()
     @CsvSource({"lt", "gt", "lte", "gte"})
-    public void doesNotPrintTwiceOnFloatComparisonMethods(final String method) {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    void doesNotDataizeArgumentTwiceComparisonMethods(final String method) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final PrintStream out = new PrintStream(baos);
         final String str = "Hello world";
         new Dataized(
-            new PrintWithCmp(
+            new EOnumberTest.PrintWithCmp(
                 new PhMethod(
                     new Data.ToPhi(1.0),
                     method
                 ),
                 new Data.ToPhi(3.0),
                 new PhWith(
-                    new EOstdout(new PrintStream(stream)),
-                    "text",
+                    new EOconsole$EOwrite$EOwritten_bytes(out),
+                    "buffer",
                     new Data.ToPhi(str)
                 )
             )
         ).take();
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            stream.toString(),
+            String.format(
+                "The object `number.%s` should have not dataize its argument twice, but it did",
+                method
+            ),
+            baos.toString(),
             Matchers.equalTo(str)
         );
+        out.close();
     }
 
     /**
@@ -150,14 +128,14 @@ public final class EOstdoutTest {
          * Ctor.
          * E.g.
          * 1.lt
-         *  seq
-         *    *
-         *      stdout "Hello world"
-         *      3
+         *   seq
+         *     *
+         *       stdout "Hello world"
+         *       3
          *
          * @param method Comparison PhMethod ("lt", "gt", "lte", "gte")
          * @param value Phi value to be compared
-         * @param stdout Phi object with printing a string via {@link EOstdout} object
+         * @param stdout Object that can print
          */
         PrintWithCmp(final Phi method, final Phi value, final Phi stdout) {
             super();
@@ -166,7 +144,7 @@ public final class EOstdoutTest {
                 new AtOnce(
                     new AtComposite(
                         this,
-                        self -> new Data.ToPhi(
+                        self -> new ToPhi(
                             new Dataized(
                                 new PhWith(
                                     method,

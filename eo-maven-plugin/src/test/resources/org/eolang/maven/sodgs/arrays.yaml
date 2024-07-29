@@ -22,12 +22,12 @@
 ---
 locators:
   - .org .eolang .test
-  - .org .eolang .int
+  - .org .eolang .number
   - .arrays .z .π >tuple
   - .arrays .z .α0 .α0 .ε >test
   - .arrays .z .α1 .π >tuple
-  - .arrays .z .α1 .α0 .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2A
-  - .arrays .z .α1 .α1 .α0 .Δ δ=00-00-00-00-00-00-00-2B
+  - .arrays .z .α1 .α0 .α1 .α0 .Δ δ=40-45-00-00-00-00-00-00
+  - .arrays .z .α1 .α1 .α0 .Δ δ=40-45-80-00-00-00-00-00
 eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > arrays

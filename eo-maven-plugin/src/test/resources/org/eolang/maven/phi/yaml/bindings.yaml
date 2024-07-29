@@ -35,9 +35,9 @@ phi: |-
           z ↦ ∅,
           φ ↦ Φ.org.eolang.w
         ⟧,
-        five ↦ Φ.org.eolang.int(
+        five ↦ Φ.org.eolang.number(
           α0 ↦ Φ.org.eolang.bytes(
-            Δ ⤍ 00-00-00-00-00-00-00-05
+            Δ ⤍ 40-14-00-00-00-00-00-00
           )
         )
       )

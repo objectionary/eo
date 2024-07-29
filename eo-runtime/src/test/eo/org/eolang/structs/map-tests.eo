@@ -47,7 +47,7 @@
         map > mp
           *
             map.entry
-              m.put (m.as-int.plus 1)
+              m.put (m.as-number.plus 1)
               1
         seq > @
           *

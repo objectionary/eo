@@ -34,8 +34,8 @@ import java.util.regex.PatternSyntaxException;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -50,7 +50,7 @@ public final class EOregex$EOcompiled extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         final Phi regex = this.take(Attr.RHO);
-        final String expression = new Param(regex, "expression").strong(String.class);
+        final String expression = new Dataized(regex.take("expression")).asString();
         final StringBuilder builder = new StringBuilder();
         if (!expression.startsWith("/")) {
             throw new ExFailure("Wrong regex syntax: \"/\" is missing");

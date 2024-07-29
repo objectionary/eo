@@ -21,47 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+// @checkstyle PackageNameCheck (1 line)
+package EOorg.EOeolang.EOsys;
 
-/*
- * @checkstyle PackageNameCheck (10 lines)
- */
-package EOorg.EOeolang;
-
-import org.eolang.AtCompositeTest;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.Param;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link EOstring}.
+ * CALL.
  *
- * @since 0.23
- * @checkstyle TypeNameCheck (4 lines)
+ * @since 0.39
+ * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOstringEOsliceTest {
+public class EOcall extends PhDefault implements Atom {
 
-    @Test
-    void slicesString() {
-        final Phi str = new Data.ToPhi("строка ㄤㄠ");
-        final Phi phi = new PhWith(
-            new PhWith(
-                str.take("slice").copy(),
-                "start",
-                new Data.ToPhi(7L)
-            ),
-            "len",
-            new Data.ToPhi(1L)
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(String.class),
-            Matchers.equalTo("ㄤ")
+    /**
+     * Ctor.
+     */
+    public EOcall() {
+        this.add("name", new AtVoid("name"));
+        this.add("args", new AtVoid("args"));
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final Phi name = this.take("name");
+        final Phi[] args = this.collectArgs();
+        return new Data.ToPhi(
+            new DispatchedLinuxSyscall(
+                new Dataized(name).take(String.class)
+            ).call(args)
         );
     }
 
+    private Phi[] collectArgs() {
+        final Phi args = this.take("args");
+        final Phi retriever = args.take("at");
+        final Long length = new Param(args, "length").strong(Long.class);
+        final Phi[] arguments = new Phi[length.intValue()];
+        for (long i = 0; i < length; i++) {
+            Phi taken = retriever.copy();
+            taken.put(0, new Data.ToPhi(i));
+            arguments[(int) i] = taken;
+        }
+        return arguments;
+    }
 }

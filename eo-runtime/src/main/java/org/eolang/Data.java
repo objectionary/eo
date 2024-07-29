@@ -168,17 +168,14 @@ public interface Data {
                 phi.attach((byte[]) obj);
             } else {
                 final byte[] bytes;
-                if (obj instanceof Long) {
-                    phi = eolang.take("int").copy();
-                    bytes = new BytesOf((Long) obj).take();
+                if (obj instanceof Number) {
+                    phi = eolang.take("number").copy();
+                    bytes = new BytesOf(((Number) obj).doubleValue()).take();
                 } else if (obj instanceof String) {
                     phi = eolang.take("string").copy();
                     bytes = Data.ToPhi.unescapeJavaString(
                         (String) obj
                     ).getBytes(StandardCharsets.UTF_8);
-                } else if (obj instanceof Double) {
-                    phi = eolang.take("float").copy();
-                    bytes = new BytesOf((Double) obj).take();
                 } else {
                     throw new IllegalArgumentException(
                         String.format(

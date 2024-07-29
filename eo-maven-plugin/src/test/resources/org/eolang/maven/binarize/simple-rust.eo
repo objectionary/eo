@@ -30,13 +30,13 @@
     use rand::Rng;
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &Portal) -> Option<EO> {
       let mut rng = rand::thread_rng();
       print!("Hello world");
-      let i = rng.gen::<i64>();
-      Some(EOInt(i))
+      let i = rng.gen::<f64>();
+      Some(EONumber(i))
     }
     """
     *

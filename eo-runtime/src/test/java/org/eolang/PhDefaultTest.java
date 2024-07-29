@@ -24,7 +24,7 @@
 package org.eolang;
 
 import EOorg.EOeolang.EOerror;
-import EOorg.EOeolang.EOio.EOstdout;
+import EOorg.EOeolang.EOio.EOconsole$EOwrite$EOwritten_bytes;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -336,7 +336,7 @@ final class PhDefaultTest {
         final Phi copy = phi.copy();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(copy).take(String.class),
+            new Dataized(copy).asString(),
             Matchers.equalTo(data)
         );
     }
@@ -359,19 +359,19 @@ final class PhDefaultTest {
         PhDefaultTest.EndlessRecursion.count = 2;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(0L)
+            new Dataized(phi).asNumber(),
+            Matchers.equalTo(0.0)
         );
     }
 
     @Test
-    void cachesPhiRecursively() {
+    void hesPhiRecursively() {
         final Phi phi = new PhDefaultTest.RecursivePhi();
         PhDefaultTest.RecursivePhi.count = 3;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(0L)
+            new Dataized(phi).asNumber(),
+            Matchers.equalTo(0.0)
         );
     }
 
@@ -381,8 +381,8 @@ final class PhDefaultTest {
         PhDefaultTest.RecursivePhiViaNew.count = 3;
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(phi).take(Long.class),
-            Matchers.equalTo(0L)
+            new Dataized(phi).asNumber(),
+            Matchers.equalTo(0.0)
         );
     }
 
@@ -409,8 +409,8 @@ final class PhDefaultTest {
         }
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(new PhMethod(phi, "count")).take(Long.class),
-            Matchers.equalTo(1L)
+            new Dataized(new PhMethod(phi, "count")).asNumber(),
+            Matchers.equalTo(1.0)
         );
     }
 
@@ -419,7 +419,7 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Data.ToPhi(5L).forma(),
-            Matchers.equalTo(new Data.ToPhi(6L).forma())
+            Matchers.equalTo(new Data.ToPhi(6).forma())
         );
     }
 
@@ -434,7 +434,7 @@ final class PhDefaultTest {
                     new PhWith(
                         five.take(PhDefaultTest.PLUS_ATT).copy(),
                         "x",
-                        new Data.ToPhi(5L)
+                        new Data.ToPhi(5)
                     ).forma()
                 )
             )
@@ -476,8 +476,8 @@ final class PhDefaultTest {
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(rnd).take(Double.class),
-            Matchers.equalTo(new Dataized(rnd).take(Double.class))
+            new Dataized(rnd).asNumber(),
+            Matchers.equalTo(new Dataized(rnd).asNumber())
         );
     }
 
@@ -633,7 +633,7 @@ final class PhDefaultTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Kid() {
             this.add("z", new AtVoid("z"));
-            this.add(Attr.PHI, new AtSimple(new EOstdout()));
+            this.add(Attr.PHI, new AtSimple(new EOconsole$EOwrite$EOwritten_bytes()));
         }
     }
 
@@ -696,7 +696,7 @@ final class PhDefaultTest {
                         if (PhDefaultTest.RecursivePhi.count <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
-                            result = new Data.ToPhi(new Dataized(rho).take(Long.class));
+                            result = new Data.ToPhi(new Dataized(rho).asNumber());
                         }
                         return result;
                     }
@@ -732,7 +732,7 @@ final class PhDefaultTest {
                             result = new Data.ToPhi(
                                 new Dataized(
                                     new RecursivePhiViaNew()
-                                ).take(Long.class)
+                                ).asNumber()
                             );
                         }
                         return result;

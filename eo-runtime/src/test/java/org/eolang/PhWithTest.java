@@ -56,7 +56,7 @@ final class PhWithTest {
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
                 new Data.ToPhi("Hello, world!")
-            ).take(String.class),
+            ).asString(),
             Matchers.startsWith("Hello, ")
         );
     }
@@ -71,8 +71,8 @@ final class PhWithTest {
                     new PhCopy(new PhMethod(dummy, "plus")),
                     0, new Data.ToPhi(1L)
                 )
-            ).take(Long.class),
-            Matchers.equalTo(2L)
+            ).asNumber(),
+            Matchers.equalTo(2.0)
         );
     }
 
@@ -85,7 +85,7 @@ final class PhWithTest {
                 new PhCopy(new PhMethod(dummy, "plus")),
                 0, new Data.ToPhi(1L)
             ).toString(),
-            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOint.*")
+            Matchers.matchesPattern(".*Dummy.*\\.plus.*\\[#0=EOorg\\.EOeolang\\.EOnumber.*")
         );
     }
 
@@ -97,7 +97,7 @@ final class PhWithTest {
         final Func<Phi, Boolean> actual = phi -> {
             MatcherAssert.assertThat(
                 AtCompositeTest.TO_ADD_MESSAGE,
-                new Dataized(phi.take(attr)).take(String.class),
+                new Dataized(phi.take(attr)).asString(),
                 Matchers.is(data)
             );
             return true;

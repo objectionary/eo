@@ -61,6 +61,11 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Attributes nesting level.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link PhDefault#NESTING} to prevent memory leaks. We should either find a place where this
+     *  variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 

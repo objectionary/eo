@@ -85,10 +85,16 @@ public interface Bytes {
     Bytes sshift(int bits);
 
     /**
-     * Convert to number.
-     * @param type Type.
+     * Convert to double number.
      * @return Number.
-     * @param <T> Numeric type.
+     */
+    Double asNumber();
+
+    /**
+     * Convert to number.
+     * @param type Number type
+     * @param <T> Type
+     * @return Number
      */
     <T extends Number> T asNumber(Class<T> type);
 

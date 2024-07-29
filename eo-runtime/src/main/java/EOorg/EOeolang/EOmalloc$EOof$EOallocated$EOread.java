@@ -32,7 +32,7 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -56,12 +56,11 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
 
     @Override
     public Phi lambda() throws Exception {
-        final Phi rho = this.take(Attr.RHO);
-        final int length = Math.toIntExact(new Param(this, "length").strong(Long.class));
+        final int length = new Dataized(this.take("length")).asNumber().intValue();
         return new Data.ToPhi(
             Heaps.INSTANCE.read(
-                Math.toIntExact(new Param(rho, "id").strong(Long.class)),
-                Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+                new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
+                new Dataized(this.take("offset")).asNumber().intValue(),
                 length
             )
         );

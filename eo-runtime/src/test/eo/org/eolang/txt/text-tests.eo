@@ -307,30 +307,23 @@
     (text "HeLlO").low-cased
 
 # Test.
-[] > converts-text-to-int
+[] > converts-text-to-number
   eq. > @
     5
-    (text "5").as-int
+    (text "5").as-number
 
 # Test.
-[] > fails-on-converting-text-to-int
+[] > fails-on-converting-text-to-number
   try > @
-    (text "Hello").as-int
+    (text "Hello").as-number
     stdout ex > [ex]
     false
 
 # Test.
-[] > converts-text-to-float
+[] > converts-float-text-to-number
   eq. > @
     3.14
-    (text "3.14").as-float
-
-# Test.
-[] > fails-on-converting-text-to-float
-  try > @
-    (text "Hello").as-float
-    stdout ex > [ex]
-    false
+    (text "3.14").as-number
 
 # Test.
 [] > checks-if-text-is-ascii
@@ -352,21 +345,21 @@
       "123"
 
 # Test.
-[] > checks-if-simple-text-is-alphabetic
-  is-alphabetic. > @
+[] > checks-if-simple-text-is-alphanumeric
+  is-alphanumeric. > @
     text
       "eEo"
 
 # Test.
-[] > checks-if-text-with-number-is-alphabetic
-  is-alphabetic. > @
+[] > checks-if-text-with-number-is-alphanumeric
+  is-alphanumeric. > @
     text
       "ab3d"
 
 # Test.
-[] > checks-if-text-with-dashes-is-not-alphabetic
+[] > checks-if-text-with-dashes-is-not-alphanumeric
   not. > @
-    is-alphabetic.
+    is-alphanumeric.
       text
         "-w-"
 

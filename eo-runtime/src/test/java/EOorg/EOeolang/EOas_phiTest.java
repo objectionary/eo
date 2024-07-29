@@ -53,12 +53,11 @@ final class EOas_phiTest {
                     new EOas_phi(),
                     0, new Data.ToPhi(1L)
                 )
-            ).take(String.class),
+            ).asString(),
             Matchers.allOf(
-                Matchers.containsString("·int⟦"),
+                Matchers.containsString("·number⟦"),
                 Matchers.containsString("·bytes⟦")
             )
         );
     }
-
 }

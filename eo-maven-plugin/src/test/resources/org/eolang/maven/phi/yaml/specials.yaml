@@ -24,14 +24,14 @@ eo: |
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > main
     ^.x > x
-    $.a > a
+    $.a > b
     @.@ > phi
 phi: |-
   {
     ⟦
       main ↦ ⟦
         x ↦ ξ.ρ.x,
-        a ↦ ξ.a,
+        b ↦ ξ.a,
         phi ↦ ξ.φ.φ
       ⟧
     ⟧

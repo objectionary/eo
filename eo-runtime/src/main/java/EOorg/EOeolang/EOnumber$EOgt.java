@@ -29,34 +29,35 @@ package EOorg.EOeolang;
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * GT.
+ * Number.gt object.
  *
- * @since 1.0
+ * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "float.gt")
-public final class EOfloat$EOgt extends PhDefault implements Atom {
+@XmirObject(oname = "number.gt")
+public final class EOnumber$EOgt extends PhDefault implements Atom {
     /**
      * Ctor.
      */
-    public EOfloat$EOgt() {
+    public EOnumber$EOgt() {
         this.add("x", new AtVoid("x"));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Param(this).strong(Double.class)
-                > new Param(this, "x").strong(Double.class)
+            new Dataized(this.take(Attr.RHO)).asNumber()
+                > new Dataized(this.take("x")).asNumber()
         );
     }
 }

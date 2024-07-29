@@ -63,15 +63,14 @@
       rec-reduced start 0.as-bytes
 
     [accum index] > rec-reduced
+      index.as-number > idx-as-number
+      1.plus idx-as-number > next-index!
       if. > @
-        eq.
-          1.plus > next-index!
-            index.as-int > idx-as-int
-          ^.origin-len
+        next-index.eq ^.origin-len
         ^.func > accumulated
           accum
-          ^.^.origin.at idx-as-int
-          idx-as-int
+          ^.^.origin.at idx-as-number
+          idx-as-number
         ^.rec-reduced
           accumulated
           next-index
@@ -224,17 +223,15 @@
 
     [idx-as-bytes accum] > rec-filtered
       ^.^.origin > original
+      idx-as-bytes.as-number > index
+      ^.^.origin.at index > item
       if. > @
         idx-as-bytes.eq ^.origin-length
         accum
         ^.rec-filtered
-          as-bytes.
-            1.plus
-              idx-as-bytes.as-int > index
+          (1.plus index).as-bytes
           if.
-            ^.func
-              ^.^.origin.at index > item
-              index
+            ^.func item index
             accum.with item
             accum
 
@@ -257,7 +254,7 @@
           list *
         *
           0.gt idx
-          ^.tail index.as-int.neg
+          ^.tail index.as-number.neg
         *
           ^.origin.length.lte idx
           ^
@@ -275,7 +272,7 @@
   # Get the last `index` elements from the end of the list.
   [index] > tail
     index > idx!
-    ^.origin.length.minus idx.as-int > start!
+    ^.origin.length.minus idx.as-number > start!
     if. > @
       0.gt start
       ^

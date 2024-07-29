@@ -25,40 +25,60 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang.EOio;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * PLUS.
+ * Console.read.read-bytes.
  *
- * @since 0.23
+ * @since 0.39
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "int.plus")
-public final class EOint$EOplus extends PhDefault implements Atom {
+@XmirObject(oname = "console.read.read-bytes")
+public final class EOconsole$EOread$EOread_bytes extends PhDefault implements Atom {
+    /**
+     * Input stream to read bytes from.
+     */
+    private final InputStream input;
+
     /**
      * Ctor.
      */
-    public EOint$EOplus() {
-        this.add("x", new AtVoid("x"));
+    public EOconsole$EOread$EOread_bytes() {
+        this(System.in);
+    }
+
+    /**
+     * Ctor for the tests.
+     * @param input Stream to read from
+     */
+    EOconsole$EOread$EOread_bytes(final InputStream input) {
+        this.input = input;
+        this.add("size", new AtVoid("size"));
     }
 
     @Override
-    public Phi lambda() {
-        return new Data.ToPhi(
-            Long.sum(
-                new Param(this).strong(Long.class),
-                new Param(this, "x").strong(Long.class)
-            )
-        );
+    public Phi lambda() throws IOException {
+        final int size = new Dataized(this.take("size")).asNumber().intValue();
+        final byte[] read = new byte[size];
+        int character;
+        int processed = 0;
+        while (processed < size && (character = this.input.read()) != -1) {
+            read[processed] = (byte) character;
+            ++processed;
+        }
+        return new Data.ToPhi(Arrays.copyOf(read, processed));
     }
 }

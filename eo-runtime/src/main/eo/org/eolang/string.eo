@@ -33,7 +33,7 @@
   as-bytes > @
 
   # Get the length of it.
-  [] > length /int
+  [] > length /number
 
   # Takes a piece of a string as another string.
   [start len] > slice /string

@@ -43,27 +43,27 @@ phi: |-
           fibonacci ↦ ⟦
             n ↦ ∅,
             φ ↦ ξ.n.lt(
-              α0 ↦ Φ.org.eolang.int(
+              α0 ↦ Φ.org.eolang.number(
                 α0 ↦ Φ.org.eolang.bytes(
-                  Δ ⤍ 00-00-00-00-00-00-00-02
+                  Δ ⤍ 40-00-00-00-00-00-00-00
                 )
               )
             ).if(
               α0 ↦ ξ.n,
               α1 ↦ ξ.ρ.fibonacci(
                 α0 ↦ ξ.n.minus(
-                  α0 ↦ Φ.org.eolang.int(
+                  α0 ↦ Φ.org.eolang.number(
                     α0 ↦ Φ.org.eolang.bytes(
-                      Δ ⤍ 00-00-00-00-00-00-00-01
+                      Δ ⤍ 3F-F0-00-00-00-00-00-00
                     )
                   )
                 )
               ).plus(
                 α0 ↦ ξ.ρ.fibonacci(
                   α0 ↦ ξ.n.minus(
-                    α0 ↦ Φ.org.eolang.int(
+                    α0 ↦ Φ.org.eolang.number(
                       α0 ↦ Φ.org.eolang.bytes(
-                        Δ ⤍ 00-00-00-00-00-00-00-02
+                        Δ ⤍ 40-00-00-00-00-00-00-00
                       )
                     )
                   )

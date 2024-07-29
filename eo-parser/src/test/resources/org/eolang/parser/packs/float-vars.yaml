@@ -36,7 +36,7 @@ tests:
   - //objects[count(//o[@cut='0'])=1]
   - //o[@name='aaa' and not(@cut)]
   - //o[@name='ooo' and not(@cut)]
-  - //o[@name='mm' and @base='int']
+  - //o[@name='mm' and @base='number']
   - //o[@base='mm']
 eo: |
   # This is the default 64+ symbols comment in front of abstract object.

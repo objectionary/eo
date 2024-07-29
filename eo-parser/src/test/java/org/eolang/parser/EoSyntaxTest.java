@@ -190,7 +190,7 @@ final class EoSyntaxTest {
                 new InputOf("1 > x")
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/program/objects/o[@base='int' and @name='x' and ends-with(text(), '1')]"
+                "/program/objects/o[@base='number' and @name='x' and text()]"
             )
         );
     }
@@ -253,7 +253,7 @@ final class EoSyntaxTest {
             XhtmlMatchers.hasXPaths(
                 "/program[@name='test-it-1']",
                 "/program/objects/o[@base='.add']",
-                "/program/objects/o/o[@base='int']",
+                "/program/objects/o/o[@base='number']",
                 "/program/objects/o/o[@base='true']"
             )
         );

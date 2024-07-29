@@ -36,8 +36,8 @@ import java.util.Arrays;
  *  <a href="https://pmd.github.io/pmd/pmd_rules_java_design">pmd.github.io</a>
  */
 @Versionized
-@SuppressWarnings("PMD.TooManyMethods")
-class BytesRaw implements Bytes {
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+final class BytesRaw implements Bytes {
 
     /**
      * Binary data.
@@ -150,6 +150,11 @@ class BytesRaw implements Bytes {
             }
         }
         return new BytesOf(bytes);
+    }
+
+    @Override
+    public Double asNumber() {
+        return this.asNumber(Double.class);
     }
 
     @Override

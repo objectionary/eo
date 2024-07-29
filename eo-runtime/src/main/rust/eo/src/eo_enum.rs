@@ -24,8 +24,7 @@
 
 pub enum EO {
     EOVertex(u32),
-    EOFloat(f64),
-    EOInt(i64),
+    EONumber(f64),
     EOString(String),
     EORaw(Box<[u8]>),
     EOError(String),
@@ -40,15 +39,9 @@ impl EO {
                 res[1..].copy_from_slice(&v.to_be_bytes());
                 res
             }
-            EO::EOFloat(x) => {
+            EO::EONumber(x) => {
                 let mut res = vec![0; 1 + 8];
                 res[0] = 1;
-                res[1..].copy_from_slice(&x.to_be_bytes());
-                res
-            }
-            EO::EOInt(x) => {
-                let mut res: Vec<u8> = vec![0; 1 + 8];
-                res[0] = 2;
                 res[1..].copy_from_slice(&x.to_be_bytes());
                 res
             }
