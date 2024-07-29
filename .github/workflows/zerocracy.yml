@@ -40,7 +40,7 @@ jobs:
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.25
+      - uses: zerocracy/pages-action@0.0.26
         with:
           factbase: objectionary.fb
           output: pages
