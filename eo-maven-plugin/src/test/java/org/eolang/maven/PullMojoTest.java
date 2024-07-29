@@ -295,27 +295,26 @@ final class PullMojoTest {
 
     @Test
     @CaptureLogs
-    void showsWhereNotFoundWasDiscoveredAt(@TempDir final Path tmp, final Logs out) {
+    void showsWhereNotFoundWasDiscoveredAt(@TempDir final Path tmp, final Logs out)
+        throws IOException {
+        final FakeMaven mvn = new FakeMaven(tmp)
+            .withProgram(
+                "+package com.example\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "[] > main",
+                "  org.eolang.org > @"
+            )
+            .with(
+                "objectionaries",
+                new Objectionaries.Fake(
+                    new OyRemote(
+                        new ChRemote("master")
+                    )
+                )
+            );
         Assertions.assertThrows(
             Exception.class,
-            () -> {
-                new FakeMaven(tmp)
-                    .withProgram(
-                        "+package com.example\n",
-                        "# This is the default 64+ symbols comment in front of named abstract object.",
-                        "[] > main",
-                        "  org.eolang.org > @"
-                    )
-                    .with(
-                        "objectionaries",
-                        new Objectionaries.Fake(
-                            new OyRemote(
-                                new ChRemote("master")
-                            )
-                        )
-                    )
-                    .execute(new FakeMaven.Pull());
-            },
+            () -> mvn.execute(new FakeMaven.Pull()),
             "Pull mojo should fail, but it does not"
         );
         Assertions.assertTrue(
