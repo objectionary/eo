@@ -28,7 +28,6 @@ import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
@@ -62,8 +61,8 @@ public class EOcall extends PhDefault implements Atom {
     private Phi[] collectArgs() {
         final Phi args = this.take("args");
         final Phi retriever = args.take("at");
-        final Long length = new Param(args, "length").strong(Long.class);
-        final Phi[] arguments = new Phi[length.intValue()];
+        final int length = new Dataized(args.take("length")).asNumber().intValue();
+        final Phi[] arguments = new Phi[length];
         for (long i = 0; i < length; i++) {
             Phi taken = retriever.copy();
             taken.put(0, new Data.ToPhi(i));

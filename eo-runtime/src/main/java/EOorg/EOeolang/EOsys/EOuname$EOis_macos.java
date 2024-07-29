@@ -25,7 +25,6 @@
 package EOorg.EOeolang.EOsys;
 
 import java.util.Locale;
-import org.eolang.AtComposite;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.PhDefault;

@@ -139,7 +139,7 @@ public final class Dataized {
         } else if (type.equals(Double.class)) {
             res = this.asNumber();
         } else if (type.equals(byte[].class)) {
-            res = this.asBytes().take();
+            res = this.take();
         } else if (type.equals(String.class)) {
             res = this.asString();
         } else if (type.equals(Boolean.class)) {

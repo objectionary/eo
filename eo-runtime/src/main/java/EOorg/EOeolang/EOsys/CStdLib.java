@@ -12,9 +12,7 @@ interface CStdLib extends Library {
     /**
      * C STDLIB instance.
      */
-    CStdLib CSTDLIB = CStdLib.class.cast(
-        Native.load("c", CStdLib.class)
-    );
+    CStdLib CSTDLIB = Native.load("c", CStdLib.class);
 
     int getpid();
 
