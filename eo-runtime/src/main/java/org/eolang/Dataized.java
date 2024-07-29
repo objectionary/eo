@@ -127,6 +127,36 @@ public final class Dataized {
     }
 
     /**
+     * Take the data with a type.
+     * @param type The type
+     * @param <T> The type
+     * @return The data
+     */
+    public <T> T take(final Class<T> type) {
+        final Object res;
+        if (type.equals(Long.class)) {
+            res = this.asNumber().longValue();
+        } else if (type.equals(Double.class)) {
+            res = this.asNumber();
+        } else if (type.equals(byte[].class)) {
+            res = this.asBytes().take();
+        } else if (type.equals(String.class)) {
+            res = this.asString();
+        } else if (type.equals(Boolean.class)) {
+            res = this.asBool();
+        } else {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unknown type: %s, bytes are: %s",
+                    type.getCanonicalName(),
+                    Arrays.toString(this.asBytes().take())
+                )
+            );
+        }
+        return type.cast(res);
+    }
+
+    /**
      * Extract the data from the object and convert to string.
      * @return Data as string
      */

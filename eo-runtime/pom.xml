@@ -39,13 +39,6 @@ SOFTWARE.
   </properties>
   <dependencies>
     <dependency>
-      <!-- We need it here for Javadoc compilation -->
-      <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>5.14.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
       <version>2.0.13</version>
@@ -204,6 +197,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>deps</goal>
               <goal>verify</goal>
               <goal>transpile</goal>
               <goal>copy</goal>
@@ -226,6 +220,7 @@ SOFTWARE.
             <goals>
               <goal>register</goal>
               <goal>assemble</goal>
+              <goal>deps</goal>
               <goal>verify</goal>
               <goal>transpile</goal>
               <goal>binarize</goal>

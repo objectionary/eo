@@ -34,11 +34,12 @@ class DispatchedLinuxSyscallTest {
 
     @Test
     void invokesWriteWithoutExceptions() {
+        final String msg = "Hello, world!\n";
         Assertions.assertDoesNotThrow(
             () -> new DispatchedLinuxSyscall("write").call(
                 new Data.ToPhi(1L),
-                new Data.ToPhi("Hello, world!"),
-                new Data.ToPhi((long) "Hello, world!".length())
+                new Data.ToPhi(msg),
+                new Data.ToPhi((long) msg.length())
             ),
             "Expected \"write\" syscall to be called without exceptions."
         );
@@ -46,14 +47,15 @@ class DispatchedLinuxSyscallTest {
 
     @Test
     void invokesWriteCorrectly() {
+        final String msg = "Hello, world!\n";
         MatcherAssert.assertThat(
             "Expected \"write\" syscall to dispatched correctly",
             new DispatchedLinuxSyscall("write").call(
                 new Data.ToPhi(1L),
-                new Data.ToPhi("Hello, world!"),
-                new Data.ToPhi((long) "Hello, world!".length())
+                new Data.ToPhi(msg),
+                new Data.ToPhi((long) msg.length())
             ),
-            Matchers.equalTo("Hello, world!".length())
+            Matchers.equalTo(msg.length())
         );
     }
 }
