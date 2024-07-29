@@ -37,12 +37,12 @@ import org.eolang.Phi;
  * @since 0.39
  * @checkstyle TypeNameCheck (100 lines)
  */
-public class EOcall extends PhDefault implements Atom {
+public class EOunix extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOcall() {
+    public EOunix() {
         this.add("name", new AtVoid("name"));
         this.add("args", new AtVoid("args"));
     }
@@ -52,7 +52,7 @@ public class EOcall extends PhDefault implements Atom {
         final Phi name = this.take("name");
         final Phi[] args = this.collectArgs();
         return new Data.ToPhi(
-            new DispatchedLinuxSyscall(
+            new DispatchedUnixSyscall(
                 new Dataized(name).take(String.class)
             ).call(args)
         );

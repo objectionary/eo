@@ -5,15 +5,15 @@ import java.lang.reflect.Method;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 
-public final class DispatchedLinuxSyscall implements DispatchedSyscall {
+public final class DispatchedUnixSyscall implements DispatchedSyscall {
     private final Method method;
 
-    DispatchedLinuxSyscall(final Method method) {
+    DispatchedUnixSyscall(final Method method) {
         this.method = method;
     }
 
-    DispatchedLinuxSyscall(final String name) {
-        this(DispatchedLinuxSyscall.getSyscall(name));
+    DispatchedUnixSyscall(final String name) {
+        this(DispatchedUnixSyscall.getSyscall(name));
     }
 
     @Override
@@ -54,7 +54,7 @@ public final class DispatchedLinuxSyscall implements DispatchedSyscall {
 
     private static Method getSyscall(String name) {
         try {
-            return DispatchedLinuxSyscall.findSyscall(name);
+            return DispatchedUnixSyscall.findSyscall(name);
         } catch (final NoSuchMethodException e) {
             throw new IllegalArgumentException(
                 String.format("Can't find syscall with name \"%s\"", name),
