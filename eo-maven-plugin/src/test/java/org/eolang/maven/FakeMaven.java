@@ -272,6 +272,10 @@ public final class FakeMaven {
                     Paths.get(String.format("target/%s", ParseMojo.DIR))
                 ).toFile()
             );
+            this.params.putIfAbsent(
+                "classesDir",
+                this.workspace.absolute(Paths.get("target/classes")).toFile()
+            );
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
