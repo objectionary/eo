@@ -168,7 +168,7 @@ final class PhPackageTest {
             () -> (Runnable) () -> {
                 try {
                     latch.await();
-                    basket.add(System.identityHashCode(pckg.take("goto")));
+                    basket.add(System.identityHashCode(pckg.take("go")));
                 } catch (final InterruptedException exception) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(
