@@ -58,4 +58,33 @@ class DispatchedLinuxSyscallTest {
             Matchers.equalTo(msg.length())
         );
     }
+
+    @Test
+    void invokesReadWithoutExceptions() {
+        final int size = 3;
+        final byte[] buf = new byte[size];
+        Assertions.assertDoesNotThrow(
+            () -> new DispatchedLinuxSyscall("read").call(
+                new Data.ToPhi(1L),
+                new Data.ToPhi(buf),
+                new Data.ToPhi(size)
+            ),
+            "Expected \"read\" syscall to be called without exceptions."
+        );
+    }
+
+    @Test
+    void invokesReadFromStdoutWithError() {
+        final int size = 3;
+        final byte[] buf = new byte[size];
+        MatcherAssert.assertThat(
+            "Expected \"read\" syscall to dispatched correctly",
+            new DispatchedLinuxSyscall("read").call(
+                new Data.ToPhi(1L),
+                new Data.ToPhi(buf),
+                new Data.ToPhi(size)
+            ),
+            Matchers.equalTo(-1)
+        );
+    }
 }

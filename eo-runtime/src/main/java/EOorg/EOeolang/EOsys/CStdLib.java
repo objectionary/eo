@@ -17,4 +17,6 @@ interface CStdLib extends Library {
     int getpid();
 
     int write(final Long fd, final String buf, final Long size);
+
+    int read(final Long fd, final byte[] buf, final Long size);
 }
