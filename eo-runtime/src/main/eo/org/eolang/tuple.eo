@@ -41,15 +41,15 @@
 
   # Obtain the length of the tuple.
   [] > length
-    number > @
-      ^.head.length.plus 1 > len!
+    ^.head.length.plus 1 > len!
+    number len > @
 
   # Take one element from the tuple, at the given position.
   [i] > at
     ^.length > len
+    i > idx!
     if. > index!
-      0.gt
-        i > idx!
+      0.gt idx
       len.plus idx
       idx
     if. > @

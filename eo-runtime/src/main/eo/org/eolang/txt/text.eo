@@ -57,11 +57,12 @@
   # Returns `text` trimmed from left side.
   [] > trimmed-left
     ^.origin.length > len!
+    first-non-space-index 0 > idx!
     if. > @
       0.eq len
       ^
       ^.slice
-        first-non-space-index 0 > idx!
+        idx
         (number len).minus (number idx)
 
     [index] > first-non-space-index
@@ -110,6 +111,7 @@
   # as a delimiter.
   [items] > joined
     ^.origin > delimiter!
+    items.at 0 > first
     items.length > len!
     text > @
       if.
@@ -117,7 +119,7 @@
         ""
         if.
           1.eq len
-          items.at 0 > first
+          first
           as-string.
             concat.
               first.as-bytes
@@ -138,9 +140,9 @@
   # If `times` == 0 - an original text is returned.
   [times] > repeated
     ^.origin.as-bytes > bts!
+    times > amount!
     if. > @
-      0.gt
-        times > amount!
+      0.gt amount
       error
         sprintf
           "Can't repeat text %d times"
@@ -169,9 +171,9 @@
 
   # Checks that current `text` ends with given `substring`.
   [substring] > ends-with
+    substring > substr!
     eq. > @
-      ^.index-of
-        substring > substr!
+      ^.index-of substr
       ^.length.minus substr.size
 
   # Checks that current `text` starts with given `substring`.
@@ -183,9 +185,9 @@
   # Returns index of `substring` in current `text`.
   # If no `substring` was found, it returns -1
   [substring] > index-of
-    ^.origin.length > self-len!
-    size. > sub-len!
-      substring > substr!
+    ^.origin.as-bytes.size > self-len!
+    substring > substr!
+    substr.size > sub-len!
     (number self-len).minus (number sub-len) > end!
     if. > @
       or.
@@ -214,9 +216,9 @@
   # Returns last index of `substring` in current `text`.
   # If no element was found, it returns -1.
   [substring] > last-index-of
-    ^.origin.length > self-len!
-    size. > sub-len!
-      substring > substr!
+    ^.origin.as-bytes.size > self-len!
+    substring > substr!
+    substring.size > sub-len!
     if. > @
       or.
         (number sub-len).gt self-len
@@ -245,9 +247,9 @@
   # Returns `text` in upper case.
   [] > up-cased
     ascii "z" > ascii-z!
+    ascii "a" > ascii-a!
     minus. > distance
-      number
-        ascii "a" > ascii-a!
+      number ascii-a
       ascii "A"
     text > @
       as-string.
@@ -305,9 +307,9 @@
   # If 0 > index >= ^.length - the error will be returned.
   [i] > at
     ^.length > len!
+    i > idx!
     if. > index!
-      0.gt
-        i > idx!
+      0.gt idx
       (number len).plus idx
       idx
     if. > @
@@ -329,11 +331,9 @@
 
   # Returns the original `text` as `number`.
   [] > as-number
+    sscanf "%f" ^.origin > scanned
     if. > @
-      eq.
-        0
-        length.
-          sscanf "%f" ^.origin > scanned
+      scanned.length.eq 0
       error
         sprintf
           "Can't convert text %s to number"

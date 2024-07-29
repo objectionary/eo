@@ -20,15 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
----
-exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOread$EOread_bytes.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOwrite$EOwritten_bytes.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOio/EOconsoleTest.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/EOuname$EOφ.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/package-info.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnumberTest.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/package-info.java"
++alias org.eolang.io.malloc-as-output
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.io
++version 0.0.0
+
+# Test.
+[] > makes-an-output-from-malloc-and-writes
+  eq. > @
+    malloc.of
+      10
+      [m]
+        malloc-as-output m > output
+        output.write 01-02-03 > o1
+        o1.write 04-05-06-07 > o2
+        o2.write 08-09-A0 > @
+    01-02-03-04-05-06-07-08-09-A0
+
+# Test.
+[] > throws-on-writing-more-than-allocated
+  malloc.of > @
+    2
+    [m]
+      malloc-as-output m > output
+      output.write 01-02-03 > @

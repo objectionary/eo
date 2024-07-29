@@ -63,11 +63,10 @@
       rec-reduced start 0.as-bytes
 
     [accum index] > rec-reduced
+      index.as-number > idx-as-number
+      1.plus idx-as-number > next-index!
       if. > @
-        eq.
-          1.plus > next-index!
-            index.as-number > idx-as-number
-          ^.origin-len
+        next-index.eq ^.origin-len
         ^.func > accumulated
           accum
           ^.^.origin.at idx-as-number
@@ -224,17 +223,15 @@
 
     [idx-as-bytes accum] > rec-filtered
       ^.^.origin > original
+      idx-as-bytes.as-number > index
+      ^.^.origin.at index > item
       if. > @
         idx-as-bytes.eq ^.origin-length
         accum
         ^.rec-filtered
-          as-bytes.
-            1.plus
-              idx-as-bytes.as-number > index
+          (1.plus index).as-bytes
           if.
-            ^.func
-              ^.^.origin.at index > item
-              index
+            ^.func item index
             accum.with item
             accum
 

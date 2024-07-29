@@ -20,15 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
----
-exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOread$EOread_bytes.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOio/EOconsole$EOwrite$EOwritten_bytes.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOio/EOconsoleTest.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/EOuname$EOφ.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOsys/package-info.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnumberTest.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/package-info.java"
++alias org.eolang.sys.uname
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.sys
++version 0.0.0
+
+# Test.
+[] > checks-os-family
+  or. > @
+    or.
+      uname.is-windows
+      uname.is-macos
+    uname.is-linux

@@ -25,36 +25,28 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOsys;
 
-import java.util.NoSuchElementException;
 import org.eolang.Atom;
 import org.eolang.Data;
-import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Standard Input. Consumes only one line.
- *
- * @since 0.23
+ * Uname.@.
+ * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
-@Versionized
-@XmirObject(oname = "stdin.next-line")
-public final class EOstdin$EOnext_line extends PhDefault implements Atom {
+@XmirObject(oname = "uname.@")
+public final class EOuname$EOφ extends PhDefault implements Atom {
+    /**
+     * Operating system name as {@link Phi}.
+     */
+    private static final Phi OS_NAME = new Data.ToPhi(System.getProperty("os.name"));
+
     @Override
-    public Phi lambda() {
-        try {
-            final Input input = Input.getInstance();
-            final String line = input.getLine();
-            return new Data.ToPhi(line);
-        } catch (final NoSuchElementException exception) {
-            throw new ExFailure(
-                "There is no line in the standard input stream to consume"
-            );
-        }
+    public Phi lambda() throws Exception {
+        return EOuname$EOφ.OS_NAME;
     }
 }

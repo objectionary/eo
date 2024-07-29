@@ -27,9 +27,6 @@
  */
 package EOorg.EOeolang.EOio;
 
-import EOorg.EOeolang.EOerror;
-import java.io.InputStream;
-import java.lang.reflect.Field;
 import org.eolang.AtCompositeTest;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -37,12 +34,8 @@ import org.eolang.PhMethod;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ReadsStdIo;
-import org.junitpioneer.jupiter.StdIn;
 import org.junitpioneer.jupiter.StdIo;
 
 /**
@@ -54,39 +47,9 @@ import org.junitpioneer.jupiter.StdIo;
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOstdinTest {
-
-    /**
-     * DEFAULT_STDIN.
-     */
-    private static final InputStream DEFAULT_STDIN = System.in;
-
-    @AfterAll
-    static void restoreSystemInput() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            System.in,
-            Matchers.equalTo(EOstdinTest.DEFAULT_STDIN)
-        );
-    }
-
-    @AfterEach
-    @ReadsStdIo
-    void clearInput() {
-        final Input input = Input.getInstance();
-        try {
-            final Field prop = input.getClass().getDeclaredField("instance");
-            prop.setAccessible(true);
-            prop.set(input, null);
-        } catch (final NoSuchFieldException exception) {
-            throw new RuntimeException(exception);
-        } catch (final IllegalAccessException exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
     @StdIo("this is a test input!")
     @Test
-    void dataizesNextLineOneLine(final StdIn stdin) {
+    void dataizesNextLineOneLine() {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
         final String actual = new Dataized(phi).asString();
@@ -99,8 +62,8 @@ final class EOstdinTest {
 
     @StdIo("this is a testing input!")
     @Test
-    void dataizesStdinOneLine(final StdIn stdin) {
-        final String expected = "this is a testing input!".concat(System.lineSeparator());
+    void dataizesStdinOneLine() {
+        final String expected = "this is a testing input!";
         final Phi phi = new PhCopy(new EOstdin());
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
@@ -112,7 +75,7 @@ final class EOstdinTest {
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    void dataizesNextLineMultiLine(final StdIn stdin) {
+    void dataizesNextLineMultiLine() {
         final String expected = "this is a test input!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
         final String actual = new Dataized(phi).asString();
@@ -125,49 +88,47 @@ final class EOstdinTest {
 
     @StdIo("")
     @Test
-    void dataizesNextLineEmpty(final StdIn stdin) {
+    void dataizesNextLineEmpty() {
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
-        final EOerror.ExError error = Assertions.assertThrows(
-            EOerror.ExError.class,
-            () -> new Dataized(phi).asString()
+        final String input = Assertions.assertDoesNotThrow(
+            () -> new Dataized(phi).asString(),
+            AtCompositeTest.TO_ADD_MESSAGE
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(error.enclosure()).asString(),
-            Matchers.containsString(
-                "There is no line in the standard input stream to consume"
-            )
+            input,
+            Matchers.equalTo("")
         );
     }
 
     @StdIo("")
     @Test
-    void dataizesEmptyStdin(final StdIn stdin) {
+    void dataizesEmptyStdin() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(new EOstdin()).asString(),
-            Matchers.equalTo(System.lineSeparator())
+            Matchers.equalTo("")
         );
     }
 
     @StdIo({"this is a test input!", "another line", "yet another line"})
     @Test
-    void dataizesStdinMultiLine(final StdIn stdin) {
-        final String first = "this is a test input!".concat(System.lineSeparator());
-        final String second = "another line".concat(System.lineSeparator());
-        final String third = "yet another line".concat(System.lineSeparator());
+    void dataizesStdinMultiLine() {
+        final String first = "this is a test input!";
+        final String second = "another line";
+        final String third = "yet another line";
         final Phi phi = new PhCopy(new EOstdin());
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
-            Matchers.equalTo(first + second + third)
+            Matchers.equalTo(String.join(System.lineSeparator(), first, second, third))
         );
     }
 
     @StdIo({"first", "second", "third"})
     @Test
-    void dataizesStdinFewOneLine(final StdIn stdin) {
+    void dataizesStdinFewOneLine() {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
@@ -196,7 +157,7 @@ final class EOstdinTest {
 
     @StdIo({"first", "", "third"})
     @Test
-    void dataizesStdinEmptyLineBetweenNonEmpty(final StdIn stdin) {
+    void dataizesStdinEmptyLineBetweenNonEmpty() {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
         Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");

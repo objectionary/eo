@@ -22,59 +22,10 @@
  * SOFTWARE.
  */
 
-/*
+/**
+ * EO runtime, SYS.
+ *
+ * @since 0.39
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOio;
-
-import java.io.PrintStream;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
-
-/**
- * Stdout.
- *
- * @since 0.1
- * @checkstyle TypeNameCheck (5 lines)
- */
-@Versionized
-@XmirObject(oname = "stdout")
-public final class EOstdout extends PhDefault implements Atom {
-    /**
-     * Default out print stream.
-     */
-    private static final PrintStream OUT = System.out;
-
-    /**
-     * Stream to print out.
-     */
-    private final PrintStream out;
-
-    /**
-     * Default ctor.
-     */
-    public EOstdout() {
-        this(EOstdout.OUT);
-    }
-
-    /**
-     * Ctor for the tests.
-     * @param out Stream to print
-     */
-    EOstdout(final PrintStream out) {
-        this.out = out;
-        this.add("text", new AtVoid("text"));
-    }
-
-    @Override
-    public Phi lambda() {
-        this.out.print(new Dataized(this.take("text")).asString());
-        return new Data.ToPhi(true);
-    }
-}
+package EOorg.EOeolang.EOsys;

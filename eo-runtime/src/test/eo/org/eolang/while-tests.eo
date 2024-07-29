@@ -74,6 +74,17 @@
       true > [i]
 
 # Test.
+[] > while-simple-iteration
+  eq. > @
+    malloc.for
+      0
+      [m]
+        while > @
+          i.lt 10 > [i]
+          m.put i > [i] >>
+    9
+
+# Test.
 [] > iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
   arr.length.plus -1 > max
