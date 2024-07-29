@@ -23,8 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -43,7 +44,7 @@
 #
 # Here, the first argument is a size of allocated block in memory, the second argument
 # is the scope where memory block is available for reading and writing. When `malloc.of` is
-# dataized it dataizes the scope, take the data from the block in memory, clears the block and
+# dataized it dataizes the scope, takes the data from the block in memory, clears the block and
 # returns the data. So there's no need for end-user to care about clearing memory after allocation.
 #
 # Second, when the size is not known upfront, but there exists

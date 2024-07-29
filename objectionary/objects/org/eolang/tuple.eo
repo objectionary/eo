@@ -23,8 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
 # Tuple.
 [head tail] > tuple
@@ -32,25 +33,23 @@
   [] > empty
     0 > length
 
-    [i] > at
-      error "Can't get an object from the empty tuple" > @
+    # Take one element from the tuple, at the given position.
+    error "Can't get an object from the empty tuple" > [i] > at
 
-    [x] > with
-      tuple > @
-        tuple.empty
-        x
+    # Create a new tuple with this element added to the end of it.
+    tuple ^ x > [x] > with
 
   # Obtain the length of the tuple.
   [] > length
-    int > @
-      ^.head.length.plus 1 > len!
+    ^.head.length.plus 1 > len!
+    number len > @
 
   # Take one element from the tuple, at the given position.
   [i] > at
     ^.length > len
+    i > idx!
     if. > index!
-      0.gt
-        i > idx!
+      0.gt idx
       len.plus idx
       idx
     if. > @

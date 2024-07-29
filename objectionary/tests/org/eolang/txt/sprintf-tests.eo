@@ -1,0 +1,93 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.txt
++version 0.39.0
+
+# Test.
+[] > prints-simple-string
+  eq. > @
+    "Hello, Jeffrey!"
+    sprintf
+      "Hello, %s!"
+      * "Jeffrey"
+
+# Test.
+[] > prints-complex-string
+  eq. > @
+    "Привет 3.140000 Jeff X!"
+    sprintf
+      "Привет %f %s %s!"
+      * 3.14 "Jeff" "X"
+
+# Test.
+[] > prints-bytes-string
+  eq. > @
+    "40-45-00-00-00-00-00-00"
+    sprintf
+      "%x"
+      * 42.as-bytes
+
+# Test.
+[] > formats-all-objects
+  eq. > @
+    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
+    sprintf
+      "string %s, bytes %x, float %f, int %d, bool %b"
+      * "Jeff" "Jeff".as-bytes 42.3 14 false
+
+# Test.
+[] > sprintf-fails-if-amount-of-arguments-does-not-match
+  try > @
+    sprintf
+      "%s%s"
+      * "Jeff"
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > sprintf-does-not-fail-if-arguments-more-than-formats
+  eq. > @
+    "Hey"
+    sprintf
+      "%s"
+      * "Hey" "Jeff"
+
+# Test.
+[] > fails-on-unsupported-format
+  try > @
+    sprintf "%o" *
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > sprintf-prints-percents
+  eq. > @
+    "%Jeff"
+    sprintf
+      "%%%s"
+      * "Jeff"

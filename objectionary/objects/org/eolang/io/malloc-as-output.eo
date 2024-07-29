@@ -1,0 +1,74 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.io
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# Makes an output from allocated block in memory.
+# Here `allocated` is `malloc.of.allocated` object.
+#
+# Imagine you want to read bytes from `console` and save them
+# to block in memory.
+# Here's how you can do it:
+# ```
+# malloc.of > result
+#   10
+#   [mem]
+#     console.read 10 > input
+#     malloc-as-output mem > output
+#     output.write input > @
+# ```
+#
+# First, you read 10 bytes from `console`.
+# Second, you create an output from allocated block in memory.
+# Third, you write read bytes to output
+# After the dataization the object `result` contains read bytes.
+[allocated] > malloc-as-output
+  # Writes bytes contained in `buffer` to operation system console.
+  # Returns new instance of `output-block` ready to write again.
+  [buffer] > write
+    self. > @
+      (output-block 0).write buffer
+
+    # Malloc output block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `malloc-as-output` object.
+    #
+    # Here `offset` is the offset to write to allocated block in memory with.
+    [offset] > output-block
+      $ > self
+      true > @
+
+      # Writes bytes contained in `buffer` to operation system console.
+      # Returns new instance of `output-block` ready to write again.
+      [buffer] > write
+        self. > @
+          seq
+            *
+              ^.^.^.allocated.write offset buffer
+              ^.^.output-block
+                offset.plus buffer.size

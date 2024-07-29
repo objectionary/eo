@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > takes-part-of-bytes
@@ -89,10 +89,11 @@
     false
 
 # Test.
+# (-18.left 2).eq 71.not
 [] > left-with-even-neg
   eq. > @
-    -18.as-bytes.left 2
-    71.as-bytes.not
+    FF-FF-FF-FF-FF-FF-FF-EE.left 2
+    00-00-00-00-00-00-00-47.not
 
 # Test.
 [] > left-with-even-plus
@@ -279,7 +280,7 @@
 # Test.
 [] > bitwise-works
   eq. > @
-    as-int.
+    as-number.
       and.
         1.as-bytes
         1.as-bytes
@@ -293,13 +294,14 @@
       00-.as-bool
 
 # Test.
+# (-127.or 127).eq -1
 [] > bitwise-works-negative
   eq. > @
-    as-int.
+    as-number.
       or.
-        -127.as-bytes
-        127.as-bytes
-    -1
+        FF-FF-FF-FF-FF-FF-FF-81.as-bytes
+        00-00-00-00-00-00-00-7F.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FF
 
 # Test.
 [] > concatenation-of-bytes
@@ -354,86 +356,76 @@
     "hello world"
 
 # Test.
-[] > xor-as-int
+# (2397719729.xor 4294967295).eq 1897247566
+[] > xor-works
   eq. > @
-    (2397719729.as-bytes.xor 4294967295.as-bytes).as-int
-    1897247566
+    00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
+    00-00-00-00-71-15-B3-4E
 
 # Test.
-[] > one-xor-one-as-int
+[] > one-xor-one-as-number
   eq. > @
-    (1.as-bytes.xor 1.as-bytes).as-int
+    (1.as-bytes.xor 1.as-bytes).as-number
     0
 
 # Test.
-[] > eight-byte-numbers-xor-as-int
+# (2397719729.or -4294967296).eq -1897247567
+[] > or-neg-bytes-with-leading-zeroes
   eq. > @
-    as-int.
-      xor.
-        as-bytes.
-          1823872398572932454
-        as-bytes.
-          1284294810240192840
-    620662338699844654
+    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
 
 # Test.
-[] > or-neg-bytes-as-int-with-leading-zeroes
+# (2397719729.and -4294967296).eq 0
+[] > and-neg-bytes-as-number-with-leading-zeroes
   eq. > @
-    (2397719729.as-bytes.or -4294967296.as-bytes).as-int
-    -1897247567
-
-# Test.
-[] > and-neg-bytes-as-int-with-leading-zeroes
-  eq. > @
-    (2397719729.as-bytes.and -4294967296.as-bytes).as-int
+    (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # Test.
-[] > xor-neg-bytes-as-int-with-leading-zeroes
+# (2397719729.xor -4294967296).eq -1897247567
+[] > xor-neg-bytes-with-leading-zeroes
   eq. > @
-    (2397719729.as-bytes.xor -4294967296.as-bytes).as-int
-    -1897247567
+    00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
 
 # Test.
-[] > or-neg-bytes-as-int-without-leading--zeroes
+# (4294967295.or -4294967296).eq -1
+[] > or-neg-bytes-without-leading-zeroes
   eq. > @
-    (4294967295.as-bytes.or -4294967296.as-bytes).as-int
-    -1
+    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF
 
 # Test.
-[] > and-neg-bytes-as-int-without-leading--zeroes
+# (4294967295.and -4294967296).eq 0
+[] > and-neg-bytes-as-number-without-leading-zeroes
   eq. > @
-    (4294967295.as-bytes.and -4294967296.as-bytes).as-int
+    (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
 # Test.
-[] > xor-neg-bytes-as-int-without-leading--zeroes
+# (4294967295.xor -4294967296).eq -1
+[] > xor-neg-bytes-as-number-without-leading-zeroes
   eq. > @
-    (4294967295.as-bytes.xor -4294967296.as-bytes).as-int
-    -1
+    (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
+    FF-FF-FF-FF-FF-FF-FF-FF
 
 # Test.
-[] > or-neg-bytes-as-int-with-zero
+[] > or-neg-bytes-as-number-with-zero
   eq. > @
-    (-4294967296.as-bytes.or 0.as-bytes).as-int
+    (-4294967296.as-bytes.or 0.as-bytes).as-number
     -4294967296
 
 # Test.
-[] > or-neg-bytes-as-int-with-one
+# (-4294967296L.or 1).eq -4294967295L
+[] > or-neg-bytes-with-one
   eq. > @
-    (-4294967296.as-bytes.or 1.as-bytes).as-int
-    -4294967295
+    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+    FF-FF-FF-FF-00-00-00-01
 
 # Test.
-[] > bytes-of-wrong-size-as-int-of-returns-error
+[] > bytes-of-wrong-size-as-number-of-returns-error
   try > @
-    01-01-01-01.as-int
-    QQ.io.stdout e > [e]
-    false
-
-# Test.
-[] > bytes-of-wrong-size-as-float-returns-error
-  try > @
-    01-01-01-01.as-float
+    01-01-01-01.as-number
     QQ.io.stdout e > [e]
     false

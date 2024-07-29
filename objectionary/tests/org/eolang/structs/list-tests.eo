@@ -1,0 +1,538 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.io.stdout
++alias org.eolang.structs.list
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.structs
++version 0.39.0
+
+# Test.
+[] > list-should-not-be-empty
+  not. > @
+    is-empty.
+      list
+        * 1 2
+
+# Test.
+(list *).is-empty > [] > list-should-be-empty
+
+# Test.
+[] > list-should-not-be-empty-with-three-objects
+  * > xs
+    [x]
+    [y]
+    [z]
+  (list xs).is-empty.not > @
+
+# Test.
+[] > list-should-not-be-empty-with-one-anon-object
+  * > xs
+    [f]
+  (list xs).is-empty.not > @
+
+# Test.
+[] > list-simple-with
+  eq. > @
+    with.
+      list
+        * 1 2
+      3
+    * 1 2 3
+
+# Test.
+[] > simple-insert
+  eq. > @
+    withi.
+      list
+        * 1 2 3 4 5
+      3
+      "hello"
+    * 1 2 3 "hello" 4 5
+
+# Test.
+[] > insert-with-zero-index
+  eq. > @
+    withi.
+      list
+        * 1 2 3 4 5
+      0
+      "hello"
+    * "hello" 1 2 3 4 5
+
+# Test.
+[] > reduce-list-with-index
+  * 2 2 > src
+  eq. > @
+    6
+    reducedi.
+      list
+        * 1 1
+      0
+      [a x i] >>
+        plus. > @
+          x
+          a.plus
+            ^.src.at i
+
+# Test.
+[] > list-reducedi-long-int-array
+  eq. > @
+    reducedi.
+      list
+        * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+      0
+      x.plus a > [a x i]
+    1
+
+# Test.
+[] > list-reducedi-bools-array
+  not. > @
+    reducedi.
+      list
+        * true true false
+      true
+      x.and a > [a x i]
+
+# Test.
+[] > list-reducedi-nested-functions
+  eq. > @
+    reducedi.
+      list
+        * 10 500
+      0
+      [acc x i]
+        check x > @
+        [el] > check
+          if. > @
+            ^.x.lt 100
+            ^.acc.plus x
+            ^.acc.minus x
+    plus.
+      10
+      0.minus 500
+
+# Test.
+[] > list-reduce-without-index
+  eq. > @
+    reduced.
+      list
+        * 1 2 3 4
+      -1
+      a.times x > [a x]
+    -24
+
+# Test. Should print "0\n1\n"
+[] > list-reduced-printing
+  reduced. > @
+    list
+      * 0 1
+    true
+    [acc item]
+      seq > @
+        *
+          acc
+          stdout
+            sprintf
+              "%d\n"
+              * item
+
+# Test.
+[] > complex-objects-list-comparison
+  list > res
+    *
+      list (* 0 1)
+      list (* 4 0)
+      list (* 7 3)
+  .eq > @
+    *
+      * 0 1
+      * 4 0
+      * 7 3
+
+# Test.
+[] > list-mappedi-should-work
+  eq. > @
+    mappedi.
+      list
+        * 1 2 3 4
+      i.times x > [x i]
+    * 0 2 6 12
+
+# Test.
+[] > simple-list-mapping
+  eq. > @
+    mapped.
+      list
+        * 1 2 3
+      x.times 2 > [x]
+    * 2 4 6
+
+# Test.
+[] > iterates-with-eachi
+  list
+    *
+      "one"
+      "two"
+      "three"
+  .eachi > @
+    [item index]
+      stdout > @
+        sprintf
+          "[%d]: %s\n"
+          * index item
+
+# Test.
+[] > iterates-with-each
+  list
+    *
+      "one"
+      "two"
+      "three"
+  .each > @
+    stdout i > [i]
+
+# Test.
+[] > list-withouti
+  eq. > @
+    withouti.
+      list
+        * 1 2 3
+      1
+    * 1 3
+
+# Test.
+[] > list-withouti-complex-case
+  [a] > foo
+    withouti. > @
+      list a
+      0
+  eq. > @
+    foo
+      * 1 "text" "f"
+    * "text" "f"
+
+# Test.
+[] > list-withouti-nested-array
+  * 3 2 1 > nested
+  eq. > @
+    withouti.
+      list
+        * "smthg" 27 nested
+      2
+    * "smthg" 27
+
+# Test.
+[] > list-without
+  eq. > @
+    without.
+      list
+        * 1 2 1 2 1 5
+      2
+    * 1 1 1 5
+
+# Test.
+[] > equality-test
+  eq. > @
+    list
+      * 1 2 3
+    * 1 2 3
+
+# Test.
+[] > not-equality-test
+  not. > @
+    eq.
+      list
+        * 1 2 3
+      * 3 2 1
+
+# Test.
+[] > concatenates-lists
+  list (* 0 1) > list1
+  list (* 2 3) > list2
+  withouti. > list3
+    concat.
+      list1
+      list2
+    0
+  and. > @
+    eq.
+      1
+      list3.at 0
+    eq.
+      list3
+      * 1 2 3
+
+# Test.
+[] > concatenates-with-tuple
+  eq. > @
+    concat.
+      list
+        * 0 1
+      * 2 4
+    * 0 1 2 4
+
+# Test.
+[] > returns-index-of
+  eq. > @
+    1
+    index-of.
+      list
+        * 1 2 3
+      2
+
+# Test.
+[] > returns-first-index-of-element
+  eq. > @
+    0
+    index-of.
+      list
+        * -1 2 -1
+      -1
+
+# Test.
+[] > does-not-find-index-of
+  eq. > @
+    -1
+    index-of.
+      list
+        * "qwerty" 2 3
+      7
+
+# Test.
+[] > finds-index-of-string
+  eq. > @
+    1
+    index-of.
+      list
+        * "asdfgh" "qwerty" 3
+      "qwerty"
+
+# Test.
+[] > finds-last-index-of
+  eq. > @
+    1
+    last-index-of.
+      list
+        * "qwerty" 2 3
+      2
+
+# Test.
+[] > finds-last-index-of-repeated
+  eq. > @
+    2
+    last-index-of.
+      list
+        * 24 42 24
+      24
+
+# Test.
+[] > last-index-of-not-found
+  eq. > @
+    -1
+    last-index-of.
+      list
+        * 1 2 3
+      0
+
+# Test.
+[] > last-index-of-empty
+  eq. > @
+    -1
+    last-index-of.
+      list *
+      "abc"
+
+# Test.
+[] > last-index-of-unicode
+  eq. > @
+    3
+    last-index-of.
+      list
+        * "Hi" "Привет" "Hola" "Привет" "こんにちわ"
+      "Привет"
+
+# Test.
+[] > list-contains-string
+  contains. > @
+    list
+      * "qwerty" "asdfgh" 3 "qwerty"
+    "qwerty"
+
+# Test.
+[] > list-contains-number
+  contains. > @
+    list
+      * "qwerty" "asdfgh" 3 "qwerty"
+    3
+
+# Test.
+[] > list-does-not-contain
+  not. > @
+    contains.
+      list
+        * "Привет" "asdfgh" 3 "qwerty"
+      "Hi"
+
+# Test.
+[] > filteredi-with-lt
+  eq. > @
+    filteredi.
+      list
+        * 3 1 4 2 5
+      v.lt 3 > [v i]
+    * 1 2
+
+# Test.
+[] > filteredi-with-string-length
+  eq. > @
+    filteredi.
+      list
+        * "Hello" "Name" "EO" "List"
+      v.length.gt 4 > [v i]
+    * "Hello"
+
+# Test.
+[] > filteredi-with-empty-list
+  is-empty. > @
+    filteredi.
+      list
+        *
+      v.lt 3 > [v i]
+
+# Test.
+[] > filteredi-by-index
+  eq. > @
+    filteredi.
+      list
+        * 3 1 4
+      i.gt 0 > [v i]
+    * 1 4
+
+# Test.
+[] > filteredi-with-bools
+  eq. > @
+    filteredi.
+      list
+        * true false true
+      v.not > [v i]
+    * false
+
+# Test.
+[] > simple-filtered
+  eq. > @
+    filtered.
+      list
+        * 3 1 4 2 5
+      v.gt 2 > [v]
+    * 3 4 5
+
+# Test.
+[] > filtered-with-bools
+  eq. > @
+    filtered.
+      list
+        * true false true
+      v.not > [v]
+    * false
+
+# Test.
+[] > simple-head
+  eq. > @
+    head.
+      list
+        * 1 2 3 4 5
+      1
+    * 1
+
+# Test.
+[] > list-head-with-zero-index
+  is-empty. > @
+    head.
+      list
+        * 1 2 3
+      0
+
+# Test.
+[] > list-head-with-length-index
+  eq. > @
+    head.
+      list
+        * 1 2 3
+      3
+    * 1 2 3
+
+# Test.
+[] > complex-head
+  eq. > @
+    head.
+      list
+        * "foo" 2.2 00-01 "bar"
+      2
+    * "foo" 2.2
+
+# Test.
+[] > head-with-negative
+  eq. > @
+    head.
+      list
+        * 1 2 3
+      -1
+    * 3
+
+# Test.
+[] > complex-head-with-negative
+  eq. > @
+    head.
+      list
+        * "foo" 2.2 00-01 "bar"
+      -3
+    * 2.2 00-01 "bar"
+
+# Test.
+[] > simple-tail
+  eq. > @
+    tail.
+      list
+        * 1 2 3 4 5
+      2
+    * 4 5
+
+# Test.
+[] > zero-index-in-tail
+  is-empty. > @
+    tail.
+      list
+        * 1 2 3 4 5
+      0
+
+# Test.
+[] > large-index-in-tail
+  eq. > @
+    tail.
+      list
+        * 1 2 3 4 5
+      10
+    * 1 2 3 4 5

@@ -24,15 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
-
-# Test.
-[] > simple-division-by-zero
-  try > @
-    42.div 0
-    QQ.io.stdout e > [e]
-    QQ.io.stdout
-      "\nfinally"
++version 0.39.0
 
 # Test.
 [] > catches-simple-exception

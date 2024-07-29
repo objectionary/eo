@@ -1,0 +1,121 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++alias org.eolang.structs.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.txt
++version 0.39.0
+
+# Test.
+[] > sscanf-with-string
+  eq. > @
+    "hello"
+    tail.
+      sscanf "%s" "hello"
+
+# Test.
+[] > sscanf-with-int
+  eq. > @
+    33
+    tail.
+      sscanf "%d" "33"
+
+# Test.
+[] > sscanf-with-float
+  eq. > @
+    0.24
+    tail.
+      sscanf "%f" "0.24"
+
+# Test.
+[] > sscanf-with-error
+  try > @
+    sscanf "%l" "error"
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > sscanf-with-string-int-float
+  eq. > @
+    list
+      sscanf
+        "%s %d %f"
+        "hello 33 0.24"
+    * "hello" 33 0.24
+
+# Test.
+[] > sscanf-with-string-with-ending
+  eq. > @
+    "hello"
+    tail.
+      sscanf "%s!" "hello!"
+
+# Test.
+[] > sscanf-with-complex-string
+  eq. > @
+    "test"
+    tail.
+      sscanf "some%sstring" "someteststring"
+
+# Test.
+[] > sscanf-with-complex-int
+  eq. > @
+    734987259
+    tail.
+      sscanf "!%d!" "!734987259!"
+
+# Test.
+[] > sscanf-with-complex-float
+  eq. > @
+    1991.01
+    tail.
+      sscanf "this will be=%f" "this will be=1991.01"
+
+# Test.
+[] > sscanf-with-sprintf
+  eq. > @
+    list
+      sscanf
+        "%s is about %d?"
+        sprintf
+          "%s is about %d?"
+          * "This" 8
+    * "This" 8
+
+# Test.
+[] > sscanf-complex-case
+  eq. > @
+    list
+      sscanf
+        "Im%d %s old and this is! Let's calculate %f + %f= %f"
+        "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
+    *
+      18
+      "years"
+      99999999.99
+      0.01
+      100000000.0

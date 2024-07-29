@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > int-less-true
@@ -234,14 +234,15 @@
         minus1.plus minus2
         rec (n.minus 1) (minus1.plus minus2) minus1
 
-# Checks that division by zero returns an error object.
+# Checks that division by zero does not return an error object.
 [] > zero-division
   try > @
-    []
-      2.div 0 > @
-    [e]
-      QQ.io.stdout e > @
-    true
+    seq
+      *
+        2.div 0
+        true
+    false > [e]
+    false
 
 # Checks that division by one returns the dividend.
 [] > division-by-one
@@ -259,19 +260,20 @@
 # Checks div with remainder
 [] > div-with-remainder
   eq. > @
-    13.div -5
+    floor.
+      13.div -5
     -2
 
 # Test.
 [] > div-less-than-one
-  eq. > @
+  lt. > @
     1.div 5
-    0
+    1
 
 # Test.
 [] > to-bytes-and-backwards
   eq. > @
-    as-int.
+    as-number.
       as-bytes.
         42
     42

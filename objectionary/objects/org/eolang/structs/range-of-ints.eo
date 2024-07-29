@@ -1,0 +1,50 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.structs.range
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.structs
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# Range of integers from `start` to `end` (soft border) with step = 1.
+# Here `start` and `end` must be `int`s. If they're not - an error will
+# be returned.
+[start end] > range-of-ints
+  if. > @
+    and.
+      or.
+        0.eq start
+        1.eq (start.div start)
+      or.
+        0.eq end
+        1.eq (end.div end)
+    range
+      [] >>
+        [num] > build
+          num > @
+          ^.build (1.plus @) > next
+        build ^.start > @
+      end
+    error "Some of the arguments are not integers"

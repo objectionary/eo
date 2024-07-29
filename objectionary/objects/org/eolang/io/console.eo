@@ -1,0 +1,123 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.io
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# The `console` object is basic I/O object that allows to
+# interact with operation system console.
+#
+# Imagine, operation system console input is "Hello, world!"
+# Here's how you can use `console` object as input
+# ```
+# seq > @
+#   *
+#     console                # error
+#     console.read 4 > c1    # "Hell".as-bytes
+#     c1.read 4 > c2         # "o, w".as-bytes
+#     console.read 4 > c3    # "orld".as-bytes
+#     c2.read 4 > c4         # "!".as-bytes
+# ```
+#
+# Here 16 bytes are read from operation system console.
+# Every `console.read` object returns an input block.
+# Every input block is requested portion of bytes read
+# from console, so it's dataizable.
+# Also every input block has object `read` which allows to get
+# next input block with next portion of bytes read from console
+#
+# Here's how you can write to `console`.
+# ```
+# seq > @
+#   *
+#     console.write "Hello" > o1
+#     o1.write ", " > o2
+#     console.write "world!" > o3
+# ```
+#
+# Here `"Hello, world!".as-bytes` bytes are printed to console.
+# The object `write` is an output block.
+# It dataizes given argument, converts it to string,
+# prints it to operation system console and returns next output block
+# ready to `write` again.
+[] > console
+  # Read `size` amount of bytes from operation system console.
+  # Returns new instance of `input-block` with `buffer` read from console.
+  [size] > read
+    ((input-block --).read size).self > @
+
+    # Console input block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `console` object.
+    [buffer] > input-block
+      $ > self
+      buffer > @
+
+      # Read `size` amount of bytes from operation system console.
+      # Returns new instance of `input-block` with `buffer` read from console.
+      [size] > read
+        ^.^.read-bytes size > read-bytes!
+        self. > @
+          seq
+            *
+              read-bytes
+              ^.^.input-block read-bytes
+
+    # Bytes read from operation system console.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `console` object.
+    [size] > read-bytes /bytes
+
+  # Write given `buffer` to console.
+  # Here `buffer` is either sequence of bytes or and object that can be
+  # dataized via `as-bytes` object.
+  [buffer] > write
+    self. > @
+      output-block.write buffer
+
+    # Console output block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `console` object.
+    [] > output-block
+      $ > self
+      true > @
+
+      # Writes bytes contained in `buffer` to operation system console.
+      # Returns new instance of `output-block` ready to write again.
+      [buffer] > write
+        seq > @
+          *
+            ^.^.written-bytes buffer
+            ^.^.output-block
+
+    # Bytes written to operation system console.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `console` object.
+    [buffer] > written-bytes /true

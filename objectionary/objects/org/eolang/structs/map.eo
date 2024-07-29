@@ -1,0 +1,169 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.txt.sprintf
++alias org.eolang.structs.hash-code-of
++alias org.eolang.structs.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.structs
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# Hash-map.
+# Here `pairs` must be a `tuple` of `tuple`s where each sub-tuple consists of 2
+# elements - key and value.
+# Key must be a dataizable object, value may be any object.
+[pairs] > map
+  initialized. > @
+    [] >>
+      ^.pairs.length > pairs-size!
+      ^.initialized > @
+        if.
+          pairs-size.eq 0
+          *
+          rec-rebuild
+            *
+            0
+            list *
+
+      [accum index hashes] > rec-rebuild
+        ^.^.pairs.at index > entry
+        hash-code-of entry.key > hash!
+        if. > @
+          ^.pairs-size.eq index
+          accum
+          ^.rec-rebuild
+            if.
+              hashes.contains hash
+              accum
+              accum.with
+                [] >>
+                  ^.entry.key > key
+                  ^.entry.value > value
+                  ^.hash > hash
+            index.plus 1
+            hashes.with hash
+
+  # Hash map entry.
+  # Here 'key' is an object which is used to find `value` is hash map.
+  # The object `key` must be dataizable.
+  # The `value` is an object which is used as value stored in hash map by
+  # given `key`.
+  [key value] > entry
+
+  # Initialized hash map with rebuilt entries.
+  [entries] > initialized
+    $ > initialized
+    entries.length > size
+
+    # Returns `list` of all keys in hash map.
+    # Keys order is not guaranteed.
+    [] > keys
+      mapped. > @
+        list ^.entries
+        entry.key > [entry]
+
+    # Returns `list` of all values in hash map.
+    # Values order is not guaranteed.
+    [] > values
+      mapped. > @
+        list ^.entries
+        entry.value > [entry]
+
+    # Returns `true` if hash map has object by given `key`.
+    # Here `key` must be dataizable.
+    (^.found key).exists > [key] > has
+
+    # Tries to find object in hash map by given `key`.
+    # Here `key` must be dataizable.
+    # The returned object has two attributes: `exists` and `get`.
+    # The `exists` attribute is either `true`, if object was found,
+    # or `false` if was not.
+    # The `get` attribute returns either found object, or `error` if
+    # the object wasn't found.
+    # @todo #3251:30min Find a way to link hash code and index of key.
+    #  Right now map is implemented as `tuple` of objects where every
+    #  element is composition of three entities: hash, key and value.
+    #  When we try to find an element in hash map by key (K1) we're
+    #  calculating hash of K1 (H1) and trying to find the entity where
+    #  `entity.hash` (H2) is equal to H1. This search is implemented by
+    #  simple reducing initial hash map `tuple` and obviously slow - O(n).
+    #  We need to find a way to get a right index of entity in hash map
+    # `tuple` just by applying some simple operation on H1, similar to it's
+    #  implemented in other programming languages. Then we'll get O(1) on
+    #  `found` operation.
+    [key] > found
+      hash-code-of key > hash!
+      if. > @
+        ^.size.eq 0
+        not-found
+        rec-key-search
+          not-found
+          0
+
+      [found index] > rec-key-search
+        ^.^.entries.at index > entry
+        if. > @
+          or.
+            found.exists
+            ^.^.size.eq index
+          found
+          ^.rec-key-search
+            if.
+              ^.hash.eq entry.hash
+              [] (true > exists) (^.entry.value > get) >>
+              found
+            index.plus 1
+
+      [] > not-found
+        false > exists
+        error > get
+          sprintf
+            "Object by hash code %d from given key does not exists"
+            * (int ^.hash)
+
+    # Returns the new `map` with added object
+    # Replaces if there was one before.
+    [key value] > with
+      hash-code-of key > hash!
+      map.initialized > @
+        with.
+          origin.
+            filtered.
+              list ^.entries
+              (^.hash.eq entry.hash).not > [entry] >>
+          [] >>
+            ^.key > key
+            ^.value > value
+            ^.hash > hash
+
+    # Returns a new `map`, without element with the given `key`
+    # Returns the `map` itself, if there was no item with this `key`.
+    [key] > without
+      hash-code-of key > hash!
+      map.initialized > @
+        origin.
+          filtered.
+            list ^.entries
+            (^.hash.eq entry.hash).not > [entry] >>

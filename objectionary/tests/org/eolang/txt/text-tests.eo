@@ -1,0 +1,384 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.txt.text
++alias org.eolang.io.stdout
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.txt
++version 0.39.0
+
+# Test.
+[] > text-slices-the-origin-string
+  eq. > @
+    (text "Hello, world!").slice 7 5
+    "world"
+
+# Test.
+[] > trimmed-left-empty-text
+  eq. > @
+    (text "").trimmed-left
+    ""
+
+# Test.
+[] > text-trimmed-left-one-space
+  eq. > @
+    (text " s").trimmed-left
+    "s"
+
+# Test.
+[] > text-trimmed-left-many-spaces
+  eq. > @
+    (text "     some").trimmed-left
+    "some"
+
+# Test.
+[] > text-trimmed-left-only-spaces
+  eq. > @
+    (text "     ").trimmed-left
+    ""
+
+# Test.
+[] > trimmed-right-empty-text
+  eq. > @
+    (text "").trimmed-right
+    ""
+
+# Test.
+[] > text-trimmed-right-one-space
+  eq. > @
+    (text "s ").trimmed-right
+    "s"
+
+# Test.
+[] > text-trimmed-right-many-spaces
+  eq. > @
+    (text "some     ").trimmed-right
+    "some"
+
+# Test.
+[] > text-trimmed-right-only-spaces
+  eq. > @
+    (text "     ").trimmed-right
+    ""
+
+# Test.
+[] > text-trimmed-one-space-left
+  eq. > @
+    (text " some").trimmed
+    "some"
+
+# Test.
+[] > text-trimmed-one-space-right
+  eq. > @
+    (text "some ").trimmed
+    "some"
+
+# Test.
+[] > text-trimmed-one-space-both
+  eq. > @
+    (text " some ").trimmed
+    "some"
+
+# Test.
+[] > text-trimmed-many-spaces
+  eq. > @
+    (text "    some     ").trimmed
+    "some"
+
+# Test.
+[] > text-trimmed-empty
+  eq. > @
+    (text "").trimmed
+    ""
+
+# Test.
+[] > text-trimmed-only-spaces
+  eq. > @
+    (text "        ").trimmed
+    ""
+
+# Test.
+[] > returns-first-char
+  eq. > @
+    "s"
+    (text "some").at 0
+
+# Test.
+[] > returns-third-char
+  eq. > @
+    "m"
+    (text "some").at 2
+
+# Test.
+[] > returns-char-at-negative-index
+  eq. > @
+    "m"
+    (text "some").at -2
+
+# Test.
+[] > returns-error-at-index-more-than-length
+  try > @
+    (text "some").at 10
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > chains-with-other-strings
+  eq. > @
+    "Hello, world!"
+    chained.
+      text "Hello"
+      *
+        ", "
+        "world"
+        "!"
+
+# Test.
+[] > returns-same-text-on-chaining-with-no-strings
+  eq. > @
+    "Some"
+    chained.
+      text "Some"
+      *
+
+# Test.
+[] > joined-no-strings
+  eq. > @
+    ""
+    (text "-").joined *
+
+# Test.
+[] > joined-one-string
+  eq. > @
+    "some"
+    (text "-").joined
+      * "some"
+
+# Test.
+[] > joined-many-strings
+  eq. > @
+    "hello-world-dear-friend"
+    (text "-").joined
+      * "hello" "world" "dear" "friend"
+
+# Test.
+[] > text-repeat-less-than-zero-times
+  try > @
+    (text "").repeated -1
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > text-repeated-zero-times-is-empty
+  eq. > @
+    ""
+    (text "some").repeated 0
+
+# Test.
+[] > text-repeated-five-times
+  eq. > @
+    "heyheyheyheyhey"
+    (text "hey").repeated 5
+
+# Test.
+[] > index-of-non-existed-substring-with-more-length
+  eq. > @
+    -1
+    (text "Hello").index-of "Somebody"
+
+# Test.
+[] > index-of-non-existed-substring-with-same-length
+  eq. > @
+    -1
+    (text "Hello").index-of "world"
+
+# Test.
+[] > returns-valid-index-of-substring
+  eq. > @
+    3
+    (text "Hello world").index-of "lo wo"
+
+# Test.
+[] > returns-valid-index-of-substring-in-the-end
+  eq. > @
+    6
+    (text "Hello world").index-of "world"
+
+# Test.
+[] > starts-with-substring
+  (text "Hello, world").starts-with "Hello" > @
+
+# Test.
+[] > does-not-start-with-substring
+  not. > @
+    (text "Hello, world").starts-with "world"
+
+# Test.
+[] > ends-with-substring
+  (text "Hello world!").ends-with "world!" > @
+
+# Test.
+[] > does-not-end-with-substring
+  not. > @
+    (text "Hello world!").ends-with "Hello"
+
+# Test.
+[] > text-contains-substring
+  (text "Hello, world!").contains "o, wo" > @
+
+# Test.
+[] > text-does-not-contain-substring
+  not. > @
+    (text "Hello, world!").contains "Hey"
+
+# Test.
+[] > finds-last-index-of-substring
+  eq. > @
+    5
+    (text "Hey, Hey, Hey").last-index-of "Hey,"
+
+# Test.
+[] > finds-last-index-of-the-same-string
+  eq. > @
+    0
+    (text "Hello").last-index-of "Hello"
+
+# Test.
+[] > last-index-of-non-existed-substring
+  eq. > @
+    -1
+    (text "Hello, world").last-index-of "somebody"
+
+# Test.
+[] > splits-text-by-dash
+  eq. > @
+    (text "a-b-c").split "-"
+    * "a" "b" "c"
+
+# Test.
+[] > splits-text-with-empty-strings
+  eq. > @
+    (text "-a-b-").split "-"
+    * "" "a" "b" ""
+
+# Test.
+[] > converts-text-to-upper-case
+  eq. > @
+    "HELLO"
+    (text "hello").up-cased
+
+# Test.
+[] > converts-text-with-upper-letters-to-upper-case
+  eq. > @
+    "HELLO"
+    (text "HeLlO").up-cased
+
+# Test.
+[] > converts-text-to-lower-case
+  eq. > @
+    "hello"
+    (text "HELLO").low-cased
+
+# Test.
+[] > converts-text-with-low-letters-to-lower-case
+  eq. > @
+    "hello"
+    (text "HeLlO").low-cased
+
+# Test.
+[] > converts-text-to-number
+  eq. > @
+    5
+    (text "5").as-number
+
+# Test.
+[] > fails-on-converting-text-to-number
+  try > @
+    (text "Hello").as-number
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > converts-float-text-to-number
+  eq. > @
+    3.14
+    (text "3.14").as-number
+
+# Test.
+[] > checks-if-text-is-ascii
+  is-ascii. > @
+    text
+      "H311oW"
+
+# Test.
+[] > checks-if-emoji-is-not-ascii
+  not. > @
+    is-ascii.
+      text
+        "🌵"
+
+# Test.
+[] > checks-if-string-of-numbers-is-ascii
+  is-ascii. > @
+    text
+      "123"
+
+# Test.
+[] > checks-if-simple-text-is-alphanumeric
+  is-alphanumeric. > @
+    text
+      "eEo"
+
+# Test.
+[] > checks-if-text-with-number-is-alphanumeric
+  is-alphanumeric. > @
+    text
+      "ab3d"
+
+# Test.
+[] > checks-if-text-with-dashes-is-not-alphanumeric
+  not. > @
+    is-alphanumeric.
+      text
+        "-w-"
+
+# Test.
+[] > checks-if-simple-text-is-alpha
+  is-alpha. > @
+    text
+      "eEo"
+
+# Test.
+[] > checks-if-text-with-number-is-not-alpha
+  not. > @
+    is-alpha.
+      text
+        "ab3d"
+
+# Test.
+[] > checks-if-text-with-dashes-is-not-alpha
+  not. > @
+    is-alpha.
+      text
+        "-w-"

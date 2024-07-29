@@ -1,0 +1,93 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.io
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# Makes an `input` from bytes.
+# Here `bts` is sequence of bytes or an object that can be dataized
+# via `as-bytes`.
+# Here's how you can read portions of bytes from the input:
+# ```
+# bytes-as-input > i
+#   01-02-03-04-05-06-07-08-F5-F6
+# seq > @
+#   *
+#     i                 # error
+#     i.read 4 > i1     # 01-02-03-04
+#     i1.read 4 > i2    # 05-06-07-08
+#     i2.read 4 > i3    # F5-F6
+#     i3.read 3 > i4    # --
+# ```
+# Here every `read` object returns input block.
+# Every input block is a requested portion of bytes, so it's dataizable.
+# Also every input block has object `read` which allows to get
+# next input block with next potion of bytes.
+# If requested amount of bytes is more than amount
+# of available bytes - only available bytes are included.
+# If there's no available bytes - empty bytes (`--`) are included.
+[bts] > bytes-as-input
+  # Read `size` amount of bytes from `bts`.
+  # Returns new instance of `input-block` with set
+  # sliced `data` and `buffer`.
+  [size] > read
+    ((input-block ^.bts --).read size).self > @
+
+    # Bytes-as-input block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `bytes-as-input` object.
+    #
+    # Here `data` is a sequence of bytes that can be read from,
+    # `buffer` is a sequence of bytes that got from previous reading.
+    [data buffer] > input-block
+      $ > self
+      buffer > @
+
+      # Read `size` amount of bytes from `data`.
+      # Returns new instance of `input-block` with set
+      # sliced `data` and `buffer`.
+      [size] > read
+        size > to-read!
+        ^.data.size > available!
+        if. > next!
+          gt.
+            number available
+            to-read
+          to-read
+          available
+        self. > @
+          if.
+            available.eq 0
+            ^.^.input-block -- --
+            ^.^.input-block
+              as-bytes.
+                ^.data.slice
+                  next
+                  (number available).minus
+                    number next
+              as-bytes.
+                ^.data.slice 0 next

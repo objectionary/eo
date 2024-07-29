@@ -23,63 +23,50 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
-# The `float` object is an abstraction of a 64-bit floating-point number that
-# internally is a chain of eight bytes.
-[as-bytes] > float
+# The `number` object is an abstraction of a 64-bit floating-point
+# number that internally is a chain of eight bytes.
+[as-bytes] > number
   as-bytes > @
 
   # Tests that $ = x.
   [x] > eq
     x > x-as-bytes!
-    ^ > self-as-bytes!
     nan > nan-as-bytes!
+    ^.as-bytes > self-as-bytes
     0.0 > pos-zero-as-bytes!
     -0.0 > neg-zero-as-bytes!
     if. > @
       or.
-        eq.
-          x-as-bytes
-          nan-as-bytes
-        eq.
-          self-as-bytes
-          nan-as-bytes
+        x-as-bytes.eq nan-as-bytes
+        self-as-bytes.eq nan-as-bytes
       false
       or.
         and.
           or.
-            eq.
-              x-as-bytes
-              pos-zero-as-bytes
-            eq.
-              x-as-bytes
-              neg-zero-as-bytes
+            x-as-bytes.eq pos-zero-as-bytes
+            x-as-bytes.eq neg-zero-as-bytes
           or.
-            eq.
-              self-as-bytes
-              pos-zero-as-bytes
-            eq.
-              self-as-bytes
-              neg-zero-as-bytes
-        eq.
-          self-as-bytes
-          x-as-bytes
+            self-as-bytes.eq pos-zero-as-bytes
+            self-as-bytes.eq neg-zero-as-bytes
+        self-as-bytes.eq x-as-bytes
 
   # Tests that $ < x.
   [x] > lt
+    x > value!
     0.0.gt > @
       ^.minus
-        float
-          x > value!
+        number value
 
   # Tests that $ ≤ x.
   [x] > lte
     x > value!
     or. > @
-      ^.eq value
       ^.lt value
+      ^.eq value
 
   # Tests that $ > x.
   [x] > gt /bool
@@ -88,14 +75,14 @@
   [x] > gte
     x > value!
     or. > @
-      ^.eq value
       ^.gt value
+      ^.eq value
 
   # Multiplication of $ and x.
-  [x] > times /float
+  [x] > times /number
 
   # Sum of $ and x.
-  [x] > plus /float
+  [x] > plus /number
 
   # Negation of $.
   ^.times -1.0 > [] > neg
@@ -104,4 +91,8 @@
   ^.plus x.neg > [x] > minus
 
   # Quotient of the division of $ by x.
-  [x] > div /float
+  [x] > div /number
+
+  # The object rounds down the original `number`  to the nearest
+  # whole `number` that is less than or equal to the original one.
+  [] > floor /number

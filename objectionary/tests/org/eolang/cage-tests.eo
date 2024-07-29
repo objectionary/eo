@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > encages-into-cage
@@ -40,7 +40,7 @@
 # Test.
 [] > checks-forma-and-fixes
   (cage 0).new > x
-  (cage int.plus).new > sum
+  (cage number.plus).new > sum
   seq > @
     *
       x.encage 42
@@ -52,7 +52,7 @@
 # Test.
 [] > dataizes-encaged-object-lazily-second
   (cage 0).new > x
-  (cage int.plus).new > sum
+  (cage number.plus).new > sum
   seq > @
     *
       x.encage 42
@@ -77,7 +77,7 @@
         [] > @
           malloc.for > @
             0
-            ma.put (ma.as-int.plus 1) > [ma]
+            ma.put (ma.as-number.plus 1) > [ma]
   (cage b).new > cb
   [] > b
     [] > @
@@ -85,16 +85,16 @@
         [] > @
           malloc.for > z
             0
-            mb.put (mb.as-int.plus 1) > [mb]
+            mb.put (mb.as-number.plus 1) > [mb]
   eq. > @
     seq
       *
         ca
-        ca.as-int.plus 40
+        ca.as-number.plus 40
     seq
       *
         cb.z
-        cb.z.as-int.plus 40
+        cb.z.as-number.plus 40
 
 # Test.
 [] > infinite-loop-check
@@ -115,7 +115,7 @@
 
 # Test.
 [] > catches-encaging-objects-of-different-formas
-  (cage int).new > cge
+  (cage number).new > cge
   seq > @
     *
       try
@@ -128,7 +128,7 @@
 # Check that cage stack leads to error. Just prints the error
 # message if passes.
 [] > catches-stack-overflow
-  (cage int.plus).new > cge
+  (cage number.plus).new > cge
   try > @
     seq
       *

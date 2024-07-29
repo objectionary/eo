@@ -1,0 +1,286 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.structs
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
+
+# List implements based operations on collections like reducing, mapping, filtering, etc.
+# Decorates and extends `tuple`.
+[origin] > list
+  origin > @
+
+  # Is it empty?
+  0.eq ^.origin.length > [] > is-empty
+
+  # Create a new list with this element added to the end of it.
+  [x] > with
+    list > @
+      with.
+        ^.origin
+        x
+
+  # Create a new list with an element inserted by the provided index.
+  [index item] > withi
+    concat. > @
+      with.
+        ^.head index
+        item
+      ^.tail
+        ^.origin.length.minus index
+
+  # Reduce with index from "start" using the function "func".
+  # Here "func" must be an abstract object with three free attributes.
+  # The first one for the accumulator, the second one
+  # for the element of the collection and the third one for the index.
+  [start func] > reducedi
+    ^.origin.length > origin-len!
+    if. > @
+      0.eq origin-len
+      start
+      rec-reduced start 0.as-bytes
+
+    [accum index] > rec-reduced
+      index.as-number > idx-as-number
+      1.plus idx-as-number > next-index!
+      if. > @
+        next-index.eq ^.origin-len
+        ^.func > accumulated
+          accum
+          ^.^.origin.at idx-as-number
+          idx-as-number
+        ^.rec-reduced
+          accumulated
+          next-index
+
+  # Reduce from "start" using the function "func".
+  # Here "func" must be an abstract object with two free attributes.
+  # The first one for the accumulator, the second one for the element
+  # of the collection.
+  [start func] > reduced
+    ^.reducedi > @
+      start
+      ^.func accum item > [accum item idx] >>
+
+  # Map with index. Here "func" must be an abstract
+  # object with two free attributes. The first
+  # one for the element of the collection, the second one
+  # for the index.
+  [func] > mappedi
+    list > @
+      ^.reducedi
+        *
+        [accum item idx] >>
+          with. > @
+            accum
+            ^.func item idx
+
+  # Map without index. Here "func" must be an abstract
+  # object with one free attribute, for the element
+  # of the collection.
+  [func] > mapped
+    ^.mappedi > @
+      ^.func item > [item idx] >>
+
+  # For each collection element dataize the object
+  # Here "func" must be an abstract object with
+  # two free attributes: the element of the
+  # collection and its index.
+  # The result of `func` must be dataizable.
+  [func] > eachi
+    ^.reducedi > @
+      true
+      [acc item index] >>
+        seq > @
+          *
+            acc
+            ^.func item index
+
+  # For each collection element dataize the object
+  # Here "func" must be an abstract object with
+  # one free attribute, the element of the collection.
+  [func] > each
+    ^.eachi > @
+      ^.func item > [item index] >>
+
+  # Create a new list without the i-th element.
+  [i] > withouti
+    list > @
+      ^.reducedi
+        *
+        [accum item idx] >>
+          if. > @
+            ^.i.eq idx
+            accum
+            accum.with item
+
+  # Create a new list without the `element` which is `.eq` to given one.
+  [element] > without
+    list > @
+      ^.reduced
+        *
+        [accum item] >>
+          if. > @
+            ^.element.eq item
+            accum
+            accum.with item
+
+  # Checks if all elements of the current list are `.eq`
+  # to the all elements of given collection.
+  [other] > eq
+    and. > @
+      eq.
+        ^.origin.length
+        other.length
+      ^.reducedi
+        true
+        [accum item idx] >>
+          and. > @
+            accum
+            eq.
+              item
+              ^.other.at idx
+
+  # Concatenates current list with given one.
+  [passed] > concat
+    reduced. > @
+      list
+        passed
+      ^
+      accum.with item > [accum item]
+
+  # Returns index of the first particular item in list.
+  # If the list has no this item, index-of returns -1
+  [wanted] > index-of
+    ^.reducedi > @
+      -1
+      [accum item index] >>
+        if. > @
+          and.
+            -1.eq accum
+            item.eq ^.wanted
+          index
+          accum
+
+  # Returns index of the last particular item in list.
+  # If the list has no this item, returns -1
+  [wanted] > last-index-of
+    ^.reducedi > @
+      -1
+      [accum item index] >>
+        if. > @
+          item.eq ^.wanted
+          index
+          accum
+
+  # Returns `true` if the list contains `element`.
+  # Otherwise, `false`.
+  [element] > contains
+    not. > @
+      eq.
+        -1
+        ^.index-of element
+
+  # Returns a new list sorted via `.lt` method.
+  # @todo #3251:30min The object does not work. After moving `list` object
+  #  to eo-runtime this is the only method which does not work because it's quite
+  #  hard to implement properly, especially after big changes in EO semantic.
+  #  We need to get it done and write some tests for it.
+  ^ > [] > sorted
+
+  # Filter list with index with the function `func`.
+  # Here `func` must be an abstract
+  # object with two attributes. The first
+  # one for the element, the second one
+  # for the index. The result of dataization
+  # the `func` should be boolean, that is `true` or `false`.
+  [func] > filteredi
+    ^.origin.length > origin-length!
+    list > @
+      rec-filtered 0.as-bytes *
+
+    [idx-as-bytes accum] > rec-filtered
+      ^.^.origin > original
+      idx-as-bytes.as-number > index
+      ^.^.origin.at index > item
+      if. > @
+        idx-as-bytes.eq ^.origin-length
+        accum
+        ^.rec-filtered
+          (1.plus index).as-bytes
+          if.
+            ^.func item index
+            accum.with item
+            accum
+
+  # Filter list without index with the function `func`.
+  # Here `func` must be an abstract object
+  # with one attribute for the element.
+  # The result of dataization the `func`
+  # should be boolean, that is `true` or `false`.
+  [func] > filtered
+    ^.filteredi > @
+      ^.func item > [item index] >>
+
+  # Get the first `index` elements from the start of the list.
+  [index] > head
+    index > idx!
+    switch > @
+      *
+        *
+          0.eq idx
+          list *
+        *
+          0.gt idx
+          ^.tail index.as-number.neg
+        *
+          ^.origin.length.lte idx
+          ^
+        *
+          true
+          list
+            ^.reducedi
+              *
+              [accum item index] >>
+                if. > @
+                  index.gte ^.idx
+                  accum
+                  accum.with item
+
+  # Get the last `index` elements from the end of the list.
+  [index] > tail
+    index > idx!
+    ^.origin.length.minus idx.as-number > start!
+    if. > @
+      0.gt start
+      ^
+      list
+        ^.reducedi
+          *
+          [accum item idx] >>
+            if. > @
+              idx.gte ^.start
+              accum.with item
+              accum

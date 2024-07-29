@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > goto-jumps-backwards
@@ -40,9 +40,9 @@
               [g] >>
                 seq > @
                   *
-                    i.put (i.as-int.plus 1)
+                    i.put (i.as-number.plus 1)
                     if.
-                      i.as-int.lt 10
+                      i.as-number.lt 10
                       g.backward
                       true
             stdout "Finished!\n"

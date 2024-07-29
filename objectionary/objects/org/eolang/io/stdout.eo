@@ -20,18 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.console
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
-# The `stdout` object, when it's being dataized, dataizes its only
-# argument and prints everything to the console. For example:
-#
+# The `stdout` object is convenient wrapper on `console` object which
+# uses it as output only and allows to print given argument to console as `string`:
 # ```
 # [args] > app
 #   QQ.io.stdout > @
 #     "Hello, world!\n"
 # ```
-[text] > stdout /true
+#
+# Here the "Hello, world!" string is printed to operation system console.
+[text] > stdout
+  seq > @
+    *
+      console.write text
+      true

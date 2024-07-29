@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -31,10 +31,10 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &mut Portal) -> Option<EO> {
-      Some(EOInt(0))
+      Some(EONumber(0.0))
     }
     """
     []
@@ -44,16 +44,16 @@
     0
 
 # Test
-[] > rust-returns-positive-int
+[] > rust-returns-positive-number
   QQ.rust > r
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &mut Portal) -> Option<EO> {
       println!("Hello world from rust");
-      Some(EOInt(2))
+      Some(EONumber(2.0))
     }
     """
     []
@@ -68,11 +68,11 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &mut Portal) -> Option<EO> {
       println!("Hello world from rust");
-      Some(EOInt(-10))
+      Some(EONumber(-10.0))
     }
     """
     []
@@ -87,10 +87,10 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOFloat};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &mut Portal) -> Option<EO> {
-      Some(EOFloat(1.23456789))
+      Some(EONumber(1.23456789))
     }
     """
     []
@@ -105,10 +105,10 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOFloat};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &mut Portal) -> Option<EO> {
-      Some(EOFloat(-1.23456789))
+      Some(EONumber(-1.23456789))
     }
     """
     []
@@ -142,17 +142,17 @@
     00-1A-EE
 
 # Test.
-[] > rust-find-returns-int
+[] > rust-find-returns-number
   123 > a
   QQ.rust > r
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       Some(
-        EOInt(portal.find("$.^.a")? as i64)
+        EONumber(portal.find("$.^.a")? as f64)
       )
     }
     """
@@ -208,7 +208,7 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt, EOError};
+    use eo::eo_enum::EO::{EONumber, EOError};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       portal.put(-1i32 as u32, &[0x00, 0x1a, 0xEE, 0xf, 0xf3])?;
@@ -237,13 +237,13 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       let v1 = portal.find("$.^.a")?;
       let v2 = portal.find("$.^.b")?;
       portal.bind(v1 , v2, "EO-att")?;
-      Some(EOInt(0 as i64))
+      Some(EONumber(0 as f64))
     }
     """
     [] >>
@@ -286,12 +286,12 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       let v = portal.find("$.^.a")?;
       let _bytes = portal.dataize(v)?;
-      Some(EOInt(v as i64))
+      Some(EONumber(v as f64))
     }
     """
     [] >>
@@ -309,19 +309,19 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
     use byteorder::{BigEndian, ReadBytesExt};
 
     pub fn foo(portal: &mut Portal) -> Option<EO> {
       let a = portal.find("$.^.a")?;
       let bytes_a = portal.dataize(a)?;
-      let a = bytes_a.as_slice().read_i64::<BigEndian>().ok()?;
+      let a = bytes_a.as_slice().read_f64::<BigEndian>().ok()?;
 
       let b = portal.find("$.^.b")?;
       let bytes_b = portal.dataize(b)?;
-      let b = bytes_b.as_slice().read_i64::<BigEndian>().ok()?;
+      let b = bytes_b.as_slice().read_f64::<BigEndian>().ok()?;
       println!("sum 5 + 10 = {}", a + b);
-      Some(EOInt(a + b))
+      Some(EONumber(a + b))
     }
     """
     [] >>
@@ -418,7 +418,7 @@
       .org
       .eolang
       .bytes:0
-        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-49-6E-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-49-6E-74-28-32-29-29-0A-7D
+        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-4E-75-6D-62-65-72-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-4E-75-6D-62-65-72-28-32-2E-30-29-29-0A-7D
     []:1
     Q
     .org
@@ -431,12 +431,12 @@
     Q
     .org
     .eolang
-    .int:0
+    .number:0
       Q
       .org
       .eolang
       .bytes:0
-        00-00-00-00-00-00-00-02
+        40-00-00-00-00-00-00-00
 
 # This is the default 64+ symbols comment in front of named abstract object.
 [] > rust-reversed-notation
@@ -452,7 +452,7 @@
         eolang.
           org.
             Q
-        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-49-6E-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-49-6E-74-28-32-29-29-0A-7D
+        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-4E-75-6D-62-65-72-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-5F-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-48-65-6C-6C-6F-20-77-6F-72-6C-64-20-66-72-6F-6D-20-72-75-73-74-22-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-4E-75-6D-62-65-72-28-32-2E-30-29-29-0A-7D
     []:1
     empty.:2
       tuple.
@@ -462,7 +462,7 @@
   eq. > @
     r.
       $
-    int.:0
+    number.:0
       eolang.
         org.
           Q
@@ -470,11 +470,11 @@
         eolang.
           org.
             Q
-        00-00-00-00-00-00-00-02
+        40-00-00-00-00-00-00-00
 
-# This is the default 64+ symbols comment in front of named abstract object.
+# Test.
 [] > rust-unwrapped-plus
-  int. > a
+  number. > a
     eolang.
       org.
         Q
@@ -483,7 +483,7 @@
         org.
           Q
       00-00-00-00-00-00-00-05
-  int. > b
+  number. > b
     eolang.
       org.
         Q
@@ -504,7 +504,7 @@
         eolang.
           org.
             Q
-        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-49-6E-74-7D-3B-0A-75-73-65-20-62-79-74-65-6F-72-64-65-72-3A-3A-7B-42-69-67-45-6E-64-69-61-6E-2C-20-52-65-61-64-42-79-74-65-73-45-78-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-6C-65-74-20-61-20-3D-20-70-6F-72-74-61-6C-2E-66-69-6E-64-28-22-24-2E-5E-2E-61-22-29-3F-3B-0A-20-20-6C-65-74-20-62-79-74-65-73-5F-61-20-3D-20-70-6F-72-74-61-6C-2E-64-61-74-61-69-7A-65-28-61-29-3F-3B-0A-20-20-6C-65-74-20-61-20-3D-20-62-79-74-65-73-5F-61-2E-61-73-5F-73-6C-69-63-65-28-29-2E-72-65-61-64-5F-69-36-34-3A-3A-3C-42-69-67-45-6E-64-69-61-6E-3E-28-29-2E-6F-6B-28-29-3F-3B-0A-0A-20-20-6C-65-74-20-62-20-3D-20-70-6F-72-74-61-6C-2E-66-69-6E-64-28-22-24-2E-5E-2E-62-22-29-3F-3B-0A-20-20-6C-65-74-20-62-79-74-65-73-5F-62-20-3D-20-70-6F-72-74-61-6C-2E-64-61-74-61-69-7A-65-28-62-29-3F-3B-0A-20-20-6C-65-74-20-62-20-3D-20-62-79-74-65-73-5F-62-2E-61-73-5F-73-6C-69-63-65-28-29-2E-72-65-61-64-5F-69-36-34-3A-3A-3C-42-69-67-45-6E-64-69-61-6E-3E-28-29-2E-6F-6B-28-29-3F-3B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-73-75-6D-20-35-20-2B-20-31-30-20-3D-20-7B-7D-22-2C-20-61-20-2B-20-62-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-49-6E-74-28-61-20-2B-20-62-29-29-0A-7D
+        75-73-65-20-65-6F-3A-3A-50-6F-72-74-61-6C-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3B-0A-75-73-65-20-65-6F-3A-3A-65-6F-5F-65-6E-75-6D-3A-3A-45-4F-3A-3A-7B-45-4F-4E-75-6D-62-65-72-7D-3B-0A-75-73-65-20-62-79-74-65-6F-72-64-65-72-3A-3A-7B-42-69-67-45-6E-64-69-61-6E-2C-20-52-65-61-64-42-79-74-65-73-45-78-74-7D-3B-0A-0A-70-75-62-20-66-6E-20-66-6F-6F-28-70-6F-72-74-61-6C-3A-20-26-6D-75-74-20-50-6F-72-74-61-6C-29-20-2D-3E-20-4F-70-74-69-6F-6E-3C-45-4F-3E-20-7B-0A-20-20-6C-65-74-20-61-20-3D-20-70-6F-72-74-61-6C-2E-66-69-6E-64-28-22-24-2E-5E-2E-61-22-29-3F-3B-0A-20-20-6C-65-74-20-62-79-74-65-73-5F-61-20-3D-20-70-6F-72-74-61-6C-2E-64-61-74-61-69-7A-65-28-61-29-3F-3B-0A-20-20-6C-65-74-20-61-20-3D-20-62-79-74-65-73-5F-61-2E-61-73-5F-73-6C-69-63-65-28-29-2E-72-65-61-64-5F-66-36-34-3A-3A-3C-42-69-67-45-6E-64-69-61-6E-3E-28-29-2E-6F-6B-28-29-3F-3B-0A-0A-20-20-6C-65-74-20-62-20-3D-20-70-6F-72-74-61-6C-2E-66-69-6E-64-28-22-24-2E-5E-2E-62-22-29-3F-3B-0A-20-20-6C-65-74-20-62-79-74-65-73-5F-62-20-3D-20-70-6F-72-74-61-6C-2E-64-61-74-61-69-7A-65-28-62-29-3F-3B-0A-20-20-6C-65-74-20-62-20-3D-20-62-79-74-65-73-5F-62-2E-61-73-5F-73-6C-69-63-65-28-29-2E-72-65-61-64-5F-66-36-34-3A-3A-3C-42-69-67-45-6E-64-69-61-6E-3E-28-29-2E-6F-6B-28-29-3F-3B-0A-20-20-70-72-69-6E-74-6C-6E-21-28-22-73-75-6D-20-35-20-2B-20-31-30-20-3D-20-7B-7D-22-2C-20-61-20-2B-20-62-29-3B-0A-20-20-53-6F-6D-65-28-45-4F-4E-75-6D-62-65-72-28-61-20-2B-20-62-29-29-0A-7D
     auto-named-attr-at-327-6.:1
       $
     tuple.:2
@@ -525,10 +525,10 @@
             org.
               Q
           62-79-74-65-6F-72-64-65-72-3A-31-2E-34-2E-33
-  eq. > @
+  eq. > res
     plus.
       $
-    int.:0
+    number.:0
       eolang.
         org.
           Q
@@ -539,3 +539,4 @@
         00-00-00-00-00-00-00-0F
   # This is the default 64+ symbols comment in front of named abstract object.
   [] > auto-named-attr-at-327-6
+  true > @

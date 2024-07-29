@@ -23,8 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
 # Non-conditional forward and backward jumps.
 # Forward jump instantly returns provided object to `g.forward` without touching

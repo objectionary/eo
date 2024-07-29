@@ -20,17 +20,76 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.console
++alias org.eolang.sys.line-separator
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
-# The `stdin` object reads the console.
+# The `stdin` object is a convenient wrapper on `console` object
+# which is used as input only and allows to read the data from console.
+#
+# To read just one line you can do:
+# ```
+# stdin.next-line
+# ```
+#
+# To read all lines you can do:
+# ```
+# stdin.all-lines
+# ```
+#
+# or just dataize `stdin` object.
 [] > stdin
-  # Consumes only one line from the standard input stream
-  # Dataizes to an error object if there is no line to consume.
-  [] > next-line /string
+  all-lines > @
 
-  # Consumes all data from the standard input stream.
-  [] > @ /string
+  # Consumes all lines from the standard input stream.
+  # There's no line to consume - returns an empty string.
+  [] > all-lines
+    rec-read ^.next-line -- true > @
+    line-separator > separator!
+
+    # Recursive reading from console by one line.
+    #
+    # Attention. The object is for internal usage only, please
+    # don't use the object programmatically outside of `stdin` object.
+    [line buffer first] > rec-read
+      if. > @
+        line.length.eq 0
+        string buffer
+        ^.rec-read
+          ^.^.next-line
+          if.
+            first
+            buffer.concat line
+            (buffer.concat ^.separator).concat line
+          false
+
+  # Consumes only one line from the standard input stream.
+  # If there's no line to consume - returns an empty string.
+  [] > next-line
+    console.read 1 > first!
+    if. > @
+      first.size.eq 0
+      ""
+      rec-read first --
+
+    # Recursive reading from console by one byte.
+    #
+    # Attention. The object is for internal usage only, please
+    # don't use the object programmatically outside of `stdin` object.
+    [char buffer] > rec-read
+      console.read 1 > next!
+      if. > @
+        or.
+          and.
+            char.eq "\r"
+            next.eq "\n"
+          char.eq "\n"
+        string buffer
+        ^.rec-read
+          next
+          buffer.concat char

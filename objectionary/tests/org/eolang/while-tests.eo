@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > while-dataizes-only-first-cycle
@@ -63,7 +63,7 @@
       [m]
         while > @
           2.gt m > [i] >>
-          m.put (m.as-int.plus 1) > [i] >>
+          m.put (m.as-number.plus 1) > [i] >>
     3
 
 # Test.
@@ -72,6 +72,17 @@
     while
       1.gt 2 > [i]
       true > [i]
+
+# Test.
+[] > while-simple-iteration
+  eq. > @
+    malloc.for
+      0
+      [m]
+        while > @
+          i.lt 10 > [i]
+          m.put i > [i] >>
+    9
 
 # Test.
 [] > iterating-tuple-with-while-using-internal-iterator
@@ -86,7 +97,7 @@
           if. > @
             max.eq 0
             acc.put
-              acc.as-int.plus
+              acc.as-number.plus
                 arr.at 0
             while
               max.gt iter > [i] >>
@@ -94,10 +105,10 @@
                 seq > @
                   *
                     acc.put
-                      acc.as-int.plus
+                      acc.as-number.plus
                         arr.at i
                     iter.put
-                      iter.as-int.plus 1
+                      iter.as-number.plus 1
   data.eq arr.length > @
 
 # Test.
@@ -116,10 +127,10 @@
               seq > @
                 *
                   acc.put
-                    acc.as-int.plus
+                    acc.as-number.plus
                       arr.at iter
                   iter.put
-                    iter.as-int.plus 1
+                    iter.as-number.plus 1
   data.eq arr.length > @
 
 # Test.
@@ -139,11 +150,11 @@
                 seq
                   *
                     acc.put
-                      acc.as-int.plus
+                      acc.as-number.plus
                         arr.at
-                          iter.as-int
+                          iter.as-number
                     iter.put
-                      iter.as-int.plus 1
+                      iter.as-number.plus 1
                     true
                 false
             true > [i]
@@ -166,11 +177,11 @@
                 seq
                   *
                     acc.put
-                      acc.as-int.plus
+                      acc.as-number.plus
                         arr.at
-                          iter.as-int
+                          iter.as-number
                     iter.put
-                      iter.as-int.plus 1
+                      iter.as-number.plus 1
                     true
                 false
             true > [i]

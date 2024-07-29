@@ -1,0 +1,174 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.txt.regex
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.txt
++version 0.39.0
+
+# Test.
+[] > matches-regex-against-the-pattern
+  (regex "/[a-z]+/").compiled.matches "hello" > @
+
+# Test.
+[] > does-not-matches-regex-against-the-pattern
+  ((regex "/[a-z]+/").compiled.matches "123").not > @
+
+# Test.
+[] > matched-sequence-has-right-border-indexes
+  ((regex "/[a-z]+/").match "!hello!").next > n
+  and. > @
+    0.eq n.start
+    and.
+      1.eq n.from
+      6.eq n.to
+
+# Test.
+[] > regex-returns-valid-matched-string-sequence
+  ((regex "/[a-z]+/").match "!hello!").next.text.eq "hello" > @
+
+# Test.
+[] > regex-returns-valid-second-matched-block
+  ((regex "/[a-z]+/").match "!hello!world!").next.next > second
+  and. > @
+    and.
+      and.
+        and.
+          second.text.eq "world"
+          second.position.eq 2
+        second.start.eq 6
+      second.from.eq 7
+    second.to.eq 12
+
+# Test.
+[] > throws-on-getting-next-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.next > @
+
+# Test.
+[] > throws-on-getting-from-position-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.from > @
+
+# Test.
+[] > throws-on-getting-to-position-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.to > @
+
+# Test.
+[] > throws-on-getting-groups-count-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.groups-count > @
+
+# Test.
+[] > throws-on-getting-groups-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.groups > @
+
+# Test.
+[] > throws-on-getting-specified-group-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.group 1 > @
+
+# Test.
+[] > throws-on-getting-text-on-not-matched-block
+  ((regex "/[a-z]+/").match "123").next.text > @
+
+# Test.
+[] > regex-matches-dotall-option
+  regex
+    "/(.*)/s"
+  .compiled
+  .matches > @
+    "too \\n many \\n line \\n Feed\\n"
+
+# Test.
+[] > regex-matches-with-case-insensitive-option
+  regex
+    "/(string)/i"
+  .compiled
+  .matches > @
+    "StRiNg"
+
+# Test.
+[] > regex-matches-with-multiline-option
+  regex
+    "/(^([0-9]+).*)/m"
+  .compiled
+  .matches > @
+    "1 bottle of water on the wall. \\n1 bottle of water."
+
+# Test.
+[] > regex-matches-entire-pattern
+  regex
+    "/[0-9]/\\d+/"
+  .compiled
+  .matches > @
+    "2/75"
+
+# Test.
+[] > regex-matches-with-regex-unix-lines
+  regex
+    "/(.+)/d"
+  .compiled
+  .matches > @
+    "A\\r\\nB\\rC\\nD"
+
+# Test.
+[] > regex-matches-with-regex-case-insensitive-and-caps
+  regex
+    "/(word)/i"
+  .compiled
+  .matches > @
+    "WORD"
+
+# Test.
+[] > regex-ignores-comments-in-string
+  regex
+    "/(\\d) #ignore this comment/x"
+  .compiled
+  .matches > @
+    "4"
+
+# Test.
+[] > regex-matches-with-unicode-case-and-insensitive
+  regex
+    "/(yildirim)/ui"
+  .compiled
+  .matches > @
+    "Yıldırım"
+
+# Test.
+[] > throws-on-missing-first-slash-in-regex
+  (regex "(.)+").compiled > @
+
+# Test.
+[] > regex-contains-valid-groups-on-each-matched-block
+  ((regex "/([a-z]+)([1-9]{1})/").compiled.match "!hello1!world2").next > first
+  first.next > second
+  and. > @
+    and.
+      and.
+        first.groups-count.eq 3
+        (first.group 1).eq "hello"
+      (first.group 2).eq "1"
+    and.
+      and.
+        second.groups-count.eq 3
+        (second.group 1).eq "world"
+      (second.group 2).eq "2"

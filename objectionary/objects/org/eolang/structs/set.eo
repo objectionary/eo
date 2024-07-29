@@ -20,56 +20,44 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.list
++alias org.eolang.structs.map
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++package org.eolang.structs
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
-# The `int` object is an abstraction of a 64-bit signed integer that
-# internally is a chain of eight bytes.
-[as-bytes] > int
-  as-bytes > @
+# Set - is an unordered `list` of unique objects.
+[lst] > set
+  initialized. > @
+    initialized
+      map
+        list
+          lst
+        .mapped
+          map.entry item true > [item]
+        .origin
 
-  # Tests that $ = x.
-  [x] > eq
-    eq. > @
-      ^.as-bytes
-      x.as-bytes
+  # Initialized set with rebuilt unique sequence.
+  [map] > initialized
+    $ > initialized
+    $.map.keys > @
+    $.map.size > size
 
-  # Tests that $ < x.
-  [x] > lt
-    0.gt > @
-      ^.minus
-        int
-          x > value!
+    # Append new `item` to set. It must be possible to get
+    # hash code of `item` so `item` must be dataizable.
+    [item] > with
+      set.initialized > @
+        ^.map.with item true
 
-  # Tests that $ <= x.
-  [x] > lte
-    not. > @
-      ^.gt
-        x > value!
+    # Remove `item` from `set`. If `item` is not present,
+    # the set wont be changed.
+    [item] > without
+      set.initialized > @
+        ^.map.without item
 
-  # Tests that $ > x.
-  [x] > gt /bool
-
-  # Tests that $ >= x.
-  [x] > gte
-    not. > @
-      ^.lt
-        x > value!
-
-  # Change the sign of the number.
-  ^.times -1 > [] > neg
-
-  # Add to the current one.
-  [x] > plus /int
-
-  # Subtract from the current one.
-  ^.plus x.neg > [x] > minus
-
-  # Multiplication this one by another int.
-  [x] > times /int
-
-  # Divide this one by another int.
-  [x] > div /int
+    # Check if given `item` exists in set.
+    [item] > has
+      ^.map.has item > @

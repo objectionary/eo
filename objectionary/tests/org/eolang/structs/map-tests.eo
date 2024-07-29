@@ -1,0 +1,156 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.structs.map
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.structs
++version 0.39.0
+
+# Test.
+[] > map-rebuilds-itself
+  map > mp
+    *
+      map.entry 1 1
+      map.entry 1 1
+      map.entry 2 1
+      map.entry 2 1
+  2.eq mp.size > @
+
+# Test.
+[] > map-rebuilds-itself-only-once
+  eq. > @
+    1
+    malloc.for
+      0
+      [m]
+        map > mp
+          *
+            map.entry
+              m.put (m.as-number.plus 1)
+              1
+        seq > @
+          *
+            (mp.found 1).exists
+            (mp.found 1).exists
+            true
+
+# Test.
+[] > returns-list-of-keys
+  eq. > @
+    keys.
+      map
+        *
+          map.entry 1 2
+          map.entry 2 3
+          map.entry 3 4
+    * 1 2 3
+
+# Test.
+[] > returns-list-of-values
+  eq. > @
+    values.
+      map
+        *
+          map.entry 1 2
+          map.entry 2 3
+          map.entry 3 4
+    * 2 3 4
+
+# Test.
+[] > finds-element-by-key-in-map
+  map > mp
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+      map.entry "three" 3
+  mp.found "two" > found
+  2.eq found.get > @
+
+# Test.
+[] > does-not-find-element-by-key-in-hash-map
+  map
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+  .found "three"
+  .exists
+  .not > @
+
+# Test.
+[] > has-element-with-key-in-hash-map
+  map
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+  .has "two" > @
+
+# Test.
+[] > does-not-have-element-by-key-in-hash-map
+  map
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+  .has "three"
+  .not > @
+
+# Test.
+[] > does-not-change-map-without-non-existed-element
+  map
+    *
+      map.entry "one" 1
+  .without "two"
+  .size
+  .eq 1 > @
+
+# Test.
+[] > removes-element-from-map-by-key
+  map
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+  .without "one" > mp
+  and. > @
+    1.eq mp.size
+    (mp.has "one").not
+
+# Test.
+[] > adds-new-pair-to-hash-map
+  map
+    *
+      map.entry "one" 1
+  .with "two" 2 > mp
+  and. > @
+    2.eq mp.size
+    mp.has "two"
+
+# Test.
+[] > replaces-value-if-pair-with-key-exists-in-map
+  map
+    *
+      map.entry "one" 1
+      map.entry "two" 2
+  .with "two" 3 > mp
+  and. > @
+    2.eq mp.size
+    3.eq (mp.found "two").get

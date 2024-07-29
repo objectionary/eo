@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > writes-into-memory-of
@@ -50,7 +50,7 @@
         malloc.of > second
           1
           [s] >>
-            f.put (f.as-int.plus 1) > @
+            f.put (f.as-number.plus 1) > @
         seq > @
           *
             second
@@ -86,7 +86,7 @@
       seq > @
         *
           m.write 0 1
-          m.put (m.as-int.plus 5)
+          m.put (m.as-number.plus 5)
   mem.eq 6 > @
 
 # Test.

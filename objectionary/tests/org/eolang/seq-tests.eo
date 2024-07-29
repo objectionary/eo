@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > seq-single-dataization-float-less
@@ -38,8 +38,8 @@
             lt.
               seq
                 *
-                  m.put (m.as-float.plus 1.0)
-                  m.as-float
+                  m.put (m.as-number.plus 1.0)
+                  m.as-number
               1.1
 
 # Test.
@@ -54,8 +54,8 @@
             gt.
               seq
                 *
-                  m.put (m.as-float.plus 1.0)
-                  m.as-float
+                  m.put (m.as-number.plus 1.0)
+                  m.as-number
               0.9
 
 # Test.
@@ -70,8 +70,8 @@
             lt.
               seq
                 *
-                  m.put (m.as-int.plus 1)
-                  m.as-int
+                  m.put (m.as-number.plus 1)
+                  m.as-number
               2
 
 # Test.
@@ -86,8 +86,8 @@
             lte.
               seq
                 *
-                  m.put (m.as-int.plus 1)
-                  m.as-int
+                  m.put (m.as-number.plus 1)
+                  m.as-number
               1
 
 # This test should have acceptable time to pass.
@@ -152,8 +152,8 @@
               seq
                 *
                   m.put 0
-                  m.put (m.as-int.plus 1)
-                  m.as-int
+                  m.put (m.as-number.plus 1)
+                  m.as-number
               1
 
 # Test.
@@ -171,7 +171,7 @@
                   at.
                     * 0 1
                     m
-                  m.put (m.as-int.plus 1)
+                  m.put (m.as-number.plus 1)
                   m
               1
 

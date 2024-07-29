@@ -23,8 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.38.4
-+version 0.38.4
++rt jvm org.eolang:eo-runtime:0.39.0
++rt node eo2js-runtime:0.0.0
++version 0.39.0
 
 # The object dataizes `target`, makes new instance of `bytes` from given data and behaves as result
 # `bytes`.
@@ -49,7 +50,7 @@
 #     5 > five
 #
 # (dataized foo).as-bytes > result # result is 00-00-00-00-00-00-00-05
-# result.as-int > f                # f is 5
+# result.as-number > f                # f is 5
 # ```
 #
 # Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`) from the object `foo`

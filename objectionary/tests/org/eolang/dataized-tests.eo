@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.38.4
++version 0.39.0
 
 # Test.
 [] > dataized-does-not-do-recalculation
@@ -33,11 +33,11 @@
       0
       [m]
         [] > func
-          ^.m.put (^.m.as-int.plus 1) > @
+          ^.m.put (^.m.as-number.plus 1) > @
         (dataized func).as-bytes > cached
         seq > @
           *
-            cached.as-int
+            cached.as-number
             cached.as-bytes
             cached.as-bool
     1
@@ -52,7 +52,7 @@
         seq > @
           *
             true
-            m.put (m.as-int.plus 1)
+            m.put (m.as-number.plus 1)
   (dataized func).as-bytes > cached1
   func > cached2!
   seq > @
