@@ -163,53 +163,57 @@ SOFTWARE.
   </xsl:function>
   <!-- Program -->
   <xsl:template match="program">
-    <phi>
-      <xsl:text>{</xsl:text>
-      <xsl:variable name="tabs" select="2"/>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:value-of select="$lb"/>
-      <xsl:value-of select="eo:eol(2)"/>
-      <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
-      <xsl:variable name="package" select="metas/meta[head[text()='package']]/tail[1]"/>
-      <xsl:variable name="parts" select="tokenize($package,'\.')"/>
-      <xsl:variable name="length" select="string-length($package)-string-length(replace($package,'\.',''))"/>
-      <xsl:choose>
-        <xsl:when test="$has-package">
-          <xsl:for-each select="$parts">
-            <xsl:value-of select="."/>
-            <xsl:value-of select="$arrow"/>
-            <xsl:value-of select="$lb"/>
-            <xsl:value-of select="eo:eol($tabs+position())"/>
-          </xsl:for-each>
-          <xsl:apply-templates select="objects">
-            <xsl:with-param name="tabs" select="$tabs + $length + 1"/>
-            <xsl:with-param name="package">
-              <xsl:value-of select="$program"/>
-              <xsl:text>.</xsl:text>
-              <xsl:value-of select="$package"/>
-            </xsl:with-param>
-          </xsl:apply-templates>
-          <xsl:for-each select="$parts">
-            <xsl:value-of select="eo:comma(2, $tabs + $length + 2 - position())"/>
-            <xsl:value-of select="$lambda"/>
-            <xsl:value-of select="$dashed-arrow"/>
-            <xsl:text>Package</xsl:text>
-            <xsl:value-of select="eo:eol($tabs + $length + 1 - position())"/>
-            <xsl:value-of select="$rb"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="objects">
-            <xsl:with-param name="tabs" select="$tabs"/>
-            <xsl:with-param name="package" select="$program"/>
-          </xsl:apply-templates>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="eo:eol(1)"/>
-      <xsl:value-of select="$rb"/>
-      <xsl:value-of select="eo:eol(0)"/>
-      <xsl:text>}</xsl:text>
-    </phi>
+    <program>
+      <xsl:copy-of select="./sheets"/>
+      <xsl:copy-of select="./errors"/>
+      <phi>
+        <xsl:text>{</xsl:text>
+        <xsl:variable name="tabs" select="2"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="$lb"/>
+        <xsl:value-of select="eo:eol(2)"/>
+        <xsl:variable name="has-package" select="metas/meta/head[text()='package']"/>
+        <xsl:variable name="package" select="metas/meta[head[text()='package']]/tail[1]"/>
+        <xsl:variable name="parts" select="tokenize($package,'\.')"/>
+        <xsl:variable name="length" select="string-length($package)-string-length(replace($package,'\.',''))"/>
+        <xsl:choose>
+          <xsl:when test="$has-package">
+            <xsl:for-each select="$parts">
+              <xsl:value-of select="."/>
+              <xsl:value-of select="$arrow"/>
+              <xsl:value-of select="$lb"/>
+              <xsl:value-of select="eo:eol($tabs+position())"/>
+            </xsl:for-each>
+            <xsl:apply-templates select="objects">
+              <xsl:with-param name="tabs" select="$tabs + $length + 1"/>
+              <xsl:with-param name="package">
+                <xsl:value-of select="$program"/>
+                <xsl:text>.</xsl:text>
+                <xsl:value-of select="$package"/>
+              </xsl:with-param>
+            </xsl:apply-templates>
+            <xsl:for-each select="$parts">
+              <xsl:value-of select="eo:comma(2, $tabs + $length + 2 - position())"/>
+              <xsl:value-of select="$lambda"/>
+              <xsl:value-of select="$dashed-arrow"/>
+              <xsl:text>Package</xsl:text>
+              <xsl:value-of select="eo:eol($tabs + $length + 1 - position())"/>
+              <xsl:value-of select="$rb"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="objects">
+              <xsl:with-param name="tabs" select="$tabs"/>
+              <xsl:with-param name="package" select="$program"/>
+            </xsl:apply-templates>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="$rb"/>
+        <xsl:value-of select="eo:eol(0)"/>
+        <xsl:text>}</xsl:text>
+      </phi>
+    </program>
   </xsl:template>
   <!-- Objects  -->
   <xsl:template match="objects">
