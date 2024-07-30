@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
   SYSTEM "about:legacy-compat">
-<html>
+<html xmlns:z="https://www.zerocracy.com">
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <title>objectionary</title>
@@ -19,8 +19,8 @@
       <script type="text/javascript"
               src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"> </script>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"> </script>
-      <script type="text/javascript">$(function(){const ctx=document.getElementById("qod");new Chart(ctx,{type:"line",data:qod_data,options:{responsive:false}})});$(function(){const ctx=document.getElementById("qos");new Chart(ctx,{type:"line",data:qos_data,options:{responsive:false}})});</script>
-      <style>#awards tr.sub td{padding:0}#awards .sorter{cursor:pointer}#awards tbody tr:hover{background-color:#f5f5f5}.policy{counter-reset:par}.policy .columns{column-count:5;font-size:.85em;line-height:1.2}.policy .columns p{display:inline-block}.policy .columns p::before{content:"R" counter(par) ": ";counter-increment:par}.policy .columns strong{color:#b8336a;font-family:monospace;font-weight:bolder}.policy .columns em{color:#1c448e;font-family:serif;font-weight:bolder}@media(max-width: 1280px){.policy .columns{column-count:4}}@media(max-width: 768px){.policy .columns{column-count:3}}section{width:auto}footer{color:#282828;font-size:.8em;line-height:1.2em;text-align:center}article{border:0}header{text-align:center}header a:hover{text-decoration:none}header img{height:64px;vertical-align:middle}header span{background-color:#131515;border-radius:.2em;color:#fff;font-size:2em;font-weight:bolder;margin-left:1em;padding:0em .2em;vertical-align:middle}.ff{font-family:monospace}td.avatar{text-align:center;vertical-align:middle}td.avatar img{height:1.5em;vertical-align:middle;width:1.5em}tr.p_{font-size:90%}</style>
+      <script type="text/javascript">function qo_render(canvas,data){const ctx=document.getElementById(canvas);new Chart(ctx,{type:"line",data:data,options:{responsive:false}})}</script>
+      <style>#awards tr.sub td{padding:0}#awards .sorter{cursor:pointer}#awards tbody tr:hover{background-color:#f5f5f5}#awards tr.p_{font-size:90%}#awards td.avatar{text-align:center;vertical-align:middle}#awards td.avatar img{height:1.5em;vertical-align:middle;width:1.5em}.policy{counter-reset:par}.policy .columns{column-count:5;font-size:.85em;line-height:1.2}.policy .columns p{display:inline-block}.policy .columns p::before{content:"R" counter(par) ": ";counter-increment:par}.policy .columns strong{color:#b8336a;font-family:monospace;font-weight:bolder}.policy .columns em{color:#1c448e;font-family:serif;font-weight:bolder}@media(max-width: 1280px){.policy .columns{column-count:4}}@media(max-width: 768px){.policy .columns{column-count:3}}.qo-section{width:40em}.qo-section canvas{width:100%}section{width:auto}footer{color:#282828;font-size:.8em;line-height:1.2em;text-align:center}article{border:0}header{text-align:center}header a:hover{text-decoration:none}header img{height:64px;vertical-align:middle}header span{background-color:#131515;border-radius:.2em;color:#fff;font-size:2em;font-weight:bolder;margin-left:1em;padding:0em .2em;vertical-align:middle}.ff{font-family:monospace}</style>
    </head>
    <body>
       <section>
@@ -33,21 +33,20 @@
             </p>
          </header>
          <article>
-            <script xmlns:xs="http://www.w3.org/2001/XMLSchema" type="text/javascript">const weeks = 5;</script>
-            <script xmlns:xs="http://www.w3.org/2001/XMLSchema" type="text/javascript">
+            <script type="text/javascript">const weeks = 4;</script>
+            <script type="text/javascript">
         $(function() {
           $("#awards").tablesorter({
-            sortList: [[3 + weeks, 1]]
+            sortList: [[2 + weeks, 1]]
           });
         });
       </script>
-            <table xmlns:xs="http://www.w3.org/2001/XMLSchema" id="awards" border="1">
+            <table id="awards" border="1">
                <colgroup span="4">
                   <col style="width: 2.5em;"/>
                   <col/>
                </colgroup>
-               <colgroup span="6">
-                  <col style="width: 3em;"/>
+               <colgroup span="5">
                   <col style="width: 3em;"/>
                   <col style="width: 3em;"/>
                   <col style="width: 3em;"/>
@@ -58,8 +57,6 @@
                   <tr>
                      <th> </th>
                      <th class="sorter">Programmer / Award Reason</th>
-                     <th class="right sorter"
-                         title="Week #27 in 2024, starting on Monday 2024-07-01Z">w27</th>
                      <th class="right sorter"
                          title="Week #28 in 2024, starting on Monday 2024-07-08Z">w28</th>
                      <th class="right sorter"
@@ -83,23 +80,20 @@
                         <span class="ff">
                            <a href="https://github.com/c71n93">@c71n93</a>
                         </span> (<a href="" onclick="$('.p_c71n93').toggle(); return false;">3 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="72">
                         <span class="darkgreen"/>+72</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="29">
                         <span class="darkgreen"/>+29</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="101">
                         <span class="darkgreen"/>+101</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_c71n93" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3259</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3259/#issuecomment-2226154611">
                            <span class="darkgreen"/>+72</a>
@@ -115,7 +109,6 @@
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3284/#issuecomment-2255960087">
                            <span class="darkgreen"/>+18</a>
@@ -125,7 +118,6 @@
                   <tr class="sub tablesorter-childRow p_ p_c71n93" style="display: none;">
                      <td> </td>
                      <td>Contributed code in objectionary/eo#3241</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -146,24 +138,21 @@
                         <span class="ff">
                            <a href="https://github.com/levBagryansky">@levBagryansky</a>
                         </span> (<a href="" onclick="$('.p_levBagryansky').toggle(); return false;">2 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="47">
                         <span class="darkgreen"/>+47</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="5">
                         <span class="darkgreen"/>+5</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="52">
                         <span class="darkgreen"/>+52</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_levBagryansky"
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3259</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3259/#issuecomment-2226154643">
                            <span class="darkgreen"/>+47</a>
@@ -177,7 +166,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3243</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3243/#issuecomment-2228644646">
@@ -198,26 +186,20 @@
                         <span class="ff">
                            <a href="https://github.com/yegor256">@yegor256</a>
                         </span> (<a href="" onclick="$('.p_yegor256').toggle(); return false;">13 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="darkgreen"/>+25</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="72">
                         <span class="darkgreen"/>+72</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="100">
                         <span class="darkgreen"/>+100</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="-40">
                         <span class="darkred"/>-40</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="73">
                         <span class="darkgreen"/>+73</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="230">
                         <span class="darkgreen"/>+230</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3249</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/eo/issues/3249/#issuecomment-2211842611">
-                           <span class="darkgreen"/>+25</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -227,7 +209,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3261</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3261/#issuecomment-2222943315">
                            <span class="darkgreen"/>+72</a>
@@ -241,7 +222,6 @@
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3268</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3268/#issuecomment-2228914364">
                            <span class="darkgreen"/>+65</a>
@@ -253,7 +233,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3276</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3276/#issuecomment-2234625726">
@@ -267,7 +246,6 @@
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/eo</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/commit/265c89d513d1ea326f3b6a5ca0cab39c076fe8c9/#commitcomment-144377874">
                            <span class="darkred"/>-20</a>
@@ -279,7 +257,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/eo</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/commit/612b047f32eaeb63bb15ef9867d522cf85781c14/#commitcomment-144388930">
@@ -293,7 +270,6 @@
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/eo</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/commit/13c194e7c68028de83f81c5fe24c8957f6e7b2a4/#commitcomment-144388937">
                            <span class="darkred"/>-20</a>
@@ -305,7 +281,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/eo#3281</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3281/#issuecomment-2241232784">
@@ -320,7 +295,6 @@
                      <td>Push 668fbb8e0 to default branch 'master' in objectionary/eo</td>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/commit/668fbb8e06e8fb72d1e670640ea78bdcebcc917e/#commitcomment-144527947">
                            <span class="darkred"/>-20</a>
@@ -331,7 +305,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Push 6f3621c4c to default branch 'master' in objectionary/normalizer</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
@@ -347,7 +320,6 @@
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3292/#issuecomment-2255815338">
                            <span class="darkgreen"/>+55</a>
@@ -360,7 +332,6 @@
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3295/#issuecomment-2255815379">
                            <span class="darkgreen"/>+38</a>
@@ -370,7 +341,6 @@
                   <tr class="sub tablesorter-childRow p_ p_yegor256" style="display: none;">
                      <td> </td>
                      <td>Pushed 050586651 to default branch 'master' in objectionary/eo</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -391,26 +361,20 @@
                         <span class="ff">
                            <a href="https://github.com/fizruk">@fizruk</a>
                         </span> (<a href="" onclick="$('.p_fizruk').toggle(); return false;">14 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="darkgreen"/>+25</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="45">
                         <span class="darkgreen"/>+45</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="72">
                         <span class="darkgreen"/>+72</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="47">
                         <span class="darkgreen"/>+47</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="189">
                         <span class="darkgreen"/>+189</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#426</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/normalizer/issues/426/#issuecomment-2212007918">
-                           <span class="darkgreen"/>+25</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -420,7 +384,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/0a712545faf7a5f1ec01a4f4b2e4fd50ad3c3668/#commitcomment-144412800">
@@ -434,7 +397,6 @@
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/be68febe049ceb191eaffa02284aa66982f11a84/#commitcomment-144412807">
                            <span class="darkred"/>-20</a>
@@ -446,7 +408,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/6d0440abcc22be41b8abc055cd91b4ba8df80efd/#commitcomment-144414207">
@@ -460,7 +421,6 @@
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#424</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/424/#issuecomment-2238626522">
                            <span class="darkgreen"/>+35</a>
@@ -472,7 +432,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/c2ce147a261b6adccbdd5682b063149f1a7463f5/#commitcomment-144414209">
@@ -486,7 +445,6 @@
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#435</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/435/#issuecomment-2238626559">
                            <span class="darkgreen"/>+35</a>
@@ -498,7 +456,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#434</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/434/#issuecomment-2238731988">
@@ -512,7 +469,6 @@
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/f3b4f1ccce8ae2ef3a875dfb1c6807dede8be75f/#commitcomment-144427981">
                            <span class="darkred"/>-20</a>
@@ -525,7 +481,6 @@
                      <td> </td>
                      <td>Code was contributed in objectionary/normalizer#432</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/432/#issuecomment-2239539388">
                            <span class="darkgreen"/>+5</a>
@@ -537,7 +492,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#444</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/444/#issuecomment-2239709214">
@@ -552,7 +506,6 @@
                      <td>Code was reviewed in objectionary/normalizer#446</td>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/446/#issuecomment-2248114886">
                            <span class="darkgreen"/>+37</a>
@@ -565,7 +518,6 @@
                      <td>Code was reviewed in objectionary/normalizer#445</td>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/445/#issuecomment-2252543356">
                            <span class="darkgreen"/>+35</a>
@@ -576,7 +528,6 @@
                   <tr class="sub tablesorter-childRow p_ p_fizruk" style="display: none;">
                      <td> </td>
                      <td>Reviewed code in objectionary/normalizer#456</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -597,23 +548,20 @@
                         <span class="ff">
                            <a href="https://github.com/h1alexbel">@h1alexbel</a>
                         </span> (<a href="" onclick="$('.p_h1alexbel').toggle(); return false;">1 award</a>)</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="25">
                         <span class="darkgreen"/>+25</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="25">
                         <span class="darkgreen"/>+25</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_h1alexbel" style="display: none;">
                      <td> </td>
                      <td>Contributed code in objectionary/opeo-maven-plugin#351</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -634,27 +582,21 @@
                         <span class="ff">
                            <a href="https://github.com/maxonfjvipon">@maxonfjvipon</a>
                         </span> (<a href="" onclick="$('.p_maxonfjvipon').toggle(); return false;">12 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="darkgreen"/>+60</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="53">
                         <span class="darkgreen"/>+53</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="5">
                         <span class="darkgreen"/>+5</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="5">
                         <span class="darkgreen"/>+5</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="75">
                         <span class="darkgreen"/>+75</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="198">
                         <span class="darkgreen"/>+198</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_maxonfjvipon"
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/benchmark#45</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/benchmark/issues/45/#issuecomment-2210615694">
-                           <span class="darkgreen"/>+20</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -665,10 +607,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3249</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/eo/issues/3249/#issuecomment-2211826567">
-                           <span class="darkgreen"/>+20</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -679,10 +617,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo2js#94</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/eo2js/issues/94/#issuecomment-2211891062">
-                           <span class="darkgreen"/>+20</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -693,7 +627,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3261</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3261/#issuecomment-2222943353">
                            <span class="darkgreen"/>+53</a>
@@ -708,7 +641,6 @@
                      <td> </td>
                      <td>Branch name was wrong in objectionary/eo#3268</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3268/#issuecomment-2228644580">
                            <span class="darkred"/>-10</a>
@@ -721,7 +653,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3268</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3268/#issuecomment-2228644580">
@@ -736,7 +667,6 @@
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3276</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3276/#issuecomment-2234625636">
                            <span class="darkgreen"/>+5</a>
@@ -750,7 +680,6 @@
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3281</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3281/#issuecomment-2241232749">
                            <span class="darkgreen"/>+5</a>
@@ -763,7 +692,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/eo#3289</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
@@ -780,7 +708,6 @@
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3284/#issuecomment-2255815284">
                            <span class="darkgreen"/>+57</a>
@@ -794,7 +721,6 @@
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eo/issues/3292/#issuecomment-2256089587">
                            <span class="darkgreen"/>+5</a>
@@ -805,7 +731,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Contributed code in objectionary/eo#3295</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -826,27 +751,21 @@
                         <span class="ff">
                            <a href="https://github.com/volodya-lombrozo">@volodya-lombrozo</a>
                         </span> (<a href="" onclick="$('.p_volodya-lombrozo').toggle(); return false;">5 awards</a>)</td>
-                     <td class="ff right">
-                        <span class="darkgreen"/>+40</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="120">
                         <span class="darkgreen"/>+120</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="20">
                         <span class="darkgreen"/>+20</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="180">
                         <span class="darkgreen"/>+180</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_volodya-lombrozo"
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/opeo-maven-plugin#335</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/opeo-maven-plugin/issues/335/#issuecomment-2212483990">
-                           <span class="darkgreen"/>+20</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -857,10 +776,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/jeo-maven-plugin#628</td>
-                     <td class="ff right">
-                        <a href="https://github.com/objectionary/jeo-maven-plugin/issues/628/#issuecomment-2212579387">
-                           <span class="darkgreen"/>+20</a>
-                     </td>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -871,7 +786,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/opeo-maven-plugin#339</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/opeo-maven-plugin/issues/339/#issuecomment-2217879342">
                            <span class="darkgreen"/>+60</a>
@@ -885,7 +799,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/opeo-maven-plugin#340</td>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/opeo-maven-plugin/issues/340/#issuecomment-2224357989">
                            <span class="darkgreen"/>+60</a>
@@ -899,7 +812,6 @@
                       style="display: none;">
                      <td> </td>
                      <td>Reviewed code in objectionary/opeo-maven-plugin#351</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -920,23 +832,20 @@
                         <span class="ff">
                            <a href="https://github.com/deemp">@deemp</a>
                         </span> (<a href="" onclick="$('.p_deemp').toggle(); return false;">7 awards</a>)</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="40">
                         <span class="darkgreen"/>+40</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="10">
                         <span class="darkgreen"/>+10</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="13">
                         <span class="darkgreen"/>+13</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="63">
                         <span class="darkgreen"/>+63</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_deemp" style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/normalizer#426</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/426/#issuecomment-2238731966">
@@ -950,7 +859,6 @@
                      <td> </td>
                      <td>Code was reviewed in objectionary/normalizer#432</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/432/#issuecomment-2239461965">
                            <span class="darkgreen"/>+35</a>
@@ -963,7 +871,6 @@
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/normalizer</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/commit/f8c75d041f9e6d5a3738445c8c096997dcbe164b/#commitcomment-144429627">
                            <span class="darkred"/>-20</a>
@@ -975,7 +882,6 @@
                   <tr class="sub tablesorter-childRow p_ p_deemp" style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/normalizer#444</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/444/#issuecomment-2239709184">
@@ -990,7 +896,6 @@
                      <td>Code was contributed in objectionary/normalizer#446</td>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/446/#issuecomment-2248285199">
                            <span class="darkgreen"/>+5</a>
@@ -1003,7 +908,6 @@
                      <td>Code was contributed in objectionary/normalizer#453</td>
                      <td class="ff right"/>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/453/#issuecomment-2254517392">
                            <span class="darkgreen"/>+5</a>
@@ -1014,7 +918,6 @@
                   <tr class="sub tablesorter-childRow p_ p_deemp" style="display: none;">
                      <td> </td>
                      <td>Contributed code in objectionary/normalizer#456</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
@@ -1035,23 +938,20 @@
                         <span class="ff">
                            <a href="https://github.com/Anatolay">@Anatolay</a>
                         </span> (<a href="" onclick="$('.p_Anatolay').toggle(); return false;">1 award</a>)</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="5">
                         <span class="darkgreen"/>+5</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="5">
                         <span class="darkgreen"/>+5</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_Anatolay" style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/proof#43</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
@@ -1072,23 +972,20 @@
                         <span class="ff">
                            <a href="https://github.com/eyihluyc">@eyihluyc</a>
                         </span> (<a href="" onclick="$('.p_eyihluyc').toggle(); return false;">3 awards</a>)</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="10">
                         <span class="darkgreen"/>+10</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="20">
                         <span class="darkgreen"/>+20</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="30">
                         <span class="darkgreen"/>+30</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_eyihluyc" style="display: none;">
                      <td> </td>
                      <td>Branch name was wrong in objectionary/normalizer#435</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/435/#issuecomment-2235797683">
@@ -1102,7 +999,6 @@
                      <td> </td>
                      <td>Code was contributed in objectionary/normalizer#435</td>
                      <td class="ff right"/>
-                     <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/normalizer/issues/435/#issuecomment-2238626477">
                            <span class="darkgreen"/>+20</a>
@@ -1114,7 +1010,6 @@
                   <tr class="sub tablesorter-childRow p_ p_eyihluyc" style="display: none;">
                      <td> </td>
                      <td>Code was contributed in objectionary/normalizer#445</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
@@ -1135,23 +1030,20 @@
                         <span class="ff">
                            <a href="https://github.com/rultor">@rultor</a>
                         </span> (<a href="" onclick="$('.p_rultor').toggle(); return false;">1 award</a>)</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
-                        <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="-20">
                         <span class="darkred"/>-20</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="0">
                         <span class="lightgray"/>—</td>
-                     <td class="ff right">
+                     <td class="ff right" data-value="-20">
                         <span class="darkred"/>-20</td>
                   </tr>
                   <tr class="sub tablesorter-childRow p_ p_rultor" style="display: none;">
                      <td> </td>
                      <td>Push to default branch 'master' in objectionary/eoc</td>
-                     <td class="ff right"/>
                      <td class="ff right"/>
                      <td class="ff right">
                         <a href="https://github.com/objectionary/eoc/commit/c19a6885786d2a7ab48419e1b215d22b25f915b3/#commitcomment-144445542">
@@ -1166,26 +1058,24 @@
                   <tr>
                      <td> </td>
                      <td class="right">
-                        <span title="There are 62 awarding facts in the XML, while 62 of them count">Total (62/62):</span>
+                        <span title="There are 62 awarding facts in the XML, while 62 of them count">Total:</span>
                      </td>
-                     <td class="right">
-                        <span class="darkgreen"/>+150</td>
-                     <td class="right">
+                     <td class="ff right" data-value="364">
                         <span class="darkgreen"/>+364</td>
-                     <td class="right">
+                     <td class="ff right" data-value="185">
                         <span class="darkgreen"/>+185</td>
-                     <td class="right">
+                     <td class="ff right" data-value="72">
                         <span class="darkgreen"/>+72</td>
-                     <td class="right">
+                     <td class="ff right" data-value="282">
                         <span class="darkgreen"/>+282</td>
-                     <td class="right">
+                     <td class="ff right" data-value="1053">
                         <span class="darkgreen"/>+1053</td>
                   </tr>
                </tfoot>
             </table>
             <div class="policy">
                <h2>Rules of the Game</h2>
-               <div class="columns"><div><p>When a bug is resolved, the person who was assigned to it gets a bonus. Here is how it&#39;s calculated: First, assume that <em>hours</em> is how many hours it took to resolve the bug. Then, set <em>days</em> to <em>hours</em> ÷ <strong>24</strong>, and award <strong>30</strong> points. Then, add <strong>10</strong> points if it was resolved in less than <strong>24</strong> hours. Then, deduct <strong>1</strong> points for each day of delay, but no more than <strong>-20</strong> points.</p>
+               <div class="columns"><p>When a bug is resolved, the person who was assigned to it gets a bonus. Here is how it&#39;s calculated: First, assume that <em>hours</em> is how many hours it took to resolve the bug. Then, set <em>days</em> to <em>hours</em> ÷ <strong>24</strong>, and award <strong>30</strong> points. Then, add <strong>10</strong> points if it was resolved in less than <strong>24</strong> hours. Then, deduct <strong>1</strong> points for each day of delay, but no more than <strong>-20</strong> points.</p>
 <p>When someone pushes directly to the default branch, they get a penalty. Here is how it&#39;s calculated: Just <strong>-20</strong> points.</p>
 <p>An author of every code review gets a bonus. Here is how it&#39;s calculated: First, assume that <em>hoc</em> is the total number of hits-of-code in the contribution. Then, assume that <em>comments</em> is the total number of comments made by all reviewers. Then, assume that <em>self</em> is 1 if the review was made for their own code contribution, otherwise zero, and award <strong>25</strong> points. Then, deduct <strong>40</strong> points if they reviewed their own contribution. Then, add <strong>0.1</strong> points for each
           <a href="https://www.yegor256.com/2014/11/14/hits-of-code.html">hit-of-code</a>,
@@ -1202,26 +1092,22 @@
           but not more than <strong>40</strong> points.</p>
 <p>When an enhancement is suggested and accepted by the team, the reporter gets a bonus. Here is how it&#39;s calculated: Just award <strong>15</strong> points.</p>
 <p>When an issue is submitted but then rejected by the team, the reporter gets a penalty. Here is how it&#39;s calculated: Just deduct <strong>-20</strong> points.</p>
-</div></div>
+</div>
             </div>
-            <div xmlns:xs="http://www.w3.org/2001/XMLSchema" class="qos">
-               <h2>Quality of Service</h2>
-               <div style="width: 800px;">
-                  <canvas id="qos" style="width: 100%"> </canvas>
-               </div>
+            <h2>Quality of Service (QoS)</h2>
+            <div class="qo-section">
+               <canvas id="quality-of-service"> </canvas>
             </div>
-            <script xmlns:xs="http://www.w3.org/2001/XMLSchema" type="text/javascript">const qos_data = { labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],datasets: [{ label: 'n_average_release_interval', data: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.2772225089528267, -0.2772225089528267, -0.2772225089528267, -0.2772225089528267, -0.2772225089528267, -0.2772225089528267, -0.2772225089528267] }, { label: 'n_average_workflow_success_rate', data: [0.0, 0.00039231071008236296, 0.00039231071008236296, 0.00039231071008236296, 0.00039231071008236296, 0.00039231071008236296, 0.0004447964213803769, 0.0004447964213803769, 0.0004447964213803769, 0.0004447964213803769, 0.0008892908764190237, 0.0012813352520070229, 0.0012813352520070229, 0.0012813352520070229, 0.0012813352520070229, 0.0008892908764190237, 0.0009415723286096952, 0.0009415723286096952, 0.0009415723286096952, 0.0009415723286096952, null] }, { label: 'n_average_build_success_rate', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.0] }, { label: 'n_average_issue_lifetime', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.0] }, { label: 'n_average_pull_lifetime', data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.0] }] };</script>
-            <div xmlns:xs="http://www.w3.org/2001/XMLSchema" class="qod">
-               <h2>Quantity of Deliverables</h2>
-               <div style="width: 800px;">
-                  <canvas id="qod" style="width: 100%"> </canvas>
-               </div>
+            <script type="text/javascript">$(function() { qo_render('quality-of-service',{labels:['7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/27'],datasets:[{label:'average_release_interval',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267]},{label:'average_workflow_success_rate',data:[0.0,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0008892908764190237,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0008892908764190237,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,null]},{label:'average_build_success_rate',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]},{label:'average_issue_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]},{label:'average_pull_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]}]});});</script>
+            <h2>Quantity of Deliverables (QoD)</h2>
+            <div class="qo-section">
+               <canvas id="quantity-of-deliverables"> </canvas>
             </div>
-            <script xmlns:xs="http://www.w3.org/2001/XMLSchema" type="text/javascript">const qod_data = { labels: [''],datasets: [{ label: 'n_total_commits_pushed', data: [0] }, { label: 'n_total_hoc_committed', data: [0] }, { label: 'n_total_issues_created', data: [0] }, { label: 'n_total_pulls_submitted', data: [0] }] };</script>
+            <script type="text/javascript">$(function() { qo_render('quantity-of-deliverables',{labels:['7/29'],datasets:[{label:'total_commits_pushed',data:[0]},{label:'total_hoc_committed',data:[0]},{label:'total_issues_created',data:[0]},{label:'total_pulls_submitted',data:[0]}]});});</script>
          </article>
          <footer>
-            <p>The value of "today" is 2024-07-30T04:20:13Z.<br/>The page was generated by the <a href="https://github.com/zerocracy/pages-action">pages-action</a> plugin (0.0.27) on 2024-07-30T04:20:14.872Z.<br/>
-               <a href="https://github.com/yegor256/factbase">Factbase</a>: 1689 facts, 593130 bytes, version 0.2.1; <a href="https://github.com/zerocracy/fbe">Fbe</a>: 0.0.32.<br/>The XML with all the data <a href="objectionary.xml">is here</a>, HTML <a href="objectionary.html">is here</a>.</p>
+            <p>The value of "today" is 2024-07-30T05:21:02Z.<br/>The page was generated by the <a href="https://github.com/zerocracy/pages-action">pages-action</a> plugin (0.0.29) on 2024-07-30T05:21:03.359Z.<br/>
+               <a href="https://github.com/yegor256/factbase">Factbase</a>: 1690 facts, 593533 bytes, version 0.2.1; <a href="https://github.com/zerocracy/fbe">Fbe</a>: 0.0.34.<br/>The XML with all the data <a href="objectionary.xml">is here</a>, HTML <a href="objectionary.html">is here</a>.</p>
             <p>Made by <a href="https://www.zerocracy.com">Zerocracy</a>.</p>
          </footer>
       </section>
