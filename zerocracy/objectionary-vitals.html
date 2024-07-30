@@ -20,7 +20,7 @@
               src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"> </script>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"> </script>
       <script type="text/javascript">function qo_render(canvas,data){const ctx=document.getElementById(canvas);new Chart(ctx,{type:"line",data:data,options:{responsive:false}})}</script>
-      <style>#awards tr.sub td{padding:0}#awards .sorter{cursor:pointer}#awards tbody tr:hover{background-color:#f5f5f5}#awards tr.p_{font-size:90%}#awards td.avatar{text-align:center;vertical-align:middle}#awards td.avatar img{height:1.5em;vertical-align:middle;width:1.5em}.policy{counter-reset:par}.policy .columns{column-count:5;font-size:.85em;line-height:1.2}.policy .columns p{display:inline-block}.policy .columns p::before{content:"R" counter(par) ": ";counter-increment:par}.policy .columns strong{color:#b8336a;font-family:monospace;font-weight:bolder}.policy .columns em{color:#1c448e;font-family:serif;font-weight:bolder}@media(max-width: 1280px){.policy .columns{column-count:4}}@media(max-width: 768px){.policy .columns{column-count:3}}.qo-section{width:40em}.qo-section canvas{width:100%}section{width:auto}footer{color:#282828;font-size:.8em;line-height:1.2em;text-align:center}article{border:0}header{text-align:center}header a:hover{text-decoration:none}header img{height:64px;vertical-align:middle}header span{background-color:#131515;border-radius:.2em;color:#fff;font-size:2em;font-weight:bolder;margin-left:1em;padding:0em .2em;vertical-align:middle}.ff{font-family:monospace}</style>
+      <style>#awards tr.sub td{padding:0}#awards .sorter{cursor:pointer}#awards tbody tr:hover{background-color:#f5f5f5}#awards tr.p_{font-size:90%}#awards td.avatar{text-align:center;vertical-align:middle}#awards td.avatar img{height:1.5em;vertical-align:middle;width:1.5em}.policy{counter-reset:par}.policy .columns{column-count:5}.policy .columns p{display:inline-block}.policy .columns p::before{content:"R" counter(par) ": ";counter-increment:par}.policy .columns strong{color:#b8336a;font-family:monospace;font-weight:bolder}.policy .columns em{color:#1c448e;font-family:serif;font-weight:bolder}@media(max-width: 1280px){.policy .columns{column-count:4}}@media(max-width: 768px){.policy .columns{column-count:3}}.qo-section{width:40em}.qo-section canvas{width:100%}section{width:auto}footer{color:#282828;font-size:.8em;line-height:1.2em;text-align:center}article{border:0}header{text-align:center}header a:hover{text-decoration:none}header img{height:64px;vertical-align:middle}header span{background-color:#131515;border-radius:.2em;color:#fff;font-size:2em;font-weight:bolder;margin-left:1em;padding:0em .2em;vertical-align:middle}.ff{font-family:monospace}</style>
    </head>
    <body>
       <section>
@@ -41,7 +41,7 @@
           });
         });
       </script>
-            <table id="awards" border="1">
+            <table id="awards">
                <colgroup span="4">
                   <col style="width: 2.5em;"/>
                   <col/>
@@ -1098,16 +1098,88 @@
             <div class="qo-section">
                <canvas id="quality-of-service"> </canvas>
             </div>
-            <script type="text/javascript">$(function() { qo_render('quality-of-service',{labels:['7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/27'],datasets:[{label:'average_release_interval',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267]},{label:'average_workflow_success_rate',data:[0.0,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0008892908764190237,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0008892908764190237,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,null]},{label:'average_build_success_rate',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]},{label:'average_issue_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]},{label:'average_pull_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0]}]});});</script>
+            <script type="text/javascript">$(function(){qo_render('quality-of-service',{labels:['7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/22','7/27','7/30'],datasets:[{label:'average_release_interval',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.2772225089528267,-0.12141980093236088]},{label:'average_workflow_success_rate',data:[0.0,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.00039231071008236296,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0004447964213803769,0.0008892908764190237,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0012813352520070229,0.0008892908764190237,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,0.0009415723286096952,null,null]},{label:'average_build_success_rate',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0,-0.017003624847052194]},{label:'average_issue_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0,-0.002781559184765986]},{label:'average_pull_lifetime',data:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0,null]}]});});</script>
             <h2>Quantity of Deliverables (QoD)</h2>
             <div class="qo-section">
                <canvas id="quantity-of-deliverables"> </canvas>
             </div>
-            <script type="text/javascript">$(function() { qo_render('quantity-of-deliverables',{labels:['7/29'],datasets:[{label:'total_commits_pushed',data:[0]},{label:'total_hoc_committed',data:[0]},{label:'total_issues_created',data:[0]},{label:'total_pulls_submitted',data:[0]}]});});</script>
+            <script type="text/javascript">$(function(){qo_render('quantity-of-deliverables',{labels:['7/29'],datasets:[{label:'total_commits_pushed',data:[0]},{label:'total_hoc_committed',data:[0]},{label:'total_issues_created',data:[0]},{label:'total_pulls_submitted',data:[0]}]});});</script>
+            <h2>Dimensions of Terrain (DoT)</h2>
+            <table>
+               <colgroup>
+                  <col/>
+               </colgroup>
+               <colgroup span="4">
+                  <col style="width: 4em;"/>
+                  <col style="width: 4em;"/>
+                  <col style="width: 4em;"/>
+                  <col style="width: 4em;"/>
+               </colgroup>
+               <thead>
+                  <tr>
+                     <th>Dimension</th>
+                     <th class="right" title="Week #28 in 2024, starting on Monday 2024-07-08Z">w28</th>
+                     <th class="right" title="Week #29 in 2024, starting on Monday 2024-07-15Z">w29</th>
+                     <th class="right" title="Week #30 in 2024, starting on Monday 2024-07-22Z">w30</th>
+                     <th class="right" title="Week #31 in 2024, starting on Monday 2024-07-29Z">w31</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td class="ff">_id</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">380030</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">_time</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">2024-07-30T08:12:11Z</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">_version</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">0.2.1/0.21.0/0.0.39</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">total_forks</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">276</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">total_releases</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">500</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">total_repositories</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">61</td>
+                  </tr>
+                  <tr>
+                     <td class="ff">total_stars</td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right"> </td>
+                     <td class="ff right">1425</td>
+                  </tr>
+               </tbody>
+            </table>
          </article>
          <footer>
-            <p>The value of "today" is 2024-07-30T07:26:52Z.<br/>The page was generated by the <a href="https://github.com/zerocracy/pages-action">pages-action</a> plugin (0.0.29) on 2024-07-30T07:26:53.441Z.<br/>
-               <a href="https://github.com/yegor256/factbase">Factbase</a>: 1698 facts, 596658 bytes, version 0.2.1; <a href="https://github.com/zerocracy/fbe">Fbe</a>: 0.0.34.<br/>The XML with all the data <a href="objectionary.xml">is here</a>, HTML <a href="objectionary.html">is here</a>.</p>
+            <p>The value of "today" is 2024-07-30T08:32:09Z.<br/>The page was generated by the <a href="https://github.com/zerocracy/pages-action">pages-action</a> plugin (0.0.30) on 2024-07-30T08:32:10.794Z.<br/>
+               <a href="https://github.com/yegor256/factbase">Factbase</a>: 1705 facts, 599670 bytes, version 0.2.1; <a href="https://github.com/zerocracy/fbe">Fbe</a>: 0.0.34.<br/>The XML with all the data <a href="objectionary.xml">is here</a>, HTML <a href="objectionary.html">is here</a>.</p>
             <p>Made by <a href="https://www.zerocracy.com">Zerocracy</a>.</p>
          </footer>
       </section>
