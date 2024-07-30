@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// @checkstyle PackageNameCheck (1 line)
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
 package EOorg.EOeolang.EOsys;
 
 import org.eolang.Dataized;
