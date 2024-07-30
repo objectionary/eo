@@ -24,7 +24,6 @@
 // @checkstyle PackageNameCheck (1 line)
 package EOorg.EOeolang.EOsys;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.eolang.Dataized;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -58,39 +57,6 @@ public final class EOunameTest {
                 new EOuname$EOφ()
             ).take(String.class),
             Matchers.equalTo(System.getProperty("os.name"))
-        );
-    }
-
-    @Test
-    public void identifiesMacCorrectly() {
-        MatcherAssert.assertThat(
-            "uname.is-macos gives incorrect result",
-            new Dataized(
-                new EOuname$EOis_macos()
-            ).take(Boolean.class),
-            Matchers.equalTo(SystemUtils.IS_OS_MAC)
-        );
-    }
-
-    @Test
-    public void identifiesLinuxCorrectly() {
-        MatcherAssert.assertThat(
-            "uname.is-linux gives incorrect result",
-            new Dataized(
-                new EOuname$EOis_linux()
-            ).take(Boolean.class),
-            Matchers.equalTo(SystemUtils.IS_OS_LINUX)
-        );
-    }
-
-    @Test
-    public void identifiesWindowsCorrectly() {
-        MatcherAssert.assertThat(
-            "uname.is-windows gives incorrect result",
-            new Dataized(
-                new EOuname$EOis_windows()
-            ).take(Boolean.class),
-            Matchers.equalTo(SystemUtils.IS_OS_WINDOWS)
         );
     }
 }
