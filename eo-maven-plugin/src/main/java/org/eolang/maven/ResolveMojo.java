@@ -181,7 +181,7 @@ public final class ResolveMojo extends SafeMojo {
             }
         }
         if (deps.isEmpty()) {
-            Logger.debug(this, "No new dependencies unpacked");
+            Logger.info(this, "No new dependencies unpacked");
         } else {
             Logger.info(this, "New %d dependenc(ies) unpacked", deps.size());
         }
