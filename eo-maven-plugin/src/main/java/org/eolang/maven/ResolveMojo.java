@@ -160,7 +160,7 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(classifier)
                 .resolve(dep.getVersion());
             if (Files.exists(dest)) {
-                Logger.debug(
+                Logger.info(
                     this, "Dependency %s already resolved to %s",
                     new Coordinates(dep), new Rel(dest)
                 );
