@@ -166,6 +166,7 @@ final class SnippetTestCase {
                     .phase("compile")
                     .goals(
                         "register",
+                        "deps",
                         "parse",
                         "optimize",
                         "xmir-to-phi",
@@ -225,6 +226,7 @@ final class SnippetTestCase {
                     .goals(
                         "register",
                         "assemble",
+                        "deps",
                         "verify",
                         "transpile",
                         "copy",
@@ -250,6 +252,7 @@ final class SnippetTestCase {
                     .goals(
                         "register",
                         "assemble",
+                        "deps",
                         "verify",
                         "transpile",
                         "binarize"

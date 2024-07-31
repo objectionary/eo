@@ -23,7 +23,6 @@
  */
 package org.eolang.maven;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -32,7 +31,6 @@ import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.list.ListOf;
 
 /**
@@ -53,18 +51,6 @@ public final class DownloadDepsMojo extends SafeMojo {
     private static final Collection<Supplier<Dependency>> DEPS = new ListOf<>(
         new DepFunc("net.java.dev.jna", "jna", "5.14.0")
     );
-
-    /**
-     * Directory where classes are stored in target.
-     * @checkstyle MemberNameCheck (8 lines)
-     */
-    @Parameter(
-        defaultValue = "${project.build.directory}/classes",
-        readonly = true,
-        required = true
-    )
-    @SuppressWarnings("PMD.UnusedPrivateField")
-    private File classesDir;
 
     /**
      * The central.
