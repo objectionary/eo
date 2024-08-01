@@ -1,10 +1,2 @@
-[default]
-extend-ignore-identifiers-re = [
-    # *sigh* this just isn't worth the cost of fixing
-    "EOfile$EOis_directory",
-    "fid"
-]
-
-[default.extend-identifiers]
-# *sigh* this just isn't worth the cost of fixing
-fid = "EOfile$EOis_directory"
+[default.extend-words]
+fileisdir = "EOfile$EOis_directory"
