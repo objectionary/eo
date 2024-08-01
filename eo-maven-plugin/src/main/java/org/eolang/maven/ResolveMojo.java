@@ -160,7 +160,7 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(classifier)
                 .resolve(dep.getVersion());
             if (Files.exists(dest)) {
-                Logger.info(
+                Logger.debug(
                     this, "Dependency %s already resolved to %s",
                     new Coordinates(dep), new Rel(dest)
                 );
@@ -181,7 +181,7 @@ public final class ResolveMojo extends SafeMojo {
             }
         }
         if (deps.isEmpty()) {
-            Logger.info(this, "No new dependencies unpacked");
+            Logger.debug(this, "No new dependencies unpacked");
         } else {
             Logger.info(this, "New %d dependenc(ies) unpacked", deps.size());
         }

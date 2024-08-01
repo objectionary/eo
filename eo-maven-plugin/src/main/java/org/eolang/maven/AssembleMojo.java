@@ -267,7 +267,6 @@ public final class AssembleMojo extends SafeMojo {
             }
             before = after;
         }
-        new Moja<>(DownloadDepsMojo.class).copy(this).execute();
         Logger.info(
             this, "%d assemble cycle(s) produced some new object(s): %s",
             cycle, before

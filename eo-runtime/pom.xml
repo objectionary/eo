@@ -149,10 +149,6 @@ SOFTWARE.
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <runOrder>random</runOrder>
@@ -195,6 +191,7 @@ SOFTWARE.
             <id>compile</id>
             <goals>
               <goal>register</goal>
+              <goal>deps</goal>
               <goal>assemble</goal>
               <goal>verify</goal>
               <goal>transpile</goal>
@@ -217,6 +214,7 @@ SOFTWARE.
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
+              <goal>deps</goal>
               <goal>assemble</goal>
               <goal>verify</goal>
               <goal>transpile</goal>

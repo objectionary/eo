@@ -42,8 +42,7 @@ import org.cactoos.list.ListOf;
 @Mojo(
     name = "deps",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE
+    threadSafe = true
 )
 public final class DownloadDepsMojo extends SafeMojo {
 
