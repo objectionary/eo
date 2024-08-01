@@ -63,6 +63,11 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+@SuppressWarnings({
+    "JTCOP.RuleAssertionMessage",
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RulePresentTense"
+})
 @RunWith(MockitoJUnitRunner.class)
 public class MojoExecutorTest {
     @Mock MavenProject project;
