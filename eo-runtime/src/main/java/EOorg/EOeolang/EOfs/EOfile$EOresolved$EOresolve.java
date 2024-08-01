@@ -27,7 +27,9 @@
  */
 package EOorg.EOeolang.EOfs;
 
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
