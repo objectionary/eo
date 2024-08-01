@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.list.ListOf;
 
 /**
@@ -41,7 +42,8 @@ import org.cactoos.list.ListOf;
 @Mojo(
     name = "deps",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-    threadSafe = true
+    threadSafe = true,
+    requiresDependencyResolution = ResolutionScope.COMPILE
 )
 public final class DownloadDepsMojo extends SafeMojo {
 
