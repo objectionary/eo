@@ -44,7 +44,9 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.file-stream.read.read-bytes")
-public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes extends PhDefault implements Atom {
+public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
+    extends PhDefault
+    implements Atom {
 
     /**
      * Ctor.

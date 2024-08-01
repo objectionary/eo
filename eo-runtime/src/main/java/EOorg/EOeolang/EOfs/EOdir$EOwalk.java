@@ -74,11 +74,13 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
                 .map(p -> p.toAbsolutePath().toString())
                 .map(p -> p.substring(p.indexOf(path.toString())))
                 .filter(p -> matcher.matches(Paths.get(p)))
-                .map(p -> {
-                    final Phi file = Phi.Φ.take("org.eolang.fs.file").copy();
-                    file.put(0, new ToPhi(p));
-                    return file;
-                })
+                .map(
+                    p -> {
+                        final Phi file = Phi.Φ.take("org.eolang.fs.file").copy();
+                        file.put(0, new ToPhi(p));
+                        return file;
+                    }
+                )
                 .toArray(Phi[]::new)
         );
     }

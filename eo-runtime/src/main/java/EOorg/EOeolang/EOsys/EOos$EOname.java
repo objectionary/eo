@@ -34,7 +34,7 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Os.name
+ * Os.name.
  * @since 0.40
  * @checkstyle TypeNameCheck (5 lines)
  */

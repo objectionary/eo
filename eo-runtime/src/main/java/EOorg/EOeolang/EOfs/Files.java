@@ -45,7 +45,7 @@ import org.eolang.Versionized;
 @Versionized
 final class Files {
     /**
-     * Files instance
+     * Files instance.
      */
     static final Files INSTANCE = new Files();
 
@@ -67,10 +67,13 @@ final class Files {
      * @throws FileNotFoundException If can't open file
      */
     void open(final String name) throws FileNotFoundException {
-        this.streams.putIfAbsent(name, new Object[] {
-            new FileInputStream(name),
-            new FileOutputStream(name, true)
-        });
+        this.streams.putIfAbsent(
+            name,
+            new Object[] {
+                new FileInputStream(name),
+                new FileOutputStream(name, true),
+            }
+        );
     }
 
     /**
