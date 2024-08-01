@@ -23,18 +23,14 @@
 +alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
++tests
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Returns the system-dependent line separator string.
-# On UNIX systems, it returns "\n";
-# on Microsoft Windows systems it returns "\r\n".
-[] > line-separator
-  string > @
-    as-bytes.
-      if.
-        os.is-windows
-        "\r\n"
-        "\n"
+# Test.
+[] > checks-os-family
+  or. > @
+    or.
+      os.is-windows
+      os.is-macos
+    os.is-linux

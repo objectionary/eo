@@ -25,28 +25,49 @@
 /*
  * @checkstyle PackageNameCheck (4 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOfs;
 
+import java.nio.file.Paths;
+import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Uname.@.
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * File.open.file-stream.read.read-bytes.
+ *
+ * @since 0.40
+ * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "uname.@")
-public final class EOuname$EOφ extends PhDefault implements Atom {
+@XmirObject(oname = "file.open.file-stream.read.read-bytes")
+public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes extends PhDefault implements Atom {
+
     /**
-     * Operating system name as {@link Phi}.
+     * Ctor.
      */
-    private static final Phi OS_NAME = new Data.ToPhi(System.getProperty("os.name"));
+    public EOfile$EOopen$EOfile_stream$EOread$EOread_bytes() {
+        this.add("size", new AtVoid("size"));
+    }
 
     @Override
     public Phi lambda() throws Exception {
-        return EOuname$EOφ.OS_NAME;
+        return new Data.ToPhi(
+            Files.INSTANCE.read(
+                Paths.get(
+                    new Dataized(
+                        this.take(Attr.RHO)
+                            .take(Attr.RHO)
+                            .take(Attr.RHO)
+                            .take(Attr.RHO)
+                            .take("path")
+                    ).asString()
+                ).toString(),
+                new Dataized(this.take("size")).asNumber().intValue()
+            )
+        );
     }
 }

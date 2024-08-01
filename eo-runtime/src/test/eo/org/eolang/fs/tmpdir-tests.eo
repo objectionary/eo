@@ -20,18 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.txt.regex
++alias org.eolang.fs.tmpdir
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
++tests
++package org.eolang.fs
 +version 0.0.0
 
-# Represents the name of the operation system.
-# See https://man7.org/linux/man-pages/man2/uname.2.html.
-[] > uname
-  [] > @ /string
-  ((regex "/^Windows.+$/").matches @).as-bool > is-windows
-  ((regex "/linux/i").matches @).as-bool > is-linux
-  ((regex "/mac/i").matches @).as-bool > is-macos
+# Test.
+tmpdir.exists > [] > global-temp-dir-exists
+
+# Test.
+tmpdir.is-directory > [] > global-temp-dir-is-directory
+
+# Test.
+tmpdir.path.eq tmpdir.path > [] > returns-the-same-tmpdir
+
+# Test.
+tmpdir.tmpfile.exists > [] > creates-tmpfile
