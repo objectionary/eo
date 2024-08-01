@@ -208,92 +208,68 @@ public interface Data {
          *  removed as a result of refactoring.
          * @checkstyle CyclomaticComplexityCheck (100 lines)
          * @checkstyle JavaNCSSCheck (100 lines)
-         * @checkstyle NestedIfDepthCheck (100 lines)
          * @checkstyle ModifiedControlVariableCheck (100 lines)
          */
-        @SuppressWarnings({
-            "PMD.AvoidReassigningLoopVariables",
-            "PMD.CognitiveComplexity",
-            "PMD.NPathComplexity"
-        })
+        @SuppressWarnings({"PMD.AvoidReassigningLoopVariables", "PMD.CognitiveComplexity"})
         private static String unescapeJavaString(final String str) {
-            final StringBuilder unescaped = new StringBuilder(str.length());
+            final StringBuilder unescaped = new StringBuilder();
             for (int idx = 0; idx < str.length(); ++idx) {
-                char chr = str.charAt(idx);
-                if (chr == '\\') {
-                    final char next;
-                    if (idx == str.length() - 1) {
-                        next = '\\';
-                    } else {
-                        next = str.charAt(idx + 1);
-                    }
-                    if (next >= '0' && next <= '7') {
-                        final StringBuilder code = new StringBuilder(String.valueOf(next));
-                        ++idx;
-                        if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
-                            && str.charAt(idx + 1) <= '7') {
-                            code.append(str.charAt(idx + 1));
-                            ++idx;
-                            if (idx < str.length() - 1 && str.charAt(idx + 1) >= '0'
-                                && str.charAt(idx + 1) <= '7') {
-                                code.append(str.charAt(idx + 1));
-                                ++idx;
-                            }
-                        }
-                        unescaped.append((char) Integer.parseInt(code.toString(), 8));
-                        continue;
-                    }
+                final char current = str.charAt(idx);
+                if (current == '\\' && idx + 1 < str.length()) {
+                    final char next = str.charAt(idx + 1);
                     switch (next) {
-                        case '\\':
-                            break;
                         case 'b':
-                            chr = '\b';
-                            break;
-                        case 'f':
-                            chr = '\f';
-                            break;
-                        case 'n':
-                            chr = '\n';
-                            break;
-                        case 'r':
-                            chr = '\r';
+                            unescaped.append('\b');
+                            ++idx;
                             break;
                         case 't':
-                            chr = '\t';
+                            unescaped.append('\t');
+                            ++idx;
+                            break;
+                        case 'n':
+                            unescaped.append('\n');
+                            ++idx;
+                            break;
+                        case 'f':
+                            unescaped.append('\f');
+                            ++idx;
+                            break;
+                        case 'r':
+                            unescaped.append('\r');
+                            ++idx;
                             break;
                         case '\"':
-                            chr = '\"';
+                            unescaped.append('\"');
+                            ++idx;
                             break;
                         case '\'':
-                            chr = '\'';
+                            unescaped.append('\'');
+                            ++idx;
+                            break;
+                        case '\\':
+                            unescaped.append('\\');
+                            ++idx;
                             break;
                         case 'u':
-                            if (idx >= str.length() - 5) {
-                                chr = 'u';
-                                break;
+                            if (idx + 5 < str.length()) {
+                                final String hex = str.substring(idx + 2, idx + 6);
+                                try {
+                                    unescaped.append((char) Integer.parseInt(hex, 16));
+                                    idx += 5;
+                                } catch (final NumberFormatException exception) {
+                                    unescaped.append(current);
+                                }
+                            } else {
+                                unescaped.append(current);
                             }
-                            unescaped.append(
-                                Character.toChars(
-                                    Integer.parseInt(
-                                        String.join(
-                                            "",
-                                            String.valueOf(str.charAt(idx + 2)),
-                                            String.valueOf(str.charAt(idx + 3)),
-                                            String.valueOf(str.charAt(idx + 4)),
-                                            String.valueOf(str.charAt(idx + 5))
-                                        ),
-                                        16
-                                    )
-                                )
-                            );
-                            idx += 5;
-                            continue;
+                            break;
                         default:
+                            unescaped.append(current);
                             break;
                     }
-                    ++idx;
+                } else {
+                    unescaped.append(current);
                 }
-                unescaped.append(chr);
             }
             return unescaped.toString();
         }
