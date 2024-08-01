@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.list.ListOf;
 
 /**
