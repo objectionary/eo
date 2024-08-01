@@ -212,7 +212,7 @@ public interface Data {
          */
         @SuppressWarnings({"PMD.AvoidReassigningLoopVariables", "PMD.CognitiveComplexity"})
         private static String unescapeJavaString(final String str) {
-            final StringBuilder unescaped = new StringBuilder();
+            final StringBuilder unescaped = new StringBuilder(str.length());
             for (int idx = 0; idx < str.length(); ++idx) {
                 final char current = str.charAt(idx);
                 if (current == '\\' && idx + 1 < str.length()) {
@@ -238,7 +238,7 @@ public interface Data {
                             unescaped.append('\r');
                             ++idx;
                             break;
-                        case '\"':
+                        case '"':
                             unescaped.append('\"');
                             ++idx;
                             break;
@@ -257,14 +257,15 @@ public interface Data {
                                     unescaped.append((char) Integer.parseInt(hex, 16));
                                     idx += 5;
                                 } catch (final NumberFormatException exception) {
-                                    unescaped.append(current);
+                                    unescaped.append('\\').append('u');
                                 }
                             } else {
-                                unescaped.append(current);
+                                unescaped.append('\\').append('u');
                             }
                             break;
                         default:
-                            unescaped.append(current);
+                            unescaped.append('\\').append(next);
+                            ++idx;
                             break;
                     }
                 } else {
