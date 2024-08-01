@@ -163,7 +163,7 @@ final class SnippetTestCase {
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
                     .execution("phi-unphi")
-                    .phase("compile")
+                    .phase("process-sources")
                     .goals(
                         "register",
                         "deps",
@@ -226,7 +226,6 @@ final class SnippetTestCase {
                     .goals(
                         "register",
                         "assemble",
-                        "deps",
                         "verify",
                         "transpile",
                         "copy",
@@ -247,12 +246,21 @@ final class SnippetTestCase {
                         "eo-maven-plugin",
                         System.getProperty("eo.version", "1.0-SNAPSHOT")
                     )
+                    .execution("deps")
+                    .phase("process-sources")
+                    .goals("deps");
+                f.build()
+                    .plugins()
+                    .append(
+                        "org.eolang",
+                        "eo-maven-plugin",
+                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                    )
                     .execution("tests")
                     .phase("generate-test-sources")
                     .goals(
                         "register",
                         "assemble",
-                        "deps",
                         "verify",
                         "transpile",
                         "binarize"
