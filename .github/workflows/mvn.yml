@@ -54,6 +54,11 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - name: Temp dirs
+        if: matrix.os == 'windows-2022'
+        run: |
+          mkdir -p ${{ runner.temp }}/example_temp_dir
+          dir ${{ runner.temp }}
       # The next step is required to avoid some exceptions that occur
       # when running on Windows OS. For example like this one:
       # - https://github.com/objectionary/eo/issues/2336
