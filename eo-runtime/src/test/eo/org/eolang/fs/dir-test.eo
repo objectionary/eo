@@ -37,7 +37,7 @@
 [] > makes-new-directory
   made. > d
     dir
-      tmpdir.tmpfile.deleted.resolved "new-dir"
+      tmpdir.tmpfile.deleted.resolved "foo-new"
   and. > @
     d.exists
     d.is-directory
@@ -46,7 +46,7 @@
 [] > deletes-empty-directory
   dir
     tmpdir.tmpfile.deleted.resolved
-      "empty"
+      "bar-empty"
   .made
   .deleted
   .exists
