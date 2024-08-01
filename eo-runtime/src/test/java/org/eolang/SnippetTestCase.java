@@ -162,6 +162,7 @@ final class SnippetTestCase {
         );
     }
 
+    // @checkstyle MethodLengthCheck (170 lines)
     @Test
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
