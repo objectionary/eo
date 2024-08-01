@@ -91,9 +91,10 @@ public final class Central implements BiConsumer<Dependency, Path> {
             MojoExecutor.executeMojo(
                 MojoExecutor.plugin(
                     MojoExecutor.groupId("org.apache.maven.plugins"),
-                    MojoExecutor.artifactId("maven-dependency-plugin")
+                    MojoExecutor.artifactId("maven-dependency-plugin"),
+                    MojoExecutor.version("3.7.0")
                 ),
-                MojoExecutor.goal("unpack-dependencies"),
+                MojoExecutor.goal("unpack"),
                 MojoExecutor.configuration(
                     MojoExecutor.element(
                         "artifactItems",
