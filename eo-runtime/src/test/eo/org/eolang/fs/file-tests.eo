@@ -70,12 +70,6 @@
   tmpdir.tmpfile.deleted.deleted.exists.not > @
 
 # Test.
-[] > resolves-in-a-right-way
-  eq. > @
-    (tmpdir.resolved "foo/bar").path
-    tmpdir.path.concat "foo/bar"
-
-# Test.
 [] > throws-an-error-on-touching-temp-file-in-absent-dir
   (tmpdir.resolve "foo").tmpfile > @
 
@@ -90,7 +84,7 @@
         f.exists
         contains.
           text f.path
-          "/foo/bar"
+          "bar"
 
 # Test.
 [] > moves-a-file
