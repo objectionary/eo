@@ -54,6 +54,7 @@ public final class EOgetenv extends PhDefault implements Atom {
         final String env = System.getenv(
             new Dataized(this.take("name")).asString()
         );
+        System.out.println("ENV is " + env);
         final Phi var;
         if (env != null) {
             var = new Data.ToPhi(env);
