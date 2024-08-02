@@ -53,7 +53,6 @@ public final class EOfile$EOresolved$EOresolve extends PhDefault implements Atom
             Paths.get(new Dataized(rho.take(Attr.RHO).take("path")).asString())
                 .resolve(new Dataized(rho.take("other")).asString())
                 .toString()
-                .replace("\\", "\\\\")
         );
     }
 }

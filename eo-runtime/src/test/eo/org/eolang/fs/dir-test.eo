@@ -22,7 +22,6 @@
 
 +alias org.eolang.fs.dir
 +alias org.eolang.fs.tmpdir
-+alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -44,23 +43,14 @@
     d.is-directory
 
 # Test.
-# @todo #3251:30min Enable the test on windows. The test fails on windows
-#  because `file.resolved` object for some reason produces invalid path
-#  on windows with unreadable characters. It appends "bar" to origin path
-#  and in "your-path\bar" '\b' is understood as <0x08> (backspace) unreadable character.
-#  So the result path is invalid and does not work. Maybe problem is related to
-#  `unescapedJavaString` function in `org.eolang.Data.ToPhi` object. But it seems it
-#  works fine.
 [] > deletes-empty-directory
-  or. > @
-    os.is-windows
-    dir
-      tmpdir.tmpfile.deleted.resolved
-        "bar-empty"
-    .made
-    .deleted
-    .exists
-    .not
+  dir
+    tmpdir.tmpfile.deleted.resolved
+      "bar-empty"
+  .made
+  .deleted
+  .exists
+  .not > @
 
 # Test.
 [] > throws-on-opening-directory

@@ -25,7 +25,6 @@
 +alias org.eolang.fs.tmpdir
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.text
-+alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -75,27 +74,17 @@
   (tmpdir.resolve "foo").tmpfile > @
 
 # Test.
-# @todo #3251:30min Enable the test on windows. The test fails on windows
-#  because `file.resolved` object for some reason produces invalid path
-#  on windows with unreadable characters. It appends "foo" to origin path
-#  and in "your-path\foo\bar" '\f' is understood as <0x00c> (form freed) unreadable
-#  character, '\b' is understood as <0x08> (backspace) unreadable character.
-#  So the result path is invalid and does not work. Maybe problem is related to
-#  `unescapedJavaString` function in `org.eolang.Data.ToPhi` object. But it seems it
-#  works fine.
 [] > resolves-and-touches
   dir (tmpdir.resolved "foo/bar") > resolved
   resolved.tmpfile > f
-  or. > @
-    os.is-windows
-    seq
-      *
-        resolved.deleted.made.path
-        and.
-          f.exists
-          contains.
-            text f.path
-            "bar"
+  seq > @
+    *
+      resolved.deleted.made.path
+      and.
+        f.exists
+        contains.
+          text f.path
+          "bar"
 
 # Test.
 [] > moves-a-file
