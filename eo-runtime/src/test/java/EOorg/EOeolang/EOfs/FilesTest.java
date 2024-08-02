@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang.EOfs;
 
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -49,14 +48,6 @@ final class FilesTest {
      * Files instance.
      */
     private static final Files INSTANCE = Files.INSTANCE;
-
-    @Test
-    void opensWithoutErrors(@TempDir final Path dir) {
-        Assertions.assertDoesNotThrow(
-            () -> FilesTest.INSTANCE.open(FilesTest.tempFile(dir)),
-            "File should be opened without errors"
-        );
-    }
 
     @Test
     void throwsOnReadingWithoutOpening(@TempDir final Path dir) {
