@@ -173,9 +173,7 @@ public interface Data {
                     bytes = new BytesOf(((Number) obj).doubleValue()).take();
                 } else if (obj instanceof String) {
                     phi = eolang.take("string").copy();
-                    bytes = Data.ToPhi.unescapeJavaString(
-                        (String) obj
-                    ).getBytes(StandardCharsets.UTF_8);
+                    bytes = ((String) obj).getBytes(StandardCharsets.UTF_8);
                 } else {
                     throw new IllegalArgumentException(
                         String.format(
@@ -189,89 +187,6 @@ public interface Data {
                 phi.put(0, bts);
             }
             return phi;
-        }
-
-        /**
-         * Unescapes a string that contains standard Java escape sequences.
-         * <ul>
-         * <li><strong>&#92;b &#92;f &#92;n &#92;r &#92;t &#92;" &#92;'</strong> :
-         * BS, FF, NL, CR, TAB, double and single quote.</li>
-         * <li><strong>&#92;X &#92;XX &#92;XXX</strong> : Octal character
-         * specification (0 - 377, 0x00 - 0xFF).</li>
-         * <li><strong>&#92;uXXXX</strong> : Hexadecimal based Unicode character.</li>
-         * </ul>
-         * @param str A string optionally containing standard java escape sequences.
-         * @return The translated string
-         * @todo #3160:90min This method should be refactored because it has high cognitive
-         *  complexity and other problems. All {@code @checkstyle} warnings suppression and
-         *  {@code SuppressWarnings("PMD.WarningName")} annotations for this method should be
-         *  removed as a result of refactoring.
-         * @checkstyle CyclomaticComplexityCheck (100 lines)
-         * @checkstyle JavaNCSSCheck (100 lines)
-         * @checkstyle ModifiedControlVariableCheck (100 lines)
-         */
-        @SuppressWarnings({"PMD.AvoidReassigningLoopVariables", "PMD.CognitiveComplexity"})
-        private static String unescapeJavaString(final String str) {
-            final StringBuilder unescaped = new StringBuilder();
-            for (int idx = 0; idx < str.length(); ++idx) {
-                final char current = str.charAt(idx);
-                if (current == '\\' && idx + 1 < str.length()) {
-                    final char next = str.charAt(idx + 1);
-                    switch (next) {
-                        case 'b':
-                            unescaped.append('\b');
-                            ++idx;
-                            break;
-                        case 't':
-                            unescaped.append('\t');
-                            ++idx;
-                            break;
-                        case 'n':
-                            unescaped.append('\n');
-                            ++idx;
-                            break;
-                        case 'f':
-                            unescaped.append('\f');
-                            ++idx;
-                            break;
-                        case 'r':
-                            unescaped.append('\r');
-                            ++idx;
-                            break;
-                        case '\"':
-                            unescaped.append('\"');
-                            ++idx;
-                            break;
-                        case '\'':
-                            unescaped.append('\'');
-                            ++idx;
-                            break;
-                        case '\\':
-                            unescaped.append('\\');
-                            ++idx;
-                            break;
-                        case 'u':
-                            if (idx + 5 < str.length()) {
-                                final String hex = str.substring(idx + 2, idx + 6);
-                                try {
-                                    unescaped.append((char) Integer.parseInt(hex, 16));
-                                    idx += 5;
-                                } catch (final NumberFormatException exception) {
-                                    unescaped.append(current);
-                                }
-                            } else {
-                                unescaped.append(current);
-                            }
-                            break;
-                        default:
-                            unescaped.append(current);
-                            break;
-                    }
-                } else {
-                    unescaped.append(current);
-                }
-            }
-            return unescaped.toString();
         }
     }
 }
