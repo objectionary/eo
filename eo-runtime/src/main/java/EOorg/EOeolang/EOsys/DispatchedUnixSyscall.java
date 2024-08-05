@@ -31,7 +31,7 @@ import org.eolang.Phi;
 /**
  * Unix system call that uses library {@link CStdLib}.
  *
- * @since 0.39
+ * @since 0.40
  */
 public final class DispatchedUnixSyscall implements DispatchedNativeMethod {
     /**

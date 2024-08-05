@@ -25,7 +25,7 @@
 /**
  * EO runtime, SYS.
  *
- * @since 0.39
+ * @since 0.40
  * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOsys;

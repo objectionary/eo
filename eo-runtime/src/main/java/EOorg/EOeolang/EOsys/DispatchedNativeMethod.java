@@ -31,7 +31,7 @@ import org.eolang.Phi;
 /**
  * Native method that can be called with EO objects ({@link Phi}) as arguments.
  *
- * @since 0.39
+ * @since 0.40
  */
 public interface DispatchedNativeMethod {
     int call(Phi... params);

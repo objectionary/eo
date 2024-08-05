@@ -34,9 +34,9 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * CALL.
+ * Unix syscall.
  *
- * @since 0.39
+ * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 public final class EOunix extends PhDefault implements Atom {

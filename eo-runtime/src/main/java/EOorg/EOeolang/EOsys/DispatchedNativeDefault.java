@@ -35,7 +35,7 @@ import org.eolang.Phi;
 /**
  * Default native call that uses {@link Library} and can be dispatched by name.
  *
- * @since 0.39
+ * @since 0.40
  */
 public final class DispatchedNativeDefault implements DispatchedNativeMethod {
     /**
