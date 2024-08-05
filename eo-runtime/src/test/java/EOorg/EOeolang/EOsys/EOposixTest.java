@@ -39,12 +39,12 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
 /**
- * Test case for {@link EOunix}.
+ * Test case for {@link EOposix}.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-public class EOunixTest {
+public class EOposixTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     public void invokesGetpidCorrectly() {
@@ -53,7 +53,7 @@ public class EOunixTest {
             new Dataized(
                 new PhWith(
                     new PhWith(
-                        new EOunix(),
+                        new EOposix(),
                         "name",
                         new Data.ToPhi("getpid")
                     ),
@@ -89,7 +89,7 @@ public class EOunixTest {
             new Dataized(
                 new PhWith(
                     new PhWith(
-                        new EOunix(),
+                        new EOposix(),
                         "name",
                         new Data.ToPhi("write")
                     ),

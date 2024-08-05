@@ -27,6 +27,6 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Makes a Unix syscall by name.
+# Makes a Unix syscall by name with POSIX interface.
 # See https://filippo.io/linux-syscall-table/
-[name args] > unix /int
+[name args] > posix /int

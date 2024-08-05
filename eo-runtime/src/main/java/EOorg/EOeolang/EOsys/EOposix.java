@@ -39,12 +39,12 @@ import org.eolang.Phi;
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-public final class EOunix extends PhDefault implements Atom {
+public final class EOposix extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOunix() {
+    public EOposix() {
         this.add("name", new AtVoid("name"));
         this.add("args", new AtVoid("args"));
     }

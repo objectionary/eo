@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.unix
++alias org.eolang.sys.posix
 +alias org.eolang.tuple
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -34,7 +34,7 @@
     sys.uname.is-windows
     true
     gt.
-      unix
+      posix
         "getpid"
         tuple.empty
       0
@@ -46,7 +46,7 @@
     sys.uname.is-windows
     true
     eq.
-      unix
+      posix
         "write"
         *
           1
@@ -61,7 +61,7 @@
     sys.uname.is-windows
     true
     eq.
-      unix
+      posix
         "read"
         *
           1
