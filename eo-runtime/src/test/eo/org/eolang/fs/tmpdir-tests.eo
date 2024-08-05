@@ -19,37 +19,31 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
----
-name: zerocracy
-'on':
-  schedule:
-    - cron: '0 * * * *'
-concurrency:
-  group: zerocracy
-  cancel-in-progress: false
-jobs:
-  zerocracy:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.40
-        with:
-          token: ${{ secrets.ZEROCRACY_TOKEN }}
-          options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
-            vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
-            repositories=objectionary/*
-          factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.33
-        with:
-          factbase: objectionary.fb
-          output: pages
-          logo: https://www.objectionary.com/cactus.svg
-          options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
-      - uses: JamesIves/github-pages-deploy-action@v4.6.3
-        with:
-          branch: gh-pages
-          folder: pages
-          target-folder: zerocracy
-          clean: false
+
++alias org.eolang.fs.tmpdir
++alias org.eolang.io.stdout
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.fs
++version 0.0.0
+
+# Test.
+[] > prints-tmpdir
+  stdout > @
+    sprintf
+      "Temp dir is %s\n"
+      * tmpdir
+
+# Test.
+tmpdir.exists > [] > global-temp-dir-exists
+
+# Test.
+tmpdir.is-directory > [] > global-temp-dir-is-directory
+
+# Test.
+tmpdir.path.eq tmpdir.path > [] > returns-the-same-tmpdir
+
+# Test.
+tmpdir.tmpfile.exists > [] > creates-tmpfile

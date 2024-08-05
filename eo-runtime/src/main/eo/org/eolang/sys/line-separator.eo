@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.uname
++alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.sys
@@ -32,7 +32,9 @@
 # On UNIX systems, it returns "\n";
 # on Microsoft Windows systems it returns "\r\n".
 [] > line-separator
-  if. > @
-    uname.is-windows
-    "\r\n"
-    "\n"
+  string > @
+    as-bytes.
+      if.
+        os.is-windows
+        "\r\n"
+        "\n"

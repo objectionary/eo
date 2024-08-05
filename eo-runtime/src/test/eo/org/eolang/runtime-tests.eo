@@ -135,6 +135,18 @@
     0
 
 # Test.
+[] > unescapes-slashes
+  eq. > @
+    "x\\b\\f\\u\\r\\t\\n\\'"
+    78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
+
+# Test.
+[] > unescapes-symbols
+  eq. > @
+    "\b\f\n\r\t\u27E6"
+    08-0C-0A-0D-09-E2-9F-A6
+
+# Test.
 [] > compiles-correctly-with-long-duplicate-names
   [] > long-object-name
     [] > long-object-name

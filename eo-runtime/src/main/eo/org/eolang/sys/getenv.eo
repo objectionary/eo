@@ -20,17 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.uname
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang.sys
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Test.
-[] > checks-os-family
-  or. > @
-    or.
-      uname.is-windows
-      uname.is-macos
-    uname.is-linux
+# Get environment variable as `string`.
+# If return `string` is empty - the variable does not exist.
+#
+# See https://man7.org/linux/man-pages/man3/getenv.3.html
+[name] > getenv /string

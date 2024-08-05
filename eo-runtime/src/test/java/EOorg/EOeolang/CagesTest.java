@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link Cages}.
  * @since 0.36.0
  */
-class CagesTest {
+final class CagesTest {
     @Test
     void initializesObjectForTheFirstTime() {
         final Phi phi = new PhFake();

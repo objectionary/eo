@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
-public final class HeapsTest {
+final class HeapsTest {
     /**
      * Heaps.
      */

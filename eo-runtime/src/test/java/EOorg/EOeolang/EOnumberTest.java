@@ -53,7 +53,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * @checkstyle TypeNameCheck (4 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-public final class EOnumberTest {
+final class EOnumberTest {
 
     @Test
     void hasDifferentHashes() {

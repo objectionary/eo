@@ -96,9 +96,9 @@
   # Write given `buffer` to console.
   # Here `buffer` is either sequence of bytes or and object that can be
   # dataized via `as-bytes` object.
+  # Returns new instance of `output-block` ready to write again.
   [buffer] > write
-    self. > @
-      output-block.write buffer
+    (output-block.write buffer).self > @
 
     # Console output block.
     #
@@ -111,10 +111,11 @@
       # Writes bytes contained in `buffer` to operation system console.
       # Returns new instance of `output-block` ready to write again.
       [buffer] > write
-        seq > @
-          *
-            ^.^.written-bytes buffer
-            ^.^.output-block
+        self. > @
+          seq
+            *
+              ^.^.written-bytes buffer
+              ^.^.output-block
 
     # Bytes written to operation system console.
     #
