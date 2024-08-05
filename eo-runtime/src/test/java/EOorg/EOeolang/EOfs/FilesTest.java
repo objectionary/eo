@@ -24,10 +24,11 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -85,11 +86,10 @@ final class FilesTest {
     @Test
     void readsFromFile(@TempDir final Path dir) throws IOException {
         final String file = FilesTest.tempFile(dir);
-        final FileWriter writer = new FileWriter(
-            Paths.get(file).toFile()
-        );
-        writer.write("Hello, world");
-        writer.close();
+        try (BufferedWriter writer =
+            java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
+            writer.write("Hello, world");
+        }
         FilesTest.INSTANCE.open(file);
         MatcherAssert.assertThat(
             "The string should have been read from file",
@@ -102,11 +102,10 @@ final class FilesTest {
     @Test
     void writesToFile(@TempDir final Path dir) throws IOException {
         final String file = FilesTest.tempFile(dir);
-        final FileWriter writer = new FileWriter(
-            Paths.get(file).toFile()
-        );
-        writer.write("Hello, world");
-        writer.close();
+        try (BufferedWriter writer =
+            java.nio.file.Files.newBufferedWriter(Paths.get(file))) {
+            writer.write("Hello, world");
+        }
         FilesTest.INSTANCE.open(file);
         FilesTest.INSTANCE.write(file, "!".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(

@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOio; // NOPMD
 
 import org.eolang.AtCompositeTest;
 import org.eolang.Dataized;
@@ -47,11 +48,17 @@ import org.junitpioneer.jupiter.StdIo;
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOstdinTest {
+
+    /**
+     * Next line.
+     */
+    private static final String NEXT_LINE = "next-line";
+
     @StdIo("this is a test input!")
     @Test
     void dataizesNextLineOneLine() {
         final String expected = "this is a test input!";
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -77,7 +84,7 @@ final class EOstdinTest {
     @Test
     void dataizesNextLineMultiLine() {
         final String expected = "this is a test input!";
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -89,7 +96,7 @@ final class EOstdinTest {
     @StdIo("")
     @Test
     void dataizesNextLineEmpty() {
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         final String input = Assertions.assertDoesNotThrow(
             () -> new Dataized(phi).asString(),
             AtCompositeTest.TO_ADD_MESSAGE
@@ -132,21 +139,21 @@ final class EOstdinTest {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
-        Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        Phi phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(first)
         );
-        phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(second)
         );
-        phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -160,21 +167,21 @@ final class EOstdinTest {
     void dataizesStdinEmptyLineBetweenNonEmpty() {
         final String first = "\u0066\u0069\u0072\u0073\u0074";
         final String third = "\u0074\u0068\u0069\u0072\u0064";
-        Phi phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        Phi phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo(first)
         );
-        phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             actual,
             Matchers.equalTo("")
         );
-        phi = new PhMethod(new PhCopy(new EOstdin()), "next-line");
+        phi = new PhMethod(new PhCopy(new EOstdin()), EOstdinTest.NEXT_LINE);
         actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,

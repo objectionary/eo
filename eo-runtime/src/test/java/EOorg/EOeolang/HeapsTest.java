@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtCompositeTest;
 import org.eolang.ExFailure;
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.19
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class HeapsTest {
     /**
      * Heaps.
@@ -83,7 +85,7 @@ final class HeapsTest {
     @Test
     void writesAndReads() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
-        final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
+        final byte[] bytes = {1, 2, 3, 4, 5};
         HeapsTest.HEAPS.write(idx, 0, bytes);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
@@ -135,7 +137,7 @@ final class HeapsTest {
     @Test
     void failsOnWriteMoreThanAllocated() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 2);
-        final byte[] bytes = new byte[] {1, 2, 3, 4, 5};
+        final byte[] bytes = {1, 2, 3, 4, 5};
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 0, bytes),
@@ -147,7 +149,7 @@ final class HeapsTest {
     @Test
     void failsToWriteMoreThanAllocatedWithOffset() {
         final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 3);
-        final byte[] bytes = new byte[] {1, 2, 3};
+        final byte[] bytes = {1, 2, 3};
         Assertions.assertThrows(
             ExFailure.class,
             () -> HeapsTest.HEAPS.write(idx, 1, bytes),

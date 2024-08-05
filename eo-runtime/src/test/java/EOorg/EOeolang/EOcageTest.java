@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -202,7 +203,7 @@ final class EOcageTest {
      */
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
-    class RecursionTests {
+    final class RecursionTests {
 
         /**
          * DEPTH.
@@ -212,7 +213,7 @@ final class EOcageTest {
         @BeforeEach
         void setDepth() {
             System.setProperty(
-                PhTraced.RECURSION_LIMIT, String.valueOf(MAX_DEPTH)
+                PhTraced.RECURSION_LIMIT, String.valueOf(EOcageTest.RecursionTests.MAX_DEPTH)
             );
         }
 
@@ -403,6 +404,7 @@ final class EOcageTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.add("x", new AtVoid("x"));
         }

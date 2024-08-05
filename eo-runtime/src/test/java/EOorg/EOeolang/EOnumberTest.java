@@ -24,12 +24,12 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import EOorg.EOeolang.EOio.EOconsole$EOwrite$EOwritten_bytes;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
@@ -137,6 +137,7 @@ final class EOnumberTest {
          * @param value Phi value to be compared
          * @param stdout Object that can print
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         PrintWithCmp(final Phi method, final Phi value, final Phi stdout) {
             super();
             this.add(

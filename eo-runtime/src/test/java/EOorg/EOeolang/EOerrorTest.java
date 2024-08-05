@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
@@ -109,6 +110,7 @@ final class EOerrorTest {
          * Ctor.
          * @param data The data inside error.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         MyError(final Object data) {
             this.add(
                 "φ",

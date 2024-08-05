@@ -343,7 +343,6 @@ SOFTWARE.
                  resolved.
                 -->
                 <exclude>pmd:/src/main/java/EOorg/.*</exclude>
-                <exclude>pmd:/src/test/java/EOorg/.*</exclude>
                 <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
               </excludes>
             </configuration>

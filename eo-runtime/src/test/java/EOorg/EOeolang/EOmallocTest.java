@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
@@ -108,6 +109,7 @@ final class EOmallocTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.add("m", new AtVoid("m"));
             this.add(
@@ -138,6 +140,7 @@ final class EOmallocTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
             this.add("m", new AtVoid("m"));
             this.add(

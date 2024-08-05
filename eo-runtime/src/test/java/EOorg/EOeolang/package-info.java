@@ -24,6 +24,7 @@
 
 /*
  * @checkstyle PackageNameCheck (20 lines)
+ * @checkstyle TrailingCommentCheck (20 lines)
  */
 
 /**
@@ -33,4 +34,4 @@
  * @see <a href="https://www.eolang.org">project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD

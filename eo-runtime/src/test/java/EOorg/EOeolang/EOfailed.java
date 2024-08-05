@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import com.jcabi.log.Logger;
 import org.eolang.PhDefault;
@@ -46,6 +47,7 @@ public final class EOfailed extends PhDefault {
      * Ctor.
      * @param arg Argument
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfailed(final String arg) {
         super();
         Logger.info(this, "EOfailed %s", arg);

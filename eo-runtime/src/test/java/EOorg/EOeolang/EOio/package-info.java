@@ -24,6 +24,7 @@
 
 /*
  * @checkstyle PackageNameCheck (20 lines)
+ * @checkstyle TrailingCommentCheck (20 lines)
  */
 
 /**
@@ -31,4 +32,4 @@
  *
  * @since 0.1
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOio; // NOPMD

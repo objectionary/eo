@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (10 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
@@ -49,7 +50,7 @@ import org.junit.jupiter.api.Test;
 final class EOtryTest {
 
     @Test
-    public void catchesException() {
+    void catchesException() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
@@ -70,7 +71,7 @@ final class EOtryTest {
     }
 
     @Test
-    public void usesCatcherOutput() {
+    void usesCatcherOutput() {
         final Phi body = new PhWith(
             new PhWith(
                 new PhWith(
@@ -90,7 +91,7 @@ final class EOtryTest {
     }
 
     @Test
-    public void worksWithoutException() {
+    void worksWithoutException() {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
@@ -111,7 +112,7 @@ final class EOtryTest {
     }
 
     @Test
-    public void doesNotDataizeBodyTwice() {
+    void doesNotDataizeBodyTwice() {
         final Phi trier = new EOtry();
         final MainWithCounter main = new MainWithCounter();
         trier.put(0, main);
@@ -138,6 +139,7 @@ final class EOtryTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         MainWithCounter() {
             super();
             this.add(
@@ -162,6 +164,7 @@ final class EOtryTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Main() {
             this.add(
                 "φ",
@@ -183,6 +186,7 @@ final class EOtryTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Broken() {
             this.add(
                 "φ",
@@ -204,6 +208,7 @@ final class EOtryTest {
         /**
          * Ctor.
          */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Catcher() {
             this.add("ex", new AtVoid("ex"));
             this.add(
