@@ -44,7 +44,7 @@ import org.junit.jupiter.api.condition.OS;
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-public class EOposixTest {
+final class EOposixTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     public void invokesGetpidCorrectly() {
@@ -74,16 +74,11 @@ public class EOposixTest {
     @DisabledOnOs(OS.WINDOWS)
     public void invokesWriteCorrectly() {
         final String msg = "Hello, world!\n";
-        final Phi args = new PhWith(
-            new PhWith(
-                new PhWith(
-                    new EOtuple$EOempty().take("with").copy(),
-                    0, new Data.ToPhi(1L)
-                ).take("with").copy(),
-                0, new Data.ToPhi(msg)
-            ).take("with").copy(),
-            0, new Data.ToPhi(msg.length())
-        );
+        final Phi args = new Data.ToPhi(new Phi[] {
+            new Data.ToPhi(1L),
+            new Data.ToPhi(msg),
+            new Data.ToPhi(msg.length())
+        });
         MatcherAssert.assertThat(
             "The \"getpid\" system call was expected to work correctly",
             new Dataized(

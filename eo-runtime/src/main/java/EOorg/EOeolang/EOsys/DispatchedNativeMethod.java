@@ -34,5 +34,11 @@ import org.eolang.Phi;
  * @since 0.40
  */
 public interface DispatchedNativeMethod {
+    /**
+     * Makes native method call.
+     *
+     * @param params Native methods parameters.
+     * @return Methods return code.
+     */
     int call(Phi... params);
 }

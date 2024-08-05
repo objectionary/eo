@@ -55,17 +55,22 @@ public final class EOposix extends PhDefault implements Atom {
         final Phi[] args = this.collectArgs();
         return new Data.ToPhi(
             new DispatchedUnixSyscall(
-                new Dataized(name).take(String.class)
+                new Dataized(name).asString()
             ).call(args)
         );
     }
 
+    /**
+     * Collects arguments for syscall from tuple.
+     *
+     * @return Array of arguments.
+     */
     private Phi[] collectArgs() {
         final Phi args = this.take("args");
         final Phi retriever = args.take("at");
         final int length = new Dataized(args.take("length")).asNumber().intValue();
         final Phi[] arguments = new Phi[length];
-        for (long iter = 0; iter < length; iter += 1) {
+        for (long iter = 0; iter < length; ++iter) {
             final Phi taken = retriever.copy();
             taken.put(0, new Data.ToPhi(iter));
             arguments[(int) iter] = taken;

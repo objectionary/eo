@@ -90,7 +90,7 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
     private Object[] prepareParams(final Phi... params) {
         final Object[] prepared = new Object[params.length];
         final Class<?>[] types = this.method.getParameterTypes();
-        for (int iter = 0; iter < params.length; iter += 1) {
+        for (int iter = 0; iter < params.length; ++iter) {
             prepared[iter] = new Dataized(params[iter]).take(types[iter]);
         }
         return prepared;

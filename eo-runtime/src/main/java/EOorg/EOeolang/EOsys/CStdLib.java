@@ -33,16 +33,37 @@ import com.sun.jna.Native;
  * C standard library with unix syscalls.
  * @since 0.40
  */
-interface CStdLib extends Library {
+public interface CStdLib extends Library {
 
     /**
      * C STDLIB instance.
      */
     CStdLib CSTDLIB = Native.load("c", CStdLib.class);
 
+    /**
+     * The "getpid" syscall.
+     *
+     * @return Process ID.
+     */
     int getpid();
 
+    /**
+     * The "write" syscall.
+     *
+     * @param descriptor File descriptor.
+     * @param buf Buffer.
+     * @param size Number of bytes to be written.
+     * @return Number of bytes was written.
+     */
     int write(Long descriptor, String buf, Long size);
 
+    /**
+     * The "read" syscall.
+     *
+     * @param descriptor File descriptor.
+     * @param buf Buffer.
+     * @param size Number of bytes to be read.
+     * @return Number of bytes was read.
+     */
     int read(Long descriptor, byte[] buf, Long size);
 }
