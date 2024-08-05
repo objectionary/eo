@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.fs.dir
 +alias org.eolang.fs.file
++alias org.eolang.fs.path
 +alias org.eolang.fs.tmpdir
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.text
@@ -71,20 +71,22 @@
 
 # Test.
 [] > throws-an-error-on-touching-temp-file-in-absent-dir
-  (tmpdir.resolve "foo").tmpfile > @
+  (tmpdir.as-path.resolved "foo").as-dir.tmpfile > @
 
 # Test.
 [] > resolves-and-touches
-  dir (tmpdir.resolved "foo/bar") > resolved
+  (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
   resolved.tmpfile > f
   seq > @
     *
-      resolved.deleted.made.path
+      resolved.deleted.made
       and.
         f.exists
         contains.
           text f.path
-          "bar"
+          joined.
+            text path.separator
+            * "foo" "bar"
 
 # Test.
 [] > moves-a-file
