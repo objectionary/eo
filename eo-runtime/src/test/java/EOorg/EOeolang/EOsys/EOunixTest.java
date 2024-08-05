@@ -41,7 +41,7 @@ import org.junit.jupiter.api.condition.OS;
 /**
  * Test case for {@link EOunix}.
  *
- * @since 0.39
+ * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 public class EOunixTest {

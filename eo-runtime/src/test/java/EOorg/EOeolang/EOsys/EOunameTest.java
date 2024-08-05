@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link EOuname}.
  *
- * @since 0.39
+ * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
