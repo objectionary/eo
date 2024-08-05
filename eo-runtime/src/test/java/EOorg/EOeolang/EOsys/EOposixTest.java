@@ -74,11 +74,13 @@ final class EOposixTest {
     @DisabledOnOs(OS.WINDOWS)
     public void invokesWriteCorrectly() {
         final String msg = "Hello, world!\n";
-        final Phi args = new Data.ToPhi(new Phi[] {
-            new Data.ToPhi(1L),
-            new Data.ToPhi(msg),
-            new Data.ToPhi(msg.length())
-        });
+        final Phi args = new Data.ToPhi(
+            new Phi[] {
+                new Data.ToPhi(1L),
+                new Data.ToPhi(msg),
+                new Data.ToPhi(msg.length()),
+            }
+        );
         MatcherAssert.assertThat(
             "The \"getpid\" system call was expected to work correctly",
             new Dataized(
