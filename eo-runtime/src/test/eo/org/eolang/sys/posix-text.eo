@@ -31,7 +31,7 @@
 # Test.
 [] > invokes-getpid-correctly
   if. > @
-    sys.uname.is-windows
+    os.is-windows
     true
     gt.
       posix
@@ -43,7 +43,7 @@
 [] > invokes-write-correctly
   "Hello, syscall!\n" > msg
   if. > @
-    sys.uname.is-windows
+    os.is-windows
     true
     eq.
       posix
@@ -58,7 +58,7 @@
 [] > fails-read-from-stdin
   00-00 > buf
   if. > @
-    sys.uname.is-windows
+    os.is-windows
     true
     eq.
       posix

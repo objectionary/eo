@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-public final class EOunameTest {
+public final class EOosTest {
 
     @Test
     public void readsSystemFamily() {
