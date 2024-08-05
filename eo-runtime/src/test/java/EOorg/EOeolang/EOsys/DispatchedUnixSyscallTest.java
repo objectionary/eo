@@ -40,7 +40,7 @@ import org.junit.jupiter.api.condition.OS;
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-class DispatchedUnixSyscallTest {
+final class DispatchedUnixSyscallTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void failsOnIllegalSyscall() {
