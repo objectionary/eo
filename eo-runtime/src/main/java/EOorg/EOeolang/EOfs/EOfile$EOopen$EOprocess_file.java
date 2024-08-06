@@ -44,6 +44,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.process-file")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {

@@ -24,9 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -44,6 +44,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.of.@")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {

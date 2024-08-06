@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -47,11 +48,13 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.pattern.match.matched-from-index")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefault
     implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         this.add("position", new AtVoid("position"));
         this.add("start", new AtVoid("start"));

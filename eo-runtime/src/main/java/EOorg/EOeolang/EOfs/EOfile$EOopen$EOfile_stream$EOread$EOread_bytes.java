@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
@@ -44,6 +45,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.file-stream.read.read-bytes")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
     extends PhDefault
     implements Atom {
@@ -51,6 +53,7 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfile$EOopen$EOfile_stream$EOread$EOread_bytes() {
         this.add("size", new AtVoid("size"));
     }

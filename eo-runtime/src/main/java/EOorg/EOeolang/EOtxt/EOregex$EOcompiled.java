@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -46,6 +47,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "regex.compiled")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOregex$EOcompiled extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {

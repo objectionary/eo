@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sprintf")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOsprintf extends PhDefault implements Atom {
     /**
      * Character conversion.
@@ -71,6 +73,7 @@ public final class EOsprintf extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOsprintf() {
         this.add("format", new AtVoid("format"));
         this.add("args", new AtVoid("args"));

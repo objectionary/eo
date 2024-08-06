@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOtxt;
+package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sscanf")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOsscanf extends PhDefault implements Atom {
     /**
      * Character conversion.
@@ -71,6 +73,7 @@ public final class EOsscanf extends PhDefault implements Atom {
      * @checkstyle CyclomaticComplexityCheck (75 lines)
      * @checkstyle NestedIfDepthCheck (75 lines)
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOsscanf() {
         this.add("format", new AtVoid("format"));
         this.add("read", new AtVoid("read"));

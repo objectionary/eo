@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -48,10 +49,12 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "dir.walk")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdir$EOwalk extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOdir$EOwalk() {
         this.add("glob", new AtVoid("glob"));
     }
