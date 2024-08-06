@@ -53,13 +53,13 @@ public final class EOregex$EOcompiled extends PhDefault implements Atom {
     public Phi lambda() throws Exception {
         final Phi regex = this.take(Attr.RHO);
         final String expression = new Dataized(regex.take("expression")).asString();
-        final StringBuilder builder = new StringBuilder();
         if (!expression.startsWith("/")) {
             throw new ExFailure("Wrong regex syntax: \"/\" is missing");
         }
-        final int last = expression.lastIndexOf("/");
+        final int last = expression.lastIndexOf('/');
+        final StringBuilder builder = new StringBuilder();
         if (!expression.endsWith("/")) {
-            builder.append("(?").append(expression.substring(last + 1)).append(")");
+            builder.append("(?").append(expression.substring(last + 1)).append(')');
         }
         builder.append(expression, 1, last);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

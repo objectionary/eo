@@ -54,16 +54,16 @@ import org.eolang.XmirObject;
 public final class EOsprintf extends PhDefault implements Atom {
     /**
      * Character conversion.
-     * @checkstyle IndentationCheck (15 lines)
      */
-    private static final Map<Character, Function<Dataized, Object>> CONVERSION =
-        new HashMap<Character, Function<Dataized, Object>>(5) {{
-            put('s', Dataized::asString);
-            put('d', element -> element.asNumber().longValue());
-            put('f', Dataized::asNumber);
-            put('x', element -> EOsprintf.bytesToHex(element.take()));
-            put('b', Dataized::asBool);
-        }};
+    private static final Map<Character, Function<Dataized, Object>> CONVERSION = new HashMap<>();
+
+    static {
+        EOsprintf.CONVERSION.put('s', Dataized::asString);
+        EOsprintf.CONVERSION.put('d', element -> element.asNumber().longValue());
+        EOsprintf.CONVERSION.put('f', Dataized::asNumber);
+        EOsprintf.CONVERSION.put('x', element -> EOsprintf.bytesToHex(element.take()));
+        EOsprintf.CONVERSION.put('b', Dataized::asBool);
+    }
 
     /**
      * Percent sign.
@@ -103,14 +103,14 @@ public final class EOsprintf extends PhDefault implements Atom {
                 );
             }
             final char sym = pattern.charAt(idx + 1);
-            if (sym != EOsprintf.PERCENT) {
+            if (sym == EOsprintf.PERCENT) {
+                pattern = pattern.substring(idx + 1);
+            } else {
                 final Phi taken = retriever.copy();
                 taken.put(0, new Data.ToPhi(index));
                 arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
                 ++index;
                 pattern = pattern.substring(idx + 2);
-            } else {
-                pattern = pattern.substring(idx + 1);
             }
         }
         return new ToPhi(

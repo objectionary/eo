@@ -51,13 +51,30 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefault
     implements Atom {
+
+    /**
+     * Start.
+     */
+    public static final String START = "start";
+
+    /**
+     * Position.
+     */
+    public static final String POSITION = "position";
+
     /**
      * Ctor.
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOregex$EOpattern$EOmatch$EOmatched_from_index() {
-        this.add("position", new AtVoid("position"));
-        this.add("start", new AtVoid("start"));
+        this.add(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+        );
+        this.add(
+            EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
+            new AtVoid(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+        );
     }
 
     @Override
@@ -69,14 +86,19 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
         final Matcher matcher = ((Pattern) new ObjectInputStream(bais).readObject()).matcher(
             new Dataized(match.take("txt")).asString()
         );
-        final Phi start = this.take("start");
-        final Double from = new Dataized(this.take("start")).asNumber();
+        final Phi start = this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START);
+        final Double from = new Dataized(
+            this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
+        ).asNumber();
         final boolean found = matcher.find(from.intValue());
         final Phi result;
         if (found) {
             result = match.take("matched");
-            result.put("position", this.take("position"));
-            result.put("start", start);
+            result.put(
+                EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            );
+            result.put(EOregex$EOpattern$EOmatch$EOmatched_from_index.START, start);
             result.put("from", new Data.ToPhi(matcher.start()));
             result.put("to", new Data.ToPhi(matcher.end()));
             final Phi[] groups;
@@ -91,7 +113,10 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
             result.put("groups", new Data.ToPhi(groups));
         } else {
             result = match.take("not-matched");
-            result.put("position", this.take("position"));
+            result.put(
+                EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
+                this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
+            );
         }
         return result;
     }

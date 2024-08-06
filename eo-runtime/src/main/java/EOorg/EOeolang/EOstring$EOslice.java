@@ -61,13 +61,13 @@ public final class EOstring$EOslice extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final int start = new Dataized(this.take("start")).asNumber().intValue();
-        final int length = new Dataized(this.take("len")).asNumber().intValue();
         if (start < 0) {
             throw new ExFailure(
                 "Start index must be greater than 0 but was %d",
                 start
             );
         }
+        final int length = new Dataized(this.take("len")).asNumber().intValue();
         final int end = length + start;
         if (start > end) {
             throw new ExFailure(

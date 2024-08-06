@@ -28,12 +28,13 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.ExFailure;
@@ -67,12 +68,13 @@ final class Files {
      * @param name Name of the file
      * @throws FileNotFoundException If can't open file
      */
-    void open(final String name) throws FileNotFoundException {
+    void open(final String name) throws IOException {
+        final Path path = Paths.get(name);
         this.streams.putIfAbsent(
             name,
             new Object[] {
-                new FileInputStream(name),
-                new FileOutputStream(name, true),
+                java.nio.file.Files.newInputStream(path),
+                java.nio.file.Files.newOutputStream(path, StandardOpenOption.APPEND),
             }
         );
     }
@@ -84,6 +86,7 @@ final class Files {
      * @return Read bytes
      * @throws IOException If fails to read
      */
+    @SuppressWarnings({"PMD.AssignmentInOperand", "PMD.CloseResource"})
     byte[] read(final String name, final int size) throws IOException {
         synchronized (this.streams) {
             if (!this.streams.containsKey(name)) {

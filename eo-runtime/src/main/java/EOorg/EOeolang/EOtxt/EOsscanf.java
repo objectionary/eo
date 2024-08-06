@@ -54,14 +54,14 @@ import org.eolang.XmirObject;
 public final class EOsscanf extends PhDefault implements Atom {
     /**
      * Character conversion.
-     * @checkstyle IndentationCheck (10 lines)
      */
-    private static final Map<Character, Function<String, Phi>> CONVERSION =
-        new HashMap<Character, Function<String, Phi>>(3) {{
-            put('s', ToPhi::new);
-            put('d', str -> new Data.ToPhi(Long.parseLong(str)));
-            put('f', str -> new Data.ToPhi(Double.parseDouble(str)));
-        }};
+    private static final Map<Character, Function<String, Phi>> CONVERSION = new HashMap<>();
+
+    static {
+        EOsscanf.CONVERSION.put('s', ToPhi::new);
+        EOsscanf.CONVERSION.put('d', str -> new Data.ToPhi(Long.parseLong(str)));
+        EOsscanf.CONVERSION.put('f', str -> new Data.ToPhi(Double.parseDouble(str)));
+    }
 
     /**
      * Percent sign.
@@ -80,9 +80,9 @@ public final class EOsscanf extends PhDefault implements Atom {
     }
 
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     public Phi lambda() throws Exception {
         final String format = new Dataized(this.take("format")).asString();
-        final List<Phi> output = new ArrayList<>(0);
         final StringBuilder regex = new StringBuilder();
         boolean literal = false;
         for (int idx = 0; idx < format.length(); ++idx) {
@@ -119,6 +119,7 @@ public final class EOsscanf extends PhDefault implements Atom {
             new Dataized(this.take("read")).asString()
         );
         String frmt = format;
+        final List<Phi> output = new ArrayList<>(0);
         if (matcher.find()) {
             int index = 1;
             while (true) {
