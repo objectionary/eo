@@ -217,7 +217,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
-      <version>2.0.13</version>
+      <version>2.0.14</version>
       <scope>provided</scope>
       <!-- This dependency must precede jcabi-maven-slf4j in order
       to enable configurable Log4j logging during testing -->
