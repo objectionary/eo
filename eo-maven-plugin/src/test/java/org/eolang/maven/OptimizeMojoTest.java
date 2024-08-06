@@ -46,6 +46,7 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -74,7 +75,8 @@ final class OptimizeMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/xmir2xmir/", glob = "**.yaml")
-    void checksXmirToXmir(final String pack, @TempDir final Path dir) throws Exception {
+    @ExtendWith(XcopCondition.class)
+    void checksXmirToXmir(final String pack, @TempDir final Path dir) {
         MatcherAssert.assertThat(
             "Xmir2xmir tests passes",
             new Xmir2Xmir(pack, dir),

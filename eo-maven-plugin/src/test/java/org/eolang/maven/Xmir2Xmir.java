@@ -43,6 +43,8 @@ import org.yaml.snakeyaml.Yaml;
  * Test scenario in YAML.
  *
  * @since 0.1
+ * @todo #3267:90min Add better error printing. Ideally, it should print the difference
+ *  the way the linux diff command does (line by line).
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 public final class Xmir2Xmir {
