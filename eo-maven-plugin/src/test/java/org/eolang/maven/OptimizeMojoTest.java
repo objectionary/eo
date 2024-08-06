@@ -72,6 +72,16 @@ final class OptimizeMojoTest {
         );
     }
 
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/xmir2xmir/", glob = "**.yaml")
+    void checksXmirToXmir(final String pack, @TempDir final Path dir) throws Exception {
+        MatcherAssert.assertThat(
+            "Xmir2xmir tests passes",
+            new Xmir2Xmir(pack, dir),
+            Matchers.equalTo(true)
+        );
+    }
+
     @Test
     void skipsAlreadyOptimized(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
