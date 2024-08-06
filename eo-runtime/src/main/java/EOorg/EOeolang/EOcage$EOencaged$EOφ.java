@@ -29,7 +29,7 @@ package EOorg.EOeolang;
 
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.PhTraced;
 import org.eolang.Phi;
@@ -46,9 +46,9 @@ import org.eolang.XmirObject;
 public final class EOcage$EOencaged$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
-        final int locator = Math.toIntExact(
-            new Param(this.take(Attr.RHO), "locator").strong(Long.class)
-        );
+        final int locator = new Dataized(this.take(Attr.RHO).take("locator"))
+            .asNumber()
+            .intValue();
         return new PhTraced(
             Cages.INSTANCE.get(locator),
             locator

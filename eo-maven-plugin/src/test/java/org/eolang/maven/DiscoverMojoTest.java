@@ -72,7 +72,7 @@ final class DiscoverMojoTest {
 
     @ParameterizedTest
     @CsvSource({
-        "org/eolang/maven/mess.eo, 8",
+        "org/eolang/maven/mess.eo, 7",
         "org/eolang/maven/sum.eo, 0",
         "org/eolang/maven/withwarning.eo, 1"
     })

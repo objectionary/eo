@@ -22,8 +22,8 @@
 ---
 xsls: [ ]
 tests:
-  - //o[@name='i1' and text()='00 00 00 00 00 00 00 2A']
-  - //o[@name='i2' and text()='00 00 00 00 00 00 01 2F']
+  - //o[@name='i1' and text()='40 45 00 00 00 00 00 00']
+  - //o[@name='i2' and text()='40 72 F0 00 00 00 00 00']
   - //o[@name='f1' and text()='40 09 21 CA C0 83 12 6F']
   - //o[@name='b1' and not(text())]
   - //o[@name='b2' and not(text())]

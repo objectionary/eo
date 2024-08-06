@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -46,7 +47,47 @@
 # Test.
 [] > prints-bytes-string
   eq. > @
-    "00-00-00-00-00-00-00-2A"
+    "40-45-00-00-00-00-00-00"
     sprintf
       "%x"
       * 42.as-bytes
+
+# Test.
+[] > formats-all-objects
+  eq. > @
+    "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
+    sprintf
+      "string %s, bytes %x, float %f, int %d, bool %b"
+      * "Jeff" "Jeff".as-bytes 42.3 14 false
+
+# Test.
+[] > sprintf-fails-if-amount-of-arguments-does-not-match
+  try > @
+    sprintf
+      "%s%s"
+      * "Jeff"
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > sprintf-does-not-fail-if-arguments-more-than-formats
+  eq. > @
+    "Hey"
+    sprintf
+      "%s"
+      * "Hey" "Jeff"
+
+# Test.
+[] > fails-on-unsupported-format
+  try > @
+    sprintf "%o" *
+    stdout ex > [ex]
+    false
+
+# Test.
+[] > sprintf-prints-percents
+  eq. > @
+    "%Jeff"
+    sprintf
+      "%%%s"
+      * "Jeff"

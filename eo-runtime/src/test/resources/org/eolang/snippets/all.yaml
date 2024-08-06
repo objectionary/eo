@@ -38,7 +38,4 @@ eo: |
         x.eq 0
         error "x is zero"
         42
-    seq > @
-      *
-        QQ.io.stdout
-          "works!"
+    QQ.io.stdout "works!" > @

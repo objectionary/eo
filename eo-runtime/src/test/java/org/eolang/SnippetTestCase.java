@@ -40,6 +40,7 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -58,11 +59,6 @@ import org.yaml.snakeyaml.Yaml;
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
- * @todo #2718:30min One snippets is disabled now, in
- *  the "src/test/resources/snippets/*.yaml". It needs
- *  "sprintf" object in objectionary (fibo.yaml).
- *  When "sprintf" is in objectionary again - we need to enable
- *  it (by removing the "skip" attribute from the YAML file).
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -200,8 +196,23 @@ final class SnippetTestCase {
                     .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
                 f.dependencies().append(
                     "org.junit.jupiter",
+                    "junit-jupiter-engine",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
+                    "junit-jupiter-params",
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit.jupiter",
                     "junit-jupiter-api",
-                    "5.10.2"
+                    "5.10.3"
+                );
+                f.dependencies().append(
+                    "org.junit-pioneer",
+                    "junit-pioneer",
+                    "2.2.0"
                 );
                 f.build()
                     .plugins()
@@ -259,11 +270,13 @@ final class SnippetTestCase {
                     .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
                 f.exec("clean", "test");
                 final String log = f.log();
-                Logger.debug(this, log);
-                MatcherAssert.assertThat(
-                    "Some tests weren't passed after converting to phi and back",
-                    log,
-                    Matchers.containsString("BUILD SUCCESS")
+                final boolean success = log.contains("BUILD SUCCESS");
+                if (!success) {
+                    Logger.info(this, log);
+                }
+                Assertions.assertTrue(
+                    success,
+                    "Some tests weren't passed after converting to phi and back"
                 );
             }
         );

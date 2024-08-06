@@ -50,11 +50,21 @@ public final class Dataized {
 
     /**
      * Dataization level.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link Dataized#LEVEL} variables to prevent memory leaks. We should either find a place
+     *  where this variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Integer> LEVEL = ThreadLocal.withInitial(() -> 0);
 
     /**
      * Max dataization level.
+     *
+     * @todo #2251:90min It is necessary to call {@link ThreadLocal#remove()} on
+     *  {@link Dataized#MAX_LEVEL} variables to prevent memory leaks. We should either find a place
+     *  where this variable can be removed, or, if this is not possible
+     *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
     private static final ThreadLocal<Integer> MAX_LEVEL =
         ThreadLocal.withInitial(() -> Integer.getInteger("max.dataization.log", 3));
@@ -88,7 +98,7 @@ public final class Dataized {
     }
 
     /**
-     * Take the object, no matter the type.
+     * Extract the data from the object.
      * @return The data
      */
     public byte[] take() {
@@ -117,37 +127,41 @@ public final class Dataized {
     }
 
     /**
-     * Take the data with a type.
-     * @param type The type
-     * @param <T> The type
-     * @return The data
+     * Extract the data from the object and convert to string.
+     * @return Data as string
      */
-    public <T> T take(final Class<T> type) {
+    public String asString() {
+        return new String(this.take(), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Extract the data from the object and convert to number.
+     * @return Data as number
+     */
+    public Double asNumber() {
+        return new BytesOf(this.take()).asNumber();
+    }
+
+    /**
+     * Extract the data from the object and convert to boolean.
+     * @return Data as boolean
+     */
+    public Boolean asBool() {
         final byte[] weak = this.take();
-        final Object strong;
-        if (type.equals(Long.class)) {
-            strong = new BytesOf(weak).asNumber(Long.class);
-        } else if (type.equals(Double.class)) {
-            strong = new BytesOf(weak).asNumber(Double.class);
-        } else if (type.equals(byte[].class)) {
-            strong = weak;
-        } else if (type.equals(String.class)) {
-            strong = new String(weak, StandardCharsets.UTF_8);
-        } else if (weak.length == 1 && type.equals(Boolean.class)) {
-            if (weak[0] == 1) {
-                strong = true;
-            } else {
-                strong = false;
-            }
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unknown type: %s, bytes are: %s",
-                    type.getCanonicalName(),
-                    Arrays.toString(weak)
-                )
+        if (weak.length != 1) {
+            throw new ExFailure(
+                "Can't dataize given bytes of length > 1 to boolean, bytes are: %s",
+                Arrays.toString(weak)
             );
         }
-        return type.cast(strong);
+        return weak[0] == 1;
+    }
+
+    /**
+     * Extract the data from the object and convert to {@link Bytes}.
+     * @return Data as {@link Bytes}
+     */
+    public Bytes asBytes() {
+        return new BytesOf(this.take());
     }
 }

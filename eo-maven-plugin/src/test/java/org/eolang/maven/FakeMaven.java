@@ -195,6 +195,7 @@ public final class FakeMaven {
      * @return Workspace after executing Mojo.
      * @throws java.io.IOException If some problem with filesystem has happened.
      * @checkstyle ExecutableStatementCountCheck (100 lines)
+     * @checkstyle JavaNCSSCheck (100 lines)
      */
     public <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
@@ -240,6 +241,7 @@ public final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("phiOptimize", false);
             this.params.putIfAbsent("phiFailOnCritical", true);
+            this.params.putIfAbsent("phiFailOnError", true);
             this.params.putIfAbsent("phiSkipFailed", false);
             this.params.putIfAbsent(
                 "eoPortalDir",
@@ -270,6 +272,10 @@ public final class FakeMaven {
                 this.workspace.absolute(
                     Paths.get(String.format("target/%s", ParseMojo.DIR))
                 ).toFile()
+            );
+            this.params.putIfAbsent(
+                "classesDir",
+                this.workspace.absolute(Paths.get("target/classes")).toFile()
             );
         }
         final Moja<T> moja = new Moja<>(mojo);

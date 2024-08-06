@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: yegor256/copyrights-action@0.0.4
+      - uses: yegor256/copyrights-action@0.0.5
         with:
           globs: >-
             **/LICENSE.txt

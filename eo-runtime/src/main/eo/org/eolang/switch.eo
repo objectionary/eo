@@ -46,22 +46,21 @@
 # This object returns value of only first truly statement.
 [cases] > switch
   cases.length > len!
+  if. > @
+    len.eq 0
+    error "switch cases are empty"
+    case-at 0
 
   # Take case by given index.
   # If case key is true, return case value.
   # Otherwise take next case.
   [index] > case-at
+    ^.cases.at index > case
     if. > @
       index.eq ^.len
       true
       if.
-        at.
-          ^.cases.at index > case
-          0
+        case.at 0
         case.at 1
         ^.case-at
           index.plus 1
-  if. > @
-    len.eq 0
-    error "switch cases are empty"
-    case-at 0

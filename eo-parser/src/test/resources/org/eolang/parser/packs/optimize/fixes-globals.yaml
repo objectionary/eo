@@ -25,7 +25,7 @@ xsls:
 tests:
   - /program/errors[count(*)=0]
   - /program/objects[count(o)=2]
-  - //objects/o[@name='pi']/o[@name='@' and @base='float' and @data='bytes']
+  - //objects/o[@name='pi']/o[@name='@' and @base='number' and @data='bytes']
   - //objects/o[@name='b']
   - //objects[count(o[@base])=0]
 eo: |

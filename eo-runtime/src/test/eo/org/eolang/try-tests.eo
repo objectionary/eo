@@ -27,14 +27,6 @@
 +version 0.0.0
 
 # Test.
-[] > simple-division-by-zero
-  try > @
-    42.div 0
-    QQ.io.stdout e > [e]
-    QQ.io.stdout
-      "\nfinally"
-
-# Test.
 [] > catches-simple-exception
   try > @
     slice.

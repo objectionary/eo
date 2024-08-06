@@ -31,14 +31,14 @@
 # convenient operations to it. Objects like `int`, `string`,
 # and `float` encapsulate `bytes`.
 [] > bytes
-  # Return itself.
   $ > as-bytes
+  $.eq 01- > as-bool
 
   # Equals to another object.
   [b] > eq /bool
 
   # Total number of bytes.
-  [] > size /int
+  [] > size /number
 
   # Represents a sub-sequence inside the current one.
   [start len] > slice /bytes
@@ -46,23 +46,14 @@
   # Turn this chain of bytes into a string in UTF-8.
   string ^ > [] > as-string
 
-  # Turn this chain of eight bytes into an integer.
+  # Turn this chain of eight bytes into a number.
   # If there are less or more than eight bytes, there will
   # be an error returned.
-  [] > as-int
+  [] > as-number
     if. > @
       ^.size.eq 8
-      int ^
-      error "Can't convert non 8 length bytes to int"
-
-  # Turn this chain of eight bytes into a float.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
-  [] > as-float
-    if. > @
-      ^.size.eq 8
-      float ^
-      error "Can't convert non 8 length bytes to float"
+      number ^
+      error "Can't convert non 8 length bytes to a number"
 
   # Calculate bitwise and.
   [b] > and /bytes
@@ -81,9 +72,6 @@
 
   # Calculate bitwise right shift.
   [x] > right /bytes
-
-  # Converts to bool.
-  ^.eq 01- > [] > as-bool
 
   # Concatenation of two byte sequences:
   # the current and the provided one,

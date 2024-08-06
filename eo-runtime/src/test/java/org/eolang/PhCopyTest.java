@@ -39,15 +39,15 @@ final class PhCopyTest {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             new Dataized(
-                new PhCopy(new Data.ToPhi(1L))
-            ).take(Long.class),
-            Matchers.equalTo(1L)
+                new PhCopy(new Data.ToPhi(1))
+            ).asNumber(),
+            Matchers.equalTo(1.0)
         );
     }
 
     @Test
     void hasTheSameFormaAsCopied() {
-        final Phi phi = new Data.ToPhi(1L);
+        final Phi phi = new Data.ToPhi(1);
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             phi.forma(),

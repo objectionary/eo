@@ -94,14 +94,14 @@
         [] > a
           seq > @
             *
-              ^.m.put (^.m.as-int.plus 1)
+              ^.m.put (^.m.as-number.plus 1)
               42
         a.neg.neg.neg.neg.eq 42 > @
     1
 
 # Test.
 [] > writes-cage-to-malloc
-  (cage int.plus).new > f2
+  (cage number.plus).new > f2
   eq. > @
     malloc.of
       8
@@ -113,7 +113,7 @@
               *
                 f0.put 1
                 f1.put 2
-                f2.encage (f0.as-int.plus f1)
+                f2.encage (f0.as-number.plus f1)
                 f1.put f2
     3
 
@@ -121,10 +121,10 @@
 [] > recursion-without-arguments
   [n] > func
     if. > @
-      n.as-int.gt 0
+      n.as-number.gt 0
       seq
         *
-          n.put (n.as-int.minus 1)
+          n.put (n.as-number.minus 1)
           ^.func n
       n
   eq. > @
@@ -133,6 +133,18 @@
       [m] >>
         ^.func m > @
     0
+
+# Test.
+[] > unescapes-slashes
+  eq. > @
+    "x\\b\\f\\u\\r\\t\\n\\'"
+    78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
+
+# Test.
+[] > unescapes-symbols
+  eq. > @
+    "\b\f\n\r\t\u27E6"
+    08-0C-0A-0D-09-E2-9F-A6
 
 # Test.
 [] > compiles-correctly-with-long-duplicate-names
@@ -175,7 +187,7 @@
             Q.org.eolang.io.stdout
               "Hello, world!"
             m.put
-              m.as-int.minus 2
+              m.as-number.minus 2
     40
 
 # Test.
@@ -190,7 +202,7 @@
             QQ.io.stdout
               "Hello, world!"
             m.put
-              m.as-int.minus 2
+              m.as-number.minus 2
     40
 
 # Test.
@@ -221,13 +233,13 @@
     seq > @
       *
         x.put
-          x.as-int.plus 1
-        x.as-int
+          x.as-number.plus 1
+        x.as-number
   eq. > @
     malloc.for
       7
       [m] >>
-        int > num
+        number > num
           ^.inc m > n!
         m.put > @
           times.

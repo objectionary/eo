@@ -62,22 +62,22 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 final class EOcageTest {
     @Test
     void encagesViaApplication() {
-        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1));
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(1L)
+            new Dataized(cage).asNumber(),
+            Matchers.equalTo(1.0)
         );
     }
 
     @Test
     void encagesAndFrees() {
-        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
-        EOcageTest.encageTo(cage, new Data.ToPhi(2L));
+        final Phi cage = EOcageTest.encaged(new Data.ToPhi(1));
+        EOcageTest.encageTo(cage, new Data.ToPhi(2));
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(2L)
+            new Dataized(cage).asNumber(),
+            Matchers.equalTo(2.0)
         );
     }
 
@@ -86,25 +86,25 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(
             new PhWith(
                 new EOcageTest.Dummy(),
-                0, new Data.ToPhi(1L)
+                0, new Data.ToPhi(1)
             )
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(new PhMethod(cage, "x")).take(Long.class),
-            Matchers.equalTo(1L)
+            new Dataized(new PhMethod(cage, "x")).asNumber(),
+            Matchers.equalTo(1.0)
         );
         EOcageTest.encageTo(
             cage,
             new PhWith(
                 new EOcageTest.Dummy(),
-                0, new Data.ToPhi(2L)
+                0, new Data.ToPhi(2)
             )
         );
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(new PhMethod(cage, "x")).take(Long.class),
-            Matchers.equalTo(2L)
+            new Dataized(new PhMethod(cage, "x")).asNumber(),
+            Matchers.equalTo(2.0)
         );
     }
 
@@ -115,8 +115,8 @@ final class EOcageTest {
         EOcageTest.encageTo(second, new Data.ToPhi(2L));
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(first).take(Long.class),
-            Matchers.equalTo(2L)
+            new Dataized(first).asNumber(),
+            Matchers.equalTo(2.0)
         );
     }
 
@@ -125,14 +125,14 @@ final class EOcageTest {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(1L)
+            new Dataized(cage).asNumber(),
+            Matchers.equalTo(1.0)
         );
         EOcageTest.encageTo(cage, new Data.ToPhi(5L));
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(cage).take(Long.class),
-            Matchers.equalTo(5L)
+            new Dataized(cage).asNumber(),
+            Matchers.equalTo(5.0)
         );
     }
 
@@ -267,7 +267,7 @@ final class EOcageTest {
                 ExAbstract.class,
                 () -> new Dataized(
                     cage.take("x").take("x").take("x")
-                ).take(Long.class)
+                ).asNumber()
             );
         }
 

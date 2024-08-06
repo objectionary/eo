@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-skip: true
-file: org/eolang/snippets/fibo.eo
 out:
   - ".*8 is the 6th number.*"
+file: org/eolang/snippets/fibo.eo
 args: [ "org.eolang.snippets.fibo" ]
 eo: |
-  +package org.eolang.snippets
   +alias org.eolang.io.stdout
+  +alias org.eolang.txt.sprintf
+  +package org.eolang.snippets
 
   # This is the default 64+ symbols comment in front of named abstract object.
   [args] > fibo
@@ -40,7 +40,8 @@ eo: |
           f (n.minus 1)
           f (n.minus 2)
     stdout > @
-      QQ.txt.sprintf
+      sprintf
         "%d is the %dth number\n"
-        8
-        f 6
+        *
+          f 6
+          6

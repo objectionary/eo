@@ -29,12 +29,12 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &Portal) -> Option<EO> {
       let x = rand::random::<i32>();
       println!("{}", x);
-      Some(EOInt(x as i64))
+      Some(EONumber(x as f64))
     }
     """
     *
@@ -47,12 +47,12 @@
     """
     use eo::Portal;
     use eo::eo_enum::EO;
-    use eo::eo_enum::EO::{EOInt};
+    use eo::eo_enum::EO::{EONumber};
 
     pub fn foo(_portal: &Portal) -> Option<EO> {
       print!("Hello 大 2");
       let x = rand::random::<i32>();
-      Some(EOInt(x as i64))
+      Some(EONumber(x as f64))
     }
     """
     *

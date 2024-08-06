@@ -1,0 +1,385 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.structs.list
++alias org.eolang.structs.bytes-as-array
++alias org.eolang.txt.regex
++alias org.eolang.txt.sprintf
++alias org.eolang.txt.sscanf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.txt
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
+
+# Text.
+[origin] > text
+  origin > @
+
+  # Check that all signs in string are numbers or letters.
+  # Works only for english letters.
+  (regex "/^[A-Za-z0-9]+$/").matches ^.origin > [] > is-alphanumeric
+
+  # Check that all signs in string are letters.
+  # Works only for english letters.
+  (regex "/^[a-zA-Z]+$/").matches ^.origin > [] > is-alpha
+
+  # Check that all signs in string are ASCII characters.
+  (regex "/^[\\x00-\\x7F]*$/").matches ^.origin > [] > is-ascii
+
+  # Takes a piece of a `text` as another `text`.
+  # Here `start` must be an integer index to start slicing from,
+  # `len` must be an integer which shows how much symbols should be sliced.
+  [start len] > slice
+    text > @
+      ^.origin.slice start len
+
+  # Returns `text` trimmed from left side.
+  [] > trimmed-left
+    ^.origin.length > len!
+    first-non-space-index 0 > idx!
+    if. > @
+      0.eq len
+      ^
+      ^.slice
+        idx
+        (number len).minus (number idx)
+
+    [index] > first-non-space-index
+      ^.^.origin.slice index 1 > char!
+      if. > @
+        ^.len.eq index
+        index
+        if.
+          " ".eq char
+          ^.first-non-space-index
+            index.plus 1
+          index
+
+  # Returns `text` trimmed from right side.
+  [] > trimmed-right
+    ^.origin.length > len!
+    if. > @
+      0.eq len
+      ^
+      ^.slice
+        0
+        first-non-space-index
+          (number len).plus -1
+
+    [index] > first-non-space-index
+      ^.^.origin.slice index 1 > char!
+      if. > @
+        -1.eq index
+        0
+        if.
+          " ".eq char
+          ^.first-non-space-index
+            index.plus -1
+          index.plus 1
+
+  # Returns `text` trimmed from both sides.
+  [] > trimmed
+    if. > @
+      0.eq ^.length
+      ^
+      trimmed-right.
+        trimmed-left.
+          ^
+
+  # Joins `items`, which is a `tuple` of strings, using current `string`
+  # as a delimiter.
+  [items] > joined
+    ^.origin > delimiter!
+    items.at 0 > first
+    items.length > len!
+    text > @
+      if.
+        0.eq len
+        ""
+        if.
+          1.eq len
+          first
+          as-string.
+            concat.
+              first.as-bytes
+              with-delimiter "".as-bytes 1
+
+    [acc index] > with-delimiter
+      if. > @
+        ^.len.eq index
+        acc
+        ^.with-delimiter
+          acc.concat
+            ^.delimiter.concat
+              ^.items.at index
+          index.plus 1
+
+  # Returns `text` repeated `times` times.
+  # If `times` < 0 - an error is returned.
+  # If `times` == 0 - an original text is returned.
+  [times] > repeated
+    ^.origin.as-bytes > bts!
+    times > amount!
+    if. > @
+      0.gt amount
+      error
+        sprintf
+          "Can't repeat text %d times"
+          * amount
+      text
+        if.
+          0.eq amount
+          ""
+          as-string.
+            rec-repeated bts 1
+
+    [accum index] > rec-repeated
+      if. > @
+        ^.amount.eq index
+        accum
+        ^.rec-repeated
+          accum.concat ^.bts
+          index.plus 1
+
+  # Checks if current `text` contains given `substring`.
+  [substring] > contains
+    not. > @
+      eq.
+        -1
+        ^.index-of substring
+
+  # Checks that current `text` ends with given `substring`.
+  [substring] > ends-with
+    substring > substr!
+    eq. > @
+      ^.index-of substr
+      ^.length.minus substr.size
+
+  # Checks that current `text` starts with given `substring`.
+  [substring] > starts-with
+    eq. > @
+      0
+      ^.index-of substring
+
+  # Returns index of `substring` in current `text`.
+  # If no `substring` was found, it returns -1
+  [substring] > index-of
+    ^.origin.as-bytes.size > self-len!
+    substring > substr!
+    substr.size > sub-len!
+    (number self-len).minus (number sub-len) > end!
+    if. > @
+      or.
+        (number sub-len).gt self-len
+        and.
+          sub-len.eq self-len
+          (substr.eq ^.origin).not
+      -1
+      rec-index-of-substr 0
+
+    [idx] > rec-index-of-substr
+      if. > @
+        ^.end.eq idx
+        if.
+          eq. > contains
+            ^.substr
+            ^.^.slice idx ^.sub-len
+          idx
+          -1
+        if.
+          contains
+          idx
+          ^.rec-index-of-substr
+            idx.plus 1
+
+  # Returns last index of `substring` in current `text`.
+  # If no element was found, it returns -1.
+  [substring] > last-index-of
+    ^.origin.as-bytes.size > self-len!
+    substring > substr!
+    substring.size > sub-len!
+    if. > @
+      or.
+        (number sub-len).gt self-len
+        and.
+          sub-len.eq self-len
+          (substr.eq ^.origin).not
+      -1
+      rec-index-of-substr
+        (number self-len).minus (number sub-len)
+
+    [idx] > rec-index-of-substr
+      if. > @
+        0.eq idx
+        if.
+          eq. > contains
+            ^.substr
+            ^.^.slice idx ^.sub-len
+          idx
+          -1
+        if.
+          contains
+          idx
+          ^.rec-index-of-substr
+            idx.plus -1
+
+  # Returns `text` in upper case.
+  [] > up-cased
+    ascii "z" > ascii-z!
+    ascii "a" > ascii-a!
+    minus. > distance
+      number ascii-a
+      ascii "A"
+    text > @
+      as-string.
+        reduced.
+          list
+            bytes-as-array
+              ^.origin.as-bytes
+          --
+          [accum byte] >>
+            ^.ascii byte > ascii-bte
+            accum.concat > @
+              if.
+                and.
+                  ascii-bte.lte ^.ascii-z
+                  ascii-bte.gte ^.ascii-a
+                slice.
+                  as-bytes.
+                    ascii-bte.minus ^.distance
+                  7
+                  1
+                byte
+
+    [char] > ascii
+      as-number. > @
+        concat.
+          00-00-00-00-00-00-00
+          char.as-bytes
+
+  # Returns `text` in lower case.
+  [] > low-cased
+    ^.up-cased.ascii "Z" > ascii-z
+    ^.up-cased.ascii "A" > ascii-a
+    text > @
+      as-string.
+        reduced.
+          list
+            bytes-as-array
+              ^.origin.as-bytes
+          --
+          [accum byte] >>
+            ^.^.up-cased.ascii byte > ascii-bte
+            accum.concat > @
+              if.
+                and.
+                  ascii-bte.lte ^.ascii-z
+                  ascii-bte.gte ^.ascii-a
+                slice.
+                  as-bytes.
+                    ascii-bte.plus ^.^.up-cased.distance
+                  7
+                  1
+                byte
+
+  # Retrieve symbol by given index as `text`.
+  # If 0 > index >= ^.length - the error will be returned.
+  [i] > at
+    ^.length > len!
+    i > idx!
+    if. > index!
+      0.gt idx
+      (number len).plus idx
+      idx
+    if. > @
+      or.
+        0.gt index
+        (number index).gte len
+      error
+        sprintf
+          "Given index %d is out of text bounds"
+          * index
+      ^.slice index 1
+
+  # Returns text where all regexp
+  # target changed to replacement.
+  # @todo #3251:30min Implement text.replaced object. This object was an atom in
+  #  eo-strings. Maybe there's a way to implement it in pure EO. Don't remember to
+  #  write some tests when object is implemented.
+  ^ > [target replacement] > replaced
+
+  # Returns the original `text` as `number`.
+  [] > as-number
+    sscanf "%f" ^.origin > scanned
+    if. > @
+      scanned.length.eq 0
+      error
+        sprintf
+          "Can't convert text %s to number"
+          * ^.origin
+      scanned.tail
+
+  # Returns a `list` of `strings`, separated by a given `delimiter`.
+  [delimiter] > split
+    delimiter > delim!
+    ^.origin.as-bytes > self-as-bytes
+    self-as-bytes.size > len!
+    list > @
+      if.
+        len.eq 0
+        *
+        rec-split * 0 0
+
+    [accum start current] > rec-split
+      if. > @
+        ^.len.eq current
+        accum.with > with-substr
+          ^.self-as-bytes.slice
+            start
+            current.minus start
+        if.
+          eq.
+            ^.delim
+            ^.self-as-bytes.slice current 1
+          ^.rec-split
+            with-substr
+            current.plus 1
+            current.plus 1
+          ^.rec-split
+            accum
+            start
+            current.plus 1
+
+  # Returns concatenation of all `other` strings.
+  # Here `other` must be a `tuple` of `strings`.
+  [others] > chained
+    if. > @
+      0.eq others.length
+      ^
+      text
+        as-string.
+          reduced.
+            list others
+            ^.origin.as-bytes
+            accum.concat str.as-bytes > [accum str]

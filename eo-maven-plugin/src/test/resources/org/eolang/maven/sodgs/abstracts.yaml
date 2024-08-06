@@ -21,10 +21,10 @@
 # SOFTWARE.
 ---
 locators:
-  - .org .eolang .int
-  - .foo .bar .a .x .α0 .α0 .Δ δ=00-00-00-00-00-00-00-2A
-  - .foo .bar .b .y .α0 .α0 .Δ δ=00-00-00-00-00-00-01-00
-  - .foo .bar .a .x .α0 .π >int ν=$Φ.org.eolang.int
+  - .org .eolang .number
+  - .foo .bar .a .x .α0 .α0 .Δ δ=40-45-00-00-00-00-00-00
+  - .foo .bar .b .y .α0 .α0 .Δ δ=40-70-00-00-00-00-00-00
+  - .foo .bar .a .x .α0 .π >int ν=$Φ.org.eolang.number
   - .foo .bar .a .x .π >bar .ρ ν=ν0
 eo: |
   +package foo.bar

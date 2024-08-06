@@ -30,9 +30,9 @@ package EOorg.EOeolang;
 import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -60,8 +60,8 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
             Arrays.equals(
                 new Dataized(
                     this.take("b").take("as-bytes")
-                ).take(byte[].class),
-                new Param(this).strong(byte[].class)
+                ).take(),
+                new Dataized(this.take(Attr.RHO)).take()
             )
         );
     }

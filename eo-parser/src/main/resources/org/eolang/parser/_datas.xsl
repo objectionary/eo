@@ -26,7 +26,6 @@ SOFTWARE.
   <xsl:variable name="literal-objects" as="element()*">
     <a>org.eolang.bytes</a>
     <a>org.eolang.string</a>
-    <a>org.eolang.int</a>
-    <a>org.eolang.float</a>
+    <a>org.eolang.number</a>
   </xsl:variable>
 </xsl:stylesheet>

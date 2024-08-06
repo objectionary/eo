@@ -48,11 +48,7 @@ public final class EOcage$EOφ extends PhDefault implements Atom {
         final Phi encaged = this.take(Attr.RHO).take("encaged").copy();
         encaged.put(
             "locator",
-            new Data.ToPhi(
-                (long) Cages.INSTANCE.init(
-                    this.take(Attr.RHO).take("object")
-                )
-            )
+            new Data.ToPhi(Cages.INSTANCE.init(this.take(Attr.RHO).take("object")))
         );
         return encaged;
     }

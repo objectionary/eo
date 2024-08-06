@@ -61,7 +61,7 @@ final class DataizedTest {
             "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
-                Matchers.containsString("intν"),
+                Matchers.containsString("numberν"),
                 Matchers.not(Matchers.containsString("\n"))
             )
         );
@@ -90,7 +90,7 @@ final class DataizedTest {
             "Expected correct logs for object dataization",
             logs.get(0).getMessage(),
             Matchers.allOf(
-                Matchers.containsString("intν"),
+                Matchers.containsString("numberν"),
                 Matchers.not(Matchers.containsString("\n"))
             )
         );

@@ -28,8 +28,9 @@
 package EOorg.EOeolang;
 
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -46,6 +47,6 @@ import org.eolang.XmirObject;
 public final class EObytes$EOsize extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
-        return new Data.ToPhi((long) new Param(this).strong(byte[].class).length);
+        return new Data.ToPhi(new Dataized(this.take(Attr.RHO)).take().length);
     }
 }

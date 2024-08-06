@@ -33,7 +33,6 @@ import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -58,8 +57,8 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
     @Override
     public Phi lambda() throws Exception {
         Heaps.INSTANCE.write(
-            Math.toIntExact(new Param(this.take(Attr.RHO), "id").strong(Long.class)),
-            Math.toIntExact(new Param(this, "offset").strong(Long.class)),
+            new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
+            new Dataized(this.take("offset")).asNumber().intValue(),
             new Dataized(this.take("data")).take()
         );
         return new Data.ToPhi(true);

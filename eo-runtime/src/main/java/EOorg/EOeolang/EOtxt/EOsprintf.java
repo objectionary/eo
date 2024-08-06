@@ -28,27 +28,46 @@
 package EOorg.EOeolang.EOtxt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
-import org.eolang.Param;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
  * Sprintf.
- *
  * @since 0.39.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "sprintf")
 public final class EOsprintf extends PhDefault implements Atom {
+    /**
+     * Character conversion.
+     * @checkstyle IndentationCheck (15 lines)
+     */
+    private static final Map<Character, Function<Dataized, Object>> CONVERSION =
+        new HashMap<Character, Function<Dataized, Object>>(5) {{
+            put('s', Dataized::asString);
+            put('d', element -> element.asNumber().longValue());
+            put('f', Dataized::asNumber);
+            put('x', element -> EOsprintf.bytesToHex(element.take()));
+            put('b', Dataized::asBool);
+        }};
+
+    /**
+     * Percent sign.
+     */
+    private static final char PERCENT = '%';
+
     /**
      * Ctor.
      */
@@ -59,15 +78,15 @@ public final class EOsprintf extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() throws Exception {
-        final String format = new Param(this, "format").strong(String.class);
+        final String format = new Dataized(this.take("format")).asString();
         final Phi args = this.take("args");
         final Phi retriever = args.take("at");
-        final Long length = new Param(args, "length").strong(Long.class);
+        final long length = new Dataized(args.take("length")).asNumber().longValue();
         final List<Object> arguments = new ArrayList<>(0);
         String pattern = format;
         long index = 0;
         while (true) {
-            final int idx = pattern.indexOf('%');
+            final int idx = pattern.indexOf(EOsprintf.PERCENT);
             if (idx == -1) {
                 break;
             }
@@ -76,16 +95,20 @@ public final class EOsprintf extends PhDefault implements Atom {
                     String.format(
                         "The amount of arguments %d does not match the amount of format occurrences %d",
                         length,
-                        EOsprintf.percents(format)
+                        EOsprintf.formats(format)
                     )
                 );
             }
             final char sym = pattern.charAt(idx + 1);
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(index));
-            arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
-            pattern = pattern.substring(idx + 1);
-            ++index;
+            if (sym != EOsprintf.PERCENT) {
+                final Phi taken = retriever.copy();
+                taken.put(0, new Data.ToPhi(index));
+                arguments.add(EOsprintf.formatted(sym, new Dataized(taken)));
+                ++index;
+                pattern = pattern.substring(idx + 2);
+            } else {
+                pattern = pattern.substring(idx + 1);
+            }
         }
         return new ToPhi(
             String.format(
@@ -116,44 +139,30 @@ public final class EOsprintf extends PhDefault implements Atom {
      * @return Formatted object
      */
     private static Object formatted(final char symbol, final Dataized element) {
-        final Object result;
-        switch (symbol) {
-            case 's':
-                result = element.take(String.class);
-                break;
-            case 'd':
-                result = element.take(Long.class);
-                break;
-            case 'f':
-                result = element.take(Double.class);
-                break;
-            case 'x':
-                result = EOsprintf.bytesToHex(element.take());
-                break;
-            case 'b':
-                result = element.take(Boolean.class);
-                break;
-            default:
-                throw new ExFailure(
-                    String.format(
-                        "The format %c is unsupported, only %s formats can be used",
-                        symbol,
-                        "%s, %d, %f, %x, %b"
-                    )
-                );
+        if (!EOsprintf.CONVERSION.containsKey(symbol)) {
+            throw new ExFailure(
+                String.format(
+                    "The format %c is unsupported, only %s formats can be used",
+                    symbol, "%s, %d, %f, %x, %b"
+                )
+            );
         }
-        return result;
+        return EOsprintf.CONVERSION.get(symbol).apply(element);
     }
 
     /**
-     * Count amount of '%' char occurrences.
+     * Count amount of format occurrences.
      * @param str Given string
-     * @return Amount of '%' in string
+     * @return Amount of formats in string
      */
-    private static int percents(final String str) {
+    private static int formats(final String str) {
         int count = 0;
         for (int idx = 0; idx < str.length(); ++idx) {
-            if (str.charAt(idx) == '%') {
+            if (
+                str.charAt(idx) == EOsprintf.PERCENT
+                    && idx + 1 != str.length()
+                    && EOsprintf.CONVERSION.containsKey(str.charAt(idx + 1))
+            ) {
                 ++count;
             }
         }

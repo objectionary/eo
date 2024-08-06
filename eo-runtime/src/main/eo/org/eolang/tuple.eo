@@ -33,24 +33,23 @@
   [] > empty
     0 > length
 
+    # Take one element from the tuple, at the given position.
     error "Can't get an object from the empty tuple" > [i] > at
 
-    [x] > with
-      tuple > @
-        tuple.empty
-        x
+    # Create a new tuple with this element added to the end of it.
+    tuple ^ x > [x] > with
 
   # Obtain the length of the tuple.
   [] > length
-    int > @
-      ^.head.length.plus 1 > len!
+    ^.head.length.plus 1 > len!
+    number len > @
 
   # Take one element from the tuple, at the given position.
   [i] > at
     ^.length > len
+    i > idx!
     if. > index!
-      0.gt
-        i > idx!
+      0.gt idx
       len.plus idx
       idx
     if. > @

@@ -48,9 +48,7 @@ public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
-        final int size = Math.toIntExact(
-            new Dataized(rho.take("size")).take(Long.class)
-        );
+        final int size = new Dataized(rho.take("size")).asNumber().intValue();
         final int identifier = Heaps.INSTANCE.malloc(this, size);
         final Phi res;
         try {

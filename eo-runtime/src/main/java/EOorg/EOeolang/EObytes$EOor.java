@@ -29,8 +29,9 @@ package EOorg.EOeolang;
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Data;
-import org.eolang.Param;
+import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Versionized;
@@ -55,8 +56,8 @@ public final class EObytes$EOor extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Param(this).asBytes().or(
-                new Param(this, "b").asBytes()
+            new Dataized(this.take(Attr.RHO)).asBytes().or(
+                new Dataized(this.take("b")).asBytes()
             ).take()
         );
     }

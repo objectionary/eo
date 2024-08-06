@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.67.0</version>
+    <version>0.68.0</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -95,7 +95,7 @@ SOFTWARE.
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <antlr.version>4.13.1</antlr.version>
+    <antlr.version>4.13.2</antlr.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -120,7 +120,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.14.0</version>
+        <version>3.15.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
