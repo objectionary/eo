@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.concurrent.ConcurrentHashMap;
 import org.eolang.ExFailure;
@@ -46,13 +47,13 @@ final class Cages {
     /**
      * Encaged objects.
      */
-    private final ConcurrentHashMap<Integer, Phi> objects = new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap<Integer, Phi> objects;
 
     /**
      * Ctor.
      */
     private Cages() {
-        // singleton :(
+        this.objects = new ConcurrentHashMap<>(0);
     }
 
     /**

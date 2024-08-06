@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.io.File;
 import org.eolang.Atom;
@@ -43,6 +44,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.size")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOsize extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {

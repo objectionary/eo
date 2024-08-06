@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -45,10 +46,12 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.right")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOright extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOright() {
         this.add("x", new AtVoid("x"));
     }

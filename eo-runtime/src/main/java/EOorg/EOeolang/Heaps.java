@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,14 +50,13 @@ final class Heaps {
     /**
      * All.
      */
-    private final ConcurrentHashMap<Integer, byte[]> blocks =
-        new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap<Integer, byte[]> blocks;
 
     /**
      * Ctor.
      */
     private Heaps() {
-        // intentionally empty, it's a singleton :(
+        this.blocks = new ConcurrentHashMap<>(0);
     }
 
     /**

@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -46,10 +47,12 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "string.slice")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOstring$EOslice extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOstring$EOslice() {
         this.add("start", new AtVoid("start"));
         this.add("len", new AtVoid("len"));
@@ -57,22 +60,22 @@ public final class EOstring$EOslice extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final String str = new Dataized(this.take(Attr.RHO)).asString();
         final int start = new Dataized(this.take("start")).asNumber().intValue();
         final int length = new Dataized(this.take("len")).asNumber().intValue();
-        final int end = length + start;
         if (start < 0) {
             throw new ExFailure(
                 "Start index must be greater than 0 but was %d",
                 start
             );
         }
+        final int end = length + start;
         if (start > end) {
             throw new ExFailure(
                 "End index must be greater or equal to start but was %d < %d",
                 end, start
             );
         }
+        final String str = new Dataized(this.take(Attr.RHO)).asString();
         if (end > str.length()) {
             throw new ExFailure(
                 "Start index + length must not exceed string length but was %d > %d",

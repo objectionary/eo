@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.nio.file.Paths;
 import org.eolang.Atom;

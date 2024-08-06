@@ -24,12 +24,12 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOio; // NOPMD
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -47,6 +47,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "console.write.written-bytes")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implements Atom {
     /**
      * Stream to write out.
@@ -64,6 +65,7 @@ public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implement
      * Ctor for the tests.
      * @param out Stream to print
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOconsole$EOwrite$EOwritten_bytes(final OutputStream out) {
         this.out = out;
         this.add("buffer", new AtVoid("buffer"));

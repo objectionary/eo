@@ -27,5 +27,6 @@
  *
  * @since 0.1
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg;
+package EOorg; // NOPMD

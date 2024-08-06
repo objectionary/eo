@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
@@ -44,6 +45,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.open.file-stream.write.written-bytes")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
     extends PhDefault
     implements Atom {
@@ -51,6 +53,7 @@ public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes() {
         this.add("buffer", new AtVoid("buffer"));
     }

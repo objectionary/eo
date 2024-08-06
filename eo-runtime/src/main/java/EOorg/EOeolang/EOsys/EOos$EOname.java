@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -39,6 +40,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (5 lines)
  */
 @XmirObject(oname = "os.name")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOos$EOname extends PhDefault implements Atom {
     /**
      * Operating system name as {@link Phi}.

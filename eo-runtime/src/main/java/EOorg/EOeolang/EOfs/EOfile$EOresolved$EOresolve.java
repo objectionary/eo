@@ -24,12 +24,11 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
@@ -45,6 +44,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "file.resolved.resolve")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOresolved$EOresolve extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {

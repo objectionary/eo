@@ -23,9 +23,10 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (8 lines)
+ * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,6 +69,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "rust")
+@SuppressWarnings("PMD.AvoidDirectAccessToStaticFields")
 public final class EOrust extends PhDefault implements Atom {
 
     /**
@@ -78,12 +81,12 @@ public final class EOrust extends PhDefault implements Atom {
     /**
      * All phis indexed while executing of native method.
      */
-    private final Map<Integer, Phi> phis = new HashMap<>();
+    private final Map<Integer, Phi> phis;
 
     /**
      * Error that possibly was thrown while the native function execution.
      */
-    private final AtomicReference<Throwable> error = new AtomicReference<>();
+    private final AtomicReference<Throwable> error;
 
     static {
         try {
@@ -95,7 +98,7 @@ public final class EOrust extends PhDefault implements Atom {
             );
         }
         final String lib;
-        final String system = System.getProperty("os.name").toLowerCase();
+        final String system = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
         if (system.contains("win")) {
             lib = "common.dll";
         } else if (system.contains("nix") || system.contains("nux") || system.contains("aix")) {
@@ -130,7 +133,10 @@ public final class EOrust extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOrust() {
+        this.phis = new HashMap<>();
+        this.error = new AtomicReference<>();
         this.add("code", new AtVoid("code"));
         this.add("portal", new AtVoid("portal"));
         this.add("params", new AtVoid("params"));

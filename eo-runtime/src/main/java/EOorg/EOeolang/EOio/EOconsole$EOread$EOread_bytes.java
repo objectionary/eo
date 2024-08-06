@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOio;
+package EOorg.EOeolang.EOio; // NOPMD
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +48,7 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "console.read.read-bytes")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOconsole$EOread$EOread_bytes extends PhDefault implements Atom {
     /**
      * Input stream to read bytes from.
@@ -64,12 +66,14 @@ public final class EOconsole$EOread$EOread_bytes extends PhDefault implements At
      * Ctor for the tests.
      * @param input Stream to read from
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     EOconsole$EOread$EOread_bytes(final InputStream input) {
         this.input = input;
         this.add("size", new AtVoid("size"));
     }
 
     @Override
+    @SuppressWarnings("PMD.AssignmentInOperand")
     public Phi lambda() throws IOException {
         final int size = new Dataized(this.take("size")).asNumber().intValue();
         final byte[] read = new byte[size];

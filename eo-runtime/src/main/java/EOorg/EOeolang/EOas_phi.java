@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -47,6 +48,7 @@ public final class EOas_phi extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOas_phi() {
         this.add("x", new AtVoid("x"));
     }

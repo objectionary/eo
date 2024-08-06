@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.Arrays;
 import org.eolang.AtVoid;
@@ -46,10 +47,12 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "bytes.slice")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EObytes$EOslice extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EObytes$EOslice() {
         this.add("start", new AtVoid("start"));
         this.add("len", new AtVoid("len"));

@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOfs;
+package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,13 +53,13 @@ final class Files {
     /**
      * File input streams for reading.
      */
-    private final ConcurrentHashMap<String, Object[]> streams = new ConcurrentHashMap<>(0);
+    private final ConcurrentHashMap<String, Object[]> streams;
 
     /**
      * Ctor.
      */
     private Files() {
-        // singleton :(
+        this.streams = new ConcurrentHashMap<>(0);
     }
 
     /**

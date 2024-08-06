@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -50,6 +51,7 @@ public final class EOtry extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOtry() {
         this.add("main", new AtVoid("main"));
         this.add("catch", new AtVoid("catch"));

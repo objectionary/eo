@@ -24,8 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -45,6 +46,7 @@ public final class EOgetenv extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOgetenv() {
         this.add("name", new AtVoid("name"));
     }

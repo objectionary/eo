@@ -24,9 +24,9 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -45,10 +45,12 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "malloc.of.allocated.read")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     EOmalloc$EOof$EOallocated$EOread() {
         this.add("offset", new AtVoid("offset"));
         this.add("length", new AtVoid("length"));
