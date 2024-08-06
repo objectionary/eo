@@ -24,8 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="remove-high-level-inner-classes" version="2.0">
   <!-- Removes all high-level nesting classes inside the main class.
-   @todo #1249:90min Create xmir2xmir tests. This tests should be represented in yaml file and contain xsls,
-   input(xmir) and output(xmir) sections. Add link to corresponding xmir2xmir test here as documentation -->
+   See example in test srsrc/test/resources/org/eolang/maven/xmir2xmir/removes-high-level-inner-classes.yaml -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="node()|@*">
     <xsl:copy>

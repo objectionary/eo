@@ -24,8 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="align-test-classes" version="2.0">
   <!-- Copies all high-level nesting classes inside the main class.
-  @todo #1249:90min Add link to corresponding xmir2xmir test here as documentation when such tests arrive.
-   Such tests would describe xsl sense via example of input/output. -->
+  See example in test src/test/resources/org/eolang/maven/xmir2xmir/aligns-test-classes.yaml -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
