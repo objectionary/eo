@@ -342,7 +342,6 @@ SOFTWARE.
                  (PMD.PackageCase, PMD.AvoidDollarSigns). All the others PMD violations should be
                  resolved.
                 -->
-                <exclude>pmd:/src/main/java/EOorg/.*</exclude>
                 <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
               </excludes>
             </configuration>
