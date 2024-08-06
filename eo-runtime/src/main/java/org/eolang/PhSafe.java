@@ -80,7 +80,7 @@ public final class PhSafe implements Phi {
             return this.origin.take(name);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
@@ -91,7 +91,7 @@ public final class PhSafe implements Phi {
             return this.origin.put(pos, object);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
@@ -102,7 +102,7 @@ public final class PhSafe implements Phi {
             return this.origin.put(name, object);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
@@ -123,7 +123,7 @@ public final class PhSafe implements Phi {
             this.origin.attach(data);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
@@ -134,7 +134,7 @@ public final class PhSafe implements Phi {
             return this.origin.delta();
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }

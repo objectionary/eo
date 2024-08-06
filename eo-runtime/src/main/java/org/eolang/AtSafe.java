@@ -79,7 +79,7 @@ final class AtSafe implements Attr {
             return new PhSafe(this.origin.get());
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
@@ -90,7 +90,7 @@ final class AtSafe implements Attr {
             return this.origin.put(phi);
         } catch (final ExFailure ex) {
             throw new EOerror.ExError(
-                new Data.ToPhi(EOerror.message(ex))
+                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }

@@ -24,9 +24,11 @@
 
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang;
+package EOorg.EOeolang; // NOPMD
 
+import java.util.function.Supplier;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
@@ -55,32 +57,59 @@ public final class EOerror extends PhDefault implements Atom {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EOerror() {
         this.add("message", new AtVoid("message"));
-    }
-
-    /**
-     * Make a message from an exception.
-     * @param exp The exception
-     * @return Message
-     */
-    public static String message(final Throwable exp) {
-        final StringBuilder ret = new StringBuilder(0);
-        if (exp.getMessage() != null) {
-            if (!(exp instanceof ExFailure)) {
-                ret.append(exp.getClass().getSimpleName()).append(": ");
-            }
-            ret.append(exp.getMessage().replace("%", "%%"));
-        }
-        if (exp.getCause() != null) {
-            ret.append("; caused by ").append(EOerror.message(exp.getCause()));
-        }
-        return ret.toString();
     }
 
     @Override
     public Phi lambda() {
         throw new ExError(this.take("message"));
+    }
+
+    /**
+     * Builds error message from the exception.
+     *
+     * @since 0.40
+     */
+    public static final class ErrorMsg implements Supplier<String> {
+        /**
+         * The exception.
+         */
+        private final Throwable exp;
+
+        /**
+         * Ctor.
+         *
+         * @param exp The exception.
+         */
+        public ErrorMsg(final Throwable exp) {
+            this.exp = exp;
+        }
+
+        @Override
+        public String get() {
+            return ErrorMsg.message(this.exp);
+        }
+
+        /**
+         * Make a message from an exception.
+         * @param exp The exception.
+         * @return Message.
+         */
+        private static String message(final Throwable exp) {
+            final StringBuilder ret = new StringBuilder(0);
+            if (exp.getMessage() != null) {
+                if (!(exp instanceof ExFailure)) {
+                    ret.append(exp.getClass().getSimpleName()).append(": ");
+                }
+                ret.append(exp.getMessage().replace("%", "%%"));
+            }
+            if (exp.getCause() != null) {
+                ret.append("; caused by ").append(ErrorMsg.message(exp.getCause()));
+            }
+            return ret.toString();
+        }
     }
 
     /**
@@ -125,6 +154,7 @@ public final class EOerror extends PhDefault implements Atom {
          * @return String message.
          * @checkstyle IllegalCatchCheck (55 lines)
          */
+        @SuppressWarnings("PMD.AvoidCatchingGenericException")
         private static String safeMessage(final Phi enclosure) {
             String result;
             if (enclosure == null) {
@@ -137,10 +167,10 @@ public final class EOerror extends PhDefault implements Atom {
                         enclosure,
                         new VerboseBytesAsString(raw).get()
                     );
-                } catch (final Throwable first) {
+                } catch (final Exception first) {
                     try {
                         result = enclosure.toString();
-                    } catch (final Throwable second) {
+                    } catch (final Exception second) {
                         result = enclosure.getClass().toString();
                     }
                 }
