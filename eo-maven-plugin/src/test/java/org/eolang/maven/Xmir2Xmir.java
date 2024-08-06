@@ -25,13 +25,12 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Jaxec;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
@@ -154,7 +153,7 @@ public final class Xmir2Xmir {
     /**
      * Pass xml through xsls.
      * @param before XML content before.
-     * @param xsls xsls.
+     * @param xsls Xsls.
      * @return Content of output xml.
      */
     private static String process(final String before, final Iterable<String> xsls) {
