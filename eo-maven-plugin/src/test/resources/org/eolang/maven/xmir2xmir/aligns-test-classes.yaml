@@ -37,7 +37,7 @@ before:
                name="nesting-testTest"
                original-name="nesting-test"
                pos="0">
-           <xmir>&lt;o abstract="" line="30" name="nesting-test" original-name="nesting-test" pos="0"&gt; 
+           <xmir>&lt;o abstract="" line="30" name="nesting-test" original-name="nesting-test" pos="0"&gt;
     &lt;o base="nesting-test$qwerty-1" cut="0" line="31" name="qwerty-1" pos="2" ref="31"/&gt;
     &lt;o base="nesting-test$qwerty-2" cut="2" line="33" name="qwerty-2" pos="2" ref="33"/&gt;
     &lt;o base="org.eolang.true" line="34" name="@" pos="2"/&gt;
@@ -48,7 +48,7 @@ before:
                   original-name="qwerty-1"
                   parent="nesting-testTest"
                   pos="2">
-              <xmir>&lt;o abstract="" line="31" name="nesting-test$qwerty-1" original-name="qwerty-1" parent="nesting-test" pos="2"&gt; 
+              <xmir>&lt;o abstract="" line="31" name="nesting-test$qwerty-1" original-name="qwerty-1" parent="nesting-test" pos="2"&gt;
     &lt;o base="nesting-test$qwerty-1$qwerty-2" cut="0" line="32" name="qwerty-2" pos="4" ref="32"/&gt;
   &lt;/o&gt;</xmir>
               <class abstract=""
