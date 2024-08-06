@@ -23,9 +23,9 @@
  */
 
 /**
- * EO runtime, SYS.
+ * System calls, tests.
  *
  * @since 0.40
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (5 lines)
  */
 package EOorg.EOeolang.EOsys;

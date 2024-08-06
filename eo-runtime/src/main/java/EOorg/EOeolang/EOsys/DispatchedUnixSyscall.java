@@ -21,11 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/**
- * EO runtime, SYS.
- *
- * @since 0.40
+/*
  * @checkstyle PackageNameCheck (4 lines)
  */
 package EOorg.EOeolang.EOsys;
+
+import org.eolang.Phi;
+
+/**
+ * Unix system call that uses library {@link CStdLib}.
+ *
+ * @since 0.40
+ */
+public final class DispatchedUnixSyscall implements DispatchedNativeMethod {
+    /**
+     * Origin {@link DispatchedNativeMethod}.
+     */
+    private final DispatchedNativeMethod origin;
+
+    /**
+     * Ctor.
+     * @param name Method name.
+     */
+    DispatchedUnixSyscall(final String name) {
+        this.origin = new DispatchedNativeDefault(CStdLib.CSTDLIB, name);
+    }
+
+    @Override
+    public int call(final Phi... params) {
+        return this.origin.call(params);
+    }
+}

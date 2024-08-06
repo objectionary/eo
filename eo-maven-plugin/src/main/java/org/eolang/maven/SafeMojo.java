@@ -83,6 +83,18 @@ abstract class SafeMojo extends AbstractMojo {
     protected BuildPluginManager manager;
 
     /**
+     * Directory where classes are stored in target.
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(
+        defaultValue = "${project.build.directory}/classes",
+        readonly = true,
+        required = true
+    )
+    protected File classesDir;
+
+    /**
      * File with foreign "tojos".
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
