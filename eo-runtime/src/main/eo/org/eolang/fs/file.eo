@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.os
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -31,31 +30,10 @@
 
 # A file on the filesystem.
 [path] > file
-  path > @
+  $.path > @
 
   # Returns `true` if current file is a directory, returns `false` otherwise.
   [] > is-directory /bool
-
-  # The system-dependent default name-separator character.
-  # On UNIX systems the value of this field is "/";
-  # on Microsoft Windows systems it is "\\".
-  [] > separator
-    string > @
-      as-bytes.
-        if.
-          os.is-windows
-          "\\"
-          "/"
-
-  # Resolves `other` path against `path` and returns as new `file` from it.
-  [other] > resolved
-    QQ.fs.file resolve.as-bytes.as-string > @
-
-    # Resolves `other` path against `^.path` and returns as `string`.
-    #
-    # Attention! The object is for internal usage only, please
-    # don't use the object programmatically outside of `file` object.
-    [] > resolve /string
 
   # Returns `true` if file with current `path` exists in filesystem.
   [] > exists /bool
@@ -109,6 +87,9 @@
     # Attention! The object is for internal usage only, please
     # don't use the object programmatically outside of `file` object.
     [] > move /string
+
+  # Convert the `file` to `path`.
+  (QQ.fs.path ^.path).determined > [] > as-path
 
   # Opens the file.
   #
