@@ -49,18 +49,14 @@ import org.junitpioneer.jupiter.StdOut;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOconsoleTest {
 
-    /**
-     * Hello.
-     */
-    private static final String HELLO = "Hello";
-
     @Test
     @StdIo
     void printsFromTuple(final StdOut output) {
+        final String msg = "Hello";
         final Phi tuple = Phi.Φ.take("org").take("eolang").take("tuple");
         final Phi copy = tuple.copy();
         copy.put(0, tuple.take("empty"));
-        copy.put(1, new Data.ToPhi(EOconsoleTest.HELLO));
+        copy.put(1, new Data.ToPhi(msg));
         final Phi ret = copy.take("at").copy();
         ret.put(0, new Data.ToPhi(0L));
         final Phi written = new EOconsole$EOwrite$EOwritten_bytes();
@@ -69,7 +65,7 @@ final class EOconsoleTest {
         MatcherAssert.assertThat(
             "The `console.write.written-bytes` object should have printed string from `tuple`, but it didn't",
             output.capturedString(),
-            Matchers.equalTo(EOconsoleTest.HELLO)
+            Matchers.equalTo(msg)
         );
     }
 
@@ -90,7 +86,7 @@ final class EOconsoleTest {
     @StdIo
     void writesToConsoleSequentially(final StdOut output) {
         final Phi console = Phi.Φ.take("org.eolang.io.console");
-        final Phi buffer = new Data.ToPhi(EOconsoleTest.HELLO);
+        final Phi buffer = new Data.ToPhi("Ha");
         final Phi first = new PhWith(
             new PhCopy(
                 new PhMethod(console, "write")
@@ -107,7 +103,7 @@ final class EOconsoleTest {
         MatcherAssert.assertThat(
             "The `console.write` object should have return output block ready to write again, but it didn't",
             output.capturedString(),
-            Matchers.equalTo("HelloHello")
+            Matchers.equalTo("HaHa")
         );
     }
 
@@ -127,7 +123,7 @@ final class EOconsoleTest {
     }
 
     @Test
-    @StdIo(EOconsoleTest.HELLO)
+    @StdIo("Message")
     void readsOnlyAvailableBytes(final StdIn input) {
         MatcherAssert.assertThat(
             String.join(
@@ -141,7 +137,7 @@ final class EOconsoleTest {
                     0, new Data.ToPhi(10)
                 )
             ).asString(),
-            Matchers.equalTo(EOconsoleTest.HELLO.concat(System.lineSeparator()))
+            Matchers.equalTo("Message".concat(System.lineSeparator()))
         );
     }
 
@@ -175,7 +171,7 @@ final class EOconsoleTest {
                     0, new Data.ToPhi(5)
                 )
             ).asString(),
-            Matchers.equalTo(EOconsoleTest.HELLO)
+            Matchers.equalTo("Hello")
         );
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read second 5 bytes from standard input, but it didn't",

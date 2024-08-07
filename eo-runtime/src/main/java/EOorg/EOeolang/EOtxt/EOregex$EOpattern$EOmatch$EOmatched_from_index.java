@@ -55,12 +55,12 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     /**
      * Start.
      */
-    public static final String START = "start";
+    private static final String START = "start";
 
     /**
      * Position.
      */
-    public static final String POSITION = "position";
+    private static final String POSITION = "position";
 
     /**
      * Ctor.
