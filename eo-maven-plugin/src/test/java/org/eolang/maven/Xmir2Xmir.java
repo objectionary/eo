@@ -64,7 +64,7 @@ final class Xmir2Xmir {
      * @param pack Content of .yaml test.
      * @param home Where to save files.
      */
-    public Xmir2Xmir(final String pack, final Path home) {
+    Xmir2Xmir(final String pack, final Path home) {
         this(
             new Sticky<>(() -> new Yaml().load(pack)),
             new HmBase(home)
