@@ -42,7 +42,7 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Test scenario in YAML.
  *
- * @since 0.1
+ * @since 0.40
  * @todo #3267:90min Add better error printing. Ideally, it should print the difference
  *  the way the linux diff command does (line by line).
  */
