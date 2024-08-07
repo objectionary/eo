@@ -47,7 +47,7 @@ import org.yaml.snakeyaml.Yaml;
  *  the way the linux diff command does (line by line).
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
-public final class Xmir2Xmir {
+final class Xmir2Xmir {
 
     /**
      * Expected content of xml.
