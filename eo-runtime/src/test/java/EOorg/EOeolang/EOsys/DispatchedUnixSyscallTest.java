@@ -23,8 +23,9 @@
  */
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Data;
 import org.hamcrest.MatcherAssert;
@@ -66,7 +67,7 @@ final class DispatchedUnixSyscallTest {
         MatcherAssert.assertThat(
             "Expected \"getpid\" syscall to dispatched correctly",
             new DispatchedUnixSyscall("getpid").call(),
-            Matchers.equalTo(CStdLib.CSTDLIB.getpid())
+            Matchers.equalTo(CStdLib.INSTANCE.getpid())
         );
     }
 

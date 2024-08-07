@@ -23,8 +23,9 @@
  */
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOtuple$EOempty;
 import java.lang.management.ManagementFactory;
@@ -47,7 +48,7 @@ import org.junit.jupiter.api.condition.OS;
 final class EOposixTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    public void invokesGetpidCorrectly() {
+    void invokesGetpidCorrectly() {
         MatcherAssert.assertThat(
             "The \"getpid\" system call was expected to work correctly",
             new Dataized(
@@ -72,7 +73,7 @@ final class EOposixTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    public void invokesWriteCorrectly() {
+    void invokesWriteCorrectly() {
         final String msg = "Hello, world!\n";
         final Phi args = new Data.ToPhi(
             new Phi[] {

@@ -23,8 +23,9 @@
  */
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Phi;
 
@@ -44,7 +45,7 @@ public final class DispatchedUnixSyscall implements DispatchedNativeMethod {
      * @param name Method name.
      */
     DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedNativeDefault(CStdLib.CSTDLIB, name);
+        this.origin = new DispatchedNativeDefault(CStdLib.INSTANCE, name);
     }
 
     @Override

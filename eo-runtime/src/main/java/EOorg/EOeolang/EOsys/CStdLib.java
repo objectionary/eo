@@ -23,8 +23,9 @@
  */
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -38,7 +39,7 @@ public interface CStdLib extends Library {
     /**
      * C STDLIB instance.
      */
-    CStdLib CSTDLIB = Native.load("c", CStdLib.class);
+    CStdLib INSTANCE = Native.load("c", CStdLib.class);
 
     /**
      * The "getpid" syscall.

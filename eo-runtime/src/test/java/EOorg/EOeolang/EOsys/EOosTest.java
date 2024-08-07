@@ -23,8 +23,9 @@
  */
 /*
  * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys;
+package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Dataized;
 import org.hamcrest.MatcherAssert;
@@ -41,7 +42,7 @@ import org.junit.jupiter.api.Test;
 final class EOosTest {
 
     @Test
-    public void readsSystemFamily() {
+    void readsSystemFamily() {
         MatcherAssert.assertThat(
             "Dataization of uname object should not return null",
             new Dataized(
@@ -52,7 +53,7 @@ final class EOosTest {
     }
 
     @Test
-    public void readsSystemFamilyCorrectly() {
+    void readsSystemFamilyCorrectly() {
         MatcherAssert.assertThat(
             "Object uname returns incorrect system name",
             new Dataized(
