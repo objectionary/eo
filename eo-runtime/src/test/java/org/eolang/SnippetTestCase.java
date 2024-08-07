@@ -79,6 +79,26 @@ final class SnippetTestCase {
      */
     private static final String UTF_8 = "UTF-8";
 
+    /**
+     * The eo.version.
+     */
+    private static final String EO_VERSION = "eo.version";
+
+    /**
+     * The eo-maven-plugin.
+     */
+    private static final String EO_PLUGIN = "eo-maven-plugin";
+
+    /**
+     * The org.eolang.
+     */
+    private static final String EO_GROUP = "org.eolang";
+
+    /**
+     * The 1.0-SNAPSHOT.
+     */
+    private static final String SNAPSHOT_1_0 = "1.0-SNAPSHOT";
+
     @ParameterizedTest
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
@@ -102,9 +122,12 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                        SnippetTestCase.EO_GROUP,
+                        SnippetTestCase.EO_PLUGIN,
+                        System.getProperty(
+                            SnippetTestCase.EO_VERSION,
+                            SnippetTestCase.SNAPSHOT_1_0
+                        )
                     )
                     .execution("compile")
                     .phase("generate-sources")
@@ -139,6 +162,7 @@ final class SnippetTestCase {
         );
     }
 
+    // @checkstyle MethodLengthCheck (170 lines)
     @Test
     @Tag("slow")
     @ExtendWith(WeAreOnline.class)
@@ -158,14 +182,18 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                        SnippetTestCase.EO_GROUP,
+                        SnippetTestCase.EO_PLUGIN,
+                        System.getProperty(
+                            SnippetTestCase.EO_VERSION,
+                            SnippetTestCase.SNAPSHOT_1_0
+                        )
                     )
                     .execution("phi-unphi")
-                    .phase("compile")
+                    .phase("process-sources")
                     .goals(
                         "register",
+                        "deps",
                         "parse",
                         "optimize",
                         "xmir-to-phi",
@@ -217,9 +245,12 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                        SnippetTestCase.EO_GROUP,
+                        SnippetTestCase.EO_PLUGIN,
+                        System.getProperty(
+                            SnippetTestCase.EO_VERSION,
+                            SnippetTestCase.SNAPSHOT_1_0
+                        )
                     )
                     .execution("compile")
                     .goals(
@@ -241,9 +272,25 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
-                        "eo-maven-plugin",
-                        System.getProperty("eo.version", "1.0-SNAPSHOT")
+                        SnippetTestCase.EO_GROUP,
+                        SnippetTestCase.EO_PLUGIN,
+                        System.getProperty(
+                            SnippetTestCase.EO_VERSION,
+                            SnippetTestCase.SNAPSHOT_1_0
+                        )
+                    )
+                    .execution("deps")
+                    .phase("process-sources")
+                    .goals("deps");
+                f.build()
+                    .plugins()
+                    .append(
+                        SnippetTestCase.EO_GROUP,
+                        SnippetTestCase.EO_PLUGIN,
+                        System.getProperty(
+                            SnippetTestCase.EO_VERSION,
+                            SnippetTestCase.SNAPSHOT_1_0
+                        )
                     )
                     .execution("tests")
                     .phase("generate-test-sources")

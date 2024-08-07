@@ -23,10 +23,9 @@
  */
 
 /**
- * EO runtime, SYS.
+ * System calls, tests.
  *
  * @since 0.40
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
+ * @checkstyle PackageNameCheck (5 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+package EOorg.EOeolang.EOsys;

@@ -41,13 +41,13 @@ SOFTWARE.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.13</version>
+      <version>2.0.14</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.13</version>
+      <version>2.0.14</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -191,6 +191,7 @@ SOFTWARE.
             <id>compile</id>
             <goals>
               <goal>register</goal>
+              <goal>deps</goal>
               <goal>assemble</goal>
               <goal>verify</goal>
               <goal>transpile</goal>
@@ -213,6 +214,7 @@ SOFTWARE.
             <phase>generate-test-sources</phase>
             <goals>
               <goal>register</goal>
+              <goal>deps</goal>
               <goal>assemble</goal>
               <goal>verify</goal>
               <goal>transpile</goal>

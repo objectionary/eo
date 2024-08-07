@@ -21,12 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
+package EOorg.EOeolang.EOsys;
+
+import org.eolang.Dataized;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * EO runtime, SYS.
+ * Test case for {@link EOos}.
  *
  * @since 0.40
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
+ * @checkstyle TypeNameCheck (100 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOosTest {
+
+    @Test
+    public void readsSystemFamily() {
+        MatcherAssert.assertThat(
+            "Dataization of uname object should not return null",
+            new Dataized(
+                new EOos$EOname()
+            ).take(String.class),
+            Matchers.is(Matchers.notNullValue())
+        );
+    }
+
+    @Test
+    public void readsSystemFamilyCorrectly() {
+        MatcherAssert.assertThat(
+            "Object uname returns incorrect system name",
+            new Dataized(
+                new EOos$EOname()
+            ).take(String.class),
+            Matchers.equalTo(System.getProperty("os.name"))
+        );
+    }
+}

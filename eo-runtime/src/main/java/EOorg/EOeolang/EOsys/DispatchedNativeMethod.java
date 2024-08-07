@@ -21,12 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
+ * @checkstyle PackageNameCheck (4 lines)
+ */
+package EOorg.EOeolang.EOsys;
+
+import org.eolang.Phi;
 
 /**
- * EO runtime, SYS.
+ * Native method that can be called with EO objects ({@link Phi}) as arguments.
  *
  * @since 0.40
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+public interface DispatchedNativeMethod {
+    /**
+     * Makes native method call.
+     *
+     * @param params Native methods parameters.
+     * @return Methods return code.
+     */
+    int call(Phi... params);
+}
