@@ -40,14 +40,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * @since 0.40
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-public final class XcopCondition implements ExecutionCondition {
+final class XcopCondition implements ExecutionCondition {
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(
         final ExtensionContext context) {
         final ConditionEvaluationResult ret;
-        final boolean exists = Stream.of(
-            System.getenv("PATH").split(Pattern.quote(File.pathSeparator))
-            )
+        final boolean exists = Stream
+            .of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
             .map(Paths::get)
             .anyMatch(path -> Files.exists(path.resolve("xcop")));
         if (exists) {
