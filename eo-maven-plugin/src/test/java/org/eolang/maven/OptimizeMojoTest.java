@@ -76,7 +76,7 @@ final class OptimizeMojoTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/xmir2xmir/", glob = "**.yaml")
     @ExtendWith(XcopCondition.class)
-    void checksXmirToXmir(final String pack, @TempDir final Path dir) {
+    void checksXmirToXmirPacks(final String pack, @TempDir final Path dir) {
         MatcherAssert.assertThat(
             "Xmir2xmir tests passes",
             new Xmir2Xmir(pack, dir),
