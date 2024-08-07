@@ -30,7 +30,7 @@
 # Test.
 [] > reads-empty-bytes
   dead-input.read 10 > i1
-  i2.read 10 > i2
+  i1.read 10 > i2
   and. > @
     i1.eq --
     i2.eq --
