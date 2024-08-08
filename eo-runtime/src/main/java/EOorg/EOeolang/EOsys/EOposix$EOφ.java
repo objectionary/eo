@@ -27,29 +27,49 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Unix system call that uses library {@link CStdLib}.
+ * Unix syscall.
  *
  * @since 0.40
+ * @checkstyle TypeNameCheck (100 lines)
  */
-public final class DispatchedUnixSyscall implements DispatchedSyscall {
-    /**
-     * Origin {@link DispatchedSyscall}.
-     */
-    private final DispatchedSyscall origin;
-
-    /**
-     * Ctor.
-     * @param name Method name.
-     */
-    DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedSyscallDefault(new PosixLibWithJna(), name);
-    }
+@Versionized
+@XmirObject(oname = "posix.@")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOposix$EOφ extends PhDefault implements Atom {
 
     @Override
-    public Phi call(final Phi... params) {
-        return this.origin.call(params);
+    public Phi lambda() throws Exception {
+        final Phi rho = this.take(Attr.RHO);
+        final Phi name = rho.take("name");
+        final Phi[] args = this.collectArgs();
+        return new DispatchedUnixSyscall(new Dataized(name).asString()).call(args);
+    }
+
+    /**
+     * Collects arguments for syscall from tuple.
+     *
+     * @return Array of arguments.
+     */
+    private Phi[] collectArgs() {
+        final Phi args = this.take(Attr.RHO).take("args");
+        final Phi retriever = args.take("at");
+        final int length = new Dataized(args.take("length")).asNumber().intValue();
+        final Phi[] arguments = new Phi[length];
+        for (long iter = 0; iter < length; ++iter) {
+            final Phi taken = retriever.copy();
+            taken.put(0, new Data.ToPhi(iter));
+            arguments[(int) iter] = taken;
+        }
+        return arguments;
     }
 }

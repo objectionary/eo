@@ -38,11 +38,11 @@ import org.eolang.Phi;
  *
  * @since 0.40
  */
-public final class DispatchedNativeDefault implements DispatchedNativeMethod {
+public final class DispatchedSyscallDefault implements DispatchedSyscall {
     /**
      * Native library.
      */
-    private final Library lib;
+    private final SyscallLib lib;
 
     /**
      * Dispatched method.
@@ -54,7 +54,7 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
      * @param lib Library.
      * @param method Method.
      */
-    DispatchedNativeDefault(final Library lib, final Method method) {
+    DispatchedSyscallDefault(final SyscallLib lib, final Method method) {
         this.lib = lib;
         this.method = method;
     }
@@ -64,14 +64,14 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
      * @param lib Library.
      * @param name Method name.
      */
-    DispatchedNativeDefault(final Library lib, final String name) {
-        this(lib, DispatchedNativeDefault.findMethodUnsafe(name, lib));
+    DispatchedSyscallDefault(final SyscallLib lib, final String name) {
+        this(lib, DispatchedSyscallDefault.findMethodUnsafe(name, lib));
     }
 
     @Override
-    public int call(final Phi... params) {
+    public Phi call(final Phi... params) {
         try {
-            return (int) this.method.invoke(this.lib, this.prepareParams(params));
+            return (Phi) this.method.invoke(this.lib, this.prepareParams(params));
         } catch (final InvocationTargetException | IllegalAccessException ex) {
             throw new IllegalStateException(
                 String.format(
@@ -104,7 +104,7 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
      * @return Method.
      * @throws NoSuchMethodException if method not found.
      */
-    private static Method findMethod(final String name, final Library lib)
+    private static Method findMethod(final String name, final SyscallLib lib)
         throws NoSuchMethodException {
         for (final Method method : lib.getClass().getMethods()) {
             if (method.getName().equals(name)) {
@@ -113,7 +113,7 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
         }
         throw new NoSuchMethodException(
             String.format(
-                "Can't find syscall with name %s in class %s",
+                "Can't find syscall with name \"%s\" in class %s",
                 name,
                 lib.getClass().getName()
             )
@@ -126,9 +126,9 @@ public final class DispatchedNativeDefault implements DispatchedNativeMethod {
      * @param lib Native library.
      * @return Method.
      */
-    private static Method findMethodUnsafe(final String name, final Library lib) {
+    private static Method findMethodUnsafe(final String name, final SyscallLib lib) {
         try {
-            return DispatchedNativeDefault.findMethod(name, lib);
+            return DispatchedSyscallDefault.findMethod(name, lib);
         } catch (final NoSuchMethodException ex) {
             throw new IllegalArgumentException(
                 String.format("Can't find syscall with name \"%s\"", name),

@@ -35,9 +35,10 @@
     os.is-windows
     true
     gt.
-      posix
-        "getpid"
-        tuple.empty
+      code.
+        posix
+          "getpid"
+          tuple.empty
       0
 
 # Test.
@@ -47,12 +48,13 @@
     os.is-windows
     true
     eq.
-      posix
-        "write"
-        *
-          1
-          msg
-          msg.length
+      code.
+        posix
+          "write"
+          *
+            1
+            msg
+            msg.length
       msg.length
 
 # Test.
@@ -62,10 +64,11 @@
     os.is-windows
     true
     eq.
-      posix
-        "read"
-        *
-          1
-          buf
-          buf.size
+      code.
+        posix
+          "read"
+          *
+            1
+            buf
+            buf.size
       -1

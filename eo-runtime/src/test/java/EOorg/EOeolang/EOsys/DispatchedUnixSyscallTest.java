@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Data;
+import org.eolang.Dataized;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -66,8 +67,10 @@ final class DispatchedUnixSyscallTest {
     void invokesGetpidCorrectly() {
         MatcherAssert.assertThat(
             "Expected \"getpid\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("getpid").call(),
-            Matchers.equalTo(CStdLib.INSTANCE.getpid())
+            new Dataized(
+                new DispatchedUnixSyscall("getpid").call().take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) CStdLib.INSTANCE.getpid())
         );
     }
 
@@ -91,12 +94,14 @@ final class DispatchedUnixSyscallTest {
         final String msg = "Hello, world!\n";
         MatcherAssert.assertThat(
             "Expected \"write\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("write").call(
-                new Data.ToPhi(1L),
-                new Data.ToPhi(msg),
-                new Data.ToPhi((long) msg.length())
-            ),
-            Matchers.equalTo(msg.length())
+            new Dataized(
+                new DispatchedUnixSyscall("write").call(
+                    new Data.ToPhi(1L),
+                    new Data.ToPhi(msg),
+                    new Data.ToPhi((long) msg.length())
+                ).take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) msg.length())
         );
     }
 
@@ -122,12 +127,14 @@ final class DispatchedUnixSyscallTest {
         final byte[] buf = new byte[size];
         MatcherAssert.assertThat(
             "Expected \"read\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("read").call(
-                new Data.ToPhi(1L),
-                new Data.ToPhi(buf),
-                new Data.ToPhi(size)
-            ),
-            Matchers.equalTo(-1)
+            new Dataized(
+                new DispatchedUnixSyscall("read").call(
+                    new Data.ToPhi(1L),
+                    new Data.ToPhi(buf),
+                    new Data.ToPhi(size)
+                ).take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) -1)
         );
     }
 }

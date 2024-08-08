@@ -27,56 +27,38 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Unix syscall.
- *
+ * Posix syscalls interface for EO.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
-public final class EOposix extends PhDefault implements Atom {
+interface PosixLib extends SyscallLib {
 
     /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOposix() {
-        this.add("name", new AtVoid("name"));
-        this.add("args", new AtVoid("args"));
-    }
-
-    @Override
-    public Phi lambda() throws Exception {
-        final Phi name = this.take("name");
-        final Phi[] args = this.collectArgs();
-        return new Data.ToPhi(
-            new DispatchedUnixSyscall(
-                new Dataized(name).asString()
-            ).call(args)
-        );
-    }
-
-    /**
-     * Collects arguments for syscall from tuple.
+     * The "getpid" syscall wrapper.
      *
-     * @return Array of arguments.
+     * @return EO object with return code as "code" and empty object as "output".
      */
-    private Phi[] collectArgs() {
-        final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final int length = new Dataized(args.take("length")).asNumber().intValue();
-        final Phi[] arguments = new Phi[length];
-        for (long iter = 0; iter < length; ++iter) {
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(iter));
-            arguments[(int) iter] = taken;
-        }
-        return arguments;
-    }
+    Phi getpid();
+
+    /**
+     * The "write" syscall wrapper.
+     *
+     * @param descriptor File descriptor.
+     * @param buf Buffer.
+     * @param size Number of bytes to be written.
+     * @return EO object with return code as "code" and empty object as "output".
+     */
+    Phi write(Long descriptor, String buf, Long size);
+
+    /**
+     * The "read" syscall wrapper.
+     *
+     * @param descriptor File descriptor.
+     * @param buf Buffer.
+     * @param size Number of bytes to be read.
+     * @return Process ID as "code" and empty object as "output".
+     */
+    Phi read(Long descriptor, byte[] buf, Long size);
 }

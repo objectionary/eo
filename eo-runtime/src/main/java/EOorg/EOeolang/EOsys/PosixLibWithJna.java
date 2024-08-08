@@ -27,29 +27,57 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import org.eolang.Data;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Unix system call that uses library {@link CStdLib}.
- *
+ * Posix syscalls implementation that uses {@link CStdLib}.
  * @since 0.40
  */
-public final class DispatchedUnixSyscall implements DispatchedSyscall {
+public final class PosixLibWithJna implements PosixLib {
     /**
-     * Origin {@link DispatchedSyscall}.
+     * C standard library with syscalls.
      */
-    private final DispatchedSyscall origin;
+    private final CStdLib lib;
 
     /**
      * Ctor.
-     * @param name Method name.
+     *
+     * @param lib C standard library with syscalls.
      */
-    DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedSyscallDefault(new PosixLibWithJna(), name);
+    public PosixLibWithJna(final CStdLib lib) {
+        this.lib = lib;
+    }
+
+    /**
+     * Ctor.
+     */
+    public PosixLibWithJna() {
+        this(CStdLib.INSTANCE);
     }
 
     @Override
-    public Phi call(final Phi... params) {
-        return this.origin.call(params);
+    public Phi getpid() {
+        final Phi res = new EOposix$EOres();
+        res.put("code", new Data.ToPhi(this.lib.getpid()));
+        res.put("output", new PhDefault());
+        return res;
+    }
+
+    @Override
+    public Phi write(final Long descriptor, final String buf, final Long size) {
+        final Phi res = new EOposix$EOres();
+        res.put("code", new Data.ToPhi(this.lib.write(descriptor, buf, size)));
+        res.put("output", new PhDefault());
+        return res;
+    }
+
+    @Override
+    public Phi read(final Long descriptor, final byte[] buf, final Long size) {
+        final Phi res = new EOposix$EOres();
+        res.put("code", new Data.ToPhi(this.lib.read(descriptor, buf, size)));
+        res.put("output", new PhDefault());
+        return res;
     }
 }
