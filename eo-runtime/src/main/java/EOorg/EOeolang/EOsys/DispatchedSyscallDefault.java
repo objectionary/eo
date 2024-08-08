@@ -89,8 +89,18 @@ public final class DispatchedSyscallDefault implements DispatchedSyscall {
      * @return Prepared parameters.
      */
     private Object[] prepareParams(final Phi... params) {
-        final Object[] prepared = new Object[params.length];
         final Class<?>[] types = this.method.getParameterTypes();
+        if (types.length != params.length) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Expected %d parameters for method \"%s\", but was %d",
+                    types.length,
+                    this.method,
+                    params.length
+                )
+            );
+        }
+        final Object[] prepared = new Object[params.length];
         for (int iter = 0; iter < params.length; ++iter) {
             prepared[iter] = new Dataized(params[iter]).take(types[iter]);
         }

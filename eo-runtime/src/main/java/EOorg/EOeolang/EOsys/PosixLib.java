@@ -56,9 +56,8 @@ interface PosixLib extends SyscallLib {
      * The "read" syscall wrapper.
      *
      * @param descriptor File descriptor.
-     * @param buf Buffer.
      * @param size Number of bytes to be read.
-     * @return Process ID as "code" and empty object as "output".
+     * @return Process ID as "code" and buffer as "output".
      */
-    Phi read(Long descriptor, byte[] buf, Long size);
+    Phi read(Long descriptor, Long size);
 }

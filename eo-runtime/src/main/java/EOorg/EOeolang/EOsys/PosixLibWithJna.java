@@ -59,7 +59,7 @@ public final class PosixLibWithJna implements PosixLib {
 
     @Override
     public Phi getpid() {
-        final Phi res = new EOposix$EOres();
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
         res.put("code", new Data.ToPhi(this.lib.getpid()));
         res.put("output", new PhDefault());
         return res;
@@ -67,15 +67,16 @@ public final class PosixLibWithJna implements PosixLib {
 
     @Override
     public Phi write(final Long descriptor, final String buf, final Long size) {
-        final Phi res = new EOposix$EOres();
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
         res.put("code", new Data.ToPhi(this.lib.write(descriptor, buf, size)));
         res.put("output", new PhDefault());
         return res;
     }
 
     @Override
-    public Phi read(final Long descriptor, final byte[] buf, final Long size) {
-        final Phi res = new EOposix$EOres();
+    public Phi read(final Long descriptor, final Long size) {
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
+        final byte[] buf = new byte[size.intValue()];
         res.put("code", new Data.ToPhi(this.lib.read(descriptor, buf, size)));
         res.put("output", new Data.ToPhi(buf));
         return res;
