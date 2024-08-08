@@ -77,7 +77,7 @@ public final class PosixLibWithJna implements PosixLib {
     public Phi read(final Long descriptor, final byte[] buf, final Long size) {
         final Phi res = new EOposix$EOres();
         res.put("code", new Data.ToPhi(this.lib.read(descriptor, buf, size)));
-        res.put("output", new PhDefault());
+        res.put("output", new Data.ToPhi(buf));
         return res;
     }
 }
