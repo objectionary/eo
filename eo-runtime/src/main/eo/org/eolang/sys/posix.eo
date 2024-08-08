@@ -29,4 +29,9 @@
 
 # Makes a Unix syscall by name with POSIX interface.
 # See https://filippo.io/linux-syscall-table/
-[name args] > posix /int
+[name args] > posix
+  [] > @ /res
+
+  # Result that is returned by system call.
+  [code output] > res
+    output > @

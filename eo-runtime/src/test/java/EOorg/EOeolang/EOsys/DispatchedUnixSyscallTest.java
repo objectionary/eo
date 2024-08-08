@@ -28,6 +28,8 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -66,8 +68,10 @@ final class DispatchedUnixSyscallTest {
     void invokesGetpidCorrectly() {
         MatcherAssert.assertThat(
             "Expected \"getpid\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("getpid").call(),
-            Matchers.equalTo(CStdLib.INSTANCE.getpid())
+            new Dataized(
+                new DispatchedUnixSyscall("getpid").call().take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) CStdLib.INSTANCE.getpid())
         );
     }
 
@@ -91,12 +95,14 @@ final class DispatchedUnixSyscallTest {
         final String msg = "Hello, world!\n";
         MatcherAssert.assertThat(
             "Expected \"write\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("write").call(
-                new Data.ToPhi(1L),
-                new Data.ToPhi(msg),
-                new Data.ToPhi((long) msg.length())
-            ),
-            Matchers.equalTo(msg.length())
+            new Dataized(
+                new DispatchedUnixSyscall("write").call(
+                    new Data.ToPhi(1L),
+                    new Data.ToPhi(msg),
+                    new Data.ToPhi((long) msg.length())
+                ).take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) msg.length())
         );
     }
 
@@ -104,11 +110,9 @@ final class DispatchedUnixSyscallTest {
     @DisabledOnOs(OS.WINDOWS)
     void invokesReadWithoutExceptions() {
         final int size = 3;
-        final byte[] buf = new byte[size];
         Assertions.assertDoesNotThrow(
             () -> new DispatchedUnixSyscall("read").call(
                 new Data.ToPhi(1L),
-                new Data.ToPhi(buf),
                 new Data.ToPhi(size)
             ),
             "Expected \"read\" syscall to be called without exceptions."
@@ -119,15 +123,23 @@ final class DispatchedUnixSyscallTest {
     @DisabledOnOs(OS.WINDOWS)
     void invokesReadFromStdoutWithError() {
         final int size = 3;
-        final byte[] buf = new byte[size];
+        final Phi result = new DispatchedUnixSyscall("read").call(
+            new Data.ToPhi(0L),
+            new Data.ToPhi(size)
+        );
         MatcherAssert.assertThat(
             "Expected \"read\" syscall to dispatched correctly",
-            new DispatchedUnixSyscall("read").call(
-                new Data.ToPhi(1L),
-                new Data.ToPhi(buf),
-                new Data.ToPhi(size)
-            ),
-            Matchers.equalTo(-1)
+            new Dataized(
+                result.take("code")
+            ).take(Long.class),
+            Matchers.equalTo((long) -1)
+        );
+        MatcherAssert.assertThat(
+            "Expected \"read\" syscall to dispatched correctly",
+            new Dataized(
+                result.take("output")
+            ).take(byte[].class).length,
+            Matchers.equalTo(size)
         );
     }
 }

@@ -27,29 +27,9 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import org.eolang.Phi;
-
 /**
- * Unix system call that uses library {@link CStdLib}.
- *
+ * General syscall library for EO.
  * @since 0.40
  */
-public final class DispatchedUnixSyscall implements DispatchedSyscall {
-    /**
-     * Origin {@link DispatchedSyscall}.
-     */
-    private final DispatchedSyscall origin;
-
-    /**
-     * Ctor.
-     * @param name Method name.
-     */
-    DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedSyscallDefault(new PosixLibWithJna(), name);
-    }
-
-    @Override
-    public Phi call(final Phi... params) {
-        return this.origin.call(params);
-    }
+public interface SyscallLib {
 }

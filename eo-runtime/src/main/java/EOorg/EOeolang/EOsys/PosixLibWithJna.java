@@ -27,56 +27,58 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Unix syscall.
- *
+ * Posix syscalls implementation that uses {@link CStdLib}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
-public final class EOposix extends PhDefault implements Atom {
+public final class PosixLibWithJna implements PosixLib {
+    /**
+     * C standard library with syscalls.
+     */
+    private final CStdLib lib;
+
+    /**
+     * Ctor.
+     *
+     * @param lib C standard library with syscalls.
+     */
+    public PosixLibWithJna(final CStdLib lib) {
+        this.lib = lib;
+    }
 
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOposix() {
-        this.add("name", new AtVoid("name"));
-        this.add("args", new AtVoid("args"));
+    public PosixLibWithJna() {
+        this(CStdLib.INSTANCE);
     }
 
     @Override
-    public Phi lambda() throws Exception {
-        final Phi name = this.take("name");
-        final Phi[] args = this.collectArgs();
-        return new Data.ToPhi(
-            new DispatchedUnixSyscall(
-                new Dataized(name).asString()
-            ).call(args)
-        );
+    public Phi getpid() {
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
+        res.put("code", new Data.ToPhi(this.lib.getpid()));
+        res.put("output", new PhDefault());
+        return res;
     }
 
-    /**
-     * Collects arguments for syscall from tuple.
-     *
-     * @return Array of arguments.
-     */
-    private Phi[] collectArgs() {
-        final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final int length = new Dataized(args.take("length")).asNumber().intValue();
-        final Phi[] arguments = new Phi[length];
-        for (long iter = 0; iter < length; ++iter) {
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(iter));
-            arguments[(int) iter] = taken;
-        }
-        return arguments;
+    @Override
+    public Phi write(final Long descriptor, final String buf, final Long size) {
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
+        res.put("code", new Data.ToPhi(this.lib.write(descriptor, buf, size)));
+        res.put("output", new PhDefault());
+        return res;
+    }
+
+    @Override
+    public Phi read(final Long descriptor, final Long size) {
+        final Phi res = Phi.Φ.take("org.eolang.sys").take("posix").take("res").copy();
+        final byte[] buf = new byte[size.intValue()];
+        res.put("code", new Data.ToPhi(this.lib.read(descriptor, buf, size)));
+        res.put("output", new Data.ToPhi(buf));
+        return res;
     }
 }

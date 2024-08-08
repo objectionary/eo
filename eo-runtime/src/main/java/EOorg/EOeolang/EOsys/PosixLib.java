@@ -30,26 +30,34 @@ package EOorg.EOeolang.EOsys; // NOPMD
 import org.eolang.Phi;
 
 /**
- * Unix system call that uses library {@link CStdLib}.
- *
+ * Posix syscalls interface for EO.
  * @since 0.40
  */
-public final class DispatchedUnixSyscall implements DispatchedSyscall {
-    /**
-     * Origin {@link DispatchedSyscall}.
-     */
-    private final DispatchedSyscall origin;
+interface PosixLib extends SyscallLib {
 
     /**
-     * Ctor.
-     * @param name Method name.
+     * The "getpid" syscall wrapper.
+     *
+     * @return EO object with return code as "code" and empty object as "output".
      */
-    DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedSyscallDefault(new PosixLibWithJna(), name);
-    }
+    Phi getpid();
 
-    @Override
-    public Phi call(final Phi... params) {
-        return this.origin.call(params);
-    }
+    /**
+     * The "write" syscall wrapper.
+     *
+     * @param descriptor File descriptor.
+     * @param buf Buffer.
+     * @param size Number of bytes to be written.
+     * @return EO object with return code as "code" and empty object as "output".
+     */
+    Phi write(Long descriptor, String buf, Long size);
+
+    /**
+     * The "read" syscall wrapper.
+     *
+     * @param descriptor File descriptor.
+     * @param size Number of bytes to be read.
+     * @return Process ID as "code" and buffer as "output".
+     */
+    Phi read(Long descriptor, Long size);
 }

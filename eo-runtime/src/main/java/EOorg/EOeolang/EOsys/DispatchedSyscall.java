@@ -34,12 +34,12 @@ import org.eolang.Phi;
  *
  * @since 0.40
  */
-public interface DispatchedNativeMethod {
+public interface DispatchedSyscall {
     /**
      * Makes native method call.
      *
      * @param params Native methods parameters.
      * @return Methods return code.
      */
-    int call(Phi... params);
+    Phi call(Phi... params);
 }

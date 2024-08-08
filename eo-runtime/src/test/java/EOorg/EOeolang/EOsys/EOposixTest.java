@@ -45,6 +45,7 @@ import org.junit.jupiter.api.condition.OS;
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOposixTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
@@ -60,7 +61,7 @@ final class EOposixTest {
                     ),
                     "args",
                     new EOtuple$EOempty()
-                )
+                ).take("code")
             ).take(Long.class),
             Matchers.equalTo(
                 Long.parseLong(
@@ -93,7 +94,7 @@ final class EOposixTest {
                     ),
                     "args",
                     args
-                )
+                ).take("code")
             ).take(Long.class),
             Matchers.equalTo(
                 (long) msg.length()
