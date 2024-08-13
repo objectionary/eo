@@ -21,54 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
-import EOorg.EOeolang.EOtuple$EOempty;
-import java.lang.management.ManagementFactory;
+import EOorg.EOeolang.EOsys.Syscall;
+import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 /**
- * Test case for {@link EOposix}.
- *
- * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
+ * WriteFile kernel32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile">here for details</a>
+ * @since 0.40.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOposixTest {
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
+public final class WriteFileFuncCall implements Syscall {
+    /**
+     * Win32 object.
+     */
+    private final Phi win;
+
+    /**
+     * Ctor.
+     * @param win Win32 object
+     */
+    public WriteFileFuncCall(final Phi win) {
+        this.win = win;
+    }
+
+    @Override
+    public Phi make(final Phi... params) {
+        final IntByReference written = new IntByReference();
+        final Phi result = this.win.take("return").copy();
+        result.put(
+            "code",
+            new Data.ToPhi(
+                Kernel32.INSTANCE.WriteFile(
+                    Kernel32.INSTANCE.GetStdHandle(
+                        new Dataized(params[0]).asNumber().intValue()
                     ),
-                    "args",
-                    new EOtuple$EOempty()
-                ).take("code")
-            ).take(Long.class),
-            Matchers.equalTo(
-                Long.parseLong(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                    new Dataized(params[1]).take(),
+                    new Dataized(params[2]).asNumber().intValue(),
+                    written,
+                    null
                 )
             )
         );
+        result.put("output", new Data.ToPhi(written.getValue()));
+        return result;
     }
 }

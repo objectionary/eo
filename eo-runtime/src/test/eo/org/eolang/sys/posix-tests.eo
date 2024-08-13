@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 +alias org.eolang.sys.posix
-+alias org.eolang.tuple
 +alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -31,41 +30,26 @@
 
 # Test.
 [] > invokes-getpid-correctly
-  if. > @
+  or. > @
     os.is-windows
-    true
     gt.
-      posix
-        "getpid"
-        tuple.empty
+      code.
+        posix
+          "getpid"
+          tuple.empty
       0
 
 # Test.
 [] > invokes-write-correctly
-  "Hello, syscall!\n" > msg
-  if. > @
+  "Hello, syscall!\n" > msg!
+  or. > @
     os.is-windows
-    true
     eq.
-      posix
-        "write"
-        *
-          1
-          msg
-          msg.length
-      msg.length
-
-# Test.
-[] > fails-read-from-stdin
-  00-00 > buf
-  if. > @
-    os.is-windows
-    true
-    eq.
-      posix
-        "read"
-        *
-          1
-          buf
-          buf.size
-      -1
+      code.
+        posix
+          "write"
+          *
+            posix.stdout-fileno
+            msg
+            msg.size
+      msg.size

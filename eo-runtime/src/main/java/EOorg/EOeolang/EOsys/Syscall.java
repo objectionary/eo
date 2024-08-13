@@ -30,26 +30,16 @@ package EOorg.EOeolang.EOsys; // NOPMD
 import org.eolang.Phi;
 
 /**
- * Unix system call that uses library {@link CStdLib}.
+ * System call that can be made with EO objects ({@link Phi}) as arguments.
  *
  * @since 0.40
  */
-public final class DispatchedUnixSyscall implements DispatchedNativeMethod {
+public interface Syscall {
     /**
-     * Origin {@link DispatchedNativeMethod}.
+     * Makes native method call.
+     *
+     * @param params Native methods parameters.
+     * @return Methods return code.
      */
-    private final DispatchedNativeMethod origin;
-
-    /**
-     * Ctor.
-     * @param name Method name.
-     */
-    DispatchedUnixSyscall(final String name) {
-        this.origin = new DispatchedNativeDefault(CStdLib.INSTANCE, name);
-    }
-
-    @Override
-    public int call(final Phi... params) {
-        return this.origin.call(params);
-    }
+    Phi make(Phi... params);
 }

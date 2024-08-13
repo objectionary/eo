@@ -27,56 +27,52 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import org.eolang.AtVoid;
+import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
+import EOorg.EOeolang.EOsys.Posix.ReadSyscall;
+import EOorg.EOeolang.EOsys.Posix.WriteSyscall;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import org.eolang.Atom;
-import org.eolang.Data;
+import org.eolang.Attr;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
+import org.eolang.XmirObject;
 
 /**
- * Unix syscall.
+ * Posix syscall.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-public final class EOposix extends PhDefault implements Atom {
-
+@XmirObject(oname = "posix.@")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOposix$EOφ extends PhDefault implements Atom {
     /**
-     * Ctor.
+     * System calls map.
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOposix() {
-        this.add("name", new AtVoid("name"));
-        this.add("args", new AtVoid("args"));
+    static final Map<String, Function<Phi, Syscall>> SYS_CALLS = new HashMap<>();
+
+    static {
+        EOposix$EOφ.SYS_CALLS.put("getpid", GetpidSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
     }
 
     @Override
     public Phi lambda() throws Exception {
-        final Phi name = this.take("name");
-        final Phi[] args = this.collectArgs();
-        return new Data.ToPhi(
-            new DispatchedUnixSyscall(
-                new Dataized(name).asString()
-            ).call(args)
-        );
-    }
-
-    /**
-     * Collects arguments for syscall from tuple.
-     *
-     * @return Array of arguments.
-     */
-    private Phi[] collectArgs() {
-        final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final int length = new Dataized(args.take("length")).asNumber().intValue();
-        final Phi[] arguments = new Phi[length];
-        for (long iter = 0; iter < length; ++iter) {
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(iter));
-            arguments[(int) iter] = taken;
+        final Phi rho = this.take(Attr.RHO);
+        final String call = new Dataized(rho.take("name")).asString();
+        if (!EOposix$EOφ.SYS_CALLS.containsKey(call)) {
+            throw new ExFailure(
+                "Can't make posix syscall '%s' because it's either not supported yet does not exist",
+                call
+            );
         }
-        return arguments;
+        return EOposix$EOφ.SYS_CALLS.get(call).apply(rho).make(
+            new TupleToArray(rho.take("args")).get()
+        );
     }
 }

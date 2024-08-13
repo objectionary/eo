@@ -27,44 +27,39 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
+import java.util.function.Supplier;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Phi;
 
 /**
- * C standard library with unix syscalls.
- * @since 0.40
+ * Convert {@link EOorg.EOeolang.EOtuple} of arguments to Java array.
+ * @since 0.40.0
  */
-public interface CStdLib extends Library {
+final class TupleToArray implements Supplier<Phi[]> {
+    /**
+     * Tuple of arguments.
+     */
+    private final Phi tuple;
 
     /**
-     * C STDLIB instance.
+     * Ctor.
+     * @param tup Tuple of arguments.
      */
-    CStdLib INSTANCE = Native.load("c", CStdLib.class);
+    TupleToArray(final Phi tup) {
+        this.tuple = tup;
+    }
 
-    /**
-     * The "getpid" syscall.
-     *
-     * @return Process ID.
-     */
-    int getpid();
-
-    /**
-     * The "write" syscall.
-     *
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be written.
-     * @return Number of bytes was written.
-     */
-    int write(Long descriptor, String buf, Long size);
-
-    /**
-     * The "read" syscall.
-     *
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be read.
-     * @return Number of bytes was read.
-     */
-    int read(Long descriptor, byte[] buf, Long size);
+    @Override
+    public Phi[] get() {
+        final Phi retriever = this.tuple.take("at");
+        final int length = new Dataized(this.tuple.take("length")).asNumber().intValue();
+        final Phi[] arguments = new Phi[length];
+        for (int iter = 0; iter < length; ++iter) {
+            final Phi taken = retriever.copy();
+            taken.put(0, new Data.ToPhi(iter));
+            arguments[iter] = taken;
+        }
+        return arguments;
+    }
 }

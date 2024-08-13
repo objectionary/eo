@@ -21,25 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
-
-import org.eolang.Phi;
+package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
 /**
- * Native method that can be called with EO objects ({@link Phi}) as arguments.
- *
+ * Ported from Wincon.h.
  * @since 0.40
+ * @checkstyle InterfaceIsTypeCheck (5 lines)
  */
-public interface DispatchedNativeMethod {
+@SuppressWarnings("PMD.ConstantsInInterface")
+public interface Wincon {
     /**
-     * Makes native method call.
-     *
-     * @param params Native methods parameters.
-     * @return Methods return code.
+     * Standard output handle.
      */
-    int call(Phi... params);
+    int STD_OUTPUT_HANDLE = -11;
 }

@@ -21,59 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOio; // NOPMD
+package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
-import java.io.IOException;
-import java.io.OutputStream;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
+import EOorg.EOeolang.EOsys.Syscall;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
 
 /**
- * Console.write.written-bytes.
- *
- * @since 0.39
- * @checkstyle TypeNameCheck (5 lines)
+ * Read syscall.
+ * @since 0.40
  */
-@Versionized
-@XmirObject(oname = "console.write.written-bytes")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implements Atom {
+public final class ReadSyscall implements Syscall {
     /**
-     * Stream to write out.
+     * Posix object.
      */
-    private final OutputStream out;
+    private final Phi posix;
 
     /**
-     * Default ctor.
+     * Ctor.
+     * @param posix Posix object
      */
-    public EOconsole$EOwrite$EOwritten_bytes() {
-        this(System.out);
-    }
-
-    /**
-     * Ctor for the tests.
-     * @param out Stream to print
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOconsole$EOwrite$EOwritten_bytes(final OutputStream out) {
-        this.out = out;
-        this.add("buffer", new AtVoid("buffer"));
+    public ReadSyscall(final Phi posix) {
+        this.posix = posix;
     }
 
     @Override
-    public Phi lambda() throws IOException {
-        this.out.write(new Dataized(this.take("buffer")).take());
-        return new Data.ToPhi(true);
+    public Phi make(final Phi... params) {
+        final int size = new Dataized(params[1]).asNumber().intValue();
+        final Phi result = this.posix.take("return").copy();
+        final byte[] buf = new byte[(int) size];
+        result.put(
+            0,
+            new Data.ToPhi(
+                CStdLib.INSTANCE.read(new Dataized(params[0]).asNumber().intValue(), buf, size)
+            )
+        );
+        result.put(1, new Data.ToPhi(buf));
+        return result;
     }
 }

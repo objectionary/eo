@@ -20,41 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.sys.win32
++alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
++tests
 +package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Makes a Unix syscall by name with POSIX interface.
-# See https://filippo.io/linux-syscall-table/
-#
-# Supported syscalls:
-# 1. getpid - get process identification
-#    - Arguments:
-#    - Returns:
-#      * code - process identification number (number)
-#      * output - []
-# 2. write - write bytes to file descriptor
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer to write (bytes)
-#      * buffer size to write (number)
-#    - Returns:
-#      * code - written bytes count (number)
-#      * output - []
-# 3. read - read bytes from file descriptor
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer size to read (number)
-#    - Returns:
-#      * code - read bytes count (number)
-#      * output - read bytes (bytes)
-[name args] > posix
-  0 > stdin-fileno
-  1 > stdout-fileno
-
-  [] > @ /return
-
-  output > [code output] > return
+# Test.
+[] > invokes-file-write-correctly
+  "Hello, win32!\n" > msg!
+  win32
+    "WriteFile"
+    *
+      win32.std-output-handle
+      msg
+      msg.size
+  .code
+  .^ > call
+  or. > @
+    os.is-windows.not
+    and.
+      call.code
+      call.output.eq msg.size

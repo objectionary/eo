@@ -27,16 +27,16 @@
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Makes a Unix syscall by name with POSIX interface.
-# See https://filippo.io/linux-syscall-table/
+# Makes a kernel32.dll function call by name.
 #
-# Supported syscalls:
-# 1. getpid - get process identification
-#    - Arguments:
-#    - Returns:
-#      * code - process identification number (number)
-#      * output - []
-# 2. write - write bytes to file descriptor
+# You can access the documentation for kernel32.dll functions by visiting the
+# Windows API Index (https://learn.microsoft.com/en-us/windows/win32/api/index).
+# Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
+# WriteFile, etc.
+#
+# Supported functions:
+# 1. WriteFile
+#    - Documentation: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
 #    - Arguments:
 #      * descriptor (number)
 #      * buffer to write (bytes)
@@ -44,16 +44,9 @@
 #    - Returns:
 #      * code - written bytes count (number)
 #      * output - []
-# 3. read - read bytes from file descriptor
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer size to read (number)
-#    - Returns:
-#      * code - read bytes count (number)
-#      * output - read bytes (bytes)
-[name args] > posix
-  0 > stdin-fileno
-  1 > stdout-fileno
+[name args] > win32
+  -10 > std-input-handle
+  -11 > std-output-handle
 
   [] > @ /return
 

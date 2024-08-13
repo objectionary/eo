@@ -31,7 +31,12 @@
 # Represents the name of the operating system.
 [] > os
   name > @
-  ((regex "/^Windows.+$/").matches name).as-bool > is-windows
+
+  [] > is-windows
+    ^.name > os-name!
+    and. > @
+      os-name.size.gt 6
+      (os-name.slice 0 7).eq "Windows"
   ((regex "/linux/i").matches name).as-bool > is-linux
   ((regex "/mac/i").matches name).as-bool > is-macos
 
