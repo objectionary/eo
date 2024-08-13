@@ -31,7 +31,7 @@
 # Test.
 [] > invokes-file-write-correctly
   "Hello, win32!\n" > msg!
-  .called > called
+  called. > called
     win32
       "WriteFile"
       *
