@@ -31,16 +31,15 @@
 # Test.
 [] > invokes-file-write-correctly
   "Hello, win32!\n" > msg!
-  win32
-    "WriteFile"
-    *
-      win32.std-output-handle
-      msg
-      msg.size
-  .code
-  .^ > call
+  .called > called
+    win32
+      "WriteFile"
+      *
+        win32.std-output-handle
+        msg
+        msg.size
   or. > @
     os.is-windows.not
     and.
-      call.code
-      call.output.eq msg.size
+      called.code
+      called.output.eq msg.size

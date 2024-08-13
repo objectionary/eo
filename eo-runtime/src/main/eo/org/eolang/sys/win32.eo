@@ -50,4 +50,6 @@
 
   [] > @ /return
 
-  output > [code output] > return
+  [code output] > return
+    $ > called
+    output > @
