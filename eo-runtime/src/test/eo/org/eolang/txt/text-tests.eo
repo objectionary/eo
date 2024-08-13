@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +alias org.eolang.structs.list
 +alias org.eolang.txt.regex
 +alias org.eolang.txt.text
@@ -139,11 +138,8 @@
     (text "some").at -2
 
 # Test.
-[] > returns-error-at-index-more-than-length
-  try > @
-    (text "some").at 10
-    stdout ex > [ex]
-    false
+[] > throws-on-text-at-index-more-than-length
+  (text "some").at 10 > @
 
 # Test.
 [] > chains-with-other-strings
@@ -185,11 +181,8 @@
       * "hello" "world" "dear" "friend"
 
 # Test.
-[] > text-repeat-less-than-zero-times
-  try > @
-    (text "").repeated -1
-    stdout ex > [ex]
-    false
+[] > throws-on-text-repeating-less-than-zero-times
+  (text "").repeated -1 > @
 
 # Test.
 [] > text-repeated-zero-times-is-empty
@@ -317,11 +310,8 @@
     (text "5").as-number
 
 # Test.
-[] > fails-on-converting-text-to-number
-  try > @
-    (text "Hello").as-number
-    stdout ex > [ex]
-    false
+[] > throws-on-converting-text-to-number
+  (text "Hello").as-number > @
 
 # Test.
 [] > converts-float-text-to-number

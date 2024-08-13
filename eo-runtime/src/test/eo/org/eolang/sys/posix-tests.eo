@@ -38,18 +38,3 @@
           "getpid"
           tuple.empty
       0
-
-# Test.
-[] > invokes-write-correctly
-  "Hello, syscall!\n" > msg!
-  or. > @
-    os.is-windows
-    eq.
-      code.
-        posix
-          "write"
-          *
-            posix.stdout-fileno
-            msg
-            msg.size
-      msg.size

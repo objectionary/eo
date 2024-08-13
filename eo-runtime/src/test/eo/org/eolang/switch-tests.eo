@@ -84,11 +84,8 @@
         "false2"
 
 # Test.
-[] > switch-case-with-error
-  try > @
-    switch *
-    QQ.io.stdout ex > [ex]
-    false
+[] > throws-on-empty-switch
+  switch * > @
 
 # Test.
 [] > switch-complex-case

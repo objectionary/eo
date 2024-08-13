@@ -184,8 +184,6 @@
         seq > @
           *
             m.put 42
-            Q.org.eolang.io.stdout
-              "Hello, world!"
             m.put
               m.as-number.minus 2
     40
@@ -199,18 +197,14 @@
         seq > @
           *
             m.put 42
-            QQ.io.stdout
-              "Hello, world!"
             m.put
               m.as-number.minus 2
     40
 
 # Test.
 [] > standard-root-and-root
-  QQ.io.stdout > stand-root
-    "one"
-  Q.org.eolang.io.stdout > root
-    "one"
+  QQ.sys.os > stand-root
+  Q.org.eolang.sys.os > root
   eq. > @
     root
     stand-root

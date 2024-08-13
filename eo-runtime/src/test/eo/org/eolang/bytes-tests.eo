@@ -424,8 +424,5 @@
     FF-FF-FF-FF-00-00-00-01
 
 # Test.
-[] > bytes-of-wrong-size-as-number-of-returns-error
-  try > @
-    01-01-01-01.as-number
-    QQ.io.stdout e > [e]
-    false
+[] > throws-on-bytes-of-wrong-size-as-number
+  01-01-01-01.as-number > @
