@@ -115,4 +115,5 @@ public interface CStdLib extends Library {
      * @return Number of bytes was read.
      */
     int read(int descriptor, byte[] buf, int size);
+
 }
