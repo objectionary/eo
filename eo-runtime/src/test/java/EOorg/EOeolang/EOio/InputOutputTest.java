@@ -170,7 +170,7 @@ final class InputOutputTest {
         ).toFile();
         file.deleteOnExit();
         Files.write(file.toPath(), content.getBytes());
-        final int descriptor = CStdLib.INSTANCE.open(file.getAbsolutePath(), CStdLib.O_RDWR);
+        final int descriptor = CStdLib.INSTANCE.open(file.getAbsolutePath(), CStdLib.O_RDONLY);
         assert descriptor >= 0;
         final int origin = CStdLib.INSTANCE.dup(CStdLib.INSTANCE.STDIN_FILENO);
         CStdLib.INSTANCE.dup2(descriptor, CStdLib.INSTANCE.STDIN_FILENO);
