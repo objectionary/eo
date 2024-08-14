@@ -87,7 +87,7 @@ final class InputOutputTest {
         final Phi phi = new PhWith(
             Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
             "buffer",
-            new Data.ToPhi("Hello, world!\n")
+            new Data.ToPhi("dataizes as true")
         );
         Assertions.assertTrue(
             new Dataized(phi).asBool(),
@@ -98,7 +98,7 @@ final class InputOutputTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void writesToPosixConsole(@TempDir final Path temp) throws IOException {
-        final String msg = "Hello, world!\n";
+        final String msg = "writes to posix console";
         final File file = InputOutputTest.posixStdout(
             temp,
             () -> new Dataized(
@@ -121,7 +121,7 @@ final class InputOutputTest {
     @Test
     @EnabledOnOs(OS.WINDOWS)
     void writesToWindowsConsole(@TempDir final Path temp) throws IOException {
-        final String msg = "Hello, world!\n";
+        final String msg = "writes to windows console";
         final File file = InputOutputTest.windowsStdout(
             temp,
             () -> new Dataized(
@@ -171,17 +171,17 @@ final class InputOutputTest {
     }
 
     @Test
-    @StdIo("Hello, world!")
+    @StdIo("read via console")
     void readsBytesFromStandardInputViaConsole() {
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read all bytes from standard input, but it didn't",
             new Dataized(
                 new PhWith(
                     new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(13)
+                    0, new Data.ToPhi(16)
                 )
             ).asString(),
-            Matchers.equalTo("Hello, world!")
+            Matchers.equalTo("read via console")
         );
     }
 
@@ -224,57 +224,57 @@ final class InputOutputTest {
     }
 
     @Test
-    @StdIo("Hello world")
+    @StdIo("read by portions")
     void readsByPortionsFromInputViaConsole() {
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read first 5 bytes from standard input, but it didn't",
             new Dataized(
                 new PhWith(
                     new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(5)
+                    0, new Data.ToPhi(4)
                 )
             ).asString(),
-            Matchers.equalTo("Hello")
+            Matchers.equalTo("read")
         );
         MatcherAssert.assertThat(
             "The object `console.read.read-bytes` should have read second 5 bytes from standard input, but it didn't",
             new Dataized(
                 new PhWith(
                     new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(6)
+                    0, new Data.ToPhi(4)
                 )
             ).asString(),
-            Matchers.equalTo(" world")
+            Matchers.equalTo(" by ")
         );
     }
 
     @Test
-    @StdIo("Hello world")
+    @StdIo("read sequentially")
     void readsSequentiallyFromInputBlockViaConsole() {
         final Phi console = Phi.Φ.take(InputOutputTest.CONSOLE);
         final Phi first = new PhWith(
             new PhCopy(
                 new PhMethod(console, "read")
             ),
-            0, new Data.ToPhi(5)
+            0, new Data.ToPhi(4)
         );
         final Phi second = new PhWith(
             new PhCopy(
                 new PhMethod(first, "read")
             ),
-            0, new Data.ToPhi(6)
+            0, new Data.ToPhi(13)
         );
         MatcherAssert.assertThat(
             "The `console.read` object should have return input block ready to `read` again, but it didn't",
             new Dataized(second).asString(),
-            Matchers.equalTo(" world")
+            Matchers.equalTo(" sequentially")
         );
     }
 
-    @StdIo("this is a test input!")
+    @StdIo("this is a test input1!")
     @Test
     void dataizesNextLineOneLine() {
-        final String expected = "this is a test input!";
+        final String expected = "this is a test input1!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
@@ -284,10 +284,10 @@ final class InputOutputTest {
         );
     }
 
-    @StdIo("this is a testing input!")
+    @StdIo("this is a testing input2!")
     @Test
     void dataizesStdinOneLine() {
-        final String expected = "this is a testing input!";
+        final String expected = "this is a testing input2!";
         final Phi phi = new PhCopy(new EOstdin());
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
@@ -297,10 +297,10 @@ final class InputOutputTest {
         );
     }
 
-    @StdIo({"this is a test input!", "another line", "yet another line"})
+    @StdIo({"this is a test input3!", "another line", "yet another line"})
     @Test
     void dataizesNextLineMultiLine() {
-        final String expected = "this is a test input!";
+        final String expected = "this is a test input3!";
         final Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
         final String actual = new Dataized(phi).asString();
         MatcherAssert.assertThat(
@@ -335,10 +335,10 @@ final class InputOutputTest {
         );
     }
 
-    @StdIo({"this is a test input!", "another line", "yet another line"})
+    @StdIo({"this is a test input4!", "another line", "yet another line"})
     @Test
     void dataizesStdinMultiLine() {
-        final String first = "this is a test input!";
+        final String first = "this is a test input4!";
         final String second = "another line";
         final String third = "yet another line";
         final Phi phi = new PhCopy(new EOstdin());
@@ -410,7 +410,7 @@ final class InputOutputTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void invokesPosixWriteSyscallCorrectly() {
-        final String msg = "Hello, world!\n";
+        final String msg = "invokes posix write";
         final Phi args = new Data.ToPhi(
             new Phi[] {
                 new Data.ToPhi(1L),
@@ -438,7 +438,7 @@ final class InputOutputTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void writesToStdoutViaPosixWriteSyscall(@TempDir final Path temp) throws IOException {
-        final String msg = "Shrek is love!\n";
+        final String msg = "writes to posix stdout";
         final File file = InputOutputTest.posixStdout(
             temp,
             () -> {
@@ -464,15 +464,18 @@ final class InputOutputTest {
         );
         MatcherAssert.assertThat(
             "The posix 'write' syscall should have written to standard output, but it didn't",
-            Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-            Matchers.equalTo(msg.getBytes(StandardCharsets.UTF_8))
+            new String(
+                Files.readAllBytes(Paths.get(file.getAbsolutePath())),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(msg)
         );
     }
 
     @Test
     @EnabledOnOs(OS.WINDOWS)
     void writesToStdoutViaWindowsFileWriteFunction(@TempDir final Path temp) throws IOException {
-        final String msg = "Shrek is love!\n";
+        final String msg = "writes to windows stdout";
         final File file = InputOutputTest.windowsStdout(
             temp,
             () -> {
@@ -498,8 +501,11 @@ final class InputOutputTest {
         );
         MatcherAssert.assertThat(
             "The win32 'WriteFile' call should have written to standard output, but it didn't",
-            Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-            Matchers.equalTo(msg.getBytes(StandardCharsets.UTF_8))
+            new String(
+                Files.readAllBytes(Paths.get(file.getAbsolutePath())),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.equalTo(msg)
         );
     }
 
