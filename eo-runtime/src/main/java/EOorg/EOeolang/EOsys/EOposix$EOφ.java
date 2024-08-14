@@ -67,7 +67,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         final String call = new Dataized(rho.take("name")).asString();
         if (!EOposix$EOφ.SYS_CALLS.containsKey(call)) {
             throw new ExFailure(
-                "Can't make posix syscall '%s' because it's either not supported yet does not exist",
+                "Can't make posix syscall '%s' because it's either not supported yet or does not exist",
                 call
             );
         }
