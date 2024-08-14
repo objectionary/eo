@@ -42,9 +42,19 @@ public interface CStdLib extends Library {
     CStdLib INSTANCE = Native.load("c", CStdLib.class);
 
     /**
+     * Standard input file descriptor.
+     */
+    int STDIN_FILENO = 0;
+
+    /**
      * Standard output file descriptor.
      */
     int STDOUT_FILENO = 1;
+
+    /**
+     * Open flag for reading only.
+     */
+    int O_RDONLY = 0;
 
     /**
      * Open flag for reading and writing.
@@ -105,4 +115,19 @@ public interface CStdLib extends Library {
      * @return Number of bytes was read.
      */
     int read(int descriptor, byte[] buf, int size);
+
+    /**
+     * Get global errno variable.
+     * On Posix systems the global variable errno is set to an error code that provides more
+     * details about the last failure.
+     * @return The errno value
+     */
+    int errno();
+
+    /**
+     * Get human-readable string that describes the error.
+     * @param errno The errno value
+     * @return Error string
+     */
+    String strerror(int errno);
 }

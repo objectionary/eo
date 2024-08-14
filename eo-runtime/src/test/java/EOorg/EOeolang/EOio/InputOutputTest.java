@@ -38,7 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.eolang.AtCompositeTest;
+import java.util.function.Supplier;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhCopy;
@@ -48,14 +48,13 @@ import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junitpioneer.jupiter.StdIo;
 
 /**
  * All tests for Input/Output operations.
@@ -68,9 +67,29 @@ import org.junitpioneer.jupiter.StdIo;
 @Execution(ExecutionMode.SAME_THREAD)
 final class InputOutputTest {
     /**
+     * Operating system name.
+     */
+    private static final String OS_NAME = System.getProperty("os.name");
+
+    /**
+     * Posix.
+     */
+    private static final String POSIX = "org.eolang.sys.posix";
+
+    /**
+     * Win32.
+     */
+    private static final String WIN = "org.eolang.sys.win32";
+
+    /**
      * Console.
      */
     private static final String CONSOLE = "org.eolang.io.console";
+
+    /**
+     * Stdin.
+     */
+    private static final String STDIN = "org.eolang.io.stdin";
 
     /**
      * Write object.
@@ -78,435 +97,88 @@ final class InputOutputTest {
     private static final String WRITE = "write";
 
     /**
+     * Write object.
+     */
+    private static final String FILE_READ = "FileRead";
+
+    /**
+     * Read object.
+     */
+    private static final String READ = "read";
+
+    /**
      * Next line.
      */
     private static final String NEXT_LINE = "next-line";
 
-    @Test
-    void dataizesConsoleWriteAsTrue() {
-        final Phi phi = new PhWith(
-            Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
-            "buffer",
-            new Data.ToPhi("dataizes as true")
-        );
-        Assertions.assertTrue(
-            new Dataized(phi).asBool(),
-            "The `console.write` should have returned TRUE, but it didn't"
-        );
+    /**
+     * Output.
+     */
+    private static final String OUTPUT = "output";
+
+    /**
+     * Redirects stdin.
+     * @param temp Temporary directory
+     * @param content Stdin content
+     * @param action Action to execute
+     * @return Read content
+     * @throws IOException If fails to create temporary file
+     */
+    private static byte[] redirectedStdin(
+        final Path temp, final String content, final Supplier<byte[]> action
+    ) throws IOException {
+        final byte[] res;
+        if (InputOutputTest.isWindows()) {
+            res = InputOutputTest.windowsStdin(temp, content, action);
+        } else {
+            res = InputOutputTest.posixStdin(temp, content, action);
+        }
+        return res;
     }
 
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void writesToPosixConsole(@TempDir final Path temp) throws IOException {
-        final String msg = "writes to posix console";
-        final File file = InputOutputTest.posixStdout(
-            temp,
-            () -> new Dataized(
-                new PhWith(
-                    Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
-                    "buffer",
-                    new Data.ToPhi(msg)
-                )
-            ).take()
-        );
-        MatcherAssert.assertThat(
-            "The posix 'console.write' should have written to posix console, but it didn't",
-            new String(
-                Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo(msg)
-        );
+    /**
+     * Redirects stdout.
+     * @param temp Temporary directory
+     * @param action Action to execute
+     * @return Stdout as file
+     * @throws IOException If fails to create temporary file
+     */
+    private static File redirectedStdout(final Path temp, final Runnable action)
+        throws IOException {
+        final File res;
+        if (InputOutputTest.isWindows()) {
+            res = InputOutputTest.windowsStdout(temp, action);
+        } else {
+            res = InputOutputTest.posixStdout(temp, action);
+        }
+        return res;
     }
 
-    @Test
-    @EnabledOnOs(OS.WINDOWS)
-    void writesToWindowsConsole(@TempDir final Path temp) throws IOException {
-        final String msg = "writes to windows console";
-        final File file = InputOutputTest.windowsStdout(
-            temp,
-            () -> new Dataized(
-                new PhWith(
-                    Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
-                    "buffer",
-                    new Data.ToPhi(msg)
-                )
-            ).take()
-        );
-        MatcherAssert.assertThat(
-            "The posix 'console.write' should have written to windows console, but it didn't",
-            new String(
-                Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo(msg)
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void writesToConsoleSequentially(@TempDir final Path temp) throws IOException {
-        final File file = InputOutputTest.posixStdout(
-            temp,
-            () -> {
-                final Phi buffer = new Data.ToPhi("Ha");
-                final Phi first = new PhWith(
-                    Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
-                    0, buffer
-                );
-                final Phi second = new PhWith(
-                    new PhCopy(
-                        new PhMethod(first, InputOutputTest.WRITE)
-                    ),
-                    0, buffer
-                );
-                new Dataized(second).take();
-            }
-        );
-        MatcherAssert.assertThat(
-            "The posix 'console.write' should have return output block ready to write again, but it didn't",
-            new String(
-                Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo("HaHa")
-        );
-    }
-
-    @Test
-    @StdIo("read via console")
-    void readsBytesFromStandardInputViaConsole() {
-        MatcherAssert.assertThat(
-            "The object `console.read.read-bytes` should have read all bytes from standard input, but it didn't",
-            new Dataized(
-                new PhWith(
-                    new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(16)
-                )
-            ).asString(),
-            Matchers.equalTo("read via console")
-        );
-    }
-
-    @Test
-    @StdIo("Message")
-    void readsOnlyAvailableBytesFromConsole() {
-        MatcherAssert.assertThat(
-            String.join(
-                "",
-                "The object `console.read.read-bytes` should have read only available bytes ",
-                "with line separator from standard input, but it didn't"
-            ),
-            new Dataized(
-                new PhWith(
-                    new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(10)
-                )
-            ).asString(),
-            Matchers.equalTo("Message".concat(System.lineSeparator()))
-        );
-    }
-
-    @Test
-    @StdIo("")
-    void readsOnlyNewLineFromEmptyInput() {
-        MatcherAssert.assertThat(
-            String.join(
-                "",
-                "The object `console.read.read-bytes` should have returned only line separator ",
-                "from empty input, but it didn't"
-            ),
-            new Dataized(
-                new PhWith(
-                    new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(10)
-                )
-            ).asString(),
-            Matchers.equalTo(System.lineSeparator())
-        );
-    }
-
-    @Test
-    @StdIo("read by portions")
-    void readsByPortionsFromInputViaConsole() {
-        MatcherAssert.assertThat(
-            "The object `console.read.read-bytes` should have read first 5 bytes from standard input, but it didn't",
-            new Dataized(
-                new PhWith(
-                    new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(4)
-                )
-            ).asString(),
-            Matchers.equalTo("read")
-        );
-        MatcherAssert.assertThat(
-            "The object `console.read.read-bytes` should have read second 5 bytes from standard input, but it didn't",
-            new Dataized(
-                new PhWith(
-                    new EOconsole$EOread$EOread_bytes(),
-                    0, new Data.ToPhi(4)
-                )
-            ).asString(),
-            Matchers.equalTo(" by ")
-        );
-    }
-
-    @Test
-    @StdIo("read sequentially")
-    void readsSequentiallyFromInputBlockViaConsole() {
-        final Phi console = Phi.Φ.take(InputOutputTest.CONSOLE);
-        final Phi first = new PhWith(
-            new PhCopy(
-                new PhMethod(console, "read")
-            ),
-            0, new Data.ToPhi(4)
-        );
-        final Phi second = new PhWith(
-            new PhCopy(
-                new PhMethod(first, "read")
-            ),
-            0, new Data.ToPhi(13)
-        );
-        MatcherAssert.assertThat(
-            "The `console.read` object should have return input block ready to `read` again, but it didn't",
-            new Dataized(second).asString(),
-            Matchers.equalTo(" sequentially")
-        );
-    }
-
-    @StdIo("this is a test input1!")
-    @Test
-    void dataizesNextLineOneLine() {
-        final String expected = "this is a test input1!";
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        final String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @StdIo("this is a testing input2!")
-    @Test
-    void dataizesStdinOneLine() {
-        final String expected = "this is a testing input2!";
-        final Phi phi = new PhCopy(new EOstdin());
-        final String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @StdIo({"this is a test input3!", "another line", "yet another line"})
-    @Test
-    void dataizesNextLineMultiLine() {
-        final String expected = "this is a test input3!";
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        final String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(expected)
-        );
-    }
-
-    @StdIo("")
-    @Test
-    void dataizesNextLineEmpty() {
-        final Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        final String input = Assertions.assertDoesNotThrow(
-            () -> new Dataized(phi).asString(),
-            AtCompositeTest.TO_ADD_MESSAGE
-        );
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            input,
-            Matchers.equalTo("")
-        );
-    }
-
-    @StdIo("")
-    @Test
-    void dataizesEmptyStdin() {
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            new Dataized(new EOstdin()).asString(),
-            Matchers.equalTo("")
-        );
-    }
-
-    @StdIo({"this is a test input4!", "another line", "yet another line"})
-    @Test
-    void dataizesStdinMultiLine() {
-        final String first = "this is a test input4!";
-        final String second = "another line";
-        final String third = "yet another line";
-        final Phi phi = new PhCopy(new EOstdin());
-        final String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(String.join(System.lineSeparator(), first, second, third))
-        );
-    }
-
-    @StdIo({"first", "second", "third"})
-    @Test
-    void dataizesStdinFewOneLine() {
-        final String first = "\u0066\u0069\u0072\u0073\u0074";
-        final String second = "\u0073\u0065\u0063\u006F\u006E\u0064";
-        final String third = "\u0074\u0068\u0069\u0072\u0064";
-        Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(first)
-        );
-        phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(second)
-        );
-        phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(third)
-        );
-    }
-
-    @StdIo({"first", "", "third"})
-    @Test
-    void dataizesStdinEmptyLineBetweenNonEmpty() {
-        final String first = "\u0066\u0069\u0072\u0073\u0074";
-        final String third = "\u0074\u0068\u0069\u0072\u0064";
-        Phi phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        String actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(first)
-        );
-        phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo("")
-        );
-        phi = new PhMethod(new PhCopy(new EOstdin()), InputOutputTest.NEXT_LINE);
-        actual = new Dataized(phi).asString();
-        MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
-            actual,
-            Matchers.equalTo(third)
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesPosixWriteSyscallCorrectly() {
-        final String msg = "invokes posix write";
-        final Phi args = new Data.ToPhi(
-            new Phi[] {
-                new Data.ToPhi(1L),
-                new Data.ToPhi(msg),
-                new Data.ToPhi(msg.length()),
-            }
-        );
-        MatcherAssert.assertThat(
-            "The \"write\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi(InputOutputTest.WRITE)
-                    ),
-                    "args",
-                    args
-                ).take("code")
-            ).asNumber().intValue(),
-            Matchers.equalTo(msg.length())
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void writesToStdoutViaPosixWriteSyscall(@TempDir final Path temp) throws IOException {
-        final String msg = "writes to posix stdout";
-        final File file = InputOutputTest.posixStdout(
-            temp,
-            () -> {
-                final Phi args = new Data.ToPhi(
-                    new Phi[] {
-                        new Data.ToPhi(CStdLib.STDOUT_FILENO),
-                        new Data.ToPhi(msg),
-                        new Data.ToPhi(msg.length()),
-                    }
-                );
-                new Dataized(
-                    new PhWith(
-                        new PhWith(
-                            Phi.Φ.take("org.eolang.sys.posix").copy(),
-                            "name",
-                            new Data.ToPhi(InputOutputTest.WRITE)
-                        ),
-                        "args",
-                        args
-                    ).take("code")
-                );
-            }
-        );
-        MatcherAssert.assertThat(
-            "The posix 'write' syscall should have written to standard output, but it didn't",
-            new String(
-                Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-                StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo(msg)
-        );
-    }
-
-    @Test
-    @EnabledOnOs(OS.WINDOWS)
-    void writesToStdoutViaWindowsFileWriteFunction(@TempDir final Path temp) throws IOException {
-        final String msg = "writes to windows stdout";
-        final File file = InputOutputTest.windowsStdout(
-            temp,
-            () -> {
-                final Phi args = new Data.ToPhi(
-                    new Phi[]{
-                        new Data.ToPhi(Kernel32.STD_OUTPUT_HANDLE),
-                        new Data.ToPhi(msg),
-                        new Data.ToPhi(msg.length()),
-                    }
-                );
-                new Dataized(
-                    new PhWith(
-                        new PhWith(
-                            Phi.Φ.take("org.eolang.sys.win32").copy(),
-                            "name",
-                            new Data.ToPhi("WriteFile")
-                        ),
-                        "args",
-                        args
-                    ).take("code")
-                );
-            }
-        );
-        MatcherAssert.assertThat(
-            "The win32 'WriteFile' call should have written to standard output, but it didn't",
-            new String(
-                Files.readAllBytes(Paths.get(file.getAbsolutePath())),
-                StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo(msg)
-        );
+    /**
+     * Redirects Posix stdin.
+     * @param temp Temporary directory
+     * @param content Content of stdin
+     * @param action Action to execute
+     * @return Read content
+     * @throws IOException If fails to create temporary file
+     */
+    private static byte[] posixStdin(
+        final Path temp, final String content, final Supplier<byte[]> action
+    ) throws IOException {
+        final File file = Files.createTempFile(
+            temp, String.valueOf(action.hashCode()), null
+        ).toFile();
+        file.deleteOnExit();
+        Files.write(file.toPath(), content.getBytes());
+        final int descriptor = CStdLib.INSTANCE.open(file.getAbsolutePath(), CStdLib.O_RDWR);
+        assert descriptor >= 0;
+        final int origin = CStdLib.INSTANCE.dup(CStdLib.INSTANCE.STDIN_FILENO);
+        CStdLib.INSTANCE.dup2(descriptor, CStdLib.INSTANCE.STDIN_FILENO);
+        final byte[] read = action.get();
+        CStdLib.INSTANCE.dup2(origin, CStdLib.INSTANCE.STDIN_FILENO);
+        CStdLib.INSTANCE.close(origin);
+        CStdLib.INSTANCE.close(descriptor);
+        return read;
     }
 
     /**
@@ -522,12 +194,47 @@ final class InputOutputTest {
         ).toFile();
         file.deleteOnExit();
         final int descriptor = CStdLib.INSTANCE.open(file.getAbsolutePath(), CStdLib.O_RDWR);
+        assert descriptor >= 0;
         final int origin = CStdLib.INSTANCE.dup(CStdLib.INSTANCE.STDOUT_FILENO);
         CStdLib.INSTANCE.dup2(descriptor, CStdLib.INSTANCE.STDOUT_FILENO);
         action.run();
         CStdLib.INSTANCE.dup2(origin, CStdLib.INSTANCE.STDOUT_FILENO);
         CStdLib.INSTANCE.close(origin);
+        CStdLib.INSTANCE.close(descriptor);
         return file;
+    }
+
+    /**
+     * Redirects windows stdin.
+     * @param temp Temporary directory
+     * @param content Content of stdin
+     * @param action Action to run
+     * @throws IOException If fails to create temporary file
+     */
+    private static byte[] windowsStdin(
+        final Path temp, final String content, final Supplier<byte[]> action
+    ) throws IOException {
+        final File file = Files.createTempFile(
+            temp, String.valueOf(action.hashCode()), null
+        ).toFile();
+        file.deleteOnExit();
+        Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
+        final WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
+            file.getAbsolutePath(),
+            Kernel32.GENERIC_READ,
+            0,
+            null,
+            Kernel32.OPEN_EXISTING,
+            Kernel32.FILE_ATTRIBUTE_NORMAL,
+            null
+        );
+        assert handle != WinBase.INVALID_HANDLE_VALUE;
+        final WinNT.HANDLE origin = Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_INPUT_HANDLE);
+        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_INPUT_HANDLE, handle);
+        final byte[] read = action.get();
+        Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_INPUT_HANDLE, origin);
+        Kernel32.INSTANCE.CloseHandle(handle);
+        return read;
     }
 
     /**
@@ -541,6 +248,7 @@ final class InputOutputTest {
         final File file = Files.createTempFile(
             temp, String.valueOf(action.hashCode()), null
         ).toFile();
+        file.deleteOnExit();
         final WinNT.HANDLE handle = Kernel32.INSTANCE.CreateFile(
             file.getAbsolutePath(),
             Kernel32.GENERIC_WRITE,
@@ -556,7 +264,685 @@ final class InputOutputTest {
         action.run();
         Kernel32.INSTANCE.SetStdHandle(Kernel32.STD_OUTPUT_HANDLE, origin);
         Kernel32.INSTANCE.CloseHandle(handle);
-        file.deleteOnExit();
         return file;
+    }
+
+    /**
+     * Check is current OS is windows.
+     * @return Is current OS windows
+     */
+    private static boolean isWindows() {
+        return InputOutputTest.OS_NAME.contains("Windows");
+    }
+
+    /**
+     * The `console` object test.
+     * @since 0.40
+     */
+    @Nested
+    final class ConsoleTest {
+        @Test
+        void dataizesConsoleWriteAsTrue() {
+            final Phi phi = new PhWith(
+                Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
+                "buffer",
+                new Data.ToPhi("dataizes as true")
+            );
+            Assertions.assertTrue(
+                new Dataized(phi).asBool(),
+                "The `console.write` should have returned TRUE, but it didn't"
+            );
+        }
+
+        @Test
+        void writesToConsole(@TempDir final Path temp) throws IOException {
+            final String msg = "writes to posix console";
+            final File file = InputOutputTest.redirectedStdout(
+                temp,
+                () -> new Dataized(
+                    new PhWith(
+                        Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
+                        "buffer",
+                        new Data.ToPhi(msg)
+                    )
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'console.write' should have written to posix console, but it didn't",
+                new String(
+                    Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
+                ),
+                Matchers.equalTo(msg)
+            );
+        }
+
+        @Test
+        void writesToConsoleSequentially(@TempDir final Path temp) throws IOException {
+            final File file = InputOutputTest.redirectedStdout(
+                temp,
+                () -> {
+                    final Phi buffer = new Data.ToPhi("Ha");
+                    final Phi first = new PhWith(
+                        Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.WRITE).copy(),
+                        0, buffer
+                    );
+                    final Phi second = new PhWith(
+                        new PhCopy(
+                            new PhMethod(first, InputOutputTest.WRITE)
+                        ),
+                        0, buffer
+                    );
+                    new Dataized(second).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'console.write' should have return output block ready to write again, but it didn't",
+                new String(
+                    Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
+                ),
+                Matchers.equalTo("HaHa")
+            );
+        }
+
+        @Test
+        void readsFromConsole(@TempDir final Path temp) throws IOException {
+            final String content = "read from posix console";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    new PhWith(
+                        Phi.Φ.take(InputOutputTest.CONSOLE).take(InputOutputTest.READ).copy(),
+                        0,
+                        new Data.ToPhi(content.length())
+                    )
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'console.read' object should have read all bytes from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void readsSequentiallyFromInputBlockViaConsole(@TempDir final Path temp)
+            throws IOException {
+            final String content = "read sequentially from posix console";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> {
+                    final Phi console = Phi.Φ.take(InputOutputTest.CONSOLE);
+                    final Phi first = new PhWith(
+                        new PhCopy(
+                            new PhMethod(console, InputOutputTest.READ)
+                        ),
+                        0, new Data.ToPhi(18)
+                    );
+                    final Phi second = new PhWith(
+                        new PhCopy(
+                            new PhMethod(first, InputOutputTest.READ)
+                        ),
+                        0, new Data.ToPhi(18)
+                    );
+                    return new Dataized(second).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The  posix `console.read` object should have return input block ready to `read` again, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo("from posix console")
+            );
+        }
+    }
+
+    /**
+     * The `stdin` test.
+     * @since 0.40
+     */
+    @Nested
+    final class StdinTest {
+        @Test
+        void dataizesOneLineOnOneLineInputViaStdin(@TempDir final Path temp) throws IOException {
+            final String content = "this is a test input1";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN).take(InputOutputTest.NEXT_LINE)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin.next-line' object should have returned one line from one line input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void dataizesOneLineOnOneLineWithSeparatorInputViaStdin(
+            @TempDir final Path temp
+        ) throws IOException {
+            final String content = "this is a test input2";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN).take(InputOutputTest.NEXT_LINE)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin.next-line' object should have returned one line from one line with separator input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void dataizesSecondLineOnThreeLineWithSeparatorInputViaStdin(
+            @TempDir final Path temp
+        ) throws IOException {
+            final String content = String.join(
+                System.lineSeparator(),
+                "first",
+                "second",
+                "third"
+            );
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> {
+                    new Dataized(
+                        Phi.Φ.take(InputOutputTest.STDIN).take(InputOutputTest.NEXT_LINE)
+                    ).take();
+                    return new Dataized(
+                        Phi.Φ.take(InputOutputTest.STDIN).take(InputOutputTest.NEXT_LINE)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin.next-line' object should have returned second line from three lines input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo("second")
+            );
+        }
+
+        @Test
+        void dataizesEmptyInputViaStdin(@TempDir final Path temp) throws IOException {
+            final String content = "";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN).take(InputOutputTest.NEXT_LINE)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin.next-line' object should have returned empty line from empty input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void dataizesStdinOneLine(@TempDir final Path temp) throws IOException {
+            final String content = "this is a test input3";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin' object should have been dataized to one line from one line input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void dataizesStdinEmptyLine(@TempDir final Path temp) throws IOException {
+            final String content = "";
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin' object should have been dataized to one line from one line input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        void dataizesStdinMultiLine(@TempDir final Path temp) throws IOException {
+            final String content = String.join(
+                System.lineSeparator(),
+                "first",
+                "second",
+                "third"
+            );
+            final byte[] result = InputOutputTest.redirectedStdin(
+                temp,
+                content,
+                () -> new Dataized(
+                    Phi.Φ.take(InputOutputTest.STDIN)
+                ).take()
+            );
+            MatcherAssert.assertThat(
+                "The posix 'stdin' object should have been dataized to one line from one line input",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+    }
+
+    /**
+     * Posix 'read' syscall test.
+     * @since 0.40
+     */
+    @Nested
+    final class PosixReadSyscallTest {
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void readsFromStdinViaPosixReadSyscall(@TempDir final Path temp) throws IOException {
+            final String content = "read from posix stdin";
+            final byte[] result = InputOutputTest.posixStdin(
+                temp,
+                content,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(CStdLib.STDIN_FILENO),
+                            new Data.ToPhi(content.length()),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                                "name",
+                                new Data.ToPhi(InputOutputTest.READ)
+                            ),
+                            "args",
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'read' syscall should have read all bytes from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void readsOnlyAvailableFromStdinViaPosixReadSyscall(@TempDir final Path temp)
+            throws IOException {
+            final String content = "read available from posix stdin";
+            final byte[] result = InputOutputTest.posixStdin(
+                temp,
+                content,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(CStdLib.STDIN_FILENO),
+                            new Data.ToPhi(content.length() * 2),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                                0,
+                                new Data.ToPhi(InputOutputTest.READ)
+                            ),
+                            1,
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'read' syscall should have read only available bytes from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void readsFromEmptyStdinViaPosixReadSyscall(@TempDir final Path temp) throws IOException {
+            final byte[] result = InputOutputTest.posixStdin(
+                temp,
+                "",
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(CStdLib.STDIN_FILENO),
+                            new Data.ToPhi(10),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                                0,
+                                new Data.ToPhi(InputOutputTest.READ)
+                            ),
+                            1,
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'read' syscall should have read empty string from standard input, but it didn't",
+                result.length,
+                Matchers.equalTo(0)
+            );
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void readsFromStdinByPortionsViaPosixReadSyscall(@TempDir final Path temp)
+            throws IOException {
+            final byte[] result = InputOutputTest.posixStdin(
+                temp,
+                "helloworld",
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(CStdLib.STDIN_FILENO),
+                            new Data.ToPhi(5),
+                        }
+                    );
+                    final Phi read = new PhWith(
+                        new PhWith(
+                            Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                            0,
+                            new Data.ToPhi(InputOutputTest.READ)
+                        ),
+                        1,
+                        args
+                    );
+                    read.take(InputOutputTest.OUTPUT);
+                    return new Dataized(read.take(InputOutputTest.OUTPUT)).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'read' syscall should have read empty string from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo("world")
+            );
+        }
+    }
+
+    /**
+     * Windows 'FileRead' syscall test.
+     * @since 0.40
+     */
+    @Nested
+    final class WindowsFileReadSyscallTest {
+        @Test
+        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        void readsFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp) throws IOException {
+            final String content = "read from windows stdin";
+            final byte[] result = InputOutputTest.windowsStdin(
+                temp,
+                content,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                            new Data.ToPhi(content.length()),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.WIN).copy(),
+                                "name",
+                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                            ),
+                            "args",
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The windows 'read' syscall should have read all bytes from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        void readsOnlyAvailableFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
+            throws IOException {
+            final String content = "read available from windows stdin";
+            final byte[] result = InputOutputTest.windowsStdin(
+                temp,
+                content,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                            new Data.ToPhi(content.length() * 2),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.WIN).copy(),
+                                0,
+                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                            ),
+                            1,
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The windows 'read' syscall should have read only available bytes from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo(content)
+            );
+        }
+
+        @Test
+        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        void readsFromEmptyStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
+            throws IOException {
+            final byte[] result = InputOutputTest.windowsStdin(
+                temp,
+                "",
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                            new Data.ToPhi(10),
+                        }
+                    );
+                    return new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.WIN).copy(),
+                                0,
+                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                            ),
+                            1,
+                            args
+                        ).take(InputOutputTest.OUTPUT)
+                    ).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The windows 'read' syscall should have read empty string from standard input, but it didn't",
+                result.length,
+                Matchers.equalTo(0)
+            );
+        }
+
+        @Test
+        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        void readsFromStdinByPortionsViaWindowsFileReadSyscall(@TempDir final Path temp)
+            throws IOException {
+            final byte[] result = InputOutputTest.windowsStdin(
+                temp,
+                "helloworld",
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(Kernel32.STD_INPUT_HANDLE),
+                            new Data.ToPhi(5),
+                        }
+                    );
+                    final Phi read = new PhWith(
+                        new PhWith(
+                            Phi.Φ.take(InputOutputTest.WIN).copy(),
+                            0,
+                            new Data.ToPhi(InputOutputTest.FILE_READ)
+                        ),
+                        1,
+                        args
+                    );
+                    read.take(InputOutputTest.OUTPUT);
+                    return new Dataized(read.take(InputOutputTest.OUTPUT)).take();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The windows 'read' syscall should have read empty string from standard input, but it didn't",
+                new String(result, StandardCharsets.UTF_8),
+                Matchers.equalTo("world")
+            );
+        }
+    }
+
+    /**
+     * Posix 'write' syscall test.
+     * @since 0.40
+     */
+    @Nested
+    final class PosixWriteSyscallTest {
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void writesToStdoutViaPosixWriteSyscall(@TempDir final Path temp) throws IOException {
+            final String msg = "writes to posix stdout";
+            final File file = InputOutputTest.posixStdout(
+                temp,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[] {
+                            new Data.ToPhi(CStdLib.STDOUT_FILENO),
+                            new Data.ToPhi(msg),
+                            new Data.ToPhi(msg.length()),
+                        }
+                    );
+                    new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                                0,
+                                new Data.ToPhi(InputOutputTest.WRITE)
+                            ),
+                            1,
+                            args
+                        ).take("code")
+                    ).asNumber();
+                }
+            );
+            MatcherAssert.assertThat(
+                "The posix 'write' syscall should have written to standard output, but it didn't",
+                new String(
+                    Files.readAllBytes(Paths.get(file.getAbsolutePath())),
+                    StandardCharsets.UTF_8
+                ),
+                Matchers.equalTo(msg)
+            );
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void invokesPosixWriteSyscallCorrectly() {
+            final String msg = "invokes posix write";
+            final Phi args = new Data.ToPhi(
+                new Phi[] {
+                    new Data.ToPhi(1L),
+                    new Data.ToPhi(msg),
+                    new Data.ToPhi(msg.length()),
+                }
+            );
+            MatcherAssert.assertThat(
+                "The \"write\" system call was expected to work correctly",
+                new Dataized(
+                    new PhWith(
+                        new PhWith(
+                            Phi.Φ.take(InputOutputTest.POSIX).copy(),
+                            0,
+                            new Data.ToPhi(InputOutputTest.WRITE)
+                        ),
+                        1,
+                        args
+                    ).take("code")
+                ).asNumber().intValue(),
+                Matchers.equalTo(msg.length())
+            );
+        }
+    }
+
+    /**
+     * Windows `FileWrite` syscall test.
+     * @since 0.40
+     */
+    @Nested
+    final class WindowsFileWriteSyscallTest {
+        @Test
+        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        void writesToStdoutViaWindowsWriteFileFunction(@TempDir final Path temp)
+            throws IOException {
+            final String msg = "writes to windows stdout";
+            final File file = InputOutputTest.windowsStdout(
+                temp,
+                () -> {
+                    final Phi args = new Data.ToPhi(
+                        new Phi[]{
+                            new Data.ToPhi(Kernel32.STD_OUTPUT_HANDLE),
+                            new Data.ToPhi(msg),
+                            new Data.ToPhi(msg.length()),
+                        }
+                    );
+                    new Dataized(
+                        new PhWith(
+                            new PhWith(
+                                Phi.Φ.take("org.eolang.sys.win32").copy(),
+                                0,
+                                new Data.ToPhi("WriteFile")
+                            ),
+                            1,
+                            args
+                        ).take("code")
+                    );
+                }
+            );
+            MatcherAssert.assertThat(
+                "The win32 'WriteFile' call should have written to standard output, but it didn't",
+                new String(
+                    Files.readAllBytes(Paths.get(file.getAbsolutePath())),
+                    StandardCharsets.UTF_8
+                ),
+                Matchers.equalTo(msg)
+            );
+        }
     }
 }

@@ -102,6 +102,34 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
     );
 
     /**
+     * Reads data from the specified file or input/output (I/O) device. Reads
+     * occur at the position specified by the file pointer if supported by the
+     * device.
+     * @param handle A handle to the device (for example, a file, file stream,
+     *  physical disk, volume, console buffer, tape drive, socket,
+     *  communications resource, mailslot, or pipe).
+     * @param buffer A pointer to the buffer that receives the data read from a
+     *  file or device.
+     * @param count The maximum number of bytes to be read.
+     * @param read A pointer to the variable that receives the number of bytes
+     *  read when using a synchronous hFile parameter
+     * @param overlapped A pointer to an OVERLAPPED structure is required if the handle
+     *  parameter was opened with FILE_FLAG_OVERLAPPED, otherwise it can be NULL.
+     * @return If the function succeeds, the return value is nonzero (TRUE). If
+     *  the function fails, or is completing asynchronously, the return
+     *  value is zero (FALSE).
+     * @checkstyle MethodNameCheck (5 lines)
+     * @checkstyle ParameterNumberCheck (20 lines)
+     */
+    boolean ReadFile(
+        HANDLE handle,
+        byte[] buffer,
+        int count,
+        IntByReference read,
+        WinBase.OVERLAPPED overlapped
+    );
+
+    /**
      * The CreateFile function creates or opens a file, file stream, directory, physical disk,
      * volume, console buffer, tape drive, communications resource, mailslot, or named pipe. The
      * function returns a handle that can be used to access an object.

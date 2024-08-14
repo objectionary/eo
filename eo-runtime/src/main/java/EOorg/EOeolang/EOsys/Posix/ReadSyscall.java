@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
 import EOorg.EOeolang.EOsys.Syscall;
+import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -55,13 +56,11 @@ public final class ReadSyscall implements Syscall {
         final int size = new Dataized(params[1]).asNumber().intValue();
         final Phi result = this.posix.take("return").copy();
         final byte[] buf = new byte[(int) size];
-        result.put(
-            0,
-            new Data.ToPhi(
-                CStdLib.INSTANCE.read(new Dataized(params[0]).asNumber().intValue(), buf, size)
-            )
+        final int count = CStdLib.INSTANCE.read(
+            new Dataized(params[0]).asNumber().intValue(), buf, size
         );
-        result.put(1, new Data.ToPhi(buf));
+        result.put(0, new Data.ToPhi(count));
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, count)));
         return result;
     }
 }

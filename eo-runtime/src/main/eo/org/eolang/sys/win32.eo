@@ -44,6 +44,14 @@
 #    - Returns:
 #      * code - written bytes count (number)
 #      * output - []
+# 2. ReadFile
+#    - Documentation: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
+#    - Arguments:
+#      * descriptor (number)
+#      * buffer size to read (number)
+#    - Returns:
+#      * code - read bytes count (number)
+#      * output - read bytes (bytes)
 [name args] > win32
   -10 > std-input-handle
   -11 > std-output-handle

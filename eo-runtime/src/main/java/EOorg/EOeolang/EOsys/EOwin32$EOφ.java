@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import EOorg.EOeolang.EOsys.Win32.ReadFileFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WriteFileFuncCall;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
 
     static {
         EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("ReadFile", ReadFileFuncCall::new);
     }
 
     @Override
