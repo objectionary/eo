@@ -308,7 +308,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'console.write' should have written to posix console, but it didn't",
+                "The 'console.write' should have written to posix console, but it didn't",
                 new String(
                     Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
                 ),
@@ -336,7 +336,7 @@ final class InputOutputTest {
                 }
             );
             MatcherAssert.assertThat(
-                "The posix 'console.write' should have return output block ready to write again, but it didn't",
+                "The 'console.write' should have return output block ready to write again, but it didn't",
                 new String(
                     Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
                 ),
@@ -359,7 +359,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'console.read' object should have read all bytes from standard input, but it didn't",
+                "The 'console.read' object should have read all bytes from standard input, but it didn't",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -390,7 +390,7 @@ final class InputOutputTest {
                 }
             );
             MatcherAssert.assertThat(
-                "The  posix `console.read` object should have return input block ready to `read` again, but it didn't",
+                "The `console.read` object should have return input block ready to `read` again, but it didn't",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo("from posix console")
             );
@@ -414,7 +414,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin.next-line' object should have returned one line from one line input",
+                "The 'stdin.next-line' object should have returned one line from one line input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -433,7 +433,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin.next-line' object should have returned one line from one line with separator input",
+                "The 'stdin.next-line' object should have returned one line from one line with separator input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -462,7 +462,7 @@ final class InputOutputTest {
                 }
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin.next-line' object should have returned second line from three lines input",
+                "The 'stdin.next-line' object should have returned second line from three lines input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo("second")
             );
@@ -479,7 +479,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin.next-line' object should have returned empty line from empty input",
+                "The 'stdin.next-line' object should have returned empty line from empty input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -496,7 +496,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin' object should have been dataized to one line from one line input",
+                "The 'stdin' object should have been dataized to one line from one line input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -513,7 +513,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin' object should have been dataized to one line from one line input",
+                "The 'stdin' object should have been dataized to one line from one line input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
@@ -535,7 +535,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The posix 'stdin' object should have been dataized to one line from one line input",
+                "The 'stdin' object should have been dataized to one line from one line input",
                 new String(result, StandardCharsets.UTF_8),
                 Matchers.equalTo(content)
             );
