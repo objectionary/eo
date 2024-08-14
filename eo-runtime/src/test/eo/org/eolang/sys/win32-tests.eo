@@ -20,8 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.posix
-+alias org.eolang.tuple
++alias org.eolang.sys.win32
 +alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -30,42 +29,17 @@
 +version 0.0.0
 
 # Test.
-[] > invokes-getpid-correctly
-  if. > @
-    os.is-windows
-    true
-    gt.
-      posix
-        "getpid"
-        tuple.empty
-      0
-
-# Test.
-[] > invokes-write-correctly
-  "Hello, syscall!\n" > msg
-  if. > @
-    os.is-windows
-    true
-    eq.
-      posix
-        "write"
-        *
-          1
-          msg
-          msg.length
-      msg.length
-
-# Test.
-[] > fails-read-from-stdin
-  00-00 > buf
-  if. > @
-    os.is-windows
-    true
-    eq.
-      posix
-        "read"
-        *
-          1
-          buf
-          buf.size
-      -1
+[] > invokes-file-write-correctly
+  "Hello, win32!\n" > msg!
+  called. > called
+    win32
+      "WriteFile"
+      *
+        win32.std-output-handle
+        msg
+        msg.size
+  or. > @
+    os.is-windows.not
+    and.
+      called.code
+      called.output.eq msg.size

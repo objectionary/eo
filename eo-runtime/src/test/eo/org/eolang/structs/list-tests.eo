@@ -192,27 +192,31 @@
 
 # Test.
 [] > iterates-with-eachi
-  list
-    *
-      "one"
-      "two"
-      "three"
-  .eachi > @
-    [item index]
-      stdout > @
-        sprintf
-          "[%d]: %s\n"
-          * index item
+  eq. > @
+    malloc.for
+      0
+      [m]
+        list
+          * 1 2 3
+        .eachi > @
+          [item index] >>
+            ^.m.put > @
+              plus.
+                ^.m.as-number.plus item
+                index
+    9
 
 # Test.
 [] > iterates-with-each
-  list
-    *
-      "one"
-      "two"
-      "three"
-  .each > @
-    stdout i > [i]
+  eq. > @
+    malloc.for
+      0
+      [m]
+        list
+          * 1 2 3
+        .each > @
+          ^.m.put (^.m.as-number.plus i) > [i] >>
+    6
 
 # Test.
 [] > list-withouti

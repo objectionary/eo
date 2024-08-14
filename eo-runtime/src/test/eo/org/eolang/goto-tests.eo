@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
@@ -45,7 +44,7 @@
                       i.as-number.lt 10
                       g.backward
                       true
-            stdout "Finished!\n"
+            true
     10
 
 # Test.

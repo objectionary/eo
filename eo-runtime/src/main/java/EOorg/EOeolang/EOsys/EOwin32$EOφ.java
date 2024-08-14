@@ -27,48 +27,48 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import EOorg.EOeolang.EOtuple$EOempty;
-import java.lang.management.ManagementFactory;
-import org.eolang.Data;
+import EOorg.EOeolang.EOsys.Win32.WriteFileFuncCall;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.ExFailure;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOposix}.
+ * Win32 function call.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOposixTest {
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
-                    ),
-                    "args",
-                    new EOtuple$EOempty()
-                ).take("code")
-            ).take(Long.class),
-            Matchers.equalTo(
-                Long.parseLong(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
-                )
-            )
+@XmirObject(oname = "win32.@")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOwin32$EOφ extends PhDefault implements Atom {
+    /**
+     * Function calls map.
+     */
+    static final Map<String, Function<Phi, Syscall>> FUNCTIONS = new HashMap<>();
+
+    static {
+        EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final Phi rho = this.take(Attr.RHO);
+        final String func = new Dataized(rho.take("name")).asString();
+        if (!EOwin32$EOφ.FUNCTIONS.containsKey(func)) {
+            throw new ExFailure(
+                "Can't make win32 function call '%s' because it's either not supported yet or does not exist",
+                func
+            );
+        }
+        return EOwin32$EOφ.FUNCTIONS.get(func).apply(rho).make(
+            new TupleToArray(rho.take("args")).get()
         );
     }
 }

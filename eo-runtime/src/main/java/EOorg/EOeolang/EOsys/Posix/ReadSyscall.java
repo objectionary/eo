@@ -25,58 +25,43 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
+import EOorg.EOeolang.EOsys.Syscall;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Unix syscall.
- *
+ * Read syscall.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
-public final class EOposix extends PhDefault implements Atom {
+public final class ReadSyscall implements Syscall {
+    /**
+     * Posix object.
+     */
+    private final Phi posix;
 
     /**
      * Ctor.
+     * @param posix Posix object
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOposix() {
-        this.add("name", new AtVoid("name"));
-        this.add("args", new AtVoid("args"));
+    public ReadSyscall(final Phi posix) {
+        this.posix = posix;
     }
 
     @Override
-    public Phi lambda() throws Exception {
-        final Phi name = this.take("name");
-        final Phi[] args = this.collectArgs();
-        return new Data.ToPhi(
-            new DispatchedUnixSyscall(
-                new Dataized(name).asString()
-            ).call(args)
+    public Phi make(final Phi... params) {
+        final int size = new Dataized(params[1]).asNumber().intValue();
+        final Phi result = this.posix.take("return").copy();
+        final byte[] buf = new byte[(int) size];
+        result.put(
+            0,
+            new Data.ToPhi(
+                CStdLib.INSTANCE.read(new Dataized(params[0]).asNumber().intValue(), buf, size)
+            )
         );
-    }
-
-    /**
-     * Collects arguments for syscall from tuple.
-     *
-     * @return Array of arguments.
-     */
-    private Phi[] collectArgs() {
-        final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final int length = new Dataized(args.take("length")).asNumber().intValue();
-        final Phi[] arguments = new Phi[length];
-        for (long iter = 0; iter < length; ++iter) {
-            final Phi taken = retriever.copy();
-            taken.put(0, new Data.ToPhi(iter));
-            arguments[(int) iter] = taken;
-        }
-        return arguments;
+        result.put(1, new Data.ToPhi(buf));
+        return result;
     }
 }

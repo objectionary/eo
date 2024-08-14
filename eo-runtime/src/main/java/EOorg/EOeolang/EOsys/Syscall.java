@@ -27,44 +27,19 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import com.sun.jna.Library;
-import com.sun.jna.Native;
+import org.eolang.Phi;
 
 /**
- * C standard library with unix syscalls.
+ * System call that can be made with EO objects ({@link Phi}) as arguments.
+ *
  * @since 0.40
  */
-public interface CStdLib extends Library {
-
+public interface Syscall {
     /**
-     * C STDLIB instance.
-     */
-    CStdLib INSTANCE = Native.load("c", CStdLib.class);
-
-    /**
-     * The "getpid" syscall.
+     * Makes native method call.
      *
-     * @return Process ID.
+     * @param params Native methods parameters.
+     * @return Methods return code.
      */
-    int getpid();
-
-    /**
-     * The "write" syscall.
-     *
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be written.
-     * @return Number of bytes was written.
-     */
-    int write(Long descriptor, String buf, Long size);
-
-    /**
-     * The "read" syscall.
-     *
-     * @param descriptor File descriptor.
-     * @param buf Buffer.
-     * @param size Number of bytes to be read.
-     * @return Number of bytes was read.
-     */
-    int read(Long descriptor, byte[] buf, Long size);
+    Phi make(Phi... params);
 }

@@ -21,59 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOio; // NOPMD
+package EOorg.EOeolang.EOsys; // NOPMD
 
-import java.io.IOException;
-import java.io.OutputStream;
-import org.eolang.AtVoid;
-import org.eolang.Atom;
+import java.util.function.Supplier;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
 
 /**
- * Console.write.written-bytes.
- *
- * @since 0.39
- * @checkstyle TypeNameCheck (5 lines)
+ * Convert {@link EOorg.EOeolang.EOtuple} of arguments to Java array.
+ * @since 0.40.0
  */
-@Versionized
-@XmirObject(oname = "console.write.written-bytes")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOconsole$EOwrite$EOwritten_bytes extends PhDefault implements Atom {
+final class TupleToArray implements Supplier<Phi[]> {
     /**
-     * Stream to write out.
+     * Tuple of arguments.
      */
-    private final OutputStream out;
+    private final Phi tuple;
 
     /**
-     * Default ctor.
+     * Ctor.
+     * @param tup Tuple of arguments.
      */
-    public EOconsole$EOwrite$EOwritten_bytes() {
-        this(System.out);
-    }
-
-    /**
-     * Ctor for the tests.
-     * @param out Stream to print
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOconsole$EOwrite$EOwritten_bytes(final OutputStream out) {
-        this.out = out;
-        this.add("buffer", new AtVoid("buffer"));
+    TupleToArray(final Phi tup) {
+        this.tuple = tup;
     }
 
     @Override
-    public Phi lambda() throws IOException {
-        this.out.write(new Dataized(this.take("buffer")).take());
-        return new Data.ToPhi(true);
+    public Phi[] get() {
+        final Phi retriever = this.tuple.take("at");
+        final int length = new Dataized(this.tuple.take("length")).asNumber().intValue();
+        final Phi[] arguments = new Phi[length];
+        for (int iter = 0; iter < length; ++iter) {
+            final Phi taken = retriever.copy();
+            taken.put(0, new Data.ToPhi(iter));
+            arguments[iter] = taken;
+        }
+        return arguments;
     }
 }

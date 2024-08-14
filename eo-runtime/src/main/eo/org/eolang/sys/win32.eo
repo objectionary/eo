@@ -20,21 +20,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.console
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
-+package org.eolang.io
++package org.eolang.sys
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Test.
-[] > writes-to-console-once
-  console.write "Hello!" > @
+# Makes a kernel32.dll function call by name.
+#
+# You can access the documentation for kernel32.dll functions by visiting the
+# Windows API Index (https://learn.microsoft.com/en-us/windows/win32/api/index).
+# Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
+# WriteFile, etc.
+#
+# Supported functions:
+# 1. WriteFile
+#    - Documentation: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+#    - Arguments:
+#      * descriptor (number)
+#      * buffer to write (bytes)
+#      * buffer size to write (number)
+#    - Returns:
+#      * code - written bytes count (number)
+#      * output - []
+[name args] > win32
+  -10 > std-input-handle
+  -11 > std-output-handle
 
-# Test.
-[] > writes-to-console-sequentially
-  seq > @
-    *
-      console.write "Hello" > o1
-      o1.write ", "
-      console.write "world!"
+  [] > @ /return
+
+  [code output] > return
+    $ > called
+    output > @

@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.sys.os
++alias org.eolang.sys.posix
++alias org.eolang.sys.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
@@ -114,11 +117,13 @@
         self. > @
           seq
             *
-              ^.^.written-bytes buffer
+              code.
+                if.
+                  os.is-windows
+                  win32
+                    "WriteFile"
+                    * win32.std-output-handle buffer buffer.size
+                  posix
+                    "write"
+                    * posix.stdout-fileno buffer buffer.size
               ^.^.output-block
-
-    # Bytes written to operation system console.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `console` object.
-    [buffer] > written-bytes /true

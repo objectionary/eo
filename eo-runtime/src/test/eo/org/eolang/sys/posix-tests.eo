@@ -20,14 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
++alias org.eolang.sys.posix
++alias org.eolang.sys.os
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
-+package org.eolang.io
++package org.eolang.sys
 +version 0.0.0
 
 # Test.
-[] > prints-string-to-console
-  stdout > @
-    "Hello world\n"
+[] > invokes-getpid-correctly
+  or. > @
+    os.is-windows
+    gt.
+      code.
+        posix
+          "getpid"
+          tuple.empty
+      0

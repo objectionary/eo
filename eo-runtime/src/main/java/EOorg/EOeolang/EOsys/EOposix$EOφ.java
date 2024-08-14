@@ -27,48 +27,52 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import EOorg.EOeolang.EOtuple$EOempty;
-import java.lang.management.ManagementFactory;
-import org.eolang.Data;
+import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
+import EOorg.EOeolang.EOsys.Posix.ReadSyscall;
+import EOorg.EOeolang.EOsys.Posix.WriteSyscall;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.eolang.Atom;
+import org.eolang.Attr;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.ExFailure;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOposix}.
+ * Posix syscall.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOposixTest {
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
-                    ),
-                    "args",
-                    new EOtuple$EOempty()
-                ).take("code")
-            ).take(Long.class),
-            Matchers.equalTo(
-                Long.parseLong(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
-                )
-            )
+@XmirObject(oname = "posix.@")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOposix$EOφ extends PhDefault implements Atom {
+    /**
+     * System calls map.
+     */
+    static final Map<String, Function<Phi, Syscall>> SYS_CALLS = new HashMap<>();
+
+    static {
+        EOposix$EOφ.SYS_CALLS.put("getpid", GetpidSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
+    }
+
+    @Override
+    public Phi lambda() throws Exception {
+        final Phi rho = this.take(Attr.RHO);
+        final String call = new Dataized(rho.take("name")).asString();
+        if (!EOposix$EOφ.SYS_CALLS.containsKey(call)) {
+            throw new ExFailure(
+                "Can't make posix syscall '%s' because it's either not supported yet or does not exist",
+                call
+            );
+        }
+        return EOposix$EOφ.SYS_CALLS.get(call).apply(rho).make(
+            new TupleToArray(rho.take("args")).get()
         );
     }
 }
