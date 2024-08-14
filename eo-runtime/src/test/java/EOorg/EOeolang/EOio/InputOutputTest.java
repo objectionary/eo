@@ -99,7 +99,7 @@ final class InputOutputTest {
     /**
      * Write object.
      */
-    private static final String FILE_READ = "FileRead";
+    private static final String READ_FILE = "ReadFile";
 
     /**
      * Read object.
@@ -710,7 +710,7 @@ final class InputOutputTest {
                             new PhWith(
                                 Phi.Φ.take(InputOutputTest.WIN).copy(),
                                 "name",
-                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                                new Data.ToPhi(InputOutputTest.READ_FILE)
                             ),
                             "args",
                             args
@@ -745,7 +745,7 @@ final class InputOutputTest {
                             new PhWith(
                                 Phi.Φ.take(InputOutputTest.WIN).copy(),
                                 0,
-                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                                new Data.ToPhi(InputOutputTest.READ_FILE)
                             ),
                             1,
                             args
@@ -779,7 +779,7 @@ final class InputOutputTest {
                             new PhWith(
                                 Phi.Φ.take(InputOutputTest.WIN).copy(),
                                 0,
-                                new Data.ToPhi(InputOutputTest.FILE_READ)
+                                new Data.ToPhi(InputOutputTest.READ_FILE)
                             ),
                             1,
                             args
@@ -812,7 +812,7 @@ final class InputOutputTest {
                         new PhWith(
                             Phi.Φ.take(InputOutputTest.WIN).copy(),
                             0,
-                            new Data.ToPhi(InputOutputTest.FILE_READ)
+                            new Data.ToPhi(InputOutputTest.READ_FILE)
                         ),
                         1,
                         args
