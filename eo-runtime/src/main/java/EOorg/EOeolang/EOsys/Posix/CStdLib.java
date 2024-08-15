@@ -115,4 +115,11 @@ public interface CStdLib extends Library {
      * @return Number of bytes was read.
      */
     int read(int descriptor, byte[] buf, int size);
+
+    /**
+     * Get environment variable.
+     * @param name Name of the variable
+     * @return Name of the environment variable
+     */
+    String getenv(String name);
 }

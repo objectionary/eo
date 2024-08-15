@@ -27,6 +27,8 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import EOorg.EOeolang.EOsys.Win32.GetCurrentProcessIdFuncCall;
+import EOorg.EOeolang.EOsys.Win32.GetEnvironmentVariableFuncCall;
 import EOorg.EOeolang.EOsys.Win32.ReadFileFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WriteFileFuncCall;
 import java.util.HashMap;
@@ -55,8 +57,10 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
     static final Map<String, Function<Phi, Syscall>> FUNCTIONS = new HashMap<>();
 
     static {
-        EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("GetCurrentProcessId", GetCurrentProcessIdFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("ReadFile", ReadFileFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("WriteFile", WriteFileFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("GetEnvironmentVariable", GetEnvironmentVariableFuncCall::new);
     }
 
     @Override

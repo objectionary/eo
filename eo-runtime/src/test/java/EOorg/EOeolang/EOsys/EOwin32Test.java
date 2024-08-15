@@ -21,47 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
+import EOorg.EOeolang.EOtuple$EOempty;
+import java.lang.management.ManagementFactory;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
+import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.XmirObject;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 /**
- * Getenv.
+ * Test case for {@link EOwin32}.
+ *
  * @since 0.40
- * @checkstyle TypeNameCheck (5 lines)
+ * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "getenv")
-public final class EOgetenv extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOgetenv() {
-        this.add("name", new AtVoid("name"));
-    }
-
-    @Override
-    public Phi lambda() throws Exception {
-        final String env = System.getenv(
-            new Dataized(this.take("name")).asString()
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+final class EOwin32Test {
+    @Test
+    @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
+    void invokesGetCurrentProcessIdCorrectly() {
+        MatcherAssert.assertThat(
+            "The \"GetCurrentProcessId\" function call was expected to work correctly",
+            new Dataized(
+                new PhWith(
+                    new PhWith(
+                        Phi.Φ.take("org.eolang.sys.win32").copy(),
+                        "name",
+                        new Data.ToPhi("GetCurrentProcessId")
+                    ),
+                    "args",
+                    new EOtuple$EOempty()
+                ).take("code")
+            ).take(Long.class),
+            Matchers.equalTo(
+                Long.parseLong(
+                    ManagementFactory.getRuntimeMXBean()
+                        .getName().split("@")[0]
+                )
+            )
         );
-        final Phi var;
-        if (env != null) {
-            var = new Data.ToPhi(env);
-        } else {
-            var = new Data.ToPhi("");
-        }
-        return var;
     }
 }

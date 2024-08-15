@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import EOorg.EOeolang.EOsys.Posix.GetenvSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
 import EOorg.EOeolang.EOsys.Posix.ReadSyscall;
 import EOorg.EOeolang.EOsys.Posix.WriteSyscall;
@@ -59,6 +60,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         EOposix$EOφ.SYS_CALLS.put("getpid", GetpidSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("getenv", GetenvSyscall::new);
     }
 
     @Override
