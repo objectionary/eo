@@ -29,8 +29,11 @@
 
 # Not a number.
 [] > nan
-  0.0.div 0.0 > @
+  7F-F8-00-00-00-00-00-00 > as-bytes
+  as-bytes > @
   $ > floor
+  $ > neg
+  error "Can't convert NaN to i64" > as-i64
 
   # Tests that $ = x.
   false > [x] > eq
@@ -52,9 +55,6 @@
 
   # Sum of $ and x.
   ^ > [x] > plus
-
-  # Negation of $.
-  ^ > [] > neg
 
   # Difference between $ and x.
   ^ > [x] > minus

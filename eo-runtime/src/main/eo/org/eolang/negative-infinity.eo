@@ -29,8 +29,11 @@
 
 # Negative infinity.
 [] > negative-infinity
-  -1.0.div 0.0 > @
+  FF-F0-00-00-00-00-00-00 > as-bytes
+  as-bytes > @
   $ > floor
+  positive-infinity > neg
+  error "Can't convert negative infinity to i64" > as-i64
 
   # Tests that $ = x.
   [x] > eq
@@ -54,12 +57,10 @@
         nan.as-bytes
 
   # Tests that $ > x.
-  [x] > gt
-    false > @
+  false > [x] > gt
 
   # Tests that $ ≥ x.
-  [x] > gte
-    ^.eq x > @
+  ^.eq x > [x] > gte
 
   # Multiplication of $ and x.
   [x] > times

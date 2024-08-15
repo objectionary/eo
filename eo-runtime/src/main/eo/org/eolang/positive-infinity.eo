@@ -29,8 +29,11 @@
 
 # Positive infinity.
 [] > positive-infinity
-  1.0.div 0.0 > @
+  7F-F0-00-00-00-00-00-00 > as-bytes
+  as-bytes > @
   $ > floor
+  negative-infinity > neg
+  error "Can't convert positive infinity to i64" > as-i64
 
   # Tests that $ = x.
   [x] > eq
@@ -39,12 +42,10 @@
       x.as-bytes
 
   # Tests that $ < x.
-  [x] > lt
-    false > @
+  false > [x] > lt
 
   # Tests that $ ≤ x.
-  [x] > lte
-    ^.eq x > @
+  ^.eq x > [x] > lte
 
   # Tests that $ > x.
   [x] > gt

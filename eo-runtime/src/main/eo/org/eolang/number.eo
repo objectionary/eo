@@ -31,7 +31,7 @@
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
-  i64 $ > as-i64
+  i64 floor > as-i64
 
   # Tests that $ = x.
   [x] > eq

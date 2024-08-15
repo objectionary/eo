@@ -166,25 +166,32 @@ public interface Data {
             } else if (obj instanceof byte[]) {
                 phi = eolang.take("bytes").copy();
                 phi.attach((byte[]) obj);
-            } else {
-                final byte[] bytes;
-                if (obj instanceof Number) {
-                    phi = eolang.take("number").copy();
-                    bytes = new BytesOf(((Number) obj).doubleValue()).take();
-                } else if (obj instanceof String) {
-                    phi = eolang.take("string").copy();
-                    bytes = ((String) obj).getBytes(StandardCharsets.UTF_8);
+            } else if (obj instanceof Number) {
+                final double value = ((Number) obj).doubleValue();
+                if (Double.isNaN(value)) {
+                    phi = eolang.take("nan");
+                } else if (value == Double.POSITIVE_INFINITY) {
+                    phi = eolang.take("positive-infinity");
+                } else if (value == Double.NEGATIVE_INFINITY) {
+                    phi = eolang.take("negative-infinity");
                 } else {
-                    throw new IllegalArgumentException(
-                        String.format(
-                            "Unknown type of data: %s",
-                            obj.getClass().getCanonicalName()
-                        )
-                    );
+                    phi = eolang.take("number").copy();
+                    final Phi bts = eolang.take("bytes").copy();
+                    bts.attach(new BytesOf(value).take());
+                    phi.put(0, bts);
                 }
+            } else if (obj instanceof String) {
+                phi = eolang.take("string").copy();
                 final Phi bts = eolang.take("bytes").copy();
-                bts.attach(bytes);
+                bts.attach(((String) obj).getBytes(StandardCharsets.UTF_8));
                 phi.put(0, bts);
+            } else {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Unknown type of data: %s",
+                        obj.getClass().getCanonicalName()
+                    )
+                );
             }
             return phi;
         }
