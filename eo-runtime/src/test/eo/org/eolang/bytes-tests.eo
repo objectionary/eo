@@ -426,3 +426,26 @@
 # Test.
 [] > throws-on-bytes-of-wrong-size-as-number
   01-01-01-01.as-number > @
+
+# Test.
+[] > throws-on-bytes-of-wrong-size-as-i64
+  01-01-01-01.as-i64 > @
+
+# Test.
+[] > bytes-converts-to-i64
+  eq. > @
+    00-00-00-00-00-00-00-2A.as-i64
+    i64 42
+
+# Test.
+[] > bytes-converts-to-i64-and-back
+  eq. > @
+    00-00-00-00-00-00-00-33.as-i64.as-bytes
+    00-00-00-00-00-00-00-33
+
+# Test.
+[] > bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
+  not. > @
+    eq.
+      00-00-00-00-00-00-00-2A.as-i64.as-bytes
+      42.as-bytes

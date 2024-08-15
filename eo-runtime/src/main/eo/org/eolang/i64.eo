@@ -32,6 +32,7 @@
 [num] > i64
   as-bytes > @
   $ > floor
+  num > as-number
 
   [] > as-bytes /bytes
 

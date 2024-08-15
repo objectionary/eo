@@ -84,3 +84,20 @@
     sprintf
       "%%%s"
       * "Jeff"
+
+# Test.
+[] > sprintf-does-not-print-i64
+  not. > @
+    eq.
+      sprintf
+        "%d"
+        * (i64 42)
+      "42"
+
+# Test.
+[] > sprintf-prints-i64-as-number
+  eq. > @
+    "42"
+    sprintf
+      "%d"
+      * (i64 42).as-number

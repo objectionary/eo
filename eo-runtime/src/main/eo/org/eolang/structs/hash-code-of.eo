@@ -34,17 +34,21 @@
 # via `as-bytes` object.
 [input] > hash-code-of
   input.as-bytes > input-as-bytes!
+  input-as-bytes.size > size!
 
   [] > @
-    rec-hash-code 0.as-bytes 0 > @
+    i64 31 > magic-number
+    rec-hash-code (i64 0) 0 > @
 
     [acc index] > rec-hash-code
       if. > @
-        index.eq ^.^.input-as-bytes.size
-        acc
+        index.eq ^.^.size
+        acc.as-number
         ^.rec-hash-code
           plus.
-            31.times acc
-            00-00-00-00-00-00-00.concat
-              ^.^.input-as-bytes.slice index 1
+            ^.magic-number.times acc
+            as-i64.
+              concat.
+                00-00-00-00-00-00-00
+                ^.^.input-as-bytes.slice index 1
           index.plus 1

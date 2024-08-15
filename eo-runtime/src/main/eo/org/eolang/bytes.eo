@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -53,7 +54,28 @@
     if. > @
       ^.size.eq 8
       number ^
-      error "Can't convert non 8 length bytes to a number"
+      error
+        sprintf
+          "Can't convert non 8 length bytes to a number, bytes are %s"
+          * ^
+
+  # Turn this chain of eight bytes into a i64 number.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-i64
+    if. > @
+      ^.size.eq 8
+      i64 converted
+      error
+        sprintf
+          "Can't convert non 8 length bytes to i64, bytes are %s"
+          * ^
+
+    # Bytes converted to `number` ready to injected to `i64`.
+    #
+    # Attention! The object is for internal usage only, please don't use
+    # the object programmatically outside of `bytes` object.
+    [] > converted /number
 
   # Calculate bitwise and.
   [b] > and /bytes
