@@ -141,6 +141,7 @@ public interface Data {
          * Convert to Phi object.
          * @param obj Object to convert
          * @return Constructed Phi
+         * @checkstyle CyclomaticComplexityCheck (100 lines)
          */
         @SuppressWarnings("PMD.CognitiveComplexity")
         private static Phi toPhi(final Object obj) {
