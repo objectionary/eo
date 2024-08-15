@@ -267,16 +267,18 @@
                   ascii-bte.gte ^.ascii-a
                 slice.
                   as-bytes.
-                    ascii-bte.minus ^.distance
+                    as-i64.
+                      ascii-bte.minus ^.distance
                   7
                   1
                 byte
 
     [char] > ascii
       as-number. > @
-        concat.
-          00-00-00-00-00-00-00
-          char.as-bytes
+        as-i64.
+          concat.
+            00-00-00-00-00-00-00
+            char.as-bytes
 
   # Returns `text` in lower case.
   [] > low-cased
@@ -298,7 +300,8 @@
                   ascii-bte.gte ^.ascii-a
                 slice.
                   as-bytes.
-                    ascii-bte.plus ^.^.up-cased.distance
+                    as-i64.
+                      ascii-bte.plus ^.^.up-cased.distance
                   7
                   1
                 byte
