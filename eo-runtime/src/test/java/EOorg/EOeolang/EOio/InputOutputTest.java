@@ -280,6 +280,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class ConsoleTest {
         @Test
         void dataizesConsoleWriteAsTrue() {
@@ -402,6 +403,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class StdinTest {
         @Test
         void dataizesOneLineOnOneLineInputViaStdin(@TempDir final Path temp) throws IOException {
@@ -547,6 +549,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class PosixReadSyscallTest {
         @Test
         @DisabledOnOs(OS.WINDOWS)
@@ -690,6 +693,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileReadSyscallTest {
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
@@ -834,6 +838,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class PosixWriteSyscallTest {
         @Test
         @DisabledOnOs(OS.WINDOWS)
@@ -906,6 +911,7 @@ final class InputOutputTest {
      * @since 0.40
      */
     @Nested
+    @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileWriteSyscallTest {
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
