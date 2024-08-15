@@ -29,8 +29,7 @@
 
 # Negative infinity.
 [] > negative-infinity
-  FF-F0-00-00-00-00-00-00 > as-bytes
-  as-bytes > @
+  number FF-F0-00-00-00-00-00-00 > @
   $ > floor
   positive-infinity > neg
   error "Can't convert negative infinity to i64" > as-i64

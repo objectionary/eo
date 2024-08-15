@@ -29,8 +29,7 @@
 
 # Not a number.
 [] > nan
-  7F-F8-00-00-00-00-00-00 > as-bytes
-  as-bytes > @
+  number 7F-F8-00-00-00-00-00-00 > @
   $ > floor
   $ > neg
   error "Can't convert NaN to i64" > as-i64
