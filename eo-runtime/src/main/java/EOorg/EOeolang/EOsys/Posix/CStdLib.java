@@ -42,9 +42,19 @@ public interface CStdLib extends Library {
     CStdLib INSTANCE = Native.load("c", CStdLib.class);
 
     /**
+     * Standard input file descriptor.
+     */
+    int STDIN_FILENO = 0;
+
+    /**
      * Standard output file descriptor.
      */
     int STDOUT_FILENO = 1;
+
+    /**
+     * Open flag for reading only.
+     */
+    int O_RDONLY = 0;
 
     /**
      * Open flag for reading and writing.

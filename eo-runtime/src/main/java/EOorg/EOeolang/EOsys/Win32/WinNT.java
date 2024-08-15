@@ -60,6 +60,13 @@ public interface WinNT extends WinDef, WinBase, BaseTSD {
     int CREATE_ALWAYS = 2;
 
     /**
+     * The OPEN_EXISTING flag tells the CreateFile function to open the file only if
+     * it already exists. If the file doesn't exist, the function fails, and an
+     * error is returned (typically ERROR_FILE_NOT_FOUND).
+     */
+    int OPEN_EXISTING = 3;
+
+    /**
      * This flag specifies the desired access to the file. GENERIC_WRITE allows for writing
      * data to the file.
      * Value: 0x40000000 (or 1073741824 in decimal)
@@ -67,6 +74,14 @@ public interface WinNT extends WinDef, WinBase, BaseTSD {
      * This flag grants the ability to write data, append data, or modify file attributes.
      */
     int GENERIC_WRITE = 0x40000000;
+
+    /**
+     * This flag grants read access to the file or resource.
+     * When you specify GENERIC_READ, the handle you obtain will allow you to read the
+     * contents of the file or resource.
+     * Value: 0x80000000
+     */
+    int GENERIC_READ = 0x80000000;
 
     /**
      * Handle to an object.

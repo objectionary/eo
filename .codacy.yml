@@ -25,21 +25,4 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/CStdLib.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/GetpidSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/package-info.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ReadSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/WriteSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/BaseTSD.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/Kernel32.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/package-info.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WinBase.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/Wincon.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WinDef.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WinNT.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WriteFileFuncCall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/EOposix$EOφ.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/EOwin32$EOφ.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Syscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/TupleToArray.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOio/InputOutputTest.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/ReadFileFuncCall.java"

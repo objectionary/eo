@@ -28,20 +28,51 @@
  */
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
+import EOorg.EOeolang.EOsys.Syscall;
+import com.sun.jna.ptr.IntByReference;
+import java.util.Arrays;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Phi;
+
 /**
- * Ported from Wincon.h.
- * @since 0.40
- * @checkstyle InterfaceIsTypeCheck (5 lines)
+ * ReadFile kernel32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile">here for details</a>
+ * @since 0.40.0
  */
-@SuppressWarnings("PMD.ConstantsInInterface")
-public interface Wincon {
+public final class ReadFileFuncCall implements Syscall {
     /**
-     * Standard input handle.
+     * Win32 object.
      */
-    int STD_INPUT_HANDLE = -10;
+    private final Phi win;
 
     /**
-     * Standard output handle.
+     * Ctor.
+     * @param win Win32 object
      */
-    int STD_OUTPUT_HANDLE = -11;
+    public ReadFileFuncCall(final Phi win) {
+        this.win = win;
+    }
+
+    @Override
+    public Phi make(final Phi... params) {
+        final int size = new Dataized(params[1]).asNumber().intValue();
+        final byte[] buf = new byte[(int) size];
+        final IntByReference read = new IntByReference();
+        final Phi result = this.win.take("return").copy();
+        result.put(
+            0,
+            new Data.ToPhi(
+                Kernel32.INSTANCE.ReadFile(
+                    Kernel32.INSTANCE.GetStdHandle(new Dataized(params[0]).asNumber().intValue()),
+                    buf,
+                    size,
+                    read,
+                    null
+                )
+            )
+        );
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, read.getValue())));
+        return result;
+    }
 }
