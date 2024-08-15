@@ -21,54 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+package EOorg.EOeolang; // NOPMD
 
-import EOorg.EOeolang.EOtuple$EOempty;
-import java.lang.management.ManagementFactory;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.BytesOf;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
+import org.eolang.Versionized;
+import org.eolang.XmirObject;
 
 /**
- * Test case for {@link EOposix}.
- *
+ * The i64.as-bytes.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
+ * @checkstyle TypeNameCheck (6 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOposixTest {
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
-                    ),
-                    "args",
-                    new EOtuple$EOempty()
-                ).take("code")
-            ).asNumber(),
-            Matchers.equalTo(
-                (double) Long.parseLong(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
-                )
-            )
+@Versionized
+@XmirObject(oname = "i64.as-bytes")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOi64$EOas_bytes extends PhDefault implements Atom {
+    @Override
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            new BytesOf(
+                new Dataized(this.take(Attr.RHO).take("num")).asNumber().longValue()
+            ).take()
         );
     }
 }

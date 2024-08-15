@@ -135,9 +135,11 @@ public final class Dataized {
     public <T> T take(final Class<T> type) {
         final Object res;
         if (type.equals(Long.class)) {
-            res = this.asNumber().longValue();
+            res = new BytesOf(this.take()).asNumber(Long.class);
         } else if (type.equals(Double.class)) {
             res = this.asNumber();
+        } else if (type.equals(Integer.class)) {
+            res = new BytesOf(this.take()).asNumber(Integer.class);
         } else if (type.equals(byte[].class)) {
             res = this.take();
         } else if (type.equals(String.class)) {

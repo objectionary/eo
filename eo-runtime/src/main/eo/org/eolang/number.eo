@@ -88,7 +88,10 @@
   ^.times -1.0 > [] > neg
 
   # Difference between $ and x.
-  ^.plus x.neg > [x] > minus
+  [x] > minus
+    x > value!
+    ^.plus > @
+      (number value).neg
 
   # Quotient of the division of $ by x.
   [x] > div /number

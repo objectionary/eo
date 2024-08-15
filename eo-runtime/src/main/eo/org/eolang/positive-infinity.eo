@@ -30,6 +30,7 @@
 # Positive infinity.
 [] > positive-infinity
   1.0.div 0.0 > @
+  $ > floor
 
   # Tests that $ = x.
   [x] > eq

@@ -162,12 +162,9 @@ final class BytesRaw implements Bytes {
         final byte[] ret = this.take();
         final Object res;
         final ByteBuffer buf = ByteBuffer.wrap(ret);
-        if (Long.class.equals(type)
-            && ret.length == Long.BYTES) {
+        if (Long.class.equals(type) && ret.length == Long.BYTES) {
             res = buf.getLong();
-        } else if (Integer.class.equals(type)
-            && ret.length == Integer.BYTES
-        ) {
+        } else if (Integer.class.equals(type) && ret.length == Integer.BYTES) {
             res = buf.getInt();
         } else if (Double.class.equals(type)
             && ret.length == Double.BYTES
