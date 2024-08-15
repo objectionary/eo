@@ -62,9 +62,9 @@ final class EOwin32Test {
                     "args",
                     new EOtuple$EOempty()
                 ).take("code")
-            ).take(Long.class),
+            ).asNumber().intValue(),
             Matchers.equalTo(
-                Long.parseLong(
+                Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
                         .getName().split("@")[0]
                 )

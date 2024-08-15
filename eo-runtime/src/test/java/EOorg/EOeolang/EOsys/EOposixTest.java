@@ -62,9 +62,9 @@ final class EOposixTest {
                     "args",
                     new EOtuple$EOempty()
                 ).take("code")
-            ).asNumber(),
+            ).asNumber().intValue(),
             Matchers.equalTo(
-                (double) Long.parseLong(
+                Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
                         .getName().split("@")[0]
                 )
