@@ -163,4 +163,33 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
         int flags,
         HANDLE template
     );
+
+    /**
+     * Retrieves the contents of the specified variable from the environment
+     * block of the calling process.
+     * @param name The name of the environment variable.
+     * @param buffer A pointer to a buffer that receives the contents of the
+     *  specified environment variable as a null-terminated string. An
+     *  environment variable has a maximum size limit of 32,767
+     *  characters, including the null-terminating character.
+     * @param size The size of the buffer pointed to by the buffer parameter,
+     *  including the null-terminating character, in characters.
+     * @return If the function succeeds, the return value is the number of
+     *  characters stored in the buffer pointed to by buffer, not
+     *  including the terminating null character. If buffer is not
+     *  large enough to hold the data, the return value is the buffer
+     *  size, in characters, required to hold the string and its
+     *  terminating null character and the contents of buffer are
+     *  undefined. If the function fails, the return value is zero. To
+     *  get extended error information, call GetLastError.
+     *  @checkstyle MethodNameCheck (5 lines)
+     */
+    int GetEnvironmentVariable(String name, char[] buffer, int size);
+
+    /**
+     * This function returns the process identifier of the calling process.
+     * @return The return value is the process identifier of the calling process.
+     * @checkstyle MethodNameCheck (5 lines)
+     */
+    int GetCurrentProcessId();
 }
