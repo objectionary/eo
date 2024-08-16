@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -31,19 +32,32 @@
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
-  i64 floor > as-i64
+  times -1 > neg
 
-  # Tests that $ = x.
+  # Convert this to `i64`.
+  # The `error` is returned if number is not integer.
+  [] > as-i64
+    if. > @
+      ^.is-integer
+      i64 ^
+      error
+        sprintf
+          "Can't convert not integer number to i64, number is %f"
+          * ^
+
+  # Returns true if `$` = `x` in terms of bytes.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to `bytes` via `as-bytes` object.
+  # According to IEEE 754 float -0.0 and 0.0 are equal.
   [x] > eq
     x > x-as-bytes!
-    nan > nan-as-bytes!
     ^.as-bytes > self-as-bytes
-    0.0 > pos-zero-as-bytes!
-    -0.0 > neg-zero-as-bytes!
+    0.as-bytes > pos-zero-as-bytes
+    -0.as-bytes > neg-zero-as-bytes
     if. > @
       or.
-        x-as-bytes.eq nan-as-bytes
-        self-as-bytes.eq nan-as-bytes
+        ^.is-nan
+        (number x-as-bytes).is-nan
       false
       or.
         and.
@@ -55,48 +69,79 @@
             self-as-bytes.eq neg-zero-as-bytes
         self-as-bytes.eq x-as-bytes
 
-  # Tests that $ < x.
+  # Returns `true` if `$` < `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lt
     x > value!
-    0.0.gt > @
+    0.gt > @
       ^.minus
         number value
 
-  # Tests that $ ≤ x.
+  # Returns `true` if `$` <= `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > lte
     x > value!
     or. > @
       ^.lt value
       ^.eq value
 
-  # Tests that $ > x.
+  # Returns `true` if `$` > `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gt /bool
 
-  # Tests that $ ≥ x.
+  # Returns `true` if `$` > `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > gte
     x > value!
     or. > @
       ^.gt value
       ^.eq value
 
-  # Multiplication of $ and x.
+  # Multiplication of `$` and `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > times /number
 
-  # Sum of $ and x.
+  # Sum of `$` and `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > plus /number
 
-  # Negation of $.
-  ^.times -1.0 > [] > neg
-
-  # Difference between $ and x.
+  # Difference between `$` and `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > minus
     x > value!
     ^.plus > @
       (number value).neg
 
-  # Quotient of the division of $ by x.
+  # Quotient of the division of `$` by `x`.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to 8 `bytes` via `as-bytes` object.
   [x] > div /number
 
   # The object rounds down the original `number`  to the nearest
   # whole `number` that is less than or equal to the original one.
   [] > floor /number
+
+  # Returns `true` if current number does not have a fractional component.
+  [] > is-integer
+    and. > @
+      ^.is-finite
+      ^.eq ^.floor
+
+  # Returns `true` if current number is finite.
+  [] > is-finite
+    and. > @
+      ^.is-nan.not
+      not.
+        or.
+          ^.eq positive-infinity
+          ^.eq negative-infinity
+
+  # Returns `true` if current number is NaN.
+  ^.as-bytes.eq nan.as-bytes > [] > is-nan

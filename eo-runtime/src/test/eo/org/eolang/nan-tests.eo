@@ -147,3 +147,12 @@
   eq. > @
     nan.as-bytes
     (0.0.div 0.0).as-bytes
+
+# Test.
+nan.is-nan > [] > nan-is-nan
+
+# Test.
+nan.is-finite.not > [] > nan-is-not-finite
+
+# Test.
+nan.is-integer.not > [] > nan-is-not-integer

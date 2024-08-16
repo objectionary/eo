@@ -1220,7 +1220,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
             data = XeEoListener.bytesToHex(
                 ByteBuffer
                     .allocate(Double.BYTES)
-                    .putDouble(((Long) Long.parseLong(text)).doubleValue())
+                    .putDouble(Double.parseDouble(text))
                     .array()
             );
         } else if (ctx.HEX() != null) {

@@ -86,13 +86,12 @@
       * "Jeff"
 
 # Test.
-[] > sprintf-does-not-print-i64
-  not. > @
-    eq.
-      sprintf
-        "%d"
-        * (i64 42)
-      "42"
+[] > sprintf-prints-i64
+  eq. > @
+    sprintf
+      "%d"
+      * (i64 42)
+    "42"
 
 # Test.
 [] > sprintf-prints-i64-as-number

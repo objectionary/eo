@@ -37,40 +37,46 @@
   not. > @
     eq.
       (i64 234).as-bytes
-      234
+      234.as-bytes
 
 # Test.
-(i64 42).eq 42 > [] > throws-on-comparison-with-not-i64
+(i64 nan).neg > [] > throws-on-creating-i64-from-nan
 
 # Test.
-(i64 42).plus 42 > [] > throws-on-addition-with-not-i64
+(i64 positive-infinity).neg > [] > throws-on-creating-i64-from-positive-infinity
 
 # Test.
-(i64 42).minus 42 > [] > throws-on-subtraction-with-not-i64
+(i64 negative-infinity).neg > [] > throws-on-creating-i64-from-negative-infinity
 
 # Test.
-(i64 42).times 42 > [] > throws-on-multiplication-with-not-i64
+(i64 42.5).neg > [] > throws-on-trying-to-convert-not-integer-to-i64
 
 # Test.
-(i64 42).div 42 > [] > throws-on-division-with-not-i64
+(i64 42).eq 42.5 > [] > throws-on-comparison-with-not-integer
 
 # Test.
-(i64 42).gt 42 > [] > throws-on-checking-greater-with-not-i64
+(i64 42).plus 42.5 > [] > throws-on-addition-i64-with-not-integer
 
 # Test.
-(i64 42).gte 42 > [] > throws-on-checking-greater-equal-with-not-i64
+(i64 42).minus 42.5 > [] > throws-on-subtraction-i64-with-not-integer
 
 # Test.
-(i64 42).lt 42 > [] > throws-on-checking-less-with-not-i64
+(i64 42).times 42.5 > [] > throws-on-multiplication-i64-with-not-integer
 
 # Test.
-(i64 42).lte 42 > [] > throws-on-checking-less-equal-with-not-i64
+(i64 42).div 42.5 > [] > throws-on-division-i64-with-not-integer
 
 # Test.
-[] > floors-real-number
-  eq. > @
-    (i64 42.25).as-bytes
-    (i64 42).as-bytes
+(i64 42).gt 42.5 > [] > throws-on-checking-greater-i64-with-not-integer
+
+# Test.
+(i64 42).gte 42.5 > [] > throws-on-checking-greater-equal-i64-with-not-integer
+
+# Test.
+(i64 42).lt 42.5 > [] > throws-on-checking-less-i64-with-not-integer
+
+# Test.
+(i64 42).lte 42.5 > [] > throws-on-checking-less-equal-i64-with-not-integer
 
 # Test.
 [] > i64-less-true
@@ -151,20 +157,6 @@
       i64 10
 
 # Test.
-[] > i64-equal-to-nan-and-infinites-is-false
-  and. > @
-    and.
-      and.
-        and.
-          and.
-            ((i64 0).eq (i64 nan)).eq false
-            ((i64 0).eq (i64 positive-infinity)).eq false
-          ((i64 0).eq (i64 negative-infinity)).eq false
-        ((i64 42).eq (i64 nan)).eq false
-      ((i64 42).eq (i64 positive-infinity)).eq false
-    ((i64 42).eq (i64 negative-infinity)).eq false
-
-# Test.
 [] > i64-zero-eq-to-i64-zero
   eq. > @
     i64 0
@@ -187,7 +179,7 @@
 [] > i64-one-plus-i64-one
   eq. > @
     (i64 1).plus (i64 1)
-    i64 2
+    2
 
 # Test
 [] > i64-one-minus-i64-one
@@ -209,16 +201,16 @@
 [] > i64-div-with-remainder
   eq. > @
     (i64 13).div (i64 -5)
-    i64 -2
+    -2
 
 # Test.
 [] > i64-div-less-than-i64-one
   lt. > @
     (i64 1).div (i64 5)
-    i64 1
+    1
 
 # Test.
 [] > i64-multiply-by-zero
   eq. > @
     (i64 1000).times (i64 0)
-    i64 0
+    0

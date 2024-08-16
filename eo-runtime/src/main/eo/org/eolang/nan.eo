@@ -32,6 +32,9 @@
   number 7F-F8-00-00-00-00-00-00 > @
   $ > floor
   $ > neg
+  true > is-nan
+  false > is-finite
+  false > is-integer
   error "Can't convert NaN to i64" > as-i64
 
   # Tests that $ = x.

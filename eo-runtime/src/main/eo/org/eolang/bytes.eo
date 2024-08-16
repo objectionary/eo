@@ -65,7 +65,7 @@
   [] > as-i64
     if. > @
       ^.size.eq 8
-      i64 converted
+      i64.validated converted
       error
         sprintf
           "Can't convert non 8 length bytes to i64, bytes are %s"

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
@@ -29,45 +30,87 @@
 
 # The 64 bits signed integer.
 # Here `num` must be a `number` object.
+# If `num` is not an integer - it can't be converted to `i64`
+# and an `error` object is returned.
 [num] > i64
-  as-bytes > @
-  $ > floor
-  num > as-number
+  if. > @
+    num.is-integer
+    validated num
+    error
+      sprintf
+        "Can't create i64 from not integer number, number is %f"
+        * num
 
-  [] > as-bytes /bytes
+  # Validated i64 number.
+  # Decorates `num` which must be an integer number.
+  #
+  # Attention! The object is for internal usage only, please
+  # don't use the object programmatically outside of `i64` object.
+  [num] > validated
+    as-number > @
+    num > as-number
+    i64 as-number.neg > neg
 
-  ^.num.floor.eq x.num.floor > [x] > eq
+    # Extract bytes from i64 number.
+    # Please not that bytes representations of i64 and number
+    # are different.
+    [] > as-bytes /bytes
 
-  [x] > plus
-    i64 > @
-      ^.num.floor.plus
-        x.num.floor
+    # Returns `true` if `$` = `x` in terms of bytes.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    ^.as-number.eq x.as-i64.as-number > [x] > eq
 
-  [x] > minus
-    i64 > @
-      ^.num.floor.minus
-        x.num.floor
+    # Sum of `$` and `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    [x] > plus
+      i64 > @
+        ^.as-number.plus x.as-i64.as-number
 
-  [x] > times
-    i64 > @
-      ^.num.floor.times
-        x.num.floor
+    # Subtraction between `$` and `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    [x] > minus
+      i64 > @
+        ^.as-number.minus x.as-i64.as-number
 
-  [x] > div
-    x.num.floor > floored
-    if. > @
-      floored.eq 0
-      error "Can't divided i64 number by zero"
-      i64
-        floor.
-          ^.num.floor.div floored
+    # Multiplication of `$` and `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    [x] > times
+      i64 > @
+        ^.as-number.times x.as-i64.as-number
 
-  i64 num.floor.neg > [] > neg
+    # Quotient of the division of `$` by `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64` or
+    # if `x` is equal to 0.
+    [x] > div
+      x.as-i64.as-number > num
+      if. > @
+        num.eq 0
+        error "Can't divide i64 by zero"
+        i64
+          floor.
+            ^.as-number.div num
 
-  ^.num.floor.gt x.num.floor > [x] > gt
+    # Returns `true` if `$` > `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    ^.as-number.gt x.as-i64.as-number > [x] > gt
 
-  ^.num.floor.gte x.num.floor > [x] > gte
+    # Returns `true` if `$` >= `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    ^.as-number.gte x.as-i64.as-number > [x] > gte
 
-  ^.num.floor.lt x.num.floor > [x] > lt
+    # Returns `true` if `$` < `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    ^.as-number.lt x.as-i64.as-number > [x] > lt
 
-  ^.num.floor.lte x.num.floor > [x] > lte
+    # Returns `true` if `$` <= `x`.
+    # Here `x` must be an `i64` object.
+    # An `error` is returned if `x` can't be converted to `i64`.
+    ^.as-number.lte x.as-i64.as-number > [x] > lte

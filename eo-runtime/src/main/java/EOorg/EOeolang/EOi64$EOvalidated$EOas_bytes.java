@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
 @Versionized
 @XmirObject(oname = "i64.as-bytes")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOi64$EOas_bytes extends PhDefault implements Atom {
+public final class EOi64$EOvalidated$EOas_bytes extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         return new Data.ToPhi(

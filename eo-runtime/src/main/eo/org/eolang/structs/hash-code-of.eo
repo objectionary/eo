@@ -38,7 +38,7 @@
 
   [] > @
     i64 31 > magic-number
-    rec-hash-code (i64 0) 0 > @
+    rec-hash-code 0 0 > @
 
     [acc index] > rec-hash-code
       if. > @
