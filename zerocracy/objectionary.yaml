@@ -2,10 +2,10 @@
 - added: 8
   cycles: 1
   removed: 8
-  seconds: 475.894268535
+  seconds: 529.747437902
   version: 0.25.2
   what: judges-summary
-  when: 2024-08-18 13:19:05.217787592 Z
+  when: 2024-08-18 14:17:54.585854383 Z
 - _id: 55
   _time: 2024-07-05 08:55:37.768108523 Z
   _version: 0.0.60/0.15.3/0.0.10
@@ -33264,57 +33264,6 @@
   when: 2024-08-17 00:57:20.000000000 Z
   where: github
   who: 29139614
-- _id: 528916
-  _job: 4662
-  _time: 2024-08-17 05:20:25.357329174 Z
-  _version: 0.4.0/0.25.2/0.0.47
-  area: hr
-  bad_branch_name_was_punished: "(award (explain 'If a branch has a name that doesn\\'t
-    obey the convention, a penalty is given to the author') (aka (let fee -12) (give
-    fee 'as a basis') 'deduct ${fee} points'))"
-  bug_report_was_rewarded: "(award (explain 'When a bug is reported and accepted by
-    the team, the reporter gets a bonus') (aka (let bonus 10) (give bonus 'as a basis')
-    'award ${bonus} points'))"
-  code_contribution_was_rewarded: |-
-    (award (explain 'When a code contribution is made, the author gets a bonus') (in hoc 'the total number of hits-of-code in the contribution') (in comments 'the total number of comments made by all reviewers') (in reviews 'the number of reviews provided') (aka (let basis 15) (give basis 'as a basis') 'award ${basis} points') (aka (let hoc_threshold 200) (let hoc_k 0.1) (let hoc_max 20) (let hoc_min 5) (set bonus_for_hoc (if (lt hoc hoc_threshold) (times hoc hoc_k) 0)) (set bonus_for_hoc (between bonus_for_hoc hoc_min hoc_max)) (give bonus_for_hoc 'for the ${hoc} hits-of-code that you wrote') 'add ${hoc_k} points for each
-              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
-              but not more than ${hoc_max} points') (aka (let many_hoc_fee 7) (set penalty_for_hoc (if (gte hoc hoc_threshold) (times -1 many_hoc_fee) 0)) (give penalty_for_hoc 'for too many hits-of-code (${hoc} >= ${hoc_threshold})') 'deduct ${many_hoc_fee} points if more than ${hoc_threshold}
-              [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)') (aka (let hoc_threshold2 800) (let man_hoc_fee2 15) (set penalty_for_hoc2 (if (gte hoc hoc_threshold2) (times -1 man_hoc_fee2) 0)) (give penalty_for_hoc2 'for way too many hits-of-code (${hoc} >= ${hoc_threshold2})') 'deduct ${man_hoc_fee2} points if more than ${hoc_threshold2}
-              [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)') (aka (let no_review_fee 15) (set penalty_for_no_review (if (eq reviews 0) (times -1 no_review_fee) 0)) (give penalty_for_no_review 'for the lack of code review') 'deduct ${no_review_fee} points if there were no code review') (aka (let comments_k 0.25) (let comments_max -20) (let comments_min -5) (set bonus_for_comments (times comments (times -1 comments_k))) (set bonus_for_comments (between bonus_for_comments comments_min comments_max)) (give bonus_for_comments 'for too many (${comments}) comments that were made during review') 'deduct ${comments_k} points for every comment made during review, but not more than ${comments_max} points') (aka (let few_comments_fee 5) (let comments_needed 5) (set penalty_for_few_comments (if (and (lt comments comments_needed) (not (eq comments 0))) (times -1 few_comments_fee) 0)) (give penalty_for_few_comments 'for very few (${comments}) comments') 'deduct ${few_comments_fee} points if there were less than ${comments_needed} comments made during review') (aka (let silence_fee 10) (set penalty_for_silence (if (eq comments 0) (times -1 silence_fee) 0)) (give penalty_for_silence 'for absolutely no comments posted by reviewers') 'deduct ${silence_fee} points if there were absolutely no comments made by reviewers during the review') (aka (let few_hoc_fee 10) (let hoc_needed 20) (set penalty_for_few_hoc (if (lt hoc hoc_needed) (times -1 few_hoc_fee) 0)) (give penalty_for_few_hoc 'for too few (${hoc}) hits-of-code') 'deduct ${few_hoc_fee} points if you contribute less than ${hoc_needed} hits-of-code') (aka (let max_bonus 40) (set over (if (gt (total) max_bonus) (minus max_bonus (total)) 0)) (give over 'to not go over the cap') (let min_bonus 5) (set least (if (lt (total) min_bonus) (minus min_bonus (total)) 0)) (give least 'to give you at least something') 'make sure the reward is not larger than ${max_bonus} points and not smaller than ${min_bonus} points'))
-  code_review_was_rewarded: |-
-    (award (explain 'An author of every code review gets a bonus') (in hoc 'the total number of hits-of-code in the contribution') (in comments 'the total number of comments made by all reviewers') (in self '1 if the review was made for their own code contribution, otherwise zero') (aka (let basis 10) (give basis 'as a basis') 'award ${basis} points') (aka (let self_fee 30) (set penalty_for_self_review (if (eq self 1) (times -1 self_fee) 0)) (give penalty_for_self_review 'for reviewing your own contribution (which is a bad idea)') 'deduct ${self_fee} points if they reviewed their own contribution') (aka (let hoc_k 0.02) (let hoc_max 10) (let hoc_min 5) (set bonus_for_hoc (times hoc hoc_k)) (set bonus_for_hoc (between bonus_for_hoc hoc_min hoc_max)) (set bonus_for_hoc (if (eq self 1) 0 bonus_for_hoc)) (give bonus_for_hoc 'for the ${hoc} hits-of-code that you reviewed') 'add ${hoc_k} points for each
-              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
-              but not more than ${hoc_max} points') (aka (let few_comments_fee 10) (let comments_needed 6) (set penalty_for_few_comments (if (and (lt comments comments_needed) (not (eq comments 0))) (times -1 few_comments_fee) 0)) (give penalty_for_few_comments 'for very few (${comments}) comments') 'deduct ${few_comments_fee} points if there were less than ${comments_needed} comments made during review') (aka (let silence_fee 15) (set penalty_for_silence (if (eq comments 0) (times -1 silence_fee) 0)) (give penalty_for_silence 'for absolutely no comments posted') 'deduct ${silence_fee} points if there were absolutely no comments made during review') (aka (let comments_k 0.5) (let comments_max 10) (let comments_min 5) (set bonus_for_comments (times comments comments_k)) (set bonus_for_comments (between bonus_for_comments comments_min comments_max)) (set bonus_for_comments (if (eq self 1) 0 bonus_for_comments)) (give bonus_for_comments 'for the ${comments} comment(s) that you have made') 'add ${comments_k} points for each comment during the review, but not more than ${comments_max} points') (aka (let hoc_fee 10) (let hoc_needed 15) (set penalty_for_hoc (if (lt hoc hoc_needed) (times -1 hoc_fee) 0)) (give penalty_for_hoc 'for too few (${hoc}) hits-of-code') 'deduct ${hoc_fee} points if there were less than ${hoc_needed} hits-of-code') (aka (let max_bonus 30) (set over (if (gt (total) max_bonus) (minus max_bonus (total)) 0)) (give over 'to not go over the cap') (let min_bonus 5) (set least (if (lt (total) min_bonus) (minus min_bonus (total)) 0)) (give least 'to give you at least something') 'make sure the reward is not larger than ${max_bonus} points and not smaller than ${min_bonus} points'))
-  days_of_running_balance: 56
-  days_to_reward: 14
-  dud_was_punished: "(award (explain 'When an issue is submitted but then rejected
-    by the team, the reporter gets a penalty') (aka (let fee -16) (give fee 'as a
-    basis') 'deduct ${fee} points'))"
-  enhancement_suggestion_was_rewarded: "(award (explain 'When an enhancement is suggested
-    and accepted by the team, the reporter gets a bonus') (aka (let bonus 10) (give
-    bonus 'as a basis') 'award ${bonus} points'))"
-  master_punish_days: 4
-  published_release_was_rewarded: |-
-    (award (explain 'When a new release is published, everybody who contributed gets a bonus') (in hoc 'how many hits-of-code are in the release') (in contributors 'how many people contributed to the release') (aka (let basis 45) (give basis 'as a basis') 'award ${basis} points') (aka (let hoc_k 0.01) (let hoc_max 40) (let hoc_min 5) (set b1 (times hoc hoc_k)) (set b1 (between b1 hoc_min hoc_max)) (give b1 'for ${hoc} hits-of-code') 'add ${hoc_k} points for each
-              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
-              but not more than ${hoc_max} points'))
-  push_to_master_was_punished: "(award (explain 'When someone pushes directly to the
-    default branch, they get a penalty') (aka (let fee -20) (give fee 'as a basis')
-    '${fee} points'))"
-  resolved_bug_was_rewarded: "(award (explain 'When a bug is resolved, the person
-    who was assigned to it gets a bonus') (in hours 'how many hours it took to resolve
-    the bug') (in self '1 if the bug was reported and resolved by the same person,
-    otherwise zero') (set days (div hours 24)) (aka (let basis 15) (give basis 'as
-    a basis') 'award ${basis} points') (aka (let hours_threshold 24) (let b1 10) (set
-    b1 (if (lt hours hours_threshold) b1 0)) (give b1 'for resolving it in less than
-    ${hours_threshold} hours') 'add ${b1} points if it was resolved in less than ${hours_threshold}
-    hours') (aka (let self_fee 15) (set penalty_for_self (if (eq self 1) (times -1
-    self_fee) 0)) (give penalty_for_self 'for resolving the bug reported by you earlier')
-    'deduct ${self_fee} points if they resolved the bug earlier reported by themselves')
-    (aka (let day_fee 1) (set b2 (times -1 (times days day_fee))) (let days_fee_max
-    -20) (set b2 (max b2 days_fee_max)) (give b2 'for ${days} days of delay') 'deduct
-    ${day_fee} points for each day of delay, but no more than ${days_fee_max} points'))"
-  what: pmp
 - _id: 529340
   _time: 2024-08-17 08:11:17.172544755 Z
   _version: 0.4.0/0.25.2/
@@ -34008,18 +33957,6 @@
   since: 2024-08-07 16:20:05.575747209 Z
   what: quality-of-service
   when: 2024-08-14 16:20:05.575667299 Z
-- _id: 534966
-  _job: 4755
-  _time: 2024-08-18 05:18:48.542405538 Z
-  _version: 0.4.0/0.25.2/0.0.47
-  cost_of_qod:
-  - 4.843870091336443
-  - 5.925800152814331
-  qod_per_day:
-  - 7.992428572317202
-  - 8.413571429462587
-  what: learn-eva
-  when: 2024-08-18 05:18:46.435756275 Z
 - _id: 535178
   _job: 4758
   _time: 2024-08-18 06:19:59.010604413 Z
@@ -34039,773 +33976,842 @@
   total_stars: 1391
   what: dimensions-of-terrain
   when: 2024-08-18 09:11:35.449708805 Z
-- _id: 536691
-  _time: 2024-08-18 13:11:24.699031000 Z
+- _id: 536890
+  _job: 4793
+  _time: 2024-08-18 13:19:27.097499260 Z
+  _version: 0.4.0/0.26.0/0.0.47
+  area: hr
+  bad_branch_name_was_punished: "(award (explain 'If a branch has a name that doesn\\'t
+    obey the convention, a penalty is given to the author') (aka (let fee -12) (give
+    fee 'as a basis') 'deduct ${fee} points'))"
+  bug_report_was_rewarded: "(award (explain 'When a bug is reported and accepted by
+    the team, the reporter gets a bonus') (aka (let bonus 16) (give bonus 'as a basis')
+    'award ${bonus} points'))"
+  code_contribution_was_rewarded: |-
+    (award (explain 'When a code contribution is made, the author gets a bonus') (in hoc 'the total number of hits-of-code in the contribution') (in comments 'the total number of comments made by all reviewers') (in reviews 'the number of reviews provided') (aka (let basis 16) (give basis 'as a basis') 'award ${basis} points') (aka (let hoc_threshold 200) (let hoc_k 0.1) (let hoc_max 16) (let hoc_min 5) (set bonus_for_hoc (if (lt hoc hoc_threshold) (times hoc hoc_k) 0)) (set bonus_for_hoc (between bonus_for_hoc hoc_min hoc_max)) (give bonus_for_hoc 'for the ${hoc} hits-of-code that you wrote') 'add ${hoc_k} points for each
+              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
+              but not more than ${hoc_max} points') (aka (let many_hoc_fee 8) (set penalty_for_hoc (if (gte hoc hoc_threshold) (times -1 many_hoc_fee) 0)) (give penalty_for_hoc 'for too many hits-of-code (${hoc} >= ${hoc_threshold})') 'deduct ${many_hoc_fee} points if more than ${hoc_threshold}
+              [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)') (aka (let hoc_threshold2 800) (let man_hoc_fee2 16) (set penalty_for_hoc2 (if (gte hoc hoc_threshold2) (times -1 man_hoc_fee2) 0)) (give penalty_for_hoc2 'for way too many hits-of-code (${hoc} >= ${hoc_threshold2})') 'deduct ${man_hoc_fee2} points if more than ${hoc_threshold2}
+              [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html)') (aka (let no_review_fee 16) (set penalty_for_no_review (if (eq reviews 0) (times -1 no_review_fee) 0)) (give penalty_for_no_review 'for the lack of code review') 'deduct ${no_review_fee} points if there were no code review') (aka (let comments_k 0.25) (let comments_max -16) (let comments_min -4) (set bonus_for_comments (times comments (times -1 comments_k))) (set bonus_for_comments (between bonus_for_comments comments_min comments_max)) (give bonus_for_comments 'for too many (${comments}) comments that were made during review') 'deduct ${comments_k} points for every comment made during review, but not more than ${comments_max} points') (aka (let few_comments_fee 4) (let comments_needed 5) (set penalty_for_few_comments (if (and (lt comments comments_needed) (not (eq comments 0))) (times -1 few_comments_fee) 0)) (give penalty_for_few_comments 'for very few (${comments}) comments') 'deduct ${few_comments_fee} points if there were less than ${comments_needed} comments made during review') (aka (let silence_fee 16) (set penalty_for_silence (if (eq comments 0) (times -1 silence_fee) 0)) (give penalty_for_silence 'for absolutely no comments posted by reviewers') 'deduct ${silence_fee} points if there were absolutely no comments made by reviewers during the review') (aka (let few_hoc_fee 8) (let hoc_needed 20) (set penalty_for_few_hoc (if (lt hoc hoc_needed) (times -1 few_hoc_fee) 0)) (give penalty_for_few_hoc 'for too few (${hoc}) hits-of-code') 'deduct ${few_hoc_fee} points if you contribute less than ${hoc_needed} hits-of-code') (aka (let max 32) (set over (if (gt (total) max) (minus max (total)) 0)) (give over 'to not go over the cap') (let min 4) (set least (if (lt (total) min) (minus min (total)) 0)) (give least 'to give you at least something') 'make sure the reward is not larger than ${max} points and not smaller than ${min} points'))
+  code_review_was_rewarded: |-
+    (award (explain 'An author of every code review gets a bonus') (in hoc 'the total number of hits-of-code in the contribution') (in comments 'the total number of comments made by all reviewers') (in self '1 if the review was made for their own code contribution, otherwise zero') (aka (let basis 8) (give basis 'as a basis') 'award ${basis} points') (aka (let self_fee 24) (set penalty_for_self_review (if (eq self 1) (times -1 self_fee) 0)) (give penalty_for_self_review 'for reviewing your own contribution (which is a bad idea)') 'deduct ${self_fee} points if they reviewed their own contribution') (aka (let hoc_k 0.02) (let hoc_max 16) (let hoc_min 5) (set bonus_for_hoc (times hoc hoc_k)) (set bonus_for_hoc (between bonus_for_hoc hoc_min hoc_max)) (set bonus_for_hoc (if (eq self 1) 0 bonus_for_hoc)) (give bonus_for_hoc 'for the ${hoc} hits-of-code that you reviewed') 'add ${hoc_k} points for each
+              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
+              but not more than ${hoc_max} points') (aka (let few_comments_fee 10) (let comments_needed 6) (set penalty_for_few_comments (if (and (lt comments comments_needed) (not (eq comments 0))) (times -1 few_comments_fee) 0)) (give penalty_for_few_comments 'for very few (${comments}) comments') 'deduct ${few_comments_fee} points if there were less than ${comments_needed} comments made during review') (aka (let silence_fee 16) (set penalty_for_silence (if (eq comments 0) (times -1 silence_fee) 0)) (give penalty_for_silence 'for absolutely no comments posted') 'deduct ${silence_fee} points if there were absolutely no comments made during review') (aka (let comments_k 0.5) (let comments_max 8) (let comments_min 5) (set bonus_for_comments (times comments comments_k)) (set bonus_for_comments (between bonus_for_comments comments_min comments_max)) (set bonus_for_comments (if (eq self 1) 0 bonus_for_comments)) (give bonus_for_comments 'for the ${comments} comment(s) that you have made') 'add ${comments_k} points for each comment during the review, but not more than ${comments_max} points') (aka (let hoc_fee 8) (let hoc_needed 15) (set penalty_for_hoc (if (lt hoc hoc_needed) (times -1 hoc_fee) 0)) (give penalty_for_hoc 'for too few (${hoc}) hits-of-code') 'deduct ${hoc_fee} points if there were less than ${hoc_needed} hits-of-code') (aka (let max 32) (set over (if (gt (total) max) (minus max (total)) 0)) (give over 'to not go over the cap') (let min 4) (set least (if (lt (total) min) (minus min (total)) 0)) (give least 'to give you at least something') 'make sure the reward is not larger than ${max} points and not smaller than ${min} points'))
+  days_of_running_balance: 56
+  days_to_reward: 14
+  dud_was_punished: "(award (explain 'When an issue is submitted but then rejected
+    by the team, the reporter gets a penalty') (aka (let fee -16) (give fee 'as a
+    basis') 'deduct ${fee} points'))"
+  enhancement_suggestion_was_rewarded: "(award (explain 'When an enhancement is suggested
+    and accepted by the team, the reporter gets a bonus') (aka (let bonus 16) (give
+    bonus 'as a basis') 'award ${bonus} points'))"
+  master_punish_days: 4
+  published_release_was_rewarded: |-
+    (award (explain 'When a new release is published, everybody who contributed gets a bonus') (in hoc 'how many hits-of-code are in the release') (in contributors 'how many people contributed to the release') (aka (let basis 24) (give basis 'as a basis') 'award ${basis} points') (aka (let hoc_k 0.01) (let hoc_max 24) (let hoc_min 4) (set b1 (times hoc hoc_k)) (set b1 (between b1 hoc_min hoc_max)) (give b1 'for ${hoc} hits-of-code') 'add ${hoc_k} points for each
+              [hit-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html),
+              but not more than ${hoc_max} points') (aka (let max 32) (set over (if (gt (total) max) (minus max (total)) 0)) (give over 'to not go over the cap') (let min 4) (set least (if (lt (total) min) (minus min (total)) 0)) (give least 'to give you at least something') 'make sure the reward is not larger than ${max} points and not smaller than ${min} points'))
+  push_to_master_was_punished: "(award (explain 'When someone pushes directly to the
+    default branch, they get a penalty') (aka (let fee -16) (give fee 'as a basis')
+    '${fee} points'))"
+  resolved_bug_was_rewarded: "(award (explain 'When a bug is resolved, the person
+    who was assigned to it gets a bonus') (in hours 'how many hours it took to resolve
+    the bug') (in self '1 if the bug was reported and resolved by the same person,
+    otherwise zero') (set days (div hours 24)) (aka (let basis 16) (give basis 'as
+    a basis') 'award ${basis} points') (aka (let hours_threshold 24) (let b1 10) (set
+    b1 (if (lt hours hours_threshold) b1 0)) (give b1 'for resolving it in less than
+    ${hours_threshold} hours') 'add ${b1} points if it was resolved in less than ${hours_threshold}
+    hours') (aka (let self_fee 16) (set penalty_for_self (if (eq self 1) (times -1
+    self_fee) 0)) (give penalty_for_self 'for resolving the bug reported by you earlier')
+    'deduct ${self_fee} points if they resolved the bug earlier reported by themselves')
+    (aka (let day_fee 1) (set b2 (times -1 (times days day_fee))) (let days_fee_max
+    -20) (set b2 (max b2 days_fee_max)) (give b2 'for ${days} days of delay') 'deduct
+    ${day_fee} points for each day of delay, but no more than ${days_fee_max} points')
+    (aka (let max 24) (set over (if (gt (total) max) (minus max (total)) 0)) (give
+    over 'to not go over the cap') (let min 4) (set least (if (lt (total) min) (minus
+    min (total)) 0)) (give least 'to give you at least something') 'make sure the
+    reward is not larger than ${max} points and not smaller than ${min} points'))"
+  what: pmp
+- _id: 536891
+  _job: 4793
+  _time: 2024-08-18 13:20:40.896903734 Z
+  _version: 0.4.0/0.26.0/0.0.47
+  cost_of_qod:
+  - 4.843870091336443
+  - 5.925800152814331
+  - 2.2001159946541597
+  qod_per_day:
+  - 7.992428572317202
+  - 8.413571429462587
+  - 22.661142859543105
+  what: learn-eva
+  when: 2024-08-18 13:20:38.824534771 Z
+- _id: 536892
+  _time: 2024-08-18 14:09:20.525931691 Z
   _version: 0.4.0/0.25.2/
   latest: 37994384112
   repository: 490221501
   what: events-were-scanned
   where: github
-- _id: 536692
-  _time: 2024-08-18 13:11:27.368331352 Z
+- _id: 536893
+  _time: 2024-08-18 14:09:23.240082894 Z
   _version: 0.4.0/0.25.2/
   latest: 41064122330
   repository: 552394123
   what: events-were-scanned
   where: github
-- _id: 536693
-  _time: 2024-08-18 13:11:29.952024515 Z
+- _id: 536894
+  _time: 2024-08-18 14:09:25.931490088 Z
   _version: 0.4.0/0.25.2/
   latest: 41015376456
   repository: 581460427
   what: events-were-scanned
   where: github
-- _id: 536694
-  _time: 2024-08-18 13:11:32.218417704 Z
+- _id: 536895
+  _time: 2024-08-18 14:09:28.225540623 Z
   _version: 0.4.0/0.25.2/
   latest: 39908080196
   repository: 733919301
   what: events-were-scanned
   where: github
-- _id: 536695
-  _time: 2024-08-18 13:11:34.380994727 Z
+- _id: 536896
+  _time: 2024-08-18 14:09:30.493665841 Z
   _version: 0.4.0/0.25.2/
   latest: 41061484928
   repository: 518891717
   what: events-were-scanned
   where: github
-- _id: 536696
-  _time: 2024-08-18 13:11:36.514561100 Z
+- _id: 536897
+  _time: 2024-08-18 14:09:32.646960542 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 559427983
   what: events-were-scanned
   where: github
-- _id: 536697
-  _time: 2024-08-18 13:11:38.665213980 Z
+- _id: 536898
+  _time: 2024-08-18 14:09:34.808277685 Z
   _version: 0.4.0/0.25.2/
   latest: 40550454145
   repository: 483303722
   what: events-were-scanned
   where: github
-- _id: 536698
-  _time: 2024-08-18 13:11:40.856220373 Z
+- _id: 536899
+  _time: 2024-08-18 14:09:37.013217232 Z
   _version: 0.4.0/0.25.2/
   latest: 41017163070
   repository: 575859928
   what: events-were-scanned
   where: github
-- _id: 536699
-  _time: 2024-08-18 13:11:43.054409364 Z
+- _id: 536900
+  _time: 2024-08-18 14:09:39.195958330 Z
   _version: 0.4.0/0.25.2/
   latest: 41063967965
   repository: 562850967
   what: events-were-scanned
   where: github
-- _id: 536700
-  _time: 2024-08-18 13:11:48.254959746 Z
+- _id: 536901
+  _time: 2024-08-18 14:09:44.549317529 Z
   _version: 0.4.0/0.25.2/
-  latest: 41114686787
+  latest: 41115250843
   repository: 73056727
   what: events-were-scanned
   where: github
-- _id: 536701
-  _time: 2024-08-18 13:11:50.396257277 Z
+- _id: 536902
+  _time: 2024-08-18 14:09:46.796656829 Z
   _version: 0.4.0/0.25.2/
   latest: 39910943746
   repository: 565789755
   what: events-were-scanned
   where: github
-- _id: 536702
-  _time: 2024-08-18 13:11:52.622490278 Z
+- _id: 536903
+  _time: 2024-08-18 14:09:49.029285407 Z
   _version: 0.4.0/0.25.2/
   latest: 38963709178
   repository: 403396472
   what: events-were-scanned
   where: github
-- _id: 536703
-  _time: 2024-08-18 13:11:54.817260707 Z
+- _id: 536904
+  _time: 2024-08-18 14:09:51.193867476 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 396732517
   what: events-were-scanned
   where: github
-- _id: 536704
-  _time: 2024-08-18 13:11:56.972063199 Z
+- _id: 536905
+  _time: 2024-08-18 14:09:53.352727573 Z
   _version: 0.4.0/0.25.2/
   latest: 41022435800
   repository: 570457023
   what: events-were-scanned
   where: github
-- _id: 536705
-  _time: 2024-08-18 13:11:59.262406577 Z
+- _id: 536906
+  _time: 2024-08-18 14:09:55.557584973 Z
   _version: 0.4.0/0.25.2/
   latest: 40720264547
   repository: 492899189
   what: events-were-scanned
   where: github
-- _id: 536706
-  _time: 2024-08-18 13:12:01.462203180 Z
+- _id: 536907
+  _time: 2024-08-18 14:09:57.857593535 Z
   _version: 0.4.0/0.25.2/
   latest: 38998211696
   repository: 362152931
   what: events-were-scanned
   where: github
-- _id: 536707
-  _time: 2024-08-18 13:12:03.625480494 Z
+- _id: 536908
+  _time: 2024-08-18 14:10:00.076861849 Z
   _version: 0.4.0/0.25.2/
   latest: 41016000133
   repository: 482612876
   what: events-were-scanned
   where: github
-- _id: 536708
-  _time: 2024-08-18 13:12:05.823436424 Z
+- _id: 536909
+  _time: 2024-08-18 14:10:02.253988242 Z
   _version: 0.4.0/0.25.2/
   latest: 41020593665
   repository: 493398326
   what: events-were-scanned
   where: github
-- _id: 536709
-  _time: 2024-08-18 13:12:08.020007402 Z
+- _id: 536910
+  _time: 2024-08-18 14:10:04.475001181 Z
   _version: 0.4.0/0.25.2/
   latest: 41018561018
   repository: 504739774
   what: events-were-scanned
   where: github
-- _id: 536710
-  _time: 2024-08-18 13:12:10.240795769 Z
+- _id: 536911
+  _time: 2024-08-18 14:10:06.675444209 Z
   _version: 0.4.0/0.25.2/
   latest: 41018346363
   repository: 510102039
   what: events-were-scanned
   where: github
-- _id: 536711
-  _time: 2024-08-18 13:12:12.455329915 Z
+- _id: 536912
+  _time: 2024-08-18 14:10:08.905048358 Z
   _version: 0.4.0/0.25.2/
   latest: 38924997103
   repository: 510082372
   what: events-were-scanned
   where: github
-- _id: 536712
-  _time: 2024-08-18 13:12:14.663120103 Z
+- _id: 536913
+  _time: 2024-08-18 14:10:11.180119895 Z
   _version: 0.4.0/0.25.2/
   latest: 40528854437
   repository: 519246071
   what: events-were-scanned
   where: github
-- _id: 536713
-  _time: 2024-08-18 13:12:17.388338400 Z
+- _id: 536914
+  _time: 2024-08-18 14:10:14.286063482 Z
   _version: 0.4.0/0.25.2/
   latest: 40908598654
   repository: 551486781
   what: events-were-scanned
   where: github
-- _id: 536714
-  _time: 2024-08-18 13:12:19.740419986 Z
+- _id: 536915
+  _time: 2024-08-18 14:10:16.715270465 Z
   _version: 0.4.0/0.25.2/
   latest: 38963863308
   repository: 568705267
   what: events-were-scanned
   where: github
-- _id: 536715
-  _time: 2024-08-18 13:12:23.127778996 Z
+- _id: 536916
+  _time: 2024-08-18 14:10:20.263966069 Z
   _version: 0.4.0/0.25.2/
   latest: 40906091861
   repository: 798766850
   what: events-were-scanned
   where: github
-- _id: 536716
-  _time: 2024-08-18 13:12:25.453783303 Z
+- _id: 536917
+  _time: 2024-08-18 14:10:22.742633696 Z
   _version: 0.4.0/0.25.2/
   latest: 40724147363
   repository: 373900298
   what: events-were-scanned
   where: github
-- _id: 536717
-  _time: 2024-08-18 13:12:29.206112582 Z
+- _id: 536918
+  _time: 2024-08-18 14:10:26.614515050 Z
   _version: 0.4.0/0.25.2/
   latest: 41107605023
   repository: 489321585
   what: events-were-scanned
   where: github
-- _id: 536718
-  _time: 2024-08-18 13:12:31.535543039 Z
+- _id: 536919
+  _time: 2024-08-18 14:10:28.987241214 Z
   _version: 0.4.0/0.25.2/
   latest: 39321329766
   repository: 784310467
   what: events-were-scanned
   where: github
-- _id: 536719
-  _time: 2024-08-18 13:12:33.840566549 Z
+- _id: 536920
+  _time: 2024-08-18 14:10:31.392388808 Z
   _version: 0.4.0/0.25.2/
   latest: 39910964919
   repository: 546194972
   what: events-were-scanned
   where: github
-- _id: 536720
-  _time: 2024-08-18 13:12:36.179113431 Z
+- _id: 536921
+  _time: 2024-08-18 14:10:33.820033764 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 721163716
   what: events-were-scanned
   where: github
-- _id: 536721
-  _time: 2024-08-18 13:12:38.564101940 Z
+- _id: 536922
+  _time: 2024-08-18 14:10:36.290345395 Z
   _version: 0.4.0/0.25.2/
   latest: 41015068463
   repository: 624420387
   what: events-were-scanned
   where: github
-- _id: 536722
-  _time: 2024-08-18 13:12:40.905316368 Z
+- _id: 536923
+  _time: 2024-08-18 14:10:38.720757742 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 501942888
   what: events-were-scanned
   where: github
-- _id: 536723
-  _time: 2024-08-18 13:12:43.246821477 Z
+- _id: 536924
+  _time: 2024-08-18 14:10:41.112008888 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 593092058
   what: events-were-scanned
   where: github
-- _id: 536724
-  _time: 2024-08-18 13:12:46.031926216 Z
+- _id: 536925
+  _time: 2024-08-18 14:10:44.081716887 Z
   _version: 0.4.0/0.25.2/
   latest: 41016455103
   repository: 13623548
   what: events-were-scanned
   where: github
-- _id: 536725
-  _time: 2024-08-18 13:12:48.421188585 Z
+- _id: 536926
+  _time: 2024-08-18 14:10:46.458236064 Z
   _version: 0.4.0/0.25.2/
   latest: 40894594725
   repository: 840332960
   what: events-were-scanned
   where: github
-- _id: 536726
-  _time: 2024-08-18 13:12:50.844341755 Z
+- _id: 536927
+  _time: 2024-08-18 14:10:48.857751437 Z
   _version: 0.4.0/0.25.2/
   latest: 37527640104
   repository: 531151981
   what: events-were-scanned
   where: github
-- _id: 536727
-  _time: 2024-08-18 13:12:53.714233485 Z
+- _id: 536928
+  _time: 2024-08-18 14:10:51.656915266 Z
   _version: 0.4.0/0.25.2/
   latest: 41107254823
   repository: 709214061
   what: events-were-scanned
   where: github
-- _id: 536728
-  _time: 2024-08-18 13:12:56.318504446 Z
+- _id: 536929
+  _time: 2024-08-18 14:10:54.372920061 Z
   _version: 0.4.0/0.25.2/
   latest: 39008120972
   repository: 659628214
   what: events-were-scanned
   where: github
-- _id: 536729
-  _time: 2024-08-18 13:13:00.061926893 Z
+- _id: 536930
+  _time: 2024-08-18 14:10:58.251589055 Z
   _version: 0.4.0/0.25.2/
   latest: 41108279833
   repository: 671896902
   what: events-were-scanned
   where: github
-- _id: 536730
-  _time: 2024-08-18 13:13:02.473450567 Z
+- _id: 536931
+  _time: 2024-08-18 14:11:00.623044684 Z
   _version: 0.4.0/0.25.2/
   latest: 41017192073
   repository: 574459304
   what: events-were-scanned
   where: github
-- _id: 536731
-  _time: 2024-08-18 13:13:05.049289393 Z
+- _id: 536932
+  _time: 2024-08-18 14:11:03.243492492 Z
   _version: 0.4.0/0.25.2/
   latest: 39843294982
   repository: 501259435
   what: events-were-scanned
   where: github
-- _id: 536732
-  _time: 2024-08-18 13:13:08.780315457 Z
+- _id: 536933
+  _time: 2024-08-18 14:11:06.898328953 Z
   _version: 0.4.0/0.25.2/
   latest: 41101422821
   repository: 731438612
   what: events-were-scanned
   where: github
-- _id: 536733
-  _time: 2024-08-18 13:13:11.411455030 Z
+- _id: 536934
+  _time: 2024-08-18 14:11:09.555129624 Z
   _version: 0.4.0/0.25.2/
   latest: 41107936491
   repository: 731090851
   what: events-were-scanned
   where: github
-- _id: 536734
-  _time: 2024-08-18 13:13:13.816244761 Z
+- _id: 536935
+  _time: 2024-08-18 14:11:12.001030255 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 490157985
   what: events-were-scanned
   where: github
-- _id: 536735
-  _time: 2024-08-18 13:13:16.238200316 Z
+- _id: 536936
+  _time: 2024-08-18 14:11:14.456662494 Z
   _version: 0.4.0/0.25.2/
   latest: 39777243482
   repository: 499536612
   what: events-were-scanned
   where: github
-- _id: 536736
-  _time: 2024-08-18 13:13:19.794827885 Z
+- _id: 536937
+  _time: 2024-08-18 14:11:18.067654762 Z
   _version: 0.4.0/0.25.2/
   latest: 41108261452
   repository: 721146770
   what: events-were-scanned
   where: github
-- _id: 536737
-  _time: 2024-08-18 13:13:22.156637019 Z
+- _id: 536938
+  _time: 2024-08-18 14:11:20.518944962 Z
   _version: 0.4.0/0.25.2/
   latest: 40881422323
   repository: 447446664
   what: events-were-scanned
   where: github
-- _id: 536738
-  _time: 2024-08-18 13:13:24.642345143 Z
+- _id: 536939
+  _time: 2024-08-18 14:11:23.096762273 Z
   _version: 0.4.0/0.25.2/
   latest: 41079403740
   repository: 731516758
   what: events-were-scanned
   where: github
-- _id: 536739
-  _time: 2024-08-18 13:13:27.079855786 Z
+- _id: 536940
+  _time: 2024-08-18 14:11:25.604258180 Z
   _version: 0.4.0/0.25.2/
   latest: 40337165709
   repository: 493235807
   what: events-were-scanned
   where: github
-- _id: 536740
-  _time: 2024-08-18 13:13:29.532947529 Z
+- _id: 536941
+  _time: 2024-08-18 14:11:28.117478775 Z
   _version: 0.4.0/0.25.2/
   latest: 40879354975
   repository: 519299365
   what: events-were-scanned
   where: github
-- _id: 536741
-  _time: 2024-08-18 13:13:31.952713000 Z
+- _id: 536942
+  _time: 2024-08-18 14:11:30.534073418 Z
   _version: 0.4.0/0.25.2/
   latest: 40557595696
   repository: 490258619
   what: events-were-scanned
   where: github
-- _id: 536742
-  _time: 2024-08-18 13:13:34.363044451 Z
+- _id: 536943
+  _time: 2024-08-18 14:11:32.937250475 Z
   _version: 0.4.0/0.25.2/
   latest: 41110528865
   repository: 543969974
   what: events-were-scanned
   where: github
-- _id: 536743
-  _time: 2024-08-18 13:13:36.817998066 Z
+- _id: 536944
+  _time: 2024-08-18 14:11:35.359772660 Z
   _version: 0.4.0/0.25.2/
   latest: 41017163451
   repository: 558766137
   what: events-were-scanned
   where: github
-- _id: 536744
-  _time: 2024-08-18 13:13:39.548343106 Z
+- _id: 536945
+  _time: 2024-08-18 14:11:38.037886005 Z
   _version: 0.4.0/0.25.2/
   latest: 41109697128
   repository: 386420319
   what: events-were-scanned
   where: github
-- _id: 536745
-  _time: 2024-08-18 13:13:41.935009647 Z
+- _id: 536946
+  _time: 2024-08-18 14:11:40.506903113 Z
   _version: 0.4.0/0.25.2/
   latest: 40658514199
   repository: 574534248
   what: events-were-scanned
   where: github
-- _id: 536746
-  _time: 2024-08-18 13:13:52.650195544 Z
+- _id: 536947
+  _time: 2024-08-18 14:11:52.053313716 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 490221501
   what: labels-were-scanned
   where: github
-- _id: 536747
-  _time: 2024-08-18 13:13:54.490497394 Z
+- _id: 536948
+  _time: 2024-08-18 14:11:53.917805581 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 552394123
   what: labels-were-scanned
   where: github
-- _id: 536748
-  _time: 2024-08-18 13:13:56.322983575 Z
+- _id: 536949
+  _time: 2024-08-18 14:11:55.796148506 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 581460427
   what: labels-were-scanned
   where: github
-- _id: 536749
-  _time: 2024-08-18 13:13:58.164994306 Z
+- _id: 536950
+  _time: 2024-08-18 14:11:57.658478454 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 733919301
   what: labels-were-scanned
   where: github
-- _id: 536750
-  _time: 2024-08-18 13:14:00.005097123 Z
+- _id: 536951
+  _time: 2024-08-18 14:11:59.539419558 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 518891717
   what: labels-were-scanned
   where: github
-- _id: 536751
-  _time: 2024-08-18 13:14:01.844200794 Z
+- _id: 536952
+  _time: 2024-08-18 14:12:01.412316874 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 559427983
   what: labels-were-scanned
   where: github
-- _id: 536752
-  _time: 2024-08-18 13:14:03.687524358 Z
+- _id: 536953
+  _time: 2024-08-18 14:12:03.297148887 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 483303722
   what: labels-were-scanned
   where: github
-- _id: 536753
-  _time: 2024-08-18 13:14:05.525090766 Z
+- _id: 536954
+  _time: 2024-08-18 14:12:05.170090791 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 575859928
   what: labels-were-scanned
   where: github
-- _id: 536754
-  _time: 2024-08-18 13:14:07.371466037 Z
+- _id: 536955
+  _time: 2024-08-18 14:12:07.054251929 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 562850967
   what: labels-were-scanned
   where: github
-- _id: 536756
-  _time: 2024-08-18 13:14:11.367775482 Z
+- _id: 536957
+  _time: 2024-08-18 14:12:11.070459410 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 565789755
   what: labels-were-scanned
   where: github
-- _id: 536757
-  _time: 2024-08-18 13:14:13.200226777 Z
+- _id: 536958
+  _time: 2024-08-18 14:12:12.943721648 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 403396472
   what: labels-were-scanned
   where: github
-- _id: 536758
-  _time: 2024-08-18 13:14:15.030275081 Z
+- _id: 536959
+  _time: 2024-08-18 14:12:14.838165506 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 396732517
   what: labels-were-scanned
   where: github
-- _id: 536759
-  _time: 2024-08-18 13:14:16.866422855 Z
+- _id: 536960
+  _time: 2024-08-18 14:12:16.717032564 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 570457023
   what: labels-were-scanned
   where: github
-- _id: 536761
-  _time: 2024-08-18 13:14:20.698624059 Z
+- _id: 536962
+  _time: 2024-08-18 14:12:20.631187940 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 362152931
   what: labels-were-scanned
   where: github
-- _id: 536762
-  _time: 2024-08-18 13:14:22.531003634 Z
+- _id: 536963
+  _time: 2024-08-18 14:12:22.510952834 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 482612876
   what: labels-were-scanned
   where: github
-- _id: 536763
-  _time: 2024-08-18 13:14:24.370564430 Z
+- _id: 536964
+  _time: 2024-08-18 14:12:24.391618403 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 493398326
   what: labels-were-scanned
   where: github
-- _id: 536764
-  _time: 2024-08-18 13:14:26.200281165 Z
+- _id: 536965
+  _time: 2024-08-18 14:12:26.264370635 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 504739774
   what: labels-were-scanned
   where: github
-- _id: 536765
-  _time: 2024-08-18 13:14:28.034851585 Z
+- _id: 536966
+  _time: 2024-08-18 14:12:28.136489611 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 510102039
   what: labels-were-scanned
   where: github
-- _id: 536766
-  _time: 2024-08-18 13:14:29.868629015 Z
+- _id: 536967
+  _time: 2024-08-18 14:12:30.025824485 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 510082372
   what: labels-were-scanned
   where: github
-- _id: 536767
-  _time: 2024-08-18 13:14:31.710469860 Z
+- _id: 536968
+  _time: 2024-08-18 14:12:31.908638451 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 519246071
   what: labels-were-scanned
   where: github
-- _id: 536768
-  _time: 2024-08-18 13:14:33.549764920 Z
+- _id: 536969
+  _time: 2024-08-18 14:12:33.790219767 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 551486781
   what: labels-were-scanned
   where: github
-- _id: 536771
-  _time: 2024-08-18 13:14:39.467002634 Z
+- _id: 536972
+  _time: 2024-08-18 14:12:39.834887177 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 373900298
   what: labels-were-scanned
   where: github
-- _id: 536774
-  _time: 2024-08-18 13:14:45.503436981 Z
+- _id: 536975
+  _time: 2024-08-18 14:12:45.928382676 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 546194972
   what: labels-were-scanned
   where: github
-- _id: 536775
-  _time: 2024-08-18 13:14:47.335852449 Z
+- _id: 536976
+  _time: 2024-08-18 14:12:47.789426334 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 721163716
   what: labels-were-scanned
   where: github
-- _id: 536776
-  _time: 2024-08-18 13:14:49.177064880 Z
+- _id: 536977
+  _time: 2024-08-18 14:12:49.658176460 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 624420387
   what: labels-were-scanned
   where: github
-- _id: 536777
-  _time: 2024-08-18 13:14:51.217291129 Z
+- _id: 536978
+  _time: 2024-08-18 14:12:51.733000524 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 501942888
   what: labels-were-scanned
   where: github
-- _id: 536778
-  _time: 2024-08-18 13:14:53.261830736 Z
+- _id: 536979
+  _time: 2024-08-18 14:12:53.814666037 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 593092058
   what: labels-were-scanned
   where: github
-- _id: 536779
-  _time: 2024-08-18 13:14:55.271478246 Z
+- _id: 536980
+  _time: 2024-08-18 14:12:55.828077202 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 13623548
   what: labels-were-scanned
   where: github
-- _id: 536780
-  _time: 2024-08-18 13:14:57.280774238 Z
+- _id: 536981
+  _time: 2024-08-18 14:12:57.888304666 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 840332960
   what: labels-were-scanned
   where: github
-- _id: 536781
-  _time: 2024-08-18 13:14:59.295584383 Z
+- _id: 536982
+  _time: 2024-08-18 14:12:59.964197012 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 531151981
   what: labels-were-scanned
   where: github
-- _id: 536783
-  _time: 2024-08-18 13:15:03.731618537 Z
+- _id: 536984
+  _time: 2024-08-18 14:13:04.493271053 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 659628214
   what: labels-were-scanned
   where: github
-- _id: 536788
-  _time: 2024-08-18 13:15:15.148660470 Z
+- _id: 536989
+  _time: 2024-08-18 14:13:16.191822357 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 731090851
   what: labels-were-scanned
   where: github
-- _id: 536789
-  _time: 2024-08-18 13:15:17.177551527 Z
+- _id: 536990
+  _time: 2024-08-18 14:13:18.235646558 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 490157985
   what: labels-were-scanned
   where: github
-- _id: 536792
-  _time: 2024-08-18 13:15:23.789928826 Z
+- _id: 536993
+  _time: 2024-08-18 14:13:25.050676760 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 447446664
   what: labels-were-scanned
   where: github
-- _id: 536794
-  _time: 2024-08-18 13:15:28.048738128 Z
+- _id: 536995
+  _time: 2024-08-18 14:13:29.369673040 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 493235807
   what: labels-were-scanned
   where: github
-- _id: 536796
-  _time: 2024-08-18 13:15:32.255475710 Z
+- _id: 536997
+  _time: 2024-08-18 14:13:33.674040521 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 490258619
   what: labels-were-scanned
   where: github
-- _id: 536797
-  _time: 2024-08-18 13:15:34.298695983 Z
+- _id: 536998
+  _time: 2024-08-18 14:13:35.763653200 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 543969974
   what: labels-were-scanned
   where: github
-- _id: 536798
-  _time: 2024-08-18 13:15:36.317652498 Z
+- _id: 536999
+  _time: 2024-08-18 14:13:37.804168407 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 558766137
   what: labels-were-scanned
   where: github
-- _id: 536799
-  _time: 2024-08-18 13:15:38.333198197 Z
+- _id: 537000
+  _time: 2024-08-18 14:13:39.833572492 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 386420319
   what: labels-were-scanned
   where: github
-- _id: 536800
-  _time: 2024-08-18 13:15:40.382341806 Z
+- _id: 537001
+  _time: 2024-08-18 14:13:41.908886861 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 574534248
   what: labels-were-scanned
   where: github
-- _id: 536802
-  _time: 2024-08-18 13:15:44.763705837 Z
+- _id: 537003
+  _time: 2024-08-18 14:13:46.301594665 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 492899189
   what: labels-were-scanned
   where: github
-- _id: 536803
-  _time: 2024-08-18 13:15:46.778380243 Z
+- _id: 537004
+  _time: 2024-08-18 14:13:48.354946679 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 568705267
   what: labels-were-scanned
   where: github
-- _id: 536806
-  _time: 2024-08-18 13:15:53.364234845 Z
+- _id: 537007
+  _time: 2024-08-18 14:13:55.119046329 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 784310467
   what: labels-were-scanned
   where: github
-- _id: 536809
-  _time: 2024-08-18 13:15:59.541369897 Z
+- _id: 537010
+  _time: 2024-08-18 14:14:01.212413828 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 574459304
   what: labels-were-scanned
   where: github
-- _id: 536823
-  _time: 2024-08-18 13:16:30.804844475 Z
+- _id: 537024
+  _time: 2024-08-18 14:14:33.408239745 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 499536612
   what: labels-were-scanned
   where: github
-- _id: 536826
-  _time: 2024-08-18 13:16:37.613504383 Z
+- _id: 537027
+  _time: 2024-08-18 14:14:40.169853298 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 519299365
   what: labels-were-scanned
   where: github
-- _id: 536839
-  _time: 2024-08-18 13:17:05.905944031 Z
+- _id: 537040
+  _time: 2024-08-18 14:15:08.831598080 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 709214061
   what: labels-were-scanned
   where: github
-- _id: 536847
-  _time: 2024-08-18 13:17:22.569278818 Z
+- _id: 537048
+  _time: 2024-08-18 14:15:25.718255725 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 489321585
   what: labels-were-scanned
   where: github
-- _id: 536856
-  _time: 2024-08-18 13:17:41.943435962 Z
+- _id: 537057
+  _time: 2024-08-18 14:15:45.623489616 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 501259435
   what: labels-were-scanned
   where: github
-- _id: 536872
-  _time: 2024-08-18 13:18:16.579237024 Z
-  _version: 0.4.0/0.25.2/
-  latest: 0
-  repository: 73056727
-  what: labels-were-scanned
-  where: github
-- _id: 536879
-  _time: 2024-08-18 13:18:31.457598296 Z
-  _version: 0.4.0/0.25.2/
-  latest: 0
-  repository: 671896902
-  what: labels-were-scanned
-  where: github
-- _id: 536882
-  _time: 2024-08-18 13:18:37.723574350 Z
+- _id: 537084
+  _time: 2024-08-18 14:16:46.266296216 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 731516758
   what: labels-were-scanned
   where: github
-- _id: 536883
-  _time: 2024-08-18 13:18:39.553571623 Z
+- _id: 537086
+  _time: 2024-08-18 14:16:50.276769846 Z
   _version: 0.4.0/0.25.2/
   latest: 0
   repository: 798766850
   what: labels-were-scanned
   where: github
-- _id: 536888
-  _time: 2024-08-18 13:18:50.093044959 Z
+- _id: 537097
+  _time: 2024-08-18 14:17:14.500892363 Z
   _version: 0.4.0/0.25.2/
   latest: 0
-  repository: 731438612
+  repository: 721146770
   what: labels-were-scanned
   where: github
-- _id: 536889
-  _time: 2024-08-18 13:19:05.131816673 Z
+- _id: 537113
+  _time: 2024-08-18 14:17:50.120660089 Z
   _version: 0.4.0/0.25.2/
-  latest: 373
-  repository: 721146770
+  latest: 3294
+  repository: 73056727
+  what: labels-were-scanned
+  where: github
+- _id: 537114
+  _time: 2024-08-18 14:17:52.404651345 Z
+  _version: 0.4.0/0.25.2/
+  latest: 640
+  repository: 671896902
+  what: labels-were-scanned
+  where: github
+- _id: 537115
+  _time: 2024-08-18 14:17:54.498346248 Z
+  _version: 0.4.0/0.25.2/
+  latest: 416
+  repository: 731438612
   what: labels-were-scanned
   where: github
