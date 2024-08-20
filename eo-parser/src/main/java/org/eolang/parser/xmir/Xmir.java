@@ -110,4 +110,59 @@ public interface Xmir {
                 .get(0);
         }
     }
+
+    final class Simplified implements Xmir {
+
+        /**
+         * Train of transformations.
+         */
+        private static final Train<Shift> TRAIN = new TrDefault<>(
+            new StClasspath("/org/eolang/parser/explicit-data.xsl"),
+            new StUnhex(),
+            new StClasspath("/org/eolang/parser/wrap-method-calls.xsl")
+        );
+
+        /**
+         * Default xmir-to-eo XSL transformation.
+         */
+        private static final String TO_EO = "/org/eolang/parser/xmir-to-eo-simplified.xsl";
+
+        /**
+         * The XML.
+         */
+        private final XML xml;
+
+        /**
+         * Result to-EO transformation.
+         */
+        private final String xsl;
+
+        /**
+         * Ctor.
+         * @param src The source
+         */
+        public Simplified(final XML src) {
+            this(src, Xmir.Simplified.TO_EO);
+        }
+
+        /**
+         * Ctor.
+         * @param src The source
+         * @param classpath To-EO transformation classpath
+         */
+        public Simplified(final XML src, final String classpath) {
+            this.xml = src;
+            this.xsl = classpath;
+        }
+
+        @Override
+        public String toEO() {
+            final XML pass = new Xsline(
+                Simplified.TRAIN.with(
+                    new StClasspath(this.xsl)
+                )
+            ).pass(this.xml);
+            return pass.xpath("eo/text()").get(0);
+        }
+    }
 }

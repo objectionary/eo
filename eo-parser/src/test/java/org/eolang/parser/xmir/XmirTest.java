@@ -26,6 +26,7 @@ package org.eolang.parser.xmir;
 import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,6 +35,8 @@ import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -83,6 +86,51 @@ final class XmirTest {
             ),
             map.get(key),
             Matchers.equalTo(eolang)
+        );
+    }
+
+    @Test
+    void failsToPrintPartialXmirWithDefault() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> new Xmir.Default(
+                new XMLDocument(
+                    String.join(
+                        "\n",
+                        " <o base='.minus'>",
+                        "    <o base='int' data='bytes' >00 00 00 00 00 00 00 03</o>",
+                        "    <o base='int' data='bytes' >00 00 00 00 00 00 00 04</o>",
+                        " </o>"
+                    )
+                )
+            ).toEO()
+        );
+    }
+
+    @Test
+    void printsPartialXmirWithSimplified() {
+        MatcherAssert.assertThat(
+            new Xmir.Simplified(
+                new XMLDocument(
+                    String.join(
+                        "\n",
+                        " <o base='.plus'>",
+                        "    <o base='int' data='bytes'>00 00 00 00 00 00 00 01</o>",
+                        "    <o base='int' data='bytes'>00 00 00 00 00 00 00 02</o>",
+                        " </o>"
+                    )
+                )
+            ).toEO(),
+            Matchers.equalTo(
+                String.join(
+                    "\n",
+                    "int",
+                    "  00-00-00-00-00-00-00-01",
+                    ".plus",
+                    "  int",
+                    "    00-00-00-00-00-00-00-02\n"
+                )
+            )
         );
     }
 
