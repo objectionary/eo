@@ -103,13 +103,17 @@ final class XmirTest {
                         " </o>"
                     )
                 )
-            ).toEO()
+            ).toEO(),
+            String.format("Should fail to print partial XMIR with %s", Xmir.Default.class)
         );
     }
 
     @Test
     void printsPartialXmirWithSimplified() {
         MatcherAssert.assertThat(
+            String.format(
+                "We expect that %s will print the partial XMIR correctly", Xmir.Simplified.class
+            ),
             new Xmir.Simplified(
                 new XMLDocument(
                     String.join(

@@ -111,6 +111,11 @@ public interface Xmir {
         }
     }
 
+    /**
+     * Simplified xmir that allows printing of small parts EO.
+     *
+     * @since 0.40
+     */
     final class Simplified implements Xmir {
 
         /**
@@ -123,32 +128,32 @@ public interface Xmir {
         );
 
         /**
-         * Default xmir-to-eo XSL transformation.
+         * Default xmir-to-eo-simplified XSL transformation.
          */
         private static final String TO_EO = "/org/eolang/parser/xmir-to-eo-simplified.xsl";
 
         /**
-         * The XML.
+         * The XML to transform.
          */
         private final XML xml;
 
         /**
-         * Result to-EO transformation.
+         * Transformation.
          */
         private final String xsl;
 
         /**
-         * Ctor.
-         * @param src The source
+         * Constructor.
+         * @param src The source to transform.
          */
         public Simplified(final XML src) {
             this(src, Xmir.Simplified.TO_EO);
         }
 
         /**
-         * Ctor.
-         * @param src The source
-         * @param classpath To-EO transformation classpath
+         * Constructor.
+         * @param src The source to transform.
+         * @param classpath Transformation classpath.
          */
         public Simplified(final XML src, final String classpath) {
             this.xml = src;
@@ -157,12 +162,8 @@ public interface Xmir {
 
         @Override
         public String toEO() {
-            final XML pass = new Xsline(
-                Simplified.TRAIN.with(
-                    new StClasspath(this.xsl)
-                )
-            ).pass(this.xml);
-            return pass.xpath("eo/text()").get(0);
+            return new Xsline(Simplified.TRAIN.with(new StClasspath(this.xsl)))
+                .pass(this.xml).xpath("eo/text()").get(0);
         }
     }
 }
