@@ -113,7 +113,33 @@ public interface Xmir {
 
     /**
      * Simplified xmir that allows printing of small parts EO.
-     *
+     * <p>
+     * This printer is important in cases when you need to print only some parts of EO
+     * without having the whole EO document.
+     * </p>
+     * <p>
+     * For example, instead of generating the full structure of EO document like the following
+     * {@code
+     * <program>
+     *    <objects>
+     *        <o base=".plus">
+     *           <o base="int" data="bytes">00 00 00 00 00 00 00 01</o>
+     *           <o base="int" data="bytes">00 00 00 00 00 00 00 02</o>
+     *        </o>
+     *    </objects>
+     * </program>
+     * }
+     * You can generate only the part of the EO document that you need like the following
+     * {@code
+     * <o base=".plus">
+     *     <o base="int" data="bytes">00 00 00 00 00 00 00 01</o>
+     *     <o base="int" data="bytes">00 00 00 00 00 00 00 02</o>
+     * </o>
+     * }
+     * </p>
+     * It significantly simplifies the process of printing EO, especially in tests.
+     * You can read more about the problem right
+     * <a href="https://github.com/objectionary/eo/issues/3343">here</a>
      * @since 0.40
      */
     final class Simplified implements Xmir {
