@@ -34,6 +34,7 @@ import org.eolang.parser.StUnhex;
 /**
  * Prints XMIR to EO.
  * @since 0.35.0
+ * @checkstyle JavadocStyleCheck (200 lines)
  */
 public interface Xmir {
     /**
