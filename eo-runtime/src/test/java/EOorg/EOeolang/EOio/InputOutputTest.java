@@ -392,7 +392,7 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The `console.read` object should have return input block ready to `read` again, but it didn't",
                 new String(result, StandardCharsets.UTF_8),
-                Matchers.equalTo("from posix console")
+                Matchers.equalTo("from console")
             );
         }
     }
