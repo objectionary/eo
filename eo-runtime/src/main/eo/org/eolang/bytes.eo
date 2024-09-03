@@ -65,17 +65,11 @@
   [] > as-i64
     if. > @
       ^.size.eq 8
-      i64.validated converted
+      i64 ^
       error
         sprintf
           "Can't convert non 8 length bytes to i64, bytes are %s"
           * ^
-
-    # Bytes converted to `number` ready to injected to `i64`.
-    #
-    # Attention! The object is for internal usage only, please don't use
-    # the object programmatically outside of `bytes` object.
-    [] > converted /number
 
   # Calculate bitwise and.
   [b] > and /bytes

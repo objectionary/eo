@@ -39,20 +39,25 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * The i64.as-bytes.
+ * The number.as-i64.
  * @since 0.40
  * @checkstyle TypeNameCheck (6 lines)
  */
 @Versionized
-@XmirObject(oname = "i64.as-bytes")
+@XmirObject(oname = "number.as-i64")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOi64$EOvalidated$EOas_bytes extends PhDefault implements Atom {
+public final class EOnumber$EOas_i64 extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
-        return new Data.ToPhi(
-            new BytesOf(
-                new Dataized(this.take(Attr.RHO).take("num")).asNumber().longValue()
-            ).take()
+        final Phi num = Phi.Φ.take("org.eolang.i64").copy();
+        num.put(
+            0,
+            new Data.ToPhi(
+                new BytesOf(
+                    new Dataized(this.take(Attr.RHO)).asNumber().longValue()
+                ).take()
+            )
         );
+        return num;
     }
 }

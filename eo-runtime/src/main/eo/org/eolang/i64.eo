@@ -29,88 +29,64 @@
 +version 0.0.0
 
 # The 64 bits signed integer.
-# Here `num` must be a `number` object.
-# If `num` is not an integer - it can't be converted to `i64`
-# and an `error` object is returned.
-[num] > i64
-  if. > @
-    num.is-integer
-    validated num
-    error
-      sprintf
-        "Can't create i64 from not integer number, number is %f"
-        * num
+# Here `as-bytes` must be a `bytes` object.
+[as-bytes] > i64
+  as-bytes > @
+  $ > as-i64
+  times -1 > neg
 
-  # Validated i64 number.
-  # Decorates `num` which must be an integer number.
-  #
-  # Attention! The object is for internal usage only, please
-  # don't use the object programmatically outside of `i64` object.
-  [num] > validated
-    as-bytes > @
-    num > as-number
-    i64 as-number.neg > neg
+  # Convert this `i64` to `number` object.
+  [] > as-number /number
 
-    # Extract bytes from i64 number.
-    # Please not that bytes representations of i64 and number
-    # are different.
-    [] > as-bytes /bytes
+  # Returns true if `$` = `x` in terms of bytes.
+  # Here `x` can be a `number` or any other object which
+  # can be converted to `bytes` via `as-bytes` object.
+  ^.as-bytes.eq x.as-bytes > [x] > eq
 
-    # Returns `true` if `$` = `x` in terms of bytes.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    ^.as-number.eq x.as-i64.as-number > [x] > eq
+  # Returns `true` if `$` < `x`.
+  # Here `x` must be an `i64` object.
+  [x] > lt
+    x > value!
+    0.as-i64.gt > @
+      ^.minus
+        i64 value
 
-    # Sum of `$` and `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    [x] > plus
-      i64 > @
-        ^.as-number.plus x.as-i64.as-number
+  # Returns `true` if `$` <= `x`.
+  # Here `x` must be an `i64` object.
+  [x] > lte
+    x > value!
+    or. > @
+      ^.lt value
+      ^.eq value
 
-    # Subtraction between `$` and `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    [x] > minus
-      i64 > @
-        ^.as-number.minus x.as-i64.as-number
+  # Returns `true` if `$` > `x`.
+  # Here `x` must be an `i64` object.
+  [x] > gt /bool
 
-    # Multiplication of `$` and `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    [x] > times
-      i64 > @
-        ^.as-number.times x.as-i64.as-number
+  # Returns `true` if `$` >= `x`.
+  # Here `x` must be an `i64` object.
+  [x] > gte
+    x > value!
+    or. > @
+      ^.gt value
+      ^.eq value
 
-    # Quotient of the division of `$` by `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64` or
-    # if `x` is equal to 0.
-    [x] > div
-      x.as-i64.as-number > num
-      if. > @
-        num.eq 0
-        error "Can't divide i64 by zero"
-        i64
-          floor.
-            ^.as-number.div num
+  # Multiplication of `$` and `x`.
+  # Here `x` must be an `i64` object.
+  [x] > times /i64
 
-    # Returns `true` if `$` > `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    ^.as-number.gt x.as-i64.as-number > [x] > gt
+  # Sum of `$` and `x`.
+  # Here `x` must be an `i64` object.
+  [x] > plus /i64
 
-    # Returns `true` if `$` >= `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    ^.as-number.gte x.as-i64.as-number > [x] > gte
+  # Subtraction between `$` and `x`.
+  # Here `x` must be an `i64` object.
+  [x] > minus
+    x > value!
+    ^.plus > @
+      (i64 value).neg
 
-    # Returns `true` if `$` < `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    ^.as-number.lt x.as-i64.as-number > [x] > lt
-
-    # Returns `true` if `$` <= `x`.
-    # Here `x` must be an `i64` object.
-    # An `error` is returned if `x` can't be converted to `i64`.
-    ^.as-number.lte x.as-i64.as-number > [x] > lte
+  # Quotient of the division of `$` by `x`.
+  # Here `x` must be an `i64` object.
+  # An `error` is returned if or `x` is equal to 0.
+  [x] > div /i64

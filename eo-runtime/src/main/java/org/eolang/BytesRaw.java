@@ -166,9 +166,7 @@ final class BytesRaw implements Bytes {
             res = buf.getLong();
         } else if (Integer.class.equals(type) && ret.length == Integer.BYTES) {
             res = buf.getInt();
-        } else if (Double.class.equals(type)
-            && ret.length == Double.BYTES
-        ) {
+        } else if (Double.class.equals(type) && ret.length == Double.BYTES) {
             res = buf.getDouble();
         } else {
             throw new UnsupportedOperationException(

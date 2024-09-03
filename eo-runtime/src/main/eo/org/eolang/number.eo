@@ -32,18 +32,11 @@
 # number that internally is a chain of eight bytes.
 [as-bytes] > number
   as-bytes > @
+  $ > as-number
   times -1 > neg
 
-  # Convert this to `i64`.
-  # The `error` is returned if number is not integer.
-  [] > as-i64
-    if. > @
-      ^.is-integer
-      i64 ^
-      error
-        sprintf
-          "Can't convert not integer number to i64, number is %f"
-          * ^
+  # Convert this `number` to `i64` object.
+  [] > as-i64 /i64
 
   # Returns true if `$` = `x` in terms of bytes.
   # Here `x` can be a `number` or any other object which
