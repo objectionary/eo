@@ -90,18 +90,4 @@ final class PhLoggedTest {
             Matchers.equalTo(phi.toString())
         );
     }
-
-    /**
-     * Dummy Phi.
-     * @since 0.29.0
-     */
-    private static final class Dummy extends PhDefault {
-        /**
-         * Ctor.
-         */
-        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-        private Dummy() {
-            this.add("x", new AtVoid("x"));
-        }
-    }
 }
