@@ -91,7 +91,7 @@
     eq.
       sprintf
         "%d"
-        * (i64 42)
+        * 42.as-i64
       "42"
 
 # Test.
@@ -100,4 +100,4 @@
     "42"
     sprintf
       "%d"
-      * (i64 42).as-number
+      * 42.as-i64.as-number

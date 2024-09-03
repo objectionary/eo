@@ -435,7 +435,7 @@
 [] > bytes-converts-to-i64
   eq. > @
     00-00-00-00-00-00-00-2A.as-i64
-    i64 42
+    42.as-i64
 
 # Test.
 [] > bytes-converts-to-i64-and-back

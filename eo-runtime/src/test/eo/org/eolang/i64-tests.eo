@@ -36,8 +36,8 @@
 [] > i64-as-bytes-is-not-equal-to-number-bytes
   not. > @
     eq.
-      (i64 234.as-bytes).as-bytes
-      234.as-bytes
+      i64 234.as-bytes
+      234.as-i64.as-bytes
 
 # Test.
 [] > i64-less-true
