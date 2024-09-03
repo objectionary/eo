@@ -39,7 +39,7 @@ jobs:
           git fetch --tags --force && \
           latest=$(git tag --sort=creatordate | tail -1) && \
           sed -E -i "s/<version>[^<]+/<version>${latest}/g" eo-maven-plugin/README.md
-      - uses: peter-evans/create-pull-request@v6
+      - uses: peter-evans/create-pull-request@v7
         with:
           branch: version-up
           commit-message: 'new version in README'

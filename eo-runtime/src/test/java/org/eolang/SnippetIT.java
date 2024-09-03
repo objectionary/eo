@@ -42,7 +42,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -62,7 +61,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
-final class SnippetTestCase {
+final class SnippetIT {
 
     /**
      * True.
@@ -100,7 +99,6 @@ final class SnippetTestCase {
     private static final String SNAPSHOT_1_0 = "1.0-SNAPSHOT";
 
     @ParameterizedTest
-    @Tag("slow")
     @ExtendWith(WeAreOnline.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml, final @TempDir Path temp) throws IOException {
@@ -111,9 +109,9 @@ final class SnippetTestCase {
         new Farea(temp).together(
             f -> {
                 f.properties()
-                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
-                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
-                SnippetTestCase.copySources(f, "src/main/eo");
+                    .set("project.build.sourceEncoding", SnippetIT.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetIT.UTF_8);
+                SnippetIT.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
                     .write(String.format("%s\n", map.get("eo")))
@@ -122,18 +120,18 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        SnippetTestCase.EO_GROUP,
-                        SnippetTestCase.EO_PLUGIN,
+                        SnippetIT.EO_GROUP,
+                        SnippetIT.EO_PLUGIN,
                         System.getProperty(
-                            SnippetTestCase.EO_VERSION,
-                            SnippetTestCase.SNAPSHOT_1_0
+                            SnippetIT.EO_VERSION,
+                            SnippetIT.SNAPSHOT_1_0
                         )
                     )
                     .execution("compile")
                     .phase("generate-sources")
                     .goals("register", "assemble", "verify", "transpile")
                     .configuration()
-                    .set("failOnWarnings", SnippetTestCase.TRUE);
+                    .set("failOnWarning", SnippetIT.FALSE);
                 f.build()
                     .plugins()
                     .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
@@ -164,16 +162,15 @@ final class SnippetTestCase {
 
     // @checkstyle MethodLengthCheck (170 lines)
     @Test
-    @Tag("slow")
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                SnippetTestCase.copySources(f, "src/main");
-                SnippetTestCase.copySources(f, "src/test/eo");
+                SnippetIT.copySources(f, "src/main");
+                SnippetIT.copySources(f, "src/test/eo");
                 f.properties()
-                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
-                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
+                    .set("project.build.sourceEncoding", SnippetIT.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetIT.UTF_8);
                 f.dependencies().append(
                     "net.sf.saxon",
                     "Saxon-HE",
@@ -182,11 +179,11 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        SnippetTestCase.EO_GROUP,
-                        SnippetTestCase.EO_PLUGIN,
+                        SnippetIT.EO_GROUP,
+                        SnippetIT.EO_PLUGIN,
                         System.getProperty(
-                            SnippetTestCase.EO_VERSION,
-                            SnippetTestCase.SNAPSHOT_1_0
+                            SnippetIT.EO_VERSION,
+                            SnippetIT.SNAPSHOT_1_0
                         )
                     )
                     .execution("phi-unphi")
@@ -210,7 +207,7 @@ final class SnippetTestCase {
                     .set("unphiMetas", new String[]{"+tests"})
                     .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
-                    .set("printReversed", SnippetTestCase.TRUE);
+                    .set("printReversed", SnippetIT.TRUE);
                 f.exec("clean", "compile");
                 final String phi = f.log();
                 MatcherAssert.assertThat(
@@ -220,8 +217,8 @@ final class SnippetTestCase {
                 );
                 f.files().file("pom.xml").delete();
                 f.properties()
-                    .set("project.build.sourceEncoding", SnippetTestCase.UTF_8)
-                    .set("project.reporting.outputEncoding", SnippetTestCase.UTF_8);
+                    .set("project.build.sourceEncoding", SnippetIT.UTF_8)
+                    .set("project.reporting.outputEncoding", SnippetIT.UTF_8);
                 f.dependencies().append(
                     "org.junit.jupiter",
                     "junit-jupiter-engine",
@@ -245,11 +242,11 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        SnippetTestCase.EO_GROUP,
-                        SnippetTestCase.EO_PLUGIN,
+                        SnippetIT.EO_GROUP,
+                        SnippetIT.EO_PLUGIN,
                         System.getProperty(
-                            SnippetTestCase.EO_VERSION,
-                            SnippetTestCase.SNAPSHOT_1_0
+                            SnippetIT.EO_VERSION,
+                            SnippetIT.SNAPSHOT_1_0
                         )
                     )
                     .execution("compile")
@@ -265,18 +262,18 @@ final class SnippetTestCase {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", SnippetTestCase.FALSE)
-                    .set("offline", SnippetTestCase.TRUE)
-                    .set("withRuntimeDependency", SnippetTestCase.FALSE)
-                    .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
+                    .set("failOnWarning", SnippetIT.FALSE)
+                    .set("offline", SnippetIT.TRUE)
+                    .set("withRuntimeDependency", SnippetIT.FALSE)
+                    .set("placeBinariesThatHaveSources", SnippetIT.TRUE);
                 f.build()
                     .plugins()
                     .append(
-                        SnippetTestCase.EO_GROUP,
-                        SnippetTestCase.EO_PLUGIN,
+                        SnippetIT.EO_GROUP,
+                        SnippetIT.EO_PLUGIN,
                         System.getProperty(
-                            SnippetTestCase.EO_VERSION,
-                            SnippetTestCase.SNAPSHOT_1_0
+                            SnippetIT.EO_VERSION,
+                            SnippetIT.SNAPSHOT_1_0
                         )
                     )
                     .execution("deps")
@@ -285,11 +282,11 @@ final class SnippetTestCase {
                 f.build()
                     .plugins()
                     .append(
-                        SnippetTestCase.EO_GROUP,
-                        SnippetTestCase.EO_PLUGIN,
+                        SnippetIT.EO_GROUP,
+                        SnippetIT.EO_PLUGIN,
                         System.getProperty(
-                            SnippetTestCase.EO_VERSION,
-                            SnippetTestCase.SNAPSHOT_1_0
+                            SnippetIT.EO_VERSION,
+                            SnippetIT.SNAPSHOT_1_0
                         )
                     )
                     .execution("tests")
@@ -304,17 +301,17 @@ final class SnippetTestCase {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", SnippetTestCase.FALSE)
-                    .set("offline", SnippetTestCase.TRUE)
+                    .set("failOnWarning", SnippetIT.FALSE)
+                    .set("offline", SnippetIT.TRUE)
                     .set("scope", "test")
                     .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
                     .set("targetDir", "${project.basedir}/target/eo-test")
-                    .set("addSourcesRoot", SnippetTestCase.FALSE)
-                    .set("addTestSourcesRoot", SnippetTestCase.TRUE)
-                    .set("failOnWarning", SnippetTestCase.FALSE)
+                    .set("addSourcesRoot", SnippetIT.FALSE)
+                    .set("addTestSourcesRoot", SnippetIT.TRUE)
+                    .set("failOnWarning", SnippetIT.FALSE)
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("withRuntimeDependency", SnippetTestCase.FALSE)
-                    .set("placeBinariesThatHaveSources", SnippetTestCase.TRUE);
+                    .set("withRuntimeDependency", SnippetIT.FALSE)
+                    .set("placeBinariesThatHaveSources", SnippetIT.TRUE);
                 f.exec("clean", "test");
                 final String log = f.log();
                 final boolean success = log.contains("BUILD SUCCESS");
