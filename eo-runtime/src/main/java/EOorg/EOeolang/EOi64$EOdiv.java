@@ -41,8 +41,8 @@ import org.eolang.XmirObject;
 
 /**
  * The i64.div object.
- * @checkstyle TypeNameCheck (5 lines)
  * @since 0.39.0
+ * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
 @XmirObject(oname = "i64.div")
