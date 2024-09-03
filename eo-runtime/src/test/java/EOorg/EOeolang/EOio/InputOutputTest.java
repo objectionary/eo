@@ -297,7 +297,7 @@ final class InputOutputTest {
 
         @Test
         void writesToConsole(@TempDir final Path temp) throws IOException {
-            final String msg = "writes to posix console";
+            final String msg = "writes to console";
             final File file = InputOutputTest.redirectedStdout(
                 temp,
                 () -> new Dataized(
@@ -309,7 +309,7 @@ final class InputOutputTest {
                 ).take()
             );
             MatcherAssert.assertThat(
-                "The 'console.write' should have written to posix console, but it didn't",
+                "The 'console.write' should have written to console, but it didn't",
                 new String(
                     Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8
                 ),
@@ -347,7 +347,7 @@ final class InputOutputTest {
 
         @Test
         void readsFromConsole(@TempDir final Path temp) throws IOException {
-            final String content = "read from posix console";
+            final String content = "read from console";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
                 content,
@@ -369,7 +369,7 @@ final class InputOutputTest {
         @Test
         void readsSequentiallyFromInputBlockViaConsole(@TempDir final Path temp)
             throws IOException {
-            final String content = "read sequentially from posix console";
+            final String content = "read sequentially from console";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
                 content,
@@ -393,7 +393,7 @@ final class InputOutputTest {
             MatcherAssert.assertThat(
                 "The `console.read` object should have return input block ready to `read` again, but it didn't",
                 new String(result, StandardCharsets.UTF_8),
-                Matchers.equalTo("from posix console")
+                Matchers.equalTo("from console")
             );
         }
     }
