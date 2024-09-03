@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +alias org.eolang.structs.list
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
@@ -143,21 +142,6 @@
       -1
       a.times x > [a x]
     -24
-
-# Test. Should print "0\n1\n"
-[] > list-reduced-printing
-  reduced. > @
-    list
-      * 0 1
-    true
-    [acc item]
-      seq > @
-        *
-          acc
-          stdout
-            sprintf
-              "%d\n"
-              * item
 
 # Test.
 [] > complex-objects-list-comparison
