@@ -29,6 +29,7 @@ package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.GetenvSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
+import EOorg.EOeolang.EOsys.Posix.GettimeofdaySyscall;
 import EOorg.EOeolang.EOsys.Posix.ReadSyscall;
 import EOorg.EOeolang.EOsys.Posix.WriteSyscall;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         EOposix$EOφ.SYS_CALLS.put("read", ReadSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("write", WriteSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("getenv", GetenvSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("gettimeofday", GettimeofdaySyscall::new);
     }
 
     @Override

@@ -28,29 +28,7 @@
 +version 0.0.0
 
 # Makes a Unix syscall by name with POSIX interface.
-# See https://filippo.io/linux-syscall-table/
-#
-# Supported syscalls:
-# 1. getpid - get process identification
-#    - Arguments:
-#    - Returns:
-#      * code - process identification number (number)
-#      * output - []
-# 2. write - write bytes to file descriptor
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer to write (bytes)
-#      * buffer size to write (number)
-#    - Returns:
-#      * code - written bytes count (number)
-#      * output - []
-# 3. read - read bytes from file descriptor
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer size to read (number)
-#    - Returns:
-#      * code - read bytes count (number)
-#      * output - read bytes (bytes)
+# See https://filippo.io/linux-syscall-table/.
 [name args] > posix
   0 > stdin-fileno
   1 > stdout-fileno
@@ -60,3 +38,7 @@
   [code output] > return
     $ > called
     output > @
+
+  # Timeval structure for "gettimeofday" syscall.
+  # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
+  [tv-sec tv-usec] > timeval

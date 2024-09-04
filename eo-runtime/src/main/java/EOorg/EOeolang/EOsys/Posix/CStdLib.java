@@ -29,6 +29,7 @@ package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 
 /**
  * C standard library with unix syscalls.
@@ -122,4 +123,12 @@ public interface CStdLib extends Library {
      * @return Name of the environment variable
      */
     String getenv(String name);
+
+    /**
+     * Get current time.
+     * @param timeval Timevalue
+     * @param timezone Timezone
+     * @return Zero on success, -1 on error
+     */
+    int gettimeofday(GettimeofdaySyscall.Timeval timeval, Pointer timezone);
 }

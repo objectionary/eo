@@ -192,4 +192,10 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      * @checkstyle MethodNameCheck (5 lines)
      */
     int GetCurrentProcessId();
+
+    /**
+     * Retrieves the current system date and time in Coordinated Universal Time (UTC) format.
+     * @param time System time structure
+     */
+    void GetSystemTime(GetSystemTimeFuncCall.SystemTime time);
 }
