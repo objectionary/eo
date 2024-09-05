@@ -28,8 +28,8 @@
  */
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
-import com.sun.jna.Structure;
 import EOorg.EOeolang.EOsys.Syscall;
+import com.sun.jna.Structure;
 import java.util.Arrays;
 import java.util.List;
 import org.eolang.Data;
@@ -76,8 +76,9 @@ public final class GetSystemTimeFuncCall implements Syscall {
     /**
      * System time structure.
      * @since 0.40.0
+     * @checkstyle VisibilityModifierCheck (100 lines)
      */
-    public static class SystemTime extends Structure {
+    public static final class SystemTime extends Structure {
         /**
          * Year.
          */
@@ -90,6 +91,7 @@ public final class GetSystemTimeFuncCall implements Syscall {
 
         /**
          * Day of week.
+         * @checkstyle MemberNameCheck (5 lines)
          */
         public short dayOfWeek;
 
@@ -119,7 +121,7 @@ public final class GetSystemTimeFuncCall implements Syscall {
         public short milliseconds;
 
         @Override
-        protected List<String> getFieldOrder() {
+        public List<String> getFieldOrder() {
             return Arrays.asList(
                 "year",
                 "month",

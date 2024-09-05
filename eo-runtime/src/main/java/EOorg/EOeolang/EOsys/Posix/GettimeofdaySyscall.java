@@ -28,8 +28,8 @@
  */
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
-import com.sun.jna.Structure;
 import EOorg.EOeolang.EOsys.Syscall;
+import com.sun.jna.Structure;
 import java.util.Arrays;
 import java.util.List;
 import org.eolang.Data;
@@ -68,8 +68,9 @@ public final class GettimeofdaySyscall implements Syscall {
     /**
      * Timeval structure.
      * @since 0.40.0
+     * @checkstyle VisibilityModifierCheck (30 lines)
      */
-    public static class Timeval extends Structure {
+    public static final class Timeval extends Structure {
         /**
          * Seconds since Jan. 1, 1970
          */
@@ -81,7 +82,7 @@ public final class GettimeofdaySyscall implements Syscall {
         public long usec;
 
         @Override
-        protected List<String> getFieldOrder() {
+        public List<String> getFieldOrder() {
             return Arrays.asList("sec", "usec");
         }
     }

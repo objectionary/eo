@@ -36,6 +36,8 @@ import com.sun.jna.win32.W32APIOptions;
 /**
  * Interface definitions for <code>kernel32.dll</code>.
  * @since 0.40
+ * @checkstyle MethodNameCheck (1000 lines)
+ * @checkstyle ParameterNumberCheck (1000 lines)
  */
 @SuppressWarnings("PMD.MethodNamingConventions")
 public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
@@ -48,7 +50,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      * Get a handle to specified standard device.
      * @param handle The standard device identifier
      * @return A handle to the specified standard device (standard input, output, or error)
-     * @checkstyle MethodNameCheck (5 lines)
      */
     HANDLE GetStdHandle(int handle);
 
@@ -60,7 +61,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      *  information
      * @see <a href="https://msdn.microsoft.com/en-us/library/ms686244(v=vs.85).aspx">SetStdHandle
      *  documentation</a>
-     * @checkstyle MethodNameCheck (5 lines)
      */
     boolean SetStdHandle(int std, HANDLE handle);
 
@@ -71,7 +71,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      * @return If the function succeeds, the return value is nonzero. If the function fails, the
      *  return value is zero. To get extended error information, call {@code GetLastError}.
      * @see <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724211(v=vs.85).aspx">CloseHandle</A>
-     * @checkstyle MethodNameCheck (5 lines)
      */
     boolean CloseHandle(HANDLE handle);
 
@@ -90,8 +89,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      * @return If the function succeeds, the return value is nonzero (TRUE). If the function fails,
      *  or is completing asynchronously, the return value is zero (FALSE). To get extended error
      *  information, call the GetLastError function.
-     * @checkstyle MethodNameCheck (5 lines)
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     boolean WriteFile(
         HANDLE handle,
@@ -118,8 +115,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      * @return If the function succeeds, the return value is nonzero (TRUE). If
      *  the function fails, or is completing asynchronously, the return
      *  value is zero (FALSE).
-     * @checkstyle MethodNameCheck (5 lines)
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     boolean ReadFile(
         HANDLE handle,
@@ -151,8 +146,6 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      *  succeeds. If a file does not exist before the call, GetLastError returns 0 (zero). If the
      *  function fails, the return value is INVALID_HANDLE_VALUE. To get extended error information,
      *  call GetLastError.
-     * @checkstyle MethodNameCheck (5 lines)
-     * @checkstyle ParameterNumberCheck (20 lines)
      */
     HANDLE CreateFile(
         String name,
@@ -182,14 +175,12 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
      *  terminating null character and the contents of buffer are
      *  undefined. If the function fails, the return value is zero. To
      *  get extended error information, call GetLastError.
-     *  @checkstyle MethodNameCheck (5 lines)
      */
     int GetEnvironmentVariable(String name, char[] buffer, int size);
 
     /**
      * This function returns the process identifier of the calling process.
      * @return The return value is the process identifier of the calling process.
-     * @checkstyle MethodNameCheck (5 lines)
      */
     int GetCurrentProcessId();
 
