@@ -33,25 +33,6 @@
 # Windows API Index (https://learn.microsoft.com/en-us/windows/win32/api/index).
 # Use the search functionality to look up specific functions, such as CreateFile, ReadFile,
 # WriteFile, etc.
-#
-# Supported functions:
-# 1. WriteFile
-#    - Documentation: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer to write (bytes)
-#      * buffer size to write (number)
-#    - Returns:
-#      * code - written bytes count (number)
-#      * output - []
-# 2. ReadFile
-#    - Documentation: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile
-#    - Arguments:
-#      * descriptor (number)
-#      * buffer size to read (number)
-#    - Returns:
-#      * code - read bytes count (number)
-#      * output - read bytes (bytes)
 [name args] > win32
   -10 > std-input-handle
   -11 > std-output-handle
@@ -61,3 +42,7 @@
   [code output] > return
     $ > called
     output > @
+
+  # Structure for "GetSystemTime" function call.
+  [year month day day-of-week hour minute second milliseconds] > system-time
+    $ > self

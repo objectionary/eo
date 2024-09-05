@@ -25,9 +25,5 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOi64$EOas_number.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOi64$EOdiv.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOi64$EOgt.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOi64$EOplus.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOi64$EOtimes.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOnumber$EOas_i64.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/GettimeofdaySyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/GetSystemTimeFuncCall.java"
