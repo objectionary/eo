@@ -60,15 +60,16 @@ public final class GetSystemTimeFuncCall implements Syscall {
         final GetSystemTimeFuncCall.SystemTime time = new GetSystemTimeFuncCall.SystemTime();
         Kernel32.INSTANCE.GetSystemTime(time);
         result.put(0, new Data.ToPhi(true));
-        params[0].put(0, new Data.ToPhi(time.year));
-        params[0].put(1, new Data.ToPhi(time.month));
-        params[0].put(2, new Data.ToPhi(time.day));
-        params[0].put(3, new Data.ToPhi(time.dayOfWeek));
-        params[0].put(4, new Data.ToPhi(time.hour));
-        params[0].put(5, new Data.ToPhi(time.minute));
-        params[0].put(6, new Data.ToPhi(time.second));
-        params[0].put(7, new Data.ToPhi(time.milliseconds));
-        result.put(1, params[0]);
+        final Phi struct = params[0].take("self");
+        struct.put(0, new Data.ToPhi(time.year));
+        struct.put(1, new Data.ToPhi(time.month));
+        struct.put(2, new Data.ToPhi(time.day));
+        struct.put(3, new Data.ToPhi(time.dayOfWeek));
+        struct.put(4, new Data.ToPhi(time.hour));
+        struct.put(5, new Data.ToPhi(time.minute));
+        struct.put(6, new Data.ToPhi(time.second));
+        struct.put(7, new Data.ToPhi(time.milliseconds));
+        result.put(1, struct);
         return result;
     }
 

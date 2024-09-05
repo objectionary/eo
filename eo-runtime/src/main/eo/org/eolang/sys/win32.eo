@@ -45,3 +45,4 @@
 
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
+    $ > self
