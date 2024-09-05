@@ -77,7 +77,7 @@ public final class GetSystemTimeFuncCall implements Syscall {
      * System time structure.
      * @since 0.40.0
      */
-    static class SystemTime extends Structure {
+    public static class SystemTime extends Structure {
         /**
          * Year.
          */

@@ -68,7 +68,6 @@ public final class ParsingTrain extends TrEnvelope {
     private static final String[] SHEETS = {
         "/org/eolang/parser/errors/not-empty-atoms.xsl",
         "/org/eolang/parser/critical-errors/duplicate-names.xsl",
-        "/org/eolang/parser/errors/many-free-attributes.xsl",
         "/org/eolang/parser/errors/broken-aliases.xsl",
         "/org/eolang/parser/errors/duplicate-aliases.xsl",
         "/org/eolang/parser/errors/global-nonames.xsl",

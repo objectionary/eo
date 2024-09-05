@@ -69,7 +69,7 @@ public final class GettimeofdaySyscall implements Syscall {
      * Timeval structure.
      * @since 0.40.0
      */
-    static class Timeval extends Structure {
+    public static class Timeval extends Structure {
         /**
          * Seconds since Jan. 1, 1970
          */
