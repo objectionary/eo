@@ -62,10 +62,24 @@
       1
       10
       100
-  calculates-lineal-integral.close-to > @
+  close-to > @
     quadratic
     333
     0.0000001
+
+  # Checks where given `value` is close to `operand` with given precision `err`.
+  [value operand err] > close-to
+    lte. > @
+      minus.
+        abs
+          value.minus operand
+        err
+      0
+    [value] > abs
+      if. > @
+        value.gte 0
+        value
+        value.neg
 
 # Test.
 [] > calculates-cube-integral
@@ -75,7 +89,21 @@
       1
       10
       100
-  calculates-lineal-integral.close-to > @
+  close-to > @
     cube
     2499.75
     0.0000001
+
+  # Checks where given `value` is close to `operand` with given precision `err`.
+  [value operand err] > close-to
+    lte. > @
+      minus.
+        abs
+          value.minus operand
+        err
+      0
+    [value] > abs
+      if. > @
+        value.gte 0
+        value
+        value.neg
