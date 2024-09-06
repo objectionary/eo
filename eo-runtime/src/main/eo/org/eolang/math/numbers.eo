@@ -20,10 +20,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
----
-exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOsin.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOcos.java"
++alias org.eolang.structs.list
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.math
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
+
+# Sequence of numbers.
+# Here `sequence` must be a `tuple` or any `tuple` decorator of `number` objects.
+[sequence] > numbers
+  sequence > @
+
+  # Find max element in the numbers sequence.
+  [] > max
+    list ^.sequence > lst
+    if. > @
+      lst.is-empty
+      error "Can't get max number from empty sequence"
+      reduced.
+        lst
+        negative-infinity
+        [max item]
+          if. > @
+            item.as-number.gt max
+            item
+            max
+
+  # Find min element in the numbers sequence.
+  [] > min
+    list ^.sequence > lst
+    if. > @
+      lst.is-empty
+      error "Can't get min number from empty sequence"
+      reduced.
+        lst
+        positive-infinity
+        [min item]
+          if. > @
+            min.gt item.as-number
+            item
+            min

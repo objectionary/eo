@@ -20,10 +20,51 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
----
-exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOsin.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOcos.java"
++alias org.eolang.math.pi
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.math
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++version 0.0.0
+
+# The angle.
+[value] > angle
+  value > @
+  # Converts this from radians to degrees
+  angle > in-degrees
+    div.
+      ^.times 180.0
+      pi
+  # Converts this from degrees to radians
+  angle > in-radians
+    div.
+      $.times pi
+      180.0
+
+  # Sine of current angle.
+  # Please note, that `sin` is calculated from the angle in radians.
+  [] > sin /number
+
+  # Cosine of current angle.
+  # Please note, that `cos` is calculated from the angle in radians.
+  [] > cos /number
+
+  # Tangent of current angle.
+  # Please note, that `tan` is calculated from the angle in radians.
+  [] > tan
+    ^.cos > cosine!
+    if. > @
+      cosine.eq 0
+      nan
+      ^.sin.div cosine
+
+  # Cotangent of current angle.
+  # Please note, that `ctan` is calculated from the angle in radians.
+  [] > ctan
+    ^.sin > sine!
+    if. > @
+      sine.eq 0
+      nan
+      ^.cos.div sine
+

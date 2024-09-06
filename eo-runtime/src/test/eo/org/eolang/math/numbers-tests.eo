@@ -20,10 +20,63 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @todo #1326:30min Enable only necessary tests. Several checks
-#  are not available for the project. For example a lot of
-#  package name contains capital letter and such names are conventional.
----
-exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOsin.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOmath/EOangle$EOcos.java"
++alias org.eolang.math.numbers
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.math
++version 0.0.0
+
+# Test.
+(numbers *).max > [] > throws-on-taking-max-from-empty-sequence-of-numbers
+
+# Test.
+(numbers *).min > [] > throws-on-taking-min-from-empty-sequence-of-numbers
+
+# Test.
+[] > max-of-one-item-array
+  eq. > @
+    (numbers (* 42)).max
+    42
+
+# Test.
+[] > min-of-one-item-array
+  eq. > @
+    (numbers (* 42)).min
+    42
+
+# Test.
+[] > max-of-array-is-first
+  eq. > @
+    (numbers (* 25 12 -2)).max
+    25
+
+# Test.
+[] > max-of-array-is-in-the-center
+  eq. > @
+    (numbers (* 12 25 -2)).max
+    25
+
+# Test.
+[] > max-of-array-is-last
+  eq. > @
+    (numbers (* 12 -2 25)).max
+    25
+
+# Test.
+[] > min-of-array-is-first
+  eq. > @
+    (numbers (* -2 25 12)).min
+    -2
+
+# Test.
+[] > min-of-array-is-in-the-center
+  eq. > @
+    (numbers (* 12 -2 25)).min
+    -2
+
+# Test.
+[] > min-of-array-is-last
+  eq. > @
+    (numbers (* 12 25 -2)).min
+    -2
