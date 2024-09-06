@@ -43,6 +43,7 @@ import org.eolang.XmirObject;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @XmirObject(oname = "angle.sin")
+@SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOangle$EOsin extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
