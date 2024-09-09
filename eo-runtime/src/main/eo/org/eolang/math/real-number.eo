@@ -29,10 +29,10 @@
 +version 0.0.0
 
 # Real number.
-[num] > real-number
+[num] > real
   num > @
   # Returns Euler's number raised to the power of a `num`.
-  (QQ.math.real-number e).pow num > exp
+  (QQ.math.real e).pow num > exp
 
   # Calculate MOD.
   [x] > mod
@@ -47,8 +47,8 @@
         abs-mod.neg
 
     [] > abs-mod
-      (QQ.math.real-number ^.dividend).abs > dividend-abs
-      (QQ.math.real-number ^.divisor).abs > divisor-abs
+      (QQ.math.real ^.dividend).abs > dividend-abs
+      (QQ.math.real ^.divisor).abs > divisor-abs
       minus. > @
         dividend-abs
         divisor-abs.times

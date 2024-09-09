@@ -36,18 +36,18 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Real-number.sqrt.
+ * Real.ln.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "real-number.sqrt")
+@XmirObject(oname = "real.ln")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOreal_number$EOsqrt extends PhDefault implements Atom {
+public final class EOreal$EOln extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         return new ToPhi(
-            Math.sqrt(new Dataized(this.take(Attr.RHO)).asNumber())
+            Math.log(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }

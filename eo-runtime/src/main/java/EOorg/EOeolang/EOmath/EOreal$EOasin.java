@@ -36,18 +36,18 @@ import org.eolang.Phi;
 import org.eolang.XmirObject;
 
 /**
- * Real-number.ln.
+ * Real.asin.
  *
  * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
  */
-@XmirObject(oname = "real-number.ln")
+@XmirObject(oname = "real.asin")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOreal_number$EOln extends PhDefault implements Atom {
+public final class EOreal$EOasin extends PhDefault implements Atom {
     @Override
     public Phi lambda() throws Exception {
         return new ToPhi(
-            Math.log(new Dataized(this.take(Attr.RHO)).asNumber())
+            Math.asin(new Dataized(this.take(Attr.RHO)).asNumber())
         );
     }
 }
