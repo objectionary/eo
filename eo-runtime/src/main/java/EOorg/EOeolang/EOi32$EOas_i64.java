@@ -39,7 +39,7 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * The i32.as-i64
+ * The i32.as-i64.
  * @since 0.40
  * @checkstyle TypeNameCheck (6 lines)
  */
