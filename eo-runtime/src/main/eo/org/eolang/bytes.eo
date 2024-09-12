@@ -34,6 +34,28 @@
 [] > bytes
   $ > as-bytes
   $.eq 01- > as-bool
+  string $ > as-string
+
+  # Turn this chain of eight bytes into a number.
+  # If there are less or more than eight bytes, there will
+  # be an error returned.
+  [] > as-number
+    if. > @
+      ^.eq nan.as-bytes
+      nan
+      if.
+        ^.eq positive-infinity.as-bytes
+        positive-infinity
+        if.
+          ^.eq negative-infinity.as-bytes
+          negative-infinity
+          if.
+            ^.size.eq 8
+            number ^
+            error
+              sprintf
+                "Can't convert non 8 length bytes to a number, bytes are %x"
+                *
 
   # Equals to another object.
   [b] > eq /bool
@@ -44,21 +66,6 @@
   # Represents a sub-sequence inside the current one.
   [start len] > slice /bytes
 
-  # Turn this chain of bytes into a string in UTF-8.
-  string ^ > [] > as-string
-
-  # Turn this chain of eight bytes into a number.
-  # If there are less or more than eight bytes, there will
-  # be an error returned.
-  [] > as-number
-    if. > @
-      ^.size.eq 8
-      number ^
-      error
-        sprintf
-          "Can't convert non 8 length bytes to a number, bytes are %s"
-          * ^
-
   # Turn this chain of eight bytes into a i64 number.
   # If there are less or more than eight bytes, there will
   # be an error returned.
@@ -68,7 +75,31 @@
       i64 ^
       error
         sprintf
-          "Can't convert non 8 length bytes to i64, bytes are %s"
+          "Can't convert non 8 length bytes to i64, bytes are %x"
+          * ^
+
+  # Turn this chain of four bytes into a i32 number.
+  # If there are less or more than four bytes, there will
+  # be an error returned.
+  [] > as-i32
+    if. > @
+      ^.size.eq 4
+      i32 ^
+      error
+        sprintf
+          "Can't convert non 4 length bytes to i32, bytes are %x"
+          * ^
+
+  # Turn this chain of two bytes into a i16 number.
+  # If there are less or more than two bytes, there will
+  # be an error returned.
+  [] > as-i16
+    if. > @
+      ^.size.eq 2
+      i16 ^
+      error
+        sprintf
+          "Can't convert non 2 length bytes to i16, bytes are %x"
           * ^
 
   # Calculate bitwise and.

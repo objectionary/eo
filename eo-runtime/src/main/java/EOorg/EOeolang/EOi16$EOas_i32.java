@@ -28,11 +28,9 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.BytesOf;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -40,31 +38,22 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * The i64.div object.
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * The i16.as-i32
+ * @since 0.40
+ * @checkstyle TypeNameCheck (6 lines)
  */
 @Versionized
-@XmirObject(oname = "i64.div")
+@XmirObject(oname = "i16.as-i32")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOi64$EOdiv extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOi64$EOdiv() {
-        this.add("x", new AtVoid("x"));
-    }
-
+public final class EOi16$EOas_i32 extends PhDefault implements Atom {
     @Override
-    public Phi lambda() {
-        final Phi num = Phi.Φ.take("org.eolang.i64").copy();
+    public Phi lambda() throws Exception {
+        final Phi num = Phi.Φ.take("org.eolang.i32").copy();
         num.put(
             0,
-            new Data.ToPhi(
+            new ToPhi(
                 new BytesOf(
-                    new Dataized(this.take(Attr.RHO)).take(Long.class)
-                        / new Dataized(this.take("x").take("as-i64")).take(Long.class)
+                    new Dataized(this.take(Attr.RHO)).take(Short.class).intValue()
                 ).take()
             )
         );
