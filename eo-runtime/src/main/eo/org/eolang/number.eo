@@ -32,7 +32,7 @@
 [as-bytes] > number
   as-bytes > @
   $ > as-number
-  times -1 > neg
+  $.times -1 > neg
 
   # Convert this `number` to `i64` object.
   [] > as-i64 /i64

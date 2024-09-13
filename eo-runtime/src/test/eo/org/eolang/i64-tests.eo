@@ -40,6 +40,21 @@
       234.as-i64.as-bytes
 
 # Test.
+[] > i64-to-i32-and-back
+  eq. > @
+    234.as-i64
+    234.as-i64.as-i32.as-i64
+
+# Test.
+[] > negative-i64-to-i32-and-back
+  eq. > @
+    -234.as-i64
+    -234.as-i64.as-i32.as-i64
+
+# Test.
+3147483647.as-i64.as-i32 > [] > throws-on-converting-to-i32-if-out-of-bounds
+
+# Test.
 [] > i64-less-true
   lt. > @
     10.as-i64

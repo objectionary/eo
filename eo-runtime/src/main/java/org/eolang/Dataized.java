@@ -140,6 +140,8 @@ public final class Dataized {
             res = this.asNumber();
         } else if (type.equals(Integer.class)) {
             res = new BytesOf(this.take()).asNumber(Integer.class);
+        } else if (type.equals(Short.class)) {
+            res = new BytesOf(this.take()).asNumber(Short.class);
         } else if (type.equals(byte[].class)) {
             res = this.take();
         } else if (type.equals(String.class)) {
