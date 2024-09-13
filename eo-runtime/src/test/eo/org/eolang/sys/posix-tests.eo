@@ -38,3 +38,38 @@
           "getpid"
           tuple.empty
       0
+
+# Test.
+[] > opens-posix-tcp-socket
+  code. > sd
+    posix
+      "socket"
+      * posix.af-inet posix.sock-stream posix.ipproto-tcp
+  or. > @
+    os.is-windows
+    try
+      sd.gt 0
+      ex > [ex]
+      code.
+        posix
+          "close"
+          * sd
+
+# Test.
+[] > closes-posix-tcp-socket
+  code. > sd
+    posix
+      "socket"
+      * posix.af-inet posix.sock-stream posix.ipproto-tcp
+  or. > @
+    os.is-windows
+    seq
+      *
+        sd
+        not.
+          eq.
+            code.
+              posix
+                "close"
+                * sd
+            -1

@@ -131,4 +131,13 @@ public interface CStdLib extends Library {
      * @return Zero on success, -1 on error
      */
     int gettimeofday(GettimeofdaySyscall.Timeval timeval, Pointer timezone);
+
+    /**
+     * Create an endpoint for communication.
+     * @param domain Socket domain
+     * @param type Socket type
+     * @param protocol Socket protocol
+     * @return New socket descriptor on success, -1 on error
+     */
+    int socket(int domain, int type, int protocol);
 }

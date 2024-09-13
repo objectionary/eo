@@ -32,6 +32,9 @@
 [name args] > posix
   0 > stdin-fileno
   1 > stdout-fileno
+  2 > af-inet
+  1 > sock-stream
+  6 > ipproto-tcp
 
   [] > @ /return
 

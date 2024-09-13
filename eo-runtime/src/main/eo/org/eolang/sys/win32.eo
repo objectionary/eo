@@ -36,6 +36,11 @@
 [name args] > win32
   -10 > std-input-handle
   -11 > std-output-handle
+  2 > af-inet
+  1 > sock-stream
+  6 > ipproto-tcp
+  -1 > invalid-socket
+  -1 > socket-error
 
   [] > @ /return
 
