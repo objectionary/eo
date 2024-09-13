@@ -37,6 +37,7 @@ import org.eolang.Phi;
  * WSACleanup WS2_32 function call.
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsacleanup">here for details</a>
  * @since 0.40.0
+ * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
  */
 public final class WSACleanupFuncCall implements Syscall {
     /**

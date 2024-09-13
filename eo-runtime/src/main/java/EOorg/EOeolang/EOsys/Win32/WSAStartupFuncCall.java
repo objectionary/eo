@@ -42,6 +42,7 @@ import org.eolang.Phi;
  * WSAStartup WS2_32 function call.
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsastartup">here for details</a>
  * @since 0.40.0
+ * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  */
 public final class WSAStartupFuncCall implements Syscall {
     /**
@@ -76,8 +77,10 @@ public final class WSAStartupFuncCall implements Syscall {
     /**
      * The WSAData structure contains information about the implementation of Windows sockets.
      * @since 0.40.0
+     * @checkstyle VisibilityModifierCheck (50 lines)
+     * @checkstyle MemberNameCheck (100 lines)
      */
-    public static class WSAData extends Structure {
+    public static final class WSAData extends Structure {
         /**
          * Version.
          */
@@ -114,7 +117,7 @@ public final class WSAStartupFuncCall implements Syscall {
         public Pointer vendorInfo;
 
         @Override
-        protected List<String> getFieldOrder() {
+        public List<String> getFieldOrder() {
             return Arrays.asList(
                 "version",
                 "highVersion",

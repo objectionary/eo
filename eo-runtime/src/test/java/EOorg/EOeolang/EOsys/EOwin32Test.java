@@ -77,6 +77,11 @@ final class EOwin32Test {
         );
     }
 
+    /**
+     * Test case for {@link Winsock}.
+     * @since 0.40
+     * @checkstyle AbbreviationAsWordInNameCheck (300 lines)
+     */
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
     @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
@@ -104,7 +109,7 @@ final class EOwin32Test {
         @Test
         void opensTcpSocket() {
             this.startupsWSA();
-            final int socket = createsSocket();
+            final int socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully create a TCP socket, but it didn't",
                 socket,
@@ -117,7 +122,7 @@ final class EOwin32Test {
         @Test
         void closesTcpSocket() {
             this.startupsWSA();
-            final int socket = createsSocket();
+            final int socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully close a TCP socket, but it didn't",
                 this.closesSocket(socket),
@@ -127,7 +132,7 @@ final class EOwin32Test {
         }
 
         /**
-         * Creates socket
+         * Creates socket.
          * @return Closes socket
          */
         private int createsSocket() {
@@ -139,7 +144,7 @@ final class EOwin32Test {
         }
 
         /**
-         * Closes socket
+         * Closes socket.
          * @param socket Socket descriptor
          * @return Status code
          */

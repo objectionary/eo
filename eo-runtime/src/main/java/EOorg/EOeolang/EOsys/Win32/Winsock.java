@@ -37,6 +37,7 @@ import com.sun.jna.win32.W32APIOptions;
  * @since 0.40
  * @checkstyle MethodNameCheck (1000 lines)
  * @checkstyle ParameterNumberCheck (1000 lines)
+ * @checkstyle AbbreviationAsWordInNameCheck (1000 lines)
  */
 @SuppressWarnings("PMD.MethodNamingConventions")
 public interface Winsock extends StdCallLibrary {
@@ -48,6 +49,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Winsock version.
      */
+    @SuppressWarnings("PMD.LongVariable")
     short WINSOCK_VERSION_2_2 = (short) 0x0202;
 
     /**
@@ -102,7 +104,7 @@ public interface Winsock extends StdCallLibrary {
     int socket(int domain, int type, int protocol);
 
     /**
-     * Closes a socket
+     * Closes a socket.
      * @param socket Socket descriptor
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
      */
