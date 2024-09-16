@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Win32.ClosesocketFuncCall;
+import EOorg.EOeolang.EOsys.Win32.ConnectFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetCurrentProcessIdFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetEnvironmentVariableFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetSystemTimeFuncCall;
@@ -71,6 +72,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("WSACleanup", WSACleanupFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("socket", SocketFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("closesocket", ClosesocketFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("connect", ConnectFuncCall::new);
     }
 
     @Override

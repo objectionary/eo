@@ -140,4 +140,13 @@ public interface CStdLib extends Library {
      * @return New socket descriptor on success, -1 on error
      */
     int socket(int domain, int type, int protocol);
+
+    /**
+     * Initiate a connection on a socket.
+     * @param sockfd Socket descriptor.
+     * @param addr Socket address structure
+     * @param addrlen Size of socket address structure
+     * @return Zero on success, -1 on error
+     */
+    int connect(int sockfd, ConnectSyscall.SockaddrIn addr, int addrlen);
 }

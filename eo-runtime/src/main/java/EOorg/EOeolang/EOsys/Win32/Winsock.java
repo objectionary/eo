@@ -109,4 +109,13 @@ public interface Winsock extends StdCallLibrary {
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
      */
     int closesocket(int socket);
+
+    /**
+     * Establishes a connection to a specified socket.
+     * @param socket Socket descriptor
+     * @param addr Sockaddr structure
+     * @param addrlen Sockaddr structure size
+     * @return Zero on success, SOCKET_ERROR on error.
+     */
+    int connect(int socket, ConnectFuncCall.SockAddr addr, int addrlen);
 }

@@ -28,6 +28,7 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.CloseSyscall;
+import EOorg.EOeolang.EOsys.Posix.ConnectSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetenvSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
 import EOorg.EOeolang.EOsys.Posix.GettimeofdaySyscall;
@@ -67,6 +68,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         EOposix$EOφ.SYS_CALLS.put("gettimeofday", GettimeofdaySyscall::new);
         EOposix$EOφ.SYS_CALLS.put("socket", SocketSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("close", CloseSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("connect", ConnectSyscall::new);
     }
 
     @Override
