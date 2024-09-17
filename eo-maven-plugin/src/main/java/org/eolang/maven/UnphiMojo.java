@@ -30,7 +30,6 @@ import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
