@@ -95,6 +95,14 @@ public interface Winsock extends StdCallLibrary {
     int WSACleanup();
 
     /**
+     * The inet_addr function converts a string containing an IPv4 dotted-decimal
+     * address into a proper address for the {@link ConnectFuncCall.SockaddrIn} structure.
+     * @param address IPv4 address
+     * @return
+     */
+    int inet_addr(String address);
+
+    /**
      * Creates a socket.
      * @param domain Socket domain
      * @param type Socket type
@@ -117,5 +125,5 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen Sockaddr structure size
      * @return Zero on success, SOCKET_ERROR on error.
      */
-    int connect(int socket, ConnectFuncCall.SockAddr addr, int addrlen);
+    int connect(int socket, ConnectFuncCall.SockaddrIn addr, int addrlen);
 }

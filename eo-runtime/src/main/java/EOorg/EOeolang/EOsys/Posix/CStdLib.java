@@ -133,6 +133,13 @@ public interface CStdLib extends Library {
     int gettimeofday(GettimeofdaySyscall.Timeval timeval, Pointer timezone);
 
     /**
+     * Return IP in network byte order.
+     * @param address IPv4 address
+     * @return IP address on success, -1 on error
+     */
+    int inet_addr(String address);
+
+    /**
      * Create an endpoint for communication.
      * @param domain Socket domain
      * @param type Socket type

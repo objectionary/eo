@@ -41,6 +41,8 @@
   6 > ipproto-tcp
   -1 > invalid-socket
   -1 > socket-error
+  -1 > inaddr-none
+  02-02 > winsock-version-2-2
 
   [] > @ /return
 

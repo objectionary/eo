@@ -64,10 +64,10 @@ public final class ConnectFuncCall implements Syscall {
             new Data.ToPhi(
                 Winsock.INSTANCE.connect(
                     new Dataized(params[0]).asNumber().intValue(),
-                    new ConnectFuncCall.SockAddr(
+                    new SockaddrIn(
                         new Dataized(params[1].take("sin-family")).take(Short.class),
                         new Dataized(params[1].take("sin-port")).take(Short.class),
-                        new Dataized(params[1].take("sin-addr")).take(),
+                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
                         new Dataized(params[1].take("sin-zero")).take()
                     ),
                     new Dataized(params[2]).asNumber().intValue()
@@ -79,10 +79,10 @@ public final class ConnectFuncCall implements Syscall {
     }
 
     /**
-     * SockAddr structure.
+     * Sockaddr_in win32 structure.
      * @since 0.40
      */
-    public static final class SockAddr extends Structure {
+    public static final class SockaddrIn extends Structure {
         /**
          * Address family (e.g., AF_INET).
          */
@@ -96,7 +96,7 @@ public final class ConnectFuncCall implements Syscall {
         /**
          * IP address in network byte order.
          */
-        public byte[] addr;
+        public int addr;
 
         /**
          * Padding.
@@ -110,7 +110,7 @@ public final class ConnectFuncCall implements Syscall {
          * @param addr Addr
          * @param zero Zero
          */
-        SockAddr(final short family, final short port, final byte[] addr, final byte[] zero) {
+        SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
             this.family = family;
             this.port = port;
             this.addr = addr;

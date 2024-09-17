@@ -20,15 +20,148 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.txt.sprintf
 +alias org.eolang.sys.os
-+alias org.eolang.sys.posix
-+alias org.eolang.sys.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.structs
++package org.eolang.net
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
 +version 0.0.0
 
-# Set - is an unordered `list` of unique objects.
-[] > socket
+# Socket.
+[address port] > socket
+  if. > @
+    os.is-windows
+    win-socket address port
+    posix-socket address port
+
+  [address port] > posix-socket
+    [scope] > connect
+      code. > sd
+        posix
+          "socket"
+          * posix.af-inet posix.sock-stream posix.ipproto-tcp
+      code. > inet-addr
+        posix
+          "inet_addr"
+          * ^.address
+      if. > inet-addr-as-int
+        inet-addr.eq posix.inaddr-none
+        error
+          sprintf
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer in network byte order via 'inet_addr' syscall"
+            * ^.address
+        inet-addr.as-i32
+      posix.sockaddr-in > sockaddr
+        posix.af-inet.as-i16
+        ^.port.as-i16
+        inet-addr-as-int
+      code. > connected
+        posix
+          "connect"
+          * sd sockaddr sockaddr.size
+      code. > closed
+        posix
+          "close"
+          * sd
+      if. > @
+        sd.eq -1
+        error "Couldn't create a posix socket"
+        try
+          if.
+            connected.eq -1
+            error
+              sprintf
+                "Couldn't connect to '%s:%d' on socket '%d'"
+                * ^.address ^.port sd
+            as-bytes.
+              dataized
+                scope
+                  ^.scoped-posix-socket sd
+          ex > [ex]
+          if.
+            closed.eq -1
+            error
+              sprintf
+                "Couldn't close a socket '%d' connected to '%s:%d'"
+                * sd ^.address ^.port
+            true
+
+    true > [descriptor] > scoped-posix-socket
+
+  [address port] > win-socket
+    [scope] > connect
+      code. > startup
+        win32
+          "WSAStartup"
+          * win32.winsock-version-2-2
+      code. > sd
+        win32
+          "socket"
+          * win32.af-inet win32.sock-stream win32.ipproto-tcp
+      code. > inet-addr
+        win32
+          "inet_addr"
+          * ^.address
+      if. > inet-addr-as-int
+        inet-addr.eq win32.inaddr-none
+        error
+          sprintf
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer in network byte order via 'inet_addr' function call"
+            * ^.address
+        inet-addr.as-i32
+      win32.sockaddr-in > sockaddr
+        win32.af-inet.as-i16
+        ^.port.as-i16
+        inet-addr-as-int
+      code. > connected
+        win32
+          "connect"
+          * sd sockaddr sockaddr.size
+      code. > closed
+        win32
+          "closesocket"
+          * sd
+      (win32 "WSACleanup" *).code > cleaned-up
+      if. > @
+        (startup.eq 0).not
+        error
+          sprintf
+            "Couldn't initialize Winsock via 'WSAStartup' call, error code is %d"
+            * startup
+        try
+          if.
+            sd.eq -1
+            error "Couldn't create a win32 socket"
+            try
+              if.
+                connected.eq -1
+
+            if.
+              connected.eq -1
+              if.
+                closed.eq -1
+                error
+                  sprintf
+                    "Couldn't close a socket '%d' after failed connection attempt to '%s:%d'"
+                    * sd ^.address ^.port
+                error
+                  sprintf
+                    "Couldn't connect to '%s:%d' on socket '%d'"
+                    * ^.address ^.port sd
+              try
+                as-bytes.
+                  dataized
+                    scope
+                      ^.scoped-win-socket sd
+                ex > [ex]
+                try-close-and-cleanup
+          ex > [ex]
+          if.
+            cleaned-up.eq win32.socket-error
+            error "Couldn't cleanup Winsock resources"
+            true
+
+    # Scoped win socket API.
+    true > [descriptor] > scoped-win-socket

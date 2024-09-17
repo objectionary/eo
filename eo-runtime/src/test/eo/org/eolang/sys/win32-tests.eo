@@ -29,17 +29,28 @@
 +version 0.0.0
 
 # Test.
-[] > invokes-file-write-correctly
-  "Hello, win32!\n" > msg!
-  called. > called
-    win32
-      "WriteFile"
-      *
-        win32.std-output-handle
-        msg
-        msg.size
+[] > converts-win32-inet-addr
   or. > @
     os.is-windows.not
-    and.
-      called.code
-      called.output.eq msg.size
+    eq.
+      code.
+        win32
+          "inet_addr"
+          * "127.0.0.1"
+      2130706433
+
+# Test.
+[] > win32-sockaddr-in-returns-valid-size
+  or. > @
+    os.is-windows.not
+    eq.
+      size.
+        win32.sockaddr-in
+          win32.af-inet.as-i16
+          8888.as-i16
+          as-i32.
+            code.
+              win32
+                "inet_addr"
+                * "169.81.81.74"
+      16

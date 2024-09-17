@@ -73,3 +73,30 @@
                 "close"
                 * sd
             -1
+
+# Test.
+[] > converts-posix-inet-addr
+  or. > @
+    os.is-windows
+    eq.
+      code.
+        posix
+          "inet_addr"
+          * "127.0.0.1"
+      2130706433
+
+# Test.
+[] > posix-sockaddr-in-returns-valid-size
+  or. > @
+    os.is-windows
+    eq.
+      size.
+        posix.sockaddr-in
+          posix.af-inet.as-i16
+          8080.as-i16
+          as-i32.
+            code.
+              posix
+                "inet_addr"
+                * "169.81.81.74"
+      16
