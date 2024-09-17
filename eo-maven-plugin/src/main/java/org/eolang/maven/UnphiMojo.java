@@ -104,7 +104,7 @@ public final class UnphiMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final List<Path> errors = new ListOf<>();
+        final List<String> errors = new ListOf<>();
         final Home home = new HmBase(this.unphiOutputDir);
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
         final int count = new SumOf(
@@ -119,7 +119,7 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", TranspileMojo.EXT)
                             )
                         );
-                        final XML result = TRANSFORMATIONS.pass(
+                        final XML result = UnphiMojo.TRANSFORMATIONS.pass(
                             new PhiSyntax(
                                 phi.getFileName().toString().replace(".phi", ""),
                                 new TextOf(phi),
@@ -133,7 +133,13 @@ public final class UnphiMojo extends SafeMojo {
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
                         if (result.nodes("//errors[count(error)=0]").isEmpty()) {
-                            errors.add(relative);
+                            errors.add(
+                                String.format(
+                                    "%s:\n\t%s\n",
+                                    relative,
+                                    String.join("\n\t", result.xpath("//errors/error/text()"))
+                                )
+                            );
                         }
                         return 1;
                     },
@@ -145,9 +151,9 @@ public final class UnphiMojo extends SafeMojo {
         if (!errors.isEmpty()) {
             throw new IllegalStateException(
                 String.format(
-                    "%d files with parsing errors were found: %s",
+                    "%d files with parsing errors were found:\n%s",
                     errors.size(),
-                    Arrays.toString(errors.toArray())
+                    String.join("\n", errors)
                 )
             );
         }
