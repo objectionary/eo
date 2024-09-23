@@ -52,8 +52,8 @@
         inet-addr.eq posix.inaddr-none
         error
           sprintf
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: %s"
-            * ^.address strerror
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall"
+            * ^.address
         inet-addr.as-i32
       posix.sockaddr-in > sockaddr
         posix.af-inet.as-i16
@@ -67,23 +67,16 @@
         posix
           "close"
           * sd
-      code. > strerror
-        posix
-          "strerror"
-          * (posix "errno" *).code
       if. > @
         sd.eq -1
-        error
-          sprintf
-            "Couldn't create a posix socket, reason: %s"
-            * strerror
+        error "Couldn't create a posix socket"
         try
           if.
             connected.eq -1
             error
               sprintf
-                "Couldn't connect to '%s:%d' on posix socket '%d', reason: %s"
-                * ^.address ^.port sd strerror
+                "Couldn't connect to '%s:%d' on posix socket '%d'"
+                * ^.address ^.port sd
             as-bytes.
               dataized
                 scope
@@ -93,8 +86,8 @@
             closed.eq -1
             error
               sprintf
-                "Couldn't close a posix socket '%d' connected to '%s:%d', reason: %s"
-                * sd ^.address ^.port strerror
+                "Couldn't close a posix socket '%d' connected to '%s:%d'"
+                * sd ^.address ^.port
             true
 
     true > [descriptor] > scoped-posix-socket

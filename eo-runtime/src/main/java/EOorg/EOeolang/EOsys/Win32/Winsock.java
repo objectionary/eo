@@ -127,4 +127,10 @@ public interface Winsock extends StdCallLibrary {
      * @return Zero on success, SOCKET_ERROR on error.
      */
     int connect(int socket, SockaddrIn addr, int addrlen);
+
+    /**
+     * Get last error status code.
+     * @return Last error status code
+     */
+    int WSAGetLastError();
 }

@@ -36,6 +36,7 @@ import EOorg.EOeolang.EOsys.Win32.InetAddrFuncCall;
 import EOorg.EOeolang.EOsys.Win32.ReadFileFuncCall;
 import EOorg.EOeolang.EOsys.Win32.SocketFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WSACleanupFuncCall;
+import EOorg.EOeolang.EOsys.Win32.WSAGetLastErrorFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WSAStartupFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WriteFileFuncCall;
 import java.util.HashMap;
@@ -71,6 +72,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("GetSystemTime", GetSystemTimeFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSAStartup", WSAStartupFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("WSACleanup", WSACleanupFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("inet_addr", InetAddrFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("socket", SocketFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("closesocket", ClosesocketFuncCall::new);

@@ -31,3 +31,4 @@ exclude_paths:
   - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/StrerrorSyscall.java"
   - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/ConnectFuncCall.java"
   - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/InetAddrFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WSAGetLastErrorFuncCall.java"

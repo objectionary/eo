@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -149,6 +150,13 @@ final class EOposixTest {
                 result,
                 Matchers.equalTo(new byte[] {0x01})
             );
+            if (!Arrays.equals(result, new byte[]{0x01})) {
+                System.out.println(
+                    CStdLib.INSTANCE.strerror(
+                        CStdLib.INSTANCE.errno()
+                    )
+                );
+            }
         }
 
         /**

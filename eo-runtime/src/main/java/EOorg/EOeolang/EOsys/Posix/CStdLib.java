@@ -36,6 +36,7 @@ import com.sun.jna.Pointer;
  * C standard library with unix syscalls.
  * @since 0.40
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface CStdLib extends Library {
 
     /**
@@ -179,7 +180,7 @@ public interface CStdLib extends Library {
     int connect(int sockfd, SockaddrIn addr, int addrlen);
 
     /**
-     * Function to retrieve the current value of {@code errno}
+     * Function to retrieve the current value of {@code errno}.
      * @return The value of errno
      */
     int errno();
