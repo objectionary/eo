@@ -28,7 +28,6 @@
 package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.CStdLib;
-import EOorg.EOeolang.EOsys.Posix.ConnectSyscall;
 import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -116,7 +115,7 @@ final class EOposixTest {
             assert descriptor >= 0;
             final int connected = CStdLib.INSTANCE.connect(
                 descriptor,
-                new ConnectSyscall.SockaddrIn(
+                new SockaddrIn(
                     (short) CStdLib.AF_INET,
                     this.htons(8080),
                     CStdLib.INSTANCE.inet_addr("127.0.0.1")

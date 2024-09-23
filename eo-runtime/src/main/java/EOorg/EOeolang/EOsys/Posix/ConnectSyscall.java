@@ -27,10 +27,8 @@
  */
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import EOorg.EOeolang.EOsys.Syscall;
-import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -62,7 +60,7 @@ public final class ConnectSyscall implements Syscall {
             new Data.ToPhi(
                 CStdLib.INSTANCE.connect(
                     new Dataized(params[0]).asNumber().intValue(),
-                    new ConnectSyscall.SockaddrIn(
+                    new SockaddrIn(
                         new Dataized(params[1].take("sin-family")).take(Short.class),
                         new Dataized(params[1].take("sin-port")).take(Short.class),
                         new Dataized(params[1].take("sin-addr")).take(Integer.class),
@@ -74,62 +72,5 @@ public final class ConnectSyscall implements Syscall {
         );
         result.put(1, new PhDefault());
         return result;
-    }
-
-    /**
-     * The sockaddr_in structure.
-     * @since 0.40.0
-     * @checkstyle VisibilityModifierCheck (50 lines)
-     * @checkstyle ParameterNumberCheck (50 lines)
-     */
-    public static final class SockaddrIn extends Structure {
-        /**
-         * Address family (e.g., AF_INET).
-         */
-        public short family;
-
-        /**
-         * Port number in network byte order.
-         */
-        public short port;
-
-        /**
-         * IP address in network byte order.
-         */
-        public int addr;
-
-        /**
-         * Padding to match C structure.
-         */
-        public byte[] zero;
-
-        /**
-         * Convenient ctor for testing.
-         * @param family Family
-         * @param port Port
-         * @param addr Address
-         */
-        public SockaddrIn(final short family, final short port, final int addr) {
-            this(family, port, addr, new byte[] {0, 0, 0, 0, 0, 0, 0, 0});
-        }
-
-        /**
-         * Ctor.
-         * @param family Family
-         * @param port Port
-         * @param addr Address
-         * @param zero Zero 8 bytes
-         */
-        SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
-            this.family = family;
-            this.port = port;
-            this.addr = addr;
-            this.zero = Arrays.copyOf(zero, zero.length);
-        }
-
-        @Override
-        public List<String> getFieldOrder() {
-            return Arrays.asList("family", "port", "addr", "zero");
-        }
     }
 }

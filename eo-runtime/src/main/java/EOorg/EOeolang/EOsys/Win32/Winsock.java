@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import com.sun.jna.Native;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
@@ -96,7 +97,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * The inet_addr function converts a string containing an IPv4 dotted-decimal
-     * address into a proper address for the {@link ConnectFuncCall.SockaddrIn} structure.
+     * address into a proper address for the {@link SockaddrIn} structure.
      * @param address IPv4 address
      * @return Address as integer.
      */
@@ -125,5 +126,5 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen Sockaddr structure size
      * @return Zero on success, SOCKET_ERROR on error.
      */
-    int connect(int socket, ConnectFuncCall.SockaddrIn addr, int addrlen);
+    int connect(int socket, SockaddrIn addr, int addrlen);
 }

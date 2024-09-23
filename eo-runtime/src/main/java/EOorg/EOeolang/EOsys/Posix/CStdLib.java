@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -175,5 +176,5 @@ public interface CStdLib extends Library {
      * @param addrlen Size of socket address structure
      * @return Zero on success, -1 on error
      */
-    int connect(int sockfd, ConnectSyscall.SockaddrIn addr, int addrlen);
+    int connect(int sockfd, SockaddrIn addr, int addrlen);
 }

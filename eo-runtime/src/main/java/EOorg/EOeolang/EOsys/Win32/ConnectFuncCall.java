@@ -28,10 +28,8 @@
  */
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import EOorg.EOeolang.EOsys.Syscall;
-import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -76,62 +74,5 @@ public final class ConnectFuncCall implements Syscall {
         );
         result.put(1, new PhDefault());
         return result;
-    }
-
-    /**
-     * Sockaddr_in win32 structure.
-     * @since 0.40
-     * @checkstyle VisibilityModifierCheck (50 lines)
-     * @checkstyle ParameterNumberCheck (50 lines)
-     */
-    public static final class SockaddrIn extends Structure {
-        /**
-         * Address family (e.g., AF_INET).
-         */
-        public short family;
-
-        /**
-         * Port number in network byte order.
-         */
-        public short port;
-
-        /**
-         * IP address in network byte order.
-         */
-        public int addr;
-
-        /**
-         * Padding.
-         */
-        public byte[] zero;
-
-        /**
-         * Convenient ctor for testing.
-         * @param family Family
-         * @param port Port
-         * @param addr Addr
-         */
-        public SockaddrIn(final short family, final short port, final int addr) {
-            this(family, port, addr, new byte[] {0, 0, 0, 0, 0, 0, 0, 0});
-        }
-
-        /**
-         * Ctor.
-         * @param family Family
-         * @param port Port
-         * @param addr Addr
-         * @param zero Zero
-         */
-        public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
-            this.family = family;
-            this.port = port;
-            this.addr = addr;
-            this.zero = Arrays.copyOf(zero, zero.length);
-        }
-
-        @Override
-        public List<String> getFieldOrder() {
-            return Arrays.asList("family", "port", "addr", "zero");
-        }
     }
 }

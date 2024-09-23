@@ -27,7 +27,6 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
-import EOorg.EOeolang.EOsys.Win32.ConnectFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WSAStartupFuncCall;
 import EOorg.EOeolang.EOsys.Win32.Winsock;
 import EOorg.EOeolang.EOtuple$EOempty;
@@ -210,7 +209,7 @@ final class EOwin32Test {
                 assert descriptor >= 0;
                 final int connected = Winsock.INSTANCE.connect(
                     descriptor,
-                    new ConnectFuncCall.SockaddrIn(
+                    new SockaddrIn(
                         (short) Winsock.AF_INET,
                         this.htons(8080),
                         Winsock.INSTANCE.inet_addr("127.0.0.1")
