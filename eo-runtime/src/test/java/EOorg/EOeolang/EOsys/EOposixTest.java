@@ -27,17 +27,29 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import EOorg.EOeolang.EOsys.Posix.CStdLib;
+import EOorg.EOeolang.EOsys.Posix.ConnectSyscall;
 import EOorg.EOeolang.EOtuple$EOempty;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.ServerSocket;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link EOposix}.
@@ -70,5 +82,97 @@ final class EOposixTest {
                 )
             )
         );
+    }
+
+    @Nested
+    @DisabledOnOs(OS.WINDOWS)
+    @Execution(ExecutionMode.SAME_THREAD)
+    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
+    final class SocketTest {
+        /**
+         * Server socket.
+         */
+        private ServerSocket socket;
+
+        @BeforeEach
+        void setUp() throws IOException {
+            this.socket = new ServerSocket(8080);
+        }
+
+        @AfterEach
+        void tearDown() throws IOException {
+            if (this.socket != null && !this.socket.isClosed()) {
+                this.socket.close();
+            }
+        }
+
+        @Test
+        void connectsSuccessfullyViaSyscalls() {
+            final int descriptor = CStdLib.INSTANCE.socket(
+                CStdLib.AF_INET,
+                CStdLib.SOCK_STREAM,
+                CStdLib.IPPROTO_TCP
+            );
+            assert descriptor >= 0;
+            final int connected = CStdLib.INSTANCE.connect(
+                descriptor,
+                new ConnectSyscall.SockaddrIn(
+                    (short) CStdLib.AF_INET,
+                    this.htons(8080),
+                    CStdLib.INSTANCE.inet_addr("127.0.0.1")
+                ),
+                16
+            );
+            MatcherAssert.assertThat(
+                "Libc 'connect' syscall should have successfully connected to local server, but it didn't",
+                connected,
+                Matchers.equalTo(0)
+            );
+            assert CStdLib.INSTANCE.close(descriptor) == 0;
+        }
+
+        @Test
+        void connectsViaSocketObject() {
+            final Phi sock = Phi.Φ.take("org.eolang.net.socket")
+                .take("posix-socket")
+                .copy();
+            sock.put(0, new Data.ToPhi("127.0.0.1"));
+            sock.put(1, new Data.ToPhi(8080));
+            final Phi connected = sock.take("connect").copy();
+            connected.put(0, new EOposixTest.Scope());
+            MatcherAssert.assertThat(
+                "Posix socket should have connected successfully to local server, but it didn't",
+                new Dataized(connected).asBool(),
+                Matchers.is(true)
+            );
+        }
+
+        /**
+         * Helper function to convert port number to network byte order (htons).
+         * @param port Port
+         * @return Port in network byte order
+         */
+        short htons(final int port) {
+            return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
+        }
+    }
+
+    /**
+     * Socket scope.
+     * @since 0.40.0
+     */
+    private static final class Scope extends PhDefault implements Atom {
+        /**
+         * Ctor.
+         */
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        Scope() {
+            this.add("s", new AtVoid("s"));
+        }
+
+        @Override
+        public Phi lambda() {
+            return new Data.ToPhi(true);
+        }
     }
 }

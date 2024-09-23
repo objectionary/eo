@@ -20,8 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.txt.sprintf
++alias org.eolang.sys.posix
 +alias org.eolang.sys.os
++alias org.eolang.sys.win32
++alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.net
@@ -50,7 +52,7 @@
         inet-addr.eq posix.inaddr-none
         error
           sprintf
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer in network byte order via 'inet_addr' syscall"
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall"
             * ^.address
         inet-addr.as-i32
       posix.sockaddr-in > sockaddr
@@ -73,7 +75,7 @@
             connected.eq -1
             error
               sprintf
-                "Couldn't connect to '%s:%d' on socket '%d'"
+                "Couldn't connect to '%s:%d' on posix socket '%d'"
                 * ^.address ^.port sd
             as-bytes.
               dataized
@@ -84,7 +86,7 @@
             closed.eq -1
             error
               sprintf
-                "Couldn't close a socket '%d' connected to '%s:%d'"
+                "Couldn't close a posix socket '%d' connected to '%s:%d'"
                 * sd ^.address ^.port
             true
 
@@ -92,7 +94,7 @@
 
   [address port] > win-socket
     [scope] > connect
-      code. > startup
+      code. > started-up
         win32
           "WSAStartup"
           * win32.winsock-version-2-2
@@ -108,7 +110,7 @@
         inet-addr.eq win32.inaddr-none
         error
           sprintf
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer in network byte order via 'inet_addr' function call"
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call"
             * ^.address
         inet-addr.as-i32
       win32.sockaddr-in > sockaddr
@@ -125,11 +127,11 @@
           * sd
       (win32 "WSACleanup" *).code > cleaned-up
       if. > @
-        (startup.eq 0).not
+        (started-up.eq 0).not
         error
           sprintf
             "Couldn't initialize Winsock via 'WSAStartup' call, error code is %d"
-            * startup
+            * started-up
         try
           if.
             sd.eq -1
@@ -137,31 +139,26 @@
             try
               if.
                 connected.eq -1
-
-            if.
-              connected.eq -1
-              if.
-                closed.eq -1
                 error
                   sprintf
-                    "Couldn't close a socket '%d' after failed connection attempt to '%s:%d'"
-                    * sd ^.address ^.port
-                error
-                  sprintf
-                    "Couldn't connect to '%s:%d' on socket '%d'"
+                    "Couldn't connect to '%s:%d' on win32 socket '%d'"
                     * ^.address ^.port sd
-              try
                 as-bytes.
                   dataized
                     scope
                       ^.scoped-win-socket sd
-                ex > [ex]
-                try-close-and-cleanup
+              ex > [ex]
+              if.
+                closed.eq win32.socket-error
+                error
+                  sprintf
+                    "Couldn't close a win32 socket '%d'"
+                    * sd
+                true
           ex > [ex]
           if.
             cleaned-up.eq win32.socket-error
             error "Couldn't cleanup Winsock resources"
             true
 
-    # Scoped win socket API.
     true > [descriptor] > scoped-win-socket

@@ -63,6 +63,24 @@ public interface CStdLib extends Library {
     int O_RDWR = 2;
 
     /**
+     * The Internet Protocol version 4 (IPv4) address family.
+     */
+    int AF_INET = 2;
+
+    /**
+     * A socket type that provides sequenced, reliable, two-way, connection-based byte streams
+     * with an OOB data transmission mechanism.
+     * This socket type uses the TCP for the Internet address family (AF_INET or AF_INET6).
+     */
+    int SOCK_STREAM = 1;
+
+    /**
+     * The Transmission Control Protocol (TCP). This is a possible value when
+     * the af parameter is AF_INET or AF_INET6 and the type parameter is SOCK_STREAM.
+     */
+    int IPPROTO_TCP = 6;
+
+    /**
      * Duplicates file descriptor.
      * @param descriptor Old file descriptor
      * @return New file descriptor
@@ -136,7 +154,9 @@ public interface CStdLib extends Library {
      * Return IP in network byte order.
      * @param address IPv4 address
      * @return IP address on success, -1 on error
+     * @checkstyle MethodNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.MethodNamingConventions")
     int inet_addr(String address);
 
     /**

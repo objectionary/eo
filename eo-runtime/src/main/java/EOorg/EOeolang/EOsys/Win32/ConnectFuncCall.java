@@ -81,6 +81,8 @@ public final class ConnectFuncCall implements Syscall {
     /**
      * Sockaddr_in win32 structure.
      * @since 0.40
+     * @checkstyle VisibilityModifierCheck (50 lines)
+     * @checkstyle ParameterNumberCheck (50 lines)
      */
     public static final class SockaddrIn extends Structure {
         /**
@@ -104,17 +106,27 @@ public final class ConnectFuncCall implements Syscall {
         public byte[] zero;
 
         /**
+         * Convenient ctor for testing.
+         * @param family Family
+         * @param port Port
+         * @param addr Addr
+         */
+        public SockaddrIn(final short family, final short port, final int addr) {
+            this(family, port, addr, new byte[] {0, 0, 0, 0, 0, 0, 0, 0});
+        }
+
+        /**
          * Ctor.
          * @param family Family
          * @param port Port
          * @param addr Addr
          * @param zero Zero
          */
-        SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
+        public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
             this.family = family;
             this.port = port;
             this.addr = addr;
-            this.zero = zero;
+            this.zero = Arrays.copyOf(zero, zero.length);
         }
 
         @Override

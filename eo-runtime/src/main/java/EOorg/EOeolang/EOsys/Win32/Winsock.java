@@ -98,7 +98,7 @@ public interface Winsock extends StdCallLibrary {
      * The inet_addr function converts a string containing an IPv4 dotted-decimal
      * address into a proper address for the {@link ConnectFuncCall.SockaddrIn} structure.
      * @param address IPv4 address
-     * @return
+     * @return Address as integer.
      */
     int inet_addr(String address);
 
