@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -139,10 +140,14 @@ final class EOposixTest {
             sock.put(1, new Data.ToPhi(8080));
             final Phi connected = sock.take("connect").copy();
             connected.put(0, new EOposixTest.Scope());
+            final byte[] result = new Dataized(connected).take();
             MatcherAssert.assertThat(
-                "Posix socket should have connected successfully to local server, but it didn't",
-                new Dataized(connected).asBool(),
-                Matchers.is(true)
+                String.format(
+                    "Posix socket should have connected successfully to local server, but it didn't, message is: '%s'",
+                    new String(result, StandardCharsets.UTF_8)
+                ),
+                result,
+                Matchers.equalTo(new byte[] {0x01})
             );
         }
 
