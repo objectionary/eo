@@ -65,6 +65,15 @@ public final class EoSyntax implements Syntax {
     /**
      * Ctor.
      *
+     * @param ipt The EO program to parse
+     */
+    public EoSyntax(final Input ipt) {
+        this("unknown", ipt);
+    }
+
+    /**
+     * Ctor.
+     *
      * @param nme The name of the EO program being parsed
      * @param ipt The EO program to parse
      */
