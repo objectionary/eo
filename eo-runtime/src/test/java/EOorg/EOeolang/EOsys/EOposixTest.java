@@ -29,6 +29,7 @@ package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.CStdLib;
 import EOorg.EOeolang.EOtuple$EOempty;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
@@ -151,8 +152,9 @@ final class EOposixTest {
                 Matchers.equalTo(new byte[] {0x01})
             );
             if (!Arrays.equals(result, new byte[]{0x01})) {
-                System.out.println(
-                    CStdLib.INSTANCE.strerror(
+                Logger.info(
+                    this,
+                    "HELLOOOOO" + CStdLib.INSTANCE.strerror(
                         CStdLib.INSTANCE.errno()
                     )
                 );
