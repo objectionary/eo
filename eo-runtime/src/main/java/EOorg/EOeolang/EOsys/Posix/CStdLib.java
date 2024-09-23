@@ -177,4 +177,17 @@ public interface CStdLib extends Library {
      * @return Zero on success, -1 on error
      */
     int connect(int sockfd, SockaddrIn addr, int addrlen);
+
+    /**
+     * Function to retrieve the current value of {@code errno}
+     * @return The value of errno
+     */
+    int errno();
+
+    /**
+     * Converts {@code errno} to a human-readable string.
+     * @param errno The number of the error
+     * @return Human-readable error string
+     */
+    String strerror(int errno);
 }
