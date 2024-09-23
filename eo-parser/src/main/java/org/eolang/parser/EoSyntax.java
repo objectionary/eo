@@ -66,6 +66,7 @@ public final class EoSyntax implements Syntax {
      * Ctor.
      *
      * @param ipt The EO program to parse
+     * @since 0.40.0
      */
     public EoSyntax(final Input ipt) {
         this("unknown", ipt);
