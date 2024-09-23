@@ -34,6 +34,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -44,8 +45,6 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -60,6 +59,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@Execution(ExecutionMode.SAME_THREAD)
 final class EOwin32Test {
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
@@ -129,6 +129,35 @@ final class EOwin32Test {
     }
 
     /**
+     * Helper function to convert port number to network byte order (htons).
+     * @param port Port
+     * @return Port in network byte order
+     */
+    private static short htons(final int port) {
+        return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
+    }
+
+    /**
+     * Start local server socket.
+     * @return Local server socket
+     * @throws IOException If fails
+     */
+    private static ServerSocket startServer() throws IOException {
+        return new ServerSocket(8080);
+    }
+
+    /**
+     * Stop local server.
+     * @param socket Local server socket
+     * @throws IOException If fails
+     */
+    private static void stopServer(final ServerSocket socket) throws IOException {
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+    }
+
+    /**
      * Test case for {@link Winsock}.
      * @since 0.40
      * @checkstyle AbbreviationAsWordInNameCheck (300 lines)
@@ -182,88 +211,55 @@ final class EOwin32Test {
             EOwin32Test.cleanupsWSA();
         }
 
-        @Nested
-        @Execution(ExecutionMode.SAME_THREAD)
-        @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
-        @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-        final class ConnectSocketTest {
-            /**
-             * Server socket.
-             */
-            private ServerSocket socket;
-
-            @BeforeEach
-            void setUp() throws IOException {
-                this.socket = new ServerSocket(8080);
+        @Test
+        void connectsSuccessfullyViaSyscalls() throws IOException {
+            final ServerSocket socket = EOwin32Test.startServer();
+            assert EOwin32Test.startupsWSA() == 0;
+            final int descriptor = EOwin32Test.createsSocket();
+            assert descriptor >= 0;
+            final int connected = Winsock.INSTANCE.connect(
+                descriptor,
+                new SockaddrIn(
+                    (short) Winsock.AF_INET,
+                    EOwin32Test.htons(8080),
+                    Winsock.INSTANCE.inet_addr("127.0.0.1")
+                ),
+                16
+            );
+            if (connected != 0) {
+                Logger.info(this, "Error code: %d", Winsock.INSTANCE.WSAGetLastError());
             }
+            MatcherAssert.assertThat(
+                "Winsock 'connect' func call should have successfully connected to local server, but it didn't",
+                connected,
+                Matchers.equalTo(0)
+            );
+            assert EOwin32Test.closesSocket(descriptor) == 0;
+            EOwin32Test.cleanupsWSA();
+            EOwin32Test.stopServer(socket);
+        }
 
-            @AfterEach
-            void tearDown() throws IOException {
-                if (this.socket != null && !this.socket.isClosed()) {
-                    this.socket.close();
-                }
+        @Test
+        void connectsViaSocketObject() throws IOException {
+            final ServerSocket socket = EOwin32Test.startServer();
+            final Phi sock = Phi.Φ.take("org.eolang.net.socket").take("win-socket").copy();
+            sock.put(0, new Data.ToPhi("127.0.0.1"));
+            sock.put(1, new Data.ToPhi(8080));
+            final Phi connected = sock.take("connect").copy();
+            connected.put(0, new EOwin32Test.Scope());
+            final byte[] result = new Dataized(connected).take();
+            final byte[] expected = new byte[] {1};
+            if (!Arrays.equals(result, expected)) {
+                Logger.info(this, "Error code: %d", Winsock.INSTANCE.WSAGetLastError());
             }
-
-            @Test
-            void connectsSuccessfullyViaSyscalls() {
-                assert EOwin32Test.startupsWSA() == 0;
-                final int descriptor = EOwin32Test.createsSocket();
-                assert descriptor >= 0;
-                final int connected = Winsock.INSTANCE.connect(
-                    descriptor,
-                    new SockaddrIn(
-                        (short) Winsock.AF_INET,
-                        this.htons(8080),
-                        Winsock.INSTANCE.inet_addr("127.0.0.1")
-                    ),
-                    16
-                );
-                if (connected != 0) {
-                    Logger.info(
-                        this,
-                        "WIN SOCK ERROR " + Winsock.INSTANCE.WSAGetLastError()
-                    );
-                }
-                MatcherAssert.assertThat(
-                    "Winsock 'connect' func call should have successfully connected to local server, but it didn't",
-                    connected,
-                    Matchers.equalTo(0)
-                );
-                assert EOwin32Test.closesSocket(descriptor) == 0;
-                EOwin32Test.cleanupsWSA();
-            }
-
-            @Test
-            void connectsViaSocketObject() {
-                final Phi sock = Phi.Φ.take("org.eolang.net.socket")
-                    .take("win-socket")
-                    .copy();
-                sock.put(0, new Data.ToPhi("127.0.0.1"));
-                sock.put(1, new Data.ToPhi(8080));
-                final Phi connected = sock.take("connect").copy();
-                connected.put(0, new EOwin32Test.Scope());
-                final byte[] result = new Dataized(connected).take();
-                if (!Arrays.equals(result, new byte[] {1})) {
-                    Logger.info(
-                        this,
-                        "HELLO WIN " + Winsock.INSTANCE.WSAGetLastError()
-                    );
-                }
-                MatcherAssert.assertThat(
-                    "Windows socket should have connected successfully to local server, but it didn't",
-                    result,
-                    Matchers.equalTo(new byte[] {1})
-                );
-            }
-
-            /**
-             * Helper function to convert port number to network byte order (htons).
-             * @param port Port
-             * @return Port in network byte order
-             */
-            short htons(final int port) {
-                return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
-            }
+            MatcherAssert.assertThat(
+                String.format(
+                    "Windows socket should have connected successfully to local server, but it didn't, message is: %s",
+                    new String(result, StandardCharsets.UTF_8)
+                ),
+                result, Matchers.equalTo(expected)
+            );
+            EOwin32Test.stopServer(socket);
         }
     }
 

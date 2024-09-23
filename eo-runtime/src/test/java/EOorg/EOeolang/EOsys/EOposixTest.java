@@ -44,9 +44,6 @@ import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -60,6 +57,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@Execution(ExecutionMode.SAME_THREAD)
 final class EOposixTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
@@ -86,89 +84,91 @@ final class EOposixTest {
         );
     }
 
-    @Nested
-    @DisabledOnOs(OS.WINDOWS)
-    @Execution(ExecutionMode.SAME_THREAD)
-    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-    final class SocketTest {
-        /**
-         * Server socket.
-         */
-        private ServerSocket socket;
+    @Test
+    void connectsSuccessfullyViaSyscalls() throws IOException {
+        final ServerSocket socket = EOposixTest.startServer();
+        final int descriptor = CStdLib.INSTANCE.socket(
+            CStdLib.AF_INET,
+            CStdLib.SOCK_STREAM,
+            CStdLib.IPPROTO_TCP
+        );
+        assert descriptor >= 0;
+        final int connected = CStdLib.INSTANCE.connect(
+            descriptor,
+            new SockaddrIn(
+                (short) CStdLib.AF_INET,
+                EOposixTest.htons(8080),
+                CStdLib.INSTANCE.inet_addr("127.0.0.1")
+            ),
+            16
+        );
+        MatcherAssert.assertThat(
+            "Libc 'connect' syscall should have successfully connected to local server, but it didn't",
+            connected,
+            Matchers.equalTo(0)
+        );
+        assert CStdLib.INSTANCE.close(descriptor) == 0;
+        EOposixTest.stopServer(socket);
+    }
 
-        @BeforeEach
-        void setUp() throws IOException {
-            this.socket = new ServerSocket(8080);
-        }
-
-        @AfterEach
-        void tearDown() throws IOException {
-            if (this.socket != null && !this.socket.isClosed()) {
-                this.socket.close();
-            }
-        }
-
-        @Test
-        void connectsSuccessfullyViaSyscalls() {
-            final int descriptor = CStdLib.INSTANCE.socket(
-                CStdLib.AF_INET,
-                CStdLib.SOCK_STREAM,
-                CStdLib.IPPROTO_TCP
-            );
-            assert descriptor >= 0;
-            final int connected = CStdLib.INSTANCE.connect(
-                descriptor,
-                new SockaddrIn(
-                    (short) CStdLib.AF_INET,
-                    this.htons(8080),
-                    CStdLib.INSTANCE.inet_addr("127.0.0.1")
-                ),
-                16
-            );
-            MatcherAssert.assertThat(
-                "Libc 'connect' syscall should have successfully connected to local server, but it didn't",
-                connected,
-                Matchers.equalTo(0)
-            );
-            assert CStdLib.INSTANCE.close(descriptor) == 0;
-        }
-
-        @Test
-        void connectsViaSocketObject() {
-            final Phi sock = Phi.Φ.take("org.eolang.net.socket")
-                .take("posix-socket")
-                .copy();
-            sock.put(0, new Data.ToPhi("127.0.0.1"));
-            sock.put(1, new Data.ToPhi(8080));
-            final Phi connected = sock.take("connect").copy();
-            connected.put(0, new EOposixTest.Scope());
-            final byte[] result = new Dataized(connected).take();
-            if (!Arrays.equals(result, new byte[]{0x01})) {
-                Logger.info(
-                    this,
-                    "HELLOOOOO" + CStdLib.INSTANCE.strerror(
-                        CStdLib.INSTANCE.errno()
-                    )
-                );
-            }
-            MatcherAssert.assertThat(
-                String.format(
-                    "Posix socket should have connected successfully to local server, but it didn't, message is: '%s'",
-                    new String(result, StandardCharsets.UTF_8)
-                ),
-                result,
-                Matchers.equalTo(new byte[] {0x01})
+    @Test
+    void connectsViaSocketObject() throws IOException {
+        final ServerSocket socket = EOposixTest.startServer();
+        final Phi sock = Phi.Φ.take("org.eolang.net.socket")
+            .take("posix-socket")
+            .copy();
+        sock.put(0, new Data.ToPhi("127.0.0.1"));
+        sock.put(1, new Data.ToPhi(8080));
+        final Phi connected = sock.take("connect").copy();
+        connected.put(0, new EOposixTest.Scope());
+        final byte[] result = new Dataized(connected).take();
+        final byte[] expected = new byte[] {1};
+        if (!Arrays.equals(result, expected)) {
+            Logger.info(
+                this,
+                "Strerror: %s",
+                CStdLib.INSTANCE.strerror(CStdLib.INSTANCE.errno())
             );
         }
+        MatcherAssert.assertThat(
+            String.format(
+                "Posix socket should have connected successfully to local server, but it didn't, message is: '%s'",
+                new String(result, StandardCharsets.UTF_8)
+            ),
+            result,
+            Matchers.equalTo(expected)
+        );
+        EOposixTest.stopServer(socket);
+    }
 
-        /**
-         * Helper function to convert port number to network byte order (htons).
-         * @param port Port
-         * @return Port in network byte order
-         */
-        short htons(final int port) {
-            return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
+
+    /**
+     * Start local server socket.
+     * @return Local server socket
+     * @throws IOException If fails
+     */
+    private static ServerSocket startServer() throws IOException {
+        return new ServerSocket(8080);
+    }
+
+    /**
+     * Stop local server.
+     * @param socket Local server socket
+     * @throws IOException If fails
+     */
+    private static void stopServer(final ServerSocket socket) throws IOException {
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
         }
+    }
+
+    /**
+     * Helper function to convert port number to network byte order (htons).
+     * @param port Port
+     * @return Port in network byte order
+     */
+    private static short htons(final int port) {
+        return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
     }
 
     /**
