@@ -30,9 +30,11 @@ package EOorg.EOeolang.EOsys; // NOPMD
 import EOorg.EOeolang.EOsys.Win32.WSAStartupFuncCall;
 import EOorg.EOeolang.EOsys.Win32.Winsock;
 import EOorg.EOeolang.EOtuple$EOempty;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
+import java.util.Arrays;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -234,10 +236,17 @@ final class EOwin32Test {
                 sock.put(1, new Data.ToPhi(8080));
                 final Phi connected = sock.take("connect").copy();
                 connected.put(0, new EOwin32Test.Scope());
+                final byte[] result = new Dataized(connected).take();
+                if (!Arrays.equals(result, new byte[] {1})) {
+                    Logger.info(
+                        this,
+                        "HELLO WIN " + Winsock.INSTANCE.WSAGetLastError()
+                    );
+                }
                 MatcherAssert.assertThat(
                     "Windows socket should have connected successfully to local server, but it didn't",
-                    new Dataized(connected).asBool(),
-                    Matchers.is(true)
+                    result,
+                    Matchers.equalTo(new byte[] {1})
                 );
             }
 
