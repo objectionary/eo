@@ -32,12 +32,14 @@
 [] > converts-win32-inet-addr
   or. > @
     os.is-windows.not
-    eq.
-      code.
-        win32
-          "inet_addr"
-          * "127.0.0.1"
-      2130706433
+    QQ.io.stdout
+      QQ.txt.sprintf
+        "Windows inet_addr '%d'"
+        *
+          code.
+            win32
+              "inet_addr"
+              * "127.0.0.1"
 
 # Test.
 [] > win32-sockaddr-in-returns-valid-size

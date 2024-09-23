@@ -206,7 +206,7 @@ final class EOwin32Test {
 
             @Test
             void connectsSuccessfullyViaSyscalls() {
-                EOwin32Test.startupsWSA();
+                assert EOwin32Test.startupsWSA() == 0;
                 final int descriptor = EOwin32Test.createsSocket();
                 assert descriptor >= 0;
                 final int connected = Winsock.INSTANCE.connect(
@@ -218,6 +218,12 @@ final class EOwin32Test {
                     ),
                     16
                 );
+                if (connected != 0) {
+                    Logger.info(
+                        this,
+                        "WIN SOCK ERROR " + Winsock.INSTANCE.WSAGetLastError()
+                    );
+                }
                 MatcherAssert.assertThat(
                     "Winsock 'connect' func call should have successfully connected to local server, but it didn't",
                     connected,
