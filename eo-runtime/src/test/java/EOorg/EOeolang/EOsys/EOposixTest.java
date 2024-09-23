@@ -143,14 +143,6 @@ final class EOposixTest {
             final Phi connected = sock.take("connect").copy();
             connected.put(0, new EOposixTest.Scope());
             final byte[] result = new Dataized(connected).take();
-            MatcherAssert.assertThat(
-                String.format(
-                    "Posix socket should have connected successfully to local server, but it didn't, message is: '%s'",
-                    new String(result, StandardCharsets.UTF_8)
-                ),
-                result,
-                Matchers.equalTo(new byte[] {0x01})
-            );
             if (!Arrays.equals(result, new byte[]{0x01})) {
                 Logger.info(
                     this,
@@ -159,6 +151,14 @@ final class EOposixTest {
                     )
                 );
             }
+            MatcherAssert.assertThat(
+                String.format(
+                    "Posix socket should have connected successfully to local server, but it didn't, message is: '%s'",
+                    new String(result, StandardCharsets.UTF_8)
+                ),
+                result,
+                Matchers.equalTo(new byte[] {0x01})
+            );
         }
 
         /**
