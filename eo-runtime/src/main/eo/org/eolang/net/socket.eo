@@ -37,12 +37,17 @@
     win-socket address port
     posix-socket address port
 
+  # Host TO Network Short.
+  # It is used to convert a `number` port from host byte order to
+  # to `i16` in network byte order (big-endian).
+  # This conversion is necessary because network protocols like TCP/IP use
+  # big-endian byte order, regardless of the host machine's architecture.
   [port] > htons
-    port.as-i16.as-bytes > short-port
+    port.as-i16.as-bytes > bts
     as-i16. > @
       or.
-        (short-port.and FF-).left 8
-        (short-port.right 8).and FF-
+        (bts.and FF-).left 8
+        (bts.right 8).and FF-
 
   [address port] > posix-socket
     [scope] > connect
@@ -58,7 +63,7 @@
         inet-addr.eq posix.inaddr-none
         error
           sprintf
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: %s"
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
             * ^.address strerror
         inet-addr.as-i32
       posix.sockaddr-in > sockaddr
@@ -81,14 +86,14 @@
         sd.eq -1
         error
           sprintf
-            "Couldn't create a posix socket, reason: %s"
+            "Couldn't create a posix socket, reason: '%s'"
             * strerror
         try
           if.
             connected.eq -1
             error
               sprintf
-                "Couldn't connect to '%s:%d' on posix socket '%d', reason: %s"
+                "Couldn't connect to '%s:%d' on posix socket '%d', reason: '%s'"
                 * ^.address ^.port sd strerror
             as-bytes.
               dataized

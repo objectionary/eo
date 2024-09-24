@@ -69,7 +69,7 @@ public interface CStdLib extends Library {
     int AF_INET = 2;
 
     /**
-     * "Socket as stream" type.
+     * The "Socket as stream" type.
      */
     int SOCK_STREAM = 1;
 
@@ -170,7 +170,9 @@ public interface CStdLib extends Library {
      * Convert IP string to binary form.
      * @param address IP address
      * @return IP address in binary form
+     * @checkstyle MethodNameCheck (5 lines)
      */
+    @SuppressWarnings("PMD.MethodNamingConventions")
     int inet_addr(String address);
 
     /**
