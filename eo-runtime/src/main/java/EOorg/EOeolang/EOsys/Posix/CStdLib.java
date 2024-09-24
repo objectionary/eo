@@ -173,6 +173,10 @@ public interface CStdLib extends Library {
      */
     int inet_addr(String address);
 
-    // Function to convert errno to a human-readable string
-    String strerror(int errnum);
+    /**
+     * Converts {@code errno} to a human-readable string.
+     * @param errno The error number
+     * @return Error as string
+     */
+    String strerror(int errno);
 }

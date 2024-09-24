@@ -33,8 +33,12 @@ import EOorg.EOeolang.EOtuple$EOempty;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -48,9 +52,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link EOposix}.
- *
- * @since 0.40
  * @checkstyle TypeNameCheck (100 lines)
+ * @since 0.40
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOposixTest {
@@ -116,6 +119,51 @@ final class EOposixTest {
             this.stopServer(server);
         }
 
+        @Test
+        void refusesConnection() {
+            final int socket = CStdLib.INSTANCE.socket(
+                CStdLib.AF_INET,
+                CStdLib.SOCK_STREAM,
+                CStdLib.IPPROTO_TCP
+            );
+            assert socket >= 0;
+            final SockaddrIn addr = new SockaddrIn(
+                (short) CStdLib.AF_INET,
+                this.htons(1234),
+                CStdLib.INSTANCE.inet_addr("127.0.0.1")
+            );
+            final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
+            MatcherAssert.assertThat(
+                "Connection via syscall to wrong port must be refused",
+                connected,
+                Matchers.equalTo(-1)
+            );
+            assert CStdLib.INSTANCE.close(socket) == 0;
+        }
+
+        @Test
+        void connectsToLocalServerViaSocketObject() throws IOException {
+            final ServerSocket server = this.startServer();
+            final Phi socket = Phi.Φ.take("org.eolang.net.socket")
+                .take("posix-socket")
+                .copy();
+            socket.put(0, new Data.ToPhi("127.0.0.1"));
+            socket.put(1, new Data.ToPhi(8080));
+            final Phi connected = socket.take("connect").copy();
+            connected.put(0, new Scoped());
+            final byte[] expected = new byte[] {1};
+            final byte[] actual = new Dataized(connected).take();
+            MatcherAssert.assertThat(
+                String.format(
+                    "Posix socket.connect should have been successfully connected to local server, but it didn't, reason: %s",
+                    new String(actual, StandardCharsets.UTF_8)
+                ),
+                actual,
+                Matchers.equalTo(expected)
+            );
+            this.stopServer(server);
+        }
+
         /**
          * Convert port number from host to network byte order (htons)
          * @param port Port number
@@ -150,8 +198,26 @@ final class EOposixTest {
          * @throws IOException If fails to stop
          */
         private void stopServer(final ServerSocket socket) throws IOException {
-            if(socket != null && !socket.isClosed()) {
+            if (socket != null && !socket.isClosed()) {
                 socket.close();
+            }
+        }
+
+        /**
+         * Scoped object.
+         * @since 0.40.0
+         */
+        private class Scoped extends PhDefault implements Atom {
+            /**
+             * Ctor.
+             */
+            Scoped() {
+                this.add("s", new AtVoid("s"));
+            }
+
+            @Override
+            public Phi lambda() {
+                return new Data.ToPhi(true);
             }
         }
     }

@@ -29,12 +29,14 @@ package EOorg.EOeolang.EOsys; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.CloseSyscall;
 import EOorg.EOeolang.EOsys.Posix.ConnectSyscall;
+import EOorg.EOeolang.EOsys.Posix.ErrnoSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetenvSyscall;
 import EOorg.EOeolang.EOsys.Posix.GetpidSyscall;
 import EOorg.EOeolang.EOsys.Posix.GettimeofdaySyscall;
 import EOorg.EOeolang.EOsys.Posix.InetAddrSyscall;
 import EOorg.EOeolang.EOsys.Posix.ReadSyscall;
 import EOorg.EOeolang.EOsys.Posix.SocketSyscall;
+import EOorg.EOeolang.EOsys.Posix.StrerrorSyscall;
 import EOorg.EOeolang.EOsys.Posix.WriteSyscall;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +73,8 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
         EOposix$EOφ.SYS_CALLS.put("close", CloseSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("connect", ConnectSyscall::new);
         EOposix$EOφ.SYS_CALLS.put("inet_addr", InetAddrSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("errno", ErrnoSyscall::new);
+        EOposix$EOφ.SYS_CALLS.put("strerror", StrerrorSyscall::new);
     }
 
     @Override
