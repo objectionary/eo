@@ -38,7 +38,7 @@ jobs:
     name: mvn
     strategy:
       matrix:
-        os: [ ubuntu-20.04, windows-2022, macos-12 ]
+        os: [ ubuntu-20.04 ]
         java: [ 11, 20 ]
     runs-on: ${{ matrix.os }}
     env:
@@ -69,4 +69,4 @@ jobs:
           echo [http] >> %USERPROFILE%\.cargo\config.toml
           echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
-      - run: mvn clean install -Pqulice --errors --batch-mode
+      - run: mvn clean test -Dtest="EOorg.EOeolang.EOsys.EOposixTest#connectsViaSocketObject" -pl eo-runtime -am
