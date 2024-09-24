@@ -27,17 +27,24 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import com.sun.jna.Native;
+import EOorg.EOeolang.EOsys.Posix.CStdLib;
 import EOorg.EOeolang.EOtuple$EOempty;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.ServerSocket;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhWith;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@link EOposix}.
@@ -70,5 +77,82 @@ final class EOposixTest {
                 )
             )
         );
+    }
+
+    @Nested
+    @DisabledOnOs(OS.WINDOWS)
+    @Execution(ExecutionMode.SAME_THREAD)
+    final class SocketSyscallsTest {
+        @Test
+        void connectsToLocalServerViaSyscall() throws IOException {
+            final ServerSocket server = this.startServer();
+            final int socket = CStdLib.INSTANCE.socket(
+                CStdLib.AF_INET,
+                CStdLib.SOCK_STREAM,
+                CStdLib.IPPROTO_TCP
+            );
+            assert socket >= 0;
+            final SockaddrIn addr = new SockaddrIn(
+                (short) CStdLib.AF_INET,
+                this.htons(8080),
+                CStdLib.INSTANCE.inet_addr("127.0.0.1")
+            );
+            final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
+            final String error;
+            if (connected != 0) {
+                error = CStdLib.INSTANCE.strerror(Native.getLastError());
+            } else {
+                error = "";
+            }
+            MatcherAssert.assertThat(
+                String.format(
+                    "Posix socket should have been connected to local server via syscall, but it didn't, error is: %s",
+                    error
+                ),
+                connected,
+                Matchers.equalTo(0)
+            );
+            assert CStdLib.INSTANCE.close(socket) == 0;
+            this.stopServer(server);
+        }
+
+        /**
+         * Convert port number from host to network byte order (htons)
+         * @param port Port number
+         * @return Port number in network byte order
+         */
+        public short htons(final int port) {
+            return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
+        }
+
+        /**
+         * Start server on 8080 port.
+         * @return Server socket
+         * @throws IOException If fails to start
+         */
+        private ServerSocket startServer() throws IOException {
+            return this.startServer(8080);
+        }
+
+        /**
+         * Start server on specific port.
+         * @param port Port to start server on
+         * @return Server socket
+         * @throws IOException If fails to start
+         */
+        private ServerSocket startServer(final int port) throws IOException {
+            return new ServerSocket(port);
+        }
+
+        /**
+         * Stop server.
+         * @param socket Socket
+         * @throws IOException If fails to stop
+         */
+        private void stopServer(final ServerSocket socket) throws IOException {
+            if(socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        }
     }
 }
