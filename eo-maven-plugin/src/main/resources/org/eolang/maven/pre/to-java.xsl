@@ -503,6 +503,8 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>@Test</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@Disabled</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>public void works() throws java.lang.Exception {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:choose>
@@ -548,6 +550,8 @@ SOFTWARE.
     <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import org.junit.jupiter.api.Disabled;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- License with disclaimer  -->

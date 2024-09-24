@@ -69,7 +69,4 @@ jobs:
           echo [http] >> %USERPROFILE%\.cargo\config.toml
           echo multiplexing = false >> %USERPROFILE%\.cargo\config.toml
         shell: cmd
-      - run: |
-          cd ./eo-parser && mvn clean compile
-          cd ../eo-maven-plugin && mvn clean compile
-          cd ../eo-runtime && mvn clean test -Dtest="EOorg.EOeolang.EOsys.EOposixTest#connectsViaSocketObject"
+      - run: mvn clean install -rf :eo-runtime
