@@ -49,7 +49,11 @@ import org.xembly.Xembler;
 public final class EoSyntax implements Syntax {
 
     /**
-     * The name of it.
+     * The name of the EO program being parsed, usually the name of
+     * <tt>.eo</tt> file itself. This name will be present in the
+     * generated XML. This is done for the sake of traceability: it will
+     * always be possible to tell which XMIR file was generated from
+     * which EO program.
      */
     private final String name;
 
@@ -61,8 +65,18 @@ public final class EoSyntax implements Syntax {
     /**
      * Ctor.
      *
-     * @param nme The name of it
-     * @param ipt Input text
+     * @param ipt The EO program to parse
+     * @since 0.40.0
+     */
+    public EoSyntax(final Input ipt) {
+        this("unknown", ipt);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param nme The name of the EO program being parsed
+     * @param ipt The EO program to parse
      */
     public EoSyntax(final String nme, final Input ipt) {
         this.name = nme;
@@ -99,11 +113,15 @@ public final class EoSyntax implements Syntax {
         );
         new Schema(dom).check();
         if (spy.size() == 0) {
-            Logger.debug(this, "Input of %d EO lines compiled, no errors", lines.size());
+            Logger.debug(
+                this,
+                "The %s program of %d EO lines compiled, no errors",
+                this.name, lines.size()
+            );
         } else {
             Logger.debug(
-                this, "Input of %d EO lines failed to compile (%d errors)",
-                lines.size(), spy.size()
+                this, "The %s program of %d EO lines failed to compile (%d errors)",
+                this.name, lines.size(), spy.size()
             );
         }
         return dom;
