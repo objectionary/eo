@@ -151,7 +151,7 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
             EOsocketTest.htons(1234),
-            CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+            Integer.reverseBytes(CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         MatcherAssert.assertThat(
@@ -168,7 +168,7 @@ final class EOsocketTest {
         assert Winsock.INSTANCE.WSAStartup(
             Winsock.WINSOCK_VERSION_2_2,
             new WSAStartupFuncCall.WSAData()
-        ) > 0;
+        ) == 0;
         final int socket = Winsock.INSTANCE.socket(
             Winsock.AF_INET,
             Winsock.SOCK_STREAM,
@@ -178,7 +178,7 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) Winsock.AF_INET,
             EOsocketTest.htons(1234),
-            Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+            Integer.reverseBytes(Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
         );
         final int connected = Winsock.INSTANCE.connect(socket, addr, addr.size());
         MatcherAssert.assertThat(
