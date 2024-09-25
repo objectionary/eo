@@ -35,6 +35,7 @@
   2 > af-inet
   1 > sock-stream
   6 > ipproto-tcp
+  -1 > inaddr-none
 
   [] > @ /return
 
@@ -46,3 +47,14 @@
   # Here `tv-sec` is seconds since Jan 1, 1970, and `tv-usec` - microseconds.
   [tv-sec tv-usec] > timeval
     $ > self
+
+  # The posix `sockaddr_in` structure.
+  [sin-family sin-port sin-addr] > sockaddr-in
+    00-00-00-00-00-00-00-00 > sin-zero
+    plus. > size
+      plus.
+        plus.
+          sin-family.size
+          sin-port.size
+        sin-addr.size
+      sin-zero.size

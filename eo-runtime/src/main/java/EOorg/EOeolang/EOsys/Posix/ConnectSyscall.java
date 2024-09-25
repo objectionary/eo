@@ -25,49 +25,52 @@
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys; // NOPMD
+package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
-import EOorg.EOeolang.EOtuple$EOempty;
-import java.lang.management.ManagementFactory;
+import EOorg.EOeolang.EOsys.SockaddrIn;
+import EOorg.EOeolang.EOsys.Syscall;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhWith;
+import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 /**
- * Test case for {@link EOposix}.
+ * Connect syscall.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOposixTest {
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhWith(
-                    new PhWith(
-                        Phi.Φ.take("org.eolang.sys.posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
+public final class ConnectSyscall implements Syscall {
+    /**
+     * Posix object.
+     */
+    private final Phi posix;
+
+    /**
+     * Ctor.
+     * @param posix Posix object
+     */
+    public ConnectSyscall(final Phi posix) {
+        this.posix = posix;
+    }
+
+    @Override
+    public Phi make(final Phi... params) {
+        final Phi result = this.posix.take("return").copy();
+        result.put(
+            0,
+            new Data.ToPhi(
+                CStdLib.INSTANCE.connect(
+                    new Dataized(params[0]).asNumber().intValue(),
+                    new SockaddrIn(
+                        new Dataized(params[1].take("sin-family")).take(Short.class),
+                        new Dataized(params[1].take("sin-port")).take(Short.class),
+                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
+                        new Dataized(params[1].take("sin-zero")).take()
                     ),
-                    "args",
-                    new EOtuple$EOempty()
-                ).take("code")
-            ).asNumber().intValue(),
-            Matchers.equalTo(
-                Integer.parseInt(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                    new Dataized(params[2]).asNumber().intValue()
                 )
             )
         );
+        result.put(1, new PhDefault());
+        return result;
     }
 }

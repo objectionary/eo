@@ -27,6 +27,7 @@
  */
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -61,6 +62,21 @@ public interface CStdLib extends Library {
      * Open flag for reading and writing.
      */
     int O_RDWR = 2;
+
+    /**
+     * TCP connection family.
+     */
+    int AF_INET = 2;
+
+    /**
+     * The "Socket as stream" type.
+     */
+    int SOCK_STREAM = 1;
+
+    /**
+     * Protocol for TCP connection.
+     */
+    int IPPROTO_TCP = 6;
 
     /**
      * Duplicates file descriptor.
@@ -140,4 +156,29 @@ public interface CStdLib extends Library {
      * @return New socket descriptor on success, -1 on error
      */
     int socket(int domain, int type, int protocol);
+
+    /**
+     * Connects to the server at the specified IP address and port.
+     * @param sockfd Socket descriptor
+     * @param addr Address structure
+     * @param addrlen The size of the address structure
+     * @return Zero on success, -1 on error
+     */
+    int connect(int sockfd, SockaddrIn addr, int addrlen);
+
+    /**
+     * Convert IP string to binary form.
+     * @param address IP address
+     * @return IP address in binary form
+     * @checkstyle MethodNameCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.MethodNamingConventions")
+    int inet_addr(String address);
+
+    /**
+     * Converts {@code errno} to a human-readable string.
+     * @param errno The error number
+     * @return Error as string
+     */
+    String strerror(int errno);
 }

@@ -25,9 +25,10 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/CloseSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/SocketSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/SocketFuncCall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/ClosesocketFuncCall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WSAStartupFuncCall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WSACleanupFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ConnectSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/InetAddrSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/StrerrorSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ErrnoSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/SockaddrIn.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnet/EOsocketTest.java"
+  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnet/package-info.java"
