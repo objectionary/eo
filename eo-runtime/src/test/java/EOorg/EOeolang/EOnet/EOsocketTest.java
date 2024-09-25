@@ -29,6 +29,8 @@ package EOorg.EOeolang.EOnet; // NOPMD
 
 import EOorg.EOeolang.EOsys.Posix.CStdLib;
 import EOorg.EOeolang.EOsys.SockaddrIn;
+import EOorg.EOeolang.EOsys.Win32.WSAStartupFuncCall;
+import EOorg.EOeolang.EOsys.Win32.Winsock;
 import com.sun.jna.Native;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -59,6 +61,11 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 })
 @Execution(ExecutionMode.SAME_THREAD)
 final class EOsocketTest {
+    /**
+     * Localhost IP.
+     */
+    private static String LOCALHOST = "127.0.0.1";
+
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void connectsToLocalServerViaPosixSyscall() throws IOException {
@@ -72,7 +79,7 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
             EOsocketTest.htons(8080),
-            CStdLib.INSTANCE.inet_addr("127.0.0.1")
+            CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         final String error;
@@ -94,6 +101,45 @@ final class EOsocketTest {
     }
 
     @Test
+    @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
+    void connectsToLocalServerViaWindowsSyscall() throws IOException {
+        final ServerSocket server = EOsocketTest.startServer();
+        assert Winsock.INSTANCE.WSAStartup(
+            Winsock.WINSOCK_VERSION_2_2,
+            new WSAStartupFuncCall.WSAData()
+        ) > 0;
+        final int socket = Winsock.INSTANCE.socket(
+            Winsock.AF_INET,
+            Winsock.SOCK_STREAM,
+            Winsock.IPPROTO_TCP
+        );
+        assert socket >= 0;
+        final SockaddrIn addr = new SockaddrIn(
+            (short) Winsock.AF_INET,
+            EOsocketTest.htons(8080),
+            Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+        );
+        final int connected = Winsock.INSTANCE.connect(socket, addr, addr.size());
+        final int error;
+        if (connected == 0) {
+            error = -1;
+        } else {
+            error = Winsock.INSTANCE.WSAGetLastError();
+        }
+        MatcherAssert.assertThat(
+            String.format(
+                "Windows socket should have been connected to local server via syscall, but it didn't, error code is: %d",
+                error
+            ),
+            connected,
+            Matchers.equalTo(0)
+        );
+        assert Winsock.INSTANCE.closesocket(socket) == 0;
+        assert Winsock.INSTANCE.WSACleanup() == 0;
+        EOsocketTest.stopServer(server);
+    }
+
+    @Test
     @DisabledOnOs(OS.WINDOWS)
     void refusesConnectionViaPosixSyscall() {
         final int socket = CStdLib.INSTANCE.socket(
@@ -105,11 +151,11 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
             EOsocketTest.htons(1234),
-            CStdLib.INSTANCE.inet_addr("127.0.0.1")
+            CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         MatcherAssert.assertThat(
-            "Connection via syscall to wrong port must be refused",
+            "Connection via posix syscall to wrong port must be refused",
             connected,
             Matchers.equalTo(-1)
         );
@@ -117,11 +163,38 @@ final class EOsocketTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
+    @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
+    void refusesConnectionViaWindowsSyscall() {
+        assert Winsock.INSTANCE.WSAStartup(
+            Winsock.WINSOCK_VERSION_2_2,
+            new WSAStartupFuncCall.WSAData()
+        ) > 0;
+        final int socket = Winsock.INSTANCE.socket(
+            Winsock.AF_INET,
+            Winsock.SOCK_STREAM,
+            Winsock.IPPROTO_TCP
+        );
+        assert socket >= 0;
+        final SockaddrIn addr = new SockaddrIn(
+            (short) Winsock.AF_INET,
+            EOsocketTest.htons(1234),
+            Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+        );
+        final int connected = Winsock.INSTANCE.connect(socket, addr, addr.size());
+        MatcherAssert.assertThat(
+            "Connection via windows syscall to wrong port must be refused",
+            connected,
+            Matchers.equalTo(-1)
+        );
+        assert Winsock.INSTANCE.closesocket(socket) == 0;
+        assert Winsock.INSTANCE.WSACleanup() == 0;
+    }
+
+    @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
         final ServerSocket server = EOsocketTest.startServer();
         final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
-        socket.put(0, new Data.ToPhi("127.0.0.1"));
+        socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
         socket.put(1, new Data.ToPhi(8080));
         final Phi connected = socket.take("connect").copy();
         connected.put(0, new Scoped());

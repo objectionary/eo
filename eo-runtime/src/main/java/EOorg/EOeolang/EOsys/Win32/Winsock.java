@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import com.sun.jna.Native;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
@@ -109,4 +110,28 @@ public interface Winsock extends StdCallLibrary {
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
      */
     int closesocket(int socket);
+
+    /**
+     * Connects to the server at the specified IP address and port.
+     * @param sockfd Socket descriptor
+     * @param addr Address structure
+     * @param addrlen The size of the address structure
+     * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
+     */
+    int connect(int sockfd, SockaddrIn addr, int addrlen);
+
+    /**
+     * Convert IP string to binary form.
+     * @param address IP address
+     * @return IP address in binary form
+     * @checkstyle MethodNameCheck (5 lines)
+     */
+    @SuppressWarnings("PMD.MethodNamingConventions")
+    int inet_addr(String address);
+
+    /**
+     * Retrieve the last error from winsock.
+     * @return The code of the last winsock error.
+     */
+    int WSAGetLastError();
 }

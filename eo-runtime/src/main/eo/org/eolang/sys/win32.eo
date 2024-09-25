@@ -41,6 +41,8 @@
   6 > ipproto-tcp
   -1 > invalid-socket
   -1 > socket-error
+  -1 > inaddr-none
+  02-02 > winsock-version-2-2
 
   [] > @ /return
 
@@ -51,3 +53,14 @@
   # Structure for "GetSystemTime" function call.
   [year month day day-of-week hour minute second milliseconds] > system-time
     $ > self
+
+  # The win32 `sockaddr_in` structure.
+  [sin-family sin-port sin-addr] > sockaddr-in
+    00-00-00-00-00-00-00-00 > sin-zero
+    plus. > size
+      plus.
+        plus.
+          sin-family.size
+          sin-port.size
+        sin-addr.size
+      sin-zero.size
