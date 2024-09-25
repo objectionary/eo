@@ -64,7 +64,7 @@ final class EOsocketTest {
     /**
      * Localhost IP.
      */
-    private static String LOCALHOST = "127.0.0.1";
+    private static final String LOCALHOST = "127.0.0.1";
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
@@ -79,7 +79,7 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
             EOsocketTest.htons(8080),
-            CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+            Integer.reverseBytes(CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         final String error;
@@ -107,7 +107,7 @@ final class EOsocketTest {
         assert Winsock.INSTANCE.WSAStartup(
             Winsock.WINSOCK_VERSION_2_2,
             new WSAStartupFuncCall.WSAData()
-        ) > 0;
+        ) == 0;
         final int socket = Winsock.INSTANCE.socket(
             Winsock.AF_INET,
             Winsock.SOCK_STREAM,
@@ -117,7 +117,7 @@ final class EOsocketTest {
         final SockaddrIn addr = new SockaddrIn(
             (short) Winsock.AF_INET,
             EOsocketTest.htons(8080),
-            Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST)
+            Integer.reverseBytes(Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
         );
         final int connected = Winsock.INSTANCE.connect(socket, addr, addr.size());
         final int error;

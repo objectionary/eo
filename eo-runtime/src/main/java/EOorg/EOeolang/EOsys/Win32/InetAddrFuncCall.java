@@ -59,7 +59,11 @@ public final class InetAddrFuncCall implements Syscall {
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
-            new Data.ToPhi(Winsock.INSTANCE.inet_addr(new Dataized(params[0]).asString()))
+            new Data.ToPhi(
+                Integer.reverseBytes(
+                    Winsock.INSTANCE.inet_addr(new Dataized(params[0]).asString())
+                )
+            )
         );
         result.put(1, new PhDefault());
         return result;

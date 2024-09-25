@@ -73,3 +73,13 @@
                 "close"
                 * sd
             -1
+
+# Test.
+[] > returns-valid-posix-inet-addr-for-localhost
+  code. > addr
+    posix
+      "inet_addr"
+      * "127.0.0.1"
+  or. > @
+    os.is-windows
+    addr.eq 2130706433
