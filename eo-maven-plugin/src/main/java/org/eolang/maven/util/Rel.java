@@ -59,7 +59,7 @@ public final class Rel {
      * @param other Path relative to working directory.
      */
     public Rel(final Path other) {
-        this(Paths.get(""), other);
+        this(Paths.get("").toAbsolutePath(), other);
     }
 
     /**

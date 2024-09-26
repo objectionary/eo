@@ -71,4 +71,13 @@ final class RelTest {
             Matchers.is(Paths.get("/d/e/f").toAbsolutePath().toString())
         );
     }
+
+    @Test
+    void relatesToCurrentDirectory() {
+        MatcherAssert.assertThat(
+            "Relates file path to current directory name",
+            new Rel(Paths.get("").resolve("f.txt").toAbsolutePath()).toString(),
+            Matchers.equalTo("./f.txt")
+        );
+    }
 }
