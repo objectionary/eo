@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.util;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.maven.BinarizeParseTest;
@@ -77,7 +78,7 @@ final class RelTest {
         MatcherAssert.assertThat(
             "Relates file path to current directory name",
             new Rel(Paths.get("").resolve("f.txt").toAbsolutePath()).toString(),
-            Matchers.equalTo("./f.txt")
+            Matchers.equalTo(String.format(".%sf.txt", File.separator))
         );
     }
 }
