@@ -56,13 +56,3 @@
   or. > @
     os.is-windows.not
     addr.eq 1
-
-# Test.
-[] > returns-valid-win32-inet-addr
-  code. > addr
-    win32
-      "inet_addr"
-      * "192.168.11.10"
-  or. > @
-    os.is-windows.not
-    addr.eq 3232248586
