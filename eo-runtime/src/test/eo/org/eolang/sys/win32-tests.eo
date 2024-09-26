@@ -52,4 +52,10 @@
       * "127.0.0.1"
   or. > @
     os.is-windows.not
-    addr.eq 2130706433
+    seq
+      *
+        QQ.io.stdout
+          QQ.txt.sprintf
+            "win32 inet_addr %d\n"
+            * addr
+        addr.eq 2130706433
