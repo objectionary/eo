@@ -20,14 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
 +package org.eolang.io
-+version 0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
 
-# Test.
-[] > prints-string-to-console
-  stdout > @
-    "Hello world\n"
+# Dead output is an output that writes to nowhere.
+[] > dead-output
+  # Writes given `buffer` to nowhere.
+  # Returns new instance of `output-block`.
+  [buffer] > write
+    output-block > @
+
+    # Dead output block.
+    #
+    # Attention! The object is for internal usage only, please don't use the object
+    # programmatically outside of `dead-output` object.
+    [] > output-block
+      true > @
+
+      # Writes given `buffer` to nowhere.
+      # Returns new instance of `output-block`.
+      ^.^.output-block > [buffer] > write

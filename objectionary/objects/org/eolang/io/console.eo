@@ -20,12 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.sys.os
++alias org.eolang.sys.posix
++alias org.eolang.sys.win32
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # The `console` object is basic I/O object that allows to
 # interact with operation system console.
@@ -63,61 +66,144 @@
 # It dataizes given argument, converts it to string,
 # prints it to operation system console and returns next output block
 # ready to `write` again.
+#
+# Console is platform dependent, which means the internal algorithm is different for
+# Posix and Windows. Defining the console is happen every time you "touch" `console` object.
+# If you use it as input/output:
+# ```
+# console.read 2 > i1
+# i1.read 2 > i2
+# i2.read 2 > i3
+# ...
+# ```
+#
+# it works faster than:
+# ```
+# console.read 2 > i1
+# console.read 2 > i2
+# console.read 2 > i3
+# ...
+# ```
+# That why it's better to use it sequentially.
 [] > console
-  # Read `size` amount of bytes from operation system console.
-  # Returns new instance of `input-block` with `buffer` read from console.
-  [size] > read
-    ((input-block --).read size).self > @
+  platform. > @
+    if.
+      os.is-windows
+      windows-console
+      posix-console
 
-    # Console input block.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `console` object.
-    [buffer] > input-block
-      $ > self
-      buffer > @
+  # Posix console.
+  # It uses posix system calls to read/write standard inputs/outputs.
+  [] > posix-console
+    $ > platform
 
-      # Read `size` amount of bytes from operation system console.
-      # Returns new instance of `input-block` with `buffer` read from console.
-      [size] > read
-        ^.^.read-bytes size > read-bytes!
-        self. > @
-          seq
-            *
-              read-bytes
-              ^.^.input-block read-bytes
+    # Read `size` amount of bytes from operation system console.
+    # Returns new instance of `input-block` with `buffer` read from console.
+    [size] > read
+      ((input-block --).read size).self > @
 
-    # Bytes read from operation system console.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `console` object.
-    [size] > read-bytes /bytes
+      # Posix console input block.
+      #
+      # Attention! The object is for internal usage only, please don't use the object
+      # programmatically outside of `console` object.
+      [buffer] > input-block
+        $ > self
+        buffer > @
 
-  # Write given `buffer` to console.
-  # Here `buffer` is either sequence of bytes or and object that can be
-  # dataized via `as-bytes` object.
-  [buffer] > write
-    self. > @
-      output-block.write buffer
+        # Read `size` amount of bytes from operation system console.
+        # Returns new instance of `input-block` with `buffer` read from console.
+        [size] > read
+          output. > read-bytes!
+            posix
+              "read"
+              * posix.stdin-fileno size
+          self. > @
+            seq
+              *
+                read-bytes
+                ^.^.input-block read-bytes
 
-    # Console output block.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `console` object.
-    [] > output-block
-      $ > self
-      true > @
+    # Write given `buffer` to console.
+    # Here `buffer` is either sequence of bytes or and object that can be
+    # dataized via `as-bytes` object.
+    # Returns new instance of `output-block` ready to write again.
+    [buffer] > write
+      (output-block.write buffer).self > @
 
-      # Writes bytes contained in `buffer` to operation system console.
-      # Returns new instance of `output-block` ready to write again.
-      [buffer] > write
-        seq > @
-          *
-            ^.^.written-bytes buffer
-            ^.^.output-block
+      # Posix console output block.
+      #
+      # Attention! The object is for internal usage only, please don't use the object
+      # programmatically outside of `console` object.
+      [] > output-block
+        $ > self
+        true > @
 
-    # Bytes written to operation system console.
-    #
-    # Attention! The object is for internal usage only, please don't use the object
-    # programmatically outside of `console` object.
-    [buffer] > written-bytes /true
+        # Writes bytes contained in `buffer` to operation system console.
+        # Returns new instance of `output-block` ready to write again.
+        [buffer] > write
+          self. > @
+            seq
+              *
+                code.
+                  posix
+                    "write"
+                    * posix.stdout-fileno buffer buffer.size
+                ^.^.output-block
+
+  # Windows console.
+  # It uses kernel32.dll system function calls to read/write standard inputs/outputs.
+  [] > windows-console
+    $ > platform
+
+    # Read `size` amount of bytes from operation system console.
+    # Returns new instance of `input-block` with `buffer` read from console.
+    [size] > read
+      ((input-block --).read size).self > @
+
+      # Windows console input block.
+      #
+      # Attention! The object is for internal usage only, please don't use the object
+      # programmatically outside of `console` object.
+      [buffer] > input-block
+        $ > self
+        buffer > @
+
+        # Read `size` amount of bytes from operation system console.
+        # Returns new instance of `input-block` with `buffer` read from console.
+        [size] > read
+          output. > read-bytes!
+            win32
+              "ReadFile"
+              * win32.std-input-handle size
+          self. > @
+            seq
+              *
+                read-bytes
+                ^.^.input-block read-bytes
+
+    # Write given `buffer` to console.
+    # Here `buffer` is either sequence of bytes or and object that can be
+    # dataized via `as-bytes` object.
+    # Returns new instance of `output-block` ready to write again.
+    [buffer] > write
+      (output-block.write buffer).self > @
+
+      # Windows console output block.
+      #
+      # Attention! The object is for internal usage only, please don't use the object
+      # programmatically outside of `console` object.
+      [] > output-block
+        $ > self
+        true > @
+
+        # Writes bytes contained in `buffer` to operation system console.
+        # Returns new instance of `output-block` ready to write again.
+        [buffer] > write
+          self. > @
+            seq
+              *
+                code.
+                  win32
+                    "WriteFile"
+                    * win32.std-output-handle buffer buffer.size
+                ^.^.output-block

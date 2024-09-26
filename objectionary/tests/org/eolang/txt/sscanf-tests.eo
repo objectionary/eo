@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +alias org.eolang.txt.sscanf
 +alias org.eolang.structs.list
@@ -28,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > sscanf-with-string
@@ -52,11 +51,8 @@
       sscanf "%f" "0.24"
 
 # Test.
-[] > sscanf-with-error
-  try > @
-    sscanf "%l" "error"
-    stdout ex > [ex]
-    false
+[] > throws-on-sscanf-with-wrong-format
+  sscanf "%l" "error" > @
 
 # Test.
 [] > sscanf-with-string-int-float

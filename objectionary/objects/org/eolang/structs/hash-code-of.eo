@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # Hash code - the pseudo-unique float numeric
 # representation of an object.
@@ -34,17 +34,21 @@
 # via `as-bytes` object.
 [input] > hash-code-of
   input.as-bytes > input-as-bytes!
+  input-as-bytes.size > size!
 
   [] > @
-    rec-hash-code 0.as-bytes 0 > @
+    31.as-i64 > magic-number
+    rec-hash-code 0 0 > @
 
     [acc index] > rec-hash-code
       if. > @
-        index.eq ^.^.input-as-bytes.size
-        acc
+        index.eq ^.^.size
+        acc.as-number
         ^.rec-hash-code
           plus.
-            31.times acc
-            00-00-00-00-00-00-00.concat
-              ^.^.input-as-bytes.slice index 1
+            ^.magic-number.times acc
+            as-i64.
+              concat.
+                00-00-00-00-00-00-00
+                ^.^.input-as-bytes.slice index 1
           index.plus 1

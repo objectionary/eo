@@ -20,18 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.txt.regex
++alias org.eolang.io.input-length
++alias org.eolang.io.bytes-as-input
++alias org.eolang.io.tee-input
++alias org.eolang.io.malloc-as-output
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package org.eolang.sys
-+rt jvm org.eolang:eo-runtime:0.39.0
-+rt node eo2js-runtime:0.0.0
-+version 0.39.0
++tests
++package org.eolang.io
++version 0.39.1
 
-# Represents the name of the operation system.
-# See https://man7.org/linux/man-pages/man2/uname.2.html.
-[] > uname
-  [] > @ /string
-  ((regex "/^Windows.+$/").matches @).as-bool > is-windows
-  ((regex "/linux/i").matches @).as-bool > is-linux
-  ((regex "/mac/i").matches @).as-bool > is-macos
+# Test.
+[] > reads-all-bytes-and-returns-length
+  eq. > @
+    input-length
+      bytes-as-input
+        01-02-03-04-05-06-07-08-09-10
+    10
+
+# Test.
+[] > copies-all-bytes-to-output-and-returns-length
+  eq. > @
+    malloc.of
+      10
+      [m]
+        input-length > @
+          tee-input
+            bytes-as-input 01-02-03-04-05-06-07-08-09-10
+            malloc-as-output m
+    01-02-03-04-05-06-07-08-09-10

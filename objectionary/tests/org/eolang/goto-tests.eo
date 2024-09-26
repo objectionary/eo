@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > goto-jumps-backwards
@@ -45,7 +44,7 @@
                       i.as-number.lt 10
                       g.backward
                       true
-            stdout "Finished!\n"
+            true
     10
 
 # Test.

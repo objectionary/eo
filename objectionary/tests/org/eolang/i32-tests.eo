@@ -1,0 +1,211 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang
++version 0.39.1
+
+# Test.
+[] > i32-has-valid-bytes
+  eq. > @
+    42.as-i64.as-i32.as-bytes
+    00-00-00-2A
+
+# Test.
+[] > negative-i32-has-valid-bytes
+  eq. > @
+    -200.as-i64.as-i32.as-bytes
+    FF-FF-FF-38
+
+# Test.
+[] > i32-to-i16-and-back
+  eq. > @
+    123.as-i64.as-i32
+    123.as-i64.as-i32.as-i16.as-i32
+
+# Test.
+[] > negative-i32-to-i16-and-back
+  eq. > @
+    -123.as-i64.as-i32
+    -123.as-i64.as-i32.as-i16.as-i32
+
+# Test.
+[] > i32-less-true
+  lt. > @
+    10.as-i64.as-i32
+    50.as-i64.as-i32
+
+# Test.
+[] > i32-less-equal
+  not. > @
+    lt.
+      10.as-i64.as-i32
+      10.as-i64.as-i32
+
+# Test.
+[] > i32-less-false
+  not. > @
+    lt.
+      10.as-i64.as-i32
+      -5.as-i64.as-i32
+
+# Test.
+[] > i32-greater-true
+  gt. > @
+    -200.as-i64.as-i32
+    -1000.as-i64.as-i32
+
+# Test.
+[] > i32-greater-false
+  not. > @
+    gt.
+      0.as-i64.as-i32
+      100.as-i64.as-i32
+
+# Test.
+[] > i32-greater-equal
+  not. > @
+    gt.
+      0.as-i64.as-i32
+      0.as-i64.as-i32
+
+# Test.
+[] > i32-lte-true
+  lte. > @
+    -200.as-i64.as-i32
+    -100.as-i64.as-i32
+
+# Test.
+[] > i32-lte-equal
+  lte. > @
+    50.as-i64.as-i32
+    50.as-i64.as-i32
+
+# Test.
+[] > i32-lte-false
+  not. > @
+    lte.
+      0.as-i64.as-i32
+      -10.as-i64.as-i32
+
+# Test.
+[] > i32-gte-true
+  gte. > @
+    -1000.as-i64.as-i32
+    -1100.as-i64.as-i32
+
+# Test.
+[] > i32-gte-equal
+  gte. > @
+    113.as-i64.as-i32
+    113.as-i64.as-i32
+
+# Test.
+[] > i32-gte-false
+  not. > @
+    gte.
+      0.as-i64.as-i32
+      10.as-i64.as-i32
+
+# Test.
+[] > i32-zero-eq-to-i32-zero
+  eq. > @
+    0.as-i64.as-i32
+    0.as-i64.as-i32
+
+# Test.
+[] > i32-eq-true
+  eq. > @
+    123.as-i64.as-i32
+    123.as-i64.as-i32
+
+# Test.
+[] > i32-eq-false
+  not. > @
+    eq.
+      123.as-i64.as-i32
+      42.as-i64.as-i32
+
+# Test
+[] > i32-one-plus-i32-one
+  eq. > @
+    1.as-i64.as-i32.plus 1.as-i64.as-i32
+    2.as-i64.as-i32
+
+# Test.
+[] > i32-plus-with-overflow
+  eq. > @
+    2147483647.as-i64.as-i32.plus 1.as-i64.as-i32
+    -2147483648.as-i64.as-i32
+
+# Test
+[] > i32-one-minus-i32-one
+  eq. > @
+    1.as-i64.as-i32.minus 1.as-i64.as-i32
+    0.as-i64.as-i32
+
+# Test.
+[] > i32-minus-with-overflow
+  eq. > @
+    -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
+    2147483647.as-i64.as-i32
+
+# Test.
+2.as-i64.as-i32.div 0.as-i64.as-i32 > [] > throws-on-division-i32-by-i32-zero
+
+# Test.
+247483647.as-i64.as-i32.as-i16 > [] > throws-on-converting-to-i16-if-out-of-bounds
+
+# Test.
+# Checks that division by one returns the dividend.
+[] > i32-div-by-i32-one
+  -235.as-i64.as-i32 > dividend
+  eq. > @
+    dividend.div 1.as-i64.as-i32
+    dividend
+
+# Test.
+# Checks div with remainder
+[] > i32-div-with-remainder
+  eq. > @
+    13.as-i64.as-i32.div -5.as-i64.as-i32
+    -2.as-i64.as-i32
+
+# Test.
+[] > i32-div-less-than-i32-one
+  lt. > @
+    1.as-i64.as-i32.div 5.as-i64.as-i32
+    1.as-i64.as-i32
+
+# Test.
+[] > i32-multiply-by-zero
+  eq. > @
+    1000.as-i64.as-i32.times 0.as-i64.as-i32
+    0.as-i64.as-i32
+
+# Test.
+[] > i32-times-with-overflow
+  eq. > @
+    2147483647.as-i64.as-i32.times 2.as-i64.as-i32
+    -2.as-i64.as-i32

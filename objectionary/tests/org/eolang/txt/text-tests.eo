@@ -20,13 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
++alias org.eolang.structs.list
++alias org.eolang.txt.regex
 +alias org.eolang.txt.text
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > text-slices-the-origin-string
@@ -137,11 +138,8 @@
     (text "some").at -2
 
 # Test.
-[] > returns-error-at-index-more-than-length
-  try > @
-    (text "some").at 10
-    stdout ex > [ex]
-    false
+[] > throws-on-text-at-index-more-than-length
+  (text "some").at 10 > @
 
 # Test.
 [] > chains-with-other-strings
@@ -183,11 +181,8 @@
       * "hello" "world" "dear" "friend"
 
 # Test.
-[] > text-repeat-less-than-zero-times
-  try > @
-    (text "").repeated -1
-    stdout ex > [ex]
-    false
+[] > throws-on-text-repeating-less-than-zero-times
+  (text "").repeated -1 > @
 
 # Test.
 [] > text-repeated-zero-times-is-empty
@@ -273,13 +268,15 @@
 # Test.
 [] > splits-text-by-dash
   eq. > @
-    (text "a-b-c").split "-"
+    list
+      (text "a-b-c").split "-"
     * "a" "b" "c"
 
 # Test.
 [] > splits-text-with-empty-strings
   eq. > @
-    (text "-a-b-").split "-"
+    list
+      (text "-a-b-").split "-"
     * "" "a" "b" ""
 
 # Test.
@@ -313,11 +310,8 @@
     (text "5").as-number
 
 # Test.
-[] > fails-on-converting-text-to-number
-  try > @
-    (text "Hello").as-number
-    stdout ex > [ex]
-    false
+[] > throws-on-converting-text-to-number
+  (text "Hello").as-number > @
 
 # Test.
 [] > converts-float-text-to-number
@@ -382,3 +376,58 @@
     is-alpha.
       text
         "-w-"
+
+# Test.
+[] > does-not-replaces-if-regex-not-found
+  text
+    "Hello, world"
+  .replaced
+    regex
+      "/[0-9]+/"
+    "12345"
+  .eq > @
+    "Hello, world"
+
+# Test.
+[] > replaces-digits-with-string
+  text
+    "Hell0, w0rld"
+  .replaced
+    regex
+      "/[0-9]+/"
+    "o"
+  .eq > @
+    "Hello, world"
+
+# Test.
+[] > replaces-slashes-to-windows-separator
+  text
+    "C:\\Windows/foo\\bar/hello.txt"
+  .replaced
+    regex
+      "/\\//"
+    "\\"
+  .eq > @
+    "C:\\Windows\\foo\\bar\\hello.txt"
+
+# Test.
+[] > replaces-windows-path-with-slash
+  text
+    "C:\\Windows\\Users\\AppLocal\\shrek"
+  .replaced
+    regex
+      "/[\\\\:]+/"
+    "/"
+  .eq > @
+    "C/Windows/Users/AppLocal/shrek"
+
+# Test.
+[] > sanitizes-windows-path-with-regex
+  text
+    "foo\\bar<:>?*\"|baz\\asdf"
+  .replaced
+    regex
+      "/[<>:\\\"\\/\\|\\?\\*\\x00-\\x1F]/"
+    ""
+  .eq > @
+    "foo\\barbaz\\asdf"

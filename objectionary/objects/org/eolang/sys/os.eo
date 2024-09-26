@@ -20,21 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.console
++alias org.eolang.txt.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
-+package org.eolang.io
-+version 0.39.0
++package org.eolang.sys
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
 
-# Test.
-[] > writes-to-console-once
-  console.write "Hello!" > @
+# Represents the name of the operating system.
+[] > os
+  name > @
 
-# Test.
-[] > writes-to-console-sequentially
-  seq > @
-    *
-      console.write "Hello" > o1
-      o1.write ", "
-      console.write "world!"
+  [] > is-windows
+    ^.name > os-name!
+    and. > @
+      os-name.size.gt 6
+      (os-name.slice 0 7).eq "Windows"
+  ((regex "/linux/i").matches name).as-bool > is-linux
+  ((regex "/mac/i").matches name).as-bool > is-macos
+
+  [] > name /string

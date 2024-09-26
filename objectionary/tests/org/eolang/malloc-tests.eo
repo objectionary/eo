@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > writes-into-memory-of
@@ -102,22 +102,16 @@
     b.eq 20
 
 # Test.
-[] > malloc-is-strictly-sized-bool-error-overflow
-  try > @
-    malloc.for
-      false
-      m.put 86124867.88 > [m]
-    QQ.io.stdout e > [e]
+[] > throws-on-overflow-boolean-malloc
+  malloc.for > @
     false
+    m.put 86124867.88 > [m]
 
 # Test.
-[] > malloc-is-strictly-sized-string-error-overflow
-  try > @
-    malloc.for
-      "Hello"
-      m.put "Much longer string!" > [m]
-    QQ.io.stdout e > [e]
-    false
+[] > throws-on-overflow-string-malloc
+  malloc.for > @
+    "Hello"
+    m.put "Much longer string!" > [m]
 
 # Test.
 [] > malloc-is-strictly-sized-int
@@ -198,13 +192,10 @@
                 (m.read 0 3).eq "XYX"
 
 # Test.
-[] > malloc-cant-write-more-than-allocated-with-offset
-  try > @
-    malloc.of
-      1
-      m.write 1 true > [m]
-    QQ.io.stdout e > [e]
-    false
+[] > throws-on-writing-more-than-allocated-to-malloc-with-offset
+  malloc.of > @
+    1
+    m.write 1 true > [m]
 
 # Test.
 [] > malloc-reads-with-offset-and-length

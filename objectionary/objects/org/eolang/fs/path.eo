@@ -1,0 +1,541 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.sys.os
++alias org.eolang.structs.list
++alias org.eolang.txt.regex
++alias org.eolang.txt.text
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.fs
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
+
+# A `path` represents a path that is hierarchical and composed of a sequence of
+# directory and file name elements separated by a special separator or delimiter.
+[uri] > path
+  determined. > @
+    if.
+      os.is-windows
+      win32
+        string uri.as-bytes
+      posix
+        string uri.as-bytes
+
+  # Utility object that joins given `tuple` of paths with current OS separator
+  # and normalizes result path.
+  [paths] > joined
+    as-string. > joined-path
+      as-bytes.
+        joined.
+          text ^.separator
+          paths
+    normalized. > @
+      if.
+        os.is-windows
+        ^.win32 joined-path
+        ^.posix joined-path
+
+  # The system-dependent default name-separator character.
+  # On UNIX systems the value of this field is "/";
+  # on Microsoft Windows systems it is "\\".
+  [] > separator
+    if. > @
+      os.is-windows
+      ^.win32.separator
+      ^.posix.separator
+
+  # POSIX specified path.
+  [uri] > posix
+    $ > determined
+    "/" > separator
+    (QQ.fs.file uri).size.^ > as-file
+    (QQ.fs.dir (QQ.fs.file uri)).made.^ > as-dir
+    uri > @
+
+    # Returns `true` if current path is absolute - starts with '/' char.
+    [] > is-absolute
+      and. > @
+        ^.uri.length.gt 0
+        (^.uri.as-bytes.slice 0 1).eq ^.separator
+
+    # Return new `path` with normalized uri.
+    # Normalization includes:
+    # - converting multiple slashes into a single slash.
+    # - resolving "." (current directory) and ".."  (parent directory) segments.
+    [] > normalized
+      ^.uri.as-bytes > uri-as-bytes
+      ^.is-absolute.as-bool > is-absolute
+      and. > has-trailing-slash
+        uri-as-bytes.size.gt 0
+        eq.
+          uri-as-bytes.slice
+            uri-as-bytes.size.plus -1
+            1
+          ^.separator
+      joined. > path
+        text ^.separator
+        reduced.
+          list
+            split.
+              text ^.uri
+              ^.separator
+          *
+          [accum segment] >>
+            if. > @
+              segment.eq ".."
+              if.
+                and.
+                  accum.length.gt 0
+                  (accum.tail.eq "..").not
+                accum.head
+                if.
+                  ^.is-absolute.not
+                  accum.with segment
+                  accum
+              if.
+                or.
+                  segment.eq "."
+                  segment.eq ""
+                accum
+                accum.with segment
+      as-bytes. > normalized
+        if.
+          ^.uri.length.eq 0
+          "."
+          concat.
+            if.
+              is-absolute
+              ^.separator.concat path
+              path
+            if.
+              has-trailing-slash
+              ^.separator
+              --
+      determined. > @
+        ^.^.posix
+          as-string.
+            if.
+              normalized.eq "//"
+              "/"
+              normalized
+
+    # Resolves `other` path against `^.uri` and returns as new `path` from it.
+    # The original `uri` and resolving `other` may be:
+    # - absolute - start with unix separator '/'
+    # - relative - start with '.', '..' or any letter
+    #
+    # The resolving works as follows:
+    # |----------|----------|-------------|
+    # | uri      | other    | result      |
+    # |==========|==========|=============|
+    # | absolute | absolute | other       |
+    # | absolute | relative | uri + other |
+    # | relative | absolute | other       |
+    # | relative | relative | uri + other |
+    # |----------|----------|-------------|
+    [other] > resolved
+      other.as-bytes > other-as-bytes
+      normalized. > @
+        ^.^.posix
+          string
+            if.
+              (other-as-bytes.slice 0 1).eq ^.separator
+              other-as-bytes
+              concat.
+                concat.
+                  ^.uri
+                  ^.separator
+                other-as-bytes
+
+    # Takes the base name from the provided `path`, for example:
+    # |------------------------------|---------------|
+    # | path                         | result        |
+    # |==============================|===============|
+    # | "/tmp/bar/foo.txt"           | "foo.txt"     |
+    # | "/tmp/bar/foo/"              | ""            |
+    # | "/var/www/html"              | "html"        |
+    # | "Hello, Jeff"                | "Hello, Jeff" |
+    # | ""                           | ""            |
+    # |------------------------------|---------------|
+    #
+    # Unix OS allows to have "\" (backslash) if file name.
+    # In such case it'll be included to the base name since separator
+    # is "/" (regular slash) in Unix OS:
+    # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
+    [] > basename
+      ^.uri > pth!
+      text > txt
+        string pth
+      plus. > slice-start-idx!
+        txt.last-index-of ^.separator
+        1
+      string > @
+        if.
+          or.
+            pth.size.eq 0
+            slice-start-idx.eq 0
+          pth
+          as-bytes.
+            txt.slice
+              slice-start-idx
+              txt.length.minus
+                number slice-start-idx
+
+    # Takes the extension part from the provided `path`, for example:
+    # |------------------------------|--------|
+    # | path                         | result |
+    # |==============================|========|
+    # | "/tmp/bar/foo.txt"           | ".txt" |
+    # | "/tmp/bar/foo/"              | ""     |
+    # | /var/www/html                | ""     |
+    # | "Hello, Jeff"                | ""     |
+    # | ""                           | ""     |
+    # |------------------------------|--------|
+    #
+    # The object takes the `basename` from the provided path
+    # and returns substring after "." if it's found.
+    # If it's not - empty string is returned.
+    [] > extname
+      ^.basename > base!
+      text > txt
+        string base
+      txt.last-index-of "." > slice-start-idx!
+      if. > @
+        or.
+          base.size.eq 0
+          slice-start-idx.eq -1
+        ""
+        string
+          as-bytes.
+            txt.slice
+              slice-start-idx
+              txt.length.minus
+                number slice-start-idx
+
+    # Takes the directory name from the provided `path`, for example:
+    # |------------------------------|--------------------|
+    # | path                         | result             |
+    # |==============================|====================|
+    # | "/tmp/bar/foo.txt"           | "/tmp/bar"         |
+    # | "/tmp/bar/foo/"              | "/tmp/bar/foo"     |
+    # | "/var/www/html"              | "/var/www"         |
+    # | "C:\Windows\Users\Error.log" | "C:\Windows\Users" |
+    # | "Hello, Jeff"                | "Hello, Jeff"      |
+    # | ""                           | ""                 |
+    # |------------------------------|--------------------|
+    #
+    # Unix OS allows to have "\" (backslash) if file or directory name.
+    # In such case it'll be included to the dir name since separator
+    # is "/" (regular slash) in Unix OS:
+    # With the `path` "/tmp/v\a\r/hello" `dir-name` returns `/tmp/v\a\r`.
+    [] > dirname
+      ^.uri > pth!
+      text > txt
+        string pth
+      txt.last-index-of ^.separator > len!
+      string > @
+        if.
+          or.
+            pth.size.eq 0
+            len.eq -1
+          pth
+          as-bytes.
+            txt.slice 0 len
+
+  # Windows specified path.
+  # Here `uri` is file system URI which may contain forward slashes '/'.
+  # The object decorates `win32.validated` with forward slashes replaced with
+  # back ones.
+  [uri] > win32
+    "\\" > separator
+    determined. > @
+      validated
+        as-string.
+          as-bytes.
+            validated.separated-correctly
+              uri
+
+    # Windows validated path with forward slashes replaced with back ones.
+    #
+    # Attention! The object is for internal usage only, please
+    # don't use the object programmatically outside of `path` object.
+    [uri] > validated
+      $ > determined
+      ^.separator > separator
+      (QQ.fs.file uri).size.^ > as-file
+      (QQ.fs.dir (QQ.fs.file uri)).made.^ > as-dir
+      uri > @
+
+      # Returns `true` if given `uri` is drive relative which means it
+      # starts with "X:" where 'X' - system drive name.
+      ((regex "/^[a-zA-Z]:/").matches uri).as-bool > [uri] > is-drive-relative
+
+      # Returns `true` if given `uri` is root relative which means it
+      # starts with windows separator '\'.
+      [uri] > is-root-relative
+        uri > uri-as-bytes!
+        and. > @
+          uri-as-bytes.size.gt 0
+          (uri-as-bytes.slice 0 1).eq ^.separator
+
+      # Replaces slashes '/' with valid windows separator '\'.
+      [uri] > separated-correctly
+        uri > uri-as-bytes!
+        text > pth
+          string uri-as-bytes
+        pth.replaced > replaced!
+          regex "/\\//"
+          ^.separator
+        if. > @
+          (pth.index-of path.posix.separator).eq -1
+          string uri-as-bytes
+          string replaced
+
+      # Returns `true` if current path is absolute, which means:
+      # - either path root is root relative (starts with "\")
+      # - or path is drive relative (starts with "X:\", where 'X' - 1 char disk name).
+      [] > is-absolute
+        uri > uri-as-bytes!
+        if. > @
+          uri-as-bytes.size.eq 0
+          false
+          or.
+            ^.is-root-relative uri-as-bytes
+            and.
+              uri-as-bytes.size.gt 1
+              ^.is-drive-relative uri-as-bytes
+
+      # Return new `path` with normalized uri.
+      # Normalization includes:
+      # - converting multiple slashes into a single slash.
+      # - resolving "." (current directory) and ".."  (parent directory) segments.
+      # - handling of drive letters in Windows
+      [] > normalized
+        ^.uri > uri-as-bytes!
+        (^.is-drive-relative uri-as-bytes).as-bool > is-drive-relative
+        (^.is-root-relative uri-as-bytes).as-bool > is-root-relative
+        if. > driveless!
+          is-drive-relative
+          uri-as-bytes.slice
+            2
+            uri-as-bytes.size.plus -2
+          uri-as-bytes
+        and. > has-trailing-slash
+          uri-as-bytes.size.gt 0
+          eq.
+            uri-as-bytes.slice
+              uri-as-bytes.size.plus -1
+              1
+            ^.separator
+        joined. > path!
+          text ^.separator
+          reduced.
+            list
+              split.
+                text driveless
+                ^.separator
+            *
+            [accum segment] >>
+              if. > @
+                segment.eq ".."
+                if.
+                  and.
+                    accum.length.gt 0
+                    (accum.tail.eq "..").not
+                  accum.head
+                  if.
+                    and.
+                      ^.is-root-relative.not
+                      ^.is-drive-relative.not
+                    accum.with segment
+                    accum
+                if.
+                  or.
+                    segment.eq "."
+                    segment.eq ""
+                  accum
+                  accum.with segment
+        as-bytes. > normalized
+          if.
+            driveless.size.eq 0
+            "."
+            concat.
+              concat.
+                if.
+                  is-drive-relative
+                  if.
+                    (driveless.slice 0 1).eq ^.separator
+                    ^.uri.slice 0 3
+                    ^.uri.slice 0 2
+                  if.
+                    is-root-relative
+                    ^.separator
+                    --
+                path
+              if.
+                has-trailing-slash
+                ^.separator
+                --
+        determined. > @
+          ^.^.validated
+            as-string.
+              if.
+                normalized.eq "\\\\"
+                ^.separator
+                normalized
+
+      # Resolves `other` path against `^.uri` and returns as new `path` from it.
+      # Original `uri` and `other` path for resolving may be:
+      # - drive relative - start from "X:" where 'X' - system drive name
+      # - root relative - start from windows separator '\'
+      # - any - start from '.', '..' or any letter
+      #
+      # Accounting these options resolving work as follows:
+      # |--------------------|----------------|-------------------|
+      # | uri                | other          | result            |
+      # |====================|================|===================|
+      # | any                | any            | uri + other       |
+      # | any                | drive relative | other             |
+      # | any                | root relative  | other             |
+      # | drive relative     | any            | uri + other       |
+      # | drive relative     | drive relative | other             |
+      # | drive relative     | root relative  | uri drive + other |
+      # | root relative      | any            | uri + other       |
+      # | root relative      | drive relative | other             |
+      # | root relative      | root relative  | other             |
+      # |--------------------|----------------|-------------------|
+      [other] > resolved
+        ^.uri > uri-as-bytes!
+        ^.separated-correctly other > valid-other!
+        (^.is-drive-relative valid-other).as-bool > other-is-drive-relative
+        (^.is-root-relative valid-other).as-bool > other-is-root-relative
+        normalized. > @
+          ^.^.validated
+            string
+              if.
+                other-is-drive-relative
+                valid-other
+                if.
+                  other-is-root-relative
+                  if.
+                    ^.is-drive-relative uri-as-bytes
+                    concat.
+                      uri-as-bytes.slice 0 2
+                      valid-other
+                    valid-other
+                  concat.
+                    concat.
+                      uri-as-bytes
+                      ^.separator
+                    valid-other
+
+      # Takes the base name from the provided `path`, for example:
+      # |------------------------------|---------------|
+      # | path                         | result        |
+      # |==============================|===============|
+      # | "/tmp/bar/foo.txt"           | "foo.txt"     |
+      # | "/tmp/bar/foo/"              | ""            |
+      # | "/var/www/html"              | "html"        |
+      # | "Hello, Jeff"                | "Hello, Jeff" |
+      # | ""                           | ""            |
+      # |------------------------------|---------------|
+      #
+      # Unix OS allows to have "\" (backslash) if file name.
+      # In such case it'll be included to the base name since separator
+      # is "/" (regular slash) in Unix OS:
+      # With the `path` "/tmp/var/hello\world" `base-name` returns `hello\world`.
+      [] > basename
+        ^.uri > pth!
+        text > txt
+          string pth
+        plus. > slice-start-idx!
+          txt.last-index-of ^.separator
+          1
+        string > @
+          if.
+            or.
+              pth.size.eq 0
+              slice-start-idx.eq 0
+            pth
+            as-bytes.
+              txt.slice
+                slice-start-idx
+                txt.length.minus
+                  number slice-start-idx
+
+      # Takes the extension part from the provided `path`, for example:
+      # |------------------------------|--------|
+      # | path                         | result |
+      # |==============================|========|
+      # | "/tmp/bar/foo.txt"           | ".txt" |
+      # | "/tmp/bar/foo/"              | ""     |
+      # | /var/www/html                | ""     |
+      # | "Hello, Jeff"                | ""     |
+      # | ""                           | ""     |
+      # |------------------------------|--------|
+      #
+      # The object takes the `basename` from the provided path
+      # and returns substring after "." if it's found.
+      # If it's not - empty string is returned.
+      [] > extname
+        ^.basename > base!
+        text > txt
+          string base
+        txt.last-index-of "." > slice-start-idx!
+        if. > @
+          or.
+            base.size.eq 0
+            slice-start-idx.eq -1
+          ""
+          string
+            as-bytes.
+              txt.slice
+                slice-start-idx
+                txt.length.minus
+                  number slice-start-idx
+
+      # Takes the directory name from the provided `path`, for example:
+      # |------------------------------|--------------------|
+      # | path                         | result             |
+      # |==============================|====================|
+      # | "/tmp/bar/foo.txt"           | "\tmp\bar"         |
+      # | "\tmp\bar\foo\"              | "\tmp\bar\foo"     |
+      # | "/var/www/html"              | "\var\www"         |
+      # | "C:\Windows\Users\Error.log" | "C:\Windows\Users" |
+      # | "Hello, Jeff"                | "Hello, Jeff"      |
+      # | ""                           | ""                 |
+      # |------------------------------|--------------------|
+      [] > dirname
+        ^.uri > pth!
+        text > txt
+          string pth
+        txt.last-index-of ^.separator > len!
+        string > @
+          if.
+            or.
+              pth.size.eq 0
+              len.eq -1
+            pth
+            as-bytes.
+              txt.slice 0 len

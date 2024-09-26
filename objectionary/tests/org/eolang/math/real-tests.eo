@@ -1,0 +1,602 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.math.e
++alias org.eolang.math.pi
++alias org.eolang.math.real
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.math
++version 0.39.1
+
+# Test.
+[] > abs-int-positive
+  eq. > @
+    (real 3).abs
+    3
+
+# Test.
+[] > abs-int-negative
+  eq. > @
+    (real -3).abs
+    3
+
+# Test.
+[] > abs-zero
+  eq. > @
+    (real 0).abs
+    0
+
+# Test.
+[] > abs-float-positive
+  eq. > @
+    (real 13.5).abs
+    13.5
+
+# Test.
+[] > abs-float-negative
+  eq. > @
+    (real -17.9).abs
+    17.9
+
+# Test.
+[] > mod-1-2
+  eq. > @
+    (real 1).mod 2
+    1
+
+# Test.
+[] > mod-0-5
+  eq. > @
+    (real 0).mod 5
+    0
+
+# Test.
+[] > mod-0-15-neg
+  eq. > @
+    (real 0).mod -15
+    0
+
+# Test.
+[] > mod-1-neg-7
+  eq. > @
+    (real -1).mod 7
+    -1
+
+# Test.
+[] > mod-16-200-neg
+  eq. > @
+    (real 16).mod -200
+    16
+
+# Test.
+# Checks mathematical equality
+# A = ((A div B) * B) + (A mod B)
+[] > div-mod-compatibility
+  -13 > dividend
+  5 > divisor
+  (real dividend).mod divisor > remainder
+  (dividend.div divisor).floor > quotient
+  eq. > @
+    plus.
+      remainder
+      times.
+        divisor
+        quotient
+    dividend
+
+# Test.
+# Checks modulo: dividend < divisor.
+[] > mod-dividend-less-than-divisor
+  eq. > @
+    (real -1).mod 5
+    -1
+
+# Test.
+# Checks modulo by 1.
+[] > mod-dividend-by-one
+  eq. > @
+    (real 133).mod 1
+    0
+
+# Test.
+[] > pow-test
+  eq. > @
+    (real 2).pow 4
+    16
+
+# Test.
+[] > pow-is-zero
+  eq. > @
+    (real 2).pow 0
+    1
+
+# Test.
+[] > pow-is-negative
+  eq. > @
+    (real 984782).pow -12341
+    0
+
+# Test.
+[] > pow-of-two
+  eq. > @
+    (real 3).pow 2
+    9
+
+# Test.
+[] > pow-of-zero
+  eq. > @
+    (real 0).pow 145
+    0
+
+# Test.
+[] > throws-on-negative-pow-of-zero
+  (real 0).pow -567 > @
+
+# Test.
+# Check pow works with NaNs.
+[] > nan-to-the-pow-of-nan-is-nan
+  is-nan. > @
+    (real nan).pow nan
+
+# Test.
+[] > nan-to-the-pow-of-any-is-nan
+  is-nan. > @
+    (real nan).pow 42
+
+# Test.
+[] > any-to-the-pow-of-nan-is-nan
+  is-nan. > @
+    (real 52).pow nan
+
+# Test.
+# Check if pow is zero.
+[] > any-int-to-the-pow-of-zero-is-one
+  eq. > @
+    (real 42).pow 0
+    1
+
+# Test.
+[] > any-float-to-the-pow-of-zero-is-one
+  eq. > @
+    (real 42.5).pow 0
+    1
+
+# Test.
+# Check if pow is less than zero
+[] > zero-to-the-negative-pow-is-positive-infinity
+  eq. > @
+    (real 0).pow -52
+    positive-infinity
+
+# Test.
+[] > zero-to-the-negative-infinity-pow-is-positive-infinity
+  eq. > @
+    (real 0).pow negative-infinity
+    positive-infinity
+
+# Test.
+[] > positive-int-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real 42).pow negative-infinity
+    0
+
+# Test.
+[] > positive-float-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real 42.5).pow negative-infinity
+    0
+
+# Test.
+[] > negative-int-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real -42).pow negative-infinity
+    0
+
+# Test.
+[] > negative-float-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real -42.5).pow negative-infinity
+    0
+
+# Test.
+[] > positive-infinity-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real positive-infinity).pow negative-infinity
+    0
+
+# Test.
+[] > negative-infinity-to-the-pow-of-negative-infinity-is-zero
+  eq. > @
+    (real negative-infinity).pow negative-infinity
+    0
+
+# Test.
+[] > positive-infinity-to-the-finite-negative-int-pow-is-zero
+  eq. > @
+    (real positive-infinity).pow -42
+    0
+
+# Test.
+[] > positive-infinity-to-the-finite-negative-float-pow-is-zero
+  eq. > @
+    (real positive-infinity).pow -42.2
+    0.0
+
+# Test.
+[] > two-to-the-pow-of-minus-one
+  eq. > @
+    (real 2).pow -1
+    0.5
+
+# Test.
+[] > two-to-the-pow-of-int-minus-two
+  eq. > @
+    (real 2).pow -2
+    0.25
+
+# Test.
+[] > two-to-the-pow-of-minus-three
+  eq. > @
+    (real 2).pow -3
+    0.125
+
+# Test.
+[] > four-to-the-pow-of-minus-three
+  eq. > @
+    (real 4).pow -3.0
+    0.015625
+
+# Test.
+# Check if pow more than zero.
+[] > zero-to-the-pow-of-positive-int-is-zero
+  eq. > @
+    (real 0).pow 4
+    0
+
+# Test.
+[] > zero-to-the-pow-of-positive-float-is-zero
+  eq. > @
+    (real 0).pow 4.2
+    0
+
+# Test.
+[] > zero-to-the-pow-of-positive-infinity-is-zero
+  eq. > @
+    (real 0).pow positive-infinity
+    0
+
+# Test.
+[] > negative-int-to-the-pow-of-positive-infinity-is-positive-infinity
+  eq. > @
+    (real -10).pow positive-infinity
+    positive-infinity
+
+# Test.
+[] > negative-float-to-the-pow-of-positive-infinity-is-infinity
+  eq. > @
+    (real -4.2).pow positive-infinity
+    positive-infinity
+
+# Test.
+[] > positive-int-to-the-pow-of-positive-infinity-is-positive-infinity
+  eq. > @
+    (real 42).pow positive-infinity
+    positive-infinity
+
+# Test.
+[] > positive-float-to-the-pow-of-positive-infinity-is-positive-infinity
+  eq. > @
+    (real 42.5).pow positive-infinity
+    positive-infinity
+
+# Test.
+[] > positive-infinity-to-the-pow-of-positive-int-is-positive-infinity
+  eq. > @
+    (real positive-infinity).pow 42
+    positive-infinity
+
+# Test.
+[] > positive-infinity-to-the-pow-of-positive-float-is-positive-infinity
+  eq. > @
+    (real positive-infinity).pow 10.8
+    positive-infinity
+
+# Test.
+[] > positive-infinity-to-the-pow-of-positive-infinity-is-positive-infinity
+  eq. > @
+    (real positive-infinity).pow positive-infinity
+    positive-infinity
+
+# Test.
+[] > negative-infinity-to-the-pow-of-positive-float-is-positive-infinity
+  eq. > @
+    (real negative-infinity).pow 9.9
+    positive-infinity
+
+# Test.
+[] > negative-infinity-to-the-pow-of-even-positive-int-is-positive-infinity
+  eq. > @
+    (real negative-infinity).pow 10
+    positive-infinity
+
+# Test.
+[] > negative-infinity-to-the-pow-of-odd-positive-int-is-positive-infinity
+  eq. > @
+    (real negative-infinity).pow 9
+    negative-infinity
+
+# Test.
+[] > positive-int-to-the-pow-of-positive-int-is-int
+  eq. > @
+    (real 2).pow 3
+    8
+
+# Test.
+[] > positive-float-to-the-pow-of-positive-int-is-float
+  eq. > @
+    (real 3.5).pow 4
+    150.0625
+
+# Test.
+[] > positive-int-to-the-pow-of-positive-float-is-float
+  eq. > @
+    (real 4).pow 5
+    1024
+
+# Test.
+[] > sqrt-check-zero-input
+  lt. > @
+    abs.
+      real
+        minus.
+          0
+          sqrt.
+            real 0
+    0.00000000001
+
+# Test.
+[] > sqrt-check-negative-input
+  is-nan. > @
+    sqrt.
+      real -0.1
+
+# Test.
+[] > sqrt-check-float-input
+  lt. > @
+    abs.
+      real
+        minus.
+          2
+          sqrt.
+            real
+              4
+    0.00000000001
+
+# Test.
+[] > sqrt-check-int-input
+  lt. > @
+    abs.
+      real
+        minus.
+          9
+          sqrt.
+            real
+              81
+    0.00000000001
+
+# Test.
+[] > sqrt-check-nan-input
+  is-nan. > @
+    sqrt.
+      real nan
+
+# Test.
+[] > sqrt-check-infinity-1
+  eq. > @
+    sqrt.
+      real positive-infinity
+    positive-infinity
+
+# Test.
+[] > sqrt-check-infinity-2
+  is-nan. > @
+    sqrt.
+      real negative-infinity
+
+# Test.
+[] > ln-of-negative-float-is-nan
+  is-nan. > @
+    ln.
+      real -2.2
+
+# Test.
+[] > ln-of-zero-is-negative-infinity
+  eq. > @
+    ln.
+      real 0
+    negative-infinity
+
+# Test.
+[] > ln-of-one-is-zero
+  eq. > @
+    ln.
+      real 1
+    0
+
+# Test.
+[] > ln-of-e-one-is-one
+  eq. > @
+    ln.
+      real e
+    1
+
+# Test.
+[] > ln-of-negative-int-is-nan
+  is-nan. > @
+    ln.
+      real -42
+
+# Test.
+[] > ln-of-int-zero-is-negative-infinity
+  eq. > @
+    ln.
+      real 0
+    negative-infinity
+
+# Test.
+[] > ln-of-int-one-is-zero
+  eq. > @
+    ln.
+      real 1
+    0
+
+# Test.
+[] > ln-of-twenty
+  eq. > @
+    ln.
+      real 20
+    2.995732273553991
+
+# Test.
+[] > arccos-negative-one-test
+  eq. > @
+    acos.
+      real -1.0
+    pi
+
+# Test.
+[] > arccos-zero-test
+  eq. > @
+    acos.
+      real 0
+    div.
+      pi
+      2
+
+# Test.
+[] > arccos-one-test
+  eq. > @
+    acos.
+      real 1.0
+    0
+
+# Test.
+[] > arccos-positive-calculated-test
+  lt. > @
+    abs.
+      real
+        minus.
+          acos.
+            real 0.6
+          0.927295
+    0.000001
+
+# Test.
+[] > arccos-negative-calculated-test
+  lt. > @
+    abs.
+      real
+        minus.
+          acos.
+            real -0.6
+          2.214297
+    0.000001
+
+# Test.
+[] > arccos-nan-positive-value-test
+  is-nan. > @
+    acos.
+      real 2.0
+
+# Test.
+[] > arccos-nan-negative-value-test
+  is-nan. > @
+    (real -2.0).acos
+
+# Test.
+[] > exp-check-0
+  lt. > @
+    abs.
+      real
+        minus.
+          e
+          (real 1).exp
+    0.00000001
+
+# Test.
+[] > exp-check-1
+  lt. > @
+    abs.
+      real
+        minus.
+          e
+          (real 1).exp
+    0.00000001
+
+# Test.
+[] > exp-check-2
+  lt. > @
+    abs.
+      real
+        minus.
+          1.div e
+          (real -1).exp
+    0.00000001
+
+# Test.
+[] > exp-check-3
+  lt. > @
+    abs.
+      real
+        minus.
+          (real e).pow 5
+          (real 5).exp
+    0.0000001
+
+# Test.
+[] > exp-check-4
+  lt. > @
+    abs.
+      real
+        minus.
+          (real e).pow -10
+          (real -10).exp
+    0.000000000001
+
+# Test.
+[] > exp-check-nan
+  is-nan. > @
+    (real nan).exp
+
+# Test.
+[] > exp-check-infinity-1
+  eq. > @
+    (real positive-infinity).exp
+    positive-infinity
+
+# Test.
+[] > exp-check-infinity-2
+  eq. > @
+    (real negative-infinity).exp
+    0

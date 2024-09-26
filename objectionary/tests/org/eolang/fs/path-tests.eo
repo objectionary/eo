@@ -1,0 +1,275 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.sys.os
++alias org.eolang.fs.path
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.fs
++version 0.39.1
+
+# Test.
+[] > determines-separator-depending-on-os
+  eq. > @
+    path.separator
+    if.
+      os.is-windows
+      path.win32.separator
+      path.posix.separator
+
+# Test.
+[] > detects-absolute-posix-path
+  and. > @
+    (path.posix "/var/www/html").is-absolute
+    (path.posix "foo/bar/baz").is-absolute.not
+
+# Test.
+[] > detects-absolute-win32-path
+  and. > @
+    and.
+      (path.win32 "C:\\Windows\\Users").is-absolute
+      (path.win32 "\\Windows\\Users").is-absolute
+    (path.win32 "temp\\var").is-absolute.not
+
+# Test.
+[] > normalizes-posix-path
+  eq. > @
+    (path.posix "/foo/bar/.//./baz//../x/").normalized
+    "/foo/bar/x/"
+
+# Test.
+[] > normalizes-posix-relative-path
+  eq. > @
+    (path.posix "../../foo/./bar/../x/../y").normalized
+    "../../foo/y"
+
+# Test.
+[] > normalizes-empty-posix-path-to-current-dir
+  eq. > @
+    (path.posix "").normalized
+    "."
+
+# Test.
+[] > normalizes-path-to-root
+  eq. > @
+    (path.posix "/foo/bar/baz/../../../../").normalized
+    "/"
+
+# Test.
+[] > normalizes-absolute-win32-path-without-drive
+  eq. > @
+    (path.win32 "\\Windows\\Users\\..\\App\\\\.\\Local\\\\").normalized
+    "\\Windows\\App\\Local\\"
+
+# Test.
+[] > normalizes-absolute-win32-path-with-drive
+  eq. > @
+    (path.win32 "C:\\Windows\\\\..\\Users\\.\\AppLocal").normalized
+    "C:\\Users\\AppLocal"
+
+# Test.
+[] > normalizes-relative-win32-path
+  eq. > @
+    (path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\").normalized
+    "..\\..\\foo\\x\\y\\"
+
+# Test.
+[] > normalizes-empty-win32-driveless-path-to-current-dir
+  eq. > @
+    (path.win32 "").normalized
+    "."
+
+# Test.
+[] > normalizes-win32-path-down-to-drive-with-separator
+  eq. > @
+    (path.win32 "C:\\Windows\\..").normalized
+    "C:\\"
+
+# Test.
+[] > normalizes-win32-path-down-to-drive-without-separator
+  eq. > @
+    (path.win32 "C:hello\\..").normalized
+    "C:"
+
+# Test.
+[] > normalizes-win32-path-with-replacing-slashes
+  eq. > @
+    (path.win32 "/var/www/../html/").normalized
+    "\\var\\html\\"
+
+# Test.
+[] > resolves-posix-absolute-path-against-other-absolute-path
+  eq. > @
+    (path.posix "/var/temp").resolved "/www/html"
+    "/www/html"
+
+# Test.
+[] > resolves-posix-absolute-path-against-other-relative-path
+  eq. > @
+    (path.posix "/var/temp").resolved "./www/html"
+    "/var/temp/www/html"
+
+# Test.
+[] > resolves-posix-relative-path-against-other-absolute-path
+  eq. > @
+    (path.posix "./var/temp").resolved "/www/html"
+    "/www/html"
+
+# Test.
+[] > resolves-posix-relative-path-against-other-relative-path
+  eq. > @
+    (path.posix "./var/temp").resolved "../www/html"
+    "var/www/html"
+
+# Test.
+[] > resolves-win32-relative-path-against-other-relative-path
+  eq. > @
+    (path.win32 ".\\temp\\var").resolved ".\\..\\x"
+    "temp\\x"
+
+# Test.
+[] > resolves-win32-relative-path-against-other-drive-relative-path
+  eq. > @
+    (path.win32 ".\\temp\\var").resolved "C:\\Windows\\Users"
+    "C:\\Windows\\Users"
+
+# Test.
+[] > resolves-win32-relative-path-against-other-root-relative-path
+  eq. > @
+    (path.win32 ".\\temp\\var").resolved "\\Windows\\Users"
+    "\\Windows\\Users"
+
+# Test.
+[] > resolves-win32-drive-relative-path-against-other-relative-path
+  eq. > @
+    (path.win32 "C:\\users\\local").resolved ".\\var\\temp"
+    "C:\\users\\local\\var\\temp"
+
+# Test.
+[] > resolves-win32-drive-relative-path-against-other-drive-relative-path
+  eq. > @
+    (path.win32 "C:\\users\\local").resolved "D:\\local\\var"
+    "D:\\local\\var"
+
+# Test.
+[] > resolves-win32-drive-relative-path-against-other-root-relative-path
+  eq. > @
+    (path.win32 "C:\\users\\local").resolved "\\local\\var"
+    "C:\\local\\var"
+
+# Test.
+[] > resolves-win32-root-relative-path-against-other-relative-path
+  eq. > @
+    (path.win32 "\\users\\local").resolved ".\\hello\\var"
+    "\\users\\local\\hello\\var"
+
+# Test.
+[] > resolves-win32-root-relative-path-against-other-drive-relative-path
+  eq. > @
+    (path.win32 "\\users\\local").resolved "D:\\hello\\var"
+    "D:\\hello\\var"
+
+# Test.
+[] > resolves-win32-root-relative-path-against-other-root-relative-path
+  eq. > @
+    (path.win32 "\\users\\local").resolved "\\hello\\var"
+    "\\hello\\var"
+
+# Test.
+[] > takes-valid-basename
+  eq. > @
+    basename.
+      path.joined
+        * "var" "www" "html" "hello.eo"
+    "hello.eo"
+
+# Test.
+[] > returns-empty-basename-from-path-ended-with-separator
+  eq. > @
+    basename.
+      path.joined
+        * "var" "www" "html" path.separator
+    ""
+
+# Test.
+[] > returns-base-with-backslash-in-path-on-posix
+  eq. > @
+    (path.posix "/var/www/html/foo\\bar").basename
+    "foo\\bar"
+
+# Test.
+[] > returns-the-same-string-if-no-separator-is-found
+  eq. > @
+    (path "Somebody").basename
+    "Somebody"
+
+# Test.
+[] > takes-file-extname
+  eq. > @
+    extname.
+      path.joined
+        * "var" "www" "hello.txt"
+    ".txt"
+
+# Test.
+[] > does-not-take-extname-on-file-without-extension
+  eq. > @
+    extname.
+      path.joined
+        * "var" "www" "html"
+    ""
+
+# Test.
+[] > does-not-take-extname-if-ends-with-separator
+  eq. > @
+    extname.
+      path.joined
+        * "var" "www" path.separator
+    ""
+
+# Test.
+[] > returns-valid-dirname-from-file-path
+  eq. > @
+    dirname.
+      path.joined
+        * "var" "www" "hello.txt"
+    path.joined
+      * "var" "www"
+
+# Test.
+[] > returns-valid-dirname-from-dir-path
+  eq. > @
+    dirname.
+      path.joined
+        * "var" "www" path.separator
+    path.joined
+      * "var" "www"
+
+# Test.
+[] > returns-valid-dirname-from-file-path-without-extension
+  eq. > @
+    dirname.
+      path.joined
+        * "var" "www" "html"
+    path.joined
+      * "var" "www"

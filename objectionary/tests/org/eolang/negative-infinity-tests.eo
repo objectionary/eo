@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.39.0
++version 0.39.1
 
 # Equal to.
 [] > negative-infinity-is-equal-to-one-div-zero
@@ -372,7 +372,7 @@
 [] > negative-infinity-div-neg-int-zero
   eq. > @
     negative-infinity.div -0
-    negative-infinity
+    positive-infinity
 
 # Test.
 [] > negative-infinity-div-nan
@@ -425,3 +425,20 @@
   eq. > @
     negative-infinity.as-bytes
     (-1.0.div 0.0).as-bytes
+
+# Test.
+[] > negative-infinity-floor-is-equal-to-self
+  negative-infinity.floor.eq negative-infinity > @
+
+# Test.
+[] > negative-infinity-is-not-nan
+  negative-infinity.is-nan.not > @
+
+# Test.
+[] > negative-infinity-is-not-finite
+  negative-infinity.is-finite.not > @
+
+# Test.
+[] > negative-infinity-is-not-integer
+  negative-infinity.is-integer.not > @
+

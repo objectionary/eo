@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > int-less-true
@@ -295,3 +295,24 @@
   eq. > @
     1000.times 0
     0
+
+# Test.
+[] > simple-number-is-not-nan
+  42.5.is-nan.not > @
+
+# Test.
+32.is-integer > [] > int-number-is-integer
+
+# Test.
+32.5.is-integer.not > [] > float-number-is-not-integer
+
+# Test.
+32.is-finite > [] > simple-number-is-finite
+
+# Test
+[] > number-with-nan-bytes-is-nan
+  (number nan.as-bytes).is-nan > @
+
+# Test.
+[] > number-with-infinite-bytes-is-not-finite
+  (number positive-infinity.as-bytes).is-finite.not > @

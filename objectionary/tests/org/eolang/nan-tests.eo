@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +package org.eolang
 +tests
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > nan-not-eq-number
@@ -147,3 +147,12 @@
   eq. > @
     nan.as-bytes
     (0.0.div 0.0).as-bytes
+
+# Test.
+nan.is-nan > [] > nan-is-nan
+
+# Test.
+nan.is-finite.not > [] > nan-is-not-finite
+
+# Test.
+nan.is-integer.not > [] > nan-is-not-integer

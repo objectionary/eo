@@ -23,13 +23,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # Positive infinity.
 [] > positive-infinity
-  1.0.div 0.0 > @
+  number 7F-F0-00-00-00-00-00-00 > @
+  $ > floor
+  negative-infinity > neg
+  false > is-nan
+  false > is-finite
+  false > is-integer
+  error "Can't convert positive infinity to i64" > as-i64
 
   # Tests that $ = x.
   [x] > eq
@@ -38,91 +44,71 @@
       x.as-bytes
 
   # Tests that $ < x.
-  [x] > lt
-    false > @
+  false > [x] > lt
 
   # Tests that $ ≤ x.
-  [x] > lte
-    ^.eq x > @
+  ^.eq x > [x] > lte
 
   # Tests that $ > x.
   [x] > gt
     x > value!
     not. > @
       or.
-        value.eq nan.as-bytes
+        (number value).is-nan
         ^.eq value
 
   # Tests that $ ≥ x.
   [x] > gte
+    x > value!
     not. > @
-      eq.
-        x.as-bytes
-        nan.as-bytes
+      (number value).is-nan
 
   # Multiplication of $ and x.
   [x] > times
     x > value!
+    number value > num
     if. > @
-      is-nan-or-zero value
+      or.
+        num.is-nan
+        num.eq 0
       nan
       if.
-        0.0.lt value
+        num.gt 0
         ^
         negative-infinity
-
-    num.eq nan.as-bytes > [num] > is-nan
-
-    [num] > is-nan-or-zero
-      or. > @
-        or.
-          is-nan num
-          num.eq -0.0
-        num.eq 0.0
 
   # Sum of $ and x.
   [x] > plus
     x > value!
     if. > @
       or.
-        is-nan value
+        (number value).is-nan
         value.eq negative-infinity
       nan
       ^
-
-    num.eq nan.as-bytes > [num] > is-nan
 
   # Difference between $ and x.
   [x] > minus
     x > value!
     if. > @
       or.
-        is-nan value
+        (number value).is-nan
         value.eq ^
       nan
       ^
 
-    num.eq nan.as-bytes > [num] > is-nan
-
   # Quotient of the division of $ by x.
   [x] > div
     x > value!
+    number value > num
     if. > @
-      is-nan-or-infinite value
+      or.
+        num.is-nan
+        num.is-finite.not
       nan
       if.
         or.
-          value.eq -0.0.as-bytes
-          0.0.gt value
+          value.eq -0.as-bytes
+          0.gt value
         negative-infinity
         ^
-
-    num.eq nan.as-bytes > [num] > is-nan
-
-    [num] > is-nan-or-infinite
-      or. > @
-        or.
-          is-nan num
-          num.eq ^.^
-        num.eq negative-infinity
-

@@ -20,13 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > prints-simple-string
@@ -61,13 +60,10 @@
       * "Jeff" "Jeff".as-bytes 42.3 14 false
 
 # Test.
-[] > sprintf-fails-if-amount-of-arguments-does-not-match
-  try > @
-    sprintf
-      "%s%s"
-      * "Jeff"
-    stdout ex > [ex]
-    false
+[] > throws-on-sprintf-with-arguments-that-does-not-match
+  sprintf > @
+    "%s%s"
+    * "Jeff"
 
 # Test.
 [] > sprintf-does-not-fail-if-arguments-more-than-formats
@@ -78,11 +74,8 @@
       * "Hey" "Jeff"
 
 # Test.
-[] > fails-on-unsupported-format
-  try > @
-    sprintf "%o" *
-    stdout ex > [ex]
-    false
+[] > throws-on-sprintf-unsupported-format
+  sprintf "%o" * > @
 
 # Test.
 [] > sprintf-prints-percents
@@ -91,3 +84,20 @@
     sprintf
       "%%%s"
       * "Jeff"
+
+# Test.
+[] > sprintf-does-not-print-i64
+  not. > @
+    eq.
+      sprintf
+        "%d"
+        * 42.as-i64
+      "42"
+
+# Test.
+[] > sprintf-prints-i64-as-number
+  eq. > @
+    "42"
+    sprintf
+      "%d"
+      * 42.as-i64.as-number

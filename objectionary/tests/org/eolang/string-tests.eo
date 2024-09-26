@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > calculates-length-of-spaces-only
@@ -231,31 +231,22 @@
     "大"
 
 # Test.
-[] > slice-start-below-zero
-  try > @
-    slice.
-      "some string"
-      -1
-      1
-    QQ.io.stdout e > [e]
-    true
+[] > throws-on-slicing-start-below-zero
+  slice. > @
+    "some string"
+    -1
+    1
 
 # Test.
-[] > slice-end-below-start
-  try > @
-    slice.
-      "some string"
-      2
-      -1
-    QQ.io.stdout e > [e]
-    true
+[] > throws-on-slicing-end-below-start
+  slice. > @
+    "some string"
+    2
+    -1
 
 # Test.
-[] > slice-end-greater-actual
-  try > @
-    slice.
-      "some string"
-      7
-      5
-    QQ.io.stdout e > [e]
-    true
+[] > throws-on-slicing-end-greater-actual
+  slice. > @
+    "some string"
+    7
+    5

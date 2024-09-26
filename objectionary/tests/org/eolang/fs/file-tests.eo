@@ -1,0 +1,367 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.fs.file
++alias org.eolang.fs.path
++alias org.eolang.fs.tmpdir
++alias org.eolang.txt.sprintf
++alias org.eolang.txt.text
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++tests
++package org.eolang.fs
++version 0.39.1
+
+# Test.
+[] > check-if-current-directory-is-directory
+  (file ".").is-directory > @
+
+# Test.
+[] > check-if-absent-file-does-not-exist
+  (file "absent.txt").exists.not > @
+
+# Test.
+[] > returns-self-after-deleting
+  tmpdir.tmpfile > temp
+  temp.deleted.path.eq temp.path > @
+
+# Test.
+[] > returns-self-after-touching
+  tmpdir.tmpfile > temp
+  temp.deleted.touched.path.eq temp.path > @
+
+# Test.
+[] > checks-file-does-not-exist-after-deleting
+  tmpdir.tmpfile.deleted.exists.not > @
+
+# Test.
+[] > touches-a-file
+  tmpdir.tmpfile.deleted.touched.exists > @
+
+# Test.
+[] > measures-empty-file-after-touching
+  tmpdir.tmpfile.deleted.touched.size.eq 0 > @
+
+# Test.
+[] > does-not-fail-on-double-touching
+  tmpdir.tmpfile.deleted.touched.touched.exists > @
+
+# Test.
+[] > does-not-fail-on-double-deleting
+  tmpdir.tmpfile.deleted.deleted.exists.not > @
+
+# Test.
+[] > throws-an-error-on-touching-temp-file-in-absent-dir
+  (tmpdir.as-path.resolved "foo").as-dir.tmpfile > @
+
+# Test.
+[] > resolves-and-touches
+  (tmpdir.as-path.resolved "foo/bar").as-dir > resolved
+  resolved.tmpfile > f
+  seq > @
+    *
+      resolved.deleted.made
+      and.
+        f.exists
+        contains.
+          text f.path
+          joined.
+            text path.separator
+            * "foo" "bar"
+
+# Test.
+[] > moves-a-file
+  tmpdir.tmpfile > temp
+  sprintf > dest
+    "%s.dest"
+    * temp.path
+  and. > @
+    (temp.moved dest).exists
+    temp.exists.not
+
+# Test.
+[] > throws-on-opening-with-wrong-mode
+  tmpdir
+  .tmpfile
+  .open > @
+    "x"
+    f > [f]
+
+# Test.
+[] > throws-on-reading-from-not-existed-file
+  tmpdir
+  .tmpfile
+  .deleted
+  .open > @
+    "r"
+    f > [f]
+
+# Test.
+[] > throws-on-reading-or-writing-from-not-existed-file
+  tmpdir
+  .tmpfile
+  .deleted
+  .open > @
+    "r+"
+    f > [f]
+
+# Test
+[] > touches-absent-file-on-opening-for-writing
+  tmpdir
+  .tmpfile
+  .deleted
+  .open
+    "w"
+    true > [f]
+  .exists > @
+
+# Test
+[] > touches-absent-file-on-opening-for-appending
+  tmpdir
+  .tmpfile
+  .deleted
+  .open
+    "a"
+    true > [f]
+  .exists > @
+
+# Test
+[] > touches-absent-file-on-opening-for-writing-or-reading
+  tmpdir
+  .tmpfile
+  .deleted
+  .open
+    "w+"
+    true > [f]
+  .exists > @
+
+# Test
+[] > touches-absent-file-on-opening-for-reading-or-appending
+  tmpdir
+  .tmpfile
+  .deleted
+  .open
+    "a+"
+    true > [f]
+  .exists > @
+
+# Test.
+[] > writes-data-to-file
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .size
+  .eq 12 > @
+
+# Test.
+[] > appending-data-to-file
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "a"
+    f.write "!" > [f]
+  .size
+  .eq 13 > @
+
+# Test.
+[] > truncates-file-opened-for-writing
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "w"
+    true > [f]
+  .size
+  .eq 0 > @
+
+# Test.
+[] > truncates-file-opened-for-writing-or-reading
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "w+"
+    true > [f]
+  .size
+  .eq 0 > @
+
+# Test.
+[] > does-not-truncate-file-opened-for-appending
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "a"
+    true > [f]
+  .size
+  .eq 12 > @
+
+# Test.
+[] > does-not-truncate-file-opened-for-reading-or-appending
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "a+"
+    true > [f]
+  .size
+  .eq 12 > @
+
+# Test.
+[] > does-not-truncate-file-opened-for-reading
+  tmpdir
+  .tmpfile
+  .open
+    "w"
+    f.write "Hello, world" > [f]
+  .open
+    "r"
+    true > [f]
+  .size
+  .eq 12 > @
+
+# Test.
+[] > throws-on-writing-with-wrong-mode
+  tmpdir
+  .tmpfile
+  .open > @
+    "r"
+    f.write "Hello" > [f]
+
+# Test.
+[] > reads-from-file
+  malloc
+  .of
+    12
+    [m]
+      tmpdir
+      .tmpfile
+      .open
+        "w"
+        f.write "Hello, world" > [f]
+      .open > @
+        "r"
+        [f] >>
+          m.put > @
+            f.read 12
+  .eq "Hello, world" > @
+
+# Test.
+[] > throws-on-reading-from-file-with-wrong-mode
+  tmpdir
+  .tmpfile
+  .open > @
+    "w"
+    f.read 12 > [f]
+
+# Test.
+[] > reads-from-file-from-different-instances
+  tmpdir.tmpfile > temp
+  temp.path > src
+  seq > @
+    *
+      temp
+      .open
+        "w"
+        f.write "Shrek is love" > [f]
+      malloc
+      .of
+        13
+        [m] >>
+          file
+            ^.src
+          .open > @
+            "r"
+            [f] >>
+              ^.m.put > @
+                f.read 13
+      .eq "Shrek is love"
+
+# Test.
+[] > writes-to-file-from-different-instances
+  tmpdir.tmpfile > temp
+  temp.path > src
+  seq > @
+    *
+      temp
+      .open
+        "w"
+        f.write "Shrek is love" > [f]
+      malloc
+      .of
+        14
+        [m] >>
+          file
+            ^.src
+          .open > @
+            "a+"
+            [f] >>
+              seq > @
+                *
+                  f.write "!"
+                  ^.m.put
+                    f.read 14
+      .eq "Shrek is love!"
+
+# Test.
+[] > reads-from-file-sequentially
+  malloc
+  .of
+    5
+    [m]
+      tmpdir
+      .tmpfile
+      .open > @
+        "w+"
+        [f] >>
+          f.read 7 > i1
+          i1.read 5 > i2
+          seq > @
+            *
+              f.write "Hello, world"
+              ^.m.put i2
+  .eq "world" > @
+
+# Test.
+[] > writes-to-file-sequentially
+  tmpdir
+  .tmpfile
+  .open
+    "a+"
+    [f]
+      f.write "Hello, world" > o1
+      o1.write "!" > @
+  .size
+  .eq 13 > @

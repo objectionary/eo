@@ -21,12 +21,11 @@
 # SOFTWARE.
 
 +alias org.eolang.structs.range-of-ints
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.structs
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > simple-range-of-ints-from-one-to-ten
@@ -51,22 +50,13 @@
     * -5 -4 -3 -2 -1
 
 # Test.
-[] > range-of-ints-with-non-int-start-returns-error
-  try > @
-    range-of-ints 1.2 3
-    stdout ex > [ex]
-    false
+[] > throws-on-range-of-ints-with-non-int-start
+  range-of-ints 1.2 3 > @
 
 # Test.
-[] > range-of-ints-with-not-int-end-returns-error
-  try > @
-    range-of-ints 1 2.5
-    stdout ex > [ex]
-    false
+[] > throws-on-range-of-ints-with-not-int-end
+  range-of-ints 1 2.5 > @
 
 # Test.
-[] > range-of-not-ints-returns-error
-  try > @
-    range-of-ints 1.5 5.2
-    stdout ex > [ex]
-    false
+[] > throws-on-range-of-not-ints
+  range-of-ints 1.5 5.2 > @

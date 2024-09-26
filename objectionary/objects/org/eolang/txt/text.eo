@@ -28,9 +28,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # Text.
 [origin] > text
@@ -267,16 +267,18 @@
                   ascii-bte.gte ^.ascii-a
                 slice.
                   as-bytes.
-                    ascii-bte.minus ^.distance
+                    as-i64.
+                      ascii-bte.minus ^.distance
                   7
                   1
                 byte
 
     [char] > ascii
       as-number. > @
-        concat.
-          00-00-00-00-00-00-00
-          char.as-bytes
+        as-i64.
+          concat.
+            00-00-00-00-00-00-00
+            char.as-bytes
 
   # Returns `text` in lower case.
   [] > low-cased
@@ -298,7 +300,8 @@
                   ascii-bte.gte ^.ascii-a
                 slice.
                   as-bytes.
-                    ascii-bte.plus ^.^.up-cased.distance
+                    as-i64.
+                      ascii-bte.plus ^.^.up-cased.distance
                   7
                   1
                 byte
@@ -322,12 +325,38 @@
           * index
       ^.slice index 1
 
-  # Returns text where all regexp
-  # target changed to replacement.
-  # @todo #3251:30min Implement text.replaced object. This object was an atom in
-  #  eo-strings. Maybe there's a way to implement it in pure EO. Don't remember to
-  #  write some tests when object is implemented.
-  ^ > [target replacement] > replaced
+  # Returns `text` where all regex target changed to replacement.
+  # Here `target` must be a `org.eolang.txt.regex` object.
+  # The `replacement` here is a `string` that would be pasted instead of
+  # matched text in original one.
+  [target replacement] > replaced
+    ^.origin > self-as-bytes!
+    string self-as-bytes > reinit
+    (target.match reinit).next > matched
+    if. > @
+      matched.exists.not
+      QQ.txt.text reinit
+      QQ.txt.text
+        rec-replaced matched "" matched.start
+
+    [block accum start] > rec-replaced
+      if. > @
+        block.exists
+        ^.rec-replaced
+          block.next
+          concat.
+            concat.
+              accum
+              ^.reinit.slice
+                start
+                block.from.minus start
+            ^.replacement
+          block.to
+        as-string.
+          accum.concat
+            ^.reinit.slice
+              start
+              ^.reinit.length.minus start
 
   # Returns the original `text` as `number`.
   [] > as-number
@@ -340,16 +369,15 @@
           * ^.origin
       scanned.tail
 
-  # Returns a `list` of `strings`, separated by a given `delimiter`.
+  # Returns a `tuple` of `strings`, separated by a given `delimiter`.
   [delimiter] > split
     delimiter > delim!
     ^.origin.as-bytes > self-as-bytes
     self-as-bytes.size > len!
-    list > @
-      if.
-        len.eq 0
-        *
-        rec-split * 0 0
+    if. > @
+      len.eq 0
+      *
+      rec-split * 0 0
 
     [accum start current] > rec-split
       if. > @

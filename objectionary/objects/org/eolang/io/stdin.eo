@@ -25,9 +25,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # The `stdin` object is a convenient wrapper on `console` object
 # which is used as input only and allows to read the data from console.
@@ -71,9 +71,9 @@
   # Consumes only one line from the standard input stream.
   # If there's no line to consume - returns an empty string.
   [] > next-line
-    console.read 1 > first!
+    (console.read 1).self > first
     if. > @
-      first.size.eq 0
+      first.as-bytes.size.eq 0
       ""
       rec-read first --
 
@@ -81,14 +81,17 @@
     #
     # Attention. The object is for internal usage only, please
     # don't use the object programmatically outside of `stdin` object.
-    [char buffer] > rec-read
-      console.read 1 > next!
+    [input buffer] > rec-read
+      input.as-bytes > char
+      (input.read 1).self > next
       if. > @
         or.
-          and.
-            char.eq "\r"
-            next.eq "\n"
-          char.eq "\n"
+          char.eq --
+          or.
+            and.
+              char.eq "\r"
+              next.as-bytes.eq "\n"
+            char.eq "\n"
         string buffer
         ^.rec-read
           next

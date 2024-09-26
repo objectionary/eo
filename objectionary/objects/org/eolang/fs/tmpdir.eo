@@ -1,0 +1,76 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.fs.dir
++alias org.eolang.fs.file
++alias org.eolang.sys.getenv
++alias org.eolang.sys.os
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.fs
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
+
+# Temporary directory.
+# For Unix/MacOS uses the path supplied by the first environment variable
+# found in the list TMPDIR, TMP, TEMP, TEMPDIR.
+# If none of these are found, "/tmp" is used.
+#
+# For Windows uses the path reported by the Windows "GetTempPath" API function which
+# takes the first environment variable in the list TMP, TEMP, USERPROFILE.
+# If none of these are found, it returns the Windows directory (C:\Windows).
+[] > tmpdir
+  dir > @
+    file
+      string
+        [] > os-tmp-dir!
+          getenv "TMPDIR" > tmpdir!
+          getenv "TMP" > tmp!
+          getenv "TEMP" > temp!
+          getenv "TEMPDIR" > tempdir!
+          getenv "USERPROFILE" > userprofile!
+          if. > @
+            os.is-windows
+            if.
+              tmp.eq ""
+              if.
+                temp.eq ""
+                if.
+                  userprofile.eq ""
+                  "C:\\Windows"
+                  userprofile
+                temp
+              tmp
+            if.
+              tmpdir.eq ""
+              if.
+                tmp.eq ""
+                if.
+                  temp.eq ""
+                  if.
+                    tempdir.eq ""
+                    "/tmp"
+                    tempdir
+                  temp
+                tmp
+              tmpdir

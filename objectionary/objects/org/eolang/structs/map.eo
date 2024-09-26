@@ -26,9 +26,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # Hash-map.
 # Here `pairs` must be a `tuple` of `tuple`s where each sub-tuple consists of 2
@@ -141,7 +141,7 @@
         error > get
           sprintf
             "Object by hash code %d from given key does not exists"
-            * (int ^.hash)
+            * ^.hash
 
     # Returns the new `map` with added object
     # Replaces if there was one before.

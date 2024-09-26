@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > encages-into-cage
@@ -109,8 +109,6 @@
         pyint 0
       tmp.encage
         x.add (pyint 1)
-      QQ.io.stdout
-        tmp.value
       tmp.value.eq 1
 
 # Test.
@@ -120,24 +118,20 @@
     *
       try
         cge.encage "Hello world"
-        [e] > ex
-          cge.encage 10 > @
+        ^.cge.encage 10 > [e] >>
         true
       cge.eq 10
 
 # Check that cage stack leads to error. Just prints the error
 # message if passes.
-[] > catches-stack-overflow
+[] > throws-on-cage-stack-overflow
   (cage number.plus).new > cge
-  try > @
-    seq
-      *
-        cge.write
-          0.plus cge
-        cge
-        false
-    QQ.io.stdout stack-overflow-message > [stack-overflow-message]
-    false
+  seq > @
+    *
+      cge.write
+        0.plus cge
+      cge
+      false
 
 # Test.
 [] > applies-after-retrieval

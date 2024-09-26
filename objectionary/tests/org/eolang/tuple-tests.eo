@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > makes-tuple-through-special-syntax
@@ -105,13 +105,10 @@
       "with"
 
 # Test.
-[] > tuple-at-with-error
-  try > @
-    at.
-      * 1 2 3 4
-      20
-    QQ.io.stdout e > [e]
-    true
+[] > throws-on-wrong-tuple-at
+  at. > @
+    * 1 2 3 4
+    20
 
 # Test.
 [] > tuple-fluent-with
@@ -214,9 +211,6 @@
     0
 
 # Test.
-[] > tuple-with-negative-index-out-of-bounds
+[] > throws-on-out-of-tuple-bounds-with-negative-index
   * 0 1 2 3 4 > arr
-  try > @
-    arr.at -6
-    QQ.io.stdout e > [e]
-    true
+  arr.at -6 > @

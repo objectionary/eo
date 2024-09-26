@@ -1,0 +1,118 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
+
+# The 16 bits signed integer.
+# Here `as-bytes` must be a `bytes` object.
+[as-bytes] > i16
+  as-bytes > @
+  $ > as-i16
+  $.times -1.as-i64.as-i32.as-i16 > neg
+  $.as-i32.as-i64 > as-i64
+  $.as-i64.as-number > as-number
+
+  # Convert this `i16` to `i32`.
+  # The object is an atom because it's not possible to check what
+  # bytes should be added from left so the number is valid.
+  # The different bytes should be added if number is positive and negative.
+  [] > as-i32 /i32
+
+  # Returns `true` if `$` < `x`.
+  # Here `x` must be an `i16` object.
+  ^.as-i32.lt x.as-i16.as-i32 > [x] > lt
+
+  # Returns `true` if `$` <= `x`.
+  # Here `x` must be an `i16` object.
+  ^.as-i32.lte x.as-i16.as-i32 > [x] > lte
+
+  # Returns `true` if `$` > `x`.
+  # Here `x` must be an `i16` object.
+  ^.as-i32.gt x.as-i16.as-i32 > [x] > gt
+
+  # Returns `true` if `$` >= `x`.
+  # Here `x` must be an `i16` object.
+  ^.as-i32.gte x.as-i16.as-i32 > [x] > gte
+
+  # Multiplication of `$` and `x`.
+  # Here `x` must be an `i16` object.
+  [x] > times
+    (^.as-i32.times x.as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
+    if. > @
+      or.
+        left.eq 00-00
+        left.eq FF-FF
+      i16 right
+      plus.
+        i16 left
+        i16 right
+
+  # Sum of `$` and `x`.
+  # Here `x` must be an `i16` object.
+  [x] > plus
+    (^.as-i32.plus x.as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
+    if. > @
+      or.
+        left.eq 00-00
+        left.eq FF-FF
+      i16 right
+      plus.
+        i16 left
+        i16 right
+
+  # Subtraction between `$` and `x`.
+  # Here `x` must be an `i16` object.
+  ^.plus x.as-i16.neg > [x] > minus
+
+  # Quotient of the division of `$` by `x`.
+  # Here `x` must be an `i16` object.
+  # An `error` is returned if or `x` is equal to 0.
+  [x] > div
+    x.as-i16 > x-as-i16
+    (^.as-i32.div x-as-i16.as-i32).as-bytes > bts
+    bts.slice 0 2 > left
+    bts.slice 2 2 > right
+    00-00 > zero
+    if. > @
+      x-as-i16.eq zero
+      error
+        sprintf
+          "Can't divide %d by i16 zero"
+          * ^.as-i32.as-i64.as-number
+      if.
+        or.
+          left.eq zero
+          left.eq FF-FF
+        i16 right
+        plus.
+          i16 left
+          i16 right

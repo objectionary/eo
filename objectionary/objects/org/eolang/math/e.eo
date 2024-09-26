@@ -20,17 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.sys.uname
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+tests
-+package org.eolang.sys
-+version 0.39.0
++package org.eolang.math
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
 
-# Test.
-[] > checks-os-family
-  or. > @
-    or.
-      uname.is-windows
-      uname.is-macos
-    uname.is-linux
+# The Euler's number
+2.7182818284590452354 > e

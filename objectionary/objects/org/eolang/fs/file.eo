@@ -1,0 +1,272 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
++alias org.eolang.txt.sprintf
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package org.eolang.fs
++rt jvm org.eolang:eo-runtime:0.39.1
++rt node eo2js-runtime:0.0.0
++version 0.39.1
+
+# A file on the filesystem.
+[path] > file
+  $.path > @
+
+  # Returns `true` if current file is a directory, returns `false` otherwise.
+  [] > is-directory /bool
+
+  # Returns `true` if file with current `path` exists in filesystem.
+  [] > exists /bool
+
+  # If current file exists - returns the file.
+  # If current file does not exist - create an empty file
+  # in filesystem and returns it.
+  [] > touched
+    if. > @
+      ^.exists
+      ^
+      seq
+        *
+          touch
+          ^
+
+    # Creates new empty file.
+    #
+    # Attention! The object is for internal usage only, please
+    # don't use the object programmatically outside of `file` object.
+    [] > touch /true
+
+  # If current file exists - deletes it and returns it.
+  # If current file does not exist - just returns it.
+  [] > deleted
+    if. > @
+      ^.exists
+      seq
+        *
+          delete
+          ^
+      ^
+
+    # Deletes the file and and returns `true`.
+    #
+    # Attention! The object is for internal usage only, please
+    # don't use the object programmatically outside of `file` object.
+    [] > delete /true
+
+  # Get file size in bytes.
+  [] > size /number
+
+  # Move current file to `target`, making and returning a new `file` from it.
+  [target] > moved
+    QQ.fs.file move.as-bytes.as-string > @
+
+    # Tries to move file from `^.path` to `target`
+    # and returns path of moved file as `string`.
+    # Returns `error` is failed to move the file.
+    #
+    # Attention! The object is for internal usage only, please
+    # don't use the object programmatically outside of `file` object.
+    [] > move /string
+
+  # Convert the `file` to `path`.
+  (QQ.fs.path ^.path).determined > [] > as-path
+
+  # Opens the file.
+  #
+  # The first argument `mode` defines the operations that are allowed on the file
+  # and how these operations are performed.
+  #
+  # The access mode can be:
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | Mode | Description | File Existence       | Init pointer pos  | Content Handling     |
+  # |======|=============|======================|===================|======================|
+  # | "r"  | Read only   | Must exist           | Beginning         | No changes           |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | "w"  | Write only  | Created if not exist | Beginning         | Truncated if exists, |
+  # |      |             |                      |                   | created if not       |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | "a"  | Append only | Created if not exist | End               | No truncation,       |
+  # |      |             |                      |                   | created if not       |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | "r+" | Read/Write  | Must exist           | Beginning         | No changes           |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | "w+" | Write/Read  | Created if not exist | Beginning         | Truncated if exists, |
+  # |      |             |                      |                   | created if not       |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  # | "a+" | Read/Append | Created if not exist | End (for writing) | No truncation,       |
+  # |      |             |                      |                   | created if not       |
+  # |------|-------------|----------------------|-------------------|----------------------|
+  #
+  # The second argument `scope` is the scope where file is available as input
+  # (the `read` object is available) or output (the `write` object is available).
+  #
+  # When `file.open` is dataized - it opens file stream, dataizes the `scope`,
+  # closes the file stream and returns an original file object.
+  [mode scope] > open
+    mode > access!
+    access.eq "r" > read
+    access.eq "w" > write
+    access.eq "a" > append
+    access.eq "r+" > read-write
+    access.eq "w+" > write-read
+    access.eq "a+" > read-append
+    as-bool. > can-read
+      or.
+        read.or read-write
+        write-read.or read-append
+    as-bool. > can-write
+      or.
+        or.
+          write.or read-write
+          write-read.or read-append
+        append
+    as-bool. > must-exists
+      read.or read-write
+    as-bool. > truncate
+      write.or write-read
+    if. > @
+      can-read.not.and can-write.not
+      error "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      if.
+        ^.exists.not
+        if.
+          must-exists
+          error
+            sprintf
+              "File must exist for given access mod: '%s'"
+              * access
+          seq
+            *
+              ^.touched.touch
+              process-file
+              ^
+        if.
+          truncate
+          seq
+            *
+              ^.deleted.delete
+              ^.touched.touch
+              process-file
+              ^
+          seq
+            *
+              process-file
+              ^
+
+    # Process current file in the provided scope.
+    #
+    # Here file stream is open, then the stream is passed to `scope`,
+    # then given `scope` is dataized and stream is closed.
+    # Returns `true` if there are no errors occurred while `scope`
+    # dataization, returns `error` otherwise.
+    #
+    # The object is stream-safe, which means that stream is closed anyway,
+    # even if errors are occurred while `scope` dataization.
+    #
+    # Attention! The object is for internal usage only, please
+    # don't use the object programmatically outside of the `file` object.
+    [] > process-file /true
+
+    # File stream.
+    # The objects provides an API for using file as input or output.
+    [] > file-stream
+      # Read `size` amount of bytes from file input stream.
+      # Returns new instance of `input-block` with `buffer` read from file, or
+      # returns `error` if access mode does not allow reading operations.
+      [size] > read
+        ((input-block --).read size).self > @
+
+        # File input block
+        #
+        # Attention! The object is for internal usage only, please
+        # don't use the object programmatically outside of `file` object.
+        [buffer] > input-block
+          $ > self
+          buffer > @
+
+          # Read `size` amount of bytes from file input stream.
+          # Returns new instance of `input-block` with `buffer` read from file, or
+          # returns `error` if provided access mode does not allow reading operations.
+          [size] > read
+            ^.^.read-bytes size > read-bytes!
+            self. > @
+              if.
+                ^.^.^.^.can-read.not
+                [] >>
+                  $ > self
+                  error > @
+                    sprintf
+                      "Can't read from file with provided access mode '%s'"
+                      * ^.^.^.^.^.access
+                seq
+                  *
+                    read-bytes
+                    ^.^.input-block read-bytes
+
+        # Bytes read from file input stream
+        #
+        # Attention! The object is for internal usage only, please
+        # don't use the object programmatically outside of `file` object.
+        [size] > read-bytes /bytes
+
+      # Write given `buffer` to file output stream.
+      # Here `buffer` is either sequence of bytes or and object that can be
+      # dataized via `as-bytes` object.
+      # Returns new instance of `output-block` ready to write again, or
+      # returns an error if provided access mode does not allow writing operations.
+      [buffer] > write
+        (output-block.write buffer).self > @
+
+        # File output block.
+        #
+        # Attention! The object is for internal usage only, please
+        # don't use the object programmatically outside of `file` object.
+        [] > output-block
+          $ > self
+          true > @
+
+          # Write given `buffer` to file output stream.
+          # Here `buffer` is either sequence of bytes or and object that can be
+          # dataized via `as-bytes` object.
+          # Returns new instance of `output-block` ready to write again, or
+          # returns an error if provided access mode does not allow writing operations.
+          [buffer] > write
+            self. > @
+              if.
+                ^.^.^.^.can-write.not
+                [] >>
+                  $ > self
+                  error > @
+                    sprintf
+                      "Can't write to file with provided access mode '%s'"
+                      * ^.^.^.^.^.access
+                seq
+                  *
+                    ^.^.written-bytes buffer
+                    ^.^.output-block
+
+        # Bytes written to file output stream.
+        #
+        # Attention! The object is for internal usage only, please
+        # don't use the object programmatically outside of `file` object.
+        [buffer] > written-bytes /true

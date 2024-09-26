@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > catches-simple-exception
@@ -33,7 +33,7 @@
       "some string"
       7
       5
-    QQ.io.stdout e > [e]
+    true > [e]
     false
 
 # Test.
@@ -45,9 +45,9 @@
         7
         5
       error e > [e]
-      true
-    QQ.io.stdout e > [e]
-    true
+      false
+    true > [e]
+    false
 
 # Test.
 [] > try-without-error-block

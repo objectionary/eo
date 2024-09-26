@@ -23,13 +23,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.39.0
++rt jvm org.eolang:eo-runtime:0.39.1
 +rt node eo2js-runtime:0.0.0
-+version 0.39.0
++version 0.39.1
 
 # Not a number.
 [] > nan
-  0.0.div 0.0 > @
+  number 7F-F8-00-00-00-00-00-00 > @
+  $ > floor
+  $ > neg
+  true > is-nan
+  false > is-finite
+  false > is-integer
+  error "Can't convert NaN to i64" > as-i64
 
   # Tests that $ = x.
   false > [x] > eq
@@ -51,9 +57,6 @@
 
   # Sum of $ and x.
   ^ > [x] > plus
-
-  # Negation of $.
-  ^ > [] > neg
 
   # Difference between $ and x.
   ^ > [x] > minus

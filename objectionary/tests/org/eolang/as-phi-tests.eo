@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+alias org.eolang.io.stdout
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.39.0
++version 0.39.1
 
 # Test.
 [] > prints-itself
@@ -33,9 +32,3 @@
     length.
       as-phi $
     0
-
-# Test.
-[] > prints-itself-to-console
-  42 > x
-  stdout > @
-    as-phi $
