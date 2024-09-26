@@ -23,6 +23,8 @@
 name: ebnf
 on:
   push:
+    branches:
+      - master
     paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
