@@ -39,6 +39,18 @@ SOFTWARE.
   </properties>
   <dependencies>
     <dependency>
+      <!--
+      This dependency is required by the javadoc plugin. In the eo-runtime,
+      we use classes from this JAR, but can't have it as a normal dependency.
+      That's why the scope is "provided" here: it won't become a transitive
+      one, but at the same time will satisfy javadoc plugin.
+      -->
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.14.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
       <version>2.0.16</version>
