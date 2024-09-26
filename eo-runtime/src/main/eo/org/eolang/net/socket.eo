@@ -22,6 +22,7 @@
 
 +alias org.eolang.sys.posix
 +alias org.eolang.sys.os
++alias org.eolang.sys.win32
 +alias org.eolang.txt.sprintf
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -68,7 +69,7 @@
         inet-addr.as-i32
       posix.sockaddr-in > sockaddr
         posix.af-inet.as-i16
-        ^.^.htons port
+        ^.^.htons ^.port
         inet-addr-as-int
       code. > connected
         posix
@@ -104,10 +105,90 @@
             closed.eq -1
             error
               sprintf
-                "Couldn't close a posix socket '%d' connected to '%s:%d'"
-                * sd ^.address ^.port
+                "Couldn't close a posix socket '%d' connected to '%s:%d', reason: '%s'"
+                *
+                  sd
+                  ^.address
+                  ^.port
+                  code.
+                    posix
+                      "strerror"
+                      * (posix "errno" *).code
             true
 
     [descriptor] > scoped-posix-socket
 
   [address port] > win-socket
+    [scope] > connect
+      code. > started-up
+        win32
+          "WSAStartup"
+          * win32.winsock-version-2-2
+      code. > sd
+        win32
+          "socket"
+          * win32.af-inet win32.sock-stream win32.ipproto-tcp
+      code. > inet-addr
+        win32
+          "inet_addr"
+          * ^.address
+      if. > inet-addr-as-int
+        inet-addr.eq win32.inaddr-none
+        error
+          sprintf
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
+            * ^.address last-error-code
+        inet-addr.as-i32
+      win32.sockaddr-in > sockaddr
+        win32.af-inet.as-i16
+        ^.^.htons ^.port
+        inet-addr-as-int
+      code. > connected
+        win32
+          "connect"
+          * sd sockaddr sockaddr.size
+      code. > closed
+        win32
+          "closesocket"
+          * sd
+      (win32 "WSACleanup" *).code > cleaned-up
+      (win32 "WSAGetLastError" *).code > last-error-code
+      if. > @
+        (started-up.eq 0).not
+        error
+          sprintf
+            "Couldn't initialize Winsock via 'WSAStartup' call, WSA error code: %d"
+            * started-up
+        try
+          if.
+            sd.eq -1
+            error
+              sprintf
+                "Couldn't create a win32 socket, WSA error code: %d"
+                * last-error-code
+            try
+              if.
+                connected.eq -1
+                error
+                  sprintf
+                    "Couldn't connect to '%s:%d' on win32 socket '%d', WSA error code: %d"
+                    * ^.address ^.port sd last-error-code
+                as-bytes.
+                  dataized
+                    scope
+                      ^.scoped-win-socket sd
+              ex > [ex]
+              if.
+                closed.eq win32.socket-error
+                error
+                  sprintf
+                    "Couldn't close a win32 socket '%d', WSA error code: %d"
+                    * sd last-error-code
+                true
+          ex > [ex]
+          if.
+            cleaned-up.eq win32.socket-error
+            error "Couldn't cleanup Winsock resources"
+            true
+
+    [descriptor] > scoped-win-socket

@@ -21,12 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys.Posix; // NOPMD
+package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import EOorg.EOeolang.EOsys.Syscall;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -34,31 +36,39 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The 'inet_addr' syscall.
- * @since 0.40
+ * The 'connect' WS2_32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">here for details</a>
+ * @since 0.40.0
  */
-public final class InetAddrSyscall implements Syscall {
+public final class ConnectFuncCall implements Syscall {
     /**
-     * Posix object.
+     * Win32 object.
      */
-    private final Phi posix;
+    private final Phi win;
 
     /**
      * Ctor.
-     * @param posix Posix object
+     * @param win Win32 object
      */
-    public InetAddrSyscall(final Phi posix) {
-        this.posix = posix;
+    public ConnectFuncCall(final Phi win) {
+        this.win = win;
     }
 
     @Override
     public Phi make(final Phi... params) {
-        final Phi result = this.posix.take("return").copy();
+        final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
-                Integer.reverseBytes(
-                    CStdLib.INSTANCE.inet_addr(new Dataized(params[0]).asString())
+                Winsock.INSTANCE.connect(
+                    new Dataized(params[0]).asNumber().intValue(),
+                    new SockaddrIn(
+                        new Dataized(params[1].take("sin-family")).take(Short.class),
+                        new Dataized(params[1].take("sin-port")).take(Short.class),
+                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
+                        new Dataized(params[1].take("sin-zero")).take()
+                    ),
+                    new Dataized(params[2]).asNumber().intValue()
                 )
             )
         );

@@ -25,10 +25,6 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ConnectSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/InetAddrSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/StrerrorSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ErrnoSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/SockaddrIn.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnet/EOsocketTest.java"
-  - "eo-runtime/src/test/java/EOorg/EOeolang/EOnet/package-info.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/ConnectSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/InetAddrSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/WSAGetLastErrorSyscall.java"

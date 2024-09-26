@@ -21,47 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys.Posix; // NOPMD
+package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
 import EOorg.EOeolang.EOsys.Syscall;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The 'inet_addr' syscall.
- * @since 0.40
+ * WSAGetLastError WS2_32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsagetlasterror">here for details</a>
+ * @since 0.40.0
+ * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
  */
-public final class InetAddrSyscall implements Syscall {
+public final class WSAGetLastErrorFuncCall implements Syscall {
     /**
-     * Posix object.
+     * Win32 object.
      */
-    private final Phi posix;
+    private final Phi win;
 
     /**
      * Ctor.
-     * @param posix Posix object
+     * @param win Win32 object
      */
-    public InetAddrSyscall(final Phi posix) {
-        this.posix = posix;
+    public WSAGetLastErrorFuncCall(final Phi win) {
+        this.win = win;
     }
 
     @Override
     public Phi make(final Phi... params) {
-        final Phi result = this.posix.take("return").copy();
-        result.put(
-            0,
-            new Data.ToPhi(
-                Integer.reverseBytes(
-                    CStdLib.INSTANCE.inet_addr(new Dataized(params[0]).asString())
-                )
-            )
-        );
+        final Phi result = this.win.take("return").copy();
+        result.put(0, new Data.ToPhi(Winsock.INSTANCE.WSAGetLastError()));
         result.put(1, new PhDefault());
         return result;
     }
