@@ -35,7 +35,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: teatimeguest/setup-texlive-action@v3.3.0

@@ -27,7 +27,7 @@ on:
     - cron: '30 1 * * *'
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: teatimeguest/setup-texlive-action@v3.3.0
@@ -67,7 +67,7 @@ jobs:
     name: Create issue on failure
     needs: build
     if: failure() && github.event.pull_request == null
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: jayqi/failed-build-issue-action@v1
         with:
