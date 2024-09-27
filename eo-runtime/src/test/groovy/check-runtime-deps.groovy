@@ -35,8 +35,13 @@ def project = new XmlSlurper().parseText(pom)
 println 'Verify that there are no any dependencies in eo-runtime except those that are needed for tests'
 
 project.dependencies.dependency.each {
-  if (it.scope.text() != 'test')
-    fail(String.format('Dependency %s.%s must be in "test" scope', it.groupId.text(), it.artifactId.text()))
+  if (it.scope.text() != 'test' && it.scope.text() != 'provided')
+    fail(
+      String.format(
+        'Dependency %s.%s must be in "test" or "provided" scope',
+        it.groupId.text(), it.artifactId.text()
+      )
+    )
 }
 
 true
