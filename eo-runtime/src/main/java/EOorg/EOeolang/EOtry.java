@@ -28,8 +28,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import java.util.function.Consumer;
-import java.util.function.Function;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Data;
@@ -60,190 +58,16 @@ public final class EOtry extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        return new PhTry(this.take("main"), this.take("catch"), this.take("finally"));
-    }
-
-    /**
-     * Object that knows how to deal with {@link EOorg.EOeolang.EOerror.ExError}.
-     * @since 0.36.0
-     */
-    private static class PhTry implements Phi {
-        /**
-         * Body object.
-         */
-        private final Phi body;
-
-        /**
-         * Catch object.
-         */
-        private final Phi ctch;
-
-        /**
-         * Finally object.
-         */
-        private final Phi last;
-
-        /**
-         * Put function.
-         */
-        private final Consumer<Consumer<Phi>> func;
-
-        /**
-         * Ctor.
-         * @param body Body object
-         * @param ctch Catch object
-         * @param last Finally object
-         */
-        PhTry(final Phi body, final Phi ctch, final Phi last) {
-            this.body = body;
-            this.ctch = ctch;
-            this.last = last;
-            this.func = new TryExecute(body, ctch);
+        byte[] result;
+        try {
+            result = new Dataized(this.take("main")).take();
+        } catch (final EOerror.ExError ex) {
+            final Phi caught = this.take("catch").copy();
+            caught.put(0, ex.enclosure());
+            result = new Dataized(caught).take();
+        } finally {
+            new Dataized(this.take("finally")).take();
         }
-
-        @Override
-        public void attach(final byte[] data) {
-            this.func.accept(phi -> phi.attach(data));
-        }
-
-        @Override
-        public byte[] delta() {
-            return new TryReturn<byte[]>(
-                this.body, this.ctch, this.last
-            ).apply(Data::delta);
-        }
-
-        @Override
-        public Phi copy() {
-            return new PhTry(this.body.copy(), this.ctch.copy(), this.last.copy());
-        }
-
-        @Override
-        public Phi take(final String name) {
-            return new TryReturn<Phi>(
-                this.body, this.ctch, this.last
-            ).apply(phi -> phi.take(name));
-        }
-
-        @Override
-        public boolean put(final int pos, final Phi object) {
-            return new TryReturn<Boolean>(
-                this.body, this.ctch, this.last
-            ).apply(phi -> phi.put(pos, object));
-        }
-
-        @Override
-        public boolean put(final String name, final Phi object) {
-            return new TryReturn<Boolean>(
-                this.body, this.ctch, this.last
-            ).apply(phi -> phi.put(name, object));
-        }
-
-        @Override
-        public String locator() {
-            return new TryReturn<String>(
-                this.body, this.ctch, this.last
-            ).apply(Phi::locator);
-        }
-
-        @Override
-        public String forma() {
-            return new TryReturn<String>(
-                this.body, this.ctch, this.last
-            ).apply(Phi::forma);
-        }
-
-        @Override
-        public String φTerm() {
-            return new TryReturn<String>(
-                this.body, this.ctch, this.last
-            ).apply(Phi::φTerm);
-        }
-    }
-
-    /**
-     * Tries to execute given function and catches {@link EOorg.EOeolang.EOerror.ExError}.
-     * @since 0.36.0
-     */
-    private static class TryExecute implements Consumer<Consumer<Phi>> {
-        /**
-         * Body object.
-         */
-        private final Phi body;
-
-        /**
-         * Catch object.
-         */
-        private final Phi ctch;
-
-        /**
-         * Ctor.
-         * @param main Body object
-         * @param ctch Catch object
-         */
-        TryExecute(final Phi main, final Phi ctch) {
-            this.body = main;
-            this.ctch = ctch;
-        }
-
-        @Override
-        public void accept(final Consumer<Phi> func) {
-            try {
-                func.accept(this.body);
-            } catch (final EOerror.ExError ex) {
-                final Phi caught = this.ctch.copy();
-                caught.put(0, ex.enclosure());
-                func.accept(caught);
-            }
-        }
-    }
-
-    /**
-     * Tries to return value from given function and catches {@link EOorg.EOeolang.EOerror.ExError}.
-     * @param <T> Type of return value.
-     * @since 0.36.0
-     */
-    private static class TryReturn<T> implements Function<Function<Phi, T>, T> {
-        /**
-         * Body object.
-         */
-        private final Phi body;
-
-        /**
-         * Catch object.
-         */
-        private final Phi ctch;
-
-        /**
-         * Finally object.
-         */
-        private final Phi last;
-
-        /**
-         * Ctor.
-         * @param main Body object
-         * @param ctch Catch object
-         * @param last Finally object
-         */
-        TryReturn(final Phi main, final Phi ctch, final Phi last) {
-            this.body = main;
-            this.ctch = ctch;
-            this.last = last;
-        }
-
-        @Override
-        public T apply(final Function<Phi, T> func) {
-            T result;
-            try {
-                result = func.apply(this.body);
-            } catch (final EOerror.ExError ex) {
-                final Phi caught = this.ctch.copy();
-                caught.put(0, ex.enclosure());
-                result = func.apply(caught);
-            } finally {
-                new Dataized(this.last).take();
-            }
-            return result;
-        }
+        return new Data.ToPhi(result);
     }
 }
