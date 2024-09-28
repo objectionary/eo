@@ -177,8 +177,8 @@ final class EOsocketTest {
         assert socket >= 0;
         final SockaddrIn addr = new SockaddrIn(
             (short) Winsock.AF_INET,
-            EOsocketTest.htons(8080),
-            Integer.reverseBytes(Winsock.INSTANCE.inet_addr("127.0.0.0"))
+            EOsocketTest.htons(1234),
+            Integer.reverseBytes(Winsock.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
         );
         final int connected = Winsock.INSTANCE.connect(socket, addr, addr.size());
         MatcherAssert.assertThat(
