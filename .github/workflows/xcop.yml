@@ -33,7 +33,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   xcop:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: g4s8/xcop-action@v1.3

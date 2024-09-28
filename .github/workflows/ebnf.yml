@@ -23,6 +23,8 @@
 name: ebnf
 on:
   push:
+    branches:
+      - master
     paths-ignore: [ 'paper/**', 'sandbox/**' ]
   pull_request:
     branches:
@@ -30,7 +32,7 @@ on:
     paths-ignore: [ 'paper/**', 'sandbox/**' ]
 jobs:
   ebnf:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
@@ -76,7 +78,7 @@ jobs:
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf
           done
-      - uses: JamesIves/github-pages-deploy-action@v4.6.4
+      - uses: JamesIves/github-pages-deploy-action@v4.6.7
         with:
           branch: gh-pages
           folder: gh-pages

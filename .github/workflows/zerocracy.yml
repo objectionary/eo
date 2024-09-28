@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   zerocracy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: zerocracy/judges-action@0.0.53
@@ -40,14 +40,14 @@ jobs:
             vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
             repositories=objectionary/*
           factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.35
+      - uses: zerocracy/pages-action@0.0.37
         with:
           factbase: objectionary.fb
           output: pages
           logo: https://www.objectionary.com/cactus.svg
           options: |
             github_token=${{ secrets.GITHUB_TOKEN }}
-      - uses: JamesIves/github-pages-deploy-action@v4.6.4
+      - uses: JamesIves/github-pages-deploy-action@v4.6.7
         with:
           branch: gh-pages
           folder: pages
