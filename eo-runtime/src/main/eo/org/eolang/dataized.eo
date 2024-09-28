@@ -55,4 +55,8 @@
 #
 # Here, when `.as-bytes` is taken, the `dataized` dataizes (takes `bytes`) from the object `foo`
 # and returns them. The `.as-bytes` is used to prevent double dataization.
-[target] > dataized /bytes
+[target] > dataized
+  try > @
+    target
+    error ex > [ex]
+    false
