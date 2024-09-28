@@ -78,7 +78,7 @@ jobs:
             cp "${p}.png" gh-pages/ebnf
             cp "${p}.svg" gh-pages/ebnf
           done
-      - uses: JamesIves/github-pages-deploy-action@v4.6.5
+      - uses: JamesIves/github-pages-deploy-action@v4.6.7
         with:
           branch: gh-pages
           folder: gh-pages
