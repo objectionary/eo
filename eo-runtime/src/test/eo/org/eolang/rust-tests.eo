@@ -222,8 +222,7 @@
         e > [e]
         true
       0
-      length.
-        message
+      message.as-bytes.size
     message
 
 # Test.
@@ -251,9 +250,7 @@
     e > [e]
     true
   eq. > @
-    res.slice
-      0
-      to-check.length
+    res.slice 0 to-check.as-bytes.size
     to-check
 
 # Test.
@@ -348,11 +345,7 @@
     e > [e]
     true
   eq. > @
-    slice.
-      res
-      0
-      length.
-        message
+    res.slice 0 message.as-bytes.size
     message
 
 # Test.
