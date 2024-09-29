@@ -167,6 +167,25 @@ public interface CStdLib extends Library {
     int connect(int sockfd, SockaddrIn addr, int addrlen);
 
     /**
+     * Assigns the address specified by {@code addr} to the socket referred to
+     * by the file descriptor {@code sockfd}.
+     * @param sockfd Socket descriptor
+     * @param addr Address structure
+     * @param addrlen The size of the address structure
+     * @return Zero on success, -1 on error
+     */
+    int bind(int sockfd, SockaddrIn addr, int addrlen);
+
+    /**
+     * Listen for incoming connections on socket.
+     * @param sockfd Socket descriptor
+     * @param backlog Specifies the queue length for completely established sockets
+     *  waiting to be accepted
+     * @return Zero on success, -1 on error
+     */
+    int listen(int sockfd, int backlog);
+
+    /**
      * Convert IP string to binary form.
      * @param address IP address
      * @return IP address in binary form

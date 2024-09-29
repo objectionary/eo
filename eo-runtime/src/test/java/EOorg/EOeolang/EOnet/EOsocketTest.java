@@ -70,23 +70,19 @@ final class EOsocketTest {
     @DisabledOnOs(OS.WINDOWS)
     void connectsToLocalServerViaPosixSyscall() throws IOException {
         final ServerSocket server = EOsocketTest.startServer();
-        final int socket = CStdLib.INSTANCE.socket(
-            CStdLib.AF_INET,
-            CStdLib.SOCK_STREAM,
-            CStdLib.IPPROTO_TCP
-        );
+        final int socket = EOsocketTest.openPosixSocket();
         assert socket >= 0;
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
             EOsocketTest.htons(8080),
-            Integer.reverseBytes(CStdLib.INSTANCE.inet_addr(EOsocketTest.LOCALHOST))
+            EOsocketTest.posixInetAddr(EOsocketTest.LOCALHOST)
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         final String error;
         if (connected == 0) {
             error = "";
         } else {
-            error = CStdLib.INSTANCE.strerror(Native.getLastError());
+            error = EOsocketTest.getPosixError();
         }
         MatcherAssert.assertThat(
             String.format(
@@ -96,7 +92,7 @@ final class EOsocketTest {
             connected,
             Matchers.equalTo(0)
         );
-        assert CStdLib.INSTANCE.close(socket) == 0;
+        assert EOsocketTest.closePosixSocket(socket) == 0;
         EOsocketTest.stopServer(server);
     }
 
@@ -142,16 +138,12 @@ final class EOsocketTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void refusesConnectionViaPosixSyscall() {
-        final int socket = CStdLib.INSTANCE.socket(
-            CStdLib.AF_INET,
-            CStdLib.SOCK_STREAM,
-            CStdLib.IPPROTO_TCP
-        );
+        final int socket = EOsocketTest.openPosixSocket();
         assert socket >= 0;
         final SockaddrIn addr = new SockaddrIn(
             (short) CStdLib.AF_INET,
-            EOsocketTest.htons(8080),
-            Integer.reverseBytes(CStdLib.INSTANCE.inet_addr("127.0.0.0"))
+            EOsocketTest.htons(1234),
+            EOsocketTest.posixInetAddr(EOsocketTest.LOCALHOST)
         );
         final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
         MatcherAssert.assertThat(
@@ -159,7 +151,7 @@ final class EOsocketTest {
             connected,
             Matchers.equalTo(-1)
         );
-        assert CStdLib.INSTANCE.close(socket) == 0;
+        assert EOsocketTest.closePosixSocket(socket) == 0;
     }
 
     @Test
@@ -209,6 +201,128 @@ final class EOsocketTest {
             Matchers.equalTo(expected)
         );
         EOsocketTest.stopServer(server);
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void bindsSocketSuccessfullyViaPosixSyscall() {
+        final int socket = EOsocketTest.openPosixSocket();
+        assert socket >= 0;
+        final int bound = EOsocketTest.bindPosixSocket(socket);
+        final String error;
+        if (bound == 0) {
+            error = "";
+        } else {
+            error = EOsocketTest.getPosixError();
+        }
+        MatcherAssert.assertThat(
+            String.format(
+                "Posix socket should have been bound to localhost via syscall, but it didn't, error is: %s",
+                error
+            ),
+            bound,
+            Matchers.equalTo(0)
+        );
+        assert EOsocketTest.closePosixSocket(socket) == 0;
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void startsListenOnPosixSocket() {
+        final int socket = EOsocketTest.openPosixSocket();
+        assert socket >= 0;
+        assert EOsocketTest.bindPosixSocket(socket) == 0;
+        final int listened = CStdLib.INSTANCE.listen(socket, 2);
+        final String error;
+        if (listened == 0) {
+            error = "";
+        } else {
+            error = EOsocketTest.getPosixError();
+        }
+        MatcherAssert.assertThat(
+            String.format(
+                "Posix socket should have been bound to localhost via syscall, but it didn't, error is: %s",
+                error
+            ),
+            listened,
+            Matchers.equalTo(0)
+        );
+        assert EOsocketTest.closePosixSocket(socket) == 0;
+    }
+
+    /**
+     * Open posix socket.
+     * @return Posix socket descriptor.
+     */
+    private static int openPosixSocket() {
+        return CStdLib.INSTANCE.socket(
+            CStdLib.AF_INET,
+            CStdLib.SOCK_STREAM,
+            CStdLib.IPPROTO_TCP
+        );
+    }
+
+    /**
+     * Close posix socket
+     * @param socket Socket to close
+     * @return Zero on success, -1 on error
+     */
+    private static int closePosixSocket(final int socket) {
+        return CStdLib.INSTANCE.close(socket);
+    }
+
+    /**
+     * Bind socket.
+     * @param socket Socket
+     * @return Zero on success, -1 on error
+     */
+    private static int bindPosixSocket(final int socket) {
+        return EOsocketTest.bindPosixSocket(socket, 8080, EOsocketTest.LOCALHOST);
+    }
+
+    /**
+     * Bind socket.
+     * @param socket Socket
+     * @param port Port
+     * @param address Address
+     * @return Zero on success, -1 on error
+     */
+    private static int bindPosixSocket(final int socket, final int port, final String address) {
+        return CStdLib.INSTANCE.bind(
+            socket,
+            new SockaddrIn(
+                (short) CStdLib.AF_INET,
+                EOsocketTest.htons(port),
+                EOsocketTest.posixInetAddr(address)
+            ),
+            16
+        );
+    }
+
+    /**
+     * Get last posix error.
+     * @param error Error code
+     * @return Last posix error as string
+     */
+    private static String getPosixError(final int error) {
+        return CStdLib.INSTANCE.strerror(error);
+    }
+
+    /**
+     * Get last posix error.
+     * @return Last posix error as string
+     */
+    private static String getPosixError() {
+        return EOsocketTest.getPosixError(Native.getLastError());
+    }
+
+    /**
+     * Call posix inet addr.
+     * @param address IP address
+     * @return Posix inet addr as integer
+     */
+    private static int posixInetAddr(final String address) {
+        return CStdLib.INSTANCE.inet_addr(address);
     }
 
     /**
