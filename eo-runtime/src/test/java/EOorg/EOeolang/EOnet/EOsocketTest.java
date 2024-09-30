@@ -115,13 +115,14 @@ final class EOsocketTest {
             }
         );
         server.start();
+        Thread.sleep(2000);
         final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
         socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
         socket.put(1, new Data.ToPhi(port));
         final Phi connected = socket.take("connect").copy();
         connected.put(0, new Client(msg));
         final int sent = new Dataized(connected).asNumber().intValue();
-        Thread.sleep(2000);
+        server.join();
         MatcherAssert.assertThat(
             "Client had to send message to the server, but it didn't",
             sent,
