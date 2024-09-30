@@ -98,10 +98,12 @@ final class EOsocketTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void sendsAndReceivesMessageViaSocketObject() throws InterruptedException {
+    void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
-        final int port = EOsocketTest.randomPort();
+        final RandomServer random = new RandomServer().started();
+        random.stop();
+        final int port = random.port;
         final Thread server = new Thread(
             () -> {
                 final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
@@ -146,8 +148,8 @@ final class EOsocketTest {
      * @return Random port
      */
     private static int randomPort() {
-        final int min = 5000;
-        final int max = 7000;
+        final int min = 10000;
+        final int max = 20000;
         return new Random().nextInt((max - min) + 1) + min;
     }
 
