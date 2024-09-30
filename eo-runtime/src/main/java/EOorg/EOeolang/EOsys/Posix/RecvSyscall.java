@@ -28,16 +28,16 @@
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
 import EOorg.EOeolang.EOsys.Syscall;
+import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Listen syscall.
+ * Recv syscall.
  * @since 0.40
  */
-public final class ListenSyscall implements Syscall {
+public final class RecvSyscall implements Syscall {
     /**
      * Posix object.
      */
@@ -47,23 +47,23 @@ public final class ListenSyscall implements Syscall {
      * Ctor.
      * @param posix Posix object
      */
-    public ListenSyscall(final Phi posix) {
+    public RecvSyscall(final Phi posix) {
         this.posix = posix;
     }
 
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
-        result.put(
-            0,
-            new Data.ToPhi(
-                CStdLib.INSTANCE.listen(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).asNumber().intValue()
-                )
-            )
+        final int size = new Dataized(params[1]).asNumber().intValue();
+        final byte[] buf = new byte[(int) size];
+        final int received = CStdLib.INSTANCE.recv(
+            new Dataized(params[0]).asNumber().intValue(),
+            buf,
+            size,
+            new Dataized(params[2]).asNumber().intValue()
         );
-        result.put(1, new PhDefault());
+        result.put(0, new Data.ToPhi(received));
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, received)));
         return result;
     }
 }

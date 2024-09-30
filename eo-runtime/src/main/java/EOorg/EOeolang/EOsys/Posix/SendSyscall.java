@@ -34,10 +34,10 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Listen syscall.
+ * Send syscall.
  * @since 0.40
  */
-public final class ListenSyscall implements Syscall {
+public final class SendSyscall implements Syscall {
     /**
      * Posix object.
      */
@@ -47,7 +47,7 @@ public final class ListenSyscall implements Syscall {
      * Ctor.
      * @param posix Posix object
      */
-    public ListenSyscall(final Phi posix) {
+    public SendSyscall(final Phi posix) {
         this.posix = posix;
     }
 
@@ -57,9 +57,11 @@ public final class ListenSyscall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                CStdLib.INSTANCE.listen(
+                CStdLib.INSTANCE.send(
                     new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).asNumber().intValue()
+                    new Dataized(params[1]).take(),
+                    new Dataized(params[2]).asNumber().intValue(),
+                    new Dataized(params[3]).asNumber().intValue()
                 )
             )
         );

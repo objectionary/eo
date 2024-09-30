@@ -696,7 +696,7 @@ final class InputOutputTest {
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileReadSyscallTest {
         @Test
-        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        @DisabledOnOs({OS.MAC, OS.LINUX})
         void readsFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp) throws IOException {
             final String content = "read from windows stdin";
             final byte[] result = InputOutputTest.windowsStdin(
@@ -730,7 +730,7 @@ final class InputOutputTest {
         }
 
         @Test
-        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        @DisabledOnOs({OS.MAC, OS.LINUX})
         void readsOnlyAvailableFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
             throws IOException {
             final String content = "read available from windows stdin";
@@ -765,7 +765,7 @@ final class InputOutputTest {
         }
 
         @Test
-        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        @DisabledOnOs({OS.MAC, OS.LINUX})
         void readsFromEmptyStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
             throws IOException {
             final byte[] result = InputOutputTest.windowsStdin(
@@ -799,7 +799,7 @@ final class InputOutputTest {
         }
 
         @Test
-        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        @DisabledOnOs({OS.MAC, OS.LINUX})
         void readsFromStdinByPortionsViaWindowsFileReadSyscall(@TempDir final Path temp)
             throws IOException {
             final byte[] result = InputOutputTest.windowsStdin(
@@ -914,7 +914,7 @@ final class InputOutputTest {
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsFileWriteSyscallTest {
         @Test
-        @DisabledOnOs({OS.MAC, OS.LINUX, OS.AIX})
+        @DisabledOnOs({OS.MAC, OS.LINUX})
         void writesToStdoutViaWindowsWriteFileFunction(@TempDir final Path temp)
             throws IOException {
             final String msg = "writes to windows stdout";

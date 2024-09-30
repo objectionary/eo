@@ -37,6 +37,7 @@ import java.util.List;
  * @checkstyle VisibilityModifierCheck (50 lines)
  * @checkstyle ParameterNumberCheck (50 lines)
  */
+@SuppressWarnings({"PMD.OnlyOneConstructorShouldDoInitialization", "PMD.DataClass"})
 public final class SockaddrIn extends Structure {
     /**
      * Address family (e.g., AF_INET).
@@ -59,6 +60,14 @@ public final class SockaddrIn extends Structure {
     public byte[] zero;
 
     /**
+     * Ctor.
+     */
+    public SockaddrIn() {
+        super();
+        this.zero = new byte[8];
+    }
+
+    /**
      * Convenient ctor for testing.
      * @param family Family
      * @param port Port
@@ -76,6 +85,7 @@ public final class SockaddrIn extends Structure {
      * @param zero Zero 8 bytes
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
+        super();
         this.family = family;
         this.port = port;
         this.addr = addr;

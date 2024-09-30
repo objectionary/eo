@@ -37,14 +37,14 @@
 #
 # ```
 # socket
-#   "127.0.0.1"                       # localhost IPv4 address
-#   8080                              # port
+#   "127.0.0.1"                           # localhost IPv4 address
+#   8080                                  # port
 # .connect
 #   [s]
-#     s.send "Hello, world" > sent    # send message to the socket, `sent` - amount of sent bytes
-#     s.recv 12 > buff                # receive 12 bytes from the socket, `buff` - received bytes
-#     s.as-input                      # make input from socket, `read` attribute is available
-#     s.as-output                     # make output from socket, `write` attribute is available
+#     s.send "Hello, world" > sent        # send message to the socket, `sent` - amount of sent bytes
+#     s.recv 12 > buff                    # receive 12 bytes from the socket, `buff` - received bytes
+#     s.as-input.read 5                   # make input from socket, `read` attribute is available
+#     s.as-output.write "Hi"              # make output from socket, `write` attribute is available
 #
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
@@ -59,21 +59,23 @@
 #   8080
 # .listen
 #   [s]
-#     s.send "Hello, world" > sent     # same as in `socket.connect`
-#     s.recv 12 > buff                 # same as in `socket.connect`
-#     s.as-input.read 10               # same as in `socket.connect`
-#     s.as-output.write "What's up"    # same as in `socket.connect`
-#     s.accept > client-sock           # accept incoming connection on socket,
-#     client-sock.send "Hi, Jeff"      # returns client socket, that has all the attributes
-#     client-sock.recv 42              # of the scoped-socket (except "accept" attribute)
-#     client-sock.as-input.read 5
-#     client-sock.as-output.write "Hi"
+#     s.send "Hello, world" > sent         # same as in `socket.connect`
+#     s.recv 12 > buff                     # same as in `socket.connect`
+#     s.as-input.read 10                   # same as in `socket.connect`
+#     s.as-output.write "What's up"        # same as in `socket.connect`
+#     s.accept                             # accept incoming connection on socket,
+#       [client]                           # client is connected client socket
+#         client-sock.send "Hi, Jeff"      # returns client socket, that has all the attributes
+#         client-sock.recv 42              # of the scoped-socket (except "accept" attribute)
+#         client-sock.as-input.read 5      # same as in `socket.connect`
+#         client-sock.as-output.write "Hi" # same as in `socket.connect`
 # ```
 #
 # When you dataize `socket.listen`, it creates new socket, binds it to the given address and port,
 # starts listening for incoming connections, dataizes provided scope, closes the socket
-# and returns bytes retrieved from scope dataization. The error is returned is any of
-# the described steps failed.
+# and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
+# given scope, closes client socket and returns `bytes` retrieved from scope dataization.
+# The error is returned is any of the described steps failed.
 [address port] > socket
   if. > @
     os.is-windows
@@ -174,20 +176,12 @@
       error
         sprintf
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' posix syscall, reason: '%s'"
-          * address strerror
+          * address strerror.code
       inet-addr.as-i32
     posix.sockaddr-in > sockaddr
       posix.af-inet.as-i16
       ^.htons port
       inet-addr-as-int
-    code. > closed
-      posix
-        "close"
-        * sd
-    code. > strerror
-      posix
-        "strerror"
-        * (posix "errno" *).code
 
     # Scoped posix socket that is passed as argument
     # to scope of `posix-socket.connect` and `posix-socket.listen`.
@@ -214,7 +208,7 @@
           error
             sprintf
               "Failed to send message through the socket '%d', reason: %s"
-              * ^.sockfd ^.^.strerror
+              * ^.sockfd ^.^.strerror.code
           sent
 
       # Receive bytes from the socket.
@@ -230,8 +224,39 @@
           error
             sprintf
               "Failed to receive data from the socket '%d', reason: %s"
-              * ^.sockfd ^.^.strerror
+              * ^.sockfd ^.^.strerror.code
           received.output
+
+    # Get error message as `string` from ERRNO.
+    #
+    # Attention! The object is for internal usage only, please don't use
+    # the object programmatically outside of `socket` object.
+    [] > strerror
+      posix > @
+        "strerror"
+        * (posix "errno" *).code
+
+    # Close socket by given descriptor `sockfd`.
+    # Returns `true` on success, returns `error` otherwise.
+    #
+    # Attention! The object is for internal usage only, please don't use
+    # the object programmatically outside of `socket` object.
+    [sockfd] > closed-socket
+      code. > closed
+        posix
+          "close"
+          * sockfd
+      if. > @
+        closed.eq -1
+        error
+          sprintf
+            "Couldn't close a posix socket '%d' connected to '%s:%d', reason: '%s'"
+            *
+              sockfd
+              ^.address
+              ^.port
+              ^.strerror.code
+        true
 
     # Safe posix socket that ensures that socket is closed even if error is occurred.
     #
@@ -243,24 +268,11 @@
         error
           sprintf
             "Couldn't create a posix socket, reason: '%s'"
-            * ^.strerror
+            * ^.strerror.code
         try
           scope
-          ex > [ex]
-          if.
-            ^.closed.eq -1
-            error
-              sprintf
-                "Couldn't close a posix socket '%d' connected to '%s:%d', reason: '%s'"
-                *
-                  ^.sd
-                  ^.address
-                  ^.port
-                  code.
-                    posix
-                      "strerror"
-                      * (posix "errno" *).code
-            true
+          error ex > [ex]
+          ^.closed-socket ^.sd
 
     # Initiate a connection on a socket.
     # Here `scope` must be an abstract object with one free attribute which will be
@@ -278,7 +290,7 @@
             error
               sprintf
                 "Couldn't connect to '%s:%d' on posix socket '%d', reason: '%s'"
-                * sock.address sock.port sock.sd sock.strerror
+                * sock.address sock.port sock.sd sock.strerror.code
             as-bytes.
               dataized
                 scope
@@ -306,13 +318,13 @@
             error
               sprintf
                 "Couldn't bind posix socket '%d' to '%s:%d', reason: '%s'"
-                * sock.sd sock.address sock.port sock.strerror
+                * sock.sd sock.address sock.port sock.strerror.code
             if.
               listened.eq -1
               error
                 sprintf
                   "Failed to listen for connections to '%s:%d' on socket '%d', reason: '%s'"
-                  * sock.address sock.port sock.sd sock.strerror
+                  * sock.address sock.port sock.sd sock.strerror.code
               as-bytes.
                 dataized
                   scope
@@ -323,19 +335,26 @@
                       # On success the client socket is returned, otherwise `error` is returned.
                       # Client socket decorates `scoped-socket` object, so all the attributes like
                       # `send`, `recv`, `as-input`, `as-output` are available.
-                      [] > accept
+                      [scope] > accept
                         ^.^.sock > sock
-                        code. > client-socketfd
+                        code. > client-sockfd
                           posix
                             "accept"
                             * sock.sd sock.sockaddr sock.sockaddr.size
-                        if. > @
-                          client-socketfd.eq -1
-                          error
-                            sprintf
-                              "Failed to accept a connection on posix socket '%d', reason: %s"
-                              * sock.sd sock.strerror
-                          sock.scoped-socket client-socketfd
+                        try > @
+                          if.
+                            client-sockfd.eq -1
+                            error
+                              sprintf
+                                "Failed to accept a connection on posix socket '%d', reason: %s"
+                                * sock.sd sock.strerror.code
+                            as-bytes.
+                              dataized
+                                scope
+                                  sock.scoped-socket
+                                    client-sockfd
+                          error ex > [ex]
+                          sock.closed-socket client-sockfd
 
   [address port] > win-socket
     [scope] > connect
@@ -396,7 +415,7 @@
                   dataized
                     scope
                       ^.scoped-win-socket sd
-              ex > [ex]
+              error ex > [ex]
               if.
                 closed.eq win32.socket-error
                 error
@@ -404,7 +423,7 @@
                     "Couldn't close a win32 socket '%d', WSA error code: %d"
                     * sd last-error-code
                 true
-          ex > [ex]
+          error ex > [ex]
           if.
             cleaned-up.eq win32.socket-error
             error "Couldn't cleanup Winsock resources"

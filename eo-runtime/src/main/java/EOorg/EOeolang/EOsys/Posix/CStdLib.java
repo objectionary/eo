@@ -31,11 +31,13 @@ import EOorg.EOeolang.EOsys.SockaddrIn;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 
 /**
  * C standard library with unix syscalls.
  * @since 0.40
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface CStdLib extends Library {
 
     /**
@@ -184,6 +186,38 @@ public interface CStdLib extends Library {
      * @return Zero on success, -1 on error
      */
     int listen(int sockfd, int backlog);
+
+    /**
+     * Accept connection on socket.
+     * @param sockfd Socket descriptor
+     * @param addr Address structure
+     * @param addrlen The size of the address structure
+     * @return On success, file descriptor for the accepted socket (a nonnegative integer)
+     *  is returned. On error, -1 is returned.
+     */
+    int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
+
+    /**
+     * Receive a message from a socket.
+     * @param sockfd Socket descriptor
+     * @param buf Byte buffer to store received bytes
+     * @param len Size of received data
+     * @param flags Flags
+     * @return The number of received bytes on success, -1 on error
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    int recv(int sockfd, byte[] buf, int len, int flags);
+
+    /**
+     * Send a message to a socket.
+     * @param sockfd Socket descriptor
+     * @param buf Byte buffer to store sent bytes
+     * @param len Size of sent data
+     * @param flags Flags
+     * @return The number of sent bytes on success, -1 on error
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    int send(int sockfd, byte[] buf, int len, int flags);
 
     /**
      * Convert IP string to binary form.

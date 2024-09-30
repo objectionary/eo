@@ -27,17 +27,19 @@
  */
 package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import EOorg.EOeolang.EOsys.Syscall;
+import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * Listen syscall.
+ * Accept syscall.
  * @since 0.40
  */
-public final class ListenSyscall implements Syscall {
+public final class AcceptSyscall implements Syscall {
     /**
      * Posix object.
      */
@@ -47,7 +49,7 @@ public final class ListenSyscall implements Syscall {
      * Ctor.
      * @param posix Posix object
      */
-    public ListenSyscall(final Phi posix) {
+    public AcceptSyscall(final Phi posix) {
         this.posix = posix;
     }
 
@@ -57,9 +59,15 @@ public final class ListenSyscall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                CStdLib.INSTANCE.listen(
+                CStdLib.INSTANCE.accept(
                     new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).asNumber().intValue()
+                    new SockaddrIn(
+                        new Dataized(params[1].take("sin-family")).take(Short.class),
+                        new Dataized(params[1].take("sin-port")).take(Short.class),
+                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
+                        new Dataized(params[1].take("sin-zero")).take()
+                    ),
+                    new IntByReference(new Dataized(params[2]).asNumber().intValue())
                 )
             )
         );

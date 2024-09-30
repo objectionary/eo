@@ -53,7 +53,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOwin32Test {
     @Test
-    @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
+    @DisabledOnOs({OS.LINUX, OS.MAC})
     void invokesGetCurrentProcessIdCorrectly() {
         MatcherAssert.assertThat(
             "The \"GetCurrentProcessId\" function call was expected to work correctly",
@@ -84,7 +84,7 @@ final class EOwin32Test {
      */
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
-    @DisabledOnOs({OS.LINUX, OS.MAC, OS.AIX})
+    @DisabledOnOs({OS.LINUX, OS.MAC})
     final class WinsockTest {
         @Test
         void initializesWinsockLibrary() {
