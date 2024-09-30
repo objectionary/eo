@@ -75,6 +75,11 @@ final class EOsocketTest {
      */
     private static final String LOCALHOST = "127.0.0.1";
 
+    /**
+     * Random.
+     */
+    private static final Random RANDOM = new Random();
+
     @Test
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
@@ -151,7 +156,7 @@ final class EOsocketTest {
     private static int randomPort() {
         final int min = 10000;
         final int max = 20000;
-        return new Random().nextInt((max - min) + 1) + min;
+        return EOsocketTest.RANDOM.nextInt((max - min) + 1) + min;
     }
 
     /**
