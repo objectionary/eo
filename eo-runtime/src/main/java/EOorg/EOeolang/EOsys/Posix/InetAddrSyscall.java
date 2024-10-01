@@ -57,9 +57,7 @@ public final class InetAddrSyscall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Integer.reverseBytes(
-                    CStdLib.INSTANCE.inet_addr(new Dataized(params[0]).asString())
-                )
+                CStdLib.INSTANCE.inet_addr(new Dataized(params[0]).asString())
             )
         );
         result.put(1, new PhDefault());

@@ -21,56 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /*
  * @checkstyle PackageNameCheck (4 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
-package EOorg.EOeolang.EOsys.Win32; // NOPMD
+package EOorg.EOeolang.EOsys.Posix; // NOPMD
 
+import EOorg.EOeolang.EOsys.SockaddrIn;
 import EOorg.EOeolang.EOsys.Syscall;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
+import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The 'inet_addr' WS2_32 function call.
- * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-inet_addr">here for details</a>
- * @since 0.40.0
- * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
+ * Accept syscall.
+ * @since 0.40
  */
-public final class InetAddrFuncCall implements Syscall {
+public final class AcceptSyscall implements Syscall {
     /**
-     * Win32 object.
+     * Posix object.
      */
-    private final Phi win;
+    private final Phi posix;
 
     /**
      * Ctor.
-     * @param win Win32 object
+     * @param posix Posix object
      */
-    public InetAddrFuncCall(final Phi win) {
-        this.win = win;
+    public AcceptSyscall(final Phi posix) {
+        this.posix = posix;
     }
 
     @Override
     public Phi make(final Phi... params) {
-        final Phi result = this.win.take("return").copy();
-        try {
-            final byte[] bytes = InetAddress.getByName(
-                new Dataized(params[0]).asString()
-            ).getAddress();
-            final ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.put(bytes);
-            result.put(0, new Data.ToPhi(buffer.getInt(0)));
-        } catch (final UnknownHostException exception) {
-            Kernel32.INSTANCE.SetLastError(Winsock.WSAEINVAL);
-            result.put(0, new Data.ToPhi(-1));
-        }
+        final Phi result = this.posix.take("return").copy();
+        result.put(
+            0,
+            new Data.ToPhi(
+                CStdLib.INSTANCE.accept(
+                    new Dataized(params[0]).asNumber().intValue(),
+                    new SockaddrIn(
+                        new Dataized(params[1].take("sin-family")).take(Short.class),
+                        new Dataized(params[1].take("sin-port")).take(Short.class),
+                        new Dataized(params[1].take("sin-addr")).take(Integer.class),
+                        new Dataized(params[1].take("sin-zero")).take()
+                    ),
+                    new IntByReference(new Dataized(params[2]).asNumber().intValue())
+                )
+            )
+        );
         result.put(1, new PhDefault());
         return result;
     }
