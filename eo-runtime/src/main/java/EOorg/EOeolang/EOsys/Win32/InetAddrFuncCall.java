@@ -29,6 +29,9 @@
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
 import EOorg.EOeolang.EOsys.Syscall;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -57,14 +60,17 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        result.put(
-            0,
-            new Data.ToPhi(
-                Integer.reverseBytes(
-                    Winsock.INSTANCE.inet_addr(new Dataized(params[0]).asString())
-                )
-            )
-        );
+        try {
+            final byte[] bytes = InetAddress.getByName(
+                new Dataized(params[0]).asString()
+            ).getAddress();
+            final ByteBuffer buffer = ByteBuffer.allocate(4);
+            buffer.put(bytes);
+            result.put(0, new Data.ToPhi(buffer.getInt(0)));
+        } catch (final UnknownHostException exception) {
+            Kernel32.INSTANCE.SetLastError(Winsock.WSAEINVAL);
+            result.put(0, new Data.ToPhi(-1));
+        }
         result.put(1, new PhDefault());
         return result;
     }

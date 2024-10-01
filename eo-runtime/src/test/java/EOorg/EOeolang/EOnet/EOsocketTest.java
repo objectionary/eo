@@ -35,8 +35,11 @@ import com.jcabi.log.Logger;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Random;
@@ -154,8 +157,8 @@ final class EOsocketTest {
      * @return Random port
      */
     private static int randomPort() {
-        final int min = 10000;
-        final int max = 20000;
+        final int min = 10_000;
+        final int max = 20_000;
         return EOsocketTest.RANDOM.nextInt((max - min) + 1) + min;
     }
 
@@ -196,16 +199,20 @@ final class EOsocketTest {
         }
 
         @Test
-        void refusesConnectionViaWindowsSyscall() {
+        void refusesConnectionViaWindowsSyscall() throws UnknownHostException {
             final int started = this.startup();
             try {
                 this.ensure(started == 0);
                 final int socket = this.openSocket();
                 try {
                     this.ensure(socket >= 0);
-                    final SockaddrIn addr = this.sockaddr(1234);
+                    final SockaddrIn addr = new SockaddrIn(
+                        (short) Winsock.AF_INET,
+                        EOsocketTest.htons(8080),
+                        this.inetAddr("192.0.2.1")
+                    );
                     MatcherAssert.assertThat(
-                        "Connection via windows syscall to wrong port must be refused",
+                        "Connection via windows syscall to Test-Net (192.0.2.1) must be refused",
                         Winsock.INSTANCE.connect(socket, addr, addr.size()),
                         Matchers.equalTo(-1)
                     );
@@ -222,11 +229,13 @@ final class EOsocketTest {
          * @return Socket descriptor
          */
         private int openSocket() {
-            return Winsock.INSTANCE.socket(
+            final int socket = Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
                 Winsock.SOCK_STREAM,
                 Winsock.IPPROTO_TCP
             );
+            Logger.info(this, "Opened socket: %d", socket);
+            return socket;
         }
 
         /**
@@ -235,7 +244,13 @@ final class EOsocketTest {
          * @return Zero on success, -1 on error
          */
         private int closeSocket(final int socket) {
-            return Winsock.INSTANCE.closesocket(socket);
+            final int closed = Winsock.INSTANCE.closesocket(socket);
+            if (closed == 0) {
+                Logger.info(this, "Closed socket: %d", socket);
+            } else {
+                Logger.info(this, "Failed to close socket: %d", socket);
+            }
+            return closed;
         }
 
         /**
@@ -280,8 +295,11 @@ final class EOsocketTest {
          * @param address IP address
          * @return Posix inet addr as integer
          */
-        private int inetAddr(final String address) {
-            return Integer.reverseBytes(Winsock.INSTANCE.inet_addr(address));
+        private int inetAddr(final String address) throws UnknownHostException {
+            final byte[] bytes = InetAddress.getByName(address).getAddress();
+            final ByteBuffer buffer = ByteBuffer.allocate(4);
+            buffer.put(bytes);
+            return buffer.getInt(0);
         }
 
         /**
@@ -289,7 +307,7 @@ final class EOsocketTest {
          * @param port Port
          * @return The sockaddr_in structure
          */
-        private SockaddrIn sockaddr(final int port) {
+        private SockaddrIn sockaddr(final int port) throws UnknownHostException {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
                 EOsocketTest.htons(port),

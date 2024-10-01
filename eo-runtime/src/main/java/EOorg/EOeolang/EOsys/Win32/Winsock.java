@@ -45,7 +45,12 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Instance.
      */
-    Winsock INSTANCE = Native.load("Ws2_32", Winsock.class, W32APIOptions.DEFAULT_OPTIONS);
+    Winsock INSTANCE = Native.load("ws2_32", Winsock.class, W32APIOptions.DEFAULT_OPTIONS);
+
+    /**
+     * Error code that indicates that an invalid argument was passed to the function.
+     */
+    int WSAEINVAL = 10_022;
 
     /**
      * Winsock version.
@@ -119,15 +124,6 @@ public interface Winsock extends StdCallLibrary {
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned.
      */
     int connect(int sockfd, SockaddrIn addr, int addrlen);
-
-    /**
-     * Convert IP string to binary form.
-     * @param address IP address
-     * @return IP address in binary form
-     * @checkstyle MethodNameCheck (5 lines)
-     */
-    @SuppressWarnings("PMD.MethodNamingConventions")
-    int inet_addr(String address);
 
     /**
      * Retrieve the last error from winsock.

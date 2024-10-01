@@ -184,7 +184,7 @@
       inet-addr-as-int
 
     # Scoped posix socket that is passed as argument
-    # to scope of `posix-socket.connect` and `posix-socket.listen`.
+    # to scope of `posix-socket.connect`, `posix-socket.listen` and `scoped-socket.accept`.
     # Here `sockfd` is the socket descriptor.
     [sockfd] > scoped-socket
       # Makes an `input` from `socket`.

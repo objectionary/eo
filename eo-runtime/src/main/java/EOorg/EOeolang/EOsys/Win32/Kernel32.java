@@ -75,6 +75,12 @@ public interface Kernel32 extends StdCallLibrary, WinNT, Wincon {
     boolean CloseHandle(HANDLE handle);
 
     /**
+     * Set a custom error code.
+     * @param code Error code to set
+     */
+    void SetLastError(int code);
+
+    /**
      * Writes data to the specified file or input/output (I/O) device.
      * @param handle A handle to the file or I/O device (for example, a file, file stream, physical
      *  disk, volume, console buffer, tape drive, socket, communications resource, mailslot, or
