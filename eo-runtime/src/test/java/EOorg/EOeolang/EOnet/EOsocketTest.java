@@ -64,9 +64,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for {@link EOsocket}.
  * @since 0.40
- * @checkstyle TypeNameCheck (100 lines)
  * @todo #3251:30min Enable the tests for windows. For some reason socket tests for windows
  *  are flaky. We need to deal with them somehow and enable.
+ * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
