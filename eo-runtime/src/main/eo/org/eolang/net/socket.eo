@@ -370,7 +370,7 @@
       error
         sprintf
           "Couldn't convert an IPv4 address '%s' into a 32-bit integer via 'inet_addr' win32 function call, WSA error code: %d"
-          * ^.address last-error-code
+          * address last-error.code
       inet-addr.as-i32
     win32.sockaddr-in > sockaddr
       win32.af-inet.as-i16
