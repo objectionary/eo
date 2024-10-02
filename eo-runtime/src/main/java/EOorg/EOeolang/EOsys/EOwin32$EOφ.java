@@ -27,13 +27,18 @@
  */
 package EOorg.EOeolang.EOsys; // NOPMD
 
+import EOorg.EOeolang.EOsys.Win32.AcceptFuncCall;
+import EOorg.EOeolang.EOsys.Win32.BindFuncCall;
 import EOorg.EOeolang.EOsys.Win32.ClosesocketFuncCall;
 import EOorg.EOeolang.EOsys.Win32.ConnectFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetCurrentProcessIdFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetEnvironmentVariableFuncCall;
 import EOorg.EOeolang.EOsys.Win32.GetSystemTimeFuncCall;
 import EOorg.EOeolang.EOsys.Win32.InetAddrFuncCall;
+import EOorg.EOeolang.EOsys.Win32.ListenFuncCall;
 import EOorg.EOeolang.EOsys.Win32.ReadFileFuncCall;
+import EOorg.EOeolang.EOsys.Win32.RecvFuncCall;
+import EOorg.EOeolang.EOsys.Win32.SendFuncCall;
 import EOorg.EOeolang.EOsys.Win32.SocketFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WSACleanupFuncCall;
 import EOorg.EOeolang.EOsys.Win32.WSAGetLastErrorFuncCall;
@@ -75,6 +80,11 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
         EOwin32$EOφ.FUNCTIONS.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("socket", SocketFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("connect", ConnectFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("accept", AcceptFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("bind", BindFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("listen", ListenFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("send", SendFuncCall::new);
+        EOwin32$EOφ.FUNCTIONS.put("recv", RecvFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("closesocket", ClosesocketFuncCall::new);
         EOwin32$EOφ.FUNCTIONS.put("inet_addr", InetAddrFuncCall::new);
     }

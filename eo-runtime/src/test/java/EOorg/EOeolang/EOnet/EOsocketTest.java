@@ -53,7 +53,6 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -64,15 +63,13 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for {@link EOsocket}.
  * @since 0.40
- * @todo #3251:30min Enable the tests for windows. For some reason socket tests for windows
- *  are flaky. We need to deal with them somehow and enable.
  * @checkstyle TypeNameCheck (100 lines)
  */
 @SuppressWarnings({
     "PMD.TooManyMethods",
-    "JTCOP.RuleAllTestsHaveProductionClass",
     "PMD.AvoidUsingHardCodedIP",
-    "PMD.CloseResource"
+    "PMD.CloseResource",
+    "JTCOP.RuleAllTestsHaveProductionClass"
 })
 @Execution(ExecutionMode.SAME_THREAD)
 final class EOsocketTest {
@@ -87,29 +84,30 @@ final class EOsocketTest {
     private static final Random RANDOM = new Random();
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void connectsToLocalServerViaSocketObject() throws IOException {
         final RandomServer server = new RandomServer().started();
-        final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
-        socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
-        socket.put(1, new Data.ToPhi(server.port));
-        final Phi connected = socket.take("connect").copy();
-        connected.put(0, new Simple());
-        final byte[] expected = {1};
-        final byte[] actual = new Dataized(connected).take();
-        MatcherAssert.assertThat(
-            String.format(
-                "The 'socket.connect' should have been successfully connected to local server, but it didn't, reason: %s",
-                new String(actual, StandardCharsets.UTF_8)
-            ),
-            actual,
-            Matchers.equalTo(expected)
-        );
-        server.stop();
+        try {
+            final Phi socket = Phi.Φ.take("org.eolang.net.socket").copy();
+            socket.put(0, new Data.ToPhi(EOsocketTest.LOCALHOST));
+            socket.put(1, new Data.ToPhi(server.port));
+            final Phi connected = socket.take("connect").copy();
+            connected.put(0, new Simple());
+            final byte[] expected = {1};
+            final byte[] actual = new Dataized(connected).take();
+            MatcherAssert.assertThat(
+                String.format(
+                    "The 'socket.connect' should have been successfully connected to local server, but it didn't, reason: %s",
+                    new String(actual, StandardCharsets.UTF_8)
+                ),
+                actual,
+                Matchers.equalTo(expected)
+            );
+        } finally {
+            server.stop();
+        }
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
     void sendsAndReceivesMessageViaSocketObject() throws InterruptedException, IOException {
         final String msg = "Hello, Socket!";
         final AtomicReference<byte[]> bytes = new AtomicReference<>();
@@ -172,19 +170,17 @@ final class EOsocketTest {
      */
     @Nested
     @DisabledOnOs({OS.MAC, OS.LINUX})
-    @Disabled
     @Execution(ExecutionMode.SAME_THREAD)
     final class WindowsSocketTest {
         @Test
-        @DisabledOnOs({OS.LINUX, OS.MAC})
-        void connectsToLocalServerViaWindowsSyscall() throws IOException {
+        void connectsToLocalServerViaSyscall() throws IOException, InterruptedException {
             final RandomServer server = new RandomServer().started();
             final int started = this.startup();
             try {
                 this.ensure(started == 0);
                 final int socket = this.openSocket();
                 try {
-                    this.ensure(socket >= 0);
+                    this.ensure(socket > 0);
                     final SockaddrIn addr = this.sockaddr(server.port);
                     MatcherAssert.assertThat(
                         String.format(
@@ -204,13 +200,13 @@ final class EOsocketTest {
         }
 
         @Test
-        void refusesConnectionViaWindowsSyscall() throws UnknownHostException {
+        void refusesConnectionViaSyscall() throws UnknownHostException {
             final int started = this.startup();
             try {
                 this.ensure(started == 0);
                 final int socket = this.openSocket();
                 try {
-                    this.ensure(socket >= 0);
+                    this.ensure(socket > 0);
                     final SockaddrIn addr = new SockaddrIn(
                         (short) Winsock.AF_INET,
                         EOsocketTest.htons(8080),
@@ -225,7 +221,200 @@ final class EOsocketTest {
                     this.closeSocket(socket);
                 }
             } finally {
-                Winsock.INSTANCE.WSACleanup();
+                this.cleanup();
+            }
+        }
+
+        @Test
+        void bindsSocketSuccessfullyViaSyscall() throws UnknownHostException {
+            final int started = this.startup();
+            try {
+                this.ensure(started == 0);
+                final int socket = this.openSocket();
+                try {
+                    this.ensure(socket > 0);
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Win socket should have been bound to localhost via syscall, but it didn't, error code is: %d",
+                            this.getError()
+                        ),
+                        this.bindSocket(socket, EOsocketTest.randomPort()),
+                        Matchers.equalTo(0)
+                    );
+                } finally {
+                    this.closeSocket(socket);
+                }
+            } finally {
+                this.cleanup();
+            }
+        }
+
+        @Test
+        void startsListenOnPosixSocket() throws UnknownHostException {
+            final int started = this.startup();
+            try {
+                this.ensure(started == 0);
+                final int socket = this.openSocket();
+                try {
+                    this.ensure(socket > 0);
+                    this.ensure(this.bindSocket(socket, EOsocketTest.randomPort()) == 0);
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
+                            this.getError()
+                        ),
+                        Winsock.INSTANCE.listen(socket, 2),
+                        Matchers.equalTo(0)
+                    );
+                } finally {
+                    this.closeSocket(socket);
+                }
+            } finally {
+                this.cleanup();
+            }
+        }
+
+        @Test
+        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+        void acceptsConnectionOnSocket() throws InterruptedException, UnknownHostException {
+            final int started = this.startup();
+            try {
+                this.ensure(started == 0);
+                final AtomicInteger accept = new AtomicInteger(0);
+                final AtomicInteger error = new AtomicInteger();
+                final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+                final Thread server = new Thread(
+                    () -> {
+                        final int socket = this.openSocket();
+                        try {
+                            this.ensure(socket > 0);
+                            while (this.bindSocket(socket, port.get()) != 0) {
+                                port.set(EOsocketTest.randomPort());
+                            }
+                            this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                            final SockaddrIn addr = new SockaddrIn();
+                            final int accepted = Winsock.INSTANCE.accept(
+                                socket, addr, new IntByReference(addr.size())
+                            );
+                            Logger.info(this, "Accepted socket: %d", accepted);
+                            accept.set(accepted);
+                            if (accepted < 0) {
+                                error.set(this.getError());
+                            }
+                        } catch (final UnknownHostException exception) {
+                            throw new RuntimeException(exception);
+                        } finally {
+                            if (accept.get() > 0) {
+                                this.closeSocket(accept.get());
+                            }
+                            this.closeSocket(socket);
+                        }
+                    }
+                );
+                server.start();
+                Thread.sleep(2000);
+                final int client = this.openSocket();
+                try {
+                    this.ensure(client >= 0);
+                    final SockaddrIn sockaddr = this.sockaddr(port.get());
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
+                            this.getError()
+                        ),
+                        Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()),
+                        Matchers.equalTo(0)
+                    );
+                    server.join();
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Accepted client socket must be positive, but it isn't, reason: %s",
+                            error.get()
+                        ),
+                        accept.get(),
+                        Matchers.greaterThan(0)
+                    );
+                } finally {
+                    this.closeSocket(client);
+                }
+            } finally {
+                this.cleanup();
+            }
+        }
+
+        @Test
+        @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+        void sendsAndReceivesMessagesViaSyscalls()
+            throws InterruptedException, UnknownHostException {
+            final int started = this.startup();
+            try {
+                this.ensure(started == 0);
+                final AtomicInteger received = new AtomicInteger(-1);
+                final AtomicReference<byte[]> bytes = new AtomicReference<>();
+                final AtomicInteger port = new AtomicInteger(EOsocketTest.randomPort());
+                final Thread server = new Thread(
+                    () -> {
+                        final int socket = this.openSocket();
+                        int accepted = 0;
+                        try {
+                            this.ensure(socket > 0);
+                            while (this.bindSocket(socket, port.get()) != 0) {
+                                port.set(EOsocketTest.randomPort());
+                            }
+                            this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                            final SockaddrIn addr = new SockaddrIn();
+                            accepted = Winsock.INSTANCE.accept(
+                                socket, addr, new IntByReference(addr.size())
+                            );
+                            Logger.info(this, "Accepted socket: %d", accepted);
+                            this.ensure(accepted > 0);
+                            final byte[] buf = new byte[1024];
+                            received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
+                            bytes.set(Arrays.copyOf(buf, received.get()));
+                        } catch (final UnknownHostException exception) {
+                            throw new RuntimeException(exception);
+                        } finally {
+                            this.closeSocket(accepted);
+                            this.closeSocket(socket);
+                        }
+                    }
+                );
+                server.start();
+                Thread.sleep(2000);
+                final int client = this.openSocket();
+                try {
+                    this.ensure(client >= 0);
+                    final SockaddrIn sockaddr = this.sockaddr(port.get());
+                    this.ensure(Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
+                    final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
+                    final int sent = Winsock.INSTANCE.send(client, buf, buf.length, 0);
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Client had to sent message to the server, but it didn't, reason: %s",
+                            this.getError()
+                        ),
+                        sent,
+                        Matchers.equalTo(buf.length)
+                    );
+                    server.join();
+                    MatcherAssert.assertThat(
+                        String.format(
+                            "Server hat to receive message from the client, but it didn't, reason: %s",
+                            this.getError()
+                        ),
+                        received.get(),
+                        Matchers.equalTo(buf.length)
+                    );
+                    MatcherAssert.assertThat(
+                        "Received bytes must be equal to sent, but they didn't",
+                        new String(bytes.get(), StandardCharsets.UTF_8),
+                        Matchers.equalTo(new String(buf, StandardCharsets.UTF_8))
+                    );
+                } finally {
+                    this.closeSocket(client);
+                }
+            } finally {
+                this.cleanup();
             }
         }
 
@@ -296,6 +485,20 @@ final class EOsocketTest {
         }
 
         /**
+         * Bind socket.
+         * @param socket Socket
+         * @param port Port
+         * @return Zero on success, -1 on error
+         */
+        private int bindSocket(final int socket, final int port) throws UnknownHostException {
+            return Winsock.INSTANCE.bind(
+                socket,
+                this.sockaddr(port),
+                16
+            );
+        }
+
+        /**
          * Call posix inet addr.
          * @param address IP address
          * @return Posix inet addr as integer
@@ -304,7 +507,7 @@ final class EOsocketTest {
             final byte[] bytes = InetAddress.getByName(address).getAddress();
             final ByteBuffer buffer = ByteBuffer.allocate(4);
             buffer.put(bytes);
-            return buffer.getInt(0);
+            return Integer.reverseBytes(buffer.getInt(0));
         }
 
         /**
@@ -334,7 +537,7 @@ final class EOsocketTest {
             final RandomServer server = new RandomServer().started();
             final int socket = this.openSocket();
             try {
-                this.ensure(socket >= 0);
+                this.ensure(socket > 0);
                 final SockaddrIn addr = this.sockaddr(server.port);
                 MatcherAssert.assertThat(
                     String.format(
@@ -354,7 +557,7 @@ final class EOsocketTest {
         void refusesConnectionViaSyscall() {
             final int socket = this.openSocket();
             try {
-                this.ensure(socket >= 0);
+                this.ensure(socket > 0);
                 final SockaddrIn addr = this.sockaddr(1234);
                 final int connected = CStdLib.INSTANCE.connect(socket, addr, addr.size());
                 MatcherAssert.assertThat(
@@ -371,7 +574,7 @@ final class EOsocketTest {
         void bindsSocketSuccessfullyViaSyscall() {
             final int socket = this.openSocket();
             try {
-                this.ensure(socket >= 0);
+                this.ensure(socket > 0);
                 MatcherAssert.assertThat(
                     String.format(
                         "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
@@ -386,11 +589,10 @@ final class EOsocketTest {
         }
 
         @Test
-        @DisabledOnOs(OS.WINDOWS)
         void startsListenOnPosixSocket() {
             final int socket = this.openSocket();
             try {
-                this.ensure(socket >= 0);
+                this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, EOsocketTest.randomPort()) == 0);
                 MatcherAssert.assertThat(
                     String.format(
@@ -406,7 +608,6 @@ final class EOsocketTest {
         }
 
         @Test
-        @DisabledOnOs(OS.WINDOWS)
         void acceptsConnectionOnSocket() throws InterruptedException {
             final AtomicInteger accept = new AtomicInteger(0);
             final AtomicReference<String> error = new AtomicReference<>();
@@ -415,7 +616,7 @@ final class EOsocketTest {
                 () -> {
                     final int socket = this.openSocket();
                     try {
-                        this.ensure(socket >= 0);
+                        this.ensure(socket > 0);
                         while (this.bindSocket(socket, port.get()) != 0) {
                             port.set(EOsocketTest.randomPort());
                         }
@@ -644,6 +845,7 @@ final class EOsocketTest {
                     this.socket.setReuseAddress(true);
                     this.socket.bind(new InetSocketAddress(EOsocketTest.LOCALHOST, this.port));
                     bound = true;
+                    Logger.info(this, "Server started on port %d", this.port);
                 } catch (final IOException exception) {
                     Logger.info(this, "Port %d is unavailable, trying another port...", this.port);
                 }

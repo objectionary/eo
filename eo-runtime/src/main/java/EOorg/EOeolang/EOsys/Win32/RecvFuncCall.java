@@ -29,21 +29,17 @@
 package EOorg.EOeolang.EOsys.Win32; // NOPMD
 
 import EOorg.EOeolang.EOsys.Syscall;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
+import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The 'inet_addr' WS2_32 function call.
- * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-inet_addr">here for details</a>
+ * ReadFile kernel32 function call.
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile">here for details</a>
  * @since 0.40.0
- * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
  */
-public final class InetAddrFuncCall implements Syscall {
+public final class RecvFuncCall implements Syscall {
     /**
      * Win32 object.
      */
@@ -53,25 +49,23 @@ public final class InetAddrFuncCall implements Syscall {
      * Ctor.
      * @param win Win32 object
      */
-    public InetAddrFuncCall(final Phi win) {
+    public RecvFuncCall(final Phi win) {
         this.win = win;
     }
 
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        try {
-            final byte[] bytes = InetAddress.getByName(
-                new Dataized(params[0]).asString()
-            ).getAddress();
-            final ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.put(bytes);
-            result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
-        } catch (final UnknownHostException exception) {
-            Kernel32.INSTANCE.SetLastError(Winsock.WSAEINVAL);
-            result.put(0, new Data.ToPhi(-1));
-        }
-        result.put(1, new PhDefault());
+        final int size = new Dataized(params[1]).asNumber().intValue();
+        final byte[] buf = new byte[(int) size];
+        final int received = Winsock.INSTANCE.recv(
+            new Dataized(params[0]).asNumber().intValue(),
+            buf,
+            size,
+            new Dataized(params[2]).asNumber().intValue()
+        );
+        result.put(0, new Data.ToPhi(received));
+        result.put(1, new Data.ToPhi(Arrays.copyOf(buf, received)));
         return result;
     }
 }

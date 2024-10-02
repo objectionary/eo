@@ -25,8 +25,8 @@
 #  package name contains capital letter and such names are conventional.
 ---
 exclude_paths:
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/BindSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/ListenSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/AcceptSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/SendSyscall.java"
-  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Posix/RecvSyscall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/BindFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/ListenFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/AcceptFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/SendFuncCall.java"
+  - "eo-runtime/src/main/java/EOorg/EOeolang/EOsys/Win32/RecvFuncCall.java"
