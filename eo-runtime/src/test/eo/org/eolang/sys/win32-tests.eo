@@ -45,9 +45,6 @@
       called.output.eq msg.size
 
 # Test.
-# Here Winsock `inet_addr` function returns 1 for "127.0.0.1" host (which is 0.0.0.1 IP).
-# The 0.0.0.1 is an unconventional IP address but technically valid.
-# It is routing it to 127.0.0.1 because of the Windows network stack's configuration.
 [] > returns-valid-win32-inet-addr-for-localhost
   code. > addr
     win32
@@ -55,4 +52,4 @@
       * "127.0.0.1"
   or. > @
     os.is-windows.not
-    addr.eq 2130706433
+    addr.eq 16777343
