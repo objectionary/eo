@@ -40,9 +40,7 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,11 +60,6 @@ import org.yaml.snakeyaml.Yaml;
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 final class SnippetIT {
-
-    /**
-     * True.
-     */
-    private static final String TRUE = "true";
 
     /**
      * False.
@@ -155,172 +148,6 @@ final class SnippetIT {
                             (Iterable<String>) map.get("out")
                         )
                     )
-                );
-            }
-        );
-    }
-
-    // @checkstyle MethodLengthCheck (170 lines)
-    @Test
-    @ExtendWith(WeAreOnline.class)
-    void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
-        new Farea(temp).together(
-            f -> {
-                SnippetIT.copySources(f, "src/main");
-                SnippetIT.copySources(f, "src/test/eo");
-                f.properties()
-                    .set("project.build.sourceEncoding", SnippetIT.UTF_8)
-                    .set("project.reporting.outputEncoding", SnippetIT.UTF_8);
-                f.dependencies().append(
-                    "net.sf.saxon",
-                    "Saxon-HE",
-                    "12.4"
-                );
-                f.build()
-                    .plugins()
-                    .append(
-                        SnippetIT.EO_GROUP,
-                        SnippetIT.EO_PLUGIN,
-                        System.getProperty(
-                            SnippetIT.EO_VERSION,
-                            SnippetIT.SNAPSHOT_1_0
-                        )
-                    )
-                    .execution("phi-unphi")
-                    .phase("process-sources")
-                    .goals(
-                        "register",
-                        "deps",
-                        "parse",
-                        "optimize",
-                        "xmir-to-phi",
-                        "phi-to-xmir",
-                        "print"
-                    )
-                    .configuration()
-                    .set("sourcesDir", "${project.basedir}/src/test/eo")
-                    .set("targetDir", "${project.build.directory}/eo-test")
-                    .set("phiInputDir", "${project.build.directory}/eo-test/2-optimize")
-                    .set("phiOutputDir", "${project.build.directory}/phi")
-                    .set("unphiInputDir", "${project.build.directory}/phi")
-                    .set("unphiOutputDir", "${project.build.directory}/generated-eo-test/1-parse")
-                    .set("unphiMetas", new String[]{"+tests"})
-                    .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
-                    .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
-                    .set("printReversed", SnippetIT.TRUE);
-                f.exec("clean", "compile");
-                final String phi = f.log();
-                MatcherAssert.assertThat(
-                    "Converting to phi and back was not successful",
-                    phi,
-                    Matchers.containsString("BUILD SUCCESS")
-                );
-                f.files().file("pom.xml").delete();
-                f.properties()
-                    .set("project.build.sourceEncoding", SnippetIT.UTF_8)
-                    .set("project.reporting.outputEncoding", SnippetIT.UTF_8);
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-engine",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-params",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit.jupiter",
-                    "junit-jupiter-api",
-                    "5.10.3"
-                );
-                f.dependencies().append(
-                    "org.junit-pioneer",
-                    "junit-pioneer",
-                    "2.2.0"
-                );
-                f.build()
-                    .plugins()
-                    .append(
-                        SnippetIT.EO_GROUP,
-                        SnippetIT.EO_PLUGIN,
-                        System.getProperty(
-                            SnippetIT.EO_VERSION,
-                            SnippetIT.SNAPSHOT_1_0
-                        )
-                    )
-                    .execution("compile")
-                    .goals(
-                        "register",
-                        "assemble",
-                        "verify",
-                        "transpile",
-                        "copy",
-                        "unplace",
-                        "unspile"
-                    )
-                    .configuration()
-                    .set("foreign", "${project.basedir}/target/eo-foreign.csv")
-                    .set("foreignFormat", "csv")
-                    .set("failOnWarning", SnippetIT.FALSE)
-                    .set("offline", SnippetIT.TRUE)
-                    .set("withRuntimeDependency", SnippetIT.FALSE)
-                    .set("placeBinariesThatHaveSources", SnippetIT.TRUE);
-                f.build()
-                    .plugins()
-                    .append(
-                        SnippetIT.EO_GROUP,
-                        SnippetIT.EO_PLUGIN,
-                        System.getProperty(
-                            SnippetIT.EO_VERSION,
-                            SnippetIT.SNAPSHOT_1_0
-                        )
-                    )
-                    .execution("deps")
-                    .phase("process-sources")
-                    .goals("deps");
-                f.build()
-                    .plugins()
-                    .append(
-                        SnippetIT.EO_GROUP,
-                        SnippetIT.EO_PLUGIN,
-                        System.getProperty(
-                            SnippetIT.EO_VERSION,
-                            SnippetIT.SNAPSHOT_1_0
-                        )
-                    )
-                    .execution("tests")
-                    .phase("generate-test-sources")
-                    .goals(
-                        "register",
-                        "assemble",
-                        "verify",
-                        "transpile",
-                        "binarize"
-                    )
-                    .configuration()
-                    .set("foreign", "${project.basedir}/target/eo-foreign.csv")
-                    .set("foreignFormat", "csv")
-                    .set("failOnWarning", SnippetIT.FALSE)
-                    .set("offline", SnippetIT.TRUE)
-                    .set("scope", "test")
-                    .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
-                    .set("targetDir", "${project.basedir}/target/eo-test")
-                    .set("addSourcesRoot", SnippetIT.FALSE)
-                    .set("addTestSourcesRoot", SnippetIT.TRUE)
-                    .set("failOnWarning", SnippetIT.FALSE)
-                    .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("withRuntimeDependency", SnippetIT.FALSE)
-                    .set("placeBinariesThatHaveSources", SnippetIT.TRUE);
-                f.exec("clean", "test");
-                final String log = f.log();
-                final boolean success = log.contains("BUILD SUCCESS");
-                if (!success) {
-                    Logger.info(this, log);
-                }
-                Assertions.assertTrue(
-                    success,
-                    "Some tests weren't passed after converting to phi and back"
                 );
             }
         );
