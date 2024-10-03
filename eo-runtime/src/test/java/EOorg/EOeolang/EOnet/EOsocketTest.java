@@ -296,7 +296,7 @@ final class EOsocketTest {
                             final int accepted = Winsock.INSTANCE.accept(
                                 socket, addr, new IntByReference(addr.size())
                             );
-                            Logger.info(this, "Accepted socket: %d", accepted);
+                            Logger.debug(this, "Accepted socket: %d", accepted);
                             accept.set(accepted);
                             if (accepted < 0) {
                                 error.set(this.getError());
@@ -366,7 +366,7 @@ final class EOsocketTest {
                             accepted = Winsock.INSTANCE.accept(
                                 socket, addr, new IntByReference(addr.size())
                             );
-                            Logger.info(this, "Accepted socket: %d", accepted);
+                            Logger.debug(this, "Accepted socket: %d", accepted);
                             this.ensure(accepted > 0);
                             final byte[] buf = new byte[1024];
                             received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
@@ -428,7 +428,7 @@ final class EOsocketTest {
                 Winsock.SOCK_STREAM,
                 Winsock.IPPROTO_TCP
             );
-            Logger.info(this, "Opened socket: %d", socket);
+            Logger.debug(this, "Opened socket: %d", socket);
             return socket;
         }
 
@@ -440,9 +440,9 @@ final class EOsocketTest {
         private int closeSocket(final int socket) {
             final int closed = Winsock.INSTANCE.closesocket(socket);
             if (closed == 0) {
-                Logger.info(this, "Closed socket: %d", socket);
+                Logger.debug(this, "Closed socket: %d", socket);
             } else {
-                Logger.info(this, "Failed to close socket: %d", socket);
+                Logger.debug(this, "Failed to close socket: %d", socket);
             }
             return closed;
         }
@@ -471,7 +471,7 @@ final class EOsocketTest {
          */
         private void ensure(final boolean condition) {
             if (!condition) {
-                Logger.info(this, "Error code: %d", this.getError());
+                Logger.debug(this, "Error code: %d", this.getError());
             }
             assert condition;
         }
@@ -625,7 +625,7 @@ final class EOsocketTest {
                         final int accepted = CStdLib.INSTANCE.accept(
                             socket, addr, new IntByReference(addr.size())
                         );
-                        Logger.info(this, "Accepted socket: %d", accepted);
+                        Logger.debug(this, "Accepted socket: %d", accepted);
                         accept.set(accepted);
                         if (accepted < 0) {
                             error.set(this.getError());
@@ -685,7 +685,7 @@ final class EOsocketTest {
                         accepted = CStdLib.INSTANCE.accept(
                             socket, addr, new IntByReference(addr.size())
                         );
-                        Logger.info(this, "Accepted socket: %d", accepted);
+                        Logger.debug(this, "Accepted socket: %d", accepted);
                         this.ensure(accepted > 0);
                         final byte[] buf = new byte[1024];
                         received.set(CStdLib.INSTANCE.recv(accepted, buf, buf.length, 0));
@@ -738,7 +738,7 @@ final class EOsocketTest {
          */
         private void ensure(final boolean condition) {
             if (!condition) {
-                Logger.info(this, "Strerror: %s", this.getError());
+                Logger.debug(this, "Strerror: %s", this.getError());
             }
             assert condition;
         }
@@ -753,7 +753,7 @@ final class EOsocketTest {
                 CStdLib.SOCK_STREAM,
                 CStdLib.IPPROTO_TCP
             );
-            Logger.info(this, "Opened socket: %d", sock);
+            Logger.debug(this, "Opened socket: %d", sock);
             return sock;
         }
 
@@ -765,9 +765,9 @@ final class EOsocketTest {
         private int closeSocket(final int socket) {
             final int closed = CStdLib.INSTANCE.close(socket);
             if (closed == 0) {
-                Logger.info(this, "Closed socket: %d", socket);
+                Logger.debug(this, "Closed socket: %d", socket);
             } else {
-                Logger.info(this, "Failed to close socket: %d", socket);
+                Logger.debug(this, "Failed to close socket: %d", socket);
             }
             return closed;
         }
@@ -845,9 +845,9 @@ final class EOsocketTest {
                     this.socket.setReuseAddress(true);
                     this.socket.bind(new InetSocketAddress(EOsocketTest.LOCALHOST, this.port));
                     bound = true;
-                    Logger.info(this, "Server started on port %d", this.port);
+                    Logger.debug(this, "Server started on port %d", this.port);
                 } catch (final IOException exception) {
-                    Logger.info(this, "Port %d is unavailable, trying another port...", this.port);
+                    Logger.debug(this, "Port %d is unavailable, trying another port...", this.port);
                 }
             }
             return this;
