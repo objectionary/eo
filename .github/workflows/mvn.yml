@@ -38,8 +38,8 @@ jobs:
     name: mvn
     strategy:
       matrix:
-        os: [ ubuntu-20.04, windows-2022, macos-12 ]
-        java: [ 11, 20 ]
+        os: [ ubuntu-24.04, windows-2022, macos-12 ]
+        java: [ 11, 21 ]
     runs-on: ${{ matrix.os }}
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter

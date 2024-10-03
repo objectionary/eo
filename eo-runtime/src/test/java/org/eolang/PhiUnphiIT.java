@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import com.jcabi.log.Logger;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
@@ -238,14 +237,12 @@ final class PhiUnphiIT {
                     .set("withRuntimeDependency", PhiUnphiIT.FALSE)
                     .set("placeBinariesThatHaveSources", PhiUnphiIT.TRUE);
                 f.exec("clean", "test");
-                final String log = f.log();
-                final boolean success = log.contains("BUILD SUCCESS");
-                if (!success) {
-                    Logger.info(this, log);
-                }
                 Assertions.assertTrue(
-                    success,
-                    "Some tests weren't passed after converting to phi and back"
+                    f.log().contains("BUILD SUCCESS"),
+                    String.format(
+                        "Some tests weren't passed after converting to phi and back:\n%s",
+                        f.log()
+                    )
                 );
             }
         );
