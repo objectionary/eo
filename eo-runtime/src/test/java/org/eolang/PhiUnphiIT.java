@@ -35,7 +35,6 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -237,12 +236,10 @@ final class PhiUnphiIT {
                     .set("withRuntimeDependency", PhiUnphiIT.FALSE)
                     .set("placeBinariesThatHaveSources", PhiUnphiIT.TRUE);
                 f.exec("clean", "test");
-                Assertions.assertTrue(
-                    f.log().contains("BUILD SUCCESS"),
-                    String.format(
-                        "Some tests weren't passed after converting to phi and back:\n%s",
-                        f.log()
-                    )
+                MatcherAssert.assertThat(
+                    "Some tests weren't passed after converting to phi and back",
+                    f.log(),
+                    Matchers.containsString("BUILD SUCCESS")
                 );
             }
         );
