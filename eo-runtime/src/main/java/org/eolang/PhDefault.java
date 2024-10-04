@@ -67,6 +67,7 @@ public class PhDefault implements Phi, Cloneable {
      *  variable can be removed, or, if this is not possible
      *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
+    @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**

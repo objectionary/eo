@@ -52,6 +52,7 @@ public final class PhTraced implements Phi {
      *  place where this variable can be removed, or, if this is not possible
      *  (see https://github.com/objectionary/eo/pull/1930), come up with another solution.
      */
+    @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Map<Integer, Integer>> DATAIZING_CAGES = ThreadLocal
         .withInitial(HashMap::new);
 

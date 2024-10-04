@@ -68,6 +68,7 @@ final class Files {
      * @param name Name of the file
      * @throws FileNotFoundException If can't open file
      */
+    @SuppressWarnings("java:S2095")
     void open(final String name) throws IOException {
         final Path path = Paths.get(name);
         this.streams.putIfAbsent(

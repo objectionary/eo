@@ -39,13 +39,11 @@ import java.util.logging.Logger;
  * or find "Δ" attribute inside it. If neither of that works, there is a
  * runtime exception.
  *
- * <p>It's recommended to use {@link Param} object, when you are inside
- * a EO object: it will add type checking on top of dataization.
- *
  * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  * @since 0.1
  */
 @Versionized
+@SuppressWarnings("java:S5164")
 public final class Dataized {
 
     /**

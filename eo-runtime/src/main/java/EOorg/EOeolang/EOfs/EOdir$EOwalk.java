@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -72,19 +73,21 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
         final PathMatcher matcher = FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", glob)
         );
-        return new Data.ToPhi(
-            Files.walk(path)
-                .map(p -> p.toAbsolutePath().toString())
-                .map(p -> p.substring(p.indexOf(path.toString())))
-                .filter(p -> matcher.matches(Paths.get(p)))
-                .map(
-                    p -> {
-                        final Phi file = Phi.Φ.take("org.eolang.fs.file").copy();
-                        file.put(0, new ToPhi(p));
-                        return file;
-                    }
-                )
-                .toArray(Phi[]::new)
-        );
+        try (Stream<Path> paths = Files.walk(path)) {
+            return new Data.ToPhi(
+                paths
+                    .map(p -> p.toAbsolutePath().toString())
+                    .map(p -> p.substring(p.indexOf(path.toString())))
+                    .filter(p -> matcher.matches(Paths.get(p)))
+                    .map(
+                        p -> {
+                            final Phi file = Phi.Φ.take("org.eolang.fs.file").copy();
+                            file.put(0, new ToPhi(p));
+                            return file;
+                        }
+                    )
+                    .toArray(Phi[]::new)
+            );
+        }
     }
 }
