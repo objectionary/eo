@@ -32,6 +32,7 @@ import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,6 +42,15 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 final class MainTest {
+
+    @BeforeAll
+    static void checkHeapSize() {
+        MatcherAssert.assertThat(
+            "The maximum heap size is not big enough, some tests may fail",
+            Runtime.getRuntime().maxMemory(),
+            Matchers.greaterThan(2_000_000_000L)
+        );
+    }
 
     @Test
     void printsVersion() {
