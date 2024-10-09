@@ -36,6 +36,8 @@ concurrency:
 jobs:
   codecov:
     runs-on: ubuntu-24.04
+    env:
+      JAVA_OPTS: -Xmx8g
     steps:
       - uses: actions/checkout@v4
       - uses: teatimeguest/setup-texlive-action@v3.3.0

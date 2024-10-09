@@ -43,6 +43,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       CONVERT_PATH: /tmp/antlr4-to-bnf-converter
+      JAVA_OPTS: -Xmx8g
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
