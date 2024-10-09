@@ -48,7 +48,7 @@ final class MainTest {
         MatcherAssert.assertThat(
             "The maximum heap size is not big enough, some tests may fail",
             Runtime.getRuntime().maxMemory(),
-            Matchers.greaterThan(2_000_000_000L)
+            Matchers.greaterThan(8_000_000_000L)
         );
     }
 
