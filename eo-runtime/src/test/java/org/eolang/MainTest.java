@@ -46,9 +46,9 @@ final class MainTest {
     @BeforeAll
     static void checkHeapSize() {
         MatcherAssert.assertThat(
-            "The maximum heap size is not big enough, some tests may fail",
+            "The maximum heap size is not big enough, some tests may fail, try to set JAVA_OPTS environment variable to '-Xmx8g'",
             Runtime.getRuntime().maxMemory(),
-            Matchers.greaterThan(8_000_000_000L)
+            Matchers.greaterThanOrEqualTo(8L * 1024 * 1024 * 1024)
         );
     }
 

@@ -41,7 +41,7 @@ install: |
   export JAVA_OPTS="-Xmx8g"
 merge:
   script: |
-    mvn clean install -Pqulice --errors -Dstyle.color=never
+    JAVA_OPTS="-Xmx8g" mvn clean install -Pqulice --errors -Dstyle.color=never
 release:
   pre: false
   script: |-
