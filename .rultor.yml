@@ -39,9 +39,10 @@ install: |
   gem install texsc:0.6.0
   gem install texqc:0.6.0
   export JAVA_OPTS="-Xmx8g"
+  export MAVEN_OPTS="-Xmx8g"
 merge:
   script: |
-    JAVA_OPTS="-Xmx8g" mvn clean install -Pqulice --errors -Dstyle.color=never
+    mvn clean install -Pqulice --errors -Dstyle.color=never
 release:
   pre: false
   script: |-
