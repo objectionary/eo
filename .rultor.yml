@@ -38,8 +38,6 @@ install: |
   gem install pdd
   gem install texsc:0.6.0
   gem install texqc:0.6.0
-  export JAVA_OPTS="-Xmx8g"
-  export MAVEN_OPTS="-Xmx8g"
 merge:
   script: |
     mvn clean install -Pqulice --errors -Dstyle.color=never
