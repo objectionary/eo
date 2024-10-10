@@ -247,7 +247,7 @@ public final class TranspileMojo extends SafeMojo {
 
     /**
      * Clean up dirty classes.
-     * The method is trying to fix problem produced by dirty libraries:
+     * The method is trying to fix a problem produced by dirty libraries:
      * <a href="https://github.com/objectionary/eo-strings/issues/147"> eo-strings example </a>
      * Some libraries by mistake can put ALL their compiled classes right into the final library
      * jar, instead of only adding atoms. This can cause different runtime errors since the
@@ -266,12 +266,18 @@ public final class TranspileMojo extends SafeMojo {
      * {@link java.nio.file.AccessDeniedException}, which could crash the build.
      * _____
      * @param java The list of java files.
-     * @todo #2375:90min. Add concurrency tests for the TranspileMojo.cleanUpClasses method.
-     *  We should be sure that the method works correctly in a concurrent environment.
-     *  In order to do so we should add a test that will run the cleanUpClasses method in
-     *  multiple threads and check that the method works correctly without exceptions.
-     *  We can apply the same approach as mentioned in that post:
-     *  <a href="https://www.yegor256.com/2018/03/27/how-to-test-thread-safety.html">Post</a>
+     * @todo #2375:90min. Implement a mechanism for "internal" and "external" classes.
+     *  - "internal" classes will be included in the catalog
+     *  - "external" classes will be placed in another directory.
+     *  For example, external classes will be placed in directories
+     *  where the top level will be the name of the package from
+     *  which the object is connected, and the subdirectories
+     *  will indicate the version of this package.
+     *  Another solution is to create an analogue of `implementation` and `api` from gradle:
+     *  - implementation – just includes a dependency for internal use
+     *  - api – allows API users use a dependency that
+     *  was added to the project using the keyword `api`
+     *  <p/><a href="https://stackoverflow.com/a/44419574/11529150">More about api and implementation here</a>
      */
     private void cleanUpClasses(final Collection<? extends Path> java) {
         final Set<Path> unexpected = java.stream()
