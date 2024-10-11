@@ -165,7 +165,7 @@ SOFTWARE.
         <configuration>
           <runOrder>random</runOrder>
           <argLine>
-            @{argLine} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
+            @{argLine} -Xmx${heap-size} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
           </argLine>
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
@@ -261,6 +261,9 @@ SOFTWARE.
               <goal>verify</goal>
             </goals>
             <configuration>
+              <argLine>
+                @{argLine} -Xmx${heap-size} -Xss${stack-size} -Duser.language=ru -Duser.region=RU
+              </argLine>
               <systemPropertyVariables combine.children="append">
                 <java.class.path>${project.build.outputDirectory}</java.class.path>
               </systemPropertyVariables>
