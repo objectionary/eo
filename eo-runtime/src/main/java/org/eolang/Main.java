@@ -91,7 +91,7 @@ public final class Main {
         Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.version()));
         if (opts.isEmpty()) {
             throw new IllegalStateException(
-                "A name of EO object is expected as a command line argument"
+                "The name of an object is expected as a command line argument"
             );
         }
         try {
@@ -175,6 +175,11 @@ public final class Main {
      */
     private static void run(final List<String> opts) throws Exception {
         final String obj = opts.get(0);
+        if (obj.isEmpty()) {
+            throw new IllegalArgumentException(
+                "The name of the object is an empty string, why?"
+            );
+        }
         final String path = new JavaPath(obj).toString();
         final Phi app;
         try {
@@ -184,7 +189,10 @@ public final class Main {
                 .newInstance();
         } catch (final ClassNotFoundException ex) {
             throw new IllegalArgumentException(
-                String.format("Can not find '%s' object", obj),
+                String.format(
+                    "Can not find \"%s\" object (java path is \"%s\")",
+                    obj, path
+                ),
                 ex
             );
         }
