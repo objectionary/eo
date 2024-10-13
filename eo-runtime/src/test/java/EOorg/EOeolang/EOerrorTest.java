@@ -81,7 +81,7 @@ final class EOerrorTest {
         }
         assert error != null;
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Bytes must be translated to string correctly",
             error.toString(),
             Matchers.containsString(text)
         );
@@ -97,11 +97,11 @@ final class EOerrorTest {
                 ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array(),
                 "12.34567"
             ),
-            Arguments.of(new byte[]{1}, "[1] = true"),
-            Arguments.of(new byte[]{0}, "[0] = false"),
-            Arguments.of(new byte[]{}, "[]"),
-            Arguments.of(new byte[]{12}, "[12] = true"),
-            Arguments.of(new byte[]{6, 5, 77, 99}, "06054D63  = \"\\u0006\\u0005Mc\"")
+            Arguments.of(new byte[]{1}, "[0x01] = true"),
+            Arguments.of(new byte[]{0}, "[0x00] = false"),
+            Arguments.of(new byte[]{}, "[<no bytes>]"),
+            Arguments.of(new byte[]{12}, "[0x0C] = true"),
+            Arguments.of(new byte[]{6, 5, 81, 99}, "[0x06055163-] = \"\\u0006\\u0005Qc\"")
         );
     }
 

@@ -42,7 +42,7 @@ final class VerboseBytesAsStringTest {
     @MethodSource("getTestSources")
     void representsString(final byte[] bytes, final String text) {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Bytes must be translated to string correctly",
             new VerboseBytesAsString(bytes).get(),
             Matchers.containsString(text)
         );
@@ -58,13 +58,13 @@ final class VerboseBytesAsStringTest {
                 ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array(),
                 "12.34567"
             ),
-            Arguments.of(new byte[]{1}, "[1] = true"),
-            Arguments.of(new byte[]{0}, "[0] = false"),
-            Arguments.of(new byte[]{}, "[]"),
-            Arguments.of(new byte[]{12}, "[12] = true"),
+            Arguments.of(new byte[]{1}, "[0x01] = true"),
+            Arguments.of(new byte[]{0}, "[0x00] = false"),
+            Arguments.of(new byte[]{}, "[<no bytes>]"),
+            Arguments.of(new byte[]{12}, "[0x0C] = true"),
             Arguments.of(
                 new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22},
-                "0A0B0C0D 0E0F1011 EEEDECEB 16 = \"\\u000a\\u000b\\u000c\\u000d\\u000e\\u000f\\u0010\\u0011\\ufffd\\ufffd\\ufffd\\ufffd\\u0016\""
+                "[0x0A0B0C0D-0E0F1011-EEEDECEB-16] = \"\\u000a\\u000b\\u000c\\u000d\\u000e\\u000f\\u0010\\u0011\\ufffd\\ufffd\\ufffd\\ufffd\\u0016\""
             )
         );
     }

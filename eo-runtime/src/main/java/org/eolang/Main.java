@@ -174,7 +174,8 @@ public final class Main {
      * @throws Exception If fails
      */
     private static void run(final List<String> opts) throws Exception {
-        final String path = new JavaPath(opts.get(0)).toString();
+        final String obj = opts.get(0);
+        final String path = new JavaPath(obj).toString();
         final Phi app;
         try {
             Main.LOGGER.fine(String.format("Loading class %s...", path));
@@ -182,8 +183,8 @@ public final class Main {
                 .getConstructor()
                 .newInstance();
         } catch (final ClassNotFoundException ex) {
-            throw new ExUnset(
-                String.format("Can not find '%s' object", opts.get(0)),
+            throw new IllegalArgumentException(
+                String.format("Can not find '%s' object", obj),
                 ex
             );
         }

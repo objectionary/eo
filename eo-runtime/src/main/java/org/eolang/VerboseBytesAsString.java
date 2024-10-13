@@ -58,30 +58,27 @@ public final class VerboseBytesAsString implements Supplier<String> {
         final String result;
         switch (this.data.length) {
             case 0:
-                result = String.format(
-                    "%s",
-                    Arrays.toString(this.data)
-                );
+                result = "[<no bytes>]";
                 break;
             case 1:
                 result = String.format(
-                    "%s = %s",
-                    Arrays.toString(this.data),
+                    "[0x%02X] = %s",
+                    this.data[0],
                     this.data[0] != 0
                 );
                 break;
             case 8:
                 final Bytes bytes = new BytesOf(this.data);
                 result = String.format(
-                    "%s = %s, or \"%s\")",
-                    Arrays.toString(this.data),
+                    "[0x%s] = %s, or \"%s\")",
+                    this.toHex(),
                     bytes.asNumber(),
                     this.escaped()
                 );
                 break;
             default:
                 result = String.format(
-                    "%s = \"%s\"",
+                    "[0x%s] = \"%s\"",
                     this.toHex(),
                     this.escaped()
                 );
@@ -101,7 +98,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
             chars[idx * 2] = VerboseBytesAsString.HEX_ARRAY[value >>> 4];
             chars[idx * 2 + 1] = VerboseBytesAsString.HEX_ARRAY[value & 0x0F];
         }
-        return new String(chars).replaceAll("(.{8})", "$1 ");
+        return new String(chars).replaceAll("(.{8})", "$1-");
     }
 
     /**
