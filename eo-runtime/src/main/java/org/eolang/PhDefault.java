@@ -243,9 +243,10 @@ public class PhDefault implements Phi, Cloneable {
                     new AtAbsent(
                         name,
                         String.format(
-                            "Can't #take(), attribute \"%s\" is absent among other %d attrs (%s), %s and %s are also absent",
+                            "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
                             name,
                             this.attrs.size(),
+                            this.form,
                             String.join(", ", this.attrs.keySet()),
                             Attr.PHI,
                             Attr.LAMBDA
