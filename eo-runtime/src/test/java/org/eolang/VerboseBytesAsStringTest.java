@@ -23,11 +23,12 @@
  */
 package org.eolang;
 
-import java.util.Arrays;
+import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -35,100 +36,36 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
-public final class VerboseBytesAsStringTest {
+final class VerboseBytesAsStringTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
-    void representsString(final Object object) {
+    void representsString(final byte[] bytes, final String text) {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
-            new VerboseBytesAsString(VerboseBytesAsStringTest.toBytes(object)).get(),
-            Matchers.containsString(
-                new VerboseBytesAsStringTest.ArgumentsUtils().toString(object)
-            )
+            new VerboseBytesAsString(bytes).get(),
+            Matchers.containsString(text)
         );
-    }
-
-    /**
-     * Makes byte array from Object.
-     * @param object Object.
-     * @return Array of bytes.
-     */
-    private static byte[] toBytes(final Object object) {
-        final Bytes ret;
-        if (object instanceof String) {
-            ret = new BytesOf((String) object);
-        } else if (object instanceof byte[]) {
-            ret = new BytesOf((byte[]) object);
-        } else if (object instanceof Long) {
-            ret = new BytesOf((Long) object);
-        } else if (object instanceof Double) {
-            ret = new BytesOf((Double) object);
-        } else if (object instanceof Boolean) {
-            if ((Boolean) object) {
-                ret = new BytesOf(new byte[]{0x1});
-            } else {
-                ret = new BytesOf(new byte[]{0x0});
-            }
-        } else {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Unsupported class of argument: %s",
-                    object.getClass()
-                )
-            );
-        }
-        return ret.take();
     }
 
     /**
      * Static method providing sources for parametrized test.
      * @return Stream of sources.
      */
-    private static Stream<Object> getTestSources() {
-        return new VerboseBytesAsStringTest.ArgumentsUtils().getTestSources();
+    private static Stream<Arguments> getTestSources() {
+        return Stream.of(
+            Arguments.of(
+                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array(),
+                "12.34567"
+            ),
+            Arguments.of(new byte[]{1}, "[1] = true"),
+            Arguments.of(new byte[]{0}, "[0] = false"),
+            Arguments.of(new byte[]{}, "[]"),
+            Arguments.of(new byte[]{12}, "[12] = true"),
+            Arguments.of(
+                new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22},
+                "0A0B0C0D 0E0F1011 EEEDECEB 16 = \"\\u000a\\u000b\\u000c\\u000d\\u000e\\u000f\\u0010\\u0011\\ufffd\\ufffd\\ufffd\\ufffd\\u0016\""
+            )
+        );
     }
-
-    /**
-     * Just a class providing resources for tests.
-     *
-     * @since 0.1
-     */
-    public static class ArgumentsUtils {
-
-        /**
-         * Makes a readable string from object.
-         * @param object Object.
-         * @return String.
-         */
-        public String toString(final Object object) {
-            final String ret;
-            if (object instanceof byte[]) {
-                ret = Arrays.toString((byte[]) object);
-            } else {
-                ret = object.toString();
-            }
-            return ret;
-        }
-
-        /**
-         * Input arguments for unit tests.
-         *
-         * @return Stream of arguments.
-         */
-        public Stream<Object> getTestSources() {
-            return Stream.of(
-                "qwerty",
-                12.345_67D,
-                true,
-                false,
-                new byte[]{},
-                new byte[]{12},
-                new byte[]{10, 11, 12, 13, 14, 15, 16, 17},
-                new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22}
-            );
-        }
-    }
-
 }

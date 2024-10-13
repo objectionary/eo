@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
 import org.eolang.AtCompositeTest;
@@ -39,12 +40,12 @@ import org.eolang.PhCopy;
 import org.eolang.PhDefault;
 import org.eolang.PhWith;
 import org.eolang.Phi;
-import org.eolang.VerboseBytesAsStringTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -71,7 +72,7 @@ final class EOerrorTest {
 
     @ParameterizedTest
     @MethodSource("getTestSources")
-    void getsReadableError(final Object cnst) {
+    void getsReadableError(final byte[] cnst, final String text) {
         ExAbstract error = null;
         try {
             new Dataized(new MyError(cnst)).take();
@@ -82,18 +83,26 @@ final class EOerrorTest {
         MatcherAssert.assertThat(
             AtCompositeTest.TO_ADD_MESSAGE,
             error.toString(),
-            Matchers.containsString(
-                new VerboseBytesAsStringTest.ArgumentsUtils().toString(cnst)
-            )
+            Matchers.containsString(text)
         );
     }
 
     /**
-     * Input arguments for getsReadableError unit tests.
-     * @return Stream of arguments.
+     * Static method providing sources for parametrized test.
+     * @return Stream of sources.
      */
-    private static Stream<Object> getTestSources() {
-        return new VerboseBytesAsStringTest.ArgumentsUtils().getTestSources();
+    private static Stream<Arguments> getTestSources() {
+        return Stream.of(
+            Arguments.of(
+                ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67D).array(),
+                "12.34567"
+            ),
+            Arguments.of(new byte[]{1}, "[1] = true"),
+            Arguments.of(new byte[]{0}, "[0] = false"),
+            Arguments.of(new byte[]{}, "[]"),
+            Arguments.of(new byte[]{12}, "[12] = true"),
+            Arguments.of(new byte[]{6, 5, 77, 99}, "06054D63  = \"\\u0006\\u0005Mc\"")
+        );
     }
 
     /**

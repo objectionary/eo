@@ -36,6 +36,11 @@ import java.util.function.Supplier;
 public final class VerboseBytesAsString implements Supplier<String> {
 
     /**
+     * To help hex printing.
+     */
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    /**
      * Data.
      */
     private final byte[] data;
@@ -71,18 +76,49 @@ public final class VerboseBytesAsString implements Supplier<String> {
                     "%s = %s, or \"%s\")",
                     Arrays.toString(this.data),
                     bytes.asNumber(),
-                    new String(this.data, StandardCharsets.UTF_8)
+                    this.escaped()
                 );
                 break;
             default:
                 result = String.format(
                     "%s = \"%s\"",
-                    Arrays.toString(this.data),
-                    new String(this.data, StandardCharsets.UTF_8)
+                    this.toHex(),
+                    this.escaped()
                 );
                 break;
         }
         return result;
+    }
+
+    /**
+     * Convert data to printable hex string.
+     * @return String
+     */
+    private String toHex() {
+        final char[] chars = new char[this.data.length * 2];
+        for (int idx = 0; idx < this.data.length; ++idx) {
+            final int value = this.data[idx] & 0xFF;
+            chars[idx * 2] = VerboseBytesAsString.HEX_ARRAY[value >>> 4];
+            chars[idx * 2 + 1] = VerboseBytesAsString.HEX_ARRAY[value & 0x0F];
+        }
+        return new String(chars).replaceAll("(.{8})", "$1 ");
+    }
+
+    /**
+     * Escape Java string.
+     * @return Escaped one
+     */
+    private String escaped() {
+        final char[] chars = new String(this.data, StandardCharsets.UTF_8).toCharArray();
+        final StringBuilder out = new StringBuilder(chars.length);
+        for (final char chr : chars) {
+            if (chr < 0x20 || chr > 0x7f) {
+                out.append(String.format("\\u%04x", (int) chr));
+            } else {
+                out.append(chr);
+            }
+        }
+        return out.toString();
     }
 
 }
