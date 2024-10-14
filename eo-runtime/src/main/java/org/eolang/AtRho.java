@@ -63,7 +63,7 @@ final class AtRho implements Attr {
     public Phi get() {
         if (this.rho.get() == null) {
             throw new ExUnset(
-                String.format("%s attribute is not set", Attr.RHO)
+                String.format("The \"%s\" attribute is not set", Attr.RHO)
             );
         }
         return this.rho.get();

@@ -200,8 +200,8 @@ public class PhDefault implements Phi, Cloneable {
         if (!this.attrs.containsKey(name)) {
             throw new ExUnset(
                 String.format(
-                    "Can't #put(%s, %s) to %s, because %s is absent",
-                    name, object, this, name
+                    "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
+                    name, object, this
                 )
             );
         }
@@ -275,7 +275,7 @@ public class PhDefault implements Phi, Cloneable {
         synchronized (this.data) {
             if (this.data.get() != null) {
                 throw new ExFailure(
-                    "Data is already attached to the object, can't reattach"
+                    "Some data is already attached to the object, can't reattach"
                 );
             }
             this.data.set(bytes);
@@ -334,7 +334,7 @@ public class PhDefault implements Phi, Cloneable {
         if (0 > pos) {
             throw new ExFailure(
                 String.format(
-                    "Attribute position can't be negative (%d)",
+                    "The attribute position can't be negative (%d)",
                     pos
                 )
             );

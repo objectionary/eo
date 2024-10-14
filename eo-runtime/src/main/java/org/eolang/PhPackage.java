@@ -68,7 +68,7 @@ final class PhPackage implements Phi {
     @Override
     public String forma() {
         throw new ExFailure(
-            String.format("Can't #form() from package object '%s'", this.pkg)
+            String.format("Can't #form() from package object \"%s\"", this.pkg)
         );
     }
 
@@ -85,7 +85,7 @@ final class PhPackage implements Phi {
     @Override
     public Phi copy() {
         throw new ExFailure(
-            String.format("Can't #copy() package object '%s'", this.pkg)
+            String.format("Can't #copy() package object \"%s\"", this.pkg)
         );
     }
 
@@ -108,14 +108,20 @@ final class PhPackage implements Phi {
     @Override
     public boolean put(final int pos, final Phi object) {
         throw new IllegalStateException(
-            String.format("Can't #put(%d, %s) to package object '%s'", pos, object, this.pkg)
+            String.format(
+                "Can't #put(%d, %s) to package object \"%s\"",
+                pos, object, this.pkg
+            )
         );
     }
 
     @Override
     public boolean put(final String name, final Phi object) {
         throw new IllegalStateException(
-            String.format("Can't #put(%s, %s) to package object '%s'", name, object, this.pkg)
+            String.format(
+                "Can't #put(%s, %s) to package object \"%s\"",
+                name, object, this.pkg
+            )
         );
     }
 
@@ -123,7 +129,8 @@ final class PhPackage implements Phi {
     public void attach(final byte[] data) {
         throw new IllegalStateException(
             String.format(
-                "Can't #attac(%s) to package object '%s'", Arrays.toString(data), this.pkg
+                "Can't #attach(%s) to package object \"%s\"",
+                Arrays.toString(data), this.pkg
             )
         );
     }
@@ -131,7 +138,10 @@ final class PhPackage implements Phi {
     @Override
     public byte[] delta() {
         throw new IllegalStateException(
-            String.format("Can't #data() from package object '%s'", this.pkg)
+            String.format(
+                "Can't take #data() from package object \"%s\"",
+                this.pkg
+            )
         );
     }
 
@@ -171,7 +181,7 @@ final class PhPackage implements Phi {
         ) {
             throw new ExFailure(
                 String.format(
-                    "Can't find Java object/package '%s' in EO package '%s'",
+                    "Can't find Java object/package \"%s\" in EO package \"%s\"",
                     target, this.pkg
                 ),
                 ex

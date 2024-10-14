@@ -46,7 +46,7 @@ final class AtAbsent extends AtEnvelope {
                 () -> {
                     throw new ExUnset(
                         String.format(
-                            "Can't get(), attribute \"%s\" is absent%s",
+                            "Can't #get(\"%s\") since the attribute is absent%s",
                             attr, sfx
                         )
                     );

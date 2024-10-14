@@ -131,7 +131,7 @@ public final class UniverseDefault implements Universe {
         ).orElseThrow(
             () -> new ExFailure(
                 String.format(
-                    "Phi object with vertex %d was not indexed.",
+                    "Phi object with vertex %d was not indexed",
                     vertex
                 )
             )

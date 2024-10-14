@@ -104,7 +104,7 @@ public final class AtVoid implements Attr {
         if (phi == null) {
             throw new ExUnset(
                 String.format(
-                    "The attribute '%s' is not initialized, can't read", this.name
+                    "The attribute \"%s\" is not initialized, can't read", this.name
                 )
             );
         }
@@ -117,7 +117,10 @@ public final class AtVoid implements Attr {
             this.object.set(phi);
         } else {
             throw new ExReadOnly(
-                "This void attribute is already set, can't reset"
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    this.name
+                )
             );
         }
         return true;

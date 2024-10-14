@@ -55,21 +55,21 @@ final class AtSafe implements Attr {
 
     @Override
     public String toString() {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }
 
     @Override
     public String φTerm() {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }
 
     @Override
     public Attr copy(final Phi self) {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }

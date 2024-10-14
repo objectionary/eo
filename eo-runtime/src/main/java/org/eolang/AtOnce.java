@@ -98,7 +98,7 @@ public final class AtOnce implements Attr {
     public boolean put(final Phi phi) {
         throw new ExReadOnly(
             String.format(
-                "You can't overwrite '%s'",
+                "Can't overwrite the \"%s\" attribute",
                 this.origin
             )
         );

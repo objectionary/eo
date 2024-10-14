@@ -149,7 +149,7 @@ public final class Dataized {
         } else {
             throw new IllegalArgumentException(
                 String.format(
-                    "Unknown type: %s, bytes are: %s",
+                    "Unknown type \"%s\", bytes are: %s",
                     type.getCanonicalName(),
                     Arrays.toString(this.asBytes().take())
                 )

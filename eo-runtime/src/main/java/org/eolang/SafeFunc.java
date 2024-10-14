@@ -61,7 +61,7 @@ class SafeFunc<T> implements Supplier<T> {
         } catch (final Exception ex) {
             throw new ExFailure(
                 String.format(
-                    "Unexpected error '%s' of type %s",
+                    "Unexpected error \"%s\" of type %s",
                     ex.getMessage(),
                     ex.getClass().getSimpleName()
                 ),

@@ -48,7 +48,7 @@ final class AtGetOnly implements Attr {
 
     @Override
     public Attr copy(final Phi self) {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }
@@ -60,14 +60,14 @@ final class AtGetOnly implements Attr {
 
     @Override
     public boolean put(final Phi phi) {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }
 
     @Override
     public String φTerm() {
-        throw new IllegalStateException(
+        throw new UnsupportedOperationException(
             "Should never happen"
         );
     }

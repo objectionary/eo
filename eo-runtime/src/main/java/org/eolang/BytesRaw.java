@@ -135,7 +135,9 @@ final class BytesRaw implements Bytes {
     @Override
     public Bytes sshift(final int bits) {
         if (bits < 0) {
-            throw new UnsupportedOperationException("right sshift is NYI");
+            throw new UnsupportedOperationException(
+                "The \"right shift\" is NYI"
+            );
         }
         final byte[] bytes = this.shift(bits).take();
         if (this.take()[0] < 0) {
@@ -173,7 +175,7 @@ final class BytesRaw implements Bytes {
         } else {
             throw new UnsupportedOperationException(
                 String.format(
-                    "Unsupported conversion to '%s' for %d bytes",
+                    "Unsupported conversion to \"%s\" for %d bytes",
                     type,
                     ret.length
                 )
