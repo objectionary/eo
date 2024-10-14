@@ -55,7 +55,7 @@ final class MainTest {
     @Test
     void printsVersion() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Prints its own version properly",
             MainTest.exec("--version"),
             Matchers.allOf(
                 Matchers.containsString("."),
@@ -67,7 +67,7 @@ final class MainTest {
     @Test
     void printsHelp() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Prints help summary properly",
             MainTest.exec("--help"),
             Matchers.containsString("Usage: ")
         );
@@ -102,11 +102,11 @@ final class MainTest {
     @Test
     void executesJvmFullRunWithDashedObject() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Fails with the proper error message",
             MainTest.exec("--verbose", "as-bytes"),
             Matchers.allOf(
                 Matchers.containsString("Loading class EOas_bytes"),
-                Matchers.containsString("Can not find 'as-bytes' object")
+                Matchers.containsString("Can not find \"as-bytes\" object")
             )
         );
     }
@@ -114,11 +114,11 @@ final class MainTest {
     @Test
     void executesJvmFullRinWithAttributeCall() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Fails with the proper error message",
             MainTest.exec("--verbose", "string$as-bytes"),
             Matchers.allOf(
                 Matchers.containsString("Loading class EOstring$EOas_bytes"),
-                Matchers.containsString("Can not find 'string$as-bytes' object")
+                Matchers.containsString("Can not find \"string$as-bytes\" object")
             )
         );
     }
@@ -126,7 +126,7 @@ final class MainTest {
     @Test
     void executesJvmFullRunWithError() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Fails with the proper error message",
             MainTest.exec("--verbose", "org.eolang.io.stdout"),
             Matchers.containsString("Error at \"EOorg.EOeolang.EOio.EOstdout#text\" attribute")
         );
@@ -135,9 +135,9 @@ final class MainTest {
     @Test
     void executesWithObjectNotFoundException() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "Fails with the proper error message",
             MainTest.exec("unavailable-name"),
-            Matchers.containsString("Can not find 'unavailable-name' object")
+            Matchers.containsString("Can not find \"unavailable-name\" object")
         );
     }
 
@@ -152,7 +152,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8.name()
+                StandardCharsets.UTF_8
             )
         );
         MatcherAssert.assertThat(
@@ -173,7 +173,7 @@ final class MainTest {
                         )
                     )
                 ),
-                StandardCharsets.UTF_8.name()
+                StandardCharsets.UTF_8
             )
         );
         MatcherAssert.assertThat(

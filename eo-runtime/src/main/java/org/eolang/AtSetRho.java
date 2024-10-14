@@ -26,7 +26,8 @@ package org.eolang;
 
 /**
  * The attribute tries to copy object and set \rho to it.
- * If the name of the attribute is {@link Attr#RHO} - just object is returned.
+ *
+ * <p>If the name of the attribute is {@link Attr#RHO} - just object is returned.</p>
  *
  * @since 0.36.0
  */

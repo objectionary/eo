@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 /**
  * Attribute that only gets objects.
+ *
  * @since 0.36.0
  */
 final class AtGetOnly implements Attr {

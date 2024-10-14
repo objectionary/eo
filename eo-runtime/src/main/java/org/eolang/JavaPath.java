@@ -25,12 +25,14 @@ package org.eolang;
 
 /**
  * Java path.
- * The class converts object path in eolang notation to java notation.
+ *
+ * <p>The class converts object path in eolang notation to java notation.
  * For example
  * - "org.eolang" -> "EOorg.EOeolang"
  * - "org.eolang.as-bytes" -> "EOorg.EOeolang.EOas_bytes"
  * - "org.eolang.as-bytes$bytes" -> "EOorg.EOeolang.EOas_bytes$EObytes"
- * Since eolang allows using dashes in object names, they are converted to underscores for Java.
+ * Since EOLANG allows using dashes in object names, they are converted to
+ * underscores for Java.</p>
  *
  * @since 0.29
  */

@@ -26,9 +26,9 @@ package org.eolang;
 /**
  * Bytes.
  *
- * Represents byte array of arbitrary size,
+ * <p>Represents byte array of arbitrary size,
  * convertible to a numeric value.
- * Original size is preserved by and, or and xor.
+ * Original size is preserved by and, or and xor.</p>
  *
  * @since 1.0
  */

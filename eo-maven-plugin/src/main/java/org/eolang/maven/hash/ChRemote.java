@@ -54,16 +54,18 @@ public final class ChRemote implements CommitHash {
 
     @Override
     public String value() {
-        final String result = new ChText(ChRemote.CACHE::asString, this.tag).value();
-        if (result == null) {
+        try {
+            final String sha = new ChText(ChRemote.CACHE::asString, this.tag).value();
+            Logger.debug(this, "Git sha of %s is %s", this.tag, sha);
+            return sha;
+        } catch (final ChText.NotFound ex) {
             throw new IllegalArgumentException(
                 String.format(
                     "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",
                     this.tag
-                )
+                ),
+                ex
             );
         }
-        Logger.debug(this, "Git sha of %s is %s", this.tag, result);
-        return result;
     }
 }

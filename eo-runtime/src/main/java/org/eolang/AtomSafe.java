@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 
 /**
  * Atom that catches exceptions.
+ *
  * @since 0.36.0
  */
 public final class AtomSafe implements Atom {

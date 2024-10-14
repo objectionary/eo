@@ -25,9 +25,11 @@ package org.eolang;
 
 /**
  * Atom.
- * A native object implemented in the language EO is compiled into.
+ *
+ * <p>A native object implemented in the language EO is compiled into.
  * For EO end user atoms look like magic box. That's why all atoms have
- * λ function, that calculates the final object.
+ * λ function, that calculates the final object.</p>
+ *
  * @since 0.36.0
  */
 public interface Atom {

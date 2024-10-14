@@ -42,9 +42,9 @@ import java.util.logging.Logger;
 /**
  * Bridge between Java CLI and EO.
  *
- * This class has a single public static method {@code main()}, which
+ * <p>This class has a single public static method {@code main()}, which
  * is supposed to be called by java runtime from command line. The best
- * example of this class usage is in the "sandbox/canonical" directory.
+ * example of this class usage is in the "sandbox/canonical" directory.</p>
  *
  * @since 0.1
  */

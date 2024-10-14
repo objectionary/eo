@@ -27,9 +27,9 @@ package org.eolang;
 /**
  * Abstract exception.
  *
- * The exception raised when something is not right inside
- * attributes.
-
+ * <p>The exception raised when something is not right inside
+ * attributes.</p>
+ *
  * @since 0.21
  */
 @Versionized

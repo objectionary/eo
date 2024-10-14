@@ -27,7 +27,7 @@ package org.eolang;
 /**
  * Default attribute that just keeps single object.
  *
- * The class is NOT thread-safe.
+ * <p>The class is NOT thread-safe.</p>
  *
  * @since 0.1
  */

@@ -28,7 +28,8 @@ import java.util.function.Supplier;
 
 /**
  * Attribute that constructs object lazily.
- * The attribute depends on context (argument of lambda expression).
+ *
+ * <p>The attribute depends on context (argument of lambda expression).</p>
  *
  * @since 0.1
  */

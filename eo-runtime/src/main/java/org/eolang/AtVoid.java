@@ -29,8 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Void attribute.
  *
- * The attribute is not yet set, but can be set. It's writable, but
- * only once.
+ * <p>The attribute is not yet set, but can be set. It's writable, but
+ * only once.</p>
  *
  * @since 0.1
  */

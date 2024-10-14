@@ -27,9 +27,9 @@ package org.eolang;
 /**
  * Absent attribute.
  *
- * This class exists only because we want to have nice and informative
+ * <p>This class exists only because we want to have nice and informative
  * error messages for the attributes that are absent, but are being
- * written or read.
+ * written or read.</p>
  *
  * @since 0.1
  */

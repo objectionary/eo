@@ -29,9 +29,11 @@ import java.util.function.Supplier;
 
 /**
  * Attribute that constructs object lazily.
- * The main difference between this attribute and {@link AtComposite} is
+ *
+ * <p>The main difference between this attribute and {@link AtComposite} is
  * it does not depend on context. It means that every new copy of the attribute
- * is linked to the origin one (which was initialized first).
+ * is linked to the origin one (which was initialized first).</p>
+ *
  * @since 0.36.0
  */
 public final class AtFormed implements Attr {

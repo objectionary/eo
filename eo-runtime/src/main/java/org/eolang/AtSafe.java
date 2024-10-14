@@ -29,10 +29,11 @@ import EOorg.EOeolang.EOerror;
 /**
  * The attribute that catches {@link ExFailure} and
  * throws {@link EOerror.ExError}.
- * Every time attribute is taken from an object (when method {@link PhDefault#attr(String)}
+ *
+ * <p>Every time attribute is taken from an object (when method {@link PhDefault#take(String)}
  * is called) - this attribute is being wrapped by this {@link AtSafe}.
  * It allows to catch {@link ExFailure} inside encapsulated attributes and transform them into
- * {@link EOerror.ExError} which is cached by {@link EOorg.EOeolang.EOtry} lately.
+ * {@link EOerror.ExError} which is cached by {@link EOorg.EOeolang.EOtry} lately.</p>
  *
  * @since 0.26
  */

@@ -87,14 +87,24 @@ public final class ChText implements CommitHash {
                                     new Split(new TextOf(this.source), "\n")
                                 ),
                                 () -> {
-                                    throw new NotFound();
+                                    throw new NotFound(
+                                        String.format(
+                                            "Git SHA not found for the '%s' tag",
+                                            this.tag
+                                        )
+                                    );
                                 }
                             )
                         ),
                         "\\s+"
                     ),
                     () -> {
-                        throw new NotFound();
+                        throw new NotFound(
+                            String.format(
+                                "No SHA found for the '%s' tag",
+                                this.tag
+                            )
+                        );
                     }
                 )
             )
@@ -106,12 +116,13 @@ public final class ChText implements CommitHash {
      *
      * @since 0.28.11
      */
-    final class NotFound extends RuntimeException {
+    static final class NotFound extends RuntimeException {
         /**
          * The main constructor.
+         * @param cause The cause of it
          */
-        private NotFound() {
-            super(String.format("The hash wasn't found for tag %s", ChText.this.tag));
+        private NotFound(final String cause) {
+            super(cause);
         }
     }
 }

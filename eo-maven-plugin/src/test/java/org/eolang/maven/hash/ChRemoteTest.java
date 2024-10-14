@@ -66,9 +66,9 @@ final class ChRemoteTest {
     @Test
     void throwsCommitHashException() {
         Assertions.assertThrows(
-            ChText.NotFound.class,
+            IllegalArgumentException.class,
             () -> new ChRemote("nonsense").value(),
-            BinarizeParseTest.TO_ADD_MESSAGE
+            "Throws when tag is not found"
         );
     }
 

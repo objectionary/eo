@@ -28,7 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Special attribute for \rho.
- * The attribute can be set only once, and it ignores all other puts.
+ *
+ * <p>The attribute can be set only once, and it ignores all other puts.</p>
+ *
  * @since 0.36.0
  */
 final class AtRho implements Attr {

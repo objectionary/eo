@@ -28,7 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Attribute that retrieves object only once.
- * It's highly recommended to use it with {@link AtComposite}.
+ *
+ * <p>It's highly recommended to use it with {@link AtComposite}.</p>
  *
  * @since 0.1
  */
