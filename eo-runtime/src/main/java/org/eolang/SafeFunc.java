@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 
 /**
  * Function that catches all kind of exceptions in one place.
+ *
  * @param <T> Type of return value.
  * @since 0.36.0
  */

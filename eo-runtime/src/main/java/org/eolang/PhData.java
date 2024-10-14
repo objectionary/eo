@@ -26,6 +26,7 @@ package org.eolang;
 
 /**
  * Object with attached data.
+ *
  * @since 0.36.0
  */
 public final class PhData extends PhOnce {

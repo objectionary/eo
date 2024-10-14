@@ -31,7 +31,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for an object which location should be extended with version package.
- * More details <a href="https://github.com/objectionary/eo/issues/2506">here</a>
+ *
+ * <p>More details <a href="https://github.com/objectionary/eo/issues/2506">here</a>.</p>
  *
  * @since 0.32.0
  */

@@ -27,12 +27,12 @@ package org.eolang;
 /**
  * A simple object.
  *
- * We call it Phi because of the name of the φ-calculus. Actually, a better
+ * <p>We call it Phi because of the name of the φ-calculus. Actually, a better
  * name would be "Object", but it's already occupied by Java. That's why
- * we call it Phi.
+ * we call it Phi.</p>
  *
- * It is guaranteed that the hash codes of different Phi are different,
- * and equal to the vertex.
+ * <p>It is guaranteed that the hash codes of different Phi are different,
+ * and equal to the vertex.</p>
  *
  * @since 0.1
  */

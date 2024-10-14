@@ -27,7 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * {@link Universe} to be used from within native function.
- * Since we cannot save stacktrace of exception inside native code
+ *
+ * <p>Since we cannot save stacktrace of exception inside native code
  *  (we can only detect it), we should keep it on the java side.
  *  More detailed:
  *  <a href = "https://www.developer.com/open-source/exception-handling-in-jni/">
@@ -35,7 +36,8 @@ import java.util.concurrent.atomic.AtomicReference;
  *  <a href = "https://stackoverflow.com/questions/2054598/how-to-catch-jni-java-exception/2125673#2125673">
  *   stackoverflow.com/questions/2054598/how-to-catch-jni-java-exception</a>,
  *  <a href = "https://www.iitk.ac.in/esc101/05Aug/tutorial/native1.1/implementing/error.html/">
- *   www.iitk.ac.in/esc101/05Aug/tutorial/native1.1/implementing/error.html</a>
+ *   www.iitk.ac.in/esc101/05Aug/tutorial/native1.1/implementing/error.html</a></p>
+ *
  * @since 0.32
  * @checkstyle IllegalCatchCheck (200 lines)
  */

@@ -25,6 +25,7 @@ package org.eolang;
 
 /**
  * Class to manipulate eo objects within "Universe" paradigm.
+ *
  * @since 0.30
  */
 @Versionized

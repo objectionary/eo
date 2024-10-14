@@ -29,9 +29,11 @@ import java.util.function.Supplier;
 
 /**
  * Class to trace if the "cage.new" got into recursion during the dataization.
- * This class is thread safe in the meaning that different threads
+ *
+ * <p>This class is thread safe in the meaning that different threads
  * can safely use different instances of the class and recursion
- * (If a thread dataizes the same recursively) will still be detected.
+ * (If a thread dataizes the same recursively) will still be detected.</p>
+ *
  * @since 0.36
  */
 @Versionized

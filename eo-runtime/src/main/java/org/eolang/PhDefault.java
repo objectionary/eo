@@ -37,7 +37,8 @@ import java.util.stream.Collectors;
 /**
  * A simple object.
  *
- * The class is thread-safe.
+ * <p>The class is thread-safe.</p>
+ *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */

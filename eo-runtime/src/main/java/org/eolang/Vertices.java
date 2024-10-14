@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Collection of all vertices.
  *
- * The class is thread-safe.
+ * <p>The class is thread-safe.</p>
  *
  * @since 0.18
  */
