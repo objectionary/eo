@@ -23,7 +23,7 @@
 name: zerocracy
 'on':
   schedule:
-    - cron: '0 * * * *'
+    - cron: '2,6,10,14,18,22 * * * *'
 concurrency:
   group: zerocracy
   cancel-in-progress: false
