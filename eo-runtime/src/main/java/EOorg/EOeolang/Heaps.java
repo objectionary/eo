@@ -71,7 +71,7 @@ final class Heaps {
             if (this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
-                        "Can't allocate block in memory with identifier %d because it's already allocated",
+                        "Can't allocate block in memory with identifier '%d' because it's already allocated",
                         identifier
                     )
                 );
@@ -79,6 +79,55 @@ final class Heaps {
             this.blocks.put(identifier, new byte[size]);
         }
         return identifier;
+    }
+
+    /**
+     * Get size of allocated block in memory by provided identifier.
+     * @param identifier Identifier of block in memory
+     * @return Size
+     */
+    int size(final int identifier) {
+        synchronized (this.blocks) {
+            if (!this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Block in memory by identifier '%d' is not allocated, can't get size",
+                        identifier
+                    )
+                );
+            }
+            return this.blocks.get(identifier).length;
+        }
+    }
+
+    /**
+     * Resize allocated block in memory.
+     * @param identifier Identifier of block
+     * @param size New size
+     */
+    void resize(final int identifier, final int size) {
+        if (size < 0) {
+            throw new ExFailure(
+                String.format(
+                    "Can't change size of block in memory by identifier '%d' to negative '%d'",
+                    identifier, size
+                )
+            );
+        }
+        synchronized (this.blocks) {
+            if (!this.blocks.containsKey(identifier)) {
+                throw new ExFailure(
+                    String.format(
+                        "Block in memory by identifier '%d' is not allocated, can't get size",
+                        identifier
+                    )
+                );
+            }
+            final byte[] bytes = this.blocks.get(identifier);
+            final byte[] resized = new byte[size];
+            System.arraycopy(bytes, 0, resized, 0, Math.min(bytes.length, size));
+            this.blocks.put(identifier, resized);
+        }
     }
 
     /**
@@ -93,7 +142,7 @@ final class Heaps {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
-                        "Block in memory by identifier %d is not allocated, can't read",
+                        "Block in memory by identifier '%d' is not allocated, can't read",
                         identifier
                     )
                 );
@@ -102,7 +151,7 @@ final class Heaps {
             if (offset + length > bytes.length) {
                 throw new ExFailure(
                     String.format(
-                        "Can't read %d bytes from offset %d, because only %d are allocated",
+                        "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                         length,
                         offset,
                         bytes.length
@@ -124,7 +173,7 @@ final class Heaps {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
-                        "Can't read a block in memory with identifier %d because it's not allocated",
+                        "Can't read a block in memory with identifier '%d' because it's not allocated",
                         identifier
                     )
                 );
@@ -134,7 +183,7 @@ final class Heaps {
             if (length < offset + data.length) {
                 throw new ExFailure(
                     String.format(
-                        "Can't write %d bytes with offset %d to the block with identifier %d, because only %d were allocated",
+                        "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
                         data.length,
                         offset,
                         identifier,
@@ -169,7 +218,7 @@ final class Heaps {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
                     String.format(
-                        "Can't free a block in memory with identifier %d because it's not allocated",
+                        "Can't free a block in memory with identifier '%d' because it's not allocated",
                         identifier
                     )
                 );

@@ -190,4 +190,87 @@ final class HeapsTest {
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }
+
+    @Test
+    void throwsOnGettingSizeOfEmptyBlock() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> HeapsTest.HEAPS.size(new PhFake().hashCode()),
+            "Heaps should throw an exception if trying to get size on an empty block, but it didn't"
+        );
+    }
+
+    @Test
+    void returnsValidSize() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        MatcherAssert.assertThat(
+            "Heaps should return valid size of allocated block, but it didn't",
+            HeapsTest.HEAPS.size(idx),
+            Matchers.equalTo(5)
+        );
+        HeapsTest.HEAPS.free(idx);
+    }
+
+    @Test
+    void throwsOnChangingSizeToNegative() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> HeapsTest.HEAPS.resize(idx, -1),
+            "Heaps should throw an exception on trying to changing size to negative, but it didn't"
+        );
+        HeapsTest.HEAPS.free(idx);
+    }
+
+    @Test
+    void throwsOnChangeSizeOfEmtpyBlock() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> HeapsTest.HEAPS.resize(new PhFake().hashCode(), 10),
+            "Heaps should throw an exception on changing size of empty block, but it didn't"
+        );
+    }
+
+    @Test
+    void increasesSizeSuccessfully() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final byte[] bytes = {1, 2, 3, 4, 5};
+        HeapsTest.HEAPS.write(idx, 0, bytes);
+        HeapsTest.HEAPS.resize(idx, 7);
+        MatcherAssert.assertThat(
+            "Heaps should successfully increase size of allocated block, but it didn't",
+            HeapsTest.HEAPS.read(idx, 0, 7),
+            Matchers.equalTo(new byte[] {1, 2, 3, 4, 5, 0, 0})
+        );
+        HeapsTest.HEAPS.free(idx);
+    }
+
+    @Test
+    void decreasesSizeSuccessfully() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final byte[] bytes = {1, 2, 3, 4, 5};
+        HeapsTest.HEAPS.write(idx, 0, bytes);
+        HeapsTest.HEAPS.resize(idx, 3);
+        MatcherAssert.assertThat(
+            "Heaps should successfully decrease size of allocated block, but it didn't",
+            HeapsTest.HEAPS.read(idx, 0, 3),
+            Matchers.equalTo(new byte[] {1, 2, 3})
+        );
+        HeapsTest.HEAPS.free(idx);
+    }
+
+    @Test
+    void returnsValidSizeAfterDecreasing() {
+        final int idx = HeapsTest.HEAPS.malloc(new PhFake(), 5);
+        final byte[] bytes = {1, 2, 3, 4, 5};
+        HeapsTest.HEAPS.write(idx, 0, bytes);
+        HeapsTest.HEAPS.resize(idx, 3);
+        MatcherAssert.assertThat(
+            "Heaps should return valid size after decreasing, but it didn't",
+            HeapsTest.HEAPS.size(idx),
+            Matchers.equalTo(3)
+        );
+        HeapsTest.HEAPS.free(idx);
+    }
+
 }
