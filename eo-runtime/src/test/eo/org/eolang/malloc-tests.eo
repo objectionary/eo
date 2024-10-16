@@ -210,3 +210,41 @@
               m.write 2 "Hello"
               b.put
                 (m.read 2 5).eq "Hello"
+
+# Test.
+[] > malloc-increases-block-size
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        01-02-03-04
+        [m] >>
+          seq > @
+            *
+              m.resize 6
+              ^.b.put
+                and.
+                  m.size.eq 6
+                  m.get.eq 01-02-03-04-00-00
+
+# Test.
+[] > malloc-decreases-block-size
+  malloc.of > @
+    1
+    [b]
+      malloc.for > @
+        01-02-03-04-05
+        [m] >>
+          seq > @
+            *
+              m.resize 3
+              ^.b.put
+                and.
+                  m.size.eq 3
+                  m.get.eq 01-02-03
+
+# Test.
+[] > throws-on-changing-size-to-negative
+  malloc.of > @
+    1
+    m.resize -1 > [m]
