@@ -71,11 +71,6 @@ public final class Cache {
      * @return Path to cache directory
      */
     public Path path() {
-        if (this.base == null || this.version == null || this.relative == null) {
-            throw new IllegalStateException(
-                "Cache properties must be not nullable"
-            );
-        }
         return this.base.resolve(this.version.path()).resolve(this.relative);
     }
 }

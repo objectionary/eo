@@ -26,7 +26,6 @@ package org.eolang.maven.fp;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Cache version.
@@ -81,9 +80,7 @@ public final class CacheVersion {
      * @return True if cacheable, false otherwise.
      */
     public boolean cacheable() {
-        return Objects.nonNull(this.hash)
-            && !this.hash.isEmpty()
-            && Objects.nonNull(this.semver)
+        return !this.hash.isEmpty()
             && Arrays.stream(CacheVersion.NOT_CACHEABLE).noneMatch(this.semver::contains);
     }
 }

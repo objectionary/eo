@@ -153,7 +153,7 @@ public final class Footprint implements Func<Scalar<String>, Path> {
      */
     private Scalar<Path> copiedFromCache() {
         return new Saved.Default(
-            new TextOf(this.source),
+            new TextOf(this.cache.path()),
             this.target
         );
     }
