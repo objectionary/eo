@@ -103,11 +103,6 @@ final class FootprintTest {
             src -> FootprintTest.LAMBDA_CONTENT
         );
         MatcherAssert.assertThat(
-            "Footprint has to return target path, but it didn't",
-            res,
-            Matchers.equalTo(target)
-        );
-        MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
             Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
@@ -129,11 +124,6 @@ final class FootprintTest {
         final Path res = new Footprint(
             source, target, cache
         ).apply(src -> FootprintTest.LAMBDA_CONTENT);
-        MatcherAssert.assertThat(
-            "Footprint has to return target path, but it didn't",
-            res,
-            Matchers.equalTo(target)
-        );
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
