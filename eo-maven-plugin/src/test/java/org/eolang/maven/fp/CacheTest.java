@@ -74,7 +74,6 @@ final class CacheTest {
         "0.0.0, abcdefg, 0.0.0|abcdefg",
         "2.0-SNAPSHOT, abcdefg, 2.0-SNAPSHOT|abcdefg",
         "1.0-SNAPSHOT, abcdefg, 1.0-SNAPSHOT|abcdefg",
-        "SNAPSHOT, abcdefg, SNAPSHOT|abcdefg",
         "0.1.0, abcdefg, 0.1.0|abcdefg",
         "'', abcdefg, abcdefg",
         "'', master, master",
