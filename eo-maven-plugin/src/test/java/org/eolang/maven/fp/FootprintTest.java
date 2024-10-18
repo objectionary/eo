@@ -64,7 +64,7 @@ final class FootprintTest {
                 Paths.get("a/b/c"),
                 Paths.get(""),
                 FootprintTest.notExistedCache(temp)
-            ).apply(s -> FootprintTest.LAMBDA_CONTENT),
+            ).apply(() -> FootprintTest.LAMBDA_CONTENT),
             "Footprint should fail if source path does not exist"
         );
     }
@@ -78,7 +78,7 @@ final class FootprintTest {
             source,
             target,
             FootprintTest.notExistedCache(temp)
-        ).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        ).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Footprint has to return target path, but it didn't",
             result,
@@ -99,7 +99,7 @@ final class FootprintTest {
         assert Files.notExists(target);
         final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
         assert Files.exists(cache.path());
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
@@ -119,7 +119,7 @@ final class FootprintTest {
         final Path target = FootprintTest.existedTarget(temp);
         FootprintTest.makeOlder(source);
         final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
@@ -140,7 +140,7 @@ final class FootprintTest {
         FootprintTest.makeOlder(source);
         final Cache cache = FootprintTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -159,7 +159,7 @@ final class FootprintTest {
         final Path target = FootprintTest.notExistedTarget(temp);
         final Cache cache = FootprintTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -180,7 +180,7 @@ final class FootprintTest {
         final Cache cache = FootprintTest.existedCache(temp);
         assert Files.exists(cache.path());
         FootprintTest.makeOlder(source);
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -201,7 +201,7 @@ final class FootprintTest {
         final Cache cache = FootprintTest.existedCache(temp);
         assert Files.notExists(target);
         FootprintTest.makeOlder(source);
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -222,7 +222,7 @@ final class FootprintTest {
         final Cache cache = FootprintTest.existedCache(temp);
         FootprintTest.makeOlder(source);
         FootprintTest.makeOlder(cache.path(), 100_000);
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
@@ -244,7 +244,7 @@ final class FootprintTest {
         final Cache cache = FootprintTest.existedCache(temp);
         FootprintTest.makeOlder(source);
         FootprintTest.makeOlder(cache.path(), 100_000);
-        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
@@ -368,7 +368,7 @@ final class FootprintTest {
     private static Cache notExistedCache(final Path temp, final String ver, final String hash) {
         return new Cache(
             temp.resolve("cache"),
-            new Cache.Version(ver, hash),
+            new CacheVersion(ver, hash),
             Paths.get("")
         );
     }

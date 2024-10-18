@@ -27,7 +27,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
-import org.cactoos.func.StickyFunc;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Sticky;
 import org.cactoos.text.TextOf;
 
 /**
@@ -55,7 +56,7 @@ import org.cactoos.text.TextOf;
  *  4) copy content from cache to target and return target</p>
  * @since 0.41.0
  */
-public final class Footprint implements Func<Func<Path, String>, Path> {
+public final class Footprint implements Func<Scalar<String>, Path> {
     /**
      * Absolute path to file with source code.
      */
@@ -88,14 +89,14 @@ public final class Footprint implements Func<Func<Path, String>, Path> {
     }
 
     @Override
-    public Path apply(final Func<Path, String> content) throws Exception {
-        if (!Footprint.exists(this.source)) {
+    public Path apply(final Scalar<String> content) throws Exception {
+        if (!this.source.toFile().exists()) {
             throw new IllegalStateException(
                 String.format("Source file %s does not exist", this.source)
             );
         }
         final Path result;
-        if (Footprint.exists(this.target) && Footprint.isAfter(this.target, this.source)) {
+        if (this.target.toFile().exists() && Footprint.isAfter(this.target, this.source)) {
             result = this.target;
         } else {
             result = this.dependentOnCache(content);
@@ -109,19 +110,19 @@ public final class Footprint implements Func<Func<Path, String>, Path> {
      * @return Path to target
      * @throws IOException If fails to check files last modified time
      */
-    private Path dependentOnCache(final Func<Path, String> content) throws Exception {
-        final Path result;
+    private Path dependentOnCache(final Scalar<String> content) throws Exception {
+        final Scalar<Path> result;
         if (this.cache.cacheable()) {
             final Path cached = this.cache.path();
-            if (Footprint.exists(cached) && Footprint.isAfter(cached, this.source)) {
+            if (cached.toFile().exists() && Footprint.isAfter(cached, this.source)) {
                 result = this.copiedFromCache();
             } else {
-                result = this.updatedAll(content);
+                result = this.updatedBoth(content);
             }
         } else {
             result = this.updatedTarget(content);
         }
-        return result;
+        return result.value();
     }
 
     /**
@@ -129,57 +130,32 @@ public final class Footprint implements Func<Func<Path, String>, Path> {
      * @param content Content function
      * @return Absolute path to target file
      */
-    private Path updatedTarget(final Func<Path, String> content) throws Exception {
-        return Footprint.updated(this.source, this.target, content);
+    private Scalar<Path> updatedTarget(final Scalar<String> content) {
+        return new Saved.Default(content, this.target);
     }
 
     /**
-     * Takes content from given function, updates target file, updates global cache file.
+     * Takes content from given function, updates both target file and global cache file.
      * @param content Content function
      * @return Absolute path to target file
-     * @throws Exception If failed to extract content or update files
      */
-    private Path updatedAll(final Func<Path, String> content) throws Exception {
-        final Func<Path, String> sticky = new StickyFunc<>(content);
-        final Path result = this.updatedTarget(sticky);
-        Footprint.updated(this.source, this.cache.path(), sticky);
-        return result;
+    private Scalar<Path> updatedBoth(final Scalar<String> content) {
+        return () -> {
+            final Scalar<String> sticky = new Sticky<>(content);
+            this.updatedTarget(sticky).value();
+            return new Saved.Default(sticky, this.cache.path()).value();
+        };
     }
 
     /**
      * Takes content from global cache and updates target file.
      * @return Absolute path to target file
      */
-    private Path copiedFromCache() throws Exception {
-        return Footprint.updated(
-            this.cache.path(),
-            this.target,
-            src -> new TextOf(src).asString()
+    private Scalar<Path> copiedFromCache() {
+        return new Saved.Default(
+            new TextOf(this.source),
+            this.target
         );
-    }
-
-    /**
-     * Takes content from given function and updates given file.
-     * @param source Absolute path to source file
-     * @param dest Absolute path to file to update
-     * @param content Content function
-     * @return Absolute path to file to update
-     * @throws Exception If failed to extract content or update files
-     */
-    private static Path updated(
-        final Path source, final Path dest, final Func<Path, String> content
-    ) throws Exception {
-        new Saved.Default(content.apply(source), dest).value();
-        return dest;
-    }
-
-    /**
-     * Returns True if file by given path exists.
-     * @param path Path to check
-     * @return True if file exists
-     */
-    private static boolean exists(final Path path) {
-        return path.toFile().exists();
     }
 
     /**

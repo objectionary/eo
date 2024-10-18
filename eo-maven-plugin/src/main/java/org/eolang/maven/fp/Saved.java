@@ -28,20 +28,22 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Input;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.OutputTo;
 import org.cactoos.io.TeeInput;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.TextOf;
 
 /**
  * Content saved to the file.
- * Returns amount of written bytes.
+ * Returns path to the file
  * @since 0.41.0
  */
-public interface Saved extends Scalar<Long> {
+public interface Saved extends Scalar<Path> {
     @Override
-    Long value() throws IOException;
+    Path value() throws IOException;
 
     /**
      * Default saved content.
@@ -69,6 +71,24 @@ public interface Saved extends Scalar<Long> {
 
         /**
          * Ctor.
+         * @param content Content as scalar
+         * @param target Path to save content to
+         */
+        public Default(final Scalar<String> content, final Path target) {
+            this(new TextOf(content), target);
+        }
+
+        /**
+         * Ctor.
+         * @param content Content as text
+         * @param target Path to save content to
+         */
+        public Default(final Text content, final Path target) {
+            this(new InputOf(content), target);
+        }
+
+        /**
+         * Ctor.
          * @param content Content as lambda
          * @param target Absolute path to save content to
          */
@@ -78,7 +98,7 @@ public interface Saved extends Scalar<Long> {
         }
 
         @Override
-        public Long value() throws IOException {
+        public Path value() throws IOException {
             final long bytes;
             try {
                 if (this.target.toFile().getParentFile().mkdirs()) {
@@ -108,7 +128,7 @@ public interface Saved extends Scalar<Long> {
                     ex
                 );
             }
-            return bytes;
+            return this.target;
         }
     }
 }

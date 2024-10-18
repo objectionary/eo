@@ -24,6 +24,7 @@
 package org.eolang.maven.fp;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,30 +32,56 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link Cache}.
- * @since 0.41.0
- * @checkstyle ParameterNumberCheck (150 lines)
+ * Test cases for {@link CacheVersion}.
+ * @since 0.41
  */
-final class CacheTest {
+class CacheVersionTest {
+
     @ParameterizedTest
     @CsvSource({
-        "x/y, 1.2.3, master, a.x, x|y|1.2.3|master|a.x",
-        "a, 0.0.0, abcdefg, f.t, a|0.0.0|abcdefg|f.t"
+        "0.0.0, abcdefg, false",
+        "2.0-SNAPSHOT, abcdefg, false",
+        "1.0-SNAPSHOT, abcdefg, false",
+        "SNAPSHOT, abcdefg, false",
+        "'','', false",
+        "0.1.0, '', false",
+        "0.1.0, abcdefg, true",
+        "'', abcdefg, true",
+        "'', master, true",
+        "'null', master, true"
     })
-    void buildsValidFullPath(
-        final String base,
-        final String version,
-        final String hash,
-        final String rel,
-        final String res
-    ) {
+    void checksCacheability(final String version, final String hash, final boolean expected) {
+        final Path path = Paths.get("x/y/z");
+        final String res;
+        if (expected) {
+            res = "cacheable";
+        } else {
+            res = "not cacheable";
+        }
         MatcherAssert.assertThat(
-            "Cache must return valid path, but it didn't",
-            new Cache(
-                Paths.get(base),
-                new CacheVersion(version, hash),
-                Paths.get(rel)
-            ).path().toString(),
+            String.format(
+                "Cache with version %s and hash %s must be %s",
+                version, hash, res
+            ),
+            new Cache(path, new CacheVersion(version, hash), path).cacheable(),
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0.0.0, abcdefg, 0.0.0|abcdefg",
+        "2.0-SNAPSHOT, abcdefg, 2.0-SNAPSHOT|abcdefg",
+        "1.0-SNAPSHOT, abcdefg, 1.0-SNAPSHOT|abcdefg",
+        "0.1.0, abcdefg, 0.1.0|abcdefg",
+        "'', abcdefg, abcdefg",
+        "'', master, master",
+        "'','', ''"
+    })
+    void buildsValidVersionPath(final String version, final String hash, final String res) {
+        MatcherAssert.assertThat(
+            "Cache version must return valid path, but it didn't",
+            new CacheVersion(version, hash).path().toString(),
             Matchers.equalTo(res.replace("|", File.separator))
         );
     }

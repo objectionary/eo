@@ -24,9 +24,6 @@
 package org.eolang.maven.fp;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Cache directory.
@@ -41,7 +38,7 @@ public final class Cache {
     /**
      * Cache version.
      */
-    private final Cache.Version version;
+    private final CacheVersion version;
 
     /**
      * Relative path of base and version.
@@ -54,7 +51,7 @@ public final class Cache {
      * @param version Cache version
      * @param relative Relative path
      */
-    public Cache(final Path base, final Cache.Version version, final Path relative) {
+    public Cache(final Path base, final CacheVersion version, final Path relative) {
         this.base = base;
         this.version = version;
         this.relative = relative;
@@ -74,67 +71,11 @@ public final class Cache {
      * @return Path to cache directory
      */
     public Path path() {
+        if (this.base == null || this.version == null || this.relative == null) {
+            throw new IllegalStateException(
+                "Cache properties must be not nullable"
+            );
+        }
         return this.base.resolve(this.version.path()).resolve(this.relative);
-    }
-
-    /**
-     * Cache version.
-     * The version consists of two main components:
-     *  1) Base, which is maven-style version string
-     *  2) Hash string, containing git hash.
-     * The two parts define the cacheable location by method {@link #path}.
-     * If base is empty or contains '0.0.0' or 'SNAPSHOT' (see {@link #NOT_CACHEABLE}
-     * versions) the version is considered non-cacheable.
-     * @since 0.41.0
-     */
-    public static class Version {
-        /**
-         * Not cacheable versions.
-         */
-        private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
-
-        /**
-         * Version of the eo-maven-plugin which currently builds a program. Version could be:
-         * - 0.0.0 - if the version is not set in the pom.xml
-         * - 0.30.0 - if the version is set in the pom.xml
-         * - 1.0-SNAPSHOT - if the not stable development version is set in the pom.xml By some
-         * reason, the version could also be empty.
-         */
-        private final String semver;
-
-        /**
-         * Hash of tag from the objectionary/home.
-         */
-        private final String hash;
-
-        /**
-         * Ctor.
-         * @param ver Version of the eo-maven-plugin which currently builds a program.
-         * @param hsh Hash of the objectionary tag.
-         */
-        public Version(final String ver, final String hsh) {
-            this.semver = ver;
-            this.hash = hsh;
-        }
-
-        /**
-         * Get cache path.
-         * @return Path.
-         */
-        Path path() {
-            return Paths.get(Objects.toString(this.semver, ""))
-                .resolve(Objects.toString(this.hash, ""));
-        }
-
-        /**
-         * Checks if the version is cacheable.
-         * @return True if cacheable, false otherwise.
-         */
-        boolean cacheable() {
-            return Objects.nonNull(this.hash)
-                && !this.hash.isEmpty()
-                && Objects.nonNull(this.semver)
-                && Arrays.stream(Cache.Version.NOT_CACHEABLE).noneMatch(this.semver::contains);
-        }
     }
 }
