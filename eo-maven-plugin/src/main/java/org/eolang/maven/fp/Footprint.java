@@ -95,12 +95,8 @@ public final class Footprint implements Func<Func<Path, String>, Path> {
             );
         }
         final Path result;
-        if (Footprint.exists(this.target)) {
-            if (Footprint.isAfter(this.target, this.source)) {
-                result = this.target;
-            } else {
-                result = this.dependentOnCache(content);
-            }
+        if (Footprint.exists(this.target) && Footprint.isAfter(this.target, this.source)) {
+            result = this.target;
         } else {
             result = this.dependentOnCache(content);
         }
@@ -112,18 +108,13 @@ public final class Footprint implements Func<Func<Path, String>, Path> {
      * @param content Content function
      * @return Path to target
      * @throws IOException If fails to check files last modified time
-     * @checkstyle NestedIfDepthCheck (30 lines)
      */
     private Path dependentOnCache(final Func<Path, String> content) throws Exception {
         final Path result;
         if (this.cache.cacheable()) {
             final Path cached = this.cache.path();
-            if (Footprint.exists(cached)) {
-                if (Footprint.isAfter(cached, this.source)) {
-                    result = this.copiedFromCache();
-                } else {
-                    result = this.updatedAll(content);
-                }
+            if (Footprint.exists(cached) && Footprint.isAfter(cached, this.source)) {
+                result = this.copiedFromCache();
             } else {
                 result = this.updatedAll(content);
             }
