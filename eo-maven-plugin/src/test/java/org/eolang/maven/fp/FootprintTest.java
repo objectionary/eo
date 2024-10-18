@@ -99,9 +99,7 @@ final class FootprintTest {
         assert Files.notExists(target);
         final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
         assert Files.exists(cache.path());
-        final Path res = new Footprint(source, target, cache).apply(
-            src -> FootprintTest.LAMBDA_CONTENT
-        );
+        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
@@ -121,9 +119,7 @@ final class FootprintTest {
         final Path target = FootprintTest.existedTarget(temp);
         FootprintTest.makeOlder(source);
         final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
-        final Path res = new Footprint(
-            source, target, cache
-        ).apply(src -> FootprintTest.LAMBDA_CONTENT);
+        new Footprint(source, target, cache).apply(src -> FootprintTest.LAMBDA_CONTENT);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
