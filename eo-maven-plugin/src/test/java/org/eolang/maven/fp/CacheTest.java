@@ -86,7 +86,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "Cache version must return valid path, but it didn't",
             new Cache.Version(version, hash).path().toString(),
-            Matchers.equalTo(res.replace("|", File.pathSeparator))
+            Matchers.equalTo(res.replace("|", File.separator))
         );
     }
 
@@ -109,7 +109,7 @@ final class CacheTest {
                 new Cache.Version(version, hash),
                 Paths.get(rel)
             ).path().toString(),
-            Matchers.equalTo(res.replace("|", File.pathSeparator))
+            Matchers.equalTo(res.replace("|", File.separator))
         );
     }
 }
