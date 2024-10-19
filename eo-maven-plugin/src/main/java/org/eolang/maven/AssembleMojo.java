@@ -64,7 +64,7 @@ public final class AssembleMojo extends SafeMojo {
     /**
      * The intermediate representation extension.
      */
-    public static final String IR_EXTENSION = "xmir";
+    public static final String XMIR = "xmir";
 
     /**
      * Output.

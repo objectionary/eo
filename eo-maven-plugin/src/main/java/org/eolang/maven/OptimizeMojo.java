@@ -24,15 +24,24 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
+import org.cactoos.number.SumOf;
+import org.eolang.maven.fp.Cache;
+import org.eolang.maven.fp.CacheVersion;
+import org.eolang.maven.fp.Footprint;
+import org.eolang.maven.fp.TojoHash;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
@@ -89,22 +98,18 @@ public final class OptimizeMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-        final int total = new OptimizedTojos(
-            new Filtered<>(
-                ForeignTojo::notOptimized,
-                tojos
-            ),
-            this.optimization(),
-            new OptimizationTask(
-                new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
-                ),
-                OptimizeMojo.DIRECTORIES,
-                ForeignTojo::withOptimized,
-                ForeignTojo::xmir
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> () -> this.optimized(tojo, this.optimization()),
+                    new Filtered<>(
+                        ForeignTojo::notOptimized,
+                        this.scopedTojos().withXmir()
+                    )
+                )
             )
-        ).count();
+        ).intValue();
         if (total > 0) {
             Logger.info(
                 this,
@@ -117,8 +122,38 @@ public final class OptimizeMojo extends SafeMojo {
     }
 
     /**
+     * XMIR optimized to another XMIR.
+     * @param tojo Foreign tojo
+     * @param optimization Optimization to apply to XMIR
+     * @return Amount of optimized XMIR files
+     * @throws Exception If fails
+     */
+    private int optimized(final ForeignTojo tojo, final Optimization optimization)
+        throws Exception {
+        final Path source = tojo.xmir();
+        final XML xmir = new XMLDocument(source);
+        final String name = xmir.xpath("/program/@name").get(0);
+        final Path base = this.targetDir.toPath().resolve(OptimizeMojo.DIR);
+        final Path target = new Place(name).make(base, TranspileMojo.EXT);
+        tojo.withOptimized(
+            new Footprint(
+                source,
+                target,
+                new Cache(
+                    this.cache.resolve(OptimizeMojo.OPTIMIZED),
+                    new CacheVersion(
+                        this.plugin.getVersion(),
+                        new TojoHash(tojo)
+                    ),
+                    base.relativize(target)
+                )
+            ).apply(() -> optimization.apply(xmir).toString())
+        );
+        return 1;
+    }
+
+    /**
      * Common optimization for all tojos.
-     *
      * @return Optimization for all tojos.
      */
     private Optimization optimization() {

@@ -42,6 +42,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -223,6 +224,16 @@ abstract class SafeMojo extends AbstractMojo {
     @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
     @SuppressWarnings("PMD.ImmutableField")
     protected boolean rewriteBinaries = true;
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    protected PluginDescriptor plugin;
 
     /**
      * Commit hashes.

@@ -26,6 +26,7 @@ package org.eolang.maven.fp;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
  * Cache version.
@@ -55,14 +56,23 @@ public final class CacheVersion {
     /**
      * Hash of tag from the objectionary/home.
      */
-    private final String hash;
+    private final Supplier<String> hash;
 
     /**
      * Ctor.
      * @param ver Version of the eo-maven-plugin which currently builds a program.
-     * @param hsh Hash of the objectionary tag.
+     * @param hsh Lazy hash of the objectionary tag.
      */
     public CacheVersion(final String ver, final String hsh) {
+        this(ver, () -> hsh);
+    }
+
+    /**
+     * Ctor.
+     * @param ver Version of the eo-maven-plugin which currently builds a program.
+     * @param hsh Lazy hash of the objectionary tag.
+     */
+    public CacheVersion(final String ver, final Supplier<String> hsh) {
         this.semver = ver;
         this.hash = hsh;
     }
@@ -72,7 +82,7 @@ public final class CacheVersion {
      * @return Path.
      */
     public Path path() {
-        return Paths.get(this.semver).resolve(this.hash);
+        return Paths.get(this.semver).resolve(this.hash.get());
     }
 
     /**
@@ -80,7 +90,7 @@ public final class CacheVersion {
      * @return True if cacheable, false otherwise.
      */
     public boolean cacheable() {
-        return !this.hash.isEmpty()
+        return !this.hash.get().isEmpty()
             && Arrays.stream(CacheVersion.NOT_CACHEABLE).noneMatch(this.semver::contains);
     }
 }

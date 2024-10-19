@@ -21,53 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.optimization;
+package org.eolang.maven.fp;
 
-import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.Train;
-import java.nio.file.Path;
-import org.eolang.maven.Place;
-import org.eolang.maven.SpyTrain;
+import java.util.function.Supplier;
+import org.eolang.maven.tojos.ForeignTojo;
 
 /**
- * Optimization that spies.
- * @since 0.28.12
+ * Hash from tojo.
+ * If tojo has no hash - returns an empty string.
+ * @since 0.41.0
  */
-public final class OptSpy implements Optimization {
+public final class TojoHash implements Supplier<String> {
     /**
-     * Optimizations train.
+     * Tojo to get hash from.
      */
-    private final Train<Shift> train;
-
-    /**
-     * Where to track optimization steps.
-     */
-    private final Path target;
+    private final ForeignTojo tojo;
 
     /**
      * Ctor.
-     * @param target Where to track optimization steps.
+     * @param tjo Foreign tojo.
      */
-    public OptSpy(final Path target) {
-        this(OptTrain.DEFAULT_TRAIN, target);
-    }
-
-    /**
-     * The main constructor.
-     * @param trn Optimizations train.
-     * @param target Where to track optimization steps.
-     */
-    public OptSpy(final Train<Shift> trn, final Path target) {
-        this.train = trn;
-        this.target = target;
+    public TojoHash(final ForeignTojo tjo) {
+        this.tojo = tjo;
     }
 
     @Override
-    public XML apply(final XML xml) {
-        final Path dir = new Place(xml.xpath("/program/@name").get(0)).make(this.target, "");
-        Logger.debug(this, "Optimization steps will be tracked to %[file]s", dir);
-        return new OptTrain(new SpyTrain(this.train, dir)).apply(xml);
+    public String get() {
+        final String hash;
+        if (tojo.hasHash()) {
+            hash = tojo.hash();
+        } else {
+            hash = "";
+        }
+        return hash;
     }
 }
