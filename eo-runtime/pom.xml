@@ -380,5 +380,32 @@ SOFTWARE.
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>hone</id>
+      <properties>
+        <hone.version>0.0.13</hone.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>hone-maven-plugin</artifactId>
+            <version>${hone.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>pull</goal>
+                  <goal>optimize</goal>
+                  <goal>rmi</goal>
+                </goals>
+                <configuration>
+                  <image>yegor256/hone:${hone.version}</image>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
