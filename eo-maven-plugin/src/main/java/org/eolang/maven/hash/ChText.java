@@ -75,6 +75,20 @@ public final class ChText implements CommitHash {
 
     @Override
     public String value() {
+        final String hash;
+        if (this.tag.matches("[0-9a-fA-F]{40}")) {
+            hash = this.tag;
+        } else {
+            hash = this.inside();
+        }
+        return hash;
+    }
+
+    /**
+     * Find and return Git SHA for the given tag (or throw if not found).
+     * @return The Git SHA
+     */
+    private String inside() {
         return new Unchecked<>(
             new Mapped<>(
                 Text::asString,
