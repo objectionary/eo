@@ -115,4 +115,16 @@ final class ChTextTest {
             BinarizeParseTest.TO_ADD_MESSAGE
         );
     }
+
+    @Test
+    void readsHashByHash() {
+        MatcherAssert.assertThat(
+            "Hash must be itself, even if it's absent in the table",
+            new ChText(
+                () -> "",
+                "434868a411b9741fdd4f8a38a5c576e8733345c9"
+            ).value(),
+            Matchers.equalTo("434868a411b9741fdd4f8a38a5c576e8733345c9")
+        );
+    }
 }
