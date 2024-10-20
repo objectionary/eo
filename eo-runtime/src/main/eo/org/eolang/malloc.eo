@@ -31,7 +31,7 @@
 # memory. The implementation of `malloc` is platform dependent. It may
 # use either OS-level or VM-level memory management mechanism.
 #
-# There are two ways of usage `malloc`:
+# There are two ways of how `malloc` could be used:
 #
 # First, when the size of required memory block is known upfront:
 #

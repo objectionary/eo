@@ -36,6 +36,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.sf.saxon.expr.instruct.TerminationException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -47,7 +48,6 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.ParsingTrain;
 import org.eolang.parser.Schema;
@@ -124,81 +124,99 @@ public final class PhiMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Home home = new HmBase(this.phiOutputDir);
-        final Train<Shift> train = this.train();
+        final AtomicInteger passed = new AtomicInteger();
+        final Walk walk = new Walk(this.phiInputDir.toPath());
+        final int total = walk.size();
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
                     xmir -> () -> {
-                        final Path processed = this.phiInputDir.toPath().relativize(xmir);
-                        Logger.info(
-                            this,
-                            "Processing XMIR: %[file]s (%[size]s)",
-                            processed, xmir.toFile().length()
-                        );
-                        final XML xml = new XMLDocument(
-                            new TextOf(xmir).asString()
-                        );
-                        new Schema(xml).check();
-                        final Path relative = Paths.get(
-                            this.phiInputDir.toPath().relativize(xmir).toString().replace(
-                                String.format(".%s", TranspileMojo.EXT),
-                                String.format(".%s", PhiMojo.EXT)
-                            )
-                        );
-                        int amount;
-                        try {
-                            home.save(PhiMojo.translated(train, xml), relative);
-                            Logger.info(
-                                this,
-                                "Translated to phi: %[file]s (%[size]s) -> %[file]s (%[size]s)",
-                                processed,
-                                xmir.toFile().length(),
-                                relative,
-                                this.phiOutputDir.toPath().resolve(relative).toFile().length()
-                            );
-                            amount = 1;
-                        } catch (final ImpossibleToPhiTranslationException exception) {
-                            Logger.debug(
-                                this,
-                                "XML is not translatable to phi:\n%s",
-                                xml.toString()
-                            );
-                            throw new IllegalStateException(
-                                String.format("Couldn't translate %s to phi", processed),
-                                exception
-                            );
-                        } catch (final IllegalArgumentException exception) {
-                            if (exception.getCause() instanceof TerminationException
-                                && this.phiSkipFailed) {
-                                Logger.info(
-                                    this,
-                                    "%[file]s failed on critical error, but skipped because phiSkipFailed=true",
-                                    processed
-                                );
-                                amount = 0;
-                            } else {
-                                throw exception;
-                            }
-                        }
-                        return amount;
+                        final int position = passed.addAndGet(1);
+                        return this.translate(xmir, position, total);
                     },
-                    new Walk(this.phiInputDir.toPath())
+                    walk
                 )
             )
         ).intValue();
         if (count > 0) {
             Logger.info(
-                this, "Translated %d XMIR file(s) from %s to %s",
-                count, new Rel(this.phiInputDir), new Rel(this.phiOutputDir)
+                this, "Translated %d XMIR file(s) from %[file]s to %[file]s",
+                count, this.phiInputDir, this.phiOutputDir
             );
         } else {
             Logger.info(
-                this, "No XMIR files translated from %s",
-                new Rel(this.phiInputDir)
+                this, "No XMIR files translated from %[file]s to %[file]s",
+                this.phiInputDir, this.phiOutputDir
             );
         }
+    }
+
+    /**
+     * Translate one XMIR file to .phi file.
+     * @param xmir The XMIR file
+     * @param position Its position in the entire pack
+     * @param total How many files are there
+     * @return How many files translated (either 1 or 0)
+     * @throws Exception If fails
+     */
+    private int translate(final Path xmir, final int position, final int total)
+        throws Exception {
+        final Home home = new HmBase(this.phiOutputDir);
+        final Train<Shift> train = this.train();
+        final long start = System.currentTimeMillis();
+        Logger.debug(
+            this,
+            "Processing XMIR (#%d/%d): %[file]s (%[size]s)...",
+            position, total, xmir, xmir.toFile().length()
+        );
+        final XML xml = new XMLDocument(
+            new TextOf(xmir).asString()
+        );
+        new Schema(xml).check();
+        final Path relative = Paths.get(
+            this.phiInputDir.toPath().relativize(xmir).toString().replace(
+                String.format(".%s", TranspileMojo.EXT),
+                String.format(".%s", PhiMojo.EXT)
+            )
+        );
+        int amount;
+        try {
+            home.save(PhiMojo.translated(train, xml), relative);
+            Logger.info(
+                this,
+                "Translated to phi (#%d/%d): %[file]s (%[size]s) -> %[file]s (%[size]s) in %[ms]s",
+                position, total, xmir,
+                xmir.toFile().length(),
+                relative,
+                this.phiOutputDir.toPath().resolve(relative).toFile().length(),
+                System.currentTimeMillis() - start
+            );
+            amount = 1;
+        } catch (final ImpossibleToPhiTranslationException ex) {
+            Logger.debug(
+                this,
+                "XML is not translatable to phi:\n%s",
+                xml.toString()
+            );
+            throw new IllegalStateException(
+                String.format("Couldn't translate %s to phi", xmir),
+                ex
+            );
+        } catch (final IllegalArgumentException ex) {
+            if (ex.getCause() instanceof TerminationException
+                && this.phiSkipFailed) {
+                Logger.info(
+                    this,
+                    "%[file]s failed on critical error, but skipped because phiSkipFailed=true",
+                    xmir
+                );
+                amount = 0;
+            } else {
+                throw ex;
+            }
+        }
+        return amount;
     }
 
     /**
