@@ -239,11 +239,17 @@ public final class PhiMojo extends SafeMojo {
     private static String translated(final Train<Shift> train, final XML xmir)
         throws ImpossibleToPhiTranslationException {
         final XML translated = new Xsline(train).pass(xmir);
-        Logger.debug(PhiMojo.class, "XML after translation to phi:\n%s", translated);
-        final List<String> phi = translated.xpath("program/phi/text()");
+        if (Logger.isDebugEnabled(PhiMojo.class)) {
+            Logger.debug(
+                PhiMojo.class,
+                "XML after translation to phi:\n%s",
+                translated
+            );
+        }
+        final List<String> phi = translated.xpath("/program/phi/text()");
         if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
-                "Xpath 'phi/text()' is not found in translated XMIR"
+                "Xpath 'phi/text()' is not found in the translated XMIR"
             );
         }
         return phi.get(0);
