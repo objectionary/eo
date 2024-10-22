@@ -21,56 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.fp;
+package org.eolang.maven.tojos;
 
-import java.nio.file.Path;
+import java.util.function.Supplier;
 
 /**
- * Cache directory.
- * @since 0.41.0
+ * Optional tojo hash.
+ * Returns tojo hash if exists or empty string otherwise.
+ * @since 0.41
  */
-public final class Cache {
+public final class TojoHash implements Supplier<String> {
     /**
-     * Base cache directory.
+     * Tojo.
      */
-    private final Path base;
-
-    /**
-     * Cache version.
-     */
-    private final CacheVersion version;
-
-    /**
-     * Relative path of base and version.
-     */
-    private final Path relative;
+    private final ForeignTojo tojo;
 
     /**
      * Ctor.
-     * @param base Base cache directory
-     * @param version Cache version
-     * @param relative Relative path
+     * @param tjo Foreign tojo
      */
-    public Cache(final Path base, final CacheVersion version, final Path relative) {
-        this.base = base;
-        this.version = version;
-        this.relative = relative;
+    public TojoHash(final ForeignTojo tjo) {
+        this.tojo = tjo;
     }
 
-    /**
-     * Checks if the current cache directory is cacheable.
-     * The directory is cacheable if cache version is cacheable.
-     * @return True if cacheable
-     */
-    public boolean cacheable() {
-        return this.version.cacheable();
-    }
-
-    /**
-     * Return full absolute path to cache directory.
-     * @return Path to cache directory
-     */
-    public Path path() {
-        return this.base.resolve(this.version.path()).resolve(this.relative);
+    @Override
+    public String get() {
+        final String hash;
+        if (this.tojo.hasHash()) {
+            hash = this.tojo.hash();
+        } else {
+            hash = "";
+        }
+        return hash;
     }
 }

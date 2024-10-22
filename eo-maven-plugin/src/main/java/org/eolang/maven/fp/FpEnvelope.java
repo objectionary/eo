@@ -24,12 +24,28 @@
 package org.eolang.maven.fp;
 
 import java.nio.file.Path;
-import org.cactoos.BiFunc;
 
 /**
- * Footprint is a function that accepts path to source and
- * target files, updates target file and returns it.
- * @since 0.41.0
+ * Wrapper for footprint.
+ * @since 0.41
+ * @checkstyle DesignForExtensionCheck (50 lines)
  */
-public interface Footprint extends BiFunc<Path, Path, Path> {
+public class FpEnvelope implements Footprint {
+    /**
+     * Wrapped footprint.
+     */
+    private final Footprint origin;
+
+    /**
+     * Ctor.
+     * @param footprint Wrapped footprint
+     */
+    public FpEnvelope(final Footprint footprint) {
+        this.origin = footprint;
+    }
+
+    @Override
+    public Path apply(final Path source, final Path target) throws Exception {
+        return this.origin.apply(source, target);
+    }
 }

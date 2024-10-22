@@ -27,9 +27,48 @@ import java.nio.file.Path;
 import org.cactoos.BiFunc;
 
 /**
- * Footprint is a function that accepts path to source and
- * target files, updates target file and returns it.
- * @since 0.41.0
+ * Footprint that behaves like one of the given {@link Footprint}s depending on the give
+ * condition.
+ * @since 0.41
  */
-public interface Footprint extends BiFunc<Path, Path, Path> {
+public final class FpFork implements Footprint {
+    /**
+     * Lazy condition.
+     */
+    private final BiFunc<Path, Path, Boolean> condition;
+
+    /**
+     * First wrapped footprint.
+     */
+    private final Footprint first;
+
+    /**
+     * Second wrapped footprint.
+     */
+    private final Footprint second;
+
+    /**
+     * Ctor.
+     * @param condition Lazy condition
+     * @param first First wrapped condition
+     * @param second Second wrapped condition
+     */
+    public FpFork(
+        final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second
+    ) {
+        this.condition = condition;
+        this.first = first;
+        this.second = second;
+    }
+
+    @Override
+    public Path apply(final Path source, final Path target) throws Exception {
+        final Footprint footprint;
+        if (this.condition.apply(source, target)) {
+            footprint = this.first;
+        } else {
+            footprint = this.second;
+        }
+        return footprint.apply(source, target);
+    }
 }

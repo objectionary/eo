@@ -99,7 +99,7 @@ public final class OptCached implements Optimization {
                 optimized = this.delegate.apply(xml);
                 new FtDefault(this.folder).save(
                     name,
-                    AssembleMojo.IR_EXTENSION,
+                    AssembleMojo.XMIR,
                     optimized::toString
                 );
             }
@@ -121,7 +121,7 @@ public final class OptCached implements Optimization {
      */
     private Path cached(final String name) throws IOException {
         return new Place(name)
-            .make(this.folder, AssembleMojo.IR_EXTENSION);
+            .make(this.folder, AssembleMojo.XMIR);
     }
 
     /**

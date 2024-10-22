@@ -99,7 +99,7 @@ final class ParseMojoTest {
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
         new FtCached(
             new CacheVersion(FakeMaven.pluginVersion(), hash.value()),
-            cache.resolve(ParseMojo.PARSED),
+            cache.resolve(ParseMojo.CACHE),
             new FtDefault(maven.targetPath())
         ).save("foo.x.main", "xmir", () -> expected);
         final String actual = String.format(
