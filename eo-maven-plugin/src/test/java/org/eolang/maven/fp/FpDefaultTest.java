@@ -111,7 +111,7 @@ final class FpDefaultTest {
             temp,
             FpDefaultTest.SNAPSHOT,
             "",
-            Paths.get("cache.txt")
+            Paths.get("cache1.txt")
         ).apply(source, target);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
@@ -136,7 +136,7 @@ final class FpDefaultTest {
             temp,
             FpDefaultTest.SNAPSHOT,
             "",
-            Paths.get("cache.txt")
+            Paths.get("cache2.txt")
         ).apply(source, target);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
@@ -158,13 +158,7 @@ final class FpDefaultTest {
         FpDefaultTest.makeOlder(source);
         final Cache cache = FpDefaultTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -183,13 +177,7 @@ final class FpDefaultTest {
         final Path target = FpDefaultTest.notExistedTarget(temp);
         final Cache cache = FpDefaultTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -210,13 +198,7 @@ final class FpDefaultTest {
         final Cache cache = FpDefaultTest.existedCache(temp);
         assert Files.exists(cache.path());
         FpDefaultTest.makeOlder(source);
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -237,13 +219,7 @@ final class FpDefaultTest {
         final Cache cache = FpDefaultTest.existedCache(temp);
         assert Files.notExists(target);
         FpDefaultTest.makeOlder(source);
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
@@ -264,13 +240,7 @@ final class FpDefaultTest {
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.makeOlder(cache.path(), 100_000);
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
@@ -292,13 +262,7 @@ final class FpDefaultTest {
         final Cache cache = FpDefaultTest.existedCache(temp);
         FpDefaultTest.makeOlder(source);
         FpDefaultTest.makeOlder(cache.path(), 100_000);
-        new FpDefault(
-            src -> FpDefaultTest.LAMBDA_CONTENT,
-            cache.base,
-            cache.semver,
-            cache.hash,
-            cache.tail
-        ).apply(source, target);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
@@ -309,6 +273,24 @@ final class FpDefaultTest {
             new TextOf(target).asString(),
             Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
+    }
+
+    /**
+     * Apply default footprint.
+     * @param cache Cache
+     * @param source Source
+     * @param target Target
+     * @throws Exception If fails
+     */
+    private static void defaultFootprint(final Cache cache, final Path source, final Path target)
+        throws Exception {
+        new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            cache.base,
+            cache.semver,
+            cache.hash,
+            cache.tail
+        ).apply(source, target);
     }
 
     /**
