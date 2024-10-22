@@ -23,39 +23,30 @@
  */
 package org.eolang.maven.fp;
 
-import java.io.File;
-import java.nio.file.Paths;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.scalar.ScalarOf;
 
 /**
- * Test case for {@link Cache}.
- * @since 0.41.0
- * @checkstyle ParameterNumberCheck (150 lines)
+ * Footprint that saves content generated from lambda to the target file.
+ * @since 0.41
  */
-final class CacheTest {
-    @ParameterizedTest
-    @CsvSource({
-        "x/y, 1.2.3, master, a.x, x|y|1.2.3|master|a.x",
-        "a, 0.0.0, abcdefg, f.t, a|0.0.0|abcdefg|f.t"
-    })
-    void buildsValidFullPath(
-        final String base,
-        final String version,
-        final String hash,
-        final String rel,
-        final String res
-    ) {
-        MatcherAssert.assertThat(
-            "Cache must return valid path, but it didn't",
-            new Cache(
-                Paths.get(base),
-                new CacheVersion(version, hash),
-                Paths.get(rel)
-            ).path().toString(),
-            Matchers.equalTo(res.replace("|", File.separator))
-        );
+public final class FpGenerated implements Footprint {
+    /**
+     * Content function.
+     */
+    private final Func<Path, String> content;
+
+    /**
+     * Ctor.
+     * @param content Content function
+     */
+    public FpGenerated(final Func<Path, String> content) {
+        this.content = content;
+    }
+
+    @Override
+    public Path apply(final Path source, final Path target) throws Exception {
+        return new Saved(new ScalarOf<>(this.content, source), target).value();
     }
 }

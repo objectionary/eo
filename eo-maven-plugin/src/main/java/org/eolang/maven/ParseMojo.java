@@ -34,18 +34,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.cactoos.Func;
 import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.cactoos.text.TextOf;
-import org.eolang.maven.fp.Cache;
-import org.eolang.maven.fp.CacheVersion;
-import org.eolang.maven.fp.Footprint;
-import org.eolang.maven.fp.TojoHash;
+import org.eolang.maven.fp.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.TojoHash;
 import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -77,7 +75,17 @@ public final class ParseMojo extends SafeMojo {
     /**
      * Subdirectory for parsed cache.
      */
-    public static final String PARSED = "parsed";
+    public static final String CACHE = "parsed";
+
+    /**
+     * The current version of eo-maven-plugin.
+     * Maven 3 only.
+     * You can read more about that property
+     * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
+     * @checkstyle MemberNameCheck (7 lines)
+     */
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    private PluginDescriptor plugin;
 
     @Override
     public void exec() {
@@ -85,7 +93,7 @@ public final class ParseMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> () -> this.parsed(tojo),
+                    tojo -> (Scalar<Integer>) () -> this.parsed(tojo),
                     new Filtered<>(
                         ForeignTojo::notParsed,
                         this.scopedTojos().withSources()
@@ -106,8 +114,9 @@ public final class ParseMojo extends SafeMojo {
 
     /**
      * Parse EO file to XML.
+     *
      * @param tojo The tojo
-     * @return Amount of parsed EO files
+     * @return Amount of parsed tojos
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
@@ -117,27 +126,17 @@ public final class ParseMojo extends SafeMojo {
         final Path base = this.targetDir.toPath().resolve(ParseMojo.DIR);
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withXmir(
-            new Footprint(
-                source,
-                target,
-                new Cache(
-                    this.cache.resolve(ParseMojo.PARSED),
-                    new CacheVersion(
-                        this.plugin.getVersion(),
-                        new TojoHash(tojo)
-                    ),
-                    base.relativize(target)
-                )
-            ).apply(ParseMojo.parse(source, name))
+            new FpDefault(
+                ParseMojo.parse(name),
+                this.cache.resolve(ParseMojo.CACHE),
+                this.plugin.getVersion(),
+                new TojoHash(tojo),
+                base.relativize(target)
+            ).apply(source, target)
         );
-        final List<XML> errors = new XMLDocument(
-            new TextOf(target).asString()
-        ).nodes("/program/errors/error");
+        final List<XML> errors = new XMLDocument(target).nodes("/program/errors/error");
         if (errors.isEmpty()) {
-            Logger.debug(
-                this, "Parsed %[file]s to %[file]s",
-                source, target
-            );
+            Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
         } else {
             for (final XML error : errors) {
                 Logger.error(
@@ -151,25 +150,18 @@ public final class ParseMojo extends SafeMojo {
     }
 
     /**
-     * Parse EO to XMIR.
-     * @param source EO source file
+     * Function that parses EO source.
      * @param name Name of the EO object
-     * @return Lambda that parses EO to XMIR
+     * @return Function that parses EO source
      */
-    private static Scalar<String> parse(final Path source, final String name) {
-        return () -> {
+    private static Func<Path, String> parse(final String name) {
+        return source -> {
             final String parsed = new XMLDocument(
                 new Xembler(
                     new Directives().xpath("/program").attr(
-                        "source",
-                        source.toAbsolutePath()
+                        "source", source.toAbsolutePath()
                     )
-                ).applyQuietly(
-                    new EoSyntax(
-                        name,
-                        new InputOf(source)
-                    ).parsed().node()
-                )
+                ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().node())
             ).toString();
             Logger.debug(
                 ParseMojo.class,

@@ -36,11 +36,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test cases for {@link Footprint}.
- * @since 0.41.0
+ * Test cases for {@link FpDefault}.
+ * @since 0.41
  */
 @SuppressWarnings("PMD.TooManyMethods")
-final class FootprintTest {
+final class FpDefaultTest {
     /**
      * Lambda content.
      */
@@ -56,29 +56,38 @@ final class FootprintTest {
      */
     private static final String CACHE_CONTENT = "Cache content";
 
+    /**
+     * Snapshot.
+     */
+    private static final String SNAPSHOT = "SNAPSHOT";
+
     @Test
     void failsIfSourcePathNotExists(@TempDir final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Footprint(
-                Paths.get("a/b/c"),
+            () -> new FpDefault(
+                src -> FpDefaultTest.LAMBDA_CONTENT,
                 Paths.get(""),
-                FootprintTest.notExistedCache(temp)
-            ).apply(() -> FootprintTest.LAMBDA_CONTENT),
-            "Footprint should fail if source path does not exist"
+                "",
+                "",
+                Paths.get("")
+            ).apply(Paths.get(""), Paths.get("")),
+            "FpDefault should fail if source path does not exist"
         );
     }
 
     @Test
     void doesNothingWhenTargetIsOlderThanSource(@TempDir final Path temp) throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.existedTarget(temp);
-        FootprintTest.makeOlder(target);
-        final Path result = new Footprint(
-            source,
-            target,
-            FootprintTest.notExistedCache(temp)
-        ).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.existedTarget(temp);
+        FpDefaultTest.makeOlder(target);
+        final Path result = new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            temp,
+            "",
+            "",
+            Paths.get("")
+        ).apply(source, target);
         MatcherAssert.assertThat(
             "Footprint has to return target path, but it didn't",
             result,
@@ -87,174 +96,201 @@ final class FootprintTest {
         MatcherAssert.assertThat(
             "The content of target file has not to be changed",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.TARGET_CONTENT)
+            Matchers.equalTo(FpDefaultTest.TARGET_CONTENT)
         );
     }
 
     @Test
     void updatesOnlyTargetFromSourceIfNoTargetAndCacheIsNotCacheable(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.notExistedTarget(temp);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
         assert Files.notExists(target);
-        final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
-        assert Files.exists(cache.path());
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            temp,
+            FpDefaultTest.SNAPSHOT,
+            "",
+            Paths.get("cache1.txt")
+        ).apply(source, target);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
-            new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            temp.resolve(FpDefaultTest.SNAPSHOT).resolve("cache.txt").toFile().exists(),
+            Matchers.equalTo(false)
         );
     }
 
     @Test
     void updatesOnlyTargetFromSourceIfYoungerTargetAndCacheIsNotCacheable(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.existedTarget(temp);
-        FootprintTest.makeOlder(source);
-        final Cache cache = FootprintTest.existedCache(temp, "SNAPSHOT", "");
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.existedTarget(temp);
+        FpDefaultTest.makeOlder(source);
+        new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            temp,
+            FpDefaultTest.SNAPSHOT,
+            "",
+            Paths.get("cache2.txt")
+        ).apply(source, target);
         MatcherAssert.assertThat(
             "Target file must be updated from content function, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache file has not to be updated",
-            new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            temp.resolve(FpDefaultTest.SNAPSHOT).resolve("cache.txt").toFile().exists(),
+            Matchers.equalTo(false)
         );
     }
 
     @Test
-    void updatesAllIfTargetYoungerAndNotExistedCacheableCache(@TempDir final Path temp)
+    void updatesBothIfTargetYoungerAndNotExistedCacheableCache(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.existedTarget(temp);
-        FootprintTest.makeOlder(source);
-        final Cache cache = FootprintTest.notExistedCache(temp);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.existedTarget(temp);
+        FpDefaultTest.makeOlder(source);
+        final Cache cache = FpDefaultTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
     }
 
     @Test
-    void updatesAllNoTargetAndNotExistedCacheableCache(@TempDir final Path temp) throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.notExistedTarget(temp);
-        final Cache cache = FootprintTest.notExistedCache(temp);
+    void updatesBothNoTargetAndNotExistedCacheableCache(@TempDir final Path temp) throws Exception {
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        final Cache cache = FpDefaultTest.notExistedCache(temp);
         assert Files.notExists(cache.path());
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
     }
 
     @Test
-    void updatesAllIfTargetYoungerAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
+    void updatesBothIfTargetYoungerAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.existedTarget(temp);
-        final Cache cache = FootprintTest.existedCache(temp);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.existedTarget(temp);
+        final Cache cache = FpDefaultTest.existedCache(temp);
         assert Files.exists(cache.path());
-        FootprintTest.makeOlder(source);
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        FpDefaultTest.makeOlder(source);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
     }
 
     @Test
-    void updatesAllIfNoTargetAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
+    void updatesBothIfNoTargetAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.notExistedTarget(temp);
-        final Cache cache = FootprintTest.existedCache(temp);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
+        final Cache cache = FpDefaultTest.existedCache(temp);
         assert Files.notExists(target);
-        FootprintTest.makeOlder(source);
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        FpDefaultTest.makeOlder(source);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from lambda, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must be updated from lambda, but it didn't",
             new TextOf(cache.path()).asString(),
-            Matchers.equalTo(FootprintTest.LAMBDA_CONTENT)
+            Matchers.equalTo(FpDefaultTest.LAMBDA_CONTENT)
         );
     }
 
     @Test
     void copiesFromCacheIfTargetYoungerAndExistedCacheableCacheOlder(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.existedTarget(temp);
-        final Cache cache = FootprintTest.existedCache(temp);
-        FootprintTest.makeOlder(source);
-        FootprintTest.makeOlder(cache.path(), 100_000);
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.existedTarget(temp);
+        final Cache cache = FpDefaultTest.existedCache(temp);
+        FpDefaultTest.makeOlder(source);
+        FpDefaultTest.makeOlder(cache.path(), 100_000);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
     }
 
     @Test
     void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(@TempDir final Path temp)
         throws Exception {
-        final Path source = FootprintTest.existedSource(temp);
-        final Path target = FootprintTest.notExistedTarget(temp);
+        final Path source = FpDefaultTest.existedSource(temp);
+        final Path target = FpDefaultTest.notExistedTarget(temp);
         assert Files.notExists(target);
-        final Cache cache = FootprintTest.existedCache(temp);
-        FootprintTest.makeOlder(source);
-        FootprintTest.makeOlder(cache.path(), 100_000);
-        new Footprint(source, target, cache).apply(() -> FootprintTest.LAMBDA_CONTENT);
+        final Cache cache = FpDefaultTest.existedCache(temp);
+        FpDefaultTest.makeOlder(source);
+        FpDefaultTest.makeOlder(cache.path(), 100_000);
+        FpDefaultTest.defaultFootprint(cache, source, target);
         MatcherAssert.assertThat(
             "Target content must be updated from cache, but it didn't",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
         MatcherAssert.assertThat(
             "Cache content must not be changed, but it did",
             new TextOf(target).asString(),
-            Matchers.equalTo(FootprintTest.CACHE_CONTENT)
+            Matchers.equalTo(FpDefaultTest.CACHE_CONTENT)
         );
+    }
+
+    /**
+     * Apply default footprint.
+     * @param cache Cache
+     * @param source Source
+     * @param target Target
+     * @throws Exception If fails
+     */
+    private static void defaultFootprint(final Cache cache, final Path source, final Path target)
+        throws Exception {
+        new FpDefault(
+            src -> FpDefaultTest.LAMBDA_CONTENT,
+            cache.base,
+            cache.semver,
+            cache.hash,
+            cache.tail
+        ).apply(source, target);
     }
 
     /**
@@ -265,8 +301,7 @@ final class FootprintTest {
      * @throws IOException If failed to store content
      */
     private static Path existedFile(final Path path, final String content) throws IOException {
-        new Saved.Default(content, path).value();
-        return path;
+        return new Saved(content, path).value();
     }
 
     /**
@@ -276,8 +311,8 @@ final class FootprintTest {
      * @throws IOException If failed to store content
      */
     private static Path existedSource(final Path temp) throws IOException {
-        final Path source = FootprintTest.notExistedSource(temp);
-        return FootprintTest.existedFile(source, "Source");
+        final Path source = FpDefaultTest.notExistedSource(temp);
+        return FpDefaultTest.existedFile(source, "Source");
     }
 
     /**
@@ -296,8 +331,8 @@ final class FootprintTest {
      * @throws IOException If failed to store content
      */
     private static Path existedTarget(final Path temp) throws IOException {
-        final Path source = FootprintTest.notExistedTarget(temp);
-        return FootprintTest.existedFile(source, FootprintTest.TARGET_CONTENT);
+        final Path source = FpDefaultTest.notExistedTarget(temp);
+        return FpDefaultTest.existedFile(source, FpDefaultTest.TARGET_CONTENT);
     }
 
     /**
@@ -315,7 +350,7 @@ final class FootprintTest {
      * @throws IOException If failed to make file older
      */
     private static void makeOlder(final Path file) throws IOException {
-        FootprintTest.makeOlder(file, 50_000);
+        FpDefaultTest.makeOlder(file, 50_000);
     }
 
     /**
@@ -334,27 +369,12 @@ final class FootprintTest {
     /**
      * Existed global cache with content.
      * @param temp Temporary directory
-     * @param ver Cache version
-     * @param hash Git hash
-     * @return Existed cache with content
-     * @throws IOException If failed to store a content to cache
-     */
-    private static Cache existedCache(final Path temp, final String ver, final String hash)
-        throws IOException {
-        final Cache cache = FootprintTest.notExistedCache(temp, ver, hash);
-        FootprintTest.existedFile(cache.path(), FootprintTest.CACHE_CONTENT);
-        return cache;
-    }
-
-    /**
-     * Existed global cache with content.
-     * @param temp Temporary directory
      * @return Existed cache with content
      * @throws IOException If failed to store a content to cache
      */
     private static Cache existedCache(final Path temp) throws IOException {
-        final Cache cache = FootprintTest.notExistedCache(temp);
-        FootprintTest.existedFile(cache.path(), FootprintTest.CACHE_CONTENT);
+        final Cache cache = FpDefaultTest.notExistedCache(temp);
+        FpDefaultTest.existedFile(cache.path(), FpDefaultTest.CACHE_CONTENT);
         return cache;
     }
 
@@ -368,7 +388,8 @@ final class FootprintTest {
     private static Cache notExistedCache(final Path temp, final String ver, final String hash) {
         return new Cache(
             temp.resolve("cache"),
-            new CacheVersion(ver, hash),
+            ver,
+            hash,
             Paths.get("")
         );
     }
@@ -379,6 +400,52 @@ final class FootprintTest {
      * @return Existed cache with content
      */
     private static Cache notExistedCache(final Path temp) {
-        return FootprintTest.notExistedCache(temp, "1.2.3", "abcdef");
+        return FpDefaultTest.notExistedCache(temp, "1.2.3", "abcdef");
+    }
+
+    /**
+     * Cache path.
+     * @since 0.41
+     * @checkstyle VisibilityModifierCheck (100 lines)
+     * @checkstyle ParameterNumberCheck (100 lines)
+     */
+    private static class Cache {
+        /**
+         * Base.
+         */
+        public final Path base;
+
+        /**
+         * Semver.
+         */
+        public final String semver;
+
+        /**
+         * Hash.
+         */
+        public final String hash;
+
+        /**
+         * Tail.
+         */
+        public final Path tail;
+
+        /**
+         * Ctor.
+         * @param base Base
+         * @param semver Semver
+         * @param hash Hash
+         * @param tail Tail
+         */
+        Cache(final Path base, final String semver, final String hash, final Path tail) {
+            this.base = base;
+            this.semver = semver;
+            this.hash = hash;
+            this.tail = tail;
+        }
+
+        public Path path() {
+            return this.base.resolve(this.semver).resolve(this.hash).resolve(this.tail);
+        }
     }
 }

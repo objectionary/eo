@@ -23,13 +23,26 @@
  */
 package org.eolang.maven.fp;
 
-import java.nio.file.Path;
-import org.cactoos.BiFunc;
-
 /**
- * Footprint is a function that accepts path to source and
- * target files, updates target file and returns it.
- * @since 0.41.0
+ * Footprint throws exception if source file does not exist.
+ * @since 0.41
  */
-public interface Footprint extends BiFunc<Path, Path, Path> {
+public final class FpExistedSource extends FpEnvelope {
+
+    /**
+     * Ctor.
+     * @param footprint Original footprint
+     */
+    public FpExistedSource(final Footprint footprint) {
+        super(
+            (source, target) -> {
+                if (!source.toFile().exists()) {
+                    throw new IllegalStateException(
+                        String.format("Source file %s does not exist", source)
+                    );
+                }
+                return footprint.apply(source, target);
+            }
+        );
+    }
 }
