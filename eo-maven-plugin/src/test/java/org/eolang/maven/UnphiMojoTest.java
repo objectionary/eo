@@ -63,7 +63,7 @@ final class UnphiMojoTest {
         MatcherAssert.assertThat(
             String.format(
                 "There should be file with .%s extension after parsing phi to XMIR, but there isn't",
-                TranspileMojo.EXT
+                AssembleMojo.XMIR
             ),
             new FakeMaven(temp)
                 .execute(UnphiMojo.class)

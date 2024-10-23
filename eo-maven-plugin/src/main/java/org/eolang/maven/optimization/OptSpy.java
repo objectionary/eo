@@ -30,7 +30,6 @@ import com.yegor256.xsline.Train;
 import java.nio.file.Path;
 import org.eolang.maven.Place;
 import org.eolang.maven.SpyTrain;
-import org.eolang.maven.util.Rel;
 
 /**
  * Optimization that spies.
@@ -67,12 +66,8 @@ public final class OptSpy implements Optimization {
 
     @Override
     public XML apply(final XML xml) {
-        final Path dir = new Place(xml.xpath("/program/@name").get(0))
-            .make(this.target, "");
-        Logger.debug(
-            this, "Optimization steps will be tracked to %s",
-            new Rel(dir)
-        );
+        final Path dir = new Place(xml.xpath("/program/@name").get(0)).make(this.target, "");
+        Logger.debug(this, "Optimization steps will be tracked to %[file]s", dir);
         return new OptTrain(new SpyTrain(this.train, dir)).apply(xml);
     }
 }

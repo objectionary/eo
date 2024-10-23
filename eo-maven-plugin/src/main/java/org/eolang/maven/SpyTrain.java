@@ -31,8 +31,7 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.eolang.maven.util.HmBase;
+import org.eolang.maven.fp.Saved;
 
 /**
  * Train that spies.
@@ -57,10 +56,10 @@ public final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^A-Za-z0-9]", "-");
-                            new HmBase(dir).save(
+                            new Saved(
                                 xml.toString(),
-                                Paths.get(String.format("%02d-%s.xml", pos, log))
-                            );
+                                dir.resolve(String.format("%02d-%s.xml", pos, log))
+                            ).value();
                             if (Logger.isDebugEnabled(SpyTrain.class)) {
                                 Logger.debug(
                                     SpyTrain.class, "Step #%d by %s:\n%s",

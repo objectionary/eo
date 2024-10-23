@@ -42,8 +42,7 @@ import org.cactoos.Scalar;
  * <p>Since Footprint can leave traces on the file system, each Footprint instance will have its
  * own unique way of saving and loading files, and it will have its own place to do so.
  * For instance, {@link FtDefault} will save files directly to a specific location on the file
- * system, while {@link FtCached} will first check the cache directory before delegating
- * the behavior.
+ * system.
  * In other words, Footprint provides useful functionality for working with files that
  * have different extensions.</p>
  *

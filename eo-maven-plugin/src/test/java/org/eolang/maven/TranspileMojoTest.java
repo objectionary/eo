@@ -267,25 +267,18 @@ final class TranspileMojoTest {
 
     @Test
     @CaptureLogs
-    void throwsExpectionIfWasNotVerified(
-        @TempDir final Path temp, final Logs out) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withHelloWorld()
-                .execute(ParseMojo.class)
-                .execute(OptimizeMojo.class)
-                .execute(ShakeMojo.class)
-                .execute(TranspileMojo.class),
-            BinarizeParseTest.TO_ADD_MESSAGE
-        );
+    void skipsTranpilationIfWasNotVerified(@TempDir final Path temp, final Logs out)
+        throws IOException {
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .execute(ParseMojo.class)
+            .execute(OptimizeMojo.class)
+            .execute(ShakeMojo.class)
+            .execute(TranspileMojo.class)
+            .result();
         Assertions.assertTrue(
-            out.captured().stream().anyMatch(
-                log -> log.contains(
-                    "You should check that 'Verify' goal of the plugin was run first"
-                )
-            ),
-            "Should throw an exception if VerifyMojo wasn't run before TranspileMojo"
+            out.captured().stream().anyMatch(log -> log.contains("created 0 Java files")),
+            "Tranpile mojo must transpile 0 files from not verified XMIRs"
         );
     }
 

@@ -35,7 +35,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.Func;
-import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
@@ -93,7 +92,7 @@ public final class ParseMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> (Scalar<Integer>) () -> this.parsed(tojo),
+                    tojo -> () -> this.parsed(tojo),
                     new Filtered<>(
                         ForeignTojo::notParsed,
                         this.scopedTojos().withSources()

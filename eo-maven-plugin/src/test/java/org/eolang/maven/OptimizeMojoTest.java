@@ -38,6 +38,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.maven.fp.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;
@@ -78,7 +79,7 @@ final class OptimizeMojoTest {
             .withHelloWorld()
             .execute(new FakeMaven.Optimize());
         final Path path = maven.result().get(
-            String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+            String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(OptimizeMojo.class);
@@ -97,7 +98,7 @@ final class OptimizeMojoTest {
             .execute(new FakeMaven.Optimize())
             .result()
             .get(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
             );
         final long old = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10L);
         if (!tgt.toFile().setLastModified(old)) {
@@ -124,16 +125,19 @@ final class OptimizeMojoTest {
         );
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
-        new HmBase(cache).save(
+        new Saved(
             cached,
-            Paths.get(OptimizeMojo.OPTIMIZED)
+            cache
+                .resolve(OptimizeMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("foo/x/main.xmir")
-        );
+        ).value();
         Files.setLastModifiedTime(
             cache.resolve(
                 Paths
-                    .get(OptimizeMojo.OPTIMIZED)
+                    .get(OptimizeMojo.CACHE)
+                    .resolve(FakeMaven.pluginVersion())
                     .resolve(hash)
                     .resolve("foo/x/main.xmir")
             ),
@@ -145,14 +149,14 @@ final class OptimizeMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
+            "OptimizeMojo must load optimized XMIR from cache",
             new XMLDocument(
                 new HmBase(temp).load(
                     Paths.get(
                         String.format(
                             "target/%s/foo/x/main.%s",
                             OptimizeMojo.DIR,
-                            TranspileMojo.EXT
+                            AssembleMojo.XMIR
                         )
                     )
                 ).asBytes()
@@ -171,8 +175,9 @@ final class OptimizeMojoTest {
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            cache.resolve(OptimizeMojo.OPTIMIZED)
+            "OptimizeMojo must save optimized XMIR to cache",
+            cache.resolve(OptimizeMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("foo/x/main.xmir").toFile(),
             FileMatchers.anExistingFile()
@@ -198,7 +203,7 @@ final class OptimizeMojoTest {
             BinarizeParseTest.TO_ADD_MESSAGE,
             res,
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }
@@ -228,7 +233,7 @@ final class OptimizeMojoTest {
                         "target/%s/foo/x/main%s.%s",
                         OptimizeMojo.DIR,
                         FakeMaven.suffix(program),
-                        TranspileMojo.EXT
+                        AssembleMojo.XMIR
                     )
                 )
             );
@@ -250,7 +255,7 @@ final class OptimizeMojoTest {
                 .execute(new FakeMaven.Optimize())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }
