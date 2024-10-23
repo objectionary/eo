@@ -93,7 +93,7 @@ SOFTWARE.
     <!-- This is the size of the stack, which you can modify from command line -->
     <stack-size>256M</stack-size>
     <!-- This is the size of the heap, which you can modify from command line -->
-    <heap-size>8G</heap-size>
+    <heap-size>4G</heap-size>
     <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
     <sonar.organization>objectionary</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -104,7 +104,7 @@ SOFTWARE.
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.55.0</version>
+        <version>0.56.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
@@ -142,26 +142,26 @@ SOFTWARE.
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.11.1</version>
+        <version>5.11.3</version>
         <type>pom</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.11.1</version>
+        <version>5.11.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
-        <version>5.11.1</version>
+        <version>5.11.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.11.1</version>
+        <version>5.11.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>

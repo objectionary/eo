@@ -31,7 +31,7 @@
 # memory. The implementation of `malloc` is platform dependent. It may
 # use either OS-level or VM-level memory management mechanism.
 #
-# There are two ways of usage `malloc`:
+# There are two ways of how `malloc` could be used:
 #
 # First, when the size of required memory block is known upfront:
 #
@@ -100,17 +100,23 @@
 
     # Allocated block in memory that provides an API for writing and reading.
     [id] > allocated
-      ^.size > size
       get > @
+      # Just get all the data from the allocated block in memory.
+      read 0 size > get
+
+      # Returns size of allocated block in memory.
+      [] > size /number
+
+      # Resizes allocated block in memory and returns `true`.
+      # Here `size` must be positive `number`.
+      # The `error` returned if failed to resize block in memory.
+      [size] > resize /true
 
       # Read `length` bytes with `offset` from the allocated block in memory.
       [offset length] > read /bytes
 
       # Write `data` with `offset` to the allocated block in memory.
       [offset data] > write /true
-
-      # Just get all the data from the allocated block in memory.
-      ^.read 0 ^.size > [] > get
 
       # Put `object` into the allocated block in memory. The `object` is supposed to be dataizable.
       [object] > put

@@ -38,33 +38,20 @@ import org.eolang.Versionized;
 import org.eolang.XmirObject;
 
 /**
- * Malloc.of.φ object.
- * @since 0.36.0
+ * Malloc.of.allocated.size object.
+ * @since 0.41.0
  * @checkstyle TypeNameCheck (5 lines)
  */
 @Versionized
-@XmirObject(oname = "malloc.of.@")
+@XmirObject(oname = "malloc.of.allocated.size")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
+public final class EOmalloc$EOof$EOallocated$EOsize extends PhDefault implements Atom {
     @Override
-    public Phi lambda() {
-        final Phi rho = this.take(Attr.RHO);
-        final int identifier = Heaps.INSTANCE.malloc(
-            this, new Dataized(rho.take("size")).asNumber().intValue()
+    public Phi lambda() throws Exception {
+        return new Data.ToPhi(
+            Heaps.INSTANCE.size(
+                new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue()
+            )
         );
-        final Phi res;
-        try {
-            final Phi allocated = rho.take("allocated");
-            allocated.put("id", new Data.ToPhi((long) identifier));
-            final Phi scope = rho.take("scope").copy();
-            scope.put(0, allocated);
-            new Dataized(scope).take();
-            res = new Data.ToPhi(
-                Heaps.INSTANCE.read(identifier, 0, Heaps.INSTANCE.size(identifier))
-            );
-        } finally {
-            Heaps.INSTANCE.free(identifier);
-        }
-        return res;
     }
 }
