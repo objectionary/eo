@@ -23,21 +23,22 @@
  */
 package org.eolang.maven;
 
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StXSL;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.Xsline;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.fp.Saved;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -219,46 +220,106 @@ final class VerifyMojoTest {
 
     @Test
     void failsOnWarning(@TempDir final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(
-                "+architect yegor256@gmail.com",
-                "+tests",
-                "+package org.eolang.examples\n",
-                "# This is the default 64+ symbols comment in front of named abstract object.",
-                "[] > main",
-                "  # This is the default 64+ symbols comment in front of named abstract object.",
-                "  [] > @",
-                "    hello > test"
-            );
-        VerifyMojoTest.applyXsl(
-            "org/eolang/maven/set-warning-severity.xsl",
-            maven.execute(ParseMojo.class)
-                .result()
-                .get("target/1-parse/foo/x/main.xmir")
-        );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.with("failOnWarning", true)
-                .execute(VerifyMojo.class),
+            () -> new FakeMaven(temp)
+                .withProgram(
+                    "+architect yegor256@gmail.com",
+                    "+tests",
+                    "+package org.eolang.examples\n",
+                    "# This is the default 64+ symbols comment in front of named abstract object.",
+                    "[] > main",
+                    "  # This is the default 64+ symbols comment in front of named abstract object.",
+                    "  [] > @",
+                    "    hello > test"
+                )
+                .with("failOnWarning", true)
+                .execute(new FakeMaven.Verify()),
             "Program with warning should fail"
         );
     }
 
-    /**
-     * Apply XSL transformation.
-     * @param xsl Path to XSL within classpath
-     * @param xml Path to XML to be transformed
-     */
-    private static void applyXsl(final String xsl, final Path xml) throws Exception {
-        final XML output = new Xsline(
-            new TrDefault<Shift>()
-                .with(
-                    new StXSL(
-                        new XSLDocument(
-                            new ResourceOf(xsl).stream()
-                        )))
-        ).pass(new XMLDocument(xml));
-        new HmBase(xml.getParent()).save(output.toString(), xml.getParent().relativize(xml));
+    @Test
+    void skipsAlreadyVerified(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withHelloWorld()
+            .execute(new FakeMaven.Verify());
+        final Path path = maven.result().get(
+            String.format("target/%s/foo/x/main.%s", VerifyMojo.DIR, AssembleMojo.XMIR)
+        );
+        final long mtime = path.toFile().lastModified();
+        maven.execute(VerifyMojo.class);
+        MatcherAssert.assertThat(
+            "VerifyMojo must skip verification if XMIR was already verified",
+            path.toFile().lastModified(),
+            Matchers.is(mtime)
+        );
+    }
+
+    @Test
+    void savesVerifiedResultsToCache(@TempDir final Path temp) throws IOException {
+        final Path cache = temp.resolve("cache");
+        final String hash = "abcdef1";
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .with("cache", cache)
+            .allTojosWithHash(() -> hash)
+            .execute(new FakeMaven.Verify());
+        MatcherAssert.assertThat(
+            "Verified results must be saved to cache",
+            cache.resolve(VerifyMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash)
+                .resolve("foo/x/main.xmir").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void getsAlreadyVerifiedResultsFromCache(@TempDir final Path temp) throws Exception {
+        final TextOf cached = new TextOf(
+            new ResourceOf("org/eolang/maven/optimize/main.xml")
+        );
+        final Path cache = temp.resolve("cache");
+        final String hash = "abcdef1";
+        new Saved(
+            cached,
+            cache
+                .resolve(VerifyMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash)
+                .resolve("foo/x/main.xmir")
+        ).value();
+        Files.setLastModifiedTime(
+            cache.resolve(
+                Paths
+                    .get(VerifyMojo.CACHE)
+                    .resolve(FakeMaven.pluginVersion())
+                    .resolve(hash)
+                    .resolve("foo/x/main.xmir")
+            ),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .with("cache", cache)
+            .allTojosWithHash(() -> hash)
+            .execute(new FakeMaven.Verify());
+        MatcherAssert.assertThat(
+            BinarizeParseTest.TO_ADD_MESSAGE,
+            new XMLDocument(
+                new HmBase(temp).load(
+                    Paths.get(
+                        String.format(
+                            "target/%s/foo/x/main.%s",
+                            VerifyMojo.DIR,
+                            AssembleMojo.XMIR
+                        )
+                    )
+                ).asBytes()
+            ),
+            Matchers.is(new XMLDocument(cached.asString()))
+        );
     }
 
     /**

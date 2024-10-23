@@ -80,11 +80,6 @@ public final class TranspileMojo extends SafeMojo {
     public static final String DIR = "8-transpile";
 
     /**
-     * Extension for compiled sources in XMIR format (XML).
-     */
-    static final String EXT = "xmir";
-
-    /**
      * Parsing train with XSLs.
      */
     static final Train<Shift> TRAIN = new TrJoined<>(
@@ -152,7 +147,7 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
+        final Collection<ForeignTojo> sources = this.scopedTojos().verified();
         final long saved = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -200,7 +195,7 @@ public final class TranspileMojo extends SafeMojo {
         final Place place = new Place(name);
         final Path target = place.make(
             this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            TranspileMojo.EXT
+            AssembleMojo.XMIR
         );
         final int saved;
         if (

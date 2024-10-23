@@ -41,7 +41,6 @@ import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Rel;
 
 /**
  * Read all XMIR files and find foreign objects in them, then
@@ -97,18 +96,15 @@ public final class DiscoverMojo extends SafeMojo {
     private Collection<String> discover(final Path file, final String tojo) {
         final XML xml = new SaxonDocument(file);
         final Collection<String> names = this.names(xml, tojo);
-        if (!xml.xpath("//o[@vararg]").isEmpty()) {
-            names.add(this.versioned("org.eolang.tuple", tojo).toString());
-        }
         if (names.isEmpty()) {
             Logger.debug(
-                this, "Didn't find any foreign objects in %s",
-                new Rel(file)
+                this, "Didn't find any foreign objects in %[file]s",
+                file
             );
         } else {
             Logger.debug(
-                this, "Found %d foreign objects in %s: %s",
-                names.size(), new Rel(file), names
+                this, "Found %d foreign objects in %[file]s: %s",
+                names.size(), file, names
             );
         }
         return names;

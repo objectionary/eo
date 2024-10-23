@@ -226,11 +226,21 @@ abstract class SafeMojo extends AbstractMojo {
     protected boolean rewriteBinaries = true;
 
     /**
+     * If we are offline and not able to download anything from the internet.
+     * @since 0.32.0
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     * @checkstyle MemberNameCheck (8 lines)
+     */
+    @Parameter(property = "eo.offline", required = true, defaultValue = "false")
+    protected boolean offline;
+
+    /**
      * The current version of eo-maven-plugin.
      * Maven 3 only.
      * You can read more about that property
      * <a href="https://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html#Supported_Annotations">here</a>.
      * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (7 lines)
      */
     @Parameter(defaultValue = "${plugin}", readonly = true)
     protected PluginDescriptor plugin;

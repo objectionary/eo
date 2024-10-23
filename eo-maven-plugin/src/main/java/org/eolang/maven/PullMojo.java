@@ -93,13 +93,6 @@ public final class PullMojo extends SafeMojo {
     @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
     private boolean overWrite;
 
-    /**
-     * Pull objects from objectionaries or not.
-     * @since 0.32.0
-     */
-    @Parameter(property = "eo.offline", required = true, defaultValue = "false")
-    private boolean offline;
-
     @Override
     public void exec() throws IOException {
         if (this.offline) {

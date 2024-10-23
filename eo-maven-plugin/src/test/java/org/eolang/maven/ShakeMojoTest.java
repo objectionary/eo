@@ -78,7 +78,7 @@ final class ShakeMojoTest {
             "After successful operation of the ShakeMojo, a xmir should appear.",
             res,
             Matchers.hasKey(
-                String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
+                String.format(this.key, ShakeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }
@@ -92,12 +92,17 @@ final class ShakeMojoTest {
         final String hash = "abcdef1";
         new HmBase(cache).save(
             cached,
-            Paths.get(ShakeMojo.SHAKEN)
+            Paths.get(ShakeMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("foo/x/main.xmir")
         );
         Files.setLastModifiedTime(
-            cache.resolve(Paths.get(ShakeMojo.SHAKEN).resolve(hash).resolve("foo/x/main.xmir")),
+            cache
+                .resolve(Paths.get(ShakeMojo.CACHE))
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash)
+                .resolve("foo/x/main.xmir"),
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
         new FakeMaven(temp)
@@ -113,7 +118,7 @@ final class ShakeMojoTest {
                         String.format(
                             this.key,
                             ShakeMojo.DIR,
-                            TranspileMojo.EXT
+                            AssembleMojo.XMIR
                         )
                     )
                 ).asBytes()
@@ -128,7 +133,7 @@ final class ShakeMojoTest {
             .withHelloWorld()
             .execute(new FakeMaven.Shake());
         final Path path = maven.result().get(
-            String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
+            String.format(this.key, ShakeMojo.DIR, AssembleMojo.XMIR)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(ShakeMojo.class);
@@ -147,7 +152,7 @@ final class ShakeMojoTest {
             .execute(new FakeMaven.Shake())
             .result()
             .get(
-                String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
+                String.format(this.key, ShakeMojo.DIR, AssembleMojo.XMIR)
             );
         final long old = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(10L);
         if (!tgt.toFile().setLastModified(old)) {
@@ -172,7 +177,8 @@ final class ShakeMojoTest {
             .execute(new FakeMaven.Shake());
         MatcherAssert.assertThat(
             "Shaken results should be saved.",
-            cache.resolve(ShakeMojo.SHAKEN)
+            cache.resolve(ShakeMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
                 .resolve(hash)
                 .resolve("foo/x/main.xmir").toFile(),
             FileMatchers.anExistingFile()
@@ -198,7 +204,7 @@ final class ShakeMojoTest {
                         "target/%s/foo/x/main%s.%s",
                         ShakeMojo.DIR,
                         FakeMaven.suffix(program),
-                        TranspileMojo.EXT
+                        AssembleMojo.XMIR
                     )
                 )
             );
@@ -220,7 +226,7 @@ final class ShakeMojoTest {
                 .execute(new FakeMaven.Shake())
                 .result(),
             Matchers.hasKey(
-                String.format(this.key, ShakeMojo.DIR, TranspileMojo.EXT)
+                String.format(this.key, ShakeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }

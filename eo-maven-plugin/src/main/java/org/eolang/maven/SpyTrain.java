@@ -56,7 +56,7 @@ public final class SpyTrain extends TrEnvelope {
                         shift::uid,
                         (pos, xml) -> {
                             final String log = shift.uid().replaceAll("[^A-Za-z0-9]", "-");
-                            new Saved.Default(
+                            new Saved(
                                 xml.toString(),
                                 dir.resolve(String.format("%02d-%s.xml", pos, log))
                             ).value();

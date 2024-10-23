@@ -86,8 +86,8 @@ final class AssembleMojoTest {
             .execute(AssembleMojo.class)
             .result();
         final String stdout = "target/%s/org/eolang/io/stdout.%s";
-        final String parsed = String.format(stdout, ParseMojo.DIR, TranspileMojo.EXT);
-        final String optimized = String.format(stdout, OptimizeMojo.DIR, TranspileMojo.EXT);
+        final String parsed = String.format(stdout, ParseMojo.DIR, AssembleMojo.XMIR);
+        final String optimized = String.format(stdout, OptimizeMojo.DIR, AssembleMojo.XMIR);
         final String pulled = String.format(stdout, PullMojo.DIR, "eo");
         MatcherAssert.assertThat(
             String.format(
@@ -218,12 +218,12 @@ final class AssembleMojoTest {
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
             result.get(String.format("target/%s", ParseMojo.DIR)),
-            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
+            new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to optimize it, but we didn't",
             result.get(String.format("target/%s", OptimizeMojo.DIR)),
-            new ContainsFiles(String.format("**/main.%s", TranspileMojo.EXT))
+            new ContainsFiles(String.format("**/main.%s", AssembleMojo.XMIR))
         );
     }
 
@@ -262,7 +262,7 @@ final class AssembleMojoTest {
             "AssembleMojo should have configured parameters within the Mojos that it uses, but it didn't",
             res,
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", OptimizeMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }

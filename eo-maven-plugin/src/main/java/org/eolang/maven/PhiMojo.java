@@ -143,7 +143,7 @@ public final class PhiMojo extends SafeMojo {
                         new Schema(xml).check();
                         final Path relative = Paths.get(
                             this.phiInputDir.toPath().relativize(xmir).toString().replace(
-                                String.format(".%s", TranspileMojo.EXT),
+                                String.format(".%s", AssembleMojo.XMIR),
                                 String.format(".%s", PhiMojo.EXT)
                             )
                         );

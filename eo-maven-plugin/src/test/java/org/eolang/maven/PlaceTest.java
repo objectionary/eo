@@ -41,10 +41,10 @@ final class PlaceTest {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new Place("hello.foo.bar")
-                .make(Paths.get("/tmp/test"), TranspileMojo.EXT)
+                .make(Paths.get("/tmp/test"), AssembleMojo.XMIR)
                 .toString()
                 .replace("\\", "/"),
-            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", TranspileMojo.EXT))
+            Matchers.equalTo(String.format("/tmp/test/hello/foo/bar.%s", AssembleMojo.XMIR))
         );
     }
 
@@ -64,7 +64,7 @@ final class PlaceTest {
     void makesPathForVersionedObject() {
         final String object = "org.eolang.io.stdout|15c85d7";
         final Path actual = new Place(object)
-            .make(Paths.get("/tmp/test"), TranspileMojo.EXT);
+            .make(Paths.get("/tmp/test"), AssembleMojo.XMIR);
         final Path expected = Paths.get("/tmp/test/org/eolang/io/stdout_15c85d7.xmir");
         MatcherAssert.assertThat(
             String.format(
