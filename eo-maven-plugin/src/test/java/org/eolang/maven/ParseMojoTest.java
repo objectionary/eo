@@ -104,7 +104,6 @@ final class ParseMojoTest {
             hash.value(),
             base.relativize(target)
         ).apply(maven.programTojo().source(), target);
-        
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             ParseMojo.DIR,
