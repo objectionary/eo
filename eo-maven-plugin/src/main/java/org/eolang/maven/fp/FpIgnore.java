@@ -23,30 +23,15 @@
  */
 package org.eolang.maven.fp;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
 /**
- * Wrapper for footprint.
+ * Footprint that does not update target path.
  * @since 0.41
- * @checkstyle DesignForExtensionCheck (50 lines)
  */
-public class FpEnvelope implements Footprint {
-    /**
-     * Wrapped footprint.
-     */
-    private final Footprint origin;
-
+public final class FpIgnore extends FpEnvelope {
     /**
      * Ctor.
-     * @param footprint Wrapped footprint
      */
-    public FpEnvelope(final Footprint footprint) {
-        this.origin = footprint;
-    }
-
-    @Override
-    public Path apply(final Path source, final Path target) throws IOException {
-        return this.origin.apply(source, target);
+    public FpIgnore() {
+        super((source, target) -> target);
     }
 }

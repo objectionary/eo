@@ -58,7 +58,7 @@ public final class MarkMojo extends SafeMojo {
         final Path home = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         if (Files.exists(home)) {
             final Collection<String> deps = new DepDirs(home);
-            int found = 0;
+            long found = 0;
             for (final String dep : deps) {
                 final Path sub = home.resolve(dep).resolve(CopyMojo.DIR);
                 if (Files.exists(sub)) {

@@ -48,7 +48,6 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Rel;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
@@ -93,10 +92,7 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(
-        () -> this.cache,
-        () -> this.session.getRequest().isUpdateSnapshots()
-    );
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
@@ -133,14 +129,7 @@ public final class ProbeMojo extends SafeMojo {
                         .withDiscoveredAt(src);
                     probed.add(object);
                 }
-                tojo.withHash(
-                    new ChNarrow(
-                        new OnSwap(
-                            this.withVersions,
-                            new OnVersioned(tojo.identifier(), this.hash)
-                        ).hash()
-                    )
-                ).withProbed(count);
+                tojo.withProbed(count);
             }
             if (tojos.isEmpty()) {
                 if (this.scopedTojos().size() == 0) {
@@ -190,14 +179,12 @@ public final class ProbeMojo extends SafeMojo {
             ).iterator()
         );
         if (objects.isEmpty()) {
-            Logger.debug(
-                this, "Didn't find any probed objects in %s",
-                new Rel(file)
-            );
+            Logger.debug(this, "Didn't find any probed objects in %[file]s", file);
         } else {
             Logger.debug(
-                this, "Found %d probed objects in %s: %s",
-                objects.size(), new Rel(file), objects
+                this,
+                "Found %d probed objects in %[file]s: %s",
+                objects.size(), file, objects
             );
         }
         return objects;

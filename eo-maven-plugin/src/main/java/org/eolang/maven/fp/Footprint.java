@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.fp;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.BiFunc;
 
@@ -32,4 +33,6 @@ import org.cactoos.BiFunc;
  * @since 0.41.0
  */
 public interface Footprint extends BiFunc<Path, Path, Path> {
+    @Override
+    Path apply(Path source, Path target) throws IOException;
 }

@@ -34,8 +34,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.set.SetOf;
-import org.eolang.maven.objectionary.Objectionaries;
-import org.eolang.maven.objectionary.ObjsDefault;
 
 /**
  * Pull all necessary EO XML files from Objectionary and parse them all.
@@ -67,6 +65,11 @@ public final class AssembleMojo extends SafeMojo {
     public static final String XMIR = "xmir";
 
     /**
+     * Source file extension.
+     */
+    public static final String EO = "eo";
+
+    /**
      * Output.
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -94,16 +97,6 @@ public final class AssembleMojo extends SafeMojo {
      */
     @Parameter
     private final Set<String> excludeBinaries = new SetOf<>();
-
-    /**
-     * Objectionaries.
-     * @checkstyle MemberNameCheck (6 lines)
-     * @checkstyle ConstantUsageCheck (5 lines)
-     */
-    private final Objectionaries objectionaries = new ObjsDefault(
-        () -> this.cache,
-        () -> this.session.getRequest().isUpdateSnapshots()
-    );
 
     /**
      * The central.

@@ -89,6 +89,7 @@ final class ParseMojoTest {
     void parsesWithCache(@TempDir final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
+            .with("plugin", FakeMaven.pluginDescriptor())
             .withProgram("invalid content")
             .with("cache", cache);
         final String expected = new UncheckedText(

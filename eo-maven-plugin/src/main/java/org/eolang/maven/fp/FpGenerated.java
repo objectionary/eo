@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.fp;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Func;
 import org.cactoos.scalar.ScalarOf;
@@ -46,7 +47,7 @@ public final class FpGenerated implements Footprint {
     }
 
     @Override
-    public Path apply(final Path source, final Path target) throws Exception {
+    public Path apply(final Path source, final Path target) throws IOException {
         return new Saved(new ScalarOf<>(this.content, source), target).value();
     }
 }

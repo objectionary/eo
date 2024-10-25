@@ -24,17 +24,13 @@
 package org.eolang.maven.objectionary;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import org.cactoos.Input;
-import org.cactoos.Scalar;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.CommitHash;
 import org.eolang.maven.name.ObjectName;
 
@@ -44,17 +40,6 @@ import org.eolang.maven.name.ObjectName;
  * @since 0.29.6
  */
 public final class ObjsDefault implements Objectionaries {
-
-    /**
-     * Cache path.
-     */
-    private final Unchecked<Path> cache;
-
-    /**
-     * Use cache.
-     */
-    private final Scalar<Boolean> remote;
-
     /**
      * Hash-map.
      */
@@ -62,11 +47,9 @@ public final class ObjsDefault implements Objectionaries {
 
     /**
      * Constructor.
-     * @param cache Cache path.
-     * @param remote Use cache.
      */
-    public ObjsDefault(final Scalar<Path> cache, final Scalar<Boolean> remote) {
-        this(cache, remote, new HashMap<>(0));
+    public ObjsDefault() {
+        this(new HashMap<>(0));
     }
 
     /**
@@ -89,26 +72,10 @@ public final class ObjsDefault implements Objectionaries {
     }
 
     /**
-     * Constructor for tests.
-     * @param ojs Predefined Objectionaries.
-     */
-    private ObjsDefault(final Map<? super String, Objectionary> ojs) {
-        this(ObjsDefault::cacheForTests, () -> false, ojs);
-    }
-
-    /**
      * Primary constructor.
-     * @param cache Cache path.
-     * @param remote Use cache.
      * @param map Objectionaries hash-map.
      */
-    private ObjsDefault(
-        final Scalar<Path> cache,
-        final Scalar<Boolean> remote,
-        final Map<? super String, Objectionary> map
-    ) {
-        this.cache = new Unchecked<>(cache);
-        this.remote = remote;
+    private ObjsDefault(final Map<? super String, Objectionary> map) {
         this.map = map;
     }
 
@@ -130,38 +97,13 @@ public final class ObjsDefault implements Objectionaries {
     private Objectionary objectionary(final CommitHash hash) {
         final CommitHash sticky = new ChCached(hash);
         if (!this.map.containsKey(sticky.value())) {
-            final CommitHash narrow = new ChNarrow(sticky);
             this.map.put(
                 sticky.value(),
-                new OyFallbackSwap(
-                    new OyHome(
-                        narrow,
-                        this.cache.value()
-                    ),
-                    new OyCaching(
-                        narrow,
-                        this.cache.value(),
-                        new OyIndexed(
-                            new OyRemote(sticky)
-                        )
-                    ),
-                    this.remote
+                new OyIndexed(
+                    new OyRemote(sticky)
                 )
             );
         }
         return this.map.get(sticky.value());
-    }
-
-    /**
-     * Cache path for tests.
-     * @return Cache path.
-     */
-    private static Path cacheForTests() {
-        throw new UnsupportedOperationException(
-            String.format(
-                "Caching unsupported for tests! If you see this message in runtime it means that you are using wrong constructor of %s",
-                ObjsDefault.class
-            )
-        );
     }
 }

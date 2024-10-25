@@ -86,10 +86,7 @@ public final class OnReplaced implements ObjectName {
      * @param origin Origin object name.
      * @param all All hashes.
      */
-    public OnReplaced(
-        final ObjectName origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
+    public OnReplaced(final ObjectName origin, final Map<String, ? extends CommitHash> all) {
         this(origin::toString, all);
     }
 
@@ -106,10 +103,7 @@ public final class OnReplaced implements ObjectName {
      * @param origin Raw string.
      * @param all All hashes.
      */
-    public OnReplaced(
-        final String origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
+    public OnReplaced(final String origin, final Map<String, ? extends CommitHash> all) {
         this(() -> origin, all);
     }
 
@@ -118,18 +112,12 @@ public final class OnReplaced implements ObjectName {
      * @param origin Raw string as scalar.
      * @param all All hashes.
      */
-    OnReplaced(
-        final Scalar<String> origin,
-        final Map<String, ? extends CommitHash> all
-    ) {
+    OnReplaced(final Scalar<String> origin, final Map<String, ? extends CommitHash> all) {
         this.name = new DelimitedName(origin);
         this.concat = new Unchecked<>(
             () -> new DelimitedName(
                 this.name.title(),
-                this.name.label()
-                    .map(
-                        label -> this.hash().value()
-                    )
+                this.name.label().map(label -> this.hash().value())
             )
         );
         this.hashes = all;

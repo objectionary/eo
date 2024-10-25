@@ -26,11 +26,23 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.fp.CachePath;
+import org.eolang.maven.fp.Footprint;
+import org.eolang.maven.fp.FpFork;
+import org.eolang.maven.fp.FpGenerated;
+import org.eolang.maven.fp.FpIfReleased;
+import org.eolang.maven.fp.FpIfTargetExists;
+import org.eolang.maven.fp.FpIgnore;
+import org.eolang.maven.fp.FpUpdateBoth;
+import org.eolang.maven.fp.FpUpdateFromCache;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
@@ -42,8 +54,6 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Rel;
 
 /**
  * Pull EO files from Objectionary.
@@ -59,6 +69,11 @@ public final class PullMojo extends SafeMojo {
      * The directory where to process to.
      */
     public static final String DIR = "4-pull";
+
+    /**
+     * Cache directory.
+     */
+    public static final String CACHE = "pulled";
 
     /**
      * The Git tag to pull objects from, in objectionary.
@@ -80,10 +95,7 @@ public final class PullMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(
-        () -> this.cache,
-        () -> this.session.getRequest().isUpdateSnapshots()
-    );
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     /**
      * Pull again even if the .eo file is already present?
@@ -110,17 +122,18 @@ public final class PullMojo extends SafeMojo {
             }
             final Collection<ForeignTojo> tojos = this.scopedTojos().withoutSources();
             final Collection<ObjectName> names = new ArrayList<>(0);
+            final Path base = this.targetDir.toPath().resolve(PullMojo.DIR);
+            final String hsh = this.hash.value();
             for (final ForeignTojo tojo : tojos) {
-                final ObjectName name = new OnCached(
+                final ObjectName object = new OnCached(
                     new OnSwap(
                         this.withVersions,
-                        new OnVersioned(tojo.identifier(), this.hash)
+                        new OnVersioned(tojo.identifier(), hsh)
                     )
                 );
-                names.add(name);
                 try {
-                    tojo.withSource(this.pull(name).toAbsolutePath())
-                        .withHash(new ChNarrow(name.hash()));
+                    tojo.withSource(this.pulled(object, base, hsh))
+                        .withHash(new ChNarrow(this.hash));
                 } catch (final IOException exception) {
                     throw new IOException(
                         String.format(
@@ -130,6 +143,7 @@ public final class PullMojo extends SafeMojo {
                         exception
                     );
                 }
+                names.add(object);
             }
             Logger.info(
                 this,
@@ -143,29 +157,63 @@ public final class PullMojo extends SafeMojo {
     /**
      * Pull one object.
      * @param object Name of the object with/without version, e.g. "org.eolang.io.stdout|5f82cc1"
+     * @param base Base cache path
+     * @param hsh Git hash
      * @return The path of .eo file
      * @throws IOException If fails
      */
-    private Path pull(final ObjectName object) throws IOException {
-        final Path dir = this.targetDir.toPath().resolve(PullMojo.DIR);
-        final Path src = new Place(object).make(
-            dir, "eo"
+    private Path pulled(final ObjectName object, final Path base, final String hsh)
+        throws IOException {
+        final String semver = this.plugin.getVersion();
+        final Path target = new Place(object).make(base, AssembleMojo.EO);
+        final Supplier<Path> che = new CachePath(
+            this.cache.resolve(PullMojo.CACHE),
+            semver,
+            hsh,
+            base.relativize(target)
         );
-        if (src.toFile().exists() && !this.overWrite) {
-            Logger.debug(
-                this, "The object '%s' already pulled to %s (and 'overWrite' is false)",
-                object, new Rel(src)
-            );
-        } else {
-            new HmBase(dir).save(
-                this.objectionaries.object(object),
-                dir.relativize(src)
-            );
-            Logger.debug(
-                this, "The sources of the object '%s' pulled to %s",
-                object, new Rel(src)
-            );
-        }
-        return src;
+        final Footprint generated = new FpGenerated(
+            src -> {
+                Logger.debug(
+                    this,
+                    "Pulling %s object from remote objectionary with hash %s",
+                    object, hsh
+                );
+                return new TextOf(
+                    this.objectionaries.object(object)
+                ).asString();
+            }
+        );
+        return new FpIfTargetExists(
+            new FpFork(
+                (src, tgt) -> {
+                    final boolean rewrite = this.overWrite;
+                    if (rewrite) {
+                        Logger.debug(
+                            this,
+                            "Pulling sources again since eo.overWrite=TRUE"
+                        );
+                    }
+                    return rewrite;
+                },
+                new FpIfReleased(
+                    semver,
+                    hsh,
+                    new FpUpdateBoth(generated, che),
+                    generated
+                ),
+                new FpIgnore()
+            ),
+            new FpIfReleased(
+                semver,
+                hsh,
+                new FpIfTargetExists(
+                    tgt -> che.get(),
+                    new FpUpdateFromCache(che),
+                    new FpUpdateBoth(generated, che)
+                ),
+                generated
+            )
+        ).apply(Paths.get(""), target);
     }
 }
