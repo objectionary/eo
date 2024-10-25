@@ -83,11 +83,12 @@ public final class OptimizeMojo extends SafeMojo {
     @Override
     public void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
+        final Optimization optimization = this.optimization();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> () -> this.optimized(tojo, this.optimization()),
+                    tojo -> () -> this.optimized(tojo, optimization),
                     new Filtered<>(
                         ForeignTojo::notOptimized,
                         tojos

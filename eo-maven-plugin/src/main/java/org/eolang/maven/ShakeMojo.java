@@ -80,11 +80,12 @@ public final class ShakeMojo extends SafeMojo {
     @Override
     void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
+        final Optimization optimization = this.optimization();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> () -> this.shaken(tojo, this.optimization()),
+                    tojo -> () -> this.shaken(tojo, optimization),
                     new Filtered<>(
                         ForeignTojo::notShaken,
                         tojos

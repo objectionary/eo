@@ -23,15 +23,12 @@
  */
 package org.eolang.maven.fp;
 
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
 
 /**
  * Footprint that behaves as first given wrapped {@link Footprint}
- * if provided target is older than source.
+ * if provided target exists and older than source.
  * Behaves as second given wrapped {@link Footprint} otherwise.
  * @since 0.41
  */
@@ -52,55 +49,18 @@ public final class FpIfOlder extends FpEnvelope {
      * @param second Second wrapped footprint
      */
     public FpIfOlder(
-        final Func<Path, Path> destination,
-        final Footprint first,
-        final Footprint second
+        final Func<Path, Path> destination, final Footprint first, final Footprint second
     ) {
         super(
-            new FpFork(
-                (source, target) -> {
-                    final Path dest = destination.apply(target);
-                    final boolean result;
-                    final boolean exists = dest.toFile().exists();
-                    if (exists) {
-                        result = FpIfOlder.isAfter(dest, source);
-                        if (result) {
-                            Logger.debug(
-                                FpIfOlder.class,
-                                "Target file %[file]s is older than source %[file]s",
-                                dest, source
-                            );
-                        } else {
-                            Logger.debug(
-                                FpIfOlder.class,
-                                "Target file %[file]s is newer than source %[file]s",
-                                dest, source
-                            );
-                        }
-                    } else {
-                        result = false;
-                        Logger.debug(
-                            FpIfOlder.class, "Target file %[file]s does not exist", dest
-                        );
-                    }
-                    return result;
-                },
-                first,
+            new FpIfTargetExists(
+                destination,
+                new FpIfTargetOlder(
+                    destination,
+                    first,
+                    second
+                ),
                 second
             )
-        );
-    }
-
-    /**
-     * Returns true if first given path is older in terms of last modified time.
-     * @param first First path to compare
-     * @param second Second path to compare
-     * @return True if first path is older that second path
-     * @throws IOException If fails to compare files
-     */
-    private static boolean isAfter(final Path first, final Path second) throws IOException {
-        return Files.getLastModifiedTime(first).toInstant().isAfter(
-            Files.getLastModifiedTime(second).toInstant()
         );
     }
 }

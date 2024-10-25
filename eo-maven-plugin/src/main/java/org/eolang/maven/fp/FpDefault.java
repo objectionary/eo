@@ -80,16 +80,58 @@ public final class FpDefault extends FpEnvelope {
         final Supplier<String> hash,
         final Path tail
     ) {
+        this(new FpGenerated(content), base, semver, hash, tail);
+    }
+
+    /**
+     * Ctor.
+     * @param generated Footprint that generates content
+     * @param base Base cache path
+     * @param semver Cache version
+     * @param hash Cache hash
+     * @param tail Cache tail path
+     */
+    private FpDefault(
+        final Footprint generated,
+        final Path base,
+        final String semver,
+        final Supplier<String> hash,
+        final Path tail
+    ) {
+        this(
+            generated,
+            semver,
+            hash,
+            new CachePath(base, semver, hash, tail)
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param generated Footprint that generates content
+     * @param semver Cache version
+     * @param hash Cache hash
+     * @param cache Lazy cache path
+     */
+    private FpDefault(
+        final Footprint generated,
+        final String semver,
+        final Supplier<String> hash,
+        final Supplier<Path> cache
+    ) {
         super(
             new FpExistedSource(
                 new FpIfOlder(
-                    (source, target) -> target,
-                    new FpOnlyReleases(
-                        new FpGenerated(content),
-                        base,
+                    new FpIgnore(),
+                    new FpIfReleased(
                         semver,
                         hash,
-                        tail
+                        new FpIfOlder(
+                            target -> cache.get(),
+                            new FpUpdateFromCache(cache),
+                            new FpUpdateBoth(generated, cache)
+                        ),
+                        generated
                     )
                 )
             )

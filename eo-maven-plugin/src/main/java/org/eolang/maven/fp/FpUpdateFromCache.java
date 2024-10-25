@@ -29,41 +29,24 @@ import java.util.function.Supplier;
 import org.cactoos.text.TextOf;
 
 /**
- * Footprint that works with cache.
- * If cache is older than source - update target from cache.
- * Update target and cache from source otherwise.
+ * Footprint that updates target from cache.
  * @since 0.41
  */
-public final class FpViaCache extends FpEnvelope {
-
+public final class FpUpdateFromCache extends FpEnvelope {
     /**
      * Ctor.
-     * @param footprint Wrapped original footprint that updates target from source
-     * @param cache Function that returns path to cache
+     * @param cache Lazy path to cache
      */
-    public FpViaCache(final Footprint footprint, final Supplier<Path> cache) {
+    public FpUpdateFromCache(final Supplier<Path> cache) {
         super(
-            new FpIfOlder(
-                target -> cache.get(),
-                (source, target) -> {
-                    Logger.debug(
-                        FpViaCache.class,
-                        "Updating only target %[file]s from source %[file]s",
-                        target, source
-                    );
-                    return new Saved(new TextOf(cache.get()), target).value();
-                },
-                (source, target) -> {
-                    Logger.debug(
-                        FpViaCache.class,
-                        "Updating target %[file]s and cache %[file]s from source %[file]s",
-                        target, cache.get(), source
-                    );
-                    footprint.apply(source, target);
-                    new Saved(new TextOf(target), cache.get()).value();
-                    return target;
-                }
-            )
+            (source, target) -> {
+                Logger.debug(
+                    FpUpdateFromCache.class,
+                    "Updating only target %[file]s from cache %[file]s",
+                    target, source
+                );
+                return new Saved(new TextOf(cache.get()), target).value();
+            }
         );
     }
 }

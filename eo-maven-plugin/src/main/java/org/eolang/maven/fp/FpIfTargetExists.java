@@ -23,54 +23,49 @@
  */
 package org.eolang.maven.fp;
 
-import java.io.IOException;
+import com.jcabi.log.Logger;
 import java.nio.file.Path;
-import org.cactoos.BiFunc;
-import org.cactoos.func.UncheckedBiFunc;
+import org.cactoos.Func;
 
 /**
- * Footprint that behaves like one of the given {@link Footprint}s depending on the give
- * condition.
+ * Footprint that behaves like one of the given wrapped footprints depending on
+ * existence of provided target path.
  * @since 0.41
  */
-public final class FpFork implements Footprint {
+public final class FpIfTargetExists extends FpEnvelope {
     /**
-     * Lazy condition.
+     * Ctor.
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
-    private final UncheckedBiFunc<Path, Path, Boolean> condition;
-
-    /**
-     * First wrapped footprint.
-     */
-    private final Footprint first;
-
-    /**
-     * Second wrapped footprint.
-     */
-    private final Footprint second;
+    public FpIfTargetExists(final Footprint first, final Footprint second) {
+        this(target -> target, first, second);
+    }
 
     /**
      * Ctor.
-     * @param condition Lazy condition
-     * @param first First wrapped condition
-     * @param second Second wrapped condition
+     * @param destination Function that modifies result target path
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
-    public FpFork(
-        final BiFunc<Path, Path, Boolean> condition, final Footprint first, final Footprint second
+    public FpIfTargetExists(
+        final Func<Path, Path> destination, final Footprint first, final Footprint second
     ) {
-        this.condition = new UncheckedBiFunc<>(condition);
-        this.first = first;
-        this.second = second;
-    }
-
-    @Override
-    public Path apply(final Path source, final Path target) throws IOException {
-        final Footprint footprint;
-        if (this.condition.apply(source, target)) {
-            footprint = this.first;
-        } else {
-            footprint = this.second;
-        }
-        return footprint.apply(source, target);
+        super(
+            new FpFork(
+                (source, target) -> {
+                    final Path dest = destination.apply(target);
+                    final boolean exists = dest.toFile().exists();
+                    if (!exists) {
+                        Logger.debug(
+                            FpIfTargetExists.class, "Target file %[file]s does not exist", dest
+                        );
+                    }
+                    return exists;
+                },
+                first,
+                second
+            )
+        );
     }
 }

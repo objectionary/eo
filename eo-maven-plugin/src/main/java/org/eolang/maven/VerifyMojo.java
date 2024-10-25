@@ -80,11 +80,12 @@ public final class VerifyMojo extends SafeMojo {
     @Override
     void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
+        final Optimization optimization = this.optimization();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> () -> this.verified(tojo, this.optimization()),
+                    tojo -> () -> this.verified(tojo, optimization),
                     new Filtered<>(
                         ForeignTojo::notVerified,
                         tojos

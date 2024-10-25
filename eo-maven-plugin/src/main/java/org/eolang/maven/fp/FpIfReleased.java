@@ -24,17 +24,16 @@
 package org.eolang.maven.fp;
 
 import com.jcabi.log.Logger;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
- * Footprint that uses cache if it's cacheable.
- * Does not use and updates cache at all otherwise.
+ * Footprint that behaves like one of the given footprints depending on
+ * hash and semver of provided cache.
  * @since 0.41
  * @checkstyle ParameterNumberCheck (100 lines)
  */
-public final class FpOnlyReleases extends FpEnvelope {
+public final class FpIfReleased extends FpEnvelope {
     /**
      * Not cacheable versions.
      */
@@ -42,63 +41,56 @@ public final class FpOnlyReleases extends FpEnvelope {
 
     /**
      * Ctor.
-     * @param origin Original wrapped footprint that updates target from source
-     * @param base Base cache directory
-     * @param semver Semver as part of absolute cache directory
-     * @param hash Git hash as part of absolute cache directory
-     * @param tail Last part of absolute cache directory
+     * @param semver Cache version
+     * @param hash Git hash
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
-    public FpOnlyReleases(
-        final Footprint origin,
-        final Path base,
+    public FpIfReleased(
         final String semver,
         final String hash,
-        final Path tail
+        final Footprint first,
+        final Footprint second
     ) {
-        this(origin, base, semver, () -> hash, tail);
+        this(semver, () -> hash, first, second);
     }
 
     /**
      * Ctor.
-     * @param origin Original wrapped footprint that updates target from source
-     * @param base Base cache directory
-     * @param semver Semver as part of absolute cache directory
-     * @param hash Git hash as part of absolute cache directory
-     * @param tail Last part of absolute cache directory
+     * @param semver Cache version
+     * @param hash Git hash
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
-    public FpOnlyReleases(
-        final Footprint origin,
-        final Path base,
+    public FpIfReleased(
         final String semver,
         final Supplier<String> hash,
-        final Path tail
+        final Footprint first,
+        final Footprint second
     ) {
         super(
             new FpFork(
                 (source, target) -> {
                     final String hsh = hash.get();
                     final boolean cacheable = !hsh.isEmpty()
-                        && Arrays.stream(FpOnlyReleases.NOT_CACHEABLE).noneMatch(semver::contains);
+                        && Arrays.stream(FpIfReleased.NOT_CACHEABLE).noneMatch(semver::contains);
                     if (cacheable) {
                         Logger.debug(
-                            FpOnlyReleases.class,
+                            FpIfReleased.class,
                             "Cache with version '%s' and hash '%s' is cacheable, using it",
                             semver, hsh
                         );
                     } else {
                         Logger.debug(
-                            FpOnlyReleases.class,
+                            FpIfReleased.class,
                             "Cache with version '%s' and hash '%s' is not cacheable, skipping it",
                             semver, hsh
                         );
                     }
                     return cacheable;
                 },
-                new FpViaCache(
-                    origin,
-                    () -> base.resolve(semver).resolve(hash.get()).resolve(tail)
-                ),
-                origin
+                first,
+                second
             )
         );
     }
