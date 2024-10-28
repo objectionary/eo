@@ -37,7 +37,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
-import org.eolang.maven.footprint.FtDefault;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.Place;
 import org.eolang.maven.util.HmBase;
 
 /**
@@ -192,10 +194,11 @@ public final class Names {
         try (ObjectInputStream map = new ObjectInputStream(
             new ByteArrayInputStream(
                 Base64.getDecoder().decode(
-                    new FtDefault(src.getParent()).load(
-                        src.getFileName().toString(),
-                        ""
-                    )
+                    new IoCheckedText(
+                        new TextOf(
+                            new Place(src.getFileName().toString()).make(src.getParent(), "")
+                        )
+                    ).asString()
                 )
             )
         )) {

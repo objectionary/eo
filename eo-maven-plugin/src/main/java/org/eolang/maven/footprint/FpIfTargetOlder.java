@@ -21,51 +21,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.fp;
+package org.eolang.maven.footprint;
 
 import com.jcabi.log.Logger;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
 
 /**
  * Footprint that behaves like one of the given wrapped footprints depending on
- * existence of provided target path.
+ * the result of comparison target and source in terms of last modified date.
  * @since 0.41
  */
-public final class FpIfTargetExists extends FpEnvelope {
-    /**
-     * Ctor.
-     * @param first First wrapped footprint
-     * @param second Second wrapped footprint
-     */
-    public FpIfTargetExists(final Footprint first, final Footprint second) {
-        this(target -> target, first, second);
-    }
-
+public final class FpIfTargetOlder extends FpEnvelope {
     /**
      * Ctor.
      * @param destination Function that modifies result target path
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfTargetExists(
+    public FpIfTargetOlder(
         final Func<Path, Path> destination, final Footprint first, final Footprint second
     ) {
         super(
             new FpFork(
                 (source, target) -> {
                     final Path dest = destination.apply(target);
-                    final boolean exists = dest.toFile().exists();
-                    if (!exists) {
+                    final boolean older = FpIfTargetOlder.isAfter(dest, source);
+                    if (older) {
                         Logger.debug(
-                            FpIfTargetExists.class, "Target file %[file]s does not exist", dest
+                            FpIfTargetOlder.class,
+                            "Target file %[file]s is older than source %[file]s",
+                            dest, source
+                        );
+                    } else {
+                        Logger.debug(
+                            FpIfTargetOlder.class,
+                            "Target file %[file]s is newer than source %[file]s",
+                            dest, source
                         );
                     }
-                    return exists;
+                    return older;
                 },
                 first,
                 second
             )
+        );
+    }
+
+    /**
+     * Returns true if first given path is older in terms of last modified time.
+     * @param first First path to compare
+     * @param second Second path to compare
+     * @return True if first path is older that second path
+     * @throws IOException If fails to compare files
+     */
+    private static boolean isAfter(final Path first, final Path second) throws IOException {
+        return Files.getLastModifiedTime(first).toInstant().isAfter(
+            Files.getLastModifiedTime(second).toInstant()
         );
     }
 }

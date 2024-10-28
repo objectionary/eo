@@ -31,7 +31,7 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
-import org.eolang.maven.fp.Saved;
+import org.eolang.maven.footprint.Saved;
 
 /**
  * Train that spies.

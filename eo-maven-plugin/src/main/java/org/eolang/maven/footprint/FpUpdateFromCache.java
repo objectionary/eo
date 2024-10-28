@@ -21,32 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.fp;
+package org.eolang.maven.footprint;
 
-import java.io.IOException;
+import com.jcabi.log.Logger;
 import java.nio.file.Path;
+import java.util.function.Supplier;
+import org.cactoos.text.TextOf;
 
 /**
- * Wrapper for footprint.
+ * Footprint that updates target from cache.
  * @since 0.41
- * @checkstyle DesignForExtensionCheck (50 lines)
  */
-public class FpEnvelope implements Footprint {
-    /**
-     * Wrapped footprint.
-     */
-    private final Footprint origin;
-
+public final class FpUpdateFromCache extends FpEnvelope {
     /**
      * Ctor.
-     * @param footprint Wrapped footprint
+     * @param cache Lazy path to cache
      */
-    public FpEnvelope(final Footprint footprint) {
-        this.origin = footprint;
-    }
-
-    @Override
-    public Path apply(final Path source, final Path target) throws IOException {
-        return this.origin.apply(source, target);
+    public FpUpdateFromCache(final Supplier<Path> cache) {
+        super(
+            (source, target) -> {
+                Logger.debug(
+                    FpUpdateFromCache.class,
+                    "Updating only target %[file]s from cache %[file]s",
+                    target, source
+                );
+                return new Saved(new TextOf(cache.get()), target).value();
+            }
+        );
     }
 }

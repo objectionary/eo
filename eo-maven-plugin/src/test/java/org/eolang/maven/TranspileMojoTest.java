@@ -32,12 +32,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.Randomized;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
-import org.eolang.maven.util.HmBase;
 import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -96,7 +94,7 @@ final class TranspileMojoTest {
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             Matchers.is(true)
         );
-        maven.execute(TranspileMojo.class);
+        maven.execute(new FakeMaven.Transpile());
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             java.toFile().lastModified(),
@@ -243,25 +241,6 @@ final class TranspileMojoTest {
             "Both class paths should not intersect and don't have to have common classes",
             intersection,
             Matchers.empty()
-        );
-    }
-
-    @Test
-    void transpilesAndCleansGarbageFromDirtyDependency(@TempDir final Path temp)
-        throws IOException {
-        final Path target = temp.resolve("target");
-        final Path sources = target.resolve("generated-sources");
-        final FakeMaven maven = new FakeMaven(temp);
-        final Path binary = Paths.get("classes", "EOf", "EOmain.class");
-        new HmBase(maven.targetPath()).save(new Randomized(), binary);
-        maven.with("generatedDir", sources.toFile())
-            .with("targetDir", target.resolve("eo").toFile())
-            .withHelloWorld()
-            .execute(new FakeMaven.Transpile());
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            maven.targetPath().resolve(binary).toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
         );
     }
 

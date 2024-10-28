@@ -35,7 +35,7 @@ import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.eolang.maven.fp.FpDefault;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;

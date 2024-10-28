@@ -25,7 +25,6 @@ package org.eolang.maven.rust;
 
 import java.nio.file.Path;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,7 @@ final class CommentedTest {
                 }
             },
             "//"
-        ).save(new FtDefault(temp));
+        ).save(temp);
         MatcherAssert.assertThat(
             "The auto-generated file has wrong comment",
             new TextOf(

@@ -23,7 +23,5 @@
  */
 /**
  * EO program footprint.
- * Represents a program physical artifacts (like files, memory blocks, or others).
- * In its simplest form footprint of a program is a file on a disc with program data (XMIR).
  */
 package org.eolang.maven.footprint;

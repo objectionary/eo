@@ -38,7 +38,7 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.maven.fp.Saved;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.HmBase;
 import org.eolang.parser.CheckPack;
 import org.hamcrest.MatcherAssert;

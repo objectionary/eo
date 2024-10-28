@@ -33,7 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.fp.FpDefault;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
@@ -89,7 +89,6 @@ final class ParseMojoTest {
     void parsesWithCache(@TempDir final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
-            .with("plugin", FakeMaven.pluginDescriptor())
             .withProgram("invalid content")
             .with("cache", cache);
         final String expected = new UncheckedText(
@@ -105,6 +104,7 @@ final class ParseMojoTest {
             hash.value(),
             base.relativize(target)
         ).apply(maven.programTojo().source(), target);
+        target.toFile().delete();
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             ParseMojo.DIR,

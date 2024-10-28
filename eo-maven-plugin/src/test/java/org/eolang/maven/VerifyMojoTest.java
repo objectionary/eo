@@ -32,7 +32,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.fp.Saved;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;

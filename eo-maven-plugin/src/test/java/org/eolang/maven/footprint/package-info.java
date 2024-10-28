@@ -23,7 +23,5 @@
  */
 /**
  * Footprint tests.
- * The package contains different unit tests for all
- * implementations of {@link org.eolang.maven.footprint.Footprint}.
  */
 package org.eolang.maven.footprint;
