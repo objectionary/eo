@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
-+version 0.39.1
++version 0.40.0
 
 # Test.
 [] > invokes-file-write-correctly
@@ -43,3 +43,13 @@
     and.
       called.code
       called.output.eq msg.size
+
+# Test.
+[] > returns-valid-win32-inet-addr-for-localhost
+  code. > addr
+    win32
+      "inet_addr"
+      * "127.0.0.1"
+  or. > @
+    os.is-windows.not
+    addr.eq 16777343

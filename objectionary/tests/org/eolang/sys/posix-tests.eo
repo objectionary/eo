@@ -26,7 +26,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.sys
-+version 0.39.1
++version 0.40.0
 
 # Test.
 [] > invokes-getpid-correctly
@@ -73,3 +73,13 @@
                 "close"
                 * sd
             -1
+
+# Test.
+[] > returns-valid-posix-inet-addr-for-localhost
+  code. > addr
+    posix
+      "inet_addr"
+      * "127.0.0.1"
+  or. > @
+    os.is-windows
+    addr.eq 16777343
