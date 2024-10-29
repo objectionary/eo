@@ -29,12 +29,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
-import org.eolang.maven.log.CaptureLogs;
-import org.eolang.maven.log.Logs;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -68,78 +65,90 @@ final class VerifyMojoTest {
     }
 
     @Test
-    @CaptureLogs
-    void detectsErrorsSuccessfully(
-        @TempDir final Path temp,
-        final Logs out) {
+    void detectsErrorsSuccessfully(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package f\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "[] > main",
+                "  QQ.io.stdout",
+                "    \"Hello world\""
+            );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
-                    "[] > main",
-                    "  QQ.io.stdout",
-                    "    \"Hello world\""
-                )
-                .execute(new FakeMaven.Verify()),
+            () -> maven.execute(new FakeMaven.Verify()),
             "Program with noname attributes should have failed or error, but it didn't"
         );
         MatcherAssert.assertThat(
-            "Errors message should have program name and error line number",
-            this.getMessage(out, "Errors identified", temp.toString()),
-            Matchers.matchesPattern(this.createRegEx(temp, "Errors identified"))
+            "Verified file should not exist",
+            maven.result().get("target/6-verify/foo/x/main.xmir"),
+            Matchers.equalTo(null)
+        );
+        MatcherAssert.assertThat(
+            "Critical error must exist in shaken XMIR",
+            new XMLDocument(
+                maven.result().get("target/3-shake/foo/x/main.xmir")
+            ).nodes("//errors/error[@severity='error']"),
+            Matchers.hasSize(1)
         );
     }
 
     @Test
-    @CaptureLogs
-    void detectsCriticalErrorsSuccessfully(
-        @TempDir final Path temp,
-        final Logs out) {
+    void detectsCriticalErrorsSuccessfully(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package f\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "[] > main",
+                "    \"Hello world\""
+            );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
-                    "[] > main",
-                    "    \"Hello world\""
-                )
-                .execute(new FakeMaven.Verify()),
+            () -> maven.execute(new FakeMaven.Verify()),
             "Wrong program should have failed or error, but it didn't"
         );
-        final String message = this.getMessage(out, "Critical error identified", temp.toString());
-        Assertions.assertTrue(
-            message.matches(this.createRegEx(temp, "Critical error identified")),
-            "Critical error message should have program name and error line number"
+        MatcherAssert.assertThat(
+            "Verified file should not exist",
+            maven.result().get("target/6-verify/foo/x/main.xmir"),
+            Matchers.equalTo(null)
+        );
+        MatcherAssert.assertThat(
+            "Error must exist in shaken XMIR",
+            new XMLDocument(
+                maven.result().get("target/3-shake/foo/x/main.xmir")
+            ).nodes("//errors/error[@severity='critical']"),
+            Matchers.hasSize(1)
         );
     }
 
     @Test
-    @CaptureLogs
-    void detectsWarningWithCorrespondingFlag(
-        @TempDir final Path temp,
-        final Logs out) {
+    void detectsWarningWithCorrespondingFlag(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(
+                "+package f\n",
+                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "[] > main",
+                "  # This is the default 64+ symbols comment in front of named abstract object.",
+                "  [] > @",
+                "    \"Hello world\" > @"
+            )
+            .with("failOnWarning", true);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    "+package f\n",
-                    "# This is the default 64+ symbols comment in front of named abstract object.",
-                    "[] > main",
-                    "  # This is the default 64+ symbols comment in front of named abstract object.",
-                    "  [] > @",
-                    "    \"Hello world\" > @"
-                )
-                .with("failOnWarning", true)
-                .execute(new FakeMaven.Verify()),
+            () -> maven.execute(new FakeMaven.Verify()),
             "Program with sparse decorated object should have failed on warning, but it didn't"
         );
-        final String message = this.getMessage(out, "Warnings identified", temp.toString());
-        Assertions.assertTrue(
-            message.matches(this.createRegEx(temp, "Warnings identified")),
-            "Warnings message should have program name and error line number"
+        MatcherAssert.assertThat(
+            "Verified file should not exist",
+            maven.result().get("target/6-verify/foo/x/main.xmir"),
+            Matchers.equalTo(null)
+        );
+        MatcherAssert.assertThat(
+            "Warning must exist in shaken XMIR",
+            new XMLDocument(
+                maven.result().get("target/3-shake/foo/x/main.xmir")
+            ).nodes("//errors/error[@severity='warning']"),
+            Matchers.hasSize(4)
         );
     }
 
@@ -320,39 +329,5 @@ final class VerifyMojoTest {
             ),
             Matchers.is(new XMLDocument(cached.asString()))
         );
-    }
-
-    /**
-     * Parse the error message to program name and error line number for checking.
-     * @param logs Logs logs
-     * @param parts String needed error message
-     */
-    private String getMessage(final Logs logs, final String... parts) {
-        return String.valueOf(logs.captured().stream()
-            .filter(
-                log -> Arrays.stream(parts).allMatch(log::contains)
-            ).findFirst()
-        );
-    }
-
-    /**
-     * Create regular expression for testing.
-     * @param path Path program
-     * @param error String needed error message
-     */
-    private String createRegEx(final Path path, final String error) {
-        final String str = ".*".concat(error)
-            .concat(":\\s{3}(")
-            .concat(
-                path.resolve("foo/x/main.eo").toString()
-                .replace("\\", "\\\\")
-            );
-        final String res;
-        if ("Warnings identified".equals(error)) {
-            res = str.concat(", \\d*: .*[\\s]*)+\\]");
-        } else {
-            res = str.concat(", \\d+: .*[\\s]*)+\\]");
-        }
-        return res;
     }
 }
