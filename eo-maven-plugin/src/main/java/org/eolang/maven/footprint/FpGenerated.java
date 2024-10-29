@@ -21,35 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.objectionary;
+package org.eolang.maven.footprint;
 
 import java.io.IOException;
-import org.eolang.maven.BinarizeParseTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.nio.file.Path;
+import org.cactoos.Func;
+import org.cactoos.scalar.ScalarOf;
 
 /**
- * Test for {@link OyEmpty}.
- *
- * @since 0.28.12
+ * Footprint that saves content generated from lambda to the target file.
+ * @since 0.41
  */
-final class OyEmptyTest {
+public final class FpGenerated implements Footprint {
+    /**
+     * Content function.
+     */
+    private final Func<Path, String> content;
 
-    @Test
-    void resolvesObject() {
-        Assertions.assertThrows(
-            IOException.class,
-            () -> new OyEmpty().get("org.eolang.io.stdin"),
-            BinarizeParseTest.TO_ADD_MESSAGE
-        );
+    /**
+     * Ctor.
+     * @param content Content function
+     */
+    public FpGenerated(final Func<Path, String> content) {
+        this.content = content;
     }
 
-    @Test
-    void checksPresenceOfObject() {
-        Assertions.assertThrows(
-            IOException.class,
-            () -> new OyEmpty().contains("org.eolang.io.stdin"),
-            BinarizeParseTest.TO_ADD_MESSAGE
-        );
+    @Override
+    public Path apply(final Path source, final Path target) throws IOException {
+        return new Saved(new ScalarOf<>(this.content, source), target).value();
     }
 }

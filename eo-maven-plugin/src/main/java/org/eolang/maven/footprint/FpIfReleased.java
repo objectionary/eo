@@ -21,65 +21,77 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.fp;
+package org.eolang.maven.footprint;
 
 import com.jcabi.log.Logger;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import org.cactoos.Func;
+import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
- * Footprint that behaves like one of the given wrapped footprints depending on
- * the result of comparison target and source in terms of last modified date.
+ * Footprint that behaves like one of the given footprints depending on
+ * hash and semver of provided cache.
  * @since 0.41
+ * @checkstyle ParameterNumberCheck (100 lines)
  */
-public final class FpIfTargetOlder extends FpEnvelope {
+public final class FpIfReleased extends FpEnvelope {
+    /**
+     * Not cacheable versions.
+     */
+    private static final String[] NOT_CACHEABLE = {"0.0.0", "SNAPSHOT"};
+
     /**
      * Ctor.
-     * @param destination Function that modifies result target path
+     * @param semver Cache version
+     * @param hash Git hash
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
-    public FpIfTargetOlder(
-        final Func<Path, Path> destination, final Footprint first, final Footprint second
+    public FpIfReleased(
+        final String semver,
+        final String hash,
+        final Footprint first,
+        final Footprint second
+    ) {
+        this(semver, () -> hash, first, second);
+    }
+
+    /**
+     * Ctor.
+     * @param semver Cache version
+     * @param hash Git hash
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
+     */
+    public FpIfReleased(
+        final String semver,
+        final Supplier<String> hash,
+        final Footprint first,
+        final Footprint second
     ) {
         super(
             new FpFork(
                 (source, target) -> {
-                    final Path dest = destination.apply(target);
-                    final boolean older = FpIfTargetOlder.isAfter(dest, source);
-                    if (older) {
+                    final String hsh = hash.get();
+                    final boolean cacheable = !hsh.isEmpty()
+                        && Arrays.stream(FpIfReleased.NOT_CACHEABLE).noneMatch(semver::contains);
+                    if (cacheable) {
                         Logger.debug(
-                            FpIfTargetOlder.class,
-                            "Target file %[file]s is older than source %[file]s",
-                            dest, source
+                            FpIfReleased.class,
+                            "Cache with version '%s' and hash '%s' is cacheable, using it",
+                            semver, hsh
                         );
                     } else {
                         Logger.debug(
-                            FpIfTargetOlder.class,
-                            "Target file %[file]s is newer than source %[file]s",
-                            dest, source
+                            FpIfReleased.class,
+                            "Cache with version '%s' and hash '%s' is not cacheable, skipping it",
+                            semver, hsh
                         );
                     }
-                    return older;
+                    return cacheable;
                 },
                 first,
                 second
             )
-        );
-    }
-
-    /**
-     * Returns true if first given path is older in terms of last modified time.
-     * @param first First path to compare
-     * @param second Second path to compare
-     * @return True if first path is older that second path
-     * @throws IOException If fails to compare files
-     */
-    private static boolean isAfter(final Path first, final Path second) throws IOException {
-        return Files.getLastModifiedTime(first).toInstant().isAfter(
-            Files.getLastModifiedTime(second).toInstant()
         );
     }
 }

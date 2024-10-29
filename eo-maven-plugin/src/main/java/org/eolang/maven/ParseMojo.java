@@ -40,7 +40,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.eolang.maven.fp.FpDefault;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.parser.EoSyntax;

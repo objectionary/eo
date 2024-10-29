@@ -26,7 +26,6 @@ package org.eolang.maven.rust;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ final class PrimeModuleTest {
     void savesCorrectly(@TempDir final Path temp) throws Exception {
         final String method = "my_method";
         final String name = "name";
-        new PrimeModule(method, name).save(new FtDefault(temp));
+        new PrimeModule(method, name).save(temp);
         MatcherAssert.assertThat(
             "Check that PrimeModule is saved correctly",
             new TextOf(

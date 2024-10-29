@@ -35,7 +35,7 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.text.TextOf;
-import org.eolang.maven.fp.Saved;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChPattern;

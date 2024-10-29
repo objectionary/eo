@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.BinarizeParseTest;
-import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ final class NativeTest {
     void savesCorrectly(@TempDir final Path temp) throws Exception {
         final Path target = Paths.get("mypackage");
         final Native java = new Native("name", target.toString());
-        java.save(new FtDefault(temp.resolve(target)));
+        java.save(temp.resolve(target));
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(

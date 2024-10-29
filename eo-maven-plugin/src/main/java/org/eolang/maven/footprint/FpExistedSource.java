@@ -21,31 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.objectionary;
-
-import java.io.IOException;
-import org.cactoos.Input;
+package org.eolang.maven.footprint;
 
 /**
- * Fake empty HTTP Objectionary server.
- *
- * @since 0.1
+ * Footprint throws exception if source file does not exist.
+ * @since 0.41
  */
-public final class OyEmpty implements Objectionary {
+public final class FpExistedSource extends FpEnvelope {
 
-    @Override
-    public String toString() {
-        return "empty";
+    /**
+     * Ctor.
+     * @param footprint Original footprint
+     */
+    public FpExistedSource(final Footprint footprint) {
+        super(
+            (source, target) -> {
+                if (!source.toFile().exists()) {
+                    throw new IllegalStateException(
+                        String.format("Source file %s does not exist", source)
+                    );
+                }
+                return footprint.apply(source, target);
+            }
+        );
     }
-
-    @Override
-    public Input get(final String name) throws IOException {
-        throw new IOException("Empty objectionary");
-    }
-
-    @Override
-    public boolean contains(final String name) throws IOException {
-        throw new IOException("Empty objectionary");
-    }
-
 }

@@ -21,7 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.eolang.maven.footprint;
+
 /**
- * EO program footprint.
+ * Footprint that does not update target path.
+ * @since 0.41
  */
-package org.eolang.maven.fp;
+public final class FpIgnore extends FpEnvelope {
+    /**
+     * Ctor.
+     */
+    public FpIgnore() {
+        super((source, target) -> target);
+    }
+}

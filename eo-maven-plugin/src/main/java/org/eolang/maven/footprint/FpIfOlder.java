@@ -21,36 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang.maven.fp;
+package org.eolang.maven.footprint;
 
-import com.jcabi.log.Logger;
 import java.nio.file.Path;
-import java.util.function.Supplier;
-import org.cactoos.text.TextOf;
+import org.cactoos.Func;
 
 /**
- * Footprint that updates target from content function and updates cache from target.
+ * Footprint that behaves as first given wrapped {@link Footprint}
+ * if provided target exists and older than source.
+ * Behaves as second given wrapped {@link Footprint} otherwise.
  * @since 0.41
  */
-public final class FpUpdateBoth extends FpEnvelope {
+public final class FpIfOlder extends FpEnvelope {
     /**
      * Ctor.
-     * @param origin Original footprint that updates target from source
-     * @param cache Lazy path to cache
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
      */
-    public FpUpdateBoth(final Footprint origin, final Supplier<Path> cache) {
+    public FpIfOlder(final Footprint first, final Footprint second) {
+        this(target -> target, first, second);
+    }
+
+    /**
+     * Ctor.
+     * @param destination Function that modifies result target path
+     * @param first First wrapped footprint
+     * @param second Second wrapped footprint
+     */
+    public FpIfOlder(
+        final Func<Path, Path> destination, final Footprint first, final Footprint second
+    ) {
         super(
-            (source, target) -> {
-                final Path che = cache.get();
-                Logger.debug(
-                    FpUpdateBoth.class,
-                    "Updating target %[file]s and cache %[file]s from source %[file]s",
-                    target, che, source
-                );
-                origin.apply(source, target);
-                new Saved(new TextOf(target), che).value();
-                return target;
-            }
+            new FpIfTargetExists(
+                destination,
+                new FpIfTargetOlder(
+                    destination,
+                    first,
+                    second
+                ),
+                second
+            )
         );
     }
 }

@@ -41,7 +41,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.footprint.FtDefault;
 
 /**
  * {@link FFINode} for Rust inserts.
@@ -150,7 +149,7 @@ public final class RustNode implements Buildable {
         new Commented(
             new Native(this.name, "EOrust.natives"),
             "//"
-        ).save(new FtDefault(this.generated));
+        ).save(this.generated);
         Logger.info(
             this,
             "Created java class %s from %s",
