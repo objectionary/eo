@@ -26,7 +26,10 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -105,6 +108,16 @@ final class ParseMojoTest {
             base.relativize(target)
         ).apply(maven.programTojo().source(), target);
         target.toFile().delete();
+        Files.setLastModifiedTime(
+            cache.resolve(
+                Paths
+                    .get(ParseMojo.CACHE)
+                    .resolve(FakeMaven.pluginVersion())
+                    .resolve(hash.value())
+                    .resolve("foo/x/main.xmir")
+            ),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             ParseMojo.DIR,
