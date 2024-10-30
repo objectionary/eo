@@ -105,9 +105,8 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
     public int hashCode() {
-        return super.hashCode();
+        return super.hashCode() + 1;
     }
 
     @Override
