@@ -100,11 +100,6 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof Phi && this.hashCode() == obj.hashCode();
-    }
-
-    @Override
     public String φTerm() {
         final List<String> list = new ArrayList<>(this.attrs.size());
         final String format = "%s ↦ %s";
