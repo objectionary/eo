@@ -155,11 +155,12 @@ public final class PhiMojo extends SafeMojo {
     /**
      * Translate one XMIR file to .phi file.
      * @param xmir The XMIR file
-     * @param position Its position in the entire pack
      * @param xsline Chain of XSL transformations
+     * @param position Its position in the entire pack
      * @param total How many files are there
      * @return How many files translated (either 1 or 0)
      * @throws Exception If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private int translate(final Path xmir, final Xsline xsline, final int position, final int total)
         throws Exception {
