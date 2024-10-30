@@ -37,7 +37,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: |-
           git fetch --tags --force && \
-          export latest=$(git tag --sort=creatordate | tail -1) && \
+          latest=$(git tag --sort=creatordate | tail -1) && \
+          export latest \
           sed -E -i "s/<version>[^<]+/<version>${latest}/g" eo-maven-plugin/README.md
       - uses: peter-evans/create-pull-request@v7
         with:
