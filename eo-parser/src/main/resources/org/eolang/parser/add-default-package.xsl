@@ -36,7 +36,19 @@ SOFTWARE.
     hello > @
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and not(contains(@base, '.')) and not(@ref) and not(@base = //meta[head='alias']/part[1]) and @base != '@' and @base != 'Q' and @base != '^' and @base != '&amp;' and @base != '$' and @base != '&lt;']">
+  <xsl:template match="o[@base]">
+    <xsl:apply-templates select="." mode="with-base"/>
+  </xsl:template>
+  <xsl:template match="o[not(@ref)]" mode="with-base">
+    <xsl:apply-templates select="." mode="no-refs"/>
+  </xsl:template>
+  <xsl:template match="o[not(contains(@base, '.'))]" mode="no-refs">
+    <xsl:apply-templates select="." mode="no-dots"/>
+  </xsl:template>
+  <xsl:template match="o[@base!='@' and @base!='Q' and @base!='^' and @base!='&amp;' and @base!='$' and @base!='&lt;']" mode="no-dots">
+    <xsl:apply-templates select="." mode="no-specials"/>
+  </xsl:template>
+  <xsl:template match="o[not(@base=/program/metas/meta[head='alias']/part[1])]" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base">
         <xsl:text>org.eolang.</xsl:text>
@@ -45,7 +57,7 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
