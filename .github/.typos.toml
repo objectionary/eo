@@ -21,4 +21,7 @@
 # SOFTWARE.
 
 [files]
-extend-exclude = ["eo-runtime/src/main/java/EOorg/EOeolang/EOfs/EOfile$EOis_directory.java"]
+extend-exclude = [
+    "eo-runtime/src/main/java/EOorg/EOeolang/EOfs/EOfile$EOis_directory.java",
+    "eo-parser/src/test/resources/org/eolang/parser/benchmark/native.xmir"
+]
