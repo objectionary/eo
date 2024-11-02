@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="stars-to-tuples" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="//o[@star]">
+  <xsl:template match="o[@star]">
     <xsl:choose>
       <xsl:when test="count(o)=0">
         <xsl:choose>

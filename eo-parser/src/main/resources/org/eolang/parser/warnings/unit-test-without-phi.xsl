@@ -27,7 +27,7 @@ SOFTWARE.
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="/program[//meta[head='junit' or head='tests']]/objects/o[@abstract][count(o[@name='@'])=0]">
+      <xsl:for-each select="/program[metas/meta[head='tests']]/objects/o[@abstract][count(o[@name='@'])=0]">
         <xsl:element name="error">
           <xsl:attribute name="check">
             <xsl:text>unit-test-without-phi</xsl:text>
