@@ -26,16 +26,17 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.footprint.CacheVersion;
-import org.eolang.maven.footprint.FtCached;
-import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.hash.ChCached;
 import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChRemote;
@@ -64,7 +65,7 @@ final class ParseMojoTest {
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, AssembleMojo.XMIR)
             )
         );
         MatcherAssert.assertThat(
@@ -97,15 +98,30 @@ final class ParseMojoTest {
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
-        new FtCached(
-            new CacheVersion(FakeMaven.pluginVersion(), hash.value()),
-            cache.resolve(ParseMojo.PARSED),
-            new FtDefault(maven.targetPath())
-        ).save("foo.x.main", "xmir", () -> expected);
+        final Path base = maven.targetPath().resolve(ParseMojo.DIR);
+        final Path target = new Place("foo.x.main").make(base, AssembleMojo.XMIR);
+        new FpDefault(
+            src -> expected,
+            cache.resolve(ParseMojo.CACHE),
+            FakeMaven.pluginVersion(),
+            hash.value(),
+            base.relativize(target)
+        ).apply(maven.programTojo().source(), target);
+        target.toFile().delete();
+        Files.setLastModifiedTime(
+            cache.resolve(
+                Paths
+                    .get(ParseMojo.CACHE)
+                    .resolve(FakeMaven.pluginVersion())
+                    .resolve(hash.value())
+                    .resolve("foo/x/main.xmir")
+            ),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
             ParseMojo.DIR,
-            TranspileMojo.EXT
+            AssembleMojo.XMIR
         );
         MatcherAssert.assertThat(
             String.format("We expect that that %s is taken from the cache, but it didn't", actual),
@@ -128,7 +144,7 @@ final class ParseMojoTest {
                 .execute(new FakeMaven.Parse())
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+                String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, AssembleMojo.XMIR)
             )
         );
     }
@@ -141,7 +157,7 @@ final class ParseMojoTest {
             .execute(new FakeMaven.Parse())
             .result();
         final File parsed = result.get(
-            String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, TranspileMojo.EXT)
+            String.format("target/%s/foo/x/main.%s", ParseMojo.DIR, AssembleMojo.XMIR)
         ).toFile();
         final long before = parsed.lastModified();
         maven.execute(ParseMojo.class);
@@ -176,7 +192,7 @@ final class ParseMojoTest {
                         "target/%s/foo/x/main%s.%s",
                         ParseMojo.DIR,
                         FakeMaven.suffix(program),
-                        TranspileMojo.EXT
+                        AssembleMojo.XMIR
                     ))
             );
         }

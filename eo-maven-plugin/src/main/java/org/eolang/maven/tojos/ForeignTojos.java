@@ -165,6 +165,14 @@ public final class ForeignTojos implements Closeable {
     }
 
     /**
+     * Get the tojos that have corresponding shaken XMIR.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> withShaken() {
+        return this.select(row -> row.exists(Attribute.SHAKEN.getKey()));
+    }
+
+    /**
      * Get the tojos that doesn't have dependency.
      * @return The tojos.
      */
@@ -201,6 +209,14 @@ public final class ForeignTojos implements Closeable {
      */
     public Collection<ForeignTojo> withOptimized() {
         return this.select(row -> row.exists(Attribute.OPTIMIZED.getKey()));
+    }
+
+    /**
+     * Get the tojos that have corresponding verified xmir.
+     * @return The tojos.
+     */
+    public Collection<ForeignTojo> verified() {
+        return this.select(row -> row.exists(Attribute.VERIFIED.getKey()));
     }
 
     /**

@@ -25,6 +25,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.nio.file.Path;
@@ -32,12 +33,15 @@ import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.TojoHash;
 
 /**
  * Mojo that checks errors and warnings after "assemble" phase.
@@ -50,6 +54,15 @@ import org.eolang.maven.tojos.ForeignTojo;
     threadSafe = true
 )
 public final class VerifyMojo extends SafeMojo {
+    /**
+     * The directory where to transpile to.
+     */
+    public static final String DIR = "6-verify";
+
+    /**
+     * Subdirectory for optimized cache.
+     */
+    static final String CACHE = "verified";
 
     /**
      * Whether we should fail on warning.
@@ -66,26 +79,20 @@ public final class VerifyMojo extends SafeMojo {
 
     @Override
     void exec() {
-        final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
-        final int total = new OptimizedTojos(
-            new Filtered<>(
-                ForeignTojo::notVerified,
-                tojos
-            ),
-            this.optimization(),
-            new OptimizationTask(
-                new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
-                ),
-                new MapOf<String, String>(
-                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), "6-verify"),
-                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), "verified")
-                ),
-                ForeignTojo::withVerified,
-                ForeignTojo::shaken
+        final Collection<ForeignTojo> tojos = this.scopedTojos().withShaken();
+        final Optimization optimization = this.optimization();
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> () -> this.verified(tojo, optimization),
+                    new Filtered<>(
+                        ForeignTojo::notVerified,
+                        tojos
+                    )
+                )
             )
-        ).count();
+        ).intValue();
         if (total > 0) {
             Logger.info(
                 this,
@@ -97,6 +104,31 @@ public final class VerifyMojo extends SafeMojo {
         } else {
             Logger.info(this, "No XMIR programs out of %d verified", tojos.size());
         }
+    }
+
+    /**
+     * XMIR verified to another XMIR.
+     * @param tojo Foreign tojo
+     * @param optimization Verification optimization
+     * @return Amount of verified tojos
+     * @throws Exception If failed to verify
+     */
+    private int verified(final ForeignTojo tojo, final Optimization optimization) throws Exception {
+        final Path source = tojo.shaken();
+        final XML xmir = new XMLDocument(source);
+        final String name = xmir.xpath("/program/@name").get(0);
+        final Path base = this.targetDir.toPath().resolve(VerifyMojo.DIR);
+        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        tojo.withVerified(
+            new FpDefault(
+                src -> optimization.apply(xmir).toString(),
+                this.cache.resolve(VerifyMojo.CACHE),
+                this.plugin.getVersion(),
+                new TojoHash(tojo),
+                base.relativize(target)
+            ).apply(source, target)
+        );
+        return 1;
     }
 
     /**
@@ -125,7 +157,7 @@ public final class VerifyMojo extends SafeMojo {
      * @return XML.
      */
     private XML logErrors(final XML xml) {
-        for (final XML error: xml.nodes("/program/errors/error")) {
+        for (final XML error : xml.nodes("/program/errors/error")) {
             final String message = Logger.format(
                 "%[file]s, line %s: %s",
                 xml.xpath("/program/@source").get(0),
@@ -149,5 +181,4 @@ public final class VerifyMojo extends SafeMojo {
         }
         return xml;
     }
-
 }

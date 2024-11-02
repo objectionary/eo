@@ -28,8 +28,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eolang.maven.footprint.Footprint;
-import org.eolang.maven.footprint.FtDefault;
 
 /**
  * To create the cargo project.
@@ -40,11 +38,6 @@ public final class Project {
      * Path to cargo project.
      */
     private final Path dest;
-
-    /**
-     * Footprint.
-     */
-    private final Footprint footprint;
 
     /**
      * Content for Cargo.toml file.
@@ -62,7 +55,6 @@ public final class Project {
      * @param target Destination path.
      */
     public Project(final Path target) {
-        this.footprint = new FtDefault(target);
         this.dest = target;
         this.cargo = new Cargo("common");
         this.modules = new HashSet<>();
@@ -104,9 +96,9 @@ public final class Project {
      */
     public Path save() throws IOException {
         for (final Module module: this.modules) {
-            new Commented(module, "//").save(this.footprint);
+            new Commented(module, "//").save(this.dest);
         }
-        new Commented(this.cargo, "#").save(this.footprint);
+        new Commented(this.cargo, "#").save(this.dest);
         return this.dest;
     }
 }

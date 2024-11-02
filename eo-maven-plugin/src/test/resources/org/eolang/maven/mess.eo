@@ -20,10 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-+architect yegor256@gmail.com
-+package org.eolang.examples
 +alias org.eolang.io.stdout
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
 +tests
++package org.eolang.examples
++version 0.0.0
 
 3.14 > pi
 
@@ -35,7 +37,7 @@
       pi
       666
       two.f1.f2 x
-  stdout > z
+  stdout > @
     sprintf > f
       "Hello, ".trim
       x 0x1fff n
@@ -48,6 +50,6 @@ alpha > beta
 [n x] > mess
   # This is the default 64+ symbols comment in front of named abstract object.
   [a] > test /int
-  n.hello > f
+  n.hello > @
     "Hello, world!"
     x

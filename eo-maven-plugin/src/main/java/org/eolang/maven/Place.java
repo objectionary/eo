@@ -67,9 +67,8 @@ public final class Place {
         final StringBuilder out = new StringBuilder();
         out.append(this.name.title().replace(".", File.separator));
         this.name.label().ifPresent(
-            version -> {
-                out.append(new JoinedUnderscore("", version).asString());
-            });
+            version -> out.append(new JoinedUnderscore("", version).asString())
+        );
         if (!ext.isEmpty()) {
             out.append('.').append(ext);
         }

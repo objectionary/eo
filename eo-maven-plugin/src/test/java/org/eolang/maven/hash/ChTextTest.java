@@ -117,6 +117,18 @@ final class ChTextTest {
     }
 
     @Test
+    void readsHashByExactValueOnly() {
+        Assertions.assertThrows(
+            ChText.NotFound.class,
+            () -> new ChText(
+                () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.22",
+                "0.1.2"
+            ).value(),
+            "Must not find this tag, because it's not an exact match"
+        );
+    }
+
+    @Test
     void readsHashByHash() {
         MatcherAssert.assertThat(
             "Hash must be itself, even if it's absent in the table",

@@ -34,18 +34,15 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.cactoos.Scalar;
+import org.cactoos.Func;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
-import org.eolang.maven.footprint.CacheVersion;
-import org.eolang.maven.footprint.Footprint;
-import org.eolang.maven.footprint.FtCached;
-import org.eolang.maven.footprint.FtDefault;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Rel;
+import org.eolang.maven.tojos.TojoHash;
 import org.eolang.parser.EoSyntax;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -77,7 +74,7 @@ public final class ParseMojo extends SafeMojo {
     /**
      * Subdirectory for parsed cache.
      */
-    public static final String PARSED = "parsed";
+    public static final String CACHE = "parsed";
 
     /**
      * The current version of eo-maven-plugin.
@@ -95,10 +92,7 @@ public final class ParseMojo extends SafeMojo {
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
                 new Mapped<>(
-                    tojo -> (Scalar<Integer>) () -> {
-                        this.parse(tojo);
-                        return 1;
-                    },
+                    tojo -> () -> this.parsed(tojo),
                     new Filtered<>(
                         ForeignTojo::notParsed,
                         this.scopedTojos().withSources()
@@ -121,68 +115,60 @@ public final class ParseMojo extends SafeMojo {
      * Parse EO file to XML.
      *
      * @param tojo The tojo
+     * @return Amount of parsed tojos
      * @throws IOException If fails
      */
     @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.ExceptionAsFlowControl"})
-    private void parse(final ForeignTojo tojo) throws IOException {
+    private int parsed(final ForeignTojo tojo) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        Footprint footprint = new FtDefault(
-            this.targetDir.toPath().resolve(ParseMojo.DIR)
+        final Path base = this.targetDir.toPath().resolve(ParseMojo.DIR);
+        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        tojo.withXmir(
+            new FpDefault(
+                ParseMojo.parse(name),
+                this.cache.resolve(ParseMojo.CACHE),
+                this.plugin.getVersion(),
+                new TojoHash(tojo),
+                base.relativize(target)
+            ).apply(source, target)
         );
-        if (tojo.hasHash()) {
-            footprint = new FtCached(
-                new CacheVersion(this.plugin.getVersion(), tojo.hash()),
-                this.cache.resolve(ParseMojo.PARSED),
-                footprint
-            );
-        }
-        footprint.save(
-            name,
-            "xmir",
-            () -> {
-                final String parsed = new XMLDocument(
-                    new Xembler(
-                        new Directives().xpath("/program").attr(
-                            "source",
-                            source.toAbsolutePath()
-                        )
-                    ).applyQuietly(
-                        new EoSyntax(
-                            name,
-                            new InputOf(source)
-                        ).parsed().node()
-                    )
-                ).toString();
-                Logger.debug(
-                    this,
-                    "Parsed program %s:\n %s",
-                    name,
-                    parsed
-                );
-                return parsed;
-            }
-        );
-        final XML xmir = new XMLDocument(footprint.load(name, "xmir"));
-        final List<XML> errors = xmir.nodes("/program/errors/error");
-        final Path target = new Place(name).make(
-            this.targetDir.toPath().resolve(ParseMojo.DIR),
-            TranspileMojo.EXT
-        );
-        tojo.withXmir(target.toAbsolutePath());
+        final List<XML> errors = new XMLDocument(target).nodes("/program/errors/error");
         if (errors.isEmpty()) {
-            Logger.debug(
-                this, "Parsed %s to %s",
-                new Rel(source), new Rel(target)
-            );
+            Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
         } else {
             for (final XML error : errors) {
                 Logger.error(
                     this,
-                    "Failed to parse '%s:%s': %s",
+                    "Failed to parse '%[file]s:%s': %s",
                     source, error.xpath("@line").get(0), error.xpath("text()").get(0)
                 );
             }
         }
+        return 1;
+    }
+
+    /**
+     * Function that parses EO source.
+     * @param name Name of the EO object
+     * @return Function that parses EO source
+     */
+    private static Func<Path, String> parse(final String name) {
+        return source -> {
+            final String parsed = new XMLDocument(
+                new Xembler(
+                    new Directives().xpath("/program").attr(
+                        "source", source.toAbsolutePath()
+                    )
+                ).applyQuietly(new EoSyntax(name, new InputOf(source)).parsed().node())
+            ).toString();
+            Logger.debug(
+                ParseMojo.class,
+                "Parsed program %s:\n %s",
+                name,
+                parsed
+            );
+            return parsed;
+        };
     }
 }

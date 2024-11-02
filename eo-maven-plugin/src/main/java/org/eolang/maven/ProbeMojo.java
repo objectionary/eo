@@ -48,7 +48,6 @@ import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.objectionary.Objectionaries;
 import org.eolang.maven.objectionary.ObjsDefault;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.Rel;
 
 /**
  * Go through all `probe` metas in XMIR files, try to locate the
@@ -63,6 +62,7 @@ import org.eolang.maven.util.Rel;
  *  duplication. One more abstract class is not an option. We can either join
  *  them into one mojo, or composite them inside other mojo.
  * @checkstyle CyclomaticComplexityCheck (300 lines)
+ * @checkstyle NestedIfDepthCheck (300 lines)
  */
 @Mojo(
     name = "probe",
@@ -92,65 +92,62 @@ public final class ProbeMojo extends SafeMojo {
      * Objectionaries.
      * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Objectionaries objectionaries = new ObjsDefault(
-        () -> this.cache,
-        () -> this.session.getRequest().isUpdateSnapshots()
-    );
+    private final Objectionaries objectionaries = new ObjsDefault();
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
     public void exec() throws IOException {
-        if (this.hash == null) {
-            this.hash = new ChCached(
-                new ChNarrow(
-                    new ChRemote(this.tag)
-                )
-            );
-        }
-        final Collection<ObjectName> probed = new HashSet<>(1);
-        final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
-        for (final ForeignTojo tojo : tojos) {
-            final Path src = tojo.shaken();
-            final Collection<ObjectName> objects = this.probes(src);
-            if (!objects.isEmpty()) {
-                Logger.info(this, "Probing object(s): %s", objects);
-            }
-            int count = 0;
-            for (final ObjectName object : objects) {
-                if (!this.objectionaries.contains(object)) {
-                    continue;
-                }
-                ++count;
-                this.scopedTojos()
-                    .add(object)
-                    .withDiscoveredAt(src);
-                probed.add(object);
-            }
-            tojo.withHash(
-                new ChNarrow(
-                    new OnSwap(
-                        this.withVersions,
-                        new OnVersioned(tojo.identifier(), this.hash)
-                    ).hash()
-                )
-            ).withProbed(count);
-        }
-        if (tojos.isEmpty()) {
-            if (this.scopedTojos().size() == 0) {
-                Logger.warn(this, "Nothing to probe, since there are no programs");
-            } else {
-                Logger.info(this, "Nothing to probe, all programs checked already");
-            }
-        } else if (probed.isEmpty()) {
-            Logger.debug(
-                this, "No probes found in %d programs",
-                tojos.size()
+        if (this.offline) {
+            Logger.info(
+                this,
+                "No programs were probed because eo.offline flag is TRUE"
             );
         } else {
-            Logger.info(
-                this, "Found %d probe(s) in %d program(s): %s",
-                probed.size(), tojos.size(), probed
-            );
+            if (this.hash == null) {
+                this.hash = new ChCached(
+                    new ChNarrow(
+                        new ChRemote(this.tag)
+                    )
+                );
+            }
+            final Collection<ObjectName> probed = new HashSet<>(1);
+            final Collection<ForeignTojo> tojos = this.scopedTojos().unprobed();
+            for (final ForeignTojo tojo : tojos) {
+                final Path src = tojo.shaken();
+                final Collection<ObjectName> objects = this.probes(src);
+                if (!objects.isEmpty()) {
+                    Logger.info(this, "Probing object(s): %s", objects);
+                }
+                int count = 0;
+                for (final ObjectName object : objects) {
+                    if (!this.objectionaries.contains(object)) {
+                        continue;
+                    }
+                    ++count;
+                    this.scopedTojos()
+                        .add(object)
+                        .withDiscoveredAt(src);
+                    probed.add(object);
+                }
+                tojo.withProbed(count);
+            }
+            if (tojos.isEmpty()) {
+                if (this.scopedTojos().size() == 0) {
+                    Logger.warn(this, "Nothing to probe, since there are no programs");
+                } else {
+                    Logger.info(this, "Nothing to probe, all programs checked already");
+                }
+            } else if (probed.isEmpty()) {
+                Logger.debug(
+                    this, "No probes found in %d programs",
+                    tojos.size()
+                );
+            } else {
+                Logger.info(
+                    this, "Found %d probe(s) in %d program(s): %s",
+                    probed.size(), tojos.size(), probed
+                );
+            }
         }
     }
 
@@ -182,14 +179,12 @@ public final class ProbeMojo extends SafeMojo {
             ).iterator()
         );
         if (objects.isEmpty()) {
-            Logger.debug(
-                this, "Didn't find any probed objects in %s",
-                new Rel(file)
-            );
+            Logger.debug(this, "Didn't find any probed objects in %[file]s", file);
         } else {
             Logger.debug(
-                this, "Found %d probed objects in %s: %s",
-                objects.size(), new Rel(file), objects
+                this,
+                "Found %d probed objects in %[file]s: %s",
+                objects.size(), file, objects
             );
         }
         return objects;

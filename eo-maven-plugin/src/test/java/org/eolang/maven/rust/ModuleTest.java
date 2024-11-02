@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.BinarizeParseTest;
-import org.eolang.maven.footprint.FtDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ final class ModuleTest {
         final String content = "content";
         final String name = "name";
         final Module module = new Module(content, name);
-        module.save(new FtDefault(temp));
+        module.save(temp);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new TextOf(

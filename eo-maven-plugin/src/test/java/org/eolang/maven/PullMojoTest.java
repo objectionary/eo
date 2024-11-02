@@ -26,13 +26,18 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.LinkedList;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
+import org.cactoos.text.TextOf;
+import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.hash.ChCached;
+import org.eolang.maven.hash.ChNarrow;
 import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
@@ -48,6 +53,7 @@ import org.eolang.maven.objectionary.OyRemote;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,8 +86,7 @@ final class PullMojoTest {
         maven.foreignTojos()
             .add(PullMojoTest.STDOUT)
             .withVersion("*.*.*");
-        maven.with("skip", false)
-            .execute(PullMojo.class);
+        maven.with("skip", false).execute(PullMojo.class);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             PullMojoTest.exists(temp, PullMojoTest.STDOUT),
@@ -138,11 +143,6 @@ final class PullMojoTest {
         );
     }
 
-    /**
-     * Offline hash test.
-     *
-     * @param temp Temporary directory for test.
-     */
     @Test
     void pullsUsingOfflineHash(@TempDir final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
@@ -322,6 +322,98 @@ final class PullMojoTest {
                 line -> line.contains("Failed to pull object discovered at")
             ),
             "Log should contain info where failed to pull object was discovered at, but it does not"
+        );
+    }
+
+    @Test
+    void skipsAlreadyPulled(@TempDir final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withHelloWorld()
+            .execute(new FakeMaven.Pull());
+        final Path path = maven.result().get(
+            String.format("target/%s/org/eolang/bytes.%s", PullMojo.DIR, AssembleMojo.EO)
+        );
+        final long mtime = path.toFile().lastModified();
+        maven.execute(PullMojo.class);
+        MatcherAssert.assertThat(
+            "PullMojo must skip pulling if source was already downloaded",
+            path.toFile().lastModified(),
+            Matchers.is(mtime)
+        );
+    }
+
+    @Test
+    void savesPulledResultsToCache(@TempDir final Path temp) throws IOException {
+        final Path cache = temp.resolve("cache");
+        final CommitHash hash = new ChCached(
+            new ChNarrow(
+                new ChRemote("master")
+            )
+        );
+        new FakeMaven(temp)
+            .withHelloWorld()
+            .with("cache", cache)
+            .with("hash", hash)
+            .execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            "Pulled results must be saved to cache",
+            cache.resolve(PullMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash.value())
+                .resolve("org/eolang/bytes.eo")
+                .toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void getsAlreadyPulledResultsFromCache(@TempDir final Path temp) throws Exception {
+        final TextOf cached = new TextOf(
+            new ResourceOf("org/eolang/maven/sum.eo")
+        );
+        final Path cache = temp.resolve("cache");
+        final String hash = "abcdef1";
+        new Saved(
+            cached,
+            cache
+                .resolve(PullMojo.CACHE)
+                .resolve(FakeMaven.pluginVersion())
+                .resolve(hash)
+                .resolve("org/eolang/io/stdout.eo")
+        ).value();
+        Files.setLastModifiedTime(
+            cache.resolve(
+                Paths
+                    .get(PullMojo.CACHE)
+                    .resolve(FakeMaven.pluginVersion())
+                    .resolve(hash)
+                    .resolve("org/eolang/io/stdout.eo")
+            ),
+            FileTime.fromMillis(System.currentTimeMillis() + 50_000)
+        );
+        new FakeMaven(temp)
+            .withProgram(
+                "# This is the default 64+ symbols comment in front of named abstract object.",
+                "[] > app",
+                "  QQ.io.stdout > @"
+            )
+            .with("hash", new CommitHash.ChConstant(hash))
+            .with("cache", cache)
+            .execute(new FakeMaven.Pull());
+        MatcherAssert.assertThat(
+            "PullMojo should take source from cache, but it does not",
+            new TextOf(
+                new HmBase(temp).load(
+                    Paths.get(
+                        String.format(
+                            "target/%s/org/eolang/io/stdout.%s",
+                            PullMojo.DIR,
+                            AssembleMojo.EO
+                        )
+                    )
+                ).asBytes()
+            ).asString(),
+            Matchers.is(cached.asString())
         );
     }
 

@@ -32,7 +32,6 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.map.MapEntry;
 import org.eolang.maven.hash.ChCached;
-import org.eolang.maven.hash.ChPattern;
 import org.eolang.maven.hash.ChRemote;
 import org.eolang.maven.hash.ChText;
 import org.eolang.maven.hash.CommitHash;
@@ -62,7 +61,6 @@ final class ProbeMojoTest {
     private static final ObjectName STDOUT = new OnVersioned("org.eolang.io.stdout", "9c93528");
 
     @Test
-    @ExtendWith(WeAreOnline.class)
     void findsProbes(@TempDir final Path temp) throws Exception {
         final String expected = "5";
         MatcherAssert.assertThat(
@@ -88,11 +86,11 @@ final class ProbeMojoTest {
             new ResourceOf(tags),
             Paths.get("tags.txt")
         );
+        final String expected = "5";
         MatcherAssert.assertThat(
             String.format(
-                "The hash of the program should be equal to the hash of the commit for the '%s' tag. See '%s' file",
-                tag,
-                tags
+                "Number of objects that we should find during the probing phase should be equal %s",
+                expected
             ),
             new FakeMaven(temp)
                 .with(
@@ -104,27 +102,12 @@ final class ProbeMojoTest {
                 .withProgram(ProbeMojoTest.program())
                 .execute(new FakeMaven.Probe())
                 .programTojo()
-                .hash(),
-            Matchers.equalTo("mmmmmmm")
+                .probed(),
+            Matchers.equalTo(expected)
         );
     }
 
     @Test
-    void findsProbesViaOfflineHash(@TempDir final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "The hash of the program tojo should be equal to the given hash pattern",
-            new FakeMaven(temp)
-                .with("hash", new ChPattern("*.*.*:abcdefg", "1.0.0"))
-                .withProgram(ProbeMojoTest.program())
-                .execute(new FakeMaven.Probe())
-                .programTojo()
-                .hash(),
-            Matchers.equalTo("abcdefg")
-        );
-    }
-
-    @Test
-    @ExtendWith(WeAreOnline.class)
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
         final String tag = "0.28.10";
         MatcherAssert.assertThat(
@@ -147,7 +130,6 @@ final class ProbeMojoTest {
     }
 
     @Test
-    @ExtendWith(WeAreOnline.class)
     void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
@@ -169,15 +151,9 @@ final class ProbeMojoTest {
             maven.programTojo().probed(),
             Matchers.equalTo("1")
         );
-        MatcherAssert.assertThat(
-            "Program tojo entry in tojos after probing should contain given hash",
-            maven.programTojo().hash(),
-            Matchers.equalTo(hash.value())
-        );
     }
 
     @Test
-    @ExtendWith(WeAreOnline.class)
     void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
@@ -208,11 +184,6 @@ final class ProbeMojoTest {
             "Program tojo after probing should contain exactly two probed objects",
             maven.programTojo().probed(),
             Matchers.equalTo("2")
-        );
-        MatcherAssert.assertThat(
-            "Program tojo after probing should have given hash",
-            maven.programTojo().hash(),
-            Matchers.equalTo(first.value())
         );
     }
 

@@ -24,7 +24,10 @@
 package org.eolang.maven.rust;
 
 import java.io.IOException;
-import org.eolang.maven.footprint.Footprint;
+import java.nio.file.Path;
+import org.cactoos.scalar.ScalarOf;
+import org.eolang.maven.Place;
+import org.eolang.maven.footprint.Saved;
 
 /**
  * Created to be saved.
@@ -55,11 +58,11 @@ public abstract class Savable {
 
     /**
      * Save it by footprint.
-     * @param footprint Footprint.
+     * @param base Base path to save to.
      * @throws IOException If any issues with IO.
      */
-    public void save(final Footprint footprint) throws IOException {
-        footprint.save(this.name, this.ext, this::content);
+    public void save(final Path base) throws IOException {
+        new Saved(new ScalarOf<>(this::content), new Place(this.name).make(base, this.ext)).value();
     }
 
     /**

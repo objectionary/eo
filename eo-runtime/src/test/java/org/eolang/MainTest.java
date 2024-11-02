@@ -209,7 +209,7 @@ final class MainTest {
             "-cp",
             System.getProperty("java.class.path"),
             Main.class.getCanonicalName()
-        ).with(cmds).withCheck(false).exec();
+        ).with(cmds).withCheck(false).exec().stdout();
         return stdout.replaceFirst(
             String.format(
                 "Picked up .*%s",

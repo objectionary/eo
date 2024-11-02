@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
@@ -60,16 +59,14 @@ final class ObjectsIndex {
      */
     ObjectsIndex() {
         this(
-            new ScalarOf<Set<String>>(
-                () -> new SetOf<>(
+            () -> new SetOf<>(
+                new Mapped<>(
+                    ObjectsIndex::convert,
                     new Mapped<>(
-                        ObjectsIndex::convert,
-                        new Mapped<>(
-                            Text::asString,
-                            new Split(
-                                ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
-                                "\n"
-                            )
+                        Text::asString,
+                        new Split(
+                            ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
+                            "\n"
                         )
                     )
                 )
@@ -116,7 +113,8 @@ final class ObjectsIndex {
      */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static Text asText(final URL url) {
-        final String body = new Unchecked<>(() -> new TextOf(url).asString()).value();
-        return new TextOf(body);
+        return new TextOf(
+            new Unchecked<>(() -> new TextOf(url).asString())
+        );
     }
 }

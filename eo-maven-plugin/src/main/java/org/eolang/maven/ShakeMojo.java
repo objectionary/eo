@@ -24,19 +24,23 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Filtered;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.number.SumOf;
+import org.eolang.maven.footprint.FpDefault;
 import org.eolang.maven.optimization.OptSpy;
 import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
+import org.eolang.maven.tojos.TojoHash;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
@@ -56,22 +60,12 @@ public final class ShakeMojo extends SafeMojo {
     /**
      * Subdirectory for shaken cache.
      */
-    static final String SHAKEN = "shaken";
+    static final String CACHE = "shaken";
 
     /**
      * The directory where to place intermediary files.
      */
     static final String STEPS = "3-shake-steps";
-
-    /**
-     * The map with directories of ShakeMojo.
-     * @checkstyle DiamondOperatorCheck (10 lines)
-     */
-    @SuppressWarnings("PMD.UseDiamondOperator")
-    private static final Map<String, String> DIRECTORIES = new MapOf<String, String>(
-        new MapEntry<>(OptimizationFolder.TARGET.getKey(), ShakeMojo.DIR),
-        new MapEntry<>(OptimizationFolder.CACHE.getKey(), ShakeMojo.SHAKEN)
-    );
 
     /**
      * Track optimization steps into intermediate XML files?
@@ -86,22 +80,19 @@ public final class ShakeMojo extends SafeMojo {
     @Override
     void exec() {
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
-        final int total = new OptimizedTojos(
-            new Filtered<>(
-                ForeignTojo::notShaken,
-                tojos
-            ),
-            this.optimization(),
-            new OptimizationTask(
-                new MapOf<String, Path>(
-                    new MapEntry<>(OptimizationFolder.TARGET.getKey(), this.targetDir.toPath()),
-                    new MapEntry<>(OptimizationFolder.CACHE.getKey(), this.cache)
-                ),
-                ShakeMojo.DIRECTORIES,
-                ForeignTojo::withShaken,
-                ForeignTojo::optimized
+        final Optimization optimization = this.optimization();
+        final int total = new SumOf(
+            new Threads<>(
+                Runtime.getRuntime().availableProcessors(),
+                new Mapped<>(
+                    tojo -> () -> this.shaken(tojo, optimization),
+                    new Filtered<>(
+                        ForeignTojo::notShaken,
+                        tojos
+                    )
+                )
             )
-        ).count();
+        ).intValue();
         if (total > 0) {
             Logger.info(
                 this,
@@ -111,6 +102,31 @@ public final class ShakeMojo extends SafeMojo {
         } else {
             Logger.debug(this, "No XMIR programs out of %d shaken", tojos.size());
         }
+    }
+
+    /**
+     * XMIR shaken to another XMIR.
+     * @param tojo Foreign tojo
+     * @param optimization Optimization to apply to XMIR
+     * @return Amount of optimized XMIR files
+     * @throws Exception If fails
+     */
+    private int shaken(final ForeignTojo tojo, final Optimization optimization) throws Exception {
+        final Path source = tojo.optimized();
+        final XML xmir = new XMLDocument(source);
+        final String name = xmir.xpath("/program/@name").get(0);
+        final Path base = this.targetDir.toPath().resolve(ShakeMojo.DIR);
+        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        tojo.withShaken(
+            new FpDefault(
+                src -> optimization.apply(xmir).toString(),
+                this.cache.resolve(ShakeMojo.CACHE),
+                this.plugin.getVersion(),
+                new TojoHash(tojo),
+                base.relativize(target)
+            ).apply(source, target)
+        );
+        return 1;
     }
 
     /**

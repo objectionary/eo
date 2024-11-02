@@ -29,22 +29,6 @@
 +version 0.0.0
 
 # Test.
-[] > invokes-file-write-correctly
-  "Hello, win32!\n" > msg!
-  called. > called
-    win32
-      "WriteFile"
-      *
-        win32.std-output-handle
-        msg
-        msg.size
-  or. > @
-    os.is-windows.not
-    and.
-      called.code
-      called.output.eq msg.size
-
-# Test.
 [] > returns-valid-win32-inet-addr-for-localhost
   code. > addr
     win32

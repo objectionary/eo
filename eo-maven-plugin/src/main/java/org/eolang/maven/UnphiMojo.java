@@ -115,7 +115,7 @@ public final class UnphiMojo extends SafeMojo {
                         final Path xmir = Paths.get(
                             relative.toString().replace(
                                 String.format(".%s", PhiMojo.EXT),
-                                String.format(".%s", TranspileMojo.EXT)
+                                String.format(".%s", AssembleMojo.XMIR)
                             )
                         );
                         final XML result = UnphiMojo.TRANSFORMATIONS.pass(

@@ -32,17 +32,14 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -50,15 +47,28 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.cactoos.experimental.Threads;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.number.SumOf;
+import org.cactoos.text.Joined;
+import org.eolang.maven.footprint.CachePath;
+import org.eolang.maven.footprint.Footprint;
+import org.eolang.maven.footprint.FpDefault;
+import org.eolang.maven.footprint.FpFork;
+import org.eolang.maven.footprint.FpGenerated;
+import org.eolang.maven.footprint.FpIfReleased;
+import org.eolang.maven.footprint.FpIfTargetExists;
+import org.eolang.maven.footprint.FpIgnore;
+import org.eolang.maven.footprint.FpUpdateBoth;
+import org.eolang.maven.footprint.FpUpdateFromCache;
+import org.eolang.maven.optimization.OptSpy;
+import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.maven.util.HmBase;
-import org.eolang.maven.util.Rel;
+import org.eolang.maven.tojos.TojoHash;
 
 /**
- * Compile.
+ * Transpile.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (400 lines)
  */
 @Mojo(
     name = "transpile",
@@ -80,9 +90,14 @@ public final class TranspileMojo extends SafeMojo {
     public static final String DIR = "8-transpile";
 
     /**
-     * Extension for compiled sources in XMIR format (XML).
+     * Cache directory for transpiled sources.
      */
-    static final String EXT = "xmir";
+    public static final String CACHE = "transpiled";
+
+    /**
+     * Java extension.
+     */
+    public static final String JAVA = "java";
 
     /**
      * Parsing train with XSLs.
@@ -105,11 +120,6 @@ public final class TranspileMojo extends SafeMojo {
             )
         )
     );
-
-    /**
-     * Java extension.
-     */
-    private static final Pattern JAVA_EXT = Pattern.compile(".java", Pattern.LITERAL);
 
     /**
      * Target directory.
@@ -152,29 +162,30 @@ public final class TranspileMojo extends SafeMojo {
 
     @Override
     public void exec() {
-        final Collection<ForeignTojo> sources = this.scopedTojos().withOptimized();
+        final Collection<ForeignTojo> sources = this.scopedTojos().verified();
+        final Optimization optimization = this.transpilation();
         final long saved = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
-                new Mapped<>(tojo -> () -> this.transpile(tojo), sources)
+                new Mapped<>(tojo -> () -> this.transpiled(tojo, optimization), sources)
             )
         ).longValue();
         Logger.info(
-            this, "Transpiled %d XMIRs, created %d Java files in %s",
-            sources.size(), saved, new Rel(this.generatedDir)
+            this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
+            sources.size(), saved, this.generatedDir
         );
         if (this.addSourcesRoot) {
             this.project.addCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
-                this, "The directory added to Maven 'compile-source-root': %s",
-                new Rel(this.generatedDir)
+                this, "The directory added to Maven 'compile-source-root': %[file]s",
+                this.generatedDir
             );
         }
         if (this.addTestSourcesRoot) {
             this.project.addTestCompileSourceRoot(this.generatedDir.getAbsolutePath());
             Logger.info(
-                this, "The directory added to Maven 'test-compile-source-root': %s",
-                new Rel(this.generatedDir)
+                this, "The directory added to Maven 'test-compile-source-root': %[file]s",
+                this.generatedDir
             );
         }
     }
@@ -182,131 +193,118 @@ public final class TranspileMojo extends SafeMojo {
     /**
      * Transpile.
      * @param tojo Tojo that should be transpiled.
+     * @param transpilation Optimization that transpiles
      * @return Number of transpiled files.
      * @throws java.io.IOException If any issues with I/O
      */
-    private int transpile(final ForeignTojo tojo) throws IOException {
-        final Path file;
+    private long transpiled(final ForeignTojo tojo, final Optimization transpilation)
+        throws IOException {
+        final Path source;
         try {
-            file = tojo.verified();
+            source = tojo.verified();
         }  catch (final AttributeNotFoundException exception) {
             throw new IllegalStateException(
                 "You should check that 'Verify' goal of the plugin was run first",
                 exception
             );
         }
-        final XML input = new XMLDocument(file);
-        final String name = input.xpath("/program/@name").get(0);
-        final Place place = new Place(name);
-        final Path target = place.make(
-            this.targetDir.toPath().resolve(TranspileMojo.DIR),
-            TranspileMojo.EXT
-        );
-        final int saved;
-        if (
-            target.toFile().exists()
-                && target.toFile().lastModified() >= file.toFile().lastModified()
-                && target.toFile().lastModified() >= tojo.source().toFile().lastModified()
-        ) {
-            Logger.info(
-                this, "XMIR %s (%s) were already transpiled to %s",
-                new Rel(file), name, new Rel(target)
-            );
-            saved = 0;
-        } else {
-            final List<Path> paths = this.transpile(input, target);
-            paths.forEach(p -> this.transpiledTojos.add(p, file));
-            saved = paths.size();
-        }
-        return saved;
+        final XML xmir = new XMLDocument(source);
+        final String name = xmir.xpath("/program/@name").get(0);
+        final Path base = this.targetDir.toPath().resolve(TranspileMojo.DIR);
+        final Path target = new Place(name).make(base, AssembleMojo.XMIR);
+        final Supplier<String> hsh = new TojoHash(tojo);
+        final AtomicBoolean rewrite = new AtomicBoolean(false);
+        new FpDefault(
+            src -> {
+                rewrite.set(true);
+                return transpilation.apply(xmir).toString();
+            },
+            this.cache.resolve(TranspileMojo.CACHE),
+            this.plugin.getVersion(),
+            hsh,
+            base.relativize(target)
+        ).apply(source, target);
+        return this.javaGenerated(rewrite.get(), target, hsh.get());
     }
 
     /**
-     * Transpile.
-     * @param input The .xmir file
-     * @param target The path to transpiled .xmir file
-     * @return List of Paths to generated java file
-     * @throws java.io.IOException If any issues with I/O
+     * Transpile optimization.
+     * @return Optimization that transpiles
      */
-    private List<Path> transpile(
-        final XML input,
-        final Path target
-    ) throws IOException {
-        final String name = input.xpath("/program/@name").get(0);
-        final Place place = new Place(name);
-        final Train<Shift> trn = new SpyTrain(
+    private Optimization transpilation() {
+        return new OptSpy(
             TranspileMojo.TRAIN,
-            place.make(this.targetDir.toPath().resolve(TranspileMojo.PRE), "")
+            this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
-        final Path dir = this.targetDir.toPath().resolve(TranspileMojo.DIR);
-        new HmBase(dir).save(new Xsline(trn).pass(input).toString(), dir.relativize(target));
-        final List<Path> javas = new JavaFiles(target, this.generatedDir.toPath()).save();
-        this.cleanUpClasses(javas);
-        return javas;
     }
 
     /**
-     * Clean up dirty classes.
-     * The method is trying to fix problem produced by dirty libraries:
-     * <a href="https://github.com/objectionary/eo-strings/issues/147"> eo-strings example </a>
-     * Some libraries by mistake can put ALL their compiled classes right into the final library
-     * jar, instead of only adding atoms. This can cause different runtime errors since the
-     * classpath will contain two classes with the same name:
-     * - The first class file will be added from dirty library
-     * - The second class with the same name will be compiled from the transpiled java file
-     * In order to prevent this, we remove all classes that have the java analog in the
-     * generated sources. In other words, if generated-sources (or generated-test-sources) folder
-     * has java classes, we expect that they will be only compiled from that folder.
-     * _____
-     * Synchronization in this method is necessary to prevent
-     * {@link java.nio.file.AccessDeniedException} on the Windows OS.
-     * You can read more about the original problem in the following issue:
-     * - <a href="https://github.com/objectionary/eo/issues/2370">issue link</a>
-     * In other words, concurrent file deletions on the Windows OS can lead to an
-     * {@link java.nio.file.AccessDeniedException}, which could crash the build.
-     * _____
-     * @param java The list of java files.
-     * @todo #2375:90min. Add concurrency tests for the TranspileMojo.cleanUpClasses method.
-     *  We should be sure that the method works correctly in a concurrent environment.
-     *  In order to do so we should add a test that will run the cleanUpClasses method in
-     *  multiple threads and check that the method works correctly without exceptions.
-     *  We can apply the same approach as mentioned in that post:
-     *  <a href="https://www.yegor256.com/2018/03/27/how-to-test-thread-safety.html">Post</a>
+     * Generate java files and count them.
+     * @param rewrite Rewrite .java files even if they exist
+     * @param target Full target path to XMIR after transpilation optimizations
+     * @param hsh Tojo hash
+     * @return Amount of generated .java files
+     * @throws IOException If fails to save files
      */
-    private void cleanUpClasses(final Collection<? extends Path> java) {
-        final Set<Path> unexpected = java.stream()
-            .map(path -> this.generatedDir.toPath().relativize(path))
-            .map(TranspileMojo::classExtension)
-            .map(binary -> this.outputDir.toPath().resolve(binary))
-            .collect(Collectors.toSet());
-        for (final Path binary : unexpected) {
-            try {
-                synchronized (TranspileMojo.class) {
-                    Files.deleteIfExists(binary);
+    private long javaGenerated(final boolean rewrite, final Path target, final String hsh)
+        throws IOException {
+        final Collection<XML> nodes = new XMLDocument(target).nodes("//class[java and not(@atom)]");
+        final AtomicLong saved = new AtomicLong(0L);
+        for (final XML java : nodes) {
+            final Path tgt = new Place(java.xpath("@java-name").get(0)).make(
+                this.generatedDir.toPath(), TranspileMojo.JAVA
+            );
+            final Supplier<Path> che = new CachePath(
+                this.cache.resolve(TranspileMojo.CACHE),
+                this.plugin.getVersion(),
+                hsh,
+                this.generatedDir.toPath().relativize(tgt)
+            );
+            final Footprint generated = new FpGenerated(
+                src -> {
+                    saved.incrementAndGet();
+                    Logger.debug(
+                        this, "Generated %s file from %s",
+                        tgt, target
+                    );
+                    return new Joined(
+                        "", java.xpath("java/text()")
+                    ).asString();
                 }
-            } catch (final IOException cause) {
-                throw new IllegalStateException(
-                    String.format("Can't delete file %s", binary),
-                    cause
-                );
-            }
+            );
+            new FpIfTargetExists(
+                new FpFork(
+                    (src, trgt) -> {
+                        if (rewrite) {
+                            Logger.debug(
+                                this,
+                                "Rewriting %[file]s because XMIR %[file]s was changed",
+                                trgt,
+                                target
+                            );
+                        }
+                        return rewrite;
+                    },
+                    new FpIfReleased(
+                        this.plugin.getVersion(),
+                        hsh,
+                        new FpUpdateBoth(generated, che),
+                        generated
+                    ),
+                    new FpIgnore()
+                ),
+                new FpIfReleased(
+                    this.plugin.getVersion(),
+                    hsh,
+                    new FpIfTargetExists(
+                        trgt -> che.get(),
+                        new FpUpdateFromCache(che),
+                        new FpUpdateBoth(generated, che)
+                    ),
+                    generated
+                )
+            ).apply(Paths.get(""), tgt);
         }
-    }
-
-    /**
-     * Rename java to class.
-     * @param java The java file
-     * @return The class file with the same (java) content.
-     */
-    private static Path classExtension(final Path java) {
-        final Path result;
-        final String filename = TranspileMojo.JAVA_EXT.matcher(java.getFileName().toString())
-            .replaceAll(".class");
-        if (java.getParent() == null) {
-            result = Paths.get(filename);
-        } else {
-            result = java.getParent().resolve(filename);
-        }
-        return result;
+        return saved.get();
     }
 }

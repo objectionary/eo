@@ -97,7 +97,9 @@ public final class ChText implements CommitHash {
                         new Flattened(
                             new FirstOf<>(
                                 new Filtered<>(
-                                    t -> t.asString().contains(this.tag),
+                                    t -> t.asString().matches(
+                                        String.format("^.+\\s\\Q%s\\E$", this.tag)
+                                    ),
                                     new Split(new TextOf(this.source), "\n")
                                 ),
                                 () -> {

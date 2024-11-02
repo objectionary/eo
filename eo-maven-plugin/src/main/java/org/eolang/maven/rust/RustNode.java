@@ -26,6 +26,7 @@ package org.eolang.maven.rust;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.yegor256.Jaxec;
+import com.yegor256.Result;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -41,7 +42,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
-import org.eolang.maven.footprint.FtDefault;
 
 /**
  * {@link FFINode} for Rust inserts.
@@ -150,7 +150,7 @@ public final class RustNode implements Buildable {
         new Commented(
             new Native(this.name, "EOrust.natives"),
             "//"
-        ).save(new FtDefault(this.generated));
+        ).save(this.generated);
         Logger.info(
             this,
             "Created java class %s from %s",
@@ -210,16 +210,18 @@ public final class RustNode implements Buildable {
                 Logger.info(this, "Copying %s to %s", cached, target);
                 FileUtils.copyDirectory(cached, target);
             }
-            Logger.info(this, "Building %s rust project..", project.getName());
-            try {
-                new Jaxec("cargo", "build").withHome(project).execUnsafe();
-            } catch (final IOException | IllegalArgumentException ex) {
+            Logger.debug(this, "Building %s rust project..", project.getName());
+            final Result res = new Jaxec("cargo", "build")
+                .withCheck(false)
+                .withRedirect(true)
+                .withHome(project)
+                .execUnsafe();
+            if (res.code() != 0) {
                 throw new BuildFailureException(
                     String.format(
-                        "Failed to build cargo project with dest = %s",
-                        project
-                    ),
-                    ex
+                        "Failed to build cargo project in %s (#%d):\n%s",
+                        project, res.code(), res.stdout()
+                    )
                 );
             }
             Logger.info(

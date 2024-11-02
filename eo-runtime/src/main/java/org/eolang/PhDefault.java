@@ -46,11 +46,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 public class PhDefault implements Phi, Cloneable {
     /**
-     * Vertices.
-     */
-    private static final Vertices VTX = new Vertices();
-
-    /**
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(PhDefault.class.getName());
@@ -70,12 +65,6 @@ public class PhDefault implements Phi, Cloneable {
      */
     @SuppressWarnings("java:S5164")
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
-
-    /**
-     * Identity of it (the ID of the vertex).
-     * @checkstyle VisibilityModifierCheck (2 lines)
-     */
-    private int vertex;
 
     /**
      * Data.
@@ -104,7 +93,6 @@ public class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault() {
         this.data = new AtomicReference<>(null);
-        this.vertex = PhDefault.VTX.next();
         this.form = this.getClass().getName();
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
@@ -118,7 +106,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
-        return this.vertex;
+        return super.hashCode() + 1;
     }
 
     @Override
@@ -149,7 +137,7 @@ public class PhDefault implements Phi, Cloneable {
         String txt = this.oname();
         if (!list.isEmpty()) {
             txt = String.format(
-                "ν%d·%s⟦\n\t%s\n⟧", this.vertex, txt,
+                "ν%d·%s⟦\n\t%s\n⟧", this.hashCode(), txt,
                 new Indented(String.join(",\n", list))
             );
         }
@@ -161,7 +149,7 @@ public class PhDefault implements Phi, Cloneable {
         String result = String.format(
             "%sν%d",
             this.getClass().getCanonicalName(),
-            this.vertex
+            this.hashCode()
         );
         if (this.data.get() != null) {
             result = String.format(
@@ -177,7 +165,6 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.vertex = PhDefault.VTX.next();
             copy.data = new AtomicReference<>(this.data.get());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
