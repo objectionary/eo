@@ -32,7 +32,13 @@ SOFTWARE.
   If some alias is badly formatted, a runtime error is issued.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[not(@ref) and @base and not(contains(@base, '.'))]">
+  <xsl:template match="o[@base]">
+    <xsl:apply-templates select="." mode="with-base"/>
+  </xsl:template>
+  <xsl:template match="o[not(@ref)]" mode="with-base">
+    <xsl:apply-templates select="." mode="with-ref"/>
+  </xsl:template>
+  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-ref">
     <xsl:variable name="o" select="."/>
     <xsl:copy>
       <xsl:attribute name="base">
@@ -60,7 +66,7 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@* except @base"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>

@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="external-weak-typed-atoms" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:variable name="package" select="//metas/meta[head='package'][1]/part"/>
+  <xsl:variable name="package" select="/program/metas/meta[head='package'][1]/part"/>
   <xsl:template match="/program/errors">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

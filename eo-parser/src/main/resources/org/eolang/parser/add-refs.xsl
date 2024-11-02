@@ -32,7 +32,13 @@ SOFTWARE.
   global or just a mistake.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base and not(starts-with(@base, '.')) and @base!='$' and @base!='^']">
+  <xsl:template match="o[@base]">
+    <xsl:apply-templates select="." mode="with-base"/>
+  </xsl:template>
+  <xsl:template match="o[not(starts-with(@base, '.'))]" mode="with-base">
+    <xsl:apply-templates select="." mode="no-dots"/>
+  </xsl:template>
+  <xsl:template match="o[@base!='$' and @base!='^']" mode="no-dots">
     <xsl:variable name="current" select="."/>
     <xsl:copy>
       <xsl:variable name="parent" select="ancestor::*[o[@name=$current/@base]][1]"/>
@@ -76,7 +82,7 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="node()|@*">
+  <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
