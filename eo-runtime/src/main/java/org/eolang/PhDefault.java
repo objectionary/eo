@@ -228,17 +228,20 @@ public class PhDefault implements Phi, Cloneable {
         } else {
             object = new AtSafe(
                 this.named(
-                    new AtAbsent(
-                        name,
-                        String.format(
-                            "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
-                            name,
-                            this.attrs.size(),
-                            this.form,
-                            String.join(", ", this.attrs.keySet()),
-                            Attr.PHI,
-                            Attr.LAMBDA
-                        )
+                    new AtGetOnly(
+                        () -> {
+                            throw new ExUnset(
+                                String.format(
+                                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                                    name,
+                                    this.attrs.size(),
+                                    this.form,
+                                    String.join(", ", this.attrs.keySet()),
+                                    Attr.PHI,
+                                    Attr.LAMBDA
+                                )
+                            );
+                        }
                     ),
                     name
                 )
