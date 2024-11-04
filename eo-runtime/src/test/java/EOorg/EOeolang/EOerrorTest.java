@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import org.eolang.AtComposite;
@@ -67,6 +68,23 @@ final class EOerrorTest {
                 )
             ).take(),
             AtCompositeTest.TO_ADD_MESSAGE
+        );
+    }
+
+    @Test
+    void rendersMultiLayeredErrorMessageCorrectly() {
+        Assertions.assertEquals(
+            new EOerror.ErrorMsg(
+                new IOException(
+                    "oops2",
+                    new IOException(
+                        "oops1",
+                        new IOException("yes!")
+                    )
+                )
+            ).get(),
+            "IOException: oops2; caused by IOException: oops1; caused by IOException: yes!",
+            "Must render all layers nicely"
         );
     }
 
