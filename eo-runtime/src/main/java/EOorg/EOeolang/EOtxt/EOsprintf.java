@@ -40,6 +40,7 @@ import org.eolang.Atom;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.Expect;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.XmirObject;
@@ -83,8 +84,14 @@ public final class EOsprintf extends PhDefault implements Atom {
     public Phi lambda() throws Exception {
         final String format = new Dataized(this.take("format")).asString();
         final Phi args = this.take("args");
-        final Phi retriever = args.take("at");
-        final long length = new Dataized(args.take("length")).asNumber().longValue();
+        final Phi retriever = new Expect<>(
+            () -> args.take("at"),
+            "sprintf expects its second argument to be a tuple with the 'at' attribute"
+        ).it();
+        final long length = new Expect<>(
+            () -> new Dataized(args.take("length")).asNumber().longValue(),
+            "sprintf expects its second argument to be a tuple with the 'length' attribute"
+        ).it();
         final List<Object> arguments = new ArrayList<>(0);
         String pattern = format;
         long index = 0;

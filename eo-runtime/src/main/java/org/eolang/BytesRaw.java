@@ -164,20 +164,19 @@ final class BytesRaw implements Bytes {
         final byte[] ret = this.take();
         final Object res;
         final ByteBuffer buf = ByteBuffer.wrap(ret);
-        if (Long.class.equals(type) && ret.length == Long.BYTES) {
-            res = buf.getLong();
-        } else if (Integer.class.equals(type) && ret.length == Integer.BYTES) {
-            res = buf.getInt();
-        } else if (Double.class.equals(type) && ret.length == Double.BYTES) {
-            res = buf.getDouble();
-        } else if (Short.class.equals(type) && ret.length == Short.BYTES) {
-            res = buf.getShort();
+        if (Long.class.equals(type)) {
+            res = BytesRaw.whenFit(buf, ret, Long.class).getLong();
+        } else if (Integer.class.equals(type)) {
+            res = BytesRaw.whenFit(buf, ret, Integer.class).getInt();
+        } else if (Double.class.equals(type)) {
+            res = BytesRaw.whenFit(buf, ret, Double.class).getDouble();
+        } else if (Short.class.equals(type)) {
+            res = BytesRaw.whenFit(buf, ret, Short.class).getShort();
         } else {
             throw new UnsupportedOperationException(
                 String.format(
-                    "Unsupported conversion to \"%s\" for %d bytes",
-                    type,
-                    ret.length
+                    "Can't convert %d bytes to \"%s\"",
+                    ret.length, type.getCanonicalName()
                 )
             );
         }
@@ -252,5 +251,31 @@ final class BytesRaw implements Bytes {
             result = (byte) (bts - (temp >>> 1));
         }
         return result;
+    }
+
+    /**
+     * Checks the buffer for its validity.
+     * @param buf The buffer
+     * @param bytes The bytes
+     * @param type The type to fit into
+     * @return The same buffer
+     */
+    private static ByteBuffer whenFit(final ByteBuffer buf, final byte[] bytes,
+        final Class<?> type) {
+        final int expected;
+        try {
+            expected = type.getField("BYTES").getInt(null);
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+        if (bytes.length != expected) {
+            throw new ExFailure(
+                String.format(
+                    "Can't convert %d bytes to %s, exactly %d bytes expected",
+                    bytes.length, type.getName(), expected
+                )
+            );
+        }
+        return buf;
     }
 }

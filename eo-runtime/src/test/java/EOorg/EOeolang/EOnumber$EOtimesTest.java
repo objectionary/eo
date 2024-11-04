@@ -23,47 +23,49 @@
  */
 
 /*
- * @checkstyle PackageNameCheck (4 lines)
+ * @checkstyle PackageNameCheck (10 lines)
  * @checkstyle TrailingCommentCheck (3 lines)
  */
 package EOorg.EOeolang; // NOPMD
 
-import org.eolang.AtVoid;
-import org.eolang.Atom;
 import org.eolang.Attr;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+import org.eolang.PhWith;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Number.times object.
+ * Test case for {@link EOnumber$EOtimes}.
  *
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @since 0.41
+ * @checkstyle TypeNameCheck (3 lines)
  */
-@Versionized
-@XmirObject(oname = "number.times")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOtimes extends PhDefault implements Atom {
-    /**
-     * Ctor.
-     */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOnumber$EOtimes() {
-        this.add("x", new AtVoid("x"));
-    }
+final class EOnumber$EOtimesTest {
 
-    @Override
-    public Phi lambda() {
-        final Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        final Double right = new Expect<>(
-            () -> new Dataized(this.take("x")).asNumber(),
-            "number.times expects its second argument to be a number"
-        ).it();
-        return new Data.ToPhi(left * right);
+    @Test
+    void throwsCorrectError() {
+        MatcherAssert.assertThat(
+            "the message in the error is correct",
+            Assertions.assertThrows(
+                EOerror.ExError.class,
+                () -> new Dataized(
+                    new PhWith(
+                        new PhWith(
+                            new EOnumber$EOtimes(),
+                            Attr.RHO,
+                            new Data.ToPhi(4L)
+                        ),
+                        "x",
+                        new Data.ToPhi(true)
+                    )
+                ).take(),
+                "multiplies 3 by TRUE and fails with a proper message that explains what happened"
+            ).getMessage(),
+            Matchers.containsString("number.times expects its second argument to be a number")
+        );
     }
 }

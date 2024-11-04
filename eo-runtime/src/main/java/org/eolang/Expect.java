@@ -22,48 +22,61 @@
  * SOFTWARE.
  */
 
-/*
- * @checkstyle PackageNameCheck (4 lines)
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package EOorg.EOeolang; // NOPMD
-
-import org.eolang.AtVoid;
-import org.eolang.Atom;
-import org.eolang.Attr;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.Expect;
-import org.eolang.PhDefault;
-import org.eolang.Phi;
-import org.eolang.Versionized;
-import org.eolang.XmirObject;
+package org.eolang;
 
 /**
- * Number.times object.
+ * This wrapper helps us explain our expectations in an error
+ * message that we throw.
  *
- * @since 0.39.0
- * @checkstyle TypeNameCheck (5 lines)
+ * @param <T> Type of returned value
+ * @since 0.41.0
  */
-@Versionized
-@XmirObject(oname = "number.times")
-@SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOnumber$EOtimes extends PhDefault implements Atom {
+public final class Expect<T> {
+
+    /**
+     * The action.
+     */
+    private final Expect.Action<T> action;
+
+    /**
+     * The message.
+     */
+    private final String message;
+
     /**
      * Ctor.
+     * @param act The action
+     * @param msg Additional explanation
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EOnumber$EOtimes() {
-        this.add("x", new AtVoid("x"));
+    public Expect(final Expect.Action<T> act, final String msg) {
+        this.action = act;
+        this.message = msg;
     }
 
-    @Override
-    public Phi lambda() {
-        final Double left = new Dataized(this.take(Attr.RHO)).asNumber();
-        final Double right = new Expect<>(
-            () -> new Dataized(this.take("x")).asNumber(),
-            "number.times expects its second argument to be a number"
-        ).it();
-        return new Data.ToPhi(left * right);
+    /**
+     * Take the value from the lambda.
+     * @return The value
+     * @checkstyle MethodNameCheck (3 lines)
+     */
+    @SuppressWarnings("PMD.ShortMethodName")
+    public T it() {
+        try {
+            return this.action.exec();
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.message, ex);
+        }
+    }
+
+    /**
+     * The action.
+     * @param <T> The type
+     * @since 0.41.0
+     */
+    public interface Action<T> {
+        /**
+         * Run it.
+         * @return The value
+         */
+        T exec();
     }
 }

@@ -121,7 +121,7 @@ final class BytesOfTest {
     void checksUnderflowForLong() {
         final Bytes bytes = new BytesOf("A");
         Assertions.assertThrows(
-            UnsupportedOperationException.class,
+            ExFailure.class,
             bytes::asNumber,
             AtCompositeTest.TO_ADD_MESSAGE
         );
