@@ -1,0 +1,69 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2024 Objectionary.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+name: benchmark
+on:
+  push:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'sandbox/**' ]
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-jdk-21-maven-
+      - run: mvn clean test --errors --batch-mode
+      - run: |
+          set -x
+          sum=$(
+            printf "\`\`\`text\n"
+            awk -F ',' '{ arr[$1]+=$2 } END { for (key in arr) printf("%s\t%s\n", key, arr[key])}' eo-runtime/target/eo/xsl-measures.csv | sort -g -k 2 | tac | column -t
+            printf "\`\`\`\n\n"
+            echo "The results were calculated in [this GHA job][benchmark-gha]"
+            echo "on $(date +'%Y-%m-%d') at $(date +'%H:%M'),"
+            echo "on $(uname) with $(nproc --all) CPUs."
+          )
+          export sum
+          perl -i -0777 -pe 's/(?<=<!-- benchmark_begin -->).*(?=<!-- benchmark_end -->)/\n\n$ENV{sum}\n\n/gs;' README.md
+          url=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          export url
+          perl -i -0777 -pe 's/(?<=\[benchmark-gha\]: ).*(?=\n)/$ENV{url}/gs;' README.md
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: benchmark
+          commit-message: 'new benchmark results'
+          delete-branch: true
+          title: 'New benchmarking results'
+          assignees: yegor256
+          base: master

@@ -240,6 +240,14 @@ Play with more examples [here](https://github.com/objectionary/sandbox).
 Read about integration with Maven,
 [here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
 
+## Benchmark
+
+There is some benchmarking here:
+
+<!-- benchmark_begin -->
+...
+<!-- benchmark_end -->
+
 ## How to Contribute
 
 Fork repository, make changes, then send us
@@ -262,3 +270,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
+[benchmark-gha]: https://github.com/objectionary/hone-maven-plugin/actions/runs/11683609818
