@@ -247,19 +247,56 @@ There is some benchmarking here:
 <!-- benchmark_begin -->
 
 ```text
-to-java                          18159
-tests                            2351
-rename-tests-inners              2067
-classes                          1683
-package                          1005
-data                             727
-align-test-classes               667
-remove-high-level-inner-classes  634
-attrs                            607
+to-java                          18484
+add-refs                         4507
+stars-to-tuples                  3927
+set-locators                     3155
+tests                            2325
+duplicate-names                  2281
+same-line-names                  2169
+rename-tests-inners              1825
+classes                          1610
+vars-float-up                    1587
+resolve-aliases                  1585
+explicit-data                    1545
+add-probes                       1528
+duplicate-aliases                1416
+unused-aliases                   1409
+broken-aliases                   1378
+broken-refs                      1342
+add-default-package              1314
+not-empty-atoms                  1294
+const-to-dataized                1246
+noname-attributes                1235
+self-naming                      1212
+prohibited-package               1103
+incorrect-home                   1090
+package                          1081
+mandatory-home-meta              1057
+cti-adds-errors                  1044
+unsorted-metas                   1042
+unknown-names                    1024
+wrap-method-calls                1013
+incorrect-architect              991
+external-weak-typed-atoms        987
+expand-aliases                   982
+sparse-decoration                978
+global-nonames                   977
+unit-test-without-phi            975
+incorrect-version                971
+expand-qqs                       971
+mandatory-version-meta           967
+duplicate-metas                  961
+mandatory-package-meta           946
+correct-package-meta             911
+data                             750
+align-test-classes               691
+remove-high-level-inner-classes  565
+attrs                            559
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-05 at 18:12,
+on 2024-11-05 at 19:20,
 on Linux with 4 CPUs.
 
 <!-- benchmark_end -->
@@ -286,4 +323,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11689820796
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11690836199
