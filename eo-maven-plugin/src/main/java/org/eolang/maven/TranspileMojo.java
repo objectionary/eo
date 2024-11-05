@@ -31,6 +31,7 @@ import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
+import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +64,7 @@ import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.AttributeNotFoundException;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
+import org.eolang.parser.StMeasured;
 
 /**
  * Transpile.
@@ -233,7 +235,13 @@ public final class TranspileMojo extends SafeMojo {
      */
     private Optimization transpilation() {
         return new OptSpy(
-            TranspileMojo.TRAIN,
+            new TrLambda(
+                TranspileMojo.TRAIN,
+                shift -> new StMeasured(
+                    shift,
+                    this.targetDir.toPath().resolve("xsl-measures.csv")
+                )
+            ),
             this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
     }
