@@ -135,7 +135,7 @@ final class SnippetIT {
                     .set("mainClass", "org.eolang.Main")
                     .set("arguments", map.get("args"));
                 f.exec("clean", "test");
-                final String log = f.log();
+                final String log = f.log().content();
                 Logger.debug(this, log);
                 MatcherAssert.assertThat(
                     String.format("'%s' printed something wrong", yml),
@@ -168,8 +168,7 @@ final class SnippetIT {
         for (final Path src : sources) {
             farea.files()
                 .file(String.format("%s/%s", target, runtime.relativize(src)))
-                .write(new UncheckedText(new TextOf(src)).asString())
-                .show();
+                .write(new UncheckedText(new TextOf(src)).asString().getBytes());
         }
     }
 }

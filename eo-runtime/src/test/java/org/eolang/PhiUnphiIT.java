@@ -25,6 +25,7 @@ package org.eolang;
 
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -132,7 +133,7 @@ final class PhiUnphiIT {
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
                     .set("printReversed", PhiUnphiIT.TRUE);
                 f.exec("clean", "compile");
-                final String phi = f.log();
+                final String phi = f.log().content();
                 MatcherAssert.assertThat(
                     "Converting to phi and back was not successful",
                     phi,
@@ -239,7 +240,7 @@ final class PhiUnphiIT {
                 MatcherAssert.assertThat(
                     "Some tests weren't passed after converting to phi and back",
                     f.log(),
-                    Matchers.containsString("BUILD SUCCESS")
+                    RequisiteMatcher.SUCCESS
                 );
             }
         );
@@ -260,8 +261,7 @@ final class PhiUnphiIT {
         for (final Path src : sources) {
             farea.files()
                 .file(String.format("%s/%s", target, runtime.relativize(src)))
-                .write(new UncheckedText(new TextOf(src)).asString())
-                .show();
+                .write(new UncheckedText(new TextOf(src)).asString().getBytes());
         }
     }
 }
