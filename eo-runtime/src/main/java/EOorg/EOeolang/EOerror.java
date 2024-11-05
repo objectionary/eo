@@ -106,7 +106,8 @@ public final class EOerror extends PhDefault implements Atom {
                 ret.append(exp.getMessage().replace("%", "%%"));
             }
             if (exp.getCause() != null) {
-                ret.append("; caused by ").append(ErrorMsg.message(exp.getCause()));
+                ret.append("; caused by ")
+                    .append(ErrorMsg.message(exp.getCause()));
             }
             return ret.toString();
         }

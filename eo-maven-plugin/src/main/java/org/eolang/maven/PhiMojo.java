@@ -256,7 +256,7 @@ public final class PhiMojo extends SafeMojo {
         final List<String> phi = translated.xpath("program/phi/text()");
         if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
-                "Xpath 'phi/text()' is not found in translated XMIR"
+                "Xpath 'phi/text()' is not found in the translated XMIR"
             );
         }
         return phi.get(0);
