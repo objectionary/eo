@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrLambda;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -42,6 +43,7 @@ import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.StMeasured;
 
 /**
  * Optimize XML files.
@@ -141,7 +143,13 @@ public final class OptimizeMojo extends SafeMojo {
         final Optimization opt;
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
-                new ParsingTrain(),
+                new TrLambda(
+                    new ParsingTrain(),
+                    shift -> new StMeasured(
+                        shift,
+                        this.targetDir.toPath().resolve("xsl-measures.csv")
+                    )
+                ),
                 this.targetDir.toPath().resolve(OptimizeMojo.STEPS)
             );
         } else {
