@@ -25,7 +25,7 @@ on:
   push:
     branches:
       - master
-    paths-ignore: [ 'paper/**', 'sandbox/**' ]
+    paths-ignore: [ 'README.md', 'paper/**', 'sandbox/**' ]
 concurrency:
   group: benchmark-${{ github.ref }}
   cancel-in-progress: true
