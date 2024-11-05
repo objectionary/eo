@@ -25,9 +25,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+rt jvm org.eolang:eo-runtime:0.40.4
++rt jvm org.eolang:eo-runtime:0.40.5
 +rt node eo2js-runtime:0.0.0
-+version 0.40.4
++version 0.40.5
 
 # Set - is an unordered `list` of unique objects.
 [lst] > set
