@@ -245,7 +245,23 @@ Read about integration with Maven,
 There is some benchmarking here:
 
 <!-- benchmark_begin -->
-...
+
+```text
+to-java                          18159
+tests                            2351
+rename-tests-inners              2067
+classes                          1683
+package                          1005
+data                             727
+align-test-classes               667
+remove-high-level-inner-classes  634
+attrs                            607
+```
+
+The results were calculated in [this GHA job][benchmark-gha]
+on 2024-11-05 at 18:12,
+on Linux with 4 CPUs.
+
 <!-- benchmark_end -->
 
 ## How to Contribute
@@ -270,4 +286,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/hone-maven-plugin/actions/runs/11683609818
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11689820796
