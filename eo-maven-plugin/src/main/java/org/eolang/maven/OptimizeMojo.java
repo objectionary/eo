@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -45,7 +44,6 @@ import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
 import org.eolang.parser.ParsingTrain;
-import org.eolang.parser.StMeasured;
 
 /**
  * Optimize XML files.
@@ -143,13 +141,7 @@ public final class OptimizeMojo extends SafeMojo {
      */
     private Optimization optimization() {
         final Optimization opt;
-        final Train<Shift> train = new TrLambda(
-            new ParsingTrain(),
-            shift -> new StMeasured(
-                shift,
-                this.targetDir.toPath().resolve("xsl-measures.csv")
-            )
-        );
+        final Train<Shift> train = this.measured(new ParsingTrain());
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
                 train,

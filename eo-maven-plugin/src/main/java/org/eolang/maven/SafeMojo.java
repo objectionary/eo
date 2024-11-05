@@ -24,6 +24,9 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrLambda;
+import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +55,7 @@ import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
+import org.eolang.parser.StMeasured;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -347,6 +351,21 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final ForeignTojos scopedTojos() {
         return this.tojos;
+    }
+
+    /**
+     * Make a measured train from another train.
+     * @param train The train
+     * @return Measured train
+     */
+    protected final Train<Shift> measured(final Train<Shift> train) {
+        return new TrLambda(
+            train,
+            shift -> new StMeasured(
+                shift,
+                this.targetDir.toPath().resolve("xsl-measures.csv")
+            )
+        );
     }
 
     /**

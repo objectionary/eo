@@ -30,7 +30,6 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
@@ -51,7 +50,6 @@ import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.ParsingTrain;
 import org.eolang.parser.Schema;
-import org.eolang.parser.StMeasured;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
@@ -236,14 +234,10 @@ public final class PhiMojo extends SafeMojo {
             dependent.add("/org/eolang/parser/fail-on-critical.xsl");
         }
         dependent.add("/org/eolang/maven/phi/to-phi.xsl");
-        return new TrLambda(
+        return this.measured(
             new TrJoined<>(
                 train,
                 new TrClasspath<>(dependent.toArray(new String[0])).back()
-            ),
-            shift -> new StMeasured(
-                shift,
-                this.targetDir.toPath().resolve("xsl-measures.csv")
             )
         );
     }
