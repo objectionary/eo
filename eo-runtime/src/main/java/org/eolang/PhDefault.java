@@ -192,7 +192,7 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        return new AtSafe(this.named(this.attrs.get(name), name)).put(object);
+        return this.attrs.get(name).put(object);
     }
 
     @Override
@@ -200,51 +200,36 @@ public class PhDefault implements Phi, Cloneable {
         PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
         final Phi object;
         if (this.attrs.containsKey(name)) {
-            object = new AtSafe(
-                this.named(
-                    new AtSetRho(
-                        this.attrs.get(name),
-                        this,
-                        name
-                    ),
-                    name
-                )
+            object = new AtSetRho(
+                this.attrs.get(name),
+                this,
+                name
             ).get();
         } else if (name.equals(Attr.LAMBDA)) {
-            object = new AtSafe(
-                this.named(
-                    new AtSetRho(
-                        new AtFormed(new AtomSafe((Atom) this)::lambda),
-                        this,
-                        name
-                    ),
-                    name
-                )
+            object = new AtSetRho(
+                new AtFormed(new AtomSafe((Atom) this)::lambda),
+                this,
+                name
             ).get();
         } else if (this instanceof Atom) {
             object = this.take(Attr.LAMBDA).take(name);
         } else if (this.attrs.containsKey(Attr.PHI)) {
             object = this.take(Attr.PHI).take(name);
         } else {
-            object = new AtSafe(
-                this.named(
-                    new AtGetOnly(
-                        () -> {
-                            throw new ExUnset(
-                                String.format(
-                                    "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
-                                    name,
-                                    this.attrs.size(),
-                                    this.form,
-                                    String.join(", ", this.attrs.keySet()),
-                                    Attr.PHI,
-                                    Attr.LAMBDA
-                                )
-                            );
-                        }
-                    ),
-                    name
-                )
+            object = new AtGetOnly(
+                () -> {
+                    throw new ExUnset(
+                        String.format(
+                            "Can't #take(\"%s\"), the attribute is absent among other %d attrs of %s:(%s), %s and %s are also absent",
+                            name,
+                            this.attrs.size(),
+                            this.form,
+                            String.join(", ", this.attrs.keySet()),
+                            Attr.PHI,
+                            Attr.LAMBDA
+                        )
+                    );
+                }
             ).get();
         }
         PhDefault.debug(
@@ -302,9 +287,10 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Add new attribute.
      *
-     * This method can only be called from child classes, in their
+     * <p>This method can only be called from child classes, in their
      * constructors, when they declare their attributes. This is why it's
-     * protected. Not the brightest design, I admit.
+     * protected. Not the brightest design, I admit.</p>
+     *
      * @param name The name
      * @param attr The attr
      */
@@ -348,27 +334,6 @@ public class PhDefault implements Phi, Cloneable {
             );
         }
         return this.order.get(pos);
-    }
-
-    /**
-     * Make named attribute.
-     * @param attr The original attr
-     * @param name The name of it
-     * @return Named one
-     */
-    private Attr named(final Attr attr, final String name) {
-        return new AtNamed(
-            String.format(
-                "%s#%s",
-                this.getClass().getCanonicalName(), name
-            ),
-            String.format(
-                "%s.%s",
-                this.oname(), name
-            ),
-            this,
-            attr
-        );
     }
 
     /**

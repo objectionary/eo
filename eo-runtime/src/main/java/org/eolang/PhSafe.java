@@ -51,91 +51,78 @@ public final class PhSafe implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
+        return this.through(() -> this.origin.equals(obj));
     }
 
     @Override
     public int hashCode() {
-        return this.origin.hashCode();
+        return this.through(this.origin::hashCode);
     }
 
     @Override
     public String toString() {
-        return this.origin.toString();
+        return this.through(this.origin::toString);
     }
 
     @Override
     public String φTerm() {
-        return this.origin.φTerm();
+        return this.through(this.origin::φTerm);
     }
 
     @Override
     public Phi copy() {
-        return new PhSafe(this.origin.copy());
+        return this.through(() -> new PhSafe(this.origin.copy()));
     }
 
     @Override
     public Phi take(final String name) {
-        try {
-            return this.origin.take(name);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return this.through(() -> new PhSafe(this.origin.take(name)));
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        try {
-            return this.origin.put(pos, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
     public boolean put(final String name, final Phi object) {
-        try {
-            return this.origin.put(name, object);
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
+        return this.through(() -> this.origin.put(name, object));
     }
 
     @Override
     public String locator() {
-        return this.origin.locator();
+        return this.through(this.origin::locator);
     }
 
     @Override
     public String forma() {
-        return this.origin.forma();
+        return this.through(this.origin::forma);
     }
 
     @Override
     public void attach(final byte[] data) {
+        this.through(() -> { this.origin.attach(data); return null; });
+    }
+
+    @Override
+    public byte[] delta() {
+        return this.through(this.origin::delta);
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @return Result
+     * @param <T> Type of result
+     */
+    private <T> T through(final Action<T> action) {
         try {
-            this.origin.attach(data);
-        } catch (final ExFailure ex) {
+            return action.act();
+        } catch (final ExAbstract ex) {
             throw new EOerror.ExError(
                 new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
             );
         }
     }
 
-    @Override
-    public byte[] delta() {
-        try {
-            return this.origin.delta();
-        } catch (final ExFailure ex) {
-            throw new EOerror.ExError(
-                new Data.ToPhi(new EOerror.ErrorMsg(ex).get())
-            );
-        }
-    }
 }

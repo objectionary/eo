@@ -25,45 +25,16 @@
 package org.eolang;
 
 /**
- * This wrapper helps us explain our expectations in an error
- * message that we throw.
- *
- * @param <T> Type of returned value
+ * The action.
+ * @param <T> The type
  * @since 0.41.0
  */
-public final class Expect<T> {
+public interface Action<T> {
 
     /**
-     * The action.
-     */
-    private final Action<T> action;
-
-    /**
-     * The message.
-     */
-    private final String message;
-
-    /**
-     * Ctor.
-     * @param act The action
-     * @param msg Additional explanation
-     */
-    public Expect(final Action<T> act, final String msg) {
-        this.action = act;
-        this.message = msg;
-    }
-
-    /**
-     * Take the value from the lambda.
+     * Run it.
      * @return The value
-     * @checkstyle MethodNameCheck (3 lines)
      */
-    @SuppressWarnings("PMD.ShortMethodName")
-    public T it() {
-        try {
-            return this.action.act();
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.message, ex);
-        }
-    }
+    T act();
+
 }

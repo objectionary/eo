@@ -31,7 +31,7 @@ package org.eolang;
  */
 @Versionized
 @SuppressWarnings("PMD.TooManyMethods")
-final class PhNamed implements Phi {
+public final class PhNamed implements Phi {
 
     /**
      * The original.
@@ -49,7 +49,7 @@ final class PhNamed implements Phi {
      * @param phi The object
      * @param txt The name
      */
-    PhNamed(final Phi phi, final String txt) {
+    public PhNamed(final Phi phi, final String txt) {
         this.origin = phi;
         this.name = txt;
     }
@@ -76,22 +76,47 @@ final class PhNamed implements Phi {
 
     @Override
     public Phi copy() {
-        return new PhNamed(this.origin.copy(), this.name);
+        try {
+            return new PhNamed(this.origin.copy(), this.name);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
+        }
     }
 
     @Override
     public Phi take(final String nme) {
-        return this.origin.take(nme);
+        try {
+            return new PhNamed(
+                this.origin.take(nme),
+                name
+            );
+        } catch (final ExUnset ex) {
+            throw new ExUnset(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
+        }
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        return this.origin.put(pos, object);
+        try {
+            return this.origin.put(pos, object);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
+        }
     }
 
     @Override
     public boolean put(final String nme, final Phi object) {
-        return this.origin.put(nme, object);
+        try {
+            return this.origin.put(nme, object);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(), ex);
+        } catch (final ExFailure ex) {
+            throw new ExFailure(this.label(), ex);
+        }
     }
 
     @Override
@@ -112,5 +137,13 @@ final class PhNamed implements Phi {
     @Override
     public byte[] delta() {
         return this.origin.delta();
+    }
+
+    /**
+     * The label of the exception.
+     * @return Label
+     */
+    private String label() {
+        return String.format("Error at \"%s\" attribute", this.name);
     }
 }
