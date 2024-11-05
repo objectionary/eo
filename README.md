@@ -249,56 +249,56 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java                          18484
-add-refs                         4507
-stars-to-tuples                  3927
-set-locators                     3155
-tests                            2325
-duplicate-names                  2281
-same-line-names                  2169
-rename-tests-inners              1825
-classes                          1610
-vars-float-up                    1587
-resolve-aliases                  1585
-explicit-data                    1545
-add-probes                       1528
-duplicate-aliases                1416
-unused-aliases                   1409
-broken-aliases                   1378
-broken-refs                      1342
-add-default-package              1314
-not-empty-atoms                  1294
-const-to-dataized                1246
-noname-attributes                1235
-self-naming                      1212
-prohibited-package               1103
-incorrect-home                   1090
-package                          1081
-mandatory-home-meta              1057
-cti-adds-errors                  1044
-unsorted-metas                   1042
-unknown-names                    1024
-wrap-method-calls                1013
-incorrect-architect              991
-external-weak-typed-atoms        987
-expand-aliases                   982
-sparse-decoration                978
-global-nonames                   977
-unit-test-without-phi            975
-incorrect-version                971
-expand-qqs                       971
-mandatory-version-meta           967
-duplicate-metas                  961
-mandatory-package-meta           946
-correct-package-meta             911
-data                             750
-align-test-classes               691
-remove-high-level-inner-classes  565
-attrs                            559
+to-java                          16208
+add-refs                         4366
+stars-to-tuples                  3814
+set-locators                     2872
+tests                            2144
+duplicate-names                  2126
+same-line-names                  2103
+rename-tests-inners              1754
+vars-float-up                    1572
+add-probes                       1513
+classes                          1438
+resolve-aliases                  1411
+duplicate-aliases                1397
+explicit-data                    1375
+broken-refs                      1335
+noname-attributes                1312
+broken-aliases                   1295
+self-naming                      1265
+add-default-package              1218
+cti-adds-errors                  1141
+unused-aliases                   1137
+not-empty-atoms                  1066
+unknown-names                    1051
+prohibited-package               1027
+expand-qqs                       1014
+global-nonames                   1004
+incorrect-architect              974
+const-to-dataized                973
+incorrect-version                967
+sparse-decoration                957
+mandatory-package-meta           954
+unsorted-metas                   949
+expand-aliases                   948
+wrap-method-calls                940
+duplicate-metas                  927
+incorrect-home                   920
+package                          874
+correct-package-meta             867
+unit-test-without-phi            866
+mandatory-home-meta              845
+mandatory-version-meta           824
+external-weak-typed-atoms        812
+data                             627
+align-test-classes               548
+attrs                            484
+remove-high-level-inner-classes  436
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-05 at 19:20,
+on 2024-11-05 at 22:52,
 on Linux with 4 CPUs.
 
 <!-- benchmark_end -->
@@ -325,4 +325,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11690836199
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11693664096
