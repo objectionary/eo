@@ -242,7 +242,7 @@ Read about integration with Maven,
 
 ## Benchmark
 
-This is how many milliseconds were spend on different 
+This is how many milliseconds were spend on different
 XSL stylesheets during the execution of `mvn install` of
 the `eo-runtime` module:
 
