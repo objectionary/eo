@@ -249,56 +249,56 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java                          16208
-add-refs                         4366
-stars-to-tuples                  3814
-set-locators                     2872
-tests                            2144
-duplicate-names                  2126
-same-line-names                  2103
-rename-tests-inners              1754
-vars-float-up                    1572
-add-probes                       1513
-classes                          1438
-resolve-aliases                  1411
-duplicate-aliases                1397
-explicit-data                    1375
-broken-refs                      1335
-noname-attributes                1312
-broken-aliases                   1295
-self-naming                      1265
-add-default-package              1218
-cti-adds-errors                  1141
-unused-aliases                   1137
-not-empty-atoms                  1066
-unknown-names                    1051
-prohibited-package               1027
-expand-qqs                       1014
-global-nonames                   1004
-incorrect-architect              974
-const-to-dataized                973
-incorrect-version                967
-sparse-decoration                957
-mandatory-package-meta           954
-unsorted-metas                   949
-expand-aliases                   948
-wrap-method-calls                940
-duplicate-metas                  927
-incorrect-home                   920
-package                          874
-correct-package-meta             867
-unit-test-without-phi            866
-mandatory-home-meta              845
-mandatory-version-meta           824
-external-weak-typed-atoms        812
-data                             627
-align-test-classes               548
-attrs                            484
-remove-high-level-inner-classes  436
+to-java.xsl                          43232
+add-refs.xsl                         9584
+stars-to-tuples.xsl                  8590
+set-locators.xsl                     6287
+tests.xsl                            5512
+same-line-names.xsl                  4793
+rename-tests-inners.xsl              4714
+duplicate-names.xsl                  4430
+resolve-aliases.xsl                  2954
+package.xsl                          2928
+add-probes.xsl                       2763
+add-default-package.xsl              2739
+classes.xsl                          2731
+vars-float-up.xsl                    2671
+broken-refs.xsl                      2543
+explicit-data.xsl                    2465
+duplicate-aliases.xsl                2404
+noname-attributes.xsl                2224
+self-naming.xsl                      2208
+unused-aliases.xsl                   2189
+broken-aliases.xsl                   2147
+cti-adds-errors.xsl                  2074
+mandatory-package-meta.xsl           2040
+unknown-names.xsl                    2026
+not-empty-atoms.xsl                  2025
+duplicate-metas.xsl                  1984
+wrap-method-calls.xsl                1894
+prohibited-package.xsl               1893
+incorrect-home.xsl                   1886
+incorrect-architect.xsl              1883
+sparse-decoration.xsl                1874
+const-to-dataized.xsl                1872
+expand-qqs.xsl                       1839
+unsorted-metas.xsl                   1828
+mandatory-home-meta.xsl              1828
+mandatory-version-meta.xsl           1826
+expand-aliases.xsl                   1809
+global-nonames.xsl                   1785
+incorrect-version.xsl                1780
+correct-package-meta.xsl             1738
+external-weak-typed-atoms.xsl        1674
+unit-test-without-phi.xsl            1667
+align-test-classes.xsl               1376
+data.xsl                             1296
+attrs.xsl                            1052
+remove-high-level-inner-classes.xsl  1016
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-05 at 22:52,
+on 2024-11-06 at 09:57,
 on Linux with 4 CPUs.
 
 <!-- benchmark_end -->
@@ -325,4 +325,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11693664096
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11700998093
