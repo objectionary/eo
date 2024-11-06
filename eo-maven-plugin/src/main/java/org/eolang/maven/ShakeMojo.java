@@ -79,6 +79,7 @@ public final class ShakeMojo extends SafeMojo {
 
     @Override
     void exec() {
+        final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withOptimized();
         final Optimization optimization = this.optimization();
         final int total = new SumOf(
@@ -96,8 +97,9 @@ public final class ShakeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Shaken %d out of %d XMIR program(s)", total,
-                tojos.size()
+                "Shaken %d out of %d XMIR program(s) in %[ms]s",
+                total, tojos.size(),
+                System.currentTimeMillis() - start
             );
         } else {
             Logger.debug(this, "No XMIR programs out of %d shaken", tojos.size());

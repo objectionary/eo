@@ -88,6 +88,7 @@ public final class ParseMojo extends SafeMojo {
 
     @Override
     public void exec() {
+        final long start = System.currentTimeMillis();
         final int total = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -102,12 +103,15 @@ public final class ParseMojo extends SafeMojo {
         ).intValue();
         if (0 == total) {
             if (this.scopedTojos().withSources().isEmpty()) {
-                Logger.info(this, "No .eo sources need to be parsed to XMIRs");
+                Logger.info(this, "No new .eo sources need to be parsed to XMIRs");
             } else {
-                Logger.info(this, "No .eo sources parsed to XMIRs");
+                Logger.info(this, "No new .eo sources parsed to XMIRs");
             }
         } else {
-            Logger.info(this, "Parsed %d .eo sources to XMIRs", total);
+            Logger.info(
+                this, "Parsed %d new .eo sources to XMIRs in %[ms]s",
+                total, System.currentTimeMillis() - start
+            );
         }
     }
 
