@@ -28,13 +28,8 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -50,52 +45,21 @@ import org.junit.jupiter.api.io.TempDir;
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 final class PhiUnphiIT {
 
-    /**
-     * True.
-     */
-    private static final String TRUE = "true";
-
-    /**
-     * False.
-     */
-    private static final String FALSE = "false";
-
-    /**
-     * UTF-8.
-     */
-    private static final String UTF_8 = "UTF-8";
-
-    /**
-     * The eo.version.
-     */
-    private static final String EO_VERSION = "eo.version";
-
-    /**
-     * The eo-maven-plugin.
-     */
-    private static final String EO_PLUGIN = "eo-maven-plugin";
-
-    /**
-     * The org.eolang.
-     */
-    private static final String EO_GROUP = "org.eolang";
-
-    /**
-     * The 1.0-SNAPSHOT.
-     */
-    private static final String SNAPSHOT_1_0 = "1.0-SNAPSHOT";
-
     // @checkstyle MethodLengthCheck (170 lines)
     @Test
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                PhiUnphiIT.copySources(f, "src/main");
-                PhiUnphiIT.copySources(f, "src/test/eo");
+                f.files().file("src/main").save(
+                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
+                );
+                f.files().file("src/test/eo").save(
+                    Paths.get(System.getProperty("user.dir")).resolve("src/test/eo")
+                );
                 f.properties()
-                    .set("project.build.sourceEncoding", PhiUnphiIT.UTF_8)
-                    .set("project.reporting.outputEncoding", PhiUnphiIT.UTF_8);
+                    .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
+                    .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.dependencies().append(
                     "net.sf.saxon",
                     "Saxon-HE",
@@ -104,11 +68,11 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        PhiUnphiIT.EO_GROUP,
-                        PhiUnphiIT.EO_PLUGIN,
+                        "org.eolang",
+                        "eo-maven-plugin",
                         System.getProperty(
-                            PhiUnphiIT.EO_VERSION,
-                            PhiUnphiIT.SNAPSHOT_1_0
+                            "eo.version",
+                            "1.0-SNAPSHOT"
                         )
                     )
                     .execution("phi-unphi")
@@ -132,7 +96,7 @@ final class PhiUnphiIT {
                     .set("unphiMetas", new String[]{"+tests"})
                     .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
-                    .set("printReversed", PhiUnphiIT.TRUE);
+                    .set("printReversed", Boolean.TRUE.toString());
                 f.exec("clean", "compile");
                 final String phi = f.log().content();
                 MatcherAssert.assertThat(
@@ -142,8 +106,8 @@ final class PhiUnphiIT {
                 );
                 f.files().file("pom.xml").delete();
                 f.properties()
-                    .set("project.build.sourceEncoding", PhiUnphiIT.UTF_8)
-                    .set("project.reporting.outputEncoding", PhiUnphiIT.UTF_8);
+                    .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
+                    .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
                 f.dependencies().append(
                     "org.junit.jupiter",
                     "junit-jupiter-engine",
@@ -167,11 +131,11 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        PhiUnphiIT.EO_GROUP,
-                        PhiUnphiIT.EO_PLUGIN,
+                        "org.eolang",
+                        "eo-maven-plugin",
                         System.getProperty(
-                            PhiUnphiIT.EO_VERSION,
-                            PhiUnphiIT.SNAPSHOT_1_0
+                            "eo.version",
+                            "1.0-SNAPSHOT"
                         )
                     )
                     .execution("compile")
@@ -187,18 +151,18 @@ final class PhiUnphiIT {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", PhiUnphiIT.FALSE)
-                    .set("offline", PhiUnphiIT.TRUE)
-                    .set("withRuntimeDependency", PhiUnphiIT.FALSE)
-                    .set("placeBinariesThatHaveSources", PhiUnphiIT.TRUE);
+                    .set("failOnWarning", Boolean.FALSE.toString())
+                    .set("offline", Boolean.TRUE.toString())
+                    .set("withRuntimeDependency", Boolean.FALSE.toString())
+                    .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
                 f.build()
                     .plugins()
                     .append(
-                        PhiUnphiIT.EO_GROUP,
-                        PhiUnphiIT.EO_PLUGIN,
+                        "org.eolang",
+                        "eo-maven-plugin",
                         System.getProperty(
-                            PhiUnphiIT.EO_VERSION,
-                            PhiUnphiIT.SNAPSHOT_1_0
+                            "eo.version",
+                            "1.0-SNAPSHOT"
                         )
                     )
                     .execution("deps")
@@ -207,11 +171,11 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        PhiUnphiIT.EO_GROUP,
-                        PhiUnphiIT.EO_PLUGIN,
+                        "org.eolang",
+                        "eo-maven-plugin",
                         System.getProperty(
-                            PhiUnphiIT.EO_VERSION,
-                            PhiUnphiIT.SNAPSHOT_1_0
+                            "eo.version",
+                            "1.0-SNAPSHOT"
                         )
                     )
                     .execution("tests")
@@ -226,17 +190,17 @@ final class PhiUnphiIT {
                     .configuration()
                     .set("foreign", "${project.basedir}/target/eo-foreign.csv")
                     .set("foreignFormat", "csv")
-                    .set("failOnWarning", PhiUnphiIT.FALSE)
-                    .set("offline", PhiUnphiIT.TRUE)
+                    .set("failOnWarning", Boolean.FALSE.toString())
+                    .set("offline", Boolean.TRUE.toString())
                     .set("scope", "test")
                     .set("sourcesDir", "${project.basedir}/src/test/generated-eo")
                     .set("targetDir", "${project.basedir}/target/eo-test")
-                    .set("addSourcesRoot", PhiUnphiIT.FALSE)
-                    .set("addTestSourcesRoot", PhiUnphiIT.TRUE)
-                    .set("failOnWarning", PhiUnphiIT.FALSE)
+                    .set("addSourcesRoot", Boolean.FALSE.toString())
+                    .set("addTestSourcesRoot", Boolean.TRUE.toString())
+                    .set("failOnWarning", Boolean.FALSE.toString())
                     .set("generatedDir", "${project.basedir}/target/generated-test-sources")
-                    .set("withRuntimeDependency", PhiUnphiIT.FALSE)
-                    .set("placeBinariesThatHaveSources", PhiUnphiIT.TRUE);
+                    .set("withRuntimeDependency", Boolean.FALSE.toString())
+                    .set("placeBinariesThatHaveSources", Boolean.TRUE.toString());
                 f.exec("clean", "test");
                 MatcherAssert.assertThat(
                     "Some tests weren't passed after converting to phi and back",
@@ -245,28 +209,5 @@ final class PhiUnphiIT {
                 );
             }
         );
-    }
-
-    /**
-     * Copy EO sources.
-     * @param farea Farea instance
-     * @param target Directory to copy from
-     * @throws IOException If fails to copy files
-     */
-    private static void copySources(final Farea farea, final String target) throws IOException {
-        final Path runtime = Paths.get(System.getProperty("user.dir"))
-            .resolve(target);
-        final Collection<Path> sources = Files.walk(runtime)
-            .filter(src -> !src.toFile().isDirectory())
-            .collect(Collectors.toList());
-        for (final Path src : sources) {
-            farea.files()
-                .file(String.format("%s/%s", target, runtime.relativize(src)))
-                .write(
-                    new UncheckedText(new TextOf(src))
-                        .asString()
-                        .getBytes(StandardCharsets.UTF_8)
-                );
-        }
     }
 }
