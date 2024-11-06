@@ -27,6 +27,7 @@ import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -261,7 +262,11 @@ final class PhiUnphiIT {
         for (final Path src : sources) {
             farea.files()
                 .file(String.format("%s/%s", target, runtime.relativize(src)))
-                .write(new UncheckedText(new TextOf(src)).asString().getBytes());
+                .write(
+                    new UncheckedText(new TextOf(src))
+                        .asString()
+                        .getBytes(StandardCharsets.UTF_8)
+                );
         }
     }
 }

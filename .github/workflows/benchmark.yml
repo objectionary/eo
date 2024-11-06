@@ -43,12 +43,12 @@ jobs:
           path: ~/.m2/repository
           key: ubuntu-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-jdk-21-maven-
-      - run: mvn clean install --errors --batch-mode
+      - run: mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
       - run: |
           set -x
           sum=$(
             printf "\`\`\`text\n"
-            awk -F ',' '{ arr[$1]+=$2 } END { for (key in arr) printf("%s\t%s\n", key, arr[key])}' eo-runtime/target/eo/xsl-measures.csv | sort -g -k 2 | tac | column -t
+            awk -F ',' '{ arr[$1]+=$2 } END { for (key in arr) printf("%s\t%s\n", key, arr[key])}' measures.csv | sort -g -k 2 | tac | column -t
             printf "\`\`\`\n\n"
             echo "The results were calculated in [this GHA job][benchmark-gha]"
             echo "on $(date +'%Y-%m-%d') at $(date +'%H:%M'),"

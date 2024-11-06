@@ -162,7 +162,6 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * The path to a text file where paths of generated java files per EO program.
      * @since 0.11.0
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -171,6 +170,20 @@ abstract class SafeMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/eo-transpiled.csv"
     )
     protected File transpiled;
+
+    /**
+     * The path of the file where XSL measurements (time of execution
+     * in milliseconds) will be stored.
+     * @since 0.41.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(
+        property = "eo.xslMeasuresFile",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
+    )
+    protected File xslMeasures;
 
     /**
      * Mojo execution timeout in seconds.
@@ -359,11 +372,14 @@ abstract class SafeMojo extends AbstractMojo {
      * @return Measured train
      */
     protected final Train<Shift> measured(final Train<Shift> train) {
+        if (this.xslMeasures.getParentFile().mkdirs()) {
+            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
+        }
         return new TrLambda(
             train,
             shift -> new StMeasured(
                 shift,
-                this.targetDir.toPath().resolve("xsl-measures.csv")
+                this.xslMeasures.toPath()
             )
         );
     }

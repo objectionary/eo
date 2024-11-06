@@ -27,6 +27,7 @@ import com.jcabi.log.Logger;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,7 +108,10 @@ final class SnippetIT {
                 SnippetIT.copySources(f, "src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
-                    .write(String.format("%s\n", map.get("eo")).getBytes());
+                    .write(
+                        String.format("%s\n", map.get("eo"))
+                            .getBytes(StandardCharsets.UTF_8)
+                    );
                 f.dependencies().appendItself();
                 f.build()
                     .plugins()
@@ -167,7 +171,11 @@ final class SnippetIT {
         for (final Path src : sources) {
             farea.files()
                 .file(String.format("%s/%s", target, runtime.relativize(src)))
-                .write(new UncheckedText(new TextOf(src)).asString().getBytes());
+                .write(
+                    new UncheckedText(new TextOf(src))
+                        .asString()
+                        .getBytes(StandardCharsets.UTF_8)
+                );
         }
     }
 }
