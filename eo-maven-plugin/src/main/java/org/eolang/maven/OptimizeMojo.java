@@ -84,6 +84,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() {
+        final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final Optimization optimization = this.optimization();
         final int total = new SumOf(
@@ -101,8 +102,9 @@ public final class OptimizeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Optimized %d out of %d XMIR program(s)", total,
-                tojos.size()
+                "Optimized %d out of %d XMIR program(s) in %[ms]s",
+                total, tojos.size(),
+                System.currentTimeMillis() - start
             );
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", tojos.size());
