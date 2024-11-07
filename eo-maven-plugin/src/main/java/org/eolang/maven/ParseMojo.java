@@ -103,7 +103,10 @@ public final class ParseMojo extends SafeMojo {
         ).intValue();
         if (0 == total) {
             if (this.scopedTojos().withSources().isEmpty()) {
-                Logger.info(this, "No new .eo sources need to be parsed to XMIRs");
+                Logger.info(
+                    this,
+                    "No .eo sources registered, nothing to be parsed to XMIRs (maybe you forgot to execute the \"register\" goal?)"
+                );
             } else {
                 Logger.info(this, "No new .eo sources parsed to XMIRs");
             }

@@ -251,6 +251,12 @@ SOFTWARE.
         <scope>test</scope>
         <version>0.0.5</version>
       </dependency>
+      <dependency>
+        <groupId>com.yegor256</groupId>
+        <artifactId>farea</artifactId>
+        <version>0.7.0</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
