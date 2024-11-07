@@ -54,7 +54,6 @@ import org.eolang.maven.hash.CommitHashesMap;
 import org.eolang.maven.tojos.ForeignTojos;
 import org.eolang.maven.tojos.PlacedTojos;
 import org.eolang.maven.tojos.TranspiledTojos;
-import org.eolang.parser.StMeasured;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -373,6 +372,23 @@ abstract class SafeMojo extends AbstractMojo {
     protected final Train<Shift> measured(final Train<Shift> train) {
         if (this.xslMeasures.getParentFile().mkdirs()) {
             Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
+        }
+        if (!this.xslMeasures.getParentFile().exists()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "For some reason, the directory %s is absent, can't write measures to %s",
+                    this.xslMeasures.getParentFile(),
+                    this.xslMeasures
+                )
+            );
+        }
+        if (this.xslMeasures.isDirectory()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "This is not a file but a directory, can't write to it: %s",
+                    this.xslMeasures
+                )
+            );
         }
         return new TrLambda(
             train,
