@@ -123,7 +123,7 @@ final class ParseMojoTest {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram("invalid content")
-            .with("cache", cache);
+            .with("cache", cache.toFile());
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();

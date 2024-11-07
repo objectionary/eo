@@ -30,7 +30,6 @@ import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -217,7 +216,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.cache")
-    protected Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+    protected File cache = Paths.get(System.getProperty("user.home")).resolve(".eo").toFile();
 
     /**
      * Used for object versioning implementation.

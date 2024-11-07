@@ -145,7 +145,7 @@ final class OptimizeMojoTest {
         );
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(
@@ -171,7 +171,7 @@ final class OptimizeMojoTest {
         final String hash = "abcdef1";
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Optimize());
         MatcherAssert.assertThat(

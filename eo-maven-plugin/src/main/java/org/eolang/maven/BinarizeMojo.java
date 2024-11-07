@@ -99,7 +99,7 @@ public final class BinarizeMojo extends SafeMojo {
             new Names(this.namesDir.toPath()),
             this.targetDir
         ).exec(this.scopedTojos().withOptimized());
-        ffis.stream().parallel().forEach(ffi -> ffi.build(this.cache));
+        ffis.stream().parallel().forEach(ffi -> ffi.build(this.cache.toPath()));
         Logger.info(this, "Built in total %d cargo projects", ffis.size());
     }
 

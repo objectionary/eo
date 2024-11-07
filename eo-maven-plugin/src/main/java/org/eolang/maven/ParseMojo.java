@@ -134,7 +134,7 @@ public final class ParseMojo extends SafeMojo {
         tojo.withXmir(
             new FpDefault(
                 ParseMojo.parse(name),
-                this.cache.resolve(ParseMojo.CACHE),
+                this.cache.toPath().resolve(ParseMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)

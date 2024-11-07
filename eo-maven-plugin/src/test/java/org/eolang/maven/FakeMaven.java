@@ -230,7 +230,7 @@ public final class FakeMaven {
             );
             this.params.putIfAbsent(
                 "cache",
-                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed")
+                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed").toFile()
             );
             this.params.putIfAbsent("generateSodgXmlFiles", true);
             this.params.putIfAbsent("generateXemblyFiles", true);

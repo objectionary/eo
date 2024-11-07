@@ -128,7 +128,7 @@ public final class OptimizeMojo extends SafeMojo {
         tojo.withOptimized(
             new FpDefault(
                 src -> optimization.apply(xmir).toString(),
-                this.cache.resolve(OptimizeMojo.CACHE),
+                this.cache.toPath().resolve(OptimizeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)

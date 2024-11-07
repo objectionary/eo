@@ -96,7 +96,7 @@ final class BinarizeMojoTest {
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
                 .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
-                .with("cache", cache);
+                .with("cache", cache.toFile());
         }
         final Map<String, Path> res = maven
             .execute(new FakeMaven.Binarize())
@@ -133,7 +133,7 @@ final class BinarizeMojoTest {
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
                 .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
-                .with("cache", cache);
+                .with("cache", cache.toFile());
         }
         long start = System.currentTimeMillis();
         maven.execute(new FakeMaven.Binarize());
@@ -158,7 +158,7 @@ final class BinarizeMojoTest {
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
                 .withProgram(BinarizeMojoTest.SRC.resolve("simple-rust.eo"))
-                .with("cache", cache);
+                .with("cache", cache.toFile());
         }
         maven.execute(new FakeMaven.Binarize());
         final File executable = cache

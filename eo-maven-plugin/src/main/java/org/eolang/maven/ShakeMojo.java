@@ -122,7 +122,7 @@ public final class ShakeMojo extends SafeMojo {
         tojo.withShaken(
             new FpDefault(
                 src -> optimization.apply(xmir).toString(),
-                this.cache.resolve(ShakeMojo.CACHE),
+                this.cache.toPath().resolve(ShakeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)

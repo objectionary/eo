@@ -271,7 +271,7 @@ final class VerifyMojoTest {
         final String hash = "abcdef1";
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Verify());
         MatcherAssert.assertThat(
@@ -311,7 +311,7 @@ final class VerifyMojoTest {
         );
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Verify());
         MatcherAssert.assertThat(
