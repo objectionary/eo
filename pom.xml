@@ -259,6 +259,14 @@ SOFTWARE.
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>12.5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -384,6 +392,30 @@ SOFTWARE.
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>validate</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <classpathScope>test</classpathScope>
+                  <mainClass>net.sf.saxon.Transform</mainClass>
+                  <arguments>
+                    <argument>-l</argument>
+                    <argument>${project.basedir}/src/test/xslqual/xslqual.xsl</argument>
+                    <argument>${project.basedir}/src/test/xslqual/xslqual.xsl</argument>
+                    <argument>ruleset=${project.basedir}/src/test/xslqual/rules.xml</argument>
+                    <argument>folder=location</argument>
+                    <argument>target=csv</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
