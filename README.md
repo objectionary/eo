@@ -249,57 +249,29 @@ the `eo-runtime` module:
 <!-- benchmark_begin -->
 
 ```text
-to-java.xsl                          43232
-add-refs.xsl                         9584
-stars-to-tuples.xsl                  8590
-set-locators.xsl                     6287
-tests.xsl                            5512
-same-line-names.xsl                  4793
-rename-tests-inners.xsl              4714
-duplicate-names.xsl                  4430
-resolve-aliases.xsl                  2954
-package.xsl                          2928
-add-probes.xsl                       2763
-add-default-package.xsl              2739
-classes.xsl                          2731
-vars-float-up.xsl                    2671
-broken-refs.xsl                      2543
-explicit-data.xsl                    2465
-duplicate-aliases.xsl                2404
-noname-attributes.xsl                2224
-self-naming.xsl                      2208
-unused-aliases.xsl                   2189
-broken-aliases.xsl                   2147
-cti-adds-errors.xsl                  2074
-mandatory-package-meta.xsl           2040
-unknown-names.xsl                    2026
-not-empty-atoms.xsl                  2025
-duplicate-metas.xsl                  1984
-wrap-method-calls.xsl                1894
-prohibited-package.xsl               1893
-incorrect-home.xsl                   1886
-incorrect-architect.xsl              1883
-sparse-decoration.xsl                1874
-const-to-dataized.xsl                1872
-expand-qqs.xsl                       1839
-unsorted-metas.xsl                   1828
-mandatory-home-meta.xsl              1828
-mandatory-version-meta.xsl           1826
-expand-aliases.xsl                   1809
-global-nonames.xsl                   1785
-incorrect-version.xsl                1780
-correct-package-meta.xsl             1738
-external-weak-typed-atoms.xsl        1674
-unit-test-without-phi.xsl            1667
-align-test-classes.xsl               1376
-data.xsl                             1296
-attrs.xsl                            1052
-remove-high-level-inner-classes.xsl  1016
+to-java.xsl                          40927  25.77%
+add-refs.xsl                         8891   5.60%
+stars-to-tuples.xsl                  8322   5.24%
+set-locators.xsl                     6195   3.90%
+tests.xsl                            5406   3.40%
+rename-tests-inners.xsl              4770   3.00%
+same-line-names.xsl                  4649   2.93%
+duplicate-names.xsl                  4082   2.57%
+resolve-aliases.xsl                  3006   1.89%
+package.xsl                          2803   1.76%
+classes.xsl                          2773   1.75%
+vars-float-up.xsl                    2758   1.74%
+add-probes.xsl                       2705   1.70%
+add-default-package.xsl              2649   1.67%
+explicit-data.xsl                    2482   1.56%
+broken-refs.xsl                      2449   1.54%
 ```
 
 The results were calculated in [this GHA job][benchmark-gha]
-on 2024-11-06 at 09:57,
+on 2024-11-08 at 01:55,
 on Linux with 4 CPUs.
+The total is 158815 milliseconds.
+We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
 
@@ -325,4 +297,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
-[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11700998093
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11734515427
