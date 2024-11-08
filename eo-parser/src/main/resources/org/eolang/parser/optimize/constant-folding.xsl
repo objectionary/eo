@@ -22,6 +22,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+<!--
+  @todo #1115:30m Add conversions for other types (
+    int, float, bytes, etc.) and values here.
+    When all simple cases are covered, add support
+    for recursive reduction.
+    Such as 01-.as-bool.as-bytes.as-bool.
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="constant-folding" version="2.0">
   <!--
   Fold expressions like FF-FF.as-int to actual integer value,

@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2016-2024 Objectionary.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
-<ruleset xmlns="http://gandhimukul.tripod.com/xslt/ruleset" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<ruleset xmlns="http://gandhimukul.tripod.com/xslt/ruleset"
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  
   <rule name="DontUseDoubleSlashOperatorNearRoot">
     <message>
       Avoid using the operator // near the root of a large tree
@@ -30,14 +9,16 @@ SOFTWARE.
     <xpath>
       //(@match | @select)[starts-with(., '//')]
 	</xpath>
-    <priority>2</priority>
-    <example>
+	<priority>2</priority>
+	<example>
       <!-- VIOLATION -->
-      <xsl:variable name="x" select="//x/y/z"/>
-      <!-- REPAIR -->
-      <xsl:variable name="x" select="/a/b/x/y/z"/>
-    </example>
+	  <xsl:variable name="x" select="//x/y/z" />
+
+	  <!-- REPAIR -->
+      <xsl:variable name="x" select="/a/b/x/y/z" />
+	</example>
   </rule>
+
   <rule name="DontUseDoubleSlashOperator">
     <message>
       Avoid using the operator // in XPath expressions
@@ -45,59 +26,66 @@ SOFTWARE.
     <xpath>
       //(@match | @select)[not(starts-with(., '//')) and contains(., '//')]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
       <!-- VIOLATION -->
-      <xsl:variable name="x" select="/x/y//z"/>
-      <!-- REPAIR -->
-      <xsl:variable name="x" select="/x/y/u/v/z"/>
-    </example>
+	  <xsl:variable name="x" select="/x/y//z" />
+
+	  <!-- REPAIR -->
+      <xsl:variable name="x" select="/x/y/u/v/z" />
+	</example>
   </rule>
+
   <rule name="SettingValueOfVariableIncorrectly">
     <message>
-      Assign value to a variable using the 'select' syntax if assigning a string value
+      Assign value to a variable using the &apos;select&apos; syntax if assigning a string value
 	</message>
     <xpath>
       //xsl:variable[(count(*) = 1) and (count(xsl:value-of) = 1)]
 	</xpath>
-    <priority>2</priority>
-    <example>
-      <!-- VIOLATION -->
+	<priority>2</priority>
+	<example>
+	  <!-- VIOLATION -->
       <xsl:variable name="x">
-        <xsl:value-of select="a/b/c"/>
-      </xsl:variable>
+        <xsl:value-of select="a/b/c" />
+	  </xsl:variable>
+
       <!-- REPAIR -->
-      <xsl:variable name="x" select="a/b/c"/>
-    </example>
+	  <xsl:variable name="x" select="a/b/c" />
+	</example>
   </rule>
+
   <rule name="EmptyContentInInstructions">
     <message>
-      Don't use empty content for instructions like 'xsl:for-each' 'xsl:if' 'xsl:when' etc.
+      Don&apos;t use empty content for instructions like &apos;xsl:for-each&apos; &apos;xsl:if&apos; &apos;xsl:when&apos; etc.
 	</message>
     <xpath>
       //(xsl:for-each | xsl:if | xsl:when | xsl:otherwise)[(count(node()) = count(text())) and (normalize-space() = '')]
 	</xpath>
-    <priority>3</priority>
-    <example>
-      <!-- VIOLATION -->
+	<priority>3</priority>
+	<example>
+	  <!-- VIOLATION -->
       <xsl:for-each select="expr">
 
 	  </xsl:for-each>
+
       <!-- REPAIR -->
-      <xsl:for-each select="expr">
+	  <xsl:for-each select="expr">
         <!-- some instructions -->
-      </xsl:for-each>
-    </example>
+	  </xsl:for-each>
+	</example>
   </rule>
+
   <rule name="DontUseNodeSetExtension">
     <message>
-      Don't use node-set extension function if using XSLT 2.0
+      Don&apos;t use node-set extension function if using XSLT 2.0
 	</message>
     <xpath>
       /xsl:stylesheet[@version = '2.0']//@select[contains(., ':node-set')]
 	</xpath>
-    <priority>2</priority>
-    <example><![CDATA[
+	<priority>2</priority>
+	<example>
+	  <![CDATA[
 	  <!-- VIOLATION -->
 	  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                       version="2.0">
@@ -106,8 +94,10 @@ SOFTWARE.
 
       <!-- REPAIR -->
 	  select="$x//*"
-	  ]]></example>
+	  ]]>
+	</example>
   </rule>
+
   <rule name="RedundantNamespaceDeclarations">
     <message>
       There are redundant namespace declarations in the xsl:stylesheet element
@@ -118,10 +108,11 @@ SOFTWARE.
 	  | @as | @name[parent::xsl:*])[starts-with(name(), concat($s, ':')) or starts-with
 	  (., concat($s, ':'))]))]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="UnusedFunction">
     <message>
       Stylesheet functions are unused
@@ -129,10 +120,11 @@ SOFTWARE.
     <xpath>
 	  //xsl:function[not(some $x in //(@match | @select) satisfies contains($x, @name))]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="UnusedNamedTemplate">
     <message>
       Named templates in stylesheet are unused
@@ -140,10 +132,11 @@ SOFTWARE.
     <xpath>
 	  //xsl:template[@name and not(@match)][not(//xsl:call-template/@name = @name)]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="UnusedVariable">
     <message>
       Variable is unused in the stylesheet
@@ -151,10 +144,11 @@ SOFTWARE.
     <xpath>
       //xsl:variable[not(some $att in //@* satisfies contains($att, concat('$', @name)))]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="UnusedFunctionTemplateParameter">
     <message>
       Function or template parameter is unused in the function/template body
@@ -162,10 +156,11 @@ SOFTWARE.
     <xpath>
       //(xsl:function | xsl:template)/xsl:param[not(some $x in ..//(node() | @*) satisfies contains($x, concat('$', @name)))]
 	</xpath>
-    <priority>2</priority>
-    <example>
+	<priority>2</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="TooManySmallTemplates">
     <message>
       Too many low granular templates in the stylesheet (10 or more)
@@ -173,10 +168,11 @@ SOFTWARE.
     <xpath>
       /xsl:stylesheet[count(//xsl:template[@match and not(@name)][count(*) &lt; 3]) &gt;= 10]
 	</xpath>
-    <priority>4</priority>
-    <example>
+	<priority>4</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="MonolithicDesign">
     <message>
       Using a single template/function in the stylesheet. You can modularize the code.
@@ -184,21 +180,23 @@ SOFTWARE.
     <xpath>
       /xsl:stylesheet[count(//xsl:template | //xsl:function) = 1]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="OutputMethodXml">
     <message>
-      Using the output method 'xml' when generating HTML code
+      Using the output method &apos;xml&apos; when generating HTML code
 	</message>
     <xpath>
       /xsl:stylesheet/xsl:output[@method = 'xml'][starts-with(//xsl:template[.//html or .//HTML]/@match, '/')]
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="NotUsingSchemaTypes">
     <message>
       The stylesheet is not using any of the built-in Schema types (xs:string etc.), when working in XSLT 2.0 mode
@@ -206,10 +204,11 @@ SOFTWARE.
     <xpath>
       /xsl:stylesheet[@version = '2.0'][not(some $x in .//@* satisfies contains($x, 'xs:'))]
 	</xpath>
-    <priority>5</priority>
-    <example>
+	<priority>5</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="UsingNameOrLocalNameFunction">
     <message>
       Using name() function when local-name() could be appropriate (and vice-versa)
@@ -217,21 +216,23 @@ SOFTWARE.
     <xpath>
       //@*[contains(., 'name(') or contains(., 'local-name(')]
 	</xpath>
-    <priority>5</priority>
-    <example>
+	<priority>5</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="FunctionTemplateComplexity">
     <message>
-      The function or template's size/complexity is high. There is need for refactoring the code.
+      The function or template&apos;s size/complexity is high. There is need for refactoring the code.
 	</message>
     <xpath>
       //(xsl:template | xsl:function)[count(.//xsl:*) &gt; 50]
 	</xpath>
-    <priority>4</priority>
-    <example>
+	<priority>4</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="NullOutputFromStylesheet">
     <message>
       The stylesheet is not generating any useful output. Please relook at the stylesheet logic.
@@ -239,16 +240,17 @@ SOFTWARE.
     <xpath>
       //xsl:template[starts-with(@match, '/')][(count(*) = count(xsl:variable)) and (normalize-space(string-join(text(), '')) = '')]
 	</xpath>
-    <priority>2</priority>
-    <example>
-      <!-- VIOLATION -->
-      <xsl:template match="/">
+	<priority>2</priority>
+	<example>
+	  <!-- VIOLATION -->
+	  <xsl:template match="/">
         <xsl:variable name="x">
           <!-- some instructions -->
         </xsl:variable>
       </xsl:template>
-    </example>
+	</example>
   </rule>
+
   <rule name="UsingNamespaceAxis">
     <message>
       Using the deprecated namespace axis, when working in XSLT 2.0 mode
@@ -256,10 +258,11 @@ SOFTWARE.
     <xpath>
       //(@match | @select)[contains(., 'namespace::')][/xsl:stylesheet/@version = '2.0']
 	</xpath>
-    <priority>4</priority>
-    <example>
+	<priority>4</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="CanUseAbbreviatedAxisSpecifier">
     <message>
       Using the lengthy axis specifiers like child::, attribute:: or parent::node()
@@ -267,24 +270,26 @@ SOFTWARE.
     <xpath>
       //(@match | @select)[contains(., 'child::') or contains(., 'attribute::') or contains(., 'parent::node()')]
 	</xpath>
-    <priority>4</priority>
-    <example>
+	<priority>4</priority>
+	<example>
 	  1. For child axis, child:: axis specifier may be omitted
       2. When the attribute axis is used, attribute:: may be abbviated to @
 	  3. The expression parent::node() may be shortened to ..
 	</example>
   </rule>
+
   <rule name="UsingDisableOutputEscaping">
     <message>
-      Have set the disable-output-escaping attribute to 'yes'. Please relook at the stylesheet logic. 
+      Have set the disable-output-escaping attribute to &apos;yes&apos;. Please relook at the stylesheet logic. 
 	</message>
     <xpath>
       //@disable-output-escaping[. = 'yes']
 	</xpath>
-    <priority>3</priority>
-    <example>
+	<priority>3</priority>
+	<example>
 	</example>
   </rule>
+
   <rule name="NotCreatingElementCorrectly">
     <message>
       Creating an element node using the xsl:element instruction when could have been possible directly
@@ -293,18 +298,20 @@ SOFTWARE.
       //xsl:element[not(contains(@name, '$') or (contains(@name, '(') and contains(@name, ')')) or 
 	  (contains(@name, '{') and contains(@name, '}')))]
 	</xpath>
-    <priority>3</priority>
-    <example>
-      <!-- VIOLATION -->
+	<priority>3</priority>
+	<example>
+	  <!-- VIOLATION -->
       <xsl:element name="test">
         <!-- some content -->
-      </xsl:element>
-      <!-- REPAIR -->
-      <test>
+	  </xsl:element>
+	  
+	  <!-- REPAIR -->
+	  <test>
         <!-- some content -->
-      </test>
-    </example>
+	  </test>
+	</example>
   </rule>
+
   <rule name="AreYouConfusingVariableAndNode">
     <message>
       You might be confusing a variable reference with a node reference
@@ -313,31 +320,34 @@ SOFTWARE.
 	  //xsl:apply-templates[some $var in ancestor::xsl:template[1]//xsl:variable satisfies 
 	  (($var &lt;&lt; .) and starts-with(@select, $var/@name))]
     </xpath>
-    <priority>5</priority>
-    <example>
-      <xsl:variable name="pass1">
+	<priority>5</priority>
+	<example>
+	  <xsl:variable name="pass1">
         <!--
           Some code for "Pass 1"
         -->
       </xsl:variable>
       <!-- VIOLATION -->
       <xsl:apply-templates select="pass1/foo"/>
-      <!-- REPAIR -->
+
+	  <!-- REPAIR -->
       <xsl:apply-templates select="$pass1/foo"/>
-    </example>
+	</example>
   </rule>
+
   <rule name="IncorrectUseOfBooleanConstants">
     <message>
-      Incorrectly using the boolean constants as 'true' or 'false'
+      Incorrectly using the boolean constants as &apos;true&apos; or &apos;false&apos;
 	</message>
     <xpath>
       //@*[(contains(., 'true') and not(contains(., 'true()'))) or (contains(., 'false') and not(contains(., 'false()')))]
 	</xpath>
-    <priority>5</priority>
-    <example>
-	  Perhaps you need true() instead of 'true', and false() instead of 'false'.
+	<priority>5</priority>
+	<example>
+	  Perhaps you need true() instead of &apos;true&apos;, and false() instead of &apos;false&apos;.
 	</example>
   </rule>
+
   <rule name="ShortNames">
     <message>
       Using a single character name for variable/function/template. Use meaningful names for these features.
@@ -345,12 +355,13 @@ SOFTWARE.
     <xpath>
       //(xsl:variable | xsl:template)[string-length(@name) = 1] | //xsl:function[string-length(substring-after(@name, ':')) = 1]
 	</xpath>
-    <priority>4</priority>
-    <example>
-      <!-- VIOLATION -->
-      <xsl:variable name="x" select="'hello'"/>
-    </example>
+	<priority>4</priority>
+	<example>
+	  <!-- VIOLATION -->
+	  <xsl:variable name="x" select="'hello'" />
+	</example>
   </rule>
+
   <rule name="NameStartsWithNumeric">
     <message>
       The variable/function/template name starts with a numeric character
@@ -358,10 +369,11 @@ SOFTWARE.
     <xpath>
       //(xsl:variable | xsl:template)[(string-length(@name) &gt; 1) and matches(@name, '[0-9].+')] | //xsl:function[(string-length(substring-after(@name, ':')) &gt; 1) and matches(substring-after(@name, ':'), '[0-9].+')]
 	</xpath>
-    <priority>5</priority>
-    <example>
-      <!-- VIOLATION -->
-      <xsl:variable name="1x" select="'hello'"/>
-    </example>
+	<priority>5</priority>
+	<example>
+	  <!-- VIOLATION -->
+	  <xsl:variable name="1x" select="'hello'" />
+	</example>
   </rule>
+
 </ruleset>
