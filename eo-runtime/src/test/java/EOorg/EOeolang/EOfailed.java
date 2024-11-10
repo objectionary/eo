@@ -33,7 +33,8 @@ import org.eolang.PhDefault;
 
 /**
  * Wrong object that can't be used and instantiated.
- * Used in {@link org.eolang.PhPackageTest#throwsExceptionIfCantInstantiateObject()}
+ *
+ * <p>Used in {@code org.eolang.PhPackageTest#throwsExceptionIfCantInstantiateObject()}.</p>
  *
  * @since 0.29
  */

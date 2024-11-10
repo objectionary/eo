@@ -529,11 +529,29 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Boolean obj = new Dataized(new </xsl:text>
+    <xsl:text>Assertions.assertTrue(</xsl:text>
+    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:text>new Dataized(</xsl:text>
+    <xsl:value-of select="eo:eol(6 + $indent)"/>
+    <xsl:text>new PhSafe(</xsl:text>
+    <xsl:value-of select="eo:eol(8 + $indent)"/>
+    <xsl:text>new PhNamed(</xsl:text>
+    <xsl:value-of select="eo:eol(10 + $indent)"/>
+    <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>()).asBool();</xsl:text>
+    <xsl:text>(),</xsl:text>
+    <xsl:value-of select="eo:eol(10 + $indent)"/>
+    <xsl:text>"</xsl:text>
+    <xsl:value-of select="@original-name"/>
+    <xsl:text>"</xsl:text>
+    <xsl:value-of select="eo:eol(8 + $indent)"/>
+    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol(6 + $indent)"/>
+    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:text>).asBool()</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>Assertions.assertTrue(obj);</xsl:text>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">

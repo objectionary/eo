@@ -28,6 +28,8 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -59,19 +61,27 @@ public final class EOfile$EOopen$EOfile_stream$EOwrite$EOwritten_bytes
     }
 
     @Override
-    public Phi lambda() throws Exception {
-        Files.INSTANCE.write(
-            Paths.get(
-                new Dataized(
-                    this.take(Attr.RHO)
-                        .take(Attr.RHO)
-                        .take(Attr.RHO)
-                        .take(Attr.RHO)
-                        .take("path")
-                ).asString()
-            ).toString(),
-            new Dataized(this.take("buffer")).take()
+    public Phi lambda() {
+        final Path path = Paths.get(
+            new Dataized(
+                this.take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take("path")
+            ).asString()
         );
+        try {
+            Files.INSTANCE.write(
+                path.toString(),
+                new Dataized(this.take("buffer")).take()
+            );
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't write to %s", path),
+                ex
+            );
+        }
         return new Data.ToPhi(true);
     }
 }

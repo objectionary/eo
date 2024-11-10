@@ -81,7 +81,7 @@ public final class EOsprintf extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
         final Phi args = this.take("args");
         final Phi retriever = new Expect<>(

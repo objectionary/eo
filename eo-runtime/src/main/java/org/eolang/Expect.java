@@ -36,7 +36,7 @@ public final class Expect<T> {
     /**
      * The action.
      */
-    private final Expect.Action<T> action;
+    private final Action<T> action;
 
     /**
      * The message.
@@ -48,7 +48,7 @@ public final class Expect<T> {
      * @param act The action
      * @param msg Additional explanation
      */
-    public Expect(final Expect.Action<T> act, final String msg) {
+    public Expect(final Action<T> act, final String msg) {
         this.action = act;
         this.message = msg;
     }
@@ -61,22 +61,9 @@ public final class Expect<T> {
     @SuppressWarnings("PMD.ShortMethodName")
     public T it() {
         try {
-            return this.action.exec();
+            return this.action.act();
         } catch (final ExFailure ex) {
             throw new ExFailure(this.message, ex);
         }
-    }
-
-    /**
-     * The action.
-     * @param <T> The type
-     * @since 0.41.0
-     */
-    public interface Action<T> {
-        /**
-         * Run it.
-         * @return The value
-         */
-        T exec();
     }
 }

@@ -47,7 +47,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOsize extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new Data.ToPhi(
             new File(
                 new Dataized(this.take(Attr.RHO).take("path")).asString()

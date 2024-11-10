@@ -57,7 +57,7 @@ public final class EOmalloc$EOof$EOallocated$EOread extends PhDefault implements
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new Data.ToPhi(
             Heaps.INSTANCE.read(
                 new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),

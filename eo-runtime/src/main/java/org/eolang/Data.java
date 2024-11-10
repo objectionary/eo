@@ -41,7 +41,7 @@ public interface Data {
      *  presence of two methods for data manipulations: {@link Data#attach(byte[])} to set data and
      *  {@link Data#delta()} to get data; which does not seem to be object oriented. It also
      *  requires every object to have reserved place for possible injected data. In our case, every
-     *  {@link PhDefault} has {@link PhDefault#data} variable. It would be much better to have this
+     *  {@link PhDefault} has {@code PhDefault#data} variable. It would be much better to have this
      *  data only inside some decorator. The main difficulty here is - child attributes of
      *  decorated object should know that their \rho is decorated and contains data.
      */

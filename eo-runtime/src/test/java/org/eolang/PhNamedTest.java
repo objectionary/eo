@@ -23,8 +23,13 @@
  */
 package org.eolang;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,15 +42,114 @@ final class PhNamedTest {
     @Test
     void comparesTwoObjects() {
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "two objects are equal",
             new PhNamed(new Data.ToPhi(1L), ""),
             Matchers.not(Matchers.equalTo(new PhNamed(new Data.ToPhi(1L), "")))
         );
         MatcherAssert.assertThat(
-            AtCompositeTest.TO_ADD_MESSAGE,
+            "two objects are not equal",
             new PhNamed(new Data.ToPhi(1L), ""),
             Matchers.not(Matchers.equalTo(new PhNamed(new Data.ToPhi(42L), "")))
         );
+    }
+
+    @Test
+    void reportsDeltaName() {
+        MatcherAssert.assertThat(
+            "reports delta attribute name correctly",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new PhNamed(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new ExFailure("oops");
+                        }
+                    },
+                    "self"
+                ).delta()
+            ).getMessage(),
+            Matchers.containsString("self.Δ")
+        );
+    }
+
+    @Test
+    void reportsLambdaName() throws Exception {
+        MatcherAssert.assertThat(
+            "reports lambda attribute name correctly",
+            PhNamedTest.stacktrace(
+                Assertions.assertThrows(
+                    ExAbstract.class,
+                    () -> new PhNamed(
+                        new BadLambda(),
+                        "here"
+                    ).lambda()
+                )
+            ),
+            Matchers.allOf(
+                Matchers.containsString("bad lambda oops"),
+                Matchers.containsString("here.λ")
+            )
+        );
+    }
+
+    @Test
+    void composesErrorMessages() throws Exception {
+        MatcherAssert.assertThat(
+            "composes errors and reports attribute name correctly",
+            PhNamedTest.stacktrace(
+                Assertions.assertThrows(
+                    ExAbstract.class,
+                    () -> new PhNamed(
+                        new PhWith(
+                            new BadLambda(),
+                            "foo",
+                            new PhDefault() {
+                                @Override
+                                public byte[] delta() {
+                                    throw new ExFailure("intentional oops");
+                                }
+                            }
+                        ),
+                        "entry"
+                    ).take("foo").delta()
+                )
+            ),
+            Matchers.allOf(
+                Matchers.containsString("intentional oops"),
+                Matchers.containsString("entry.foo.Δ")
+            )
+        );
+    }
+
+    /**
+     * Print the entire stacktrace of the exception.
+     * @param thr The exception
+     * @return Full stack trace
+     * @throws UnsupportedEncodingException If something wrong with the encoding
+     */
+    private static String stacktrace(final Throwable thr)
+        throws UnsupportedEncodingException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        thr.printStackTrace(new PrintStream(baos, true, StandardCharsets.UTF_8.name()));
+        return baos.toString(StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * Test class, always fails.
+     *
+     * @since 0.42.0
+     */
+    class BadLambda extends PhDefault implements Atom {
+        @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+        BadLambda() {
+            this.add("foo", new AtVoid("foo"));
+        }
+
+        @Override
+        public Phi lambda() {
+            throw new ExFailure("bad lambda oops");
+        }
     }
 
 }

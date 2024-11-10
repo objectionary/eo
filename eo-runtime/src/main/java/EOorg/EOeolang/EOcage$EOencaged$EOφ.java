@@ -47,7 +47,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOcage$EOencaged$EOφ extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final int locator = new Dataized(this.take(Attr.RHO).take("locator"))
             .asNumber()
             .intValue();

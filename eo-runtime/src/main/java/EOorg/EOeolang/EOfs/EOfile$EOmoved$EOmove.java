@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,15 +50,22 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOmoved$EOmove extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi rho = this.take(Attr.RHO);
         final Path target = Paths.get(
             new Dataized(rho.take("target")).asString()
         );
-        Files.move(
-            Paths.get(new Dataized(rho.take(Attr.RHO).take("path")).asString()),
-            target
+        final Path from = Paths.get(
+            new Dataized(rho.take(Attr.RHO).take("path")).asString()
         );
+        try {
+            Files.move(from, target);
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't move %s to %s", from, target),
+                ex
+            );
+        }
         return new Data.ToPhi(target.toString());
     }
 }

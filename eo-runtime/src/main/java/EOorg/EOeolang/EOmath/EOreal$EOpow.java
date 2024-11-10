@@ -54,7 +54,7 @@ public final class EOreal$EOpow extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         return new ToPhi(
             Math.pow(
                 new Dataized(this.take(Attr.RHO)).asNumber(),

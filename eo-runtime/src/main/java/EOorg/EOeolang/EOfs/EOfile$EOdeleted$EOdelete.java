@@ -28,7 +28,9 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -48,14 +50,20 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOdeleted$EOdelete extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
-        Files.delete(
-            Paths.get(
-                new Dataized(
-                    this.take(Attr.RHO).take(Attr.RHO).take("path")
-                ).asString()
-            )
+    public Phi lambda() {
+        final Path path = Paths.get(
+            new Dataized(
+                this.take(Attr.RHO).take(Attr.RHO).take("path")
+            ).asString()
         );
+        try {
+            Files.delete(path);
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't deleted %s", path),
+                ex
+            );
+        }
         return new Data.ToPhi(true);
     }
 }

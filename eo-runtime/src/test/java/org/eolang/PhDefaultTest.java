@@ -23,7 +23,6 @@
  */
 package org.eolang;
 
-import EOorg.EOeolang.EOerror;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,9 +80,9 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = new PhSafe(new PhDefaultTest.Int());
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> phi.take(Attr.RHO),
             String.format("Object should not have %s attribute when it's just formed", Attr.RHO)
         );
@@ -100,9 +99,9 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        final Phi phi = new PhDefaultTest.Int().copy();
+        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> phi.take(Attr.RHO),
             String.format("Object should not give %s attribute after copying", Attr.RHO)
         );
@@ -220,10 +219,10 @@ final class PhDefaultTest {
 
     @Test
     void copiesUnsetVoidAttribute() {
-        final Phi phi = new PhDefaultTest.Int();
+        final Phi phi = new PhSafe(new PhDefaultTest.Int());
         final Phi copy = phi.copy();
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> copy.take(PhDefaultTest.VOID_ATT),
             "Unset void attribute should be copied with unset value"
         );
@@ -266,9 +265,9 @@ final class PhDefaultTest {
 
     @Test
     void hasAccessToDependentOnContextAttribute() {
-        final Phi phi = new PhDefaultTest.Int().copy();
+        final Phi phi = new PhSafe(new PhDefaultTest.Int().copy());
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> phi.take(Attr.PHI),
             AtCompositeTest.TO_ADD_MESSAGE
         );
@@ -321,8 +320,8 @@ final class PhDefaultTest {
     @Test
     void failsGracefullyOnMissingAttribute() {
         Assertions.assertThrows(
-            EOerror.ExError.class,
-            () -> new Data.ToPhi("Hey").take("missing-attr"),
+            ExAbstract.class,
+            () -> new PhSafe(new Data.ToPhi("Hey")).take("missing-attr"),
             AtCompositeTest.TO_ADD_MESSAGE
         );
     }

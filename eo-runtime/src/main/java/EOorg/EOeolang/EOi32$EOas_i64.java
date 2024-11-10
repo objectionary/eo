@@ -45,10 +45,11 @@ import org.eolang.XmirObject;
  */
 @Versionized
 @XmirObject(oname = "i32.as-i64")
+
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOi32$EOas_i64 extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi num = Phi.Φ.take("org.eolang.i64").copy();
         num.put(
             0,

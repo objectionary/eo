@@ -141,7 +141,7 @@ final class EOcageTest {
     void doesNotWritePrimitivesFormedDifferently() {
         final Phi cage = EOcageTest.encaged(new Data.ToPhi(1L));
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> EOcageTest.encageTo(cage, new Data.ToPhi("Hello world")),
             AtCompositeTest.TO_ADD_MESSAGE
         );
@@ -157,7 +157,7 @@ final class EOcageTest {
         );
         final Phi cage = EOcageTest.encaged(five);
         Assertions.assertThrows(
-            EOerror.ExError.class,
+            ExAbstract.class,
             () -> EOcageTest.encageTo(cage, ten),
             AtCompositeTest.TO_ADD_MESSAGE
         );

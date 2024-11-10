@@ -81,7 +81,7 @@ public final class EOsscanf extends PhDefault implements Atom {
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final String format = new Dataized(this.take("format")).asString();
         final StringBuilder regex = new StringBuilder();
         boolean literal = false;

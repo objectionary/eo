@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,13 +50,21 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOdir$EOtmpfile$EOtouch extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Path home = Paths.get(
             new Dataized(
                 this.take(Attr.RHO).take(Attr.RHO).take("path")
             ).asString()
         );
-        final Path path = Files.createTempFile(home, null, null);
+        final Path path;
+        try {
+            path = Files.createTempFile(home, null, null);
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't created temp file in %s", home),
+                ex
+            );
+        }
         path.toFile().deleteOnExit();
         return new Data.ToPhi(path.toAbsolutePath().toString());
     }
