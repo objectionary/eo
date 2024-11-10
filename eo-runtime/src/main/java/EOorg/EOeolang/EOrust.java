@@ -149,15 +149,17 @@ public final class EOrust extends PhDefault implements Atom {
         final String name = Optional.ofNullable(NAMES.get(locator))
             .orElseThrow(() -> new ExNative("No native function for %s", locator));
         final Method method;
+        final String type = String.format("EOrust.natives.%s", name);
         try {
-            method = Class.forName(
-                String.format(
-                    "EOrust.natives.%s",
-                    name
-                )
-            ).getDeclaredMethod(name, Universe.class);
+            method = Class.forName(type).getDeclaredMethod(name, Universe.class);
         } catch (final NoSuchMethodException | ClassNotFoundException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format(
+                    "Can't instantiate class %s or find %s() method in it",
+                    type, name
+                ),
+                ex
+            );
         }
         if (method.getReturnType() != byte[].class) {
             throw new ExFailure(
@@ -168,22 +170,25 @@ public final class EOrust extends PhDefault implements Atom {
             );
         }
         final Phi portal = this.take("portal");
+        final UniverseSafe uni = new UniverseSafe(
+            new UniverseDefault(
+                portal, this.phis
+            ),
+            this.error
+        );
+        final byte[] bytes;
         try {
-            return this.translate(
-                (byte[]) method.invoke(
-                    null,
-                    new UniverseSafe(
-                        new UniverseDefault(
-                            portal, this.phis
-                        ),
-                        this.error
-                    )
-                ),
-                this.take("code").locator()
-            );
+            bytes = (byte[]) method.invoke(null, uni);
         } catch (final IllegalAccessException | InvocationTargetException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Failed to invoke %s", method),
+                ex
+            );
         }
+        return this.translate(
+            bytes,
+            this.take("code").locator()
+        );
     }
 
     /**
