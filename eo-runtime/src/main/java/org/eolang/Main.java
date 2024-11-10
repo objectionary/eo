@@ -210,7 +210,9 @@ public final class Main {
         Main.LOGGER.info(
             String.format(
                 "%n---%n%s",
-                new VerboseBytesAsString(new Dataized(app).take()).get()
+                new VerboseBytesAsString(
+                    new Dataized(new PhSafe(new PhNamed(app, obj))).take()
+                ).get()
             )
         );
     }

@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -47,18 +48,22 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi open = this.take(Attr.RHO);
         final String name = Paths.get(
             new Dataized(open.take(Attr.RHO).take("path")).asString()
         ).toString();
-        Files.INSTANCE.open(name);
         try {
-            final Phi scope = open.take("scope").copy();
-            scope.put(0, open.take("file-stream"));
-            new Dataized(scope).take();
-        } finally {
-            Files.INSTANCE.close(name);
+            Files.INSTANCE.open(name);
+            try {
+                final Phi scope = open.take("scope").copy();
+                scope.put(0, open.take("file-stream"));
+                new Dataized(scope).take();
+            } finally {
+                Files.INSTANCE.close(name);
+            }
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
         return new Data.ToPhi(true);
     }

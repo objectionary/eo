@@ -29,6 +29,7 @@
 package EOorg.EOeolang.EOtxt; // NOPMD
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.regex.Matcher;
@@ -78,14 +79,19 @@ public final class EOregex$EOpattern$EOmatch$EOmatched_from_index extends PhDefa
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi match = this.take(Attr.RHO);
         final InputStream bais = new ByteArrayInputStream(
             new Dataized(match.take(Attr.RHO).take("serialized")).take()
         );
-        final Matcher matcher = ((Pattern) new ObjectInputStream(bais).readObject()).matcher(
-            new Dataized(match.take("txt")).asString()
-        );
+        final Matcher matcher;
+        try {
+            matcher = ((Pattern) new ObjectInputStream(bais).readObject()).matcher(
+                new Dataized(match.take("txt")).asString()
+            );
+        } catch (final IOException | ClassNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
+        }
         final Phi start = this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START);
         final Double from = new Dataized(
             this.take(EOregex$EOpattern$EOmatch$EOmatched_from_index.START)

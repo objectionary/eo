@@ -245,9 +245,7 @@ SOFTWARE.
       </xsl:with-param>
     </xsl:apply-templates>
     <xsl:value-of select="eo:tabs(3)"/>
-    <xsl:text>return new PhNamed(ret, "</xsl:text>
-    <xsl:value-of select="o/@name"/>
-    <xsl:text>");</xsl:text>
+    <xsl:text>return ret;</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
     <xsl:text>})</xsl:text>
     <xsl:text>)</xsl:text>
@@ -314,9 +312,9 @@ SOFTWARE.
       </xsl:when>
       <!-- TBD -->
       <xsl:when test="$source/@ancestors">
-        <xsl:text>new PhSafe(new </xsl:text>
+        <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:class-name($source/@name, eo:suffix(@line, @pos))"/>
-        <xsl:text>())</xsl:text>
+        <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:when test="$source and name($source)='class'">
         <xsl:value-of select="eo:fetch(concat($source/@package, '.', $source/@name))"/>
@@ -531,11 +529,29 @@ SOFTWARE.
   <xsl:template match="class" mode="assert">
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:tabs($indent)"/>
-    <xsl:text>Boolean obj = new Dataized(new PhSafe(new </xsl:text>
+    <xsl:text>Assertions.assertTrue(</xsl:text>
+    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:text>new Dataized(</xsl:text>
+    <xsl:value-of select="eo:eol(6 + $indent)"/>
+    <xsl:text>new PhSafe(</xsl:text>
+    <xsl:value-of select="eo:eol(8 + $indent)"/>
+    <xsl:text>new PhNamed(</xsl:text>
+    <xsl:value-of select="eo:eol(10 + $indent)"/>
+    <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>())).asBool();</xsl:text>
+    <xsl:text>(),</xsl:text>
+    <xsl:value-of select="eo:eol(10 + $indent)"/>
+    <xsl:text>"</xsl:text>
+    <xsl:value-of select="@original-name"/>
+    <xsl:text>"</xsl:text>
+    <xsl:value-of select="eo:eol(8 + $indent)"/>
+    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol(6 + $indent)"/>
+    <xsl:text>)</xsl:text>
+    <xsl:value-of select="eo:eol(4 + $indent)"/>
+    <xsl:text>).asBool()</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>
-    <xsl:text>Assertions.assertTrue(obj);</xsl:text>
+    <xsl:text>);</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="meta[head='package']" mode="head">

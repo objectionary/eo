@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -143,16 +144,21 @@ public final class EOrust extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final String locator = this.take("code").locator().split(":")[0];
         final String name = Optional.ofNullable(NAMES.get(locator))
             .orElseThrow(() -> new ExNative("No native function for %s", locator));
-        final Method method = Class.forName(
-            String.format(
-                "EOrust.natives.%s",
-                name
-            )
-        ).getDeclaredMethod(name, Universe.class);
+        final Method method;
+        try {
+            method = Class.forName(
+                String.format(
+                    "EOrust.natives.%s",
+                    name
+                )
+            ).getDeclaredMethod(name, Universe.class);
+        } catch (final NoSuchMethodException | ClassNotFoundException ex) {
+            throw new IllegalArgumentException(ex);
+        }
         if (method.getReturnType() != byte[].class) {
             throw new ExFailure(
                 "Return type of %s is %s, required %s",
@@ -162,18 +168,22 @@ public final class EOrust extends PhDefault implements Atom {
             );
         }
         final Phi portal = this.take("portal");
-        return this.translate(
-            (byte[]) method.invoke(
-                null,
-                new UniverseSafe(
-                    new UniverseDefault(
-                        portal, this.phis
-                    ),
-                    this.error
-                )
-            ),
-            this.take("code").locator()
-        );
+        try {
+            return this.translate(
+                (byte[]) method.invoke(
+                    null,
+                    new UniverseSafe(
+                        new UniverseDefault(
+                            portal, this.phis
+                        ),
+                        this.error
+                    )
+                ),
+                this.take("code").locator()
+            );
+        } catch (final IllegalAccessException | InvocationTargetException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     /**

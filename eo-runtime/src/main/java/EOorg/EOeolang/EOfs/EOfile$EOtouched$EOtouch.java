@@ -28,10 +28,10 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Attr;
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -47,11 +47,17 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOfile$EOtouched$EOtouch extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
-        return new Data.ToPhi(
-            Paths.get(
-                new Dataized(this.take(Attr.RHO).take(Attr.RHO).take("path")).asString()
-            ).toFile().createNewFile()
-        );
+    public Phi lambda() {
+        try {
+            return new ToPhi(
+                Paths.get(
+                    new Dataized(
+                        this.take(Attr.RHO).take(Attr.RHO).take("path")
+                    ).asString()
+                ).toFile().createNewFile()
+            );
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 }

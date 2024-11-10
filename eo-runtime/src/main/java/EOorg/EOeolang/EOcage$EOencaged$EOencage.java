@@ -56,7 +56,7 @@ public final class EOcage$EOencaged$EOencage extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         Cages.INSTANCE.encage(
             new Dataized(this.take(Attr.RHO).take("locator")).asNumber().intValue(),
             this.take("object")

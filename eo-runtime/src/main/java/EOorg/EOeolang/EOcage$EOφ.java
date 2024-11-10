@@ -46,7 +46,7 @@ import org.eolang.XmirObject;
 @SuppressWarnings("PMD.AvoidDollarSigns")
 public final class EOcage$EOφ extends PhDefault implements Atom {
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Phi encaged = this.take(Attr.RHO).take("encaged").copy();
         encaged.put(
             "locator",

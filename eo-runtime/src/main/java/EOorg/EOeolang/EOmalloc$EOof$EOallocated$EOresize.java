@@ -56,7 +56,7 @@ public final class EOmalloc$EOof$EOallocated$EOresize extends PhDefault implemen
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         Heaps.INSTANCE.resize(
             new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
             new Dataized(this.take("size")).asNumber().intValue()

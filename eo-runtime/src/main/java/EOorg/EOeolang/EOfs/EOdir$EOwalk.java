@@ -28,6 +28,7 @@
  */
 package EOorg.EOeolang.EOfs; // NOPMD
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,7 +62,7 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         final Path path = Paths.get(
             new Dataized(
                 this.take(Attr.RHO).take("file").take("path")
@@ -88,6 +89,8 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
                     )
                     .toArray(Phi[]::new)
             );
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException(ex);
         }
     }
 }

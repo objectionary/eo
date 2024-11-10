@@ -57,7 +57,7 @@ public final class EOmalloc$EOof$EOallocated$EOwrite extends PhDefault implement
     }
 
     @Override
-    public Phi lambda() throws Exception {
+    public Phi lambda() {
         Heaps.INSTANCE.write(
             new Dataized(this.take(Attr.RHO).take("id")).asNumber().intValue(),
             new Dataized(this.take("offset")).asNumber().intValue(),

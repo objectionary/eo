@@ -31,7 +31,7 @@ package org.eolang;
  */
 @Versionized
 @SuppressWarnings("PMD.TooManyMethods")
-public final class PhNamed implements Phi {
+public final class PhNamed implements Phi, Atom {
 
     /**
      * The original.
@@ -56,94 +56,114 @@ public final class PhNamed implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.origin.equals(obj);
+        return this.through(() -> this.origin.equals(obj));
     }
 
     @Override
     public int hashCode() {
-        return this.origin.hashCode();
+        return this.through(this.origin::hashCode);
     }
 
     @Override
     public String toString() {
-        return String.format("%s≡%s", this.name, this.origin.toString());
+        return this.through(() -> String.format("%s≡%s", this.name, this.origin.toString()));
     }
 
     @Override
     public String φTerm() {
-        return String.format("%s ≡ %s", this.name, this.origin.φTerm());
+        return this.through(() -> String.format("%s ≡ %s", this.name, this.origin.φTerm()));
     }
 
     @Override
     public Phi copy() {
-        try {
-            return new PhNamed(this.origin.copy(), this.name);
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.label(), ex);
-        }
+        return this.through(() -> new PhNamed(this.origin.copy(), this.name));
     }
 
     @Override
-    public Phi take(final String nme) {
-        try {
-            return new PhNamed(
-                this.origin.take(nme),
-                name
-            );
-        } catch (final ExUnset ex) {
-            throw new ExUnset(this.label(), ex);
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.label(), ex);
-        }
+    public Phi take(final String sub) {
+        return this.through(
+            () -> new PhNamed(
+                this.origin.take(sub),
+                String.format("%s.%s", this.name, sub)
+            )
+        );
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        try {
-            return this.origin.put(pos, object);
-        } catch (final ExReadOnly ex) {
-            throw new ExReadOnly(this.label(), ex);
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.label(), ex);
-        }
+        return this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
     public boolean put(final String nme, final Phi object) {
-        try {
-            return this.origin.put(nme, object);
-        } catch (final ExReadOnly ex) {
-            throw new ExReadOnly(this.label(), ex);
-        } catch (final ExFailure ex) {
-            throw new ExFailure(this.label(), ex);
-        }
+        return this.through(() -> this.origin.put(nme, object));
     }
 
     @Override
     public String locator() {
-        return this.origin.locator();
+        return this.through(this.origin::locator);
     }
 
     @Override
     public String forma() {
-        return this.origin.forma();
+        return this.through(this.origin::forma);
     }
 
     @Override
     public void attach(final byte[] data) {
-        this.origin.attach(data);
+        this.through(
+            () -> {
+                this.origin.attach(data);
+                return null;
+            }
+        );
     }
 
     @Override
     public byte[] delta() {
-        return this.origin.delta();
+        return this.through(this.origin::delta, ".Δ");
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.through(() -> ((Atom) this.origin).lambda(), ".λ");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param <T> Type of result
+     * @return Result
+     */
+    private <T> T through(final Action<T> action) {
+        return this.through(action, "");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param suffix The suffix to add to the label
+     * @param <T> Type of result
+     * @return Result
+     */
+    private <T> T through(final Action<T> action, final String suffix) {
+        try {
+            return action.act();
+        } catch (final ExUnset ex) {
+            throw new ExUnset(this.label(suffix), ex);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(suffix), ex);
+        } catch (final ExAbstract ex) {
+            throw new ExFailure(this.label(suffix), ex);
+        }
     }
 
     /**
      * The label of the exception.
+     * @param suffix The suffix to add to the label
      * @return Label
      */
-    private String label() {
-        return String.format("Error at \"%s\" attribute", this.name);
+    private String label(final String suffix) {
+        return String.format("Error at \"%s%s\" attribute", this.name, suffix);
     }
 }

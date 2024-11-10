@@ -32,11 +32,10 @@ package org.eolang;
 @Versionized
 public final class ExNative extends ExFailure {
 
-    private static final long serialVersionUID = 5726845593921315515L;
-
     /**
      * Serialization identifier.
      */
+    private static final long serialVersionUID = 5726845593921315515L;
 
     /**
      * Ctor.
