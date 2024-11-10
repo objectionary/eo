@@ -55,15 +55,16 @@ public final class EOfile$EOmoved$EOmove extends PhDefault implements Atom {
         final Path target = Paths.get(
             new Dataized(rho.take("target")).asString()
         );
+        final Path from = Paths.get(
+            new Dataized(rho.take(Attr.RHO).take("path")).asString()
+        );
         try {
-            Files.move(
-                Paths.get(
-                    new Dataized(rho.take(Attr.RHO).take("path")).asString()
-                ),
-                target
-            );
+            Files.move(from, target);
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Can't move %s to %s", from, target),
+                ex
+            );
         }
         return new Data.ToPhi(target.toString());
     }

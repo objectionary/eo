@@ -60,7 +60,10 @@ public final class EOdir$EOtmpfile$EOtouch extends PhDefault implements Atom {
         try {
             path = Files.createTempFile(home, null, null);
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Can't created temp file in %s", home),
+                ex
+            );
         }
         path.toFile().deleteOnExit();
         return new Data.ToPhi(path.toAbsolutePath().toString());

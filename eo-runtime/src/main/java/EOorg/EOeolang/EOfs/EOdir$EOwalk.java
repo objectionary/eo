@@ -90,7 +90,10 @@ public final class EOdir$EOwalk extends PhDefault implements Atom {
                     .toArray(Phi[]::new)
             );
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Can't walk at %s", path),
+                ex
+            );
         }
     }
 }

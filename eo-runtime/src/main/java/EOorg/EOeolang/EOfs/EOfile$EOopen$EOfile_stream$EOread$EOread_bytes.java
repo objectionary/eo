@@ -29,6 +29,7 @@
 package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
@@ -60,23 +61,27 @@ public final class EOfile$EOopen$EOfile_stream$EOread$EOread_bytes
 
     @Override
     public Phi lambda() {
+        final Path path = Paths.get(
+            new Dataized(
+                this.take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take(Attr.RHO)
+                    .take("path")
+            ).asString()
+        );
         try {
             return new ToPhi(
                 Files.INSTANCE.read(
-                    Paths.get(
-                        new Dataized(
-                            this.take(Attr.RHO)
-                                .take(Attr.RHO)
-                                .take(Attr.RHO)
-                                .take(Attr.RHO)
-                                .take("path")
-                        ).asString()
-                    ).toString(),
+                    path.toString(),
                     new Dataized(this.take("size")).asNumber().intValue()
                 )
             );
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Can't read from %s", path),
+                ex
+            );
         }
     }
 }

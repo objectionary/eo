@@ -29,6 +29,7 @@
 package EOorg.EOeolang.EOfs; // NOPMD
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.eolang.Atom;
 import org.eolang.Attr;
@@ -50,20 +51,23 @@ public final class EOfile$EOopen$EOprocess_file extends PhDefault implements Ato
     @Override
     public Phi lambda() {
         final Phi open = this.take(Attr.RHO);
-        final String name = Paths.get(
+        final Path path = Paths.get(
             new Dataized(open.take(Attr.RHO).take("path")).asString()
-        ).toString();
+        );
         try {
-            Files.INSTANCE.open(name);
+            Files.INSTANCE.open(path.toString());
             try {
                 final Phi scope = open.take("scope").copy();
                 scope.put(0, open.take("file-stream"));
                 new Dataized(scope).take();
             } finally {
-                Files.INSTANCE.close(name);
+                Files.INSTANCE.close(path.toString());
             }
         } catch (final IOException ex) {
-            throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(
+                String.format("Can't process file %s", path),
+                ex
+            );
         }
         return new Data.ToPhi(true);
     }
