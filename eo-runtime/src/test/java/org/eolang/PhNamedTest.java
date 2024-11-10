@@ -131,7 +131,7 @@ final class PhNamedTest {
     private static String stacktrace(final Throwable thr)
         throws UnsupportedEncodingException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        thr.printStackTrace(new PrintStream(baos));
+        thr.printStackTrace(new PrintStream(baos, true, StandardCharsets.UTF_8.name()));
         return baos.toString(StandardCharsets.UTF_8.name());
     }
 
