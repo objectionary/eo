@@ -65,7 +65,7 @@ public final class MarkMojo extends SafeMojo {
                 }
             }
             Logger.info(
-                this, "New %d objects found in %d unpacked dependencies",
+                this, "New %d EO objects found in %d unpacked dependencies",
                 found, deps.size()
             );
         }
