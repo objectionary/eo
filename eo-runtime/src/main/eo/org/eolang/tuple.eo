@@ -41,7 +41,7 @@
 
   # Obtain the length of the tuple.
   [] > length
-    ^.head.length.plus 1 > len!
+    head.length.plus 1 > len!
     number len > @
 
   # Take one element from the tuple, at the given position.
@@ -61,7 +61,7 @@
 
     [tup len] > at-fast
       if. > @
-        (len.plus -1).gt ^.index
+        (len.plus -1).gt index
         ^.at-fast
           tup.head
           len.plus -1
