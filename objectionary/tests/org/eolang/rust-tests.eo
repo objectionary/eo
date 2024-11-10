@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.0
++version 0.41.1
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -201,7 +201,7 @@
 
 # Test.
 [] > rust-invalid-put
-  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > message
+  "Rust insert failed " > message
   QQ.rust > put
     """
     use eo::Portal;
@@ -219,7 +219,11 @@
     slice.
       try
         put
-        e > [e]
+        [e]
+          seq > @
+            *
+              QQ.io.stdout e
+              e
         true
       0
       message.as-bytes.size
@@ -229,7 +233,7 @@
 [] > rust-invalid-bind
   1 > a
   2 > b
-  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > to-check
+  "Rust insert failed " > to-check
   QQ.rust > insert
     """
     use eo::Portal;
@@ -327,7 +331,7 @@
 
 # Test.
 [] > rust-error
-  "Error at \"EOorg.EOeolang.EOrust#λ\" attribute; caused by Rust insert failed " > message
+  "Rust insert failed " > message
   QQ.rust > err
     """
     use eo::Portal;

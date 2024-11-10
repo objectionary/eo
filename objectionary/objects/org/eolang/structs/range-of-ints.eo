@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+rt jvm org.eolang:eo-runtime:0.41.0
++rt jvm org.eolang:eo-runtime:0.41.1
 +rt node eo2js-runtime:0.0.0
-+version 0.41.0
++version 0.41.1
 
 # Range of integers from `start` to `end` (soft border) with step = 1.
 # Here `start` and `end` must be `int`s. If they're not - an error will
