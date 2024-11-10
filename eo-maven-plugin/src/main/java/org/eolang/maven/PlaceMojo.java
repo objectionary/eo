@@ -111,14 +111,14 @@ public final class PlaceMojo extends SafeMojo {
                 );
             } else {
                 Logger.info(
-                    this, "Placed %d binary files found in %d dependencies",
+                    this, "Placed %d binary file(s) found in %d dependencies",
                     copied, deps.size()
                 );
             }
         } else {
             Logger.info(
-                this, "The directory is absent, nothing to place: %s",
-                new Rel(home)
+                this, "The directory is absent, nothing to place to %[file]s",
+                home
             );
         }
     }
@@ -132,20 +132,20 @@ public final class PlaceMojo extends SafeMojo {
      */
     private long placeDependency(final Path home, final String dep) {
         if (this.placedTojos.findJar(dep).isPresent()) {
-            Logger.info(this, "Found placed binaries from %s", dep);
+            Logger.debug(this, "Found placed binaries from %s", dep);
         }
         final Path dir = home.resolve(dep);
         final long copied = new BinariesDependency(dir, dep, this.rewriteBinaries).place();
         this.placedTojos.placeJar(dep);
         if (copied > 0) {
             Logger.info(
-                this, "Placed %d binary file(s) out of %d, found in %s",
-                copied, new Walk(dir).size(), dep
+                this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
+                copied, new Walk(dir).size(), dep, this.outputDir
             );
         } else {
             Logger.info(
-                this, "No binary file(s) out of %d were placed from %s",
-                new Walk(dir).size(), dep
+                this, "No binary file(s) out of %d were placed from %s, to %[file]s",
+                new Walk(dir).size(), dep, this.outputDir
             );
         }
         return copied;
@@ -213,11 +213,12 @@ public final class PlaceMojo extends SafeMojo {
          */
         private boolean isNotEoSource(final Path file) {
             final boolean res;
-            if (this.dir.relativize(file).startsWith(CopyMojo.DIR)) {
+            final Path path = this.dir.relativize(file);
+            if (path.startsWith(CopyMojo.DIR)) {
                 Logger.debug(
                     this,
-                    "File %s is not a binary, but a source, won't place it",
-                    new Rel(file)
+                    "File %[file]s (%[size]s) is not a binary, but a source, won't place it",
+                    path, path.toFile().length()
                 );
                 res = false;
             } else {
@@ -309,17 +310,16 @@ public final class PlaceMojo extends SafeMojo {
                 if (!Files.exists(target)) {
                     Logger.info(
                         this,
-                        "The file %s has been placed to %s, but now it's gone, replacing",
-                        new Rel(file),
-                        new Rel(target)
+                        "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
+                        file, target
                     );
                 }
                 if (Files.exists(target) && !this.sameLength(target, file)) {
                     Logger.debug(
                         this,
-                        "File %s (%d bytes) was already placed at %s (%d bytes!) by %s, replacing",
-                        new Rel(file), file.toFile().length(),
-                        new Rel(target), target.toFile().length(),
+                        "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
+                        file, file.toFile().length(),
+                        target, target.toFile().length(),
                         tojo.get().dependency()
                     );
                 }
