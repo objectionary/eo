@@ -62,9 +62,9 @@
   # Attention! The object is for internal usage only. Please don't use
   # the object programmatically outside of `while` object.
   [index] > loop
-    ^.body index > current
+    body index > current
     if. > @
-      (^.condition (index.plus 1)).as-bool
+      (condition (index.plus 1)).as-bool
       seq
         *
           current
