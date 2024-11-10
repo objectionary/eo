@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT }}
+          to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             Good news, we've just published a new version of [EO compiler](https://github.com/objectionary/eo): [`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). You're welcome to gitve it a try!
