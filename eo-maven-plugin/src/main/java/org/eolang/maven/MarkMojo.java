@@ -89,7 +89,8 @@ public final class MarkMojo extends SafeMojo {
             .map(tojo -> tojo.withVersion(version))
             .count();
         Logger.info(
-            this, "Found %d source(s) in %[file]s, %d program(s) registered with version %s",
+            this,
+            "Found %d .eo source file(s) in %[file]s, %d program(s) registered with version %s",
             sources.size(), dir, done, version
         );
         return done;
