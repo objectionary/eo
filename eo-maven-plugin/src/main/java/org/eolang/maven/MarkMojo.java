@@ -37,7 +37,6 @@ import org.eolang.maven.name.OnReplaced;
 import org.eolang.maven.name.OnSwap;
 import org.eolang.maven.name.OnVersioned;
 import org.eolang.maven.tojos.ForeignTojos;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
@@ -90,8 +89,8 @@ public final class MarkMojo extends SafeMojo {
             .map(tojo -> tojo.withVersion(version))
             .count();
         Logger.info(
-            this, "Found %d sources in %s, %d program(s) registered with version %s",
-            sources.size(), new Rel(dir), done, version
+            this, "Found %d source(s) in %[file]s, %d program(s) registered with version %s",
+            sources.size(), dir, done, version
         );
         return done;
     }

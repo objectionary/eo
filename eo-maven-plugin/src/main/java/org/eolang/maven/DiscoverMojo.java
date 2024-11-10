@@ -71,7 +71,11 @@ public final class DiscoverMojo extends SafeMojo {
             if (this.scopedTojos().size() == 0) {
                 Logger.warn(this, "Nothing to discover, since there are no programs");
             } else {
-                Logger.info(this, "Nothing to discover, all programs checked already");
+                Logger.info(
+                    this,
+                    "Nothing to discover, all %d programs checked already",
+                    this.scopedTojos().size()
+                );
             }
         } else if (discovered.isEmpty()) {
             Logger.info(

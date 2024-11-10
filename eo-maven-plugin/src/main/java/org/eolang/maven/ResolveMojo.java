@@ -35,6 +35,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
+import org.cactoos.iterable.Joined;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
 import org.eolang.maven.dependencies.DcsDefault;
 import org.eolang.maven.dependencies.DcsDepgraph;
@@ -150,12 +152,13 @@ public final class ResolveMojo extends SafeMojo {
             this.central = new Central(this.project, this.session, this.manager);
         }
         final Collection<Dependency> deps = this.deps();
+        final Path target = this.targetDir.toPath().resolve(ResolveMojo.DIR);
         for (final Dependency dep : deps) {
             String classifier = dep.getClassifier();
             if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
-            final Path dest = this.targetDir.toPath().resolve(ResolveMojo.DIR)
+            final Path dest = target
                 .resolve(dep.getGroupId())
                 .resolve(dep.getArtifactId())
                 .resolve(classifier)
@@ -184,7 +187,18 @@ public final class ResolveMojo extends SafeMojo {
         if (deps.isEmpty()) {
             Logger.debug(this, "No new dependencies unpacked");
         } else {
-            Logger.info(this, "New %d dependenc(ies) unpacked", deps.size());
+            Logger.info(
+                this,
+                "New %d dependenc(ies) unpacked to %[file]s: %s",
+                deps.size(), target,
+                new Joined<>(
+                    ", ",
+                    new Mapped<>(
+                        Object::toString,
+                        deps
+                    )
+                )
+            );
         }
     }
 
