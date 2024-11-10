@@ -108,12 +108,17 @@ public final class ParseMojo extends SafeMojo {
                     "No .eo sources registered, nothing to be parsed to XMIRs (maybe you forgot to execute the \"register\" goal?)"
                 );
             } else {
-                Logger.info(this, "No new .eo sources parsed to XMIRs");
+                Logger.info(
+                    this,
+                    "No new .eo sources out of %d parsed to XMIRs",
+                    this.scopedTojos().withSources().size()
+                );
             }
         } else {
             Logger.info(
-                this, "Parsed %d new .eo sources to XMIRs in %[ms]s",
-                total, System.currentTimeMillis() - start
+                this, "Parsed %d new .eo sources out of %d to XMIRs in %[ms]s",
+                total, this.scopedTojos().withSources().size(),
+                System.currentTimeMillis() - start
             );
         }
     }

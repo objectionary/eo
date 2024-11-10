@@ -42,15 +42,16 @@ import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
 import org.eolang.maven.dependencies.DcsUniquelyVersioned;
 import org.eolang.maven.dependencies.DcsWithRuntime;
 import org.eolang.maven.dependencies.DcsWithoutRuntime;
-import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
  * Find all required runtime dependencies, download
- * them from Maven Central, unpack and place to target/eo.
- * The motivation for this mojo is simple: Maven doesn't have
+ * them from Maven Central, unpack and place to the {@code target/eo}
+ * directory.
+ *
+ * <p>The motivation for this mojo is simple: Maven doesn't have
  * a mechanism for adding .JAR files to transpile/test classpath in
- * runtime.
+ * runtime.</p>
  *
  * @since 0.1
  */
@@ -106,12 +107,12 @@ public final class ResolveMojo extends SafeMojo {
     /**
      * Add eo-runtime dependency to the classpath.
      *
-     * That property is useful only for eo-runtime library compilation.
+     * <p>That property is useful only for eo-runtime library compilation.
      * When you compile eo-runtime, you don't want to add eo-runtime from foreign sources
      * (since you compile an eo-runtime library and classpath will anyway have all required classes)
      * and in this case, you should set this property to false.
      * In any other cases, the eo-runtime
-     * dependency will be downloaded and added to the classpath automatically.
+     * dependency will be downloaded and added to the classpath automatically.</p>
      *
      * @checkstyle MemberNameCheck (7 lines)
      */
@@ -161,8 +162,8 @@ public final class ResolveMojo extends SafeMojo {
                 .resolve(dep.getVersion());
             if (Files.exists(dest)) {
                 Logger.debug(
-                    this, "Dependency %s already resolved to %s",
-                    new Coordinates(dep), new Rel(dest)
+                    this, "Dependency %s already resolved and exists in %[file]s",
+                    new Coordinates(dep), dest
                 );
                 continue;
             }

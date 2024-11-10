@@ -46,8 +46,8 @@ import org.eolang.maven.util.Rel;
 import org.eolang.maven.util.Walk;
 
 /**
- * Take binary files from where ResolveMojo placed them and
- * copy to target/classes.
+ * Take binary files from where {@link ResolveMojo} placed them and
+ * copy to the {@code target/classes} directory.
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.11
@@ -228,9 +228,12 @@ public final class PlaceMojo extends SafeMojo {
 
         /**
          * Check whether the binary file has corresponding EO sources in the jar.
-         * The method checks ONLY EO binaries and classes. All other java files or classes in jar
+         *
+         * <p>The method checks ONLY EO binaries and classes. All other java files or classes in jar
          * will be included anyway.
-         * Let's consider the next filesystem structure.
+         * Let's consider the next filesystem structure:</p>
+         *
+         * <pre>
          * Source file:
          * - "EO-SOURCE/org/eolang/txt/x.eo" -
          *
@@ -242,9 +245,10 @@ public final class PlaceMojo extends SafeMojo {
          * Is incorrect (since has no corresponding EO source folder):
          * - "EOorg/EOeolang/EObool.class"
          * - "EOorg/x.class"
+         * </pre>
          *
-         * The filter is disabled by default, works only if the parameter
-         * "placeBinariesThatHaveSources" is set to true.
+         * <p>The filter is disabled by default, works only if the parameter
+         * "placeBinariesThatHaveSources" is set to true.</p>
          *
          * @param file The file to check.
          * @return True if the file has corresponding EO sources.
