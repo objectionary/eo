@@ -20,36 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: zerocracy
-'on':
-  schedule:
-    - cron: '0 2,6,10,14,18,22 * * *'
+name: hone
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 concurrency:
-  group: zerocracy
-  cancel-in-progress: false
+  group: hone-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  zerocracy:
+  hone:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: zerocracy/judges-action@0.0.55
+      - uses: actions/setup-java@v4
         with:
-          token: ${{ secrets.ZEROCRACY_TOKEN }}
-          options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
-            vitals_url=https://www.eolang.org/zerocracy/objectionary-vitals.html
-            repositories=objectionary/*
-          factbase: objectionary.fb
-      - uses: zerocracy/pages-action@0.0.40
+          distribution: 'temurin'
+          java-version: 21
+      - uses: actions/cache@v4
         with:
-          factbase: objectionary.fb
-          output: pages
-          logo: https://www.objectionary.com/cactus.svg
-          options: |
-            github_token=${{ secrets.GITHUB_TOKEN }}
-      - uses: JamesIves/github-pages-deploy-action@v4.6.9
-        with:
-          branch: gh-pages
-          folder: pages
-          target-folder: zerocracy
-          clean: false
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+      - run: mvn install -DskipTests -Dinvoker.skip -Phone
+      - run: mvn test -Phone -pl :eo-runtime

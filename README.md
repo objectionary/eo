@@ -240,6 +240,41 @@ Play with more examples [here](https://github.com/objectionary/sandbox).
 Read about integration with Maven,
 [here](https://github.com/objectionary/eo/tree/master/eo-maven-plugin).
 
+## Benchmark
+
+This is how many milliseconds were spend on different
+XSL stylesheets during the execution of `mvn install` of
+the `eo-runtime` module:
+
+<!-- benchmark_begin -->
+
+```text
+to-java.xsl                          40237  25.58%
+add-refs.xsl                         9410   5.98%
+stars-to-tuples.xsl                  8018   5.10%
+set-locators.xsl                     6015   3.82%
+tests.xsl                            5414   3.44%
+same-line-names.xsl                  4913   3.12%
+rename-tests-inners.xsl              4529   2.88%
+duplicate-names.xsl                  4351   2.77%
+resolve-aliases.xsl                  2935   1.87%
+classes.xsl                          2766   1.76%
+vars-float-up.xsl                    2692   1.71%
+add-probes.xsl                       2611   1.66%
+package.xsl                          2591   1.65%
+explicit-data.xsl                    2507   1.59%
+duplicate-aliases.xsl                2468   1.57%
+broken-refs.xsl                      2394   1.52%
+```
+
+The results were calculated in [this GHA job][benchmark-gha]
+on 2024-11-08 at 14:40,
+on Linux with 4 CPUs.
+The total is 157303 milliseconds.
+We show only the first 16 most expensive XSL stylesheets.
+
+<!-- benchmark_end -->
+
 ## How to Contribute
 
 Fork repository, make changes, then send us
@@ -262,3 +297,4 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
+[benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11743937310

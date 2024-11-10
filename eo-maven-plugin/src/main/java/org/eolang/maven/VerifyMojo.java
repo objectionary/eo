@@ -122,7 +122,7 @@ public final class VerifyMojo extends SafeMojo {
         tojo.withVerified(
             new FpDefault(
                 src -> optimization.apply(xmir).toString(),
-                this.cache.resolve(VerifyMojo.CACHE),
+                this.cache.toPath().resolve(VerifyMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)

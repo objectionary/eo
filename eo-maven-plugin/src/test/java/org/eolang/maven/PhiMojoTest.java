@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,12 +45,42 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link PhiMojo}.
  * @since 0.34.0
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class PhiMojoTest {
     /**
      * Comment.
      */
     private static final String COMMENT =
         "# This is the default 64+ symbols comment in front of named abstract object.";
+
+    @Test
+    void convertsSimpleObjectToPhi(@TempDir final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.format("%s\n[] > foo\n", PhiMojoTest.COMMENT).getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "xmir-to-phi");
+                f.exec("compile");
+                MatcherAssert.assertThat(
+                    "build has no problems",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
+                    "the .phi file is generated",
+                    f.files().file("target/eo/phi/foo.phi").exists(),
+                    Matchers.is(true)
+                );
+                f.files().show();
+            }
+        );
+    }
 
     @Test
     void createsFiles(@TempDir final Path temp) throws Exception {

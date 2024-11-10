@@ -219,7 +219,7 @@ public final class TranspileMojo extends SafeMojo {
                 rewrite.set(true);
                 return transpilation.apply(xmir).toString();
             },
-            this.cache.resolve(TranspileMojo.CACHE),
+            this.cache.toPath().resolve(TranspileMojo.CACHE),
             this.plugin.getVersion(),
             hsh,
             base.relativize(target)
@@ -233,7 +233,7 @@ public final class TranspileMojo extends SafeMojo {
      */
     private Optimization transpilation() {
         return new OptSpy(
-            TranspileMojo.TRAIN,
+            this.measured(TranspileMojo.TRAIN),
             this.targetDir.toPath().resolve(TranspileMojo.PRE)
         );
     }
@@ -255,7 +255,7 @@ public final class TranspileMojo extends SafeMojo {
                 this.generatedDir.toPath(), TranspileMojo.JAVA
             );
             final Supplier<Path> che = new CachePath(
-                this.cache.resolve(TranspileMojo.CACHE),
+                this.cache.toPath().resolve(TranspileMojo.CACHE),
                 this.plugin.getVersion(),
                 hsh,
                 this.generatedDir.toPath().relativize(tgt)

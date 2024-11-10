@@ -167,7 +167,7 @@ public final class PullMojo extends SafeMojo {
         final String semver = this.plugin.getVersion();
         final Path target = new Place(object).make(base, AssembleMojo.EO);
         final Supplier<Path> che = new CachePath(
-            this.cache.resolve(PullMojo.CACHE),
+            this.cache.toPath().resolve(PullMojo.CACHE),
             semver,
             hsh,
             base.relativize(target)

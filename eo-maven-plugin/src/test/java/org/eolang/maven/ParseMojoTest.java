@@ -24,6 +24,8 @@
 package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
+import com.yegor256.farea.RequisiteMatcher;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,6 +57,34 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ParseMojoTest {
+
+    @Test
+    void parsesSimpleFile(@TempDir final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    "# Simple object.\n[] > foo\n".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse");
+                f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
+                MatcherAssert.assertThat(
+                    "build has no problems",
+                    f.log(),
+                    RequisiteMatcher.SUCCESS
+                );
+                MatcherAssert.assertThat(
+                    "the XMIR file is generated",
+                    f.files().file("target/eo/1-parse/foo.xmir").exists(),
+                    Matchers.is(true)
+                );
+            }
+        );
+    }
 
     @Test
     void parsesSuccessfully(@TempDir final Path temp) throws Exception {
@@ -93,7 +123,7 @@ final class ParseMojoTest {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram("invalid content")
-            .with("cache", cache);
+            .with("cache", cache.toFile());
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();

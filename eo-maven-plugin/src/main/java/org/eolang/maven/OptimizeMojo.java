@@ -26,6 +26,8 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.Train;
 import java.nio.file.Path;
 import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -82,6 +84,7 @@ public final class OptimizeMojo extends SafeMojo {
 
     @Override
     public void exec() {
+        final long start = System.currentTimeMillis();
         final Collection<ForeignTojo> tojos = this.scopedTojos().withXmir();
         final Optimization optimization = this.optimization();
         final int total = new SumOf(
@@ -99,8 +102,9 @@ public final class OptimizeMojo extends SafeMojo {
         if (total > 0) {
             Logger.info(
                 this,
-                "Optimized %d out of %d XMIR program(s)", total,
-                tojos.size()
+                "Optimized %d out of %d XMIR program(s) in %[ms]s",
+                total, tojos.size(),
+                System.currentTimeMillis() - start
             );
         } else {
             Logger.debug(this, "No XMIR programs out of %d optimized", tojos.size());
@@ -124,7 +128,7 @@ public final class OptimizeMojo extends SafeMojo {
         tojo.withOptimized(
             new FpDefault(
                 src -> optimization.apply(xmir).toString(),
-                this.cache.resolve(OptimizeMojo.CACHE),
+                this.cache.toPath().resolve(OptimizeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
                 base.relativize(target)
@@ -139,13 +143,14 @@ public final class OptimizeMojo extends SafeMojo {
      */
     private Optimization optimization() {
         final Optimization opt;
+        final Train<Shift> train = this.measured(new ParsingTrain());
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
-                new ParsingTrain(),
+                train,
                 this.targetDir.toPath().resolve(OptimizeMojo.STEPS)
             );
         } else {
-            opt = new OptTrain(new ParsingTrain());
+            opt = new OptTrain(train);
         }
         return opt;
     }

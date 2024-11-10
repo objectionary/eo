@@ -203,6 +203,10 @@ public final class FakeMaven {
             final Path placed = Paths.get("placed.json");
             this.workspace.save(new TextOf(""), transpiled);
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+            this.params.putIfAbsent(
+                "xslMeasures",
+                this.targetPath().resolve("measures.csv").toFile()
+            );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
             this.params.putIfAbsent("project", new MavenProjectStub());
@@ -226,7 +230,7 @@ public final class FakeMaven {
             );
             this.params.putIfAbsent(
                 "cache",
-                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed")
+                this.workspace.absolute(Paths.get("eo")).resolve("cache/parsed").toFile()
             );
             this.params.putIfAbsent("generateSodgXmlFiles", true);
             this.params.putIfAbsent("generateXemblyFiles", true);

@@ -25,7 +25,9 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
+import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.File;
 import java.nio.file.Path;
@@ -63,13 +65,11 @@ public final class UnphiMojo extends SafeMojo {
     /**
      * Unphi transformations.
      */
-    private static final Xsline TRANSFORMATIONS = new Xsline(
-        new TrClasspath<>(
-            "/org/eolang/maven/unphi/wrap-bytes.xsl",
-            "/org/eolang/parser/wrap-method-calls.xsl",
-            "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
-        ).back()
-    );
+    private static final Train<Shift> TRANSFORMATIONS = new TrClasspath<>(
+        "/org/eolang/maven/unphi/wrap-bytes.xsl",
+        "/org/eolang/parser/wrap-method-calls.xsl",
+        "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
+    ).back();
 
     /**
      * The directory where to take phi files for parsing from.
@@ -118,13 +118,14 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", AssembleMojo.XMIR)
                             )
                         );
-                        final XML result = UnphiMojo.TRANSFORMATIONS.pass(
-                            new PhiSyntax(
-                                phi.getFileName().toString().replace(".phi", ""),
-                                new TextOf(phi),
-                                metas
-                            ).parsed()
-                        );
+                        final XML result = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS))
+                            .pass(
+                                new PhiSyntax(
+                                    phi.getFileName().toString().replace(".phi", ""),
+                                    new TextOf(phi),
+                                    metas
+                                ).parsed()
+                            );
                         home.save(result.toString(), xmir);
                         Logger.info(
                             this,

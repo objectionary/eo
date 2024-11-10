@@ -352,7 +352,7 @@ final class PullMojoTest {
         );
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .with("hash", hash)
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
@@ -398,7 +398,7 @@ final class PullMojoTest {
                 "  QQ.io.stdout > @"
             )
             .with("hash", new CommitHash.ChConstant(hash))
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .execute(new FakeMaven.Pull());
         MatcherAssert.assertThat(
             "PullMojo should take source from cache, but it does not",

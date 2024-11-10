@@ -38,7 +38,7 @@ jobs:
           debug: true
           directory: .
           badge: target/loc-badge.svg
-      - uses: JamesIves/github-pages-deploy-action@v4.6.8
+      - uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
           branch: gh-pages
           folder: target

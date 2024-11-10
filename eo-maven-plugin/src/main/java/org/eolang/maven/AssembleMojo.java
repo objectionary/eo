@@ -226,6 +226,7 @@ public final class AssembleMojo extends SafeMojo {
 
     @Override
     public void exec() {
+        final long begin = System.currentTimeMillis();
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
@@ -261,8 +262,11 @@ public final class AssembleMojo extends SafeMojo {
             before = after;
         }
         Logger.info(
-            this, "%d assemble cycle(s) produced some new object(s): %s",
-            cycle, before
+            this,
+            "%d assemble cycle(s) produced some new object(s) in %[ms]s: %s",
+            cycle,
+            System.currentTimeMillis() - begin,
+            before
         );
     }
 }

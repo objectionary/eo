@@ -143,8 +143,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
-      <version>0.3.0</version>
-      <scope>test</scope>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -291,7 +290,7 @@ SOFTWARE.
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>3.0.22</version>
+            <version>3.0.23</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -376,6 +375,33 @@ SOFTWARE.
                 <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
               </excludes>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>hone</id>
+      <properties>
+        <hone.version>0.0.23</hone.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>hone-maven-plugin</artifactId>
+            <version>${hone.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>pull</goal>
+                  <goal>optimize</goal>
+                  <goal>rmi</goal>
+                </goals>
+                <configuration>
+                  <image>yegor256/hone:${hone.version}</image>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>

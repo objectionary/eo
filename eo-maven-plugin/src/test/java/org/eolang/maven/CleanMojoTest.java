@@ -68,7 +68,7 @@ final class CleanMojoTest {
             .with("includeSources", new SetOf<>("**.eo"))
             .with("outputDir", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
-            .with("cache", temp.resolve("cache/parsed"))
+            .with("cache", temp.resolve("cache/parsed").toFile())
             .with("skipZeroVersions", true)
             .with("central", Central.EMPTY)
             .with("ignoreTransitive", true)

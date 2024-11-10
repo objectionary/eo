@@ -24,10 +24,12 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.TrLambda;
+import com.yegor256.xsline.Train;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -158,7 +160,6 @@ abstract class SafeMojo extends AbstractMojo {
     /**
      * The path to a text file where paths of generated java files per EO program.
      * @since 0.11.0
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(
@@ -167,6 +168,20 @@ abstract class SafeMojo extends AbstractMojo {
         defaultValue = "${project.build.directory}/eo-transpiled.csv"
     )
     protected File transpiled;
+
+    /**
+     * The path of the file where XSL measurements (time of execution
+     * in milliseconds) will be stored.
+     * @since 0.41.0
+     * @checkstyle MemberNameCheck (10 lines)
+     * @checkstyle VisibilityModifierCheck (10 lines)
+     */
+    @Parameter(
+        property = "eo.xslMeasuresFile",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
+    )
+    protected File xslMeasures;
 
     /**
      * Mojo execution timeout in seconds.
@@ -200,7 +215,7 @@ abstract class SafeMojo extends AbstractMojo {
      * @checkstyle VisibilityModifierCheck (10 lines)
      */
     @Parameter(property = "eo.cache")
-    protected Path cache = Paths.get(System.getProperty("user.home")).resolve(".eo");
+    protected File cache = Paths.get(System.getProperty("user.home")).resolve(".eo").toFile();
 
     /**
      * Used for object versioning implementation.
@@ -347,6 +362,41 @@ abstract class SafeMojo extends AbstractMojo {
      */
     protected final ForeignTojos scopedTojos() {
         return this.tojos;
+    }
+
+    /**
+     * Make a measured train from another train.
+     * @param train The train
+     * @return Measured train
+     */
+    protected final Train<Shift> measured(final Train<Shift> train) {
+        if (this.xslMeasures.getParentFile().mkdirs()) {
+            Logger.debug(this, "Directory created for %[file]s", this.xslMeasures);
+        }
+        if (!this.xslMeasures.getParentFile().exists()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "For some reason, the directory %s is absent, can't write measures to %s",
+                    this.xslMeasures.getParentFile(),
+                    this.xslMeasures
+                )
+            );
+        }
+        if (this.xslMeasures.isDirectory()) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "This is not a file but a directory, can't write to it: %s",
+                    this.xslMeasures
+                )
+            );
+        }
+        return new TrLambda(
+            train,
+            shift -> new StMeasured(
+                shift,
+                this.xslMeasures.toPath()
+            )
+        );
     }
 
     /**

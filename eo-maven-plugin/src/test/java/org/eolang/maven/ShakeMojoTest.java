@@ -107,7 +107,7 @@ final class ShakeMojoTest {
         );
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Shake());
         MatcherAssert.assertThat(
@@ -172,7 +172,7 @@ final class ShakeMojoTest {
         final String hash = "abcdef1";
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("cache", cache)
+            .with("cache", cache.toFile())
             .allTojosWithHash(() -> hash)
             .execute(new FakeMaven.Shake());
         MatcherAssert.assertThat(

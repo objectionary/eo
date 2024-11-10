@@ -234,9 +234,11 @@ public final class PhiMojo extends SafeMojo {
             dependent.add("/org/eolang/parser/fail-on-critical.xsl");
         }
         dependent.add("/org/eolang/maven/phi/to-phi.xsl");
-        return new TrJoined<>(
-            train,
-            new TrClasspath<>(dependent.toArray(new String[0])).back()
+        return this.measured(
+            new TrJoined<>(
+                train,
+                new TrClasspath<>(dependent.toArray(new String[0])).back()
+            )
         );
     }
 
@@ -254,7 +256,7 @@ public final class PhiMojo extends SafeMojo {
         final List<String> phi = translated.xpath("program/phi/text()");
         if (phi.isEmpty()) {
             throw new ImpossibleToPhiTranslationException(
-                "Xpath 'phi/text()' is not found in translated XMIR"
+                "Xpath 'phi/text()' is not found in the translated XMIR"
             );
         }
         return phi.get(0);

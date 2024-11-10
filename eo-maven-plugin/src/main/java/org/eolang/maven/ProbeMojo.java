@@ -103,6 +103,7 @@ public final class ProbeMojo extends SafeMojo {
                 "No programs were probed because eo.offline flag is TRUE"
             );
         } else {
+            final long start = System.currentTimeMillis();
             if (this.hash == null) {
                 this.hash = new ChCached(
                     new ChNarrow(
@@ -116,7 +117,7 @@ public final class ProbeMojo extends SafeMojo {
                 final Path src = tojo.shaken();
                 final Collection<ObjectName> objects = this.probes(src);
                 if (!objects.isEmpty()) {
-                    Logger.info(this, "Probing object(s): %s", objects);
+                    Logger.debug(this, "Probing object(s): %s", objects);
                 }
                 int count = 0;
                 for (final ObjectName object : objects) {
@@ -144,8 +145,10 @@ public final class ProbeMojo extends SafeMojo {
                 );
             } else {
                 Logger.info(
-                    this, "Found %d probe(s) in %d program(s): %s",
-                    probed.size(), tojos.size(), probed
+                    this, "Found %d probe(s) in %d program(s) in %[ms]s: %s",
+                    probed.size(), tojos.size(),
+                    System.currentTimeMillis() - start,
+                    probed
                 );
             }
         }
@@ -159,6 +162,7 @@ public final class ProbeMojo extends SafeMojo {
      * @throws FileNotFoundException If not found
      */
     private Collection<ObjectName> probes(final Path file) throws FileNotFoundException {
+        final long start = System.currentTimeMillis();
         final Collection<ObjectName> objects = new ListOf<>(
             new Mapped<>(
                 obj -> new OnCached(
@@ -183,8 +187,10 @@ public final class ProbeMojo extends SafeMojo {
         } else {
             Logger.debug(
                 this,
-                "Found %d probed objects in %[file]s: %s",
-                objects.size(), file, objects
+                "Found %d probed objects in %[file]s in %[ms]s: %s",
+                objects.size(), file,
+                System.currentTimeMillis() - start,
+                objects
             );
         }
         return objects;

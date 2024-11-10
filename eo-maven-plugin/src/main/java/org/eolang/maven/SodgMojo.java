@@ -445,8 +445,8 @@ public final class SodgMojo extends SafeMojo {
         if (Logger.isTraceEnabled(this)) {
             Logger.trace(this, "XML before translating to SODG:\n%s", before);
         }
-        final XML after = new Xsline(SodgMojo.TRAIN).pass(before);
-        final String instructions = new Xsline(SodgMojo.TO_TEXT)
+        final XML after = new Xsline(this.measured(SodgMojo.TRAIN)).pass(before);
+        final String instructions = new Xsline(this.measured(SodgMojo.TO_TEXT))
             .pass(after)
             .xpath("/text/text()")
             .get(0);
@@ -465,7 +465,7 @@ public final class SodgMojo extends SafeMojo {
             );
         }
         if (this.generateXemblyFiles) {
-            final String xembly = new Xsline(SodgMojo.TO_XEMBLY)
+            final String xembly = new Xsline(this.measured(SodgMojo.TO_XEMBLY))
                 .pass(after)
                 .xpath("/xembly/text()").get(0);
             final Path sibling = sodg.resolveSibling(String.format("%s.xe", sodg.getFileName()));
@@ -493,7 +493,7 @@ public final class SodgMojo extends SafeMojo {
             );
             final ListOf<Directive> directives = new ListOf<>(all);
             final Directive comment = directives.remove(0);
-            final XML graph = new Xsline(SodgMojo.FINISH).pass(
+            final XML graph = new Xsline(this.measured(SodgMojo.FINISH)).pass(
                 new XMLDocument(
                     new Xembler(
                         new Directives()
@@ -526,7 +526,7 @@ public final class SodgMojo extends SafeMojo {
      */
     private void makeDot(final XML graph, final Path sodg) throws IOException {
         if (this.generateDotFiles) {
-            final String dot = new Xsline(SodgMojo.TO_DOT)
+            final String dot = new Xsline(this.measured(SodgMojo.TO_DOT))
                 .pass(graph).xpath("//dot/text()").get(0);
             if (Logger.isTraceEnabled(this)) {
                 Logger.trace(this, "Dot:\n%s", dot);
