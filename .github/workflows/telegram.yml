@@ -47,13 +47,13 @@ jobs:
           git fetch --tag
           TAGS=$(git tag | wc -l | xargs)
           (
-            printf 'Good news, we've just published the %dth release ' "${TAGS}"
+            printf 'Good news, we have just published the %dth release ' "${TAGS}"
             printf 'of [EO compiler](https://github.com/objectionary/eo): '
             printf '[`%s`](https://github.com/objectionary/eo/releases/tag/%$0s). ' "${{github.ref_name}}"
             printf 'At the moment, there are %d lines-of code ' "${LOC}"
             printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' "${HOC}"
             printf 'in the [repository](https://github.com/objectionary/eo). '
-            printf 'You're welcome to give it a try!'
+            printf 'You are welcome to give it a try!'
           ) > message.md
       - uses: appleboy/telegram-action@master
         with:
