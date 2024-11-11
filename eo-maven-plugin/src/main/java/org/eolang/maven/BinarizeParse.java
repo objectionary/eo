@@ -67,13 +67,8 @@ public final class BinarizeParse {
      * appropriate XSL transformation.
      */
     private static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(
-            new ParsingTrain()
-                .empty()
-        ),
-        Arrays.asList(
-            "/org/eolang/maven/add_rust/add_rust.xsl"
-        )
+        new TrClasspath<>(new ParsingTrain().empty()),
+        Arrays.asList("/org/eolang/maven/add_rust/add_rust.xsl")
     ).back().back();
 
     /**
@@ -162,9 +157,7 @@ public final class BinarizeParse {
      * @return The content of FFI inserts sections
      * @checkstyle AbbreviationAsWordInNameCheck (8 lines)
      */
-    private XML addFFIs(
-        final XML input
-    ) {
+    private XML addFFIs(final XML input) {
         final String name = input.xpath("/program/@name").get(0);
         final Place place = new Place(name);
         final Train<Shift> trn = new SpyTrain(
