@@ -53,7 +53,9 @@ jobs:
               "$(jq '.SUM.code' <cloc.json)"
             printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
               "$(hoc .)"
-            printf 'in the [repository](https://github.com/objectionary/eo). '
+            printf 'in the [repository](https://github.com/objectionary/eo) '
+            printf '(%d Git commits total). ' \
+              "$(git rev-list --count master)"
             printf 'There are %d objects and %d atoms in the runtime. ' \
               "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)" \
               "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
