@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: djdefi/cloc-action@6
+      - uses: djdefi/cloc-action@7
         with:
           options: --json --report-file=cloc.json
       - run: sudo apt-get update && sudo apt-get install --yes jq
