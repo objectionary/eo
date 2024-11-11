@@ -43,12 +43,21 @@ jobs:
           ruby-version: 3.2
       - run: gem install hoc
       - run: HOC=$(hoc .); export HOC
+      - run: |
+          (
+            printf "Good news, we've just published a new version "
+            printf "of [EO compiler](https://github.com/objectionary/eo): "
+            printf "[`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). "
+            printf "At the moment, there are ${LOC} lines-of code "
+            printf "and ${HOC} [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) "
+            printf "in the [repository](https://github.com/objectionary/eo). "
+            printf "You're welcome to give it a try!"
+          ) > message.md
       - uses: appleboy/telegram-action@master
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            Good news, we've just published a new version of [EO compiler](https://github.com/objectionary/eo): [`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). At the moment, there are ${LOC} lines-of code and ${HOC} [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) in the [repository](https://github.com/objectionary/eo). You're welcome to give it a try!
+          message_file: message.md
           disable_web_page_preview: true
           disable_notification: true
           format: markdown
