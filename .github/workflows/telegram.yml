@@ -33,12 +33,22 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - uses: djdefi/cloc-action@6
+        with:
+          options: --json --report-file=cloc.json
+      - run: sudo apt-get update && sudo apt-get install --yes jq
+      - run: LOC=$(jq '.SUM.code' <cloc.json); export LOC
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+      - run: gem install hoc
+      - run: HOC=$(hoc .); export HOC
       - uses: appleboy/telegram-action@master
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            Good news, we've just published a new version of [EO compiler](https://github.com/objectionary/eo): [`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). You're welcome to gitve it a try!
+            Good news, we've just published a new version of [EO compiler](https://github.com/objectionary/eo): [`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). At the moment, there are ${LOC} lines-of code and ${HOC} [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) in the [repository](https://github.com/objectionary/eo). You're welcome to give it a try!
           disable_web_page_preview: true
           disable_notification: true
           format: markdown
