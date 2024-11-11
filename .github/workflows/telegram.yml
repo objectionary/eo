@@ -49,7 +49,7 @@ jobs:
           (
             printf 'Good news, we have just published the %dth release ' "${TAGS}"
             printf 'of [EO compiler](https://github.com/objectionary/eo): '
-            printf '[`%s`](https://github.com/objectionary/eo/releases/tag/%s). ' "${{github.ref_name}}" "${{github.ref_name}}"
+            printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' "${{github.ref_name}}" "${{github.ref_name}}"
             printf 'At the moment, there are %d lines-of code ' "${LOC}"
             printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' "${HOC}"
             printf 'in the [repository](https://github.com/objectionary/eo). '
