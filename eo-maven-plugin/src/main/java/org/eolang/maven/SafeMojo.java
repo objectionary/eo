@@ -300,6 +300,11 @@ abstract class SafeMojo extends AbstractMojo {
     @SuppressWarnings("PMD.ImmutableField")
     private boolean skip;
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
     /**
      * Execute it.
      * @throws MojoFailureException If fails during build
