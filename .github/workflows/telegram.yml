@@ -46,7 +46,7 @@ jobs:
           (
             printf 'Good news, we have just published the %dth release ' \
               "$(git tag | wc -l | xargs)"
-            printf 'of [EO compiler](https://github.com/objectionary/eo): '
+            printf 'of [EO-to-Java compiler](https://github.com/objectionary/eo): '
             printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' \
               "${{github.ref_name}}" "${{github.ref_name}}"
             printf 'At the moment, there are %d lines-of code ' \
