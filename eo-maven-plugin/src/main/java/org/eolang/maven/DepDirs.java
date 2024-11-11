@@ -35,9 +35,14 @@ import java.util.stream.Stream;
 import org.cactoos.list.ListEnvelope;
 
 /**
- * Walk through directories in a directory and find dep names. Each
- * dep is a subdirectory of the FOURTH level,
- * for example "org.eolang/eo-runtime/jar-with-dependencies/0.10.0".
+ * Walk through directories in the provided directory and find names of
+ * Maven dependencies.
+ *
+ * <p>Each dependency is a subdirectory of the <b>forth</b> level,
+ * for example {@code "org.eolang/eo-runtime/jar-with-dependencies/0.10.0"},
+ * where the first part is the {@code groupId}, the second is the
+ * {@code artifactId}, the third is the {@code classifier}, and the forth
+ * is the {@code version}.</p>
  *
  * @since 0.13
  */

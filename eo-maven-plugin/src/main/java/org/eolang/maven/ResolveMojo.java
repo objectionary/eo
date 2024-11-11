@@ -24,20 +24,24 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.Func;
-import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.Joined;
 import org.eolang.maven.dependencies.DcsDefault;
 import org.eolang.maven.dependencies.DcsDepgraph;
 import org.eolang.maven.dependencies.DcsEachWithoutTransitive;
@@ -147,7 +151,7 @@ public final class ResolveMojo extends SafeMojo {
         );
 
     @Override
-    public void exec() {
+    public void exec() throws IOException {
         if (this.central == null) {
             this.central = new Central(this.project, this.session, this.manager);
         }
@@ -158,11 +162,13 @@ public final class ResolveMojo extends SafeMojo {
             if (classifier == null || classifier.isEmpty()) {
                 classifier = "-";
             }
-            final Path dest = target
-                .resolve(dep.getGroupId())
-                .resolve(dep.getArtifactId())
-                .resolve(classifier)
-                .resolve(dep.getVersion());
+            final Path dest = this.cleanPlace(
+                target
+                    .resolve(dep.getGroupId())
+                    .resolve(dep.getArtifactId())
+                    .resolve(classifier),
+                dep.getVersion()
+            );
             if (Files.exists(dest)) {
                 Logger.debug(
                     this, "Dependency %s already resolved and exists in %[file]s",
@@ -191,10 +197,13 @@ public final class ResolveMojo extends SafeMojo {
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
                 deps.size(), target,
-                new Joined<>(
+                new Joined(
                     ", ",
                     new Mapped<>(
-                        Object::toString,
+                        dep -> String.format(
+                            "%s:%s:%s", dep.getGroupId(), dep.getArtifactId(),
+                            dep.getVersion()
+                        ),
                         deps
                     )
                 )
@@ -211,6 +220,49 @@ public final class ResolveMojo extends SafeMojo {
     public static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
+    }
+
+    /**
+     * Returns directory where the files should be unpacked,
+     * making sure there are no old files around.
+     *
+     * <p>Say, on the first run of "resolve" binary files from some JAR
+     * get unpacked. Then, the user changes the version of the JAR
+     * in the "pom.xml" (or in some .eo file) and runs the build again.
+     * We don't want the old binary files to stay in the "5-resolve"
+     * directory, because they are outdated. We want them to be removed
+     * and only the new files from the right versio of the JAR to be there.
+     * This method does exactly this: it removes old files and doesn't
+     * touches new ones.</p>
+     *
+     * @param dir The dir
+     * @param version Version of dependency
+     * @return Full path
+     * @throws IOException If fails
+     */
+    private Path cleanPlace(final Path dir, final String version) throws IOException {
+        final File[] subs = dir.toFile().listFiles();
+        if (subs != null) {
+            for (final File sub : subs) {
+                final String base = sub.getName();
+                if (base.equals(version)) {
+                    continue;
+                }
+                final Path bad = dir.resolve(base);
+                try (Stream<Path> walk = Files.walk(bad)) {
+                    walk
+                        .map(Path::toFile)
+                        .sorted(Comparator.reverseOrder())
+                        .forEach(File::delete);
+                }
+                Logger.info(
+                    this,
+                    "Directory %[file]s deleted because it contained wrong version files (not %s)",
+                    bad, version
+                );
+            }
+        }
+        return dir.resolve(version);
     }
 
     /**

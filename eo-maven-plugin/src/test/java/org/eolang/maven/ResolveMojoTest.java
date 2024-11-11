@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -46,6 +47,40 @@ import org.junit.jupiter.api.io.TempDir;
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class ResolveMojoTest {
+
+    @Test
+    void deletesOtherVersions(@TempDir final Path temp) throws IOException {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.dependencies()
+                    .append("org.eolang", "eo-runtime", "0.39.0");
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("resolve");
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "the jar file was resolved and unpacked",
+                    f.files().file(
+                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0/org/eolang/Phi.class"
+                    ).exists(),
+                    Matchers.is(true)
+                );
+                f.dependencies()
+                    .append("org.eolang", "eo-runtime", "0.40.0");
+                f.exec("process-classes");
+                MatcherAssert.assertThat(
+                    "binary files from the old JAR were removed",
+                    f.files().file(
+                        "target/eo/5-resolve/org.eolang/eo-runtime/-/0.39.0"
+                    ).exists(),
+                    Matchers.is(false)
+                );
+            }
+        );
+    }
 
     @Test
     void resolvesWithSingleDependency(@TempDir final Path temp) throws IOException {
