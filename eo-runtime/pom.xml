@@ -144,6 +144,7 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>farea</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>

@@ -105,14 +105,14 @@ public final class PlaceMojo extends SafeMojo {
                 .mapToLong(dep -> this.placeDependency(home, dep))
                 .sum();
             if (copied == 0) {
-                Logger.debug(
-                    this, "No binary files placed from %d dependencies",
-                    deps.size()
+                Logger.info(
+                    this, "No binary files placed from %d dependencies into %[file]s",
+                    deps.size(), home
                 );
             } else {
                 Logger.info(
-                    this, "Placed %d binary file(s) found in %d dependencies",
-                    copied, deps.size()
+                    this, "Placed %d binary file(s) found in %d dependencies, into %[file]s",
+                    copied, deps.size(), home
                 );
             }
         } else {
@@ -138,12 +138,12 @@ public final class PlaceMojo extends SafeMojo {
         final long copied = new BinariesDependency(dir, dep, this.rewriteBinaries).place();
         this.placedTojos.placeJar(dep);
         if (copied > 0) {
-            Logger.info(
+            Logger.debug(
                 this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
                 copied, new Walk(dir).size(), dep, this.outputDir
             );
         } else {
-            Logger.info(
+            Logger.debug(
                 this, "No binary file(s) out of %d were placed from %s, to %[file]s",
                 new Walk(dir).size(), dep, this.outputDir
             );
