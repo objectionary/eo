@@ -231,7 +231,7 @@ public final class ResolveMojo extends SafeMojo {
      * in the "pom.xml" (or in some .eo file) and runs the build again.
      * We don't want the old binary files to stay in the "5-resolve"
      * directory, because they are outdated. We want them to be removed
-     * and only the new files from the right versio of the JAR to be there.
+     * and only the new files from the right version of the JAR to be there.
      * This method does exactly this: it removes old files and doesn't
      * touches new ones.</p>
      *
