@@ -42,17 +42,21 @@ jobs:
           ruby-version: 3.2
       - run: gem install hoc
       - run: |
-          LOC=$(jq '.SUM.code' <cloc.json)
-          HOC=$(hoc .)
           git fetch --tag
-          TAGS=$(git tag | wc -l | xargs)
           (
-            printf 'Good news, we have just published the %dth release ' "${TAGS}"
+            printf 'Good news, we have just published the %dth release ' \
+              "$(git tag | wc -l | xargs)"
             printf 'of [EO compiler](https://github.com/objectionary/eo): '
-            printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' "${{github.ref_name}}" "${{github.ref_name}}"
-            printf 'At the moment, there are %d lines-of code ' "${LOC}"
-            printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' "${HOC}"
+            printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' \
+              "${{github.ref_name}}" "${{github.ref_name}}"
+            printf 'At the moment, there are %d lines-of code ' \
+              "$(jq '.SUM.code' <cloc.json)"
+            printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
+              "$(hoc .)"
             printf 'in the [repository](https://github.com/objectionary/eo). '
+            printf 'There are %d objects and %d atoms in the runtime. ' \
+              "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)" \
+              "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
             printf 'You are welcome to give it a try!'
           ) > message.md
       - uses: appleboy/telegram-action@master
