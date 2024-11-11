@@ -37,15 +37,17 @@ jobs:
         with:
           options: --json --report-file=cloc.json
       - run: sudo apt-get update && sudo apt-get install --yes jq
-      - run: LOC=$(jq '.SUM.code' <cloc.json); export LOC
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
       - run: gem install hoc
-      - run: HOC=$(hoc .); export HOC
       - run: |
+          LOC=$(jq '.SUM.code' <cloc.json)
+          HOC=$(hoc .)
+          git fetch --tag
+          TAGS=$(git tag | wc -l | xargs)
           (
-            printf "Good news, we've just published a new version "
+            printf "Good news, we've just published the ${TAGS}th release "
             printf "of [EO compiler](https://github.com/objectionary/eo): "
             printf "[`${{github.ref_name}}`](https://github.com/objectionary/eo/releases/tag/${{github.ref_name}}). "
             printf "At the moment, there are ${LOC} lines-of code "
