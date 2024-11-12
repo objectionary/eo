@@ -7048,7 +7048,7 @@ A local schema component contains two dashes in
     <xsl:param name="attribute"/>
     <xsl:choose>
       <!-- Qualified local attribute declaration -->
-      <xsl:when test="$attribute[@name] and (normalize-space(translate($attribute/@form, 'QUALIFED', 'qualifed'))='qualified' or normalize-space(translate(/xsd:schema/@attributeFormDefault, 'QUALIFED', 'qualifed'))='qualified')">
+      <xsl:when test="$attribute[@name] and (normalize-space(translate($attribute/@form, 'QUALIFIED', 'qualified'))='qualified' or normalize-space(translate(/xsd:schema/@attributeFormDefault, 'QUALIFIED', 'qualified'))='qualified')">
         <xsl:value-of select="/xsd:schema/@targetNamespace"/>
       </xsl:when>
       <!-- Reference to global attribute declaration -->
