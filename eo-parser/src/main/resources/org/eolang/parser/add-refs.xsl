@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="add-refs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="http://eolang.com" id="add-refs" version="2.0">
   <!--
   Here we go through all objects and find what their @base
   are referring to. If we find the object they refer to,
@@ -32,6 +32,7 @@ SOFTWARE.
   global or just a mistake.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <xsl:key name="o-by-name" match="o[@name]" use="@name"/>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
@@ -40,44 +41,41 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="o[@base!='$' and @base!='^']" mode="no-dots">
     <xsl:variable name="current" select="."/>
+    <xsl:variable name="source" select="eo:closest($current, key('o-by-name', @base))"/>
     <xsl:copy>
-      <xsl:variable name="parent" select="ancestor::*[o[@name=$current/@base]][1]"/>
-      <xsl:if test="$parent">
-        <xsl:variable name="source" select="$parent/o[@name=$current/@base]"/>
-        <xsl:if test="$parent">
-          <xsl:if test="count($source)!=1">
-            <xsl:message terminate="yes">
-              <xsl:text>Duplicate names inside "</xsl:text>
-              <xsl:value-of select="@name"/>
-              <xsl:text>", the base is "</xsl:text>
-              <xsl:value-of select="@base"/>
-              <xsl:text>" at the line #</xsl:text>
+      <xsl:if test="$source">
+        <xsl:if test="count($source)!=1">
+          <xsl:message terminate="yes">
+            <xsl:text>Duplicate names inside "</xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text>", the base is "</xsl:text>
+            <xsl:value-of select="@base"/>
+            <xsl:text>" at the line #</xsl:text>
+            <xsl:value-of select="@line"/>
+            <xsl:text> pointing to </xsl:text>
+            <xsl:for-each select="$source">
+              <xsl:if test="position()&gt;1">
+                <xsl:text>, </xsl:text>
+              </xsl:if>
+              <xsl:text>&lt;</xsl:text>
+              <xsl:value-of select="name(.)"/>
+              <xsl:text>/&gt;</xsl:text>
+              <xsl:text> at line #</xsl:text>
               <xsl:value-of select="@line"/>
-              <xsl:text> pointing to </xsl:text>
-              <xsl:for-each select="$source">
-                <xsl:if test="position()&gt;1">
-                  <xsl:text>, </xsl:text>
-                </xsl:if>
-                <xsl:text>&lt;</xsl:text>
-                <xsl:value-of select="name(.)"/>
-                <xsl:text>/&gt;</xsl:text>
-                <xsl:text> at line #</xsl:text>
-                <xsl:value-of select="@line"/>
-              </xsl:for-each>
-              <xsl:text>; it's internal bug</xsl:text>
-            </xsl:message>
-          </xsl:if>
-          <xsl:if test="not($source/@line)">
-            <xsl:message terminate="yes">
-              <xsl:text>Attribute @line is absent at "</xsl:text>
-              <xsl:value-of select="$source/@name"/>
-              <xsl:text>"</xsl:text>
-            </xsl:message>
-          </xsl:if>
-          <xsl:attribute name="ref">
-            <xsl:value-of select="$source/@line"/>
-          </xsl:attribute>
+            </xsl:for-each>
+            <xsl:text>; it's internal bug</xsl:text>
+          </xsl:message>
         </xsl:if>
+        <xsl:if test="not($source/@line)">
+          <xsl:message terminate="yes">
+            <xsl:text>Attribute @line is absent at "</xsl:text>
+            <xsl:value-of select="$source/@name"/>
+            <xsl:text>"</xsl:text>
+          </xsl:message>
+        </xsl:if>
+        <xsl:attribute name="ref">
+          <xsl:value-of select="$source/@line"/>
+        </xsl:attribute>
       </xsl:if>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
@@ -87,4 +85,41 @@ SOFTWARE.
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
+  <xsl:function name="eo:closest" as="node()?">
+    <xsl:param name="current-node" as="node()"/>
+    <xsl:param name="nodes" as="node()*"/>
+    <xsl:variable name="nodes-with-common-root">
+      <xsl:for-each select="$nodes">
+        <xsl:variable name="node" select="."/>
+        <xsl:variable name="intersects" select="eo:has-intersecting-route($current-node, $node)"/>
+        <xsl:variable name="route" select="string-join(eo:get-route($node), '/')"/>
+        <xsl:if test="$intersects">
+          <item>
+            <node>
+              <xsl:sequence select="$node"/>
+            </node>
+            <route>
+              <xsl:sequence select="$route"/>
+            </route>
+          </item>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="max-length" select="max($nodes-with-common-root/item/route/string-length(text()))"/>
+    <xsl:variable name="candidates" select="$nodes-with-common-root/item[route[string-length(text()) = $max-length]]"/>
+    <xsl:variable name="closest-node" select="$candidates[1]/node/*"/>
+    <xsl:sequence select="$closest-node"/>
+  </xsl:function>
+  <xsl:function name="eo:has-intersecting-route" as="xs:boolean">
+    <xsl:param name="node1" as="node()"/>
+    <xsl:param name="node2" as="node()"/>
+    <xsl:variable name="route1" select="string-join(eo:get-route($node1), '/')"/>
+    <xsl:variable name="route2" select="string-join(eo:get-route($node2), '/')"/>
+    <xsl:sequence select="         starts-with($route2, $route1) or starts-with($route1, $route2)     "/>
+  </xsl:function>
+  <xsl:function name="eo:get-route" as="xs:string*">
+    <xsl:param name="node" as="node()"/>
+    <xsl:variable name="ancestors" select="$node/ancestor::*"/>
+    <xsl:sequence select="         for $ancestor in $ancestors         return generate-id($ancestor)     "/>
+  </xsl:function>
 </xsl:stylesheet>
