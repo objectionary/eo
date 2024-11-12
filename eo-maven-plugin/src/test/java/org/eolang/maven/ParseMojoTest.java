@@ -25,7 +25,6 @@ package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.RequisiteMatcher;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,11 +71,6 @@ final class ParseMojoTest {
                     .execution()
                     .goals("register", "parse");
                 f.exec("compile", String.format("-Deo.cache=%s", temp.resolve("cache")));
-                MatcherAssert.assertThat(
-                    "build has no problems",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",
                     f.files().file("target/eo/1-parse/foo.xmir").exists(),

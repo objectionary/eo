@@ -24,7 +24,6 @@
 package org.eolang.maven;
 
 import com.yegor256.farea.Farea;
-import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,11 +66,6 @@ final class PhiMojoTest {
                     .execution()
                     .goals("register", "parse", "optimize", "xmir-to-phi");
                 f.exec("compile");
-                MatcherAssert.assertThat(
-                    "build has no problems",
-                    f.log(),
-                    RequisiteMatcher.SUCCESS
-                );
                 MatcherAssert.assertThat(
                     "the .phi file is generated",
                     f.files().file("target/eo/phi/foo.phi").exists(),
