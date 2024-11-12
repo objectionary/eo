@@ -285,7 +285,9 @@ mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
 Then, to generate the report:
 
 ```shell
-awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
+ printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
+ eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
 ```
 
 ## How to Contribute
