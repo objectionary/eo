@@ -39,7 +39,7 @@ jobs:
           mkdir gh-pages
           java -jar "saxon.jar" \
             "-s:eo-parser/main/resources/XMIR.xsd" \
-            "-xsl:eo-parser/main/resources/xs3p/xs3p.xsl" \
+            "-xsl:eo-parser/main/xs3p/xs3p.xsl" \
             "-o:gh-pages/XMIR.html"
       - uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
