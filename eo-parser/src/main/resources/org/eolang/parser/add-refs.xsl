@@ -115,11 +115,11 @@ SOFTWARE.
     <xsl:param name="node2" as="node()"/>
     <xsl:variable name="route1" select="string-join(eo:get-route($node1), '/')"/>
     <xsl:variable name="route2" select="string-join(eo:get-route($node2), '/')"/>
-    <xsl:sequence select="         starts-with($route2, $route1) or starts-with($route1, $route2)     "/>
+    <xsl:sequence select="starts-with($route2, $route1) or starts-with($route1, $route2)"/>
   </xsl:function>
   <xsl:function name="eo:get-route" as="xs:string*">
     <xsl:param name="node" as="node()"/>
     <xsl:variable name="ancestors" select="$node/ancestor::*"/>
-    <xsl:sequence select="         for $ancestor in $ancestors         return generate-id($ancestor)     "/>
+    <xsl:sequence select="for $ancestor in $ancestors return generate-id($ancestor)"/>
   </xsl:function>
 </xsl:stylesheet>
