@@ -38,8 +38,8 @@ jobs:
           wget --no-verbose -O saxon.jar "https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar"
           mkdir gh-pages
           java -jar "saxon.jar" \
-            "-s:eo-parser/main/resources/XMIR.xsd" \
-            "-xsl:eo-parser/main/xs3p/xs3p.xsl" \
+            "-s:eo-parser/src/main/resources/XMIR.xsd" \
+            "-xsl:eo-parser/src/main/xs3p/xs3p.xsl" \
             "-o:gh-pages/XMIR.html"
       - uses: JamesIves/github-pages-deploy-action@v4.6.9
         with:
