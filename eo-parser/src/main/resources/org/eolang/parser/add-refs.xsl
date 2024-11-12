@@ -88,27 +88,13 @@ SOFTWARE.
   <xsl:function name="eo:closest" as="node()?">
     <xsl:param name="current-node" as="node()"/>
     <xsl:param name="nodes" as="node()*"/>
-    <xsl:variable name="nodes-with-common-root">
-      <xsl:for-each select="$nodes">
-        <xsl:variable name="node" select="."/>
-        <xsl:variable name="intersects" select="eo:has-intersecting-route($current-node, $node)"/>
-        <xsl:variable name="route" select="string-join(eo:get-route($node), '/')"/>
-        <xsl:if test="$intersects">
-          <item>
-            <node>
-              <xsl:sequence select="$node"/>
-            </node>
-            <route>
-              <xsl:sequence select="$route"/>
-            </route>
-          </item>
-        </xsl:if>
-      </xsl:for-each>
-    </xsl:variable>
-    <xsl:variable name="max-length" select="max($nodes-with-common-root/item/route/string-length(text()))"/>
-    <xsl:variable name="candidates" select="$nodes-with-common-root/item[route[string-length(text()) = $max-length]]"/>
-    <xsl:variable name="closest-node" select="$candidates[1]/node/*"/>
-    <xsl:sequence select="$closest-node"/>
+    <xsl:variable name="intersecting-nodes" select="$nodes[eo:has-intersecting-route($current-node, .)]"/>
+    <xsl:for-each select="$intersecting-nodes">
+      <xsl:sort select="string-length(eo:get-route(.))" order="descending" data-type="number"/>
+      <xsl:if test="position() = 1">
+        <xsl:copy-of select="."/>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:function>
   <xsl:function name="eo:has-intersecting-route" as="xs:boolean">
     <xsl:param name="node1" as="node()"/>
