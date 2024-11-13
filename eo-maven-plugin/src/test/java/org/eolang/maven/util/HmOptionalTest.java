@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.util;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +38,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -46,6 +48,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.35.0
  */
+@ExtendWith(MktmpResolver.class)
 final class HmOptionalTest {
 
     /**
@@ -68,7 +71,7 @@ final class HmOptionalTest {
     @CsvSource({"true", "false"})
     void savesIfFileDoesNotExist(
         final boolean rewrite,
-        @TempDir final Path dir) throws IOException {
+        @Mktmp final Path dir) throws IOException {
         final HmOptional optional = new HmOptional(new HmBase(dir), rewrite);
         final Path file = Paths.get(this.sample);
         final String content = new UncheckedText(new Randomized(this.size)).asString();
@@ -81,7 +84,7 @@ final class HmOptionalTest {
     }
 
     @Test
-    void savesIfFileExistsAndRewriteTrue(@TempDir final Path dir) throws IOException {
+    void savesIfFileExistsAndRewriteTrue(@Mktmp final Path dir) throws IOException {
         final String first = new UncheckedText(new Randomized(this.size)).asString();
         final Path file = Paths.get(this.sample);
         final HmBase base = new HmBase(dir);
@@ -99,7 +102,7 @@ final class HmOptionalTest {
     @Test
     @CaptureLogs
     void savesIfFileExistsAndRewriteFalse(
-        @TempDir final Path dir,
+        @Mktmp final Path dir,
         final Logs out) throws IOException {
         final String first = new UncheckedText(new Randomized(this.size)).asString();
         final Path file = Paths.get(this.sample);
@@ -125,7 +128,7 @@ final class HmOptionalTest {
     }
 
     @Test
-    void exists(@TempDir final Path dir) throws IOException {
+    void exists(@Mktmp final Path dir) throws IOException {
         final Path file = Paths.get(this.sample);
         Files.write(dir.resolve(file), "any content".getBytes());
         MatcherAssert.assertThat(
@@ -136,7 +139,7 @@ final class HmOptionalTest {
     }
 
     @Test
-    void absolutes(@TempDir final Path dir) throws IOException {
+    void absolutes(@Mktmp final Path dir) throws IOException {
         final Path file = Paths.get(this.sample);
         final HmBase base = new HmBase(dir);
         base.save("", file);
@@ -150,7 +153,7 @@ final class HmOptionalTest {
 
     @ParameterizedTest
     @CsvSource({"file.txt", "a/file.txt", "a/b/file.txt"})
-    void checksOnlyRelative(final Path file, @TempDir final Path dir) throws IOException {
+    void checksOnlyRelative(final Path file, @Mktmp final Path dir) throws IOException {
         final HmBase base = new HmBase(dir);
         base.save("", file);
         Assertions.assertEquals(
@@ -161,7 +164,7 @@ final class HmOptionalTest {
     }
 
     @Test
-    void loads(@TempDir final Path dir) throws IOException {
+    void loads(@Mktmp final Path dir) throws IOException {
         final HmBase base = new HmBase(dir);
         final Path file = Paths.get(this.sample);
         final String text = "Hello World";

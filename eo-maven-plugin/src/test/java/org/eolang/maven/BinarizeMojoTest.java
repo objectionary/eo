@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
 
 /**
  * Test case for {@link BinarizeMojo}.
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @ExtendWith(WeAreOnline.class)
+@ExtendWith(MktmpResolver.class)
 final class BinarizeMojoTest {
 
     /**
@@ -60,7 +62,7 @@ final class BinarizeMojoTest {
     @Test
     @Tag("slow")
     @ExtendWith(CargoCondition.class)
-    void binarizesWithoutErrors(@TempDir final Path temp) throws Exception {
+    void binarizesWithoutErrors(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
             maven = new FakeMaven(temp)
@@ -74,7 +76,7 @@ final class BinarizeMojoTest {
     }
 
     @Test
-    void failsWithIncorrectInsert(@TempDir final Path temp) throws IOException {
+    void failsWithIncorrectInsert(@Mktmp final Path temp) throws IOException {
         final Path src = BinarizeMojoTest.SRC.resolve("wrong-rust.eo");
         final FakeMaven maven;
         synchronized (BinarizeMojoTest.class) {
@@ -90,7 +92,7 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
-    void savesToCache(@TempDir final Path temp) throws IOException {
+    void savesToCache(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven;
         final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
@@ -127,7 +129,7 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
-    void boostsSecondCompilation(@TempDir final Path temp) throws IOException {
+    void boostsSecondCompilation(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven;
         final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {
@@ -152,7 +154,7 @@ final class BinarizeMojoTest {
 
     @Test
     @Tag("slow")
-    void doesNotRecompile(@TempDir final Path temp) throws IOException {
+    void doesNotRecompile(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven;
         final Path cache = temp.resolve(".cache");
         synchronized (BinarizeMojoTest.class) {

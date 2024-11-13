@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,17 +32,19 @@ import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DepDirs}.
  *
  * @since 0.11
  */
+@ExtendWith(MktmpResolver.class)
 final class DepDirsTest {
 
     @Test
-    void findsDirs(@TempDir final Path temp) throws IOException {
+    void findsDirs(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save("", Paths.get("a/b/c/f/test.txt"));
         new HmBase(temp).save("", Paths.get("a/b/f.txt"));
         new HmBase(temp).save("", Paths.get("test/f.txt"));

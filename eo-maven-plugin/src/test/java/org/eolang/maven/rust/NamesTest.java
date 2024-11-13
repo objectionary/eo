@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.rust;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -33,16 +34,18 @@ import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Names}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class NamesTest {
     @Test
-    void solvesSameHashes(@TempDir final Path temp) {
+    void solvesSameHashes(@Mktmp final Path temp) {
         final Names dispatcher = new Names(temp.resolve("names"));
         final String one = "AaAaAa";
         final String two = "AaAaBB";
@@ -61,7 +64,7 @@ final class NamesTest {
     }
 
     @Test
-    void recoversNames(@TempDir final Path temp) throws IOException {
+    void recoversNames(@Mktmp final Path temp) throws IOException {
         final String names = "names";
         final List<String> locations = IntStream.range(0, 1000)
             .mapToObj(String::valueOf)

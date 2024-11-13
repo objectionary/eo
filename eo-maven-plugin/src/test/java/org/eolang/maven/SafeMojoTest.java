@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import org.eolang.maven.log.CaptureLogs;
 import org.eolang.maven.log.Logs;
@@ -30,18 +31,20 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link SafeMojo}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class SafeMojoTest {
 
     @Test
     @CaptureLogs
-    void logsStackTrace(final Logs out, @TempDir final Path temp) {
+    void logsStackTrace(final Logs out, @Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram("something > is definitely wrong here")

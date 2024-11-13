@@ -23,22 +23,25 @@
  */
 package org.eolang.maven.rust;
 
+import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Commented}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class CommentedTest {
 
     @Test
-    void addsComment(@TempDir final Path temp) throws Exception {
+    void addsComment(@Mktmp final Path temp) throws Exception {
         final String content = "content";
         new Commented(
             new Savable(

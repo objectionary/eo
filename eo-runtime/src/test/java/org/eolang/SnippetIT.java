@@ -24,6 +24,7 @@
 package org.eolang;
 
 import com.jcabi.log.Logger;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -55,12 +56,13 @@ import org.yaml.snakeyaml.Yaml;
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@ExtendWith(MktmpResolver.class)
 final class SnippetIT {
 
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
-    void runsAllSnippets(final String yml, final @TempDir Path temp) throws IOException {
+    void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final String file = map.get("file").toString();

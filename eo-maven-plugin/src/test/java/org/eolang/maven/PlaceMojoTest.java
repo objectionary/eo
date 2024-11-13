@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,7 +40,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
 
 /**
  * Test case for {@link PlaceMojo}.
@@ -47,6 +48,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.11
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@ExtendWith(MktmpResolver.class)
 final class PlaceMojoTest {
 
     /**
@@ -60,7 +62,7 @@ final class PlaceMojoTest {
     private static final String LIBRARY = "foo/hello/-/0.1";
 
     @Test
-    void placesBinaries(@TempDir final Path temp) throws Exception {
+    void placesBinaries(@Mktmp final Path temp) throws Exception {
         PlaceMojoTest.saveBinary(temp, "EObar/x.bin");
         PlaceMojoTest.saveBinary(temp, "org/eolang/f/x.a.class");
         PlaceMojoTest.saveBinary(temp, "org/eolang/t.txt");
@@ -85,7 +87,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void skipsEoSources(@TempDir final Path temp) throws IOException {
+    void skipsEoSources(@Mktmp final Path temp) throws IOException {
         final String expected = String.format("%s/EObar/x.bin", CopyMojo.DIR);
         PlaceMojoTest.saveBinary(temp, expected);
         MatcherAssert.assertThat(
@@ -100,7 +102,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesOnlyClassesFromPackageThatHaveSources(@TempDir final Path temp) throws IOException {
+    void placesOnlyClassesFromPackageThatHaveSources(@Mktmp final Path temp) throws IOException {
         final String sources = String.format("%s/org/eolang/txt/x.eo", CopyMojo.DIR);
         final String[] expected = {
             "EOorg/EOeolang/EOtxt/x.class",
@@ -143,7 +145,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void skipsAlreadyPlacedBinaries(@TempDir final Path temp) throws IOException {
+    void skipsAlreadyPlacedBinaries(@Mktmp final Path temp) throws IOException {
         final String binary = "org/eolang/f/x.a.class";
         PlaceMojoTest.saveBinary(temp, binary);
         PlaceMojoTest.saveAlreadyPlacedBinary(temp, binary);
@@ -167,7 +169,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void rewritesAlreadyPlacedBinaries(@TempDir final Path temp) throws Exception {
+    void rewritesAlreadyPlacedBinaries(@Mktmp final Path temp) throws Exception {
         final String binary = "org/eolang/f/y.a.class";
         final String content = "some new content";
         PlaceMojoTest.saveBinary(temp, content, binary);
@@ -188,7 +190,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesWithoutBinaries(@TempDir final Path temp) throws IOException {
+    void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
         Files.createDirectories(temp.resolve("target").resolve(ResolveMojo.DIR));
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
@@ -200,7 +202,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesWithoutResolveDirectory(@TempDir final Path temp) throws IOException {
+    void placesWithoutResolveDirectory(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
@@ -211,7 +213,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesMissing(@TempDir final Path temp) throws IOException {
+    void placesMissing(@Mktmp final Path temp) throws IOException {
         final String first = "EObar/x.bin";
         final String second = "org/eolang/f/x.a.class";
         PlaceMojoTest.saveBinary(temp, first);
@@ -242,7 +244,7 @@ final class PlaceMojoTest {
      */
     @Test
     @ExtendWith(WeAreOnline.class)
-    void placesAllEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+    void placesAllEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
@@ -260,7 +262,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesWithoutEoRuntimeClasses(@TempDir final Path temp) throws IOException {
+    void placesWithoutEoRuntimeClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
@@ -279,7 +281,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void doesNotPlacesAgainIfWasNotUnplaced(@TempDir final Path temp) throws Exception {
+    void doesNotPlacesAgainIfWasNotUnplaced(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final String binary = "some.class";
         final String old = "some old content";
@@ -295,7 +297,7 @@ final class PlaceMojoTest {
     }
 
     @Test
-    void placesAgainIfWasUnplaced(@TempDir final Path temp) throws Exception {
+    void placesAgainIfWasUnplaced(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final String binary = "some.class";
         PlaceMojoTest.saveBinary(temp, "with old content", binary);

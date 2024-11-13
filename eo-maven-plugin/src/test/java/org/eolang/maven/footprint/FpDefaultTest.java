@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.footprint;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,13 +34,15 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link FpDefault}.
  * @since 0.41
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@ExtendWith(MktmpResolver.class)
 final class FpDefaultTest {
     /**
      * Lambda content.
@@ -62,7 +65,7 @@ final class FpDefaultTest {
     private static final String SNAPSHOT = "SNAPSHOT";
 
     @Test
-    void failsIfSourcePathNotExists(@TempDir final Path temp) {
+    void failsIfSourcePathNotExists(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FpDefault(
@@ -77,7 +80,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void doesNothingWhenTargetIsOlderThanSource(@TempDir final Path temp) throws Exception {
+    void doesNothingWhenTargetIsOlderThanSource(@Mktmp final Path temp) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
         FpDefaultTest.makeOlder(target);
@@ -101,7 +104,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesOnlyTargetFromSourceIfNoTargetAndCacheIsNotCacheable(@TempDir final Path temp)
+    void updatesOnlyTargetFromSourceIfNoTargetAndCacheIsNotCacheable(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
@@ -126,7 +129,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesOnlyTargetFromSourceIfYoungerTargetAndCacheIsNotCacheable(@TempDir final Path temp)
+    void updatesOnlyTargetFromSourceIfYoungerTargetAndCacheIsNotCacheable(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
@@ -151,7 +154,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfTargetYoungerAndNotExistedCacheableCache(@TempDir final Path temp)
+    void updatesBothIfTargetYoungerAndNotExistedCacheableCache(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
@@ -172,7 +175,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothNoTargetAndNotExistedCacheableCache(@TempDir final Path temp) throws Exception {
+    void updatesBothNoTargetAndNotExistedCacheableCache(@Mktmp final Path temp) throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
         final Cache cache = FpDefaultTest.notExistedCache(temp);
@@ -191,7 +194,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfTargetYoungerAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
+    void updatesBothIfTargetYoungerAndExistedCacheableCacheIsYounger(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
@@ -212,7 +215,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void updatesBothIfNoTargetAndExistedCacheableCacheIsYounger(@TempDir final Path temp)
+    void updatesBothIfNoTargetAndExistedCacheableCacheIsYounger(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);
@@ -233,7 +236,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void copiesFromCacheIfTargetYoungerAndExistedCacheableCacheOlder(@TempDir final Path temp)
+    void copiesFromCacheIfTargetYoungerAndExistedCacheableCacheOlder(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.existedTarget(temp);
@@ -254,7 +257,7 @@ final class FpDefaultTest {
     }
 
     @Test
-    void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(@TempDir final Path temp)
+    void copiesFromCacheIfNoTaretAndExistedCacheableCacheOlder(@Mktmp final Path temp)
         throws Exception {
         final Path source = FpDefaultTest.existedSource(temp);
         final Path target = FpDefaultTest.notExistedTarget(temp);

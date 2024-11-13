@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,17 +33,18 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
 
 /**
  * Test case for {@link CleanMojo}.
  *
  * @since 0.28.6
  */
+@ExtendWith(MktmpResolver.class)
 final class CleanMojoTest {
 
     @Test
-    void cleansSuccessfully(@TempDir final Path temp) throws IOException {
+    void cleansSuccessfully(@Mktmp final Path temp) throws IOException {
         final Path dir = Files.createDirectories(temp.resolve("target"));
         final Path out = Files.createDirectories(dir.resolve("child"));
         final Path small = Files.createDirectories(out.resolve("child.eo"));
@@ -62,7 +64,7 @@ final class CleanMojoTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    void makesFullCompilingLifecycleSuccessfully(@TempDir final Path temp) throws IOException {
+    void makesFullCompilingLifecycleSuccessfully(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("includeSources", new SetOf<>("**.eo"))

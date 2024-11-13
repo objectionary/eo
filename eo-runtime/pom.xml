@@ -147,6 +147,12 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>jucs</artifactId>
       <!-- version from parent POM -->

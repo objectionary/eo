@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,13 +33,15 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link RegisterMojo}.
  *
  * @since 0.11
  */
+@ExtendWith(MktmpResolver.class)
 final class RegisterMojoTest {
     /**
      * Parameter for source directory.
@@ -51,7 +54,7 @@ final class RegisterMojoTest {
     private static final String SOURCES = "src/eo";
 
     @Test
-    void registersOkNames(@TempDir final Path temp) throws IOException {
+    void registersOkNames(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
             Paths.get("src/eo/org/eolang/maven/abc-def.eo")
@@ -67,7 +70,7 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void failsWithDotNames(@TempDir final Path temp) throws IOException {
+    void failsWithDotNames(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
@@ -88,7 +91,7 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void doesNotFailWhenNoStrictNames(@TempDir final Path temp) throws IOException {
+    void doesNotFailWhenNoStrictNames(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             new ResourceOf("org/eolang/maven/file-name/.abc.eo"),
             Paths.get("src/eo/org/eolang/maven/.abc.eo")
@@ -105,7 +108,7 @@ final class RegisterMojoTest {
     }
 
     @Test
-    void throwsExceptionInCaseSourceDirIsNotSet(@TempDir final Path temp) {
+    void throwsExceptionInCaseSourceDirIsNotSet(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)

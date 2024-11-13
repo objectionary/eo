@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,7 +44,8 @@ import org.eolang.maven.tojos.ForeignTojos;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -52,6 +54,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
+@ExtendWith(MktmpResolver.class)
 final class DiscoverMojoTest {
     /**
      * Text.
@@ -79,7 +82,7 @@ final class DiscoverMojoTest {
     void executesDiscoveryPhaseForCorrectEoPrograms(
         final String program,
         final int dependencies,
-        @TempDir final Path tmp
+        @Mktmp final Path tmp
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp);
         maven.withProgram(new ResourceOf(program))
@@ -101,7 +104,7 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void discoversForDifferentScopes(@TempDir final Path tmp) throws IOException {
+    void discoversForDifferentScopes(@Mktmp final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp);
         final String scope = "test";
         maven.with("scope", scope)
@@ -119,7 +122,7 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void discoversWithVersions(@TempDir final Path tmp) throws IOException {
+    void discoversWithVersions(@Mktmp final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", true)
             .withVersionedProgram()
@@ -146,7 +149,7 @@ final class DiscoverMojoTest {
 
     @Test
     void discoversWithSeveralObjectsWithDifferentVersions(
-        @TempDir final Path tmp
+        @Mktmp final Path tmp
     ) throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final FakeMaven maven = new FakeMaven(tmp)
@@ -183,7 +186,7 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@TempDir final Path tmp)
+    void discoversDifferentUnversionedObjectsFromDifferentVersionedObjects(@Mktmp final Path tmp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final String first = String.join(
@@ -226,7 +229,7 @@ final class DiscoverMojoTest {
     }
 
     @Test
-    void doesNotDiscoverWithVersions(@TempDir final Path tmp) throws IOException {
+    void doesNotDiscoverWithVersions(@Mktmp final Path tmp) throws IOException {
         final FakeMaven maven = new FakeMaven(tmp)
             .with("withVersions", false)
             .withVersionedProgram()

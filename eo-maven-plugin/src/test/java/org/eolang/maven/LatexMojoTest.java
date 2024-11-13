@@ -23,17 +23,20 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link org.eolang.maven.LatexMojo}.
  *
  * @since 0.29
  */
+@ExtendWith(MktmpResolver.class)
 final class LatexMojoTest {
 
     /**
@@ -44,7 +47,7 @@ final class LatexMojoTest {
      * @throws Exception
      */
     @Test
-    void generatesTexFile(@TempDir final Path temp) throws Exception {
+    void generatesTexFile(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)

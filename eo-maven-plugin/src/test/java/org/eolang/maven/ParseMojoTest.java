@@ -49,7 +49,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ParseMojo}.
@@ -84,7 +83,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void parsesSuccessfully(@TempDir final Path temp) throws Exception {
+    void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
@@ -103,7 +102,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void failsOnTimeout(@TempDir final Path temp) {
+    void failsOnTimeout(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -116,7 +115,7 @@ final class ParseMojoTest {
 
     @Test
     @ExtendWith(WeAreOnline.class)
-    void parsesWithCache(@TempDir final Path temp) throws Exception {
+    void parsesWithCache(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram("invalid content")
@@ -163,7 +162,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             new FakeMaven(temp)
@@ -177,7 +176,7 @@ final class ParseMojoTest {
     }
 
     @Test
-    void doesNotParseIfAlreadyParsed(@TempDir final Path temp) throws IOException {
+    void doesNotParseIfAlreadyParsed(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> result = maven
             .withHelloWorld()
@@ -203,7 +202,7 @@ final class ParseMojoTest {
      * @throws IOException If problem with filesystem happened.
      */
     @Test
-    void parsesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+    void parsesConcurrentlyWithLotsOfPrograms(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 50;
         for (int program = 0; program < total; ++program) {

@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,17 +32,19 @@ import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link UnspileMojo}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class UnspileMojoTest {
 
     @Test
-    void cleans(@TempDir final Path temp) throws IOException {
+    void cleans(@Mktmp final Path temp) throws IOException {
         final Path generated = Paths.get("generated");
         final Path classes = Paths.get("classes");
         final Path foo = Paths.get("a/b/c/foo.class");

@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -81,7 +80,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void createsFiles(@TempDir final Path temp) throws Exception {
+    void createsFiles(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             String.format(
                 "There' should be file with .%s extension after translation to phi, but there isn't",
@@ -106,7 +105,7 @@ final class PhiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
     void convertsXmirsToPhiWithoutCriticalErrorsWithoutOptimizations(
         final String xmir,
-        @TempDir final Path temp
+        @Mktmp final Path temp
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("phiFailOnError", false)
@@ -122,7 +121,7 @@ final class PhiMojoTest {
     @ClasspathSource(value = "org/eolang/maven/phi/xmir", glob = "**.xmir")
     void convertsXmirsToPhiWithoutCriticalErrorsWithOptimizations(
         final String xmir,
-        @TempDir final Path temp
+        @Mktmp final Path temp
     ) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("phiFailOnError", false)
@@ -135,7 +134,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void doesNotFailOnCritical(@TempDir final Path temp) {
+    void doesNotFailOnCritical(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .with("phiFailOnCritical", false)
@@ -151,7 +150,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void skipsFailedOnCriticalError(@TempDir final Path temp) {
+    void skipsFailedOnCriticalError(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .with("phiFailOnCritical", true)
@@ -168,7 +167,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void failsOnError(@TempDir final Path temp) {
+    void failsOnError(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -183,7 +182,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void doesNotFailOnError(@TempDir final Path temp) {
+    void doesNotFailOnError(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .with("phiFailOnError", false)
@@ -198,7 +197,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void skipsFailedOnError(@TempDir final Path temp) {
+    void skipsFailedOnError(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .with("phiFailOnCritical", false)
@@ -215,7 +214,7 @@ final class PhiMojoTest {
     }
 
     @Test
-    void doesNotSaveSkippedFile(@TempDir final Path temp) throws IOException {
+    void doesNotSaveSkippedFile(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "Skipped file should not be saved after PhiMojo is done",
             new FakeMaven(temp)
@@ -239,7 +238,7 @@ final class PhiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi/yaml", glob = "**.yaml")
-    void checksPhiPacks(final String pack, @TempDir final Path temp) throws Exception {
+    void checksPhiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         if (map.get("skip") != null) {
             Assumptions.abort(

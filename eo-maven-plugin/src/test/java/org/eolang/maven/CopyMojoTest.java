@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,17 +32,19 @@ import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link CopyMojo}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class CopyMojoTest {
 
     @Test
-    void copiesSources(@TempDir final Path temp) throws Exception {
+    void copiesSources(@Mktmp final Path temp) throws Exception {
         final Path src = temp.resolve("src");
         final Path classes = temp.resolve("classes");
         new HmBase(src).save(
@@ -73,7 +76,7 @@ final class CopyMojoTest {
     }
 
     @Test
-    void skipsCopyMojo(@TempDir final Path temp) throws IOException {
+    void skipsCopyMojo(@Mktmp final Path temp) throws IOException {
         final Path classes = temp.resolve("classes");
         new FakeMaven(temp)
             .withProgram(

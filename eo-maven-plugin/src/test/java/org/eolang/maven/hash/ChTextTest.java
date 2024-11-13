@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.hash;
 
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
@@ -33,7 +34,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -42,6 +44,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
+@ExtendWith(MktmpResolver.class)
 final class ChTextTest {
 
     /**
@@ -50,7 +53,8 @@ final class ChTextTest {
     private static Path file;
 
     @BeforeAll
-    static void setUp(@TempDir final Path dir) throws IOException {
+    @ExtendWith(MktmpResolver.class)
+    static void setUp(@Mktmp final Path dir) throws IOException {
         ChTextTest.file = dir.resolve("tags.txt");
         new HmBase(dir).save(
             new ResourceOf("org/eolang/maven/commits/tags.txt"),
