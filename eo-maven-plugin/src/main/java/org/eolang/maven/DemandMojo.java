@@ -28,7 +28,6 @@ import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.util.Rel;
 
 /**
  * Add object names to the "foreign" registry as demanded.
@@ -54,8 +53,8 @@ public final class DemandMojo extends SafeMojo {
     public void exec() {
         this.objects.forEach(this.scopedTojos()::add);
         Logger.info(
-            this, "Added %d objects to foreign catalog at %s",
-            this.objects.size(), new Rel(this.foreign)
+            this, "Added %d object(s) to the foreign catalog at %[file]s",
+            this.objects.size(), this.foreign
         );
     }
 

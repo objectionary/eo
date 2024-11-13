@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import java.io.File;
@@ -55,10 +57,11 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(MktmpResolver.class)
 final class ParseMojoTest {
 
     @Test
-    void parsesSimpleFile(@TempDir final Path temp) throws Exception {
+    void parsesSimpleFile(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
@@ -121,7 +124,7 @@ final class ParseMojoTest {
         final String expected = new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
-        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.25.0")));
+        final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
         final Path base = maven.targetPath().resolve(ParseMojo.DIR);
         final Path target = new Place("foo.x.main").make(base, AssembleMojo.XMIR);
         new FpDefault(

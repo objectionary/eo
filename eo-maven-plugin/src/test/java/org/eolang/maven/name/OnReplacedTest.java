@@ -128,15 +128,15 @@ final class OnReplacedTest {
     void convertsToStringFromOtherObjectName() {
         final ObjectName name = new OnReplaced(
             new OnVersioned(
-                OnReplacedTest.STRING,
-                "0.28.5"
+                "org.eolang.number",
+                "0.41.1"
             )
         );
         MatcherAssert.assertThat(
             String.format("Couldn't convert versioned object %s to string", name),
             name.toString(),
             Matchers.equalTo(
-                new DelimitedName(OnReplacedTest.STRING, "9c93528").toString()
+                new DelimitedName("org.eolang.number", "9a3dee3").toString()
             )
         );
     }

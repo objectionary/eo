@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,7 +45,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link AssembleMojo}.
@@ -64,6 +65,7 @@ import org.junit.jupiter.api.io.TempDir;
  *  forget to remove the puzzle.
  */
 @ExtendWith(WeAreOnline.class)
+@ExtendWith(MktmpResolver.class)
 final class AssembleMojoTest {
 
     /**
@@ -80,7 +82,7 @@ final class AssembleMojoTest {
     };
 
     @Test
-    void assemblesTogether(@TempDir final Path temp) throws IOException {
+    void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withHelloWorld()
             .execute(AssembleMojo.class)
@@ -123,7 +125,7 @@ final class AssembleMojoTest {
     @Test
     @Disabled
     @ExtendWith(WeAreOnline.class)
-    void assemblesTogetherWithVersions(@TempDir final Path temp) throws Exception {
+    void assemblesTogetherWithVersions(@Mktmp final Path temp) throws Exception {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash master = new ChCached(new ChRemote("master"));
         final CommitHash five = hashes.get("0.28.5");
@@ -210,7 +212,7 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void assemblesNotFailWithFailOnError(@TempDir final Path temp) throws IOException {
+    void assemblesNotFailWithFailOnError(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> result = new FakeMaven(temp)
             .withProgram(AssembleMojoTest.INVALID_PROGRAM)
             .execute(new FakeMaven.Optimize())
@@ -229,7 +231,7 @@ final class AssembleMojoTest {
 
     @CaptureLogs
     @Test
-    void assemblesSuccessfullyInOfflineMode(final Logs out, @TempDir final Path temp) {
+    void assemblesSuccessfullyInOfflineMode(final Logs out, @Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withHelloWorld()
@@ -245,7 +247,7 @@ final class AssembleMojoTest {
     }
 
     @Test
-    void configuresChildParameters(@TempDir final Path temp) throws IOException {
+    void configuresChildParameters(@Mktmp final Path temp) throws IOException {
         final Map<String, Path> res = new FakeMaven(temp)
             .withHelloWorld()
             .with("trackOptimizationSteps", true)

@@ -45,21 +45,21 @@ final class ChRemoteTest {
 
     @Test
     void getsCommitHashTag() {
-        final String hash = new ChRemote("0.26.0").value();
+        final String hash = new ChRemote("0.41.1").value();
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             hash,
-            Matchers.equalTo("e0b783692ef749bb184244acb2401f551388a328")
+            Matchers.equalTo("9a3dee39597b2e9ac305ca57c296b0fa7e10eb55")
         );
     }
 
     @Test
     void getsCommitHashOldTag() {
-        final String hash = new ChRemote("0.23.19").value();
+        final String hash = new ChRemote("0.40.5").value();
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             hash,
-            Matchers.equalTo("4b19944d86058e3c81e558340a3a13bc335a2b48")
+            Matchers.equalTo("ee14a1e30a9e0f8f64404e7a52f40c2a07f88359")
         );
     }
 
@@ -75,14 +75,14 @@ final class ChRemoteTest {
     @Test
     void isThreadSafe() {
         final int threads = 200;
-        final String sample = new ChRemote("0.23.19").value();
+        final String sample = new ChRemote("0.40.5").value();
         MatcherAssert.assertThat(
             "You can use this class concurrently",
             StreamSupport.stream(
                 new Threads<>(
                     threads,
                     Stream.generate(
-                        () -> new ChRemote("0.23.19")
+                        () -> new ChRemote("0.40.5")
                     ).limit(threads).collect(Collectors.toList())
                 ).spliterator(), false
             ).filter(str -> !sample.equals(str)).collect(Collectors.toList()),

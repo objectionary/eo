@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -45,6 +48,7 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.34.0
  */
 @SuppressWarnings("PMD.TooManyMethods")
+@ExtendWith(MktmpResolver.class)
 final class PhiMojoTest {
     /**
      * Comment.
@@ -53,7 +57,7 @@ final class PhiMojoTest {
         "# This is the default 64+ symbols comment in front of named abstract object.";
 
     @Test
-    void convertsSimpleObjectToPhi(@TempDir final Path temp) throws Exception {
+    void convertsSimpleObjectToPhi(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();

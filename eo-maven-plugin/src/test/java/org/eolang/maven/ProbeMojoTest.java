@@ -109,7 +109,7 @@ final class ProbeMojoTest {
 
     @Test
     void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
-        final String tag = "0.28.10";
+        final String tag = "0.40.5";
         MatcherAssert.assertThat(
             String.format(
                 "The hash of the program tojo should be equal to the hash of the commit for the '%s' tag",
