@@ -37,7 +37,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,7 +56,6 @@ final class PhiMojoTest {
         "# This is the default 64+ symbols comment in front of named abstract object.";
 
     @Test
-    @Disabled
     void convertsSimpleObjectToPhi(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {

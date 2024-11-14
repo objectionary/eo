@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,6 +60,30 @@ import org.junit.jupiter.params.ParameterizedTest;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(MktmpResolver.class)
 final class OptimizeMojoTest {
+
+    @Test
+    void optimizesSimpleObject(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    "Test.\n[] > foo\n".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize");
+                f.exec("compile");
+                MatcherAssert.assertThat(
+                    "the .xmir file is generated",
+                    f.files().file("target/eo/2-optimize/foo.xmir").exists(),
+                    Matchers.is(true)
+                );
+                f.files().show();
+            }
+        );
+    }
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/packs/", glob = "**.yaml")
