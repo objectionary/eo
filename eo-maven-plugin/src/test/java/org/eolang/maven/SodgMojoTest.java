@@ -26,6 +26,9 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -47,6 +50,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -57,7 +61,34 @@ import org.yaml.snakeyaml.Yaml;
  * @since 0.1
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@ExtendWith(MktmpResolver.class)
 final class SodgMojoTest {
+
+    @Test
+    void convertsSimpleObjectToGraph(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    "# Test.\n[] > foo\n".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse", "optimize", "shake", "sodg");
+                f.exec("compile");
+                f.files().show();
+                MatcherAssert.assertThat(
+                    "the .sodg file is generated",
+                    f.files().file("target/eo/sodg/foo.sodg").exists(),
+                    Matchers.is(true)
+                );
+                f.files().show();
+            }
+        );
+    }
+
     @Test
     @Disabled
     void convertsToGraph() throws Exception {

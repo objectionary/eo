@@ -147,6 +147,12 @@ SOFTWARE.
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>mktmp</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>jucs</artifactId>
       <!-- version from parent POM -->
@@ -383,7 +389,7 @@ SOFTWARE.
     <profile>
       <id>hone</id>
       <properties>
-        <hone.version>0.0.23</hone.version>
+        <hone.version>0.0.24</hone.version>
       </properties>
       <build>
         <plugins>

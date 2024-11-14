@@ -23,6 +23,9 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +43,7 @@ import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -48,9 +51,38 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link PrintMojo}.
  * @since 0.33.0
  */
+@ExtendWith(MktmpResolver.class)
 final class PrintMojoTest {
     @Test
-    void printsSuccessfully(@TempDir final Path temp) throws Exception {
+    void printsSimpleObject(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    "# Test.\n[] > foo\n".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .goals("register", "parse");
+                f.exec("compile");
+                f.files()
+                    .file("src/main/xmir/foo.xmir")
+                    .save(f.files().file("target/eo/1-parse/foo.xmir").path());
+                f.exec("eo:print");
+                MatcherAssert.assertThat(
+                    "the .phi file is generated",
+                    f.files().file("target/generated-sources/eo/foo.eo").exists(),
+                    Matchers.is(true)
+                );
+                f.files().show();
+            }
+        );
+    }
+
+    @Test
+    void printsSuccessfully(@Mktmp final Path temp) throws Exception {
         final Home home = new HmBase(temp);
         final Path resources = new File("src/test/resources/org/eolang/maven/print/xmir")
             .toPath();
@@ -81,7 +113,7 @@ final class PrintMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
-    void printsInStraightNotation(final String pack, @TempDir final Path temp) throws Exception {
+    void printsInStraightNotation(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> yaml = new Yaml().load(pack);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
@@ -92,7 +124,7 @@ final class PrintMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/print/samples/", glob = "**.yaml")
-    void printsInReversedNotation(final String pack, @TempDir final Path temp) throws Exception {
+    void printsInReversedNotation(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> yaml = new Yaml().load(pack);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in reversed notation, but it didn't",

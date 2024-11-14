@@ -25,6 +25,8 @@ package org.eolang.maven.rust;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,16 +36,17 @@ import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link RustNode}.
  * @since 0.34
  */
+@ExtendWith(MktmpResolver.class)
 final class RustNodeTest {
 
     @Test
-    void generatesRust(@TempDir final Path temp) throws IOException {
+    void generatesRust(@Mktmp final Path temp) throws IOException {
         final XML insert = new XMLDocument(
             "<rust code=\"75 73 65 20\" code_loc=\"Φ.org.eolang.custom-rust.r.α0\"><dependencies/></rust>"
         ).nodes("rust").get(0);

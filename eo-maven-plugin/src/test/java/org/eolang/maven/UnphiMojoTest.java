@@ -26,6 +26,8 @@ package org.eolang.maven;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +46,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.yaml.snakeyaml.Yaml;
@@ -53,9 +55,10 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link UnphiMojo}.
  * @since 0.34.0
  */
+@ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
     @Test
-    void createsFile(@TempDir final Path temp) throws Exception {
+    void createsFile(@Mktmp final Path temp) throws Exception {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x⟧}",
             Paths.get("target/phi/std.phi")
@@ -73,7 +76,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void failsIfParsedWithErrors(@TempDir final Path temp) throws IOException {
+    void failsIfParsedWithErrors(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
             Paths.get("target/phi/std.phi")
@@ -87,7 +90,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void addsMetas(@TempDir final Path temp) throws IOException {
+    void addsMetas(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
@@ -112,7 +115,7 @@ final class UnphiMojoTest {
     }
 
     @Test
-    void failsIfPackageMetaIsAdded(@TempDir final Path temp) throws IOException {
+    void failsIfPackageMetaIsAdded(@Mktmp final Path temp) throws IOException {
         new HmBase(temp).save(
             "{⟦std ↦ Φ.org.eolang.io.stdout⟧}",
             Paths.get("target/phi/std.phi")
@@ -128,7 +131,7 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/unphi", glob = "**.yaml")
-    void checksUnphiPacks(final String pack, @TempDir final Path temp) throws Exception {
+    void checksUnphiPacks(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         final String phi = map.get("phi").toString();
         new HmBase(temp).save(phi, Paths.get("target/phi/main.phi"));
@@ -159,7 +162,7 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/phi", glob = "**.yaml")
-    void convertsToXmirAndBack(final String pack, @TempDir final Path temp) throws Exception {
+    void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         if (map.get("skip") != null) {
             Assumptions.abort(
@@ -195,7 +198,7 @@ final class UnphiMojoTest {
 
     @ParameterizedTest
     @CsvSource({"true", "false"})
-    void convertsValidXmirAndParsableEO(final boolean reversed, @TempDir final Path temp)
+    void convertsValidXmirAndParsableEO(final boolean reversed, @Mktmp final Path temp)
         throws Exception {
         final Map<String, Path> map = new FakeMaven(temp)
             .withProgram(

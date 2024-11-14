@@ -27,7 +27,6 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.eolang.maven.util.Rel;
 
 /**
  * Implementation of maven clean plugin,
@@ -47,16 +46,16 @@ public class CleanMojo extends SafeMojo {
         if (!this.targetDir.exists()) {
             Logger.debug(
                 this,
-                "Directory '%s' doesn't exist",
-                new Rel(this.targetDir)
+                "The directory %[file]s doesn't exist",
+                this.targetDir
             );
             return;
         }
         if (this.purge(this.targetDir)) {
             Logger.info(
                 this,
-                "Deleted all files in: '%s'",
-                new Rel(this.targetDir)
+                "Deleted all files in the %[file]s directory",
+                this.targetDir
             );
         }
     }
@@ -76,11 +75,7 @@ public class CleanMojo extends SafeMojo {
         }
         final boolean state = dir.delete();
         if (state) {
-            Logger.debug(
-                this,
-                "'%s' purged",
-                new Rel(dir)
-            );
+            Logger.debug(this, "The directory %[file]s purged", dir);
         }
         return state;
     }

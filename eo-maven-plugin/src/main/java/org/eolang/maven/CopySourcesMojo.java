@@ -34,9 +34,11 @@ import org.eolang.maven.hash.CommitHash;
 
 /**
  * Copy source files from source directory with extra package on top.
- * This mojo is about to be used only on deployment step.
- * See more details
- * <a href="https://github.com/objectionary/eo/issues/2506#issuecomment-1759609269">here</a>
+ *
+ * <p>This mojo is about to be used only on deployment step.</p>
+ *
+ * <p>See more details
+ * <a href="https://github.com/objectionary/eo/issues/2506#issuecomment-1759609269">here</a>.</p>
  *
  * @since 0.33.0
  */

@@ -48,7 +48,7 @@ final class CommitHashesMapTest {
         "0.28.10, 9b88393",
     })
     void containsValidHash(final String tag, final String hash) {
-        final Map<String, CommitHash> hashes = new CommitHashesMap();
+        final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         MatcherAssert.assertThat(
             String.format(
                 "Commit hashes should have contained tag %s, but they didn't",

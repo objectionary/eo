@@ -24,6 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +40,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link VerifyMojo}.
@@ -52,10 +54,11 @@ import org.junit.jupiter.api.io.TempDir;
  *  After you need fix {@code createRegEx()}.
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@ExtendWith(MktmpResolver.class)
 final class VerifyMojoTest {
 
     @Test
-    void doesNotFailWithNoErrorsAndWarnings(@TempDir final Path temp) {
+    void doesNotFailWithNoErrorsAndWarnings(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withHelloWorld()
@@ -65,7 +68,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void detectsErrorsSuccessfully(@TempDir final Path temp) throws IOException {
+    void detectsErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
@@ -94,7 +97,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void detectsCriticalErrorsSuccessfully(@TempDir final Path temp) throws IOException {
+    void detectsCriticalErrorsSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
@@ -122,7 +125,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void detectsWarningWithCorrespondingFlag(@TempDir final Path temp) throws IOException {
+    void detectsWarningWithCorrespondingFlag(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withProgram(
                 "+package f\n",
@@ -153,7 +156,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void doesNotDetectWarningWithoutCorrespondingFlag(@TempDir final Path temp) {
+    void doesNotDetectWarningWithoutCorrespondingFlag(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
                 .withProgram(
@@ -171,7 +174,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void failsOptimizationOnError(@TempDir final Path temp) {
+    void failsOptimizationOnError(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -188,7 +191,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void failsOptimizationOnCritical(@TempDir final Path temp) {
+    void failsOptimizationOnCritical(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -206,7 +209,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void failsParsingOnError(@TempDir final Path temp) {
+    void failsParsingOnError(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -217,7 +220,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void failsOnInvalidProgram(@TempDir final Path temp) {
+    void failsOnInvalidProgram(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -228,7 +231,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void failsOnWarning(@TempDir final Path temp) throws Exception {
+    void failsOnWarning(@Mktmp final Path temp) throws Exception {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new FakeMaven(temp)
@@ -249,7 +252,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void skipsAlreadyVerified(@TempDir final Path temp) throws IOException {
+    void skipsAlreadyVerified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Verify());
@@ -266,7 +269,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void savesVerifiedResultsToCache(@TempDir final Path temp) throws IOException {
+    void savesVerifiedResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
@@ -285,7 +288,7 @@ final class VerifyMojoTest {
     }
 
     @Test
-    void getsAlreadyVerifiedResultsFromCache(@TempDir final Path temp) throws Exception {
+    void getsAlreadyVerifiedResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf cached = new TextOf(
             new ResourceOf("org/eolang/maven/optimize/main.xml")
         );

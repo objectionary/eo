@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,13 +33,14 @@ import java.util.Collection;
 import org.cactoos.list.ListOf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DownloadDepsMojo}.
  *
  * @since 0.39
  */
+@ExtendWith(MktmpResolver.class)
 final class DownloadDepsMojoTest {
 
     /**
@@ -51,7 +54,7 @@ final class DownloadDepsMojoTest {
     private static final Collection<String> DEPS_NAMES = new ListOf<>("jna-5.14.0.jar");
 
     @Test
-    void executesWithoutErrors(@TempDir final Path temp) {
+    void executesWithoutErrors(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp).execute(DownloadDepsMojo.class),
             "Exception shouldn't been thrown"
@@ -59,7 +62,7 @@ final class DownloadDepsMojoTest {
     }
 
     @Test
-    void createsOutDir(@TempDir final Path temp) throws IOException {
+    void createsOutDir(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).execute(DownloadDepsMojo.class);
         Assertions.assertTrue(
             Files.exists(temp.resolve(DownloadDepsMojoTest.OUT)),
@@ -68,7 +71,7 @@ final class DownloadDepsMojoTest {
     }
 
     @Test
-    void downloadsCorrectly(@TempDir final Path temp) throws IOException {
+    void downloadsCorrectly(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).execute(DownloadDepsMojo.class);
         for (final String dep : DownloadDepsMojoTest.DEPS_NAMES) {
             Assertions.assertTrue(

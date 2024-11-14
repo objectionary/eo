@@ -23,6 +23,8 @@
  */
 package org.eolang;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
@@ -34,7 +36,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Integration test for phi-unphi.
@@ -43,12 +44,13 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@ExtendWith(MktmpResolver.class)
 final class PhiUnphiIT {
 
     // @checkstyle MethodLengthCheck (170 lines)
     @Test
     @ExtendWith(WeAreOnline.class)
-    void runsTestsAfterPhiAndUnphi(final @TempDir Path temp) throws IOException {
+    void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 f.files().file("src/main").save(

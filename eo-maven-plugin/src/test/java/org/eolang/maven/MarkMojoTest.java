@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,13 +35,14 @@ import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MarkMojo}.
  *
  * @since 0.11
  */
+@ExtendWith(MktmpResolver.class)
 final class MarkMojoTest {
     /**
      * Version.
@@ -47,7 +50,7 @@ final class MarkMojoTest {
     private static final String VERSION = "0.28.0";
 
     @Test
-    void extendsForeignWithNewObjects(@TempDir final Path temp) throws IOException {
+    void extendsForeignWithNewObjects(@Mktmp final Path temp) throws IOException {
         MarkMojoTest.source(temp);
         final FakeMaven maven = new FakeMaven(temp);
         maven.execute(MarkMojo.class);
@@ -63,7 +66,7 @@ final class MarkMojoTest {
     }
 
     @Test
-    void updatesVersionIfItExists(@TempDir final Path temp) throws IOException {
+    void updatesVersionIfItExists(@Mktmp final Path temp) throws IOException {
         MarkMojoTest.source(temp);
         final FakeMaven maven = new FakeMaven(temp);
         final ForeignTojos foreign = maven.foreignTojos();
@@ -83,7 +86,7 @@ final class MarkMojoTest {
     }
 
     @Test
-    void extendsTojosWithVersionedOne(@TempDir final Path temp) throws IOException {
+    void extendsTojosWithVersionedOne(@Mktmp final Path temp) throws IOException {
         MarkMojoTest.source(temp);
         final ForeignTojos tojos = new FakeMaven(temp)
             .with("withVersions", true)

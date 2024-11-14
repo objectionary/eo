@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +45,7 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -52,6 +54,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.1
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
+@ExtendWith(MktmpResolver.class)
 final class TranspileMojoTest {
 
     /**
@@ -81,7 +84,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void recompilesIfModified(@TempDir final Path temp) throws IOException {
+    void recompilesIfModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(this.program)
@@ -103,7 +106,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void recompilesIfExpired(@TempDir final Path temp) throws IOException {
+    void recompilesIfExpired(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(this.program)
@@ -149,7 +152,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void doesNotRetranspileIfNotModified(@TempDir final Path temp) throws IOException {
+    void doesNotRetranspileIfNotModified(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Path java = maven
             .withProgram(this.program)
@@ -174,7 +177,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void transpilesSimpleEoProgram(@TempDir final Path temp) throws Exception {
+    void transpilesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
         final Path src = Paths.get("../eo-runtime/src/main/eo/org/eolang/tuple.eo");
         final Map<String, Path> res = new FakeMaven(temp)
             .withProgram(src)
@@ -193,7 +196,7 @@ final class TranspileMojoTest {
     }
 
     @Test
-    void transpilesSeveralEoProgramsInParallel(@TempDir final Path temp) throws IOException {
+    void transpilesSeveralEoProgramsInParallel(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int programs = 30;
         for (int prog = 0; prog < programs; ++prog) {
@@ -213,7 +216,7 @@ final class TranspileMojoTest {
 
     @Test
     void transpilesSourcesForDifferentScopesWithoutIntersections(
-        @TempDir final Path temp
+        @Mktmp final Path temp
     ) throws IOException {
         final Path target = temp.resolve("target");
         final Path sources = target.resolve("generated-sources");
@@ -246,7 +249,7 @@ final class TranspileMojoTest {
 
     @Test
     @CaptureLogs
-    void skipsTranpilationIfWasNotVerified(@TempDir final Path temp, final Logs out)
+    void skipsTranpilationIfWasNotVerified(@Mktmp final Path temp, final Logs out)
         throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()

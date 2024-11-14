@@ -32,6 +32,7 @@ import EOorg.EOeolang.EOsys.Posix.CStdLib;
 import EOorg.EOeolang.EOsys.Win32.Kernel32;
 import EOorg.EOeolang.EOsys.Win32.WinBase;
 import EOorg.EOeolang.EOsys.Win32.WinNT;
+import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -52,7 +53,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-import org.junit.jupiter.api.io.TempDir;
+import com.yegor256.Mktmp;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
@@ -65,6 +67,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.TooManyMethods"})
 @Execution(ExecutionMode.SAME_THREAD)
+@ExtendWith(MktmpResolver.class)
 final class InputOutputTest {
     /**
      * Operating system name.
@@ -296,7 +299,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void writesToConsole(@TempDir final Path temp) throws IOException {
+        void writesToConsole(@Mktmp final Path temp) throws IOException {
             final String msg = "writes to console";
             final File file = InputOutputTest.redirectedStdout(
                 temp,
@@ -318,7 +321,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void writesToConsoleSequentially(@TempDir final Path temp) throws IOException {
+        void writesToConsoleSequentially(@Mktmp final Path temp) throws IOException {
             final File file = InputOutputTest.redirectedStdout(
                 temp,
                 () -> {
@@ -346,7 +349,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void readsFromConsole(@TempDir final Path temp) throws IOException {
+        void readsFromConsole(@Mktmp final Path temp) throws IOException {
             final String content = "read from console";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
@@ -367,7 +370,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void readsSequentiallyFromInputBlockViaConsole(@TempDir final Path temp)
+        void readsSequentiallyFromInputBlockViaConsole(@Mktmp final Path temp)
             throws IOException {
             final String content = "read sequentially from console";
             final byte[] result = InputOutputTest.redirectedStdin(
@@ -406,7 +409,7 @@ final class InputOutputTest {
     @Execution(ExecutionMode.SAME_THREAD)
     final class StdinTest {
         @Test
-        void dataizesOneLineOnOneLineInputViaStdin(@TempDir final Path temp) throws IOException {
+        void dataizesOneLineOnOneLineInputViaStdin(@Mktmp final Path temp) throws IOException {
             final String content = "this is a test input1";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
@@ -424,7 +427,7 @@ final class InputOutputTest {
 
         @Test
         void dataizesOneLineOnOneLineWithSeparatorInputViaStdin(
-            @TempDir final Path temp
+            @Mktmp final Path temp
         ) throws IOException {
             final String content = "this is a test input2";
             final byte[] result = InputOutputTest.redirectedStdin(
@@ -443,7 +446,7 @@ final class InputOutputTest {
 
         @Test
         void dataizesSecondLineOnThreeLineWithSeparatorInputViaStdin(
-            @TempDir final Path temp
+            @Mktmp final Path temp
         ) throws IOException {
             final String content = String.join(
                 System.lineSeparator(),
@@ -471,7 +474,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void dataizesEmptyInputViaStdin(@TempDir final Path temp) throws IOException {
+        void dataizesEmptyInputViaStdin(@Mktmp final Path temp) throws IOException {
             final String content = "";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
@@ -488,7 +491,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void dataizesStdinOneLine(@TempDir final Path temp) throws IOException {
+        void dataizesStdinOneLine(@Mktmp final Path temp) throws IOException {
             final String content = "this is a test input3";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
@@ -505,7 +508,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void dataizesStdinEmptyLine(@TempDir final Path temp) throws IOException {
+        void dataizesStdinEmptyLine(@Mktmp final Path temp) throws IOException {
             final String content = "";
             final byte[] result = InputOutputTest.redirectedStdin(
                 temp,
@@ -522,7 +525,7 @@ final class InputOutputTest {
         }
 
         @Test
-        void dataizesStdinMultiLine(@TempDir final Path temp) throws IOException {
+        void dataizesStdinMultiLine(@Mktmp final Path temp) throws IOException {
             final String content = String.join(
                 System.lineSeparator(),
                 "first",
@@ -553,7 +556,7 @@ final class InputOutputTest {
     final class PosixReadSyscallTest {
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        void readsFromStdinViaPosixReadSyscall(@TempDir final Path temp) throws IOException {
+        void readsFromStdinViaPosixReadSyscall(@Mktmp final Path temp) throws IOException {
             final String content = "read from posix stdin";
             final byte[] result = InputOutputTest.posixStdin(
                 temp,
@@ -587,7 +590,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        void readsOnlyAvailableFromStdinViaPosixReadSyscall(@TempDir final Path temp)
+        void readsOnlyAvailableFromStdinViaPosixReadSyscall(@Mktmp final Path temp)
             throws IOException {
             final String content = "read available from posix stdin";
             final byte[] result = InputOutputTest.posixStdin(
@@ -622,7 +625,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        void readsFromEmptyStdinViaPosixReadSyscall(@TempDir final Path temp) throws IOException {
+        void readsFromEmptyStdinViaPosixReadSyscall(@Mktmp final Path temp) throws IOException {
             final byte[] result = InputOutputTest.posixStdin(
                 temp,
                 "",
@@ -655,7 +658,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        void readsFromStdinByPortionsViaPosixReadSyscall(@TempDir final Path temp)
+        void readsFromStdinByPortionsViaPosixReadSyscall(@Mktmp final Path temp)
             throws IOException {
             final byte[] result = InputOutputTest.posixStdin(
                 temp,
@@ -697,7 +700,7 @@ final class InputOutputTest {
     final class WindowsFileReadSyscallTest {
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        void readsFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp) throws IOException {
+        void readsFromStdinViaWindowsFileReadSyscall(@Mktmp final Path temp) throws IOException {
             final String content = "read from windows stdin";
             final byte[] result = InputOutputTest.windowsStdin(
                 temp,
@@ -731,7 +734,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        void readsOnlyAvailableFromStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
+        void readsOnlyAvailableFromStdinViaWindowsFileReadSyscall(@Mktmp final Path temp)
             throws IOException {
             final String content = "read available from windows stdin";
             final byte[] result = InputOutputTest.windowsStdin(
@@ -766,7 +769,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        void readsFromEmptyStdinViaWindowsFileReadSyscall(@TempDir final Path temp)
+        void readsFromEmptyStdinViaWindowsFileReadSyscall(@Mktmp final Path temp)
             throws IOException {
             final byte[] result = InputOutputTest.windowsStdin(
                 temp,
@@ -800,7 +803,7 @@ final class InputOutputTest {
 
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        void readsFromStdinByPortionsViaWindowsFileReadSyscall(@TempDir final Path temp)
+        void readsFromStdinByPortionsViaWindowsFileReadSyscall(@Mktmp final Path temp)
             throws IOException {
             final byte[] result = InputOutputTest.windowsStdin(
                 temp,
@@ -842,7 +845,7 @@ final class InputOutputTest {
     final class PosixWriteSyscallTest {
         @Test
         @DisabledOnOs(OS.WINDOWS)
-        void writesToStdoutViaPosixWriteSyscall(@TempDir final Path temp) throws IOException {
+        void writesToStdoutViaPosixWriteSyscall(@Mktmp final Path temp) throws IOException {
             final String msg = "writes to posix stdout";
             final File file = InputOutputTest.posixStdout(
                 temp,
@@ -915,7 +918,7 @@ final class InputOutputTest {
     final class WindowsFileWriteSyscallTest {
         @Test
         @DisabledOnOs({OS.MAC, OS.LINUX})
-        void writesToStdoutViaWindowsWriteFileFunction(@TempDir final Path temp)
+        void writesToStdoutViaWindowsWriteFileFunction(@Mktmp final Path temp)
             throws IOException {
             final String msg = "writes to windows stdout";
             final File file = InputOutputTest.windowsStdout(

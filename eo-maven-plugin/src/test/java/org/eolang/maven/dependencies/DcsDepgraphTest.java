@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +34,7 @@ import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -41,6 +43,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  *
  * @since 0.28.11
  */
+@ExtendWith(MktmpResolver.class)
 final class DcsDepgraphTest {
 
     @ParameterizedTest
@@ -51,7 +54,7 @@ final class DcsDepgraphTest {
     void readsAllDependenciesFromJsonFile(
         final String name,
         final long number,
-        @TempDir final Path tmp
+        @Mktmp final Path tmp
     ) throws Exception {
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,

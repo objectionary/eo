@@ -24,6 +24,8 @@
 package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,13 +42,14 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link ShakeMojo}.
  *
  * @since 0.35.0
  */
+@ExtendWith(MktmpResolver.class)
 final class ShakeMojoTest {
 
     /**
@@ -60,7 +63,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void shakesSuccessfully(@TempDir final Path temp) throws IOException {
+    void shakesSuccessfully(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withHelloWorld()
@@ -84,7 +87,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void getsAlreadyShakenResultsFromCache(@TempDir final Path temp) throws Exception {
+    void getsAlreadyShakenResultsFromCache(@Mktmp final Path temp) throws Exception {
         final TextOf cached = new TextOf(
             new ResourceOf("org/eolang/maven/optimize/main.xml")
         );
@@ -128,7 +131,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void skipsAlreadyShaken(@TempDir final Path temp) throws IOException {
+    void skipsAlreadyShaken(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
             .execute(new FakeMaven.Shake());
@@ -145,7 +148,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void shakesIfExpired(@TempDir final Path temp) throws Exception {
+    void shakesIfExpired(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         final Path tgt = maven
             .withHelloWorld()
@@ -167,7 +170,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void savesShakenResultsToCache(@TempDir final Path temp) throws IOException {
+    void savesShakenResultsToCache(@Mktmp final Path temp) throws IOException {
         final Path cache = temp.resolve("cache");
         final String hash = "abcdef1";
         new FakeMaven(temp)
@@ -186,7 +189,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void shakesConcurrentlyWithLotsOfPrograms(@TempDir final Path temp) throws IOException {
+    void shakesConcurrentlyWithLotsOfPrograms(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         final int total = 20;
         for (int program = 0; program < total; ++program) {
@@ -212,7 +215,7 @@ final class ShakeMojoTest {
     }
 
     @Test
-    void doesNotCrashesOnError(@TempDir final Path temp) throws Exception {
+    void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "The program should run without errors.",
             new FakeMaven(temp)

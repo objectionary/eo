@@ -23,23 +23,26 @@
  */
 package org.eolang.maven.util;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.eolang.maven.BinarizeParseTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link FileHash}.
  *
  * @since 0.26
  */
+@ExtendWith(MktmpResolver.class)
 final class FileHashTest {
 
     @Test
-    void readsFromExistingFile(@TempDir final Path temp) throws IOException {
+    void readsFromExistingFile(@Mktmp final Path temp) throws IOException {
         final Path path = temp.resolve("1.txt");
         new HmBase(temp).save("hey, you", temp.relativize(path));
         MatcherAssert.assertThat(
@@ -50,7 +53,7 @@ final class FileHashTest {
     }
 
     @Test
-    void readsFromAbsentFile(@TempDir final Path temp) {
+    void readsFromAbsentFile(@Mktmp final Path temp) {
         final Path path = temp.resolve("2.txt");
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,

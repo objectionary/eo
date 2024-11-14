@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,7 +36,7 @@ import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +48,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 @SuppressWarnings("PMD.JUnit5TestShouldBePackagePrivate")
 @Execution(ExecutionMode.CONCURRENT)
+@ExtendWith(MktmpResolver.class)
 public final class BinarizeParseTest {
 
     /**
@@ -59,7 +62,7 @@ public final class BinarizeParseTest {
     public static final String TO_ADD_MESSAGE = "TO ADD ASSERTION MESSAGE";
 
     @Test
-    void parsesSimpleEoProgram(@TempDir final Path temp) throws Exception {
+    void parsesSimpleEoProgram(@Mktmp final Path temp) throws Exception {
         final Map<String, Path> res = execParse(
             temp,
             BinarizeMojoTest.SRC.resolve("simple-rust.eo")
@@ -104,7 +107,7 @@ public final class BinarizeParseTest {
     }
 
     @Test
-    void binarizesTwiceRustProgram(@TempDir final Path temp) throws Exception {
+    void binarizesTwiceRustProgram(@Mktmp final Path temp) throws Exception {
         final Map<String, Path> res = execParse(
             temp,
             BinarizeMojoTest.SRC.resolve("twice-rust.eo")
@@ -158,7 +161,7 @@ public final class BinarizeParseTest {
     }
 
     @Test
-    void createsCorrectRustProject(@TempDir final Path temp) throws Exception {
+    void createsCorrectRustProject(@Mktmp final Path temp) throws Exception {
         final Map<String, Path> res = execParse(
             temp,
             BinarizeMojoTest.SRC.resolve("simple-rust.eo"),

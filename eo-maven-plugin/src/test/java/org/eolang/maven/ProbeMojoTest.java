@@ -23,6 +23,8 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -46,7 +48,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link ProbeMojo}.
@@ -54,6 +55,7 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.28.11
  */
 @ExtendWith(WeAreOnline.class)
+@ExtendWith(MktmpResolver.class)
 final class ProbeMojoTest {
     /**
      * Stdout.
@@ -61,7 +63,7 @@ final class ProbeMojoTest {
     private static final ObjectName STDOUT = new OnVersioned("org.eolang.io.stdout", "9c93528");
 
     @Test
-    void findsProbes(@TempDir final Path temp) throws Exception {
+    void findsProbes(@Mktmp final Path temp) throws Exception {
         final String expected = "5";
         MatcherAssert.assertThat(
             String.format(
@@ -79,7 +81,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void findsProbesViaOfflineHashFile(@TempDir final Path temp) throws IOException {
+    void findsProbesViaOfflineHashFile(@Mktmp final Path temp) throws IOException {
         final String tag = "master";
         final String tags = "org/eolang/maven/commits/tags.txt";
         new HmBase(temp).save(
@@ -108,8 +110,8 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void findsProbesInOyRemote(@TempDir final Path temp) throws IOException {
-        final String tag = "0.28.10";
+    void findsProbesInOyRemote(@Mktmp final Path temp) throws IOException {
+        final String tag = "0.40.5";
         MatcherAssert.assertThat(
             String.format(
                 "The hash of the program tojo should be equal to the hash of the commit for the '%s' tag",
@@ -130,7 +132,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void findsProbesWithVersionsInOneObjectionary(@TempDir final Path temp) throws IOException {
+    void findsProbesWithVersionsInOneObjectionary(@Mktmp final Path temp) throws IOException {
         final CommitHash hash = new CommitHashesMap.Fake().get("0.28.5");
         final FakeMaven maven = new FakeMaven(temp)
             .with("hash", hash)
@@ -154,7 +156,7 @@ final class ProbeMojoTest {
     }
 
     @Test
-    void findsProbesWithVersionsInDifferentObjectionaries(@TempDir final Path temp)
+    void findsProbesWithVersionsInDifferentObjectionaries(@Mktmp final Path temp)
         throws IOException {
         final Map<String, CommitHash> hashes = new CommitHashesMap.Fake();
         final CommitHash first = hashes.get("0.28.5");

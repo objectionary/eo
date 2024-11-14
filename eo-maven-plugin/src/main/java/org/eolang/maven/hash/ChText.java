@@ -105,7 +105,7 @@ public final class ChText implements CommitHash {
                                 () -> {
                                     throw new NotFound(
                                         String.format(
-                                            "Git SHA not found for the '%s' tag",
+                                            "Git SHA not found for the '%s' tag, probably it doesn't exist in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                             this.tag
                                         )
                                     );
@@ -117,7 +117,7 @@ public final class ChText implements CommitHash {
                     () -> {
                         throw new NotFound(
                             String.format(
-                                "No SHA found for the '%s' tag",
+                                "The tag '%s' was found, but there is no corresponding Git SHA for it in the line, most probably something is wrong in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                 this.tag
                             )
                         );

@@ -23,22 +23,25 @@
  */
 package org.eolang.maven.rust;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link PrimeModule}.
  *
  * @since 0.1
  */
+@ExtendWith(MktmpResolver.class)
 final class PrimeModuleTest {
     @Test
-    void savesCorrectly(@TempDir final Path temp) throws Exception {
+    void savesCorrectly(@Mktmp final Path temp) throws Exception {
         final String method = "my_method";
         final String name = "name";
         new PrimeModule(method, name).save(temp);

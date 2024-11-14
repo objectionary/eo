@@ -23,6 +23,8 @@
  */
 package org.eolang.maven.util;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -37,7 +39,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -46,11 +48,12 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.22
  */
+@ExtendWith(MktmpResolver.class)
 final class HmBaseTest {
 
     @ValueSource(ints = {0, 100, 1_000, 10_000})
     @ParameterizedTest
-    void saves(final int size, @TempDir final Path temp) throws IOException {
+    void saves(final int size, @Mktmp final Path temp) throws IOException {
         final Path resolve = Paths.get("1.txt");
         final String content = new UncheckedText(new Randomized(size)).asString();
         new HmBase(temp).save(content, resolve);
@@ -62,7 +65,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void exists(@TempDir final Path temp) throws IOException {
+    void exists(@Mktmp final Path temp) throws IOException {
         final Path path = Paths.get("file.txt");
         Files.write(temp.resolve(path), "any content".getBytes());
         MatcherAssert.assertThat(
@@ -73,7 +76,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void existsInDir(@TempDir final Path temp) throws IOException {
+    void existsInDir(@Mktmp final Path temp) throws IOException {
         final Path target = temp.resolve("dir/subdir/file.txt");
         target.getParent().toFile().mkdirs();
         Files.write(target, "any content".getBytes());
@@ -85,7 +88,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void existsInDirDifferentEncryption(@TempDir final Path temp) throws IOException {
+    void existsInDirDifferentEncryption(@Mktmp final Path temp) throws IOException {
         final String filename = "文件名.txt";
         final byte[] bytes = filename.getBytes(StandardCharsets.UTF_16BE);
         final String decoded = new String(bytes, StandardCharsets.UTF_16BE);
@@ -99,7 +102,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void existsInDirWithSpecialSymbols(@TempDir final Path temp) throws IOException {
+    void existsInDirWithSpecialSymbols(@Mktmp final Path temp) throws IOException {
         final String filename = "EOorg/EOeolang/EOmath/EOnan$EOas_int$EO@";
         final byte[] bytes = filename.getBytes("CP1252");
         final String decoded = new String(bytes, "CP1252");
@@ -113,7 +116,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void loadsBytesFromExistingFile(@TempDir final Path temp) throws IOException {
+    void loadsBytesFromExistingFile(@Mktmp final Path temp) throws IOException {
         final HmBase home = new HmBase(temp);
         final String content = "bar";
         final Path subfolder = Paths.get("subfolder", "foo.txt");
@@ -126,7 +129,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void loadsFromAbsentFile(@TempDir final Path temp) {
+    void loadsFromAbsentFile(@Mktmp final Path temp) {
         Assertions.assertThrows(
             NoSuchFileException.class,
             () -> new HmBase(temp).load(Paths.get("nonexistent")),
@@ -135,7 +138,7 @@ final class HmBaseTest {
     }
 
     @Test
-    void throwsExceptionOnAbsolute(@TempDir final Path temp) {
+    void throwsExceptionOnAbsolute(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new HmBase(temp).exists(temp.toAbsolutePath()),
