@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.hash;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,7 +35,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

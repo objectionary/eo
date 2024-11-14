@@ -23,13 +23,13 @@
  */
 package org.eolang.maven.rust;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**

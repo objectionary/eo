@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
@@ -36,7 +37,6 @@ import org.cactoos.number.SumOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**

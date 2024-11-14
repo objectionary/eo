@@ -24,6 +24,7 @@
 package org.eolang.maven;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,7 +49,6 @@ import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 

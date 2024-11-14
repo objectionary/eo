@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import org.eolang.xax.XaxStory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;

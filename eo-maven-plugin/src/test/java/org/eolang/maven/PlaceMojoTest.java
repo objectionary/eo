@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
@@ -40,7 +41,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.yegor256.Mktmp;
 
 /**
  * Test case for {@link PlaceMojo}.

@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.File;
@@ -38,7 +39,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.yegor256.Mktmp;
 
 /**
  * Test case for {@link BinarizeMojo}.

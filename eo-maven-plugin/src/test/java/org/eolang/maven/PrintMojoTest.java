@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.File;
 import java.nio.file.Files;
@@ -41,7 +42,6 @@ import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;

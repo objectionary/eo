@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.tojos;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.tojos.MnJson;
 import com.yegor256.tojos.MnSticky;
@@ -44,7 +45,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**

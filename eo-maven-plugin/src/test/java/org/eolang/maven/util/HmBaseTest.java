@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.util;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +39,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

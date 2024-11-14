@@ -23,6 +23,7 @@
  */
 package org.eolang.maven.dependencies;
 
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,7 +34,6 @@ import org.eolang.maven.BinarizeParseTest;
 import org.eolang.maven.util.HmBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
