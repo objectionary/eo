@@ -61,7 +61,7 @@ SOFTWARE.
       </a>
     </xsl:for-each>
   </xsl:variable>
-  <xsl:template match="o[@data and not(@ref)]">
+  <xsl:template match="o[@data]">
     <xsl:apply-templates select="." mode="with-data"/>
   </xsl:template>
   <xsl:template match="o[not(@base='org.eolang.bytes' or @base='bytes')]" mode="with-data">
