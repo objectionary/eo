@@ -35,30 +35,30 @@ All of them have something **we don't tolerate**:
 
 * types ([why?](https://www.yegor256.com/2020/11/10/typing-without-types.html))
 * static/class methods or attributes
-([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
+  ([why?](http://www.yegor256.com/2014/05/05/oop-alternative-to-utility-classes.html))
 * classes ([why?](http://www.yegor256.com/2016/09/20/oop-without-classes.html))
 * implementation inheritance
-([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
+  ([why?](http://www.yegor256.com/2016/09/13/inheritance-is-procedural.html))
 * mutability
-([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html)
-and
-[why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
+  ([why?](http://www.yegor256.com/2014/06/09/objects-should-be-immutable.html)
+  and
+  [why not?](https://www.yegor256.com/2016/09/07/gradients-of-immutability.html))
 * NULL ([why?](http://www.yegor256.com/2014/05/13/why-null-is-bad.html))
 * global scope
-([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
+  ([why?](https://www.yegor256.com/2018/07/03/global-variables.html))
 * type casting
-([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
+  ([why?](http://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html))
 * reflection
-([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
+  ([why?](https://www.yegor256.com/2022/06/05/reflection-means-hidden-coupling.html))
 * scalar types and data primitives
 * annotations
-([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
+  ([why?](http://www.yegor256.com/2016/04/12/java-annotations-are-evil.html))
 * operators
 * traits and mixins
-([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
+  ([why?](https://www.yegor256.com/2017/03/07/traits-and-mixins.html))
 * flow control statements (`for`, `while`, `if`, etc)
 * [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar)
-([why?](https://github.com/objectionary/eo/issues/51))
+  ([why?](https://github.com/objectionary/eo/issues/51))
 
 ## Quick Start
 
@@ -242,7 +242,7 @@ Read about integration with Maven,
 
 ## Benchmark
 
-This is how many milliseconds were spend on different
+This is how many milliseconds were spent on different
 XSL stylesheets during the execution of `mvn install` of
 the `eo-runtime` module:
 
@@ -275,6 +275,21 @@ We show only the first 16 most expensive XSL stylesheets.
 
 <!-- benchmark_end -->
 
+You can run this benchmark locally with the following commands.
+First, to generate the `measures.csv` file:
+
+```shell
+mvn clean install --errors --batch-mode -Deo.xslMeasuresFile=measures.csv
+```
+
+Then, to generate the report:
+
+```shell
+awk -F ',' '{ a[$1]+=$2; s+=$2; } END { for (k in a) \
+ printf("%s.xsl\t%d\t%0.2f%%\n", k, a[k], 100 * a[k]/s)}' \
+ eo-runtime/measures.csv | sort -g -k 2 | tail -r | column -t | head "-16"
+```
+
 ## How to Contribute
 
 Fork repository, make changes, then send us
@@ -297,4 +312,5 @@ to enhance the performance of EO components:
 [![YourKit](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 
 [cargo]: https://doc.rust-lang.org/cargo/getting-started/installation.html
+
 [benchmark-gha]: https://github.com/objectionary/eo/actions/runs/11770647245

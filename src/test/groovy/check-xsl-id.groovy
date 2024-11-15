@@ -34,7 +34,7 @@ project = new File('.')
 project.traverse(
   type         : FileType.FILES,
   preDir       : { if (it.name == 'target') return FileVisitResult.SKIP_SUBTREE },
-  nameFilter   : ~/.*\.xsl/
+  nameFilter   : ~/.*\.xsl|xs3p.xsl/
 ) {
   it ->
     String id = new XmlSlurper().parse(it).@id
