@@ -22,7 +22,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.41.1" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.41.2" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo>XML schema for XMIR documents</xs:appinfo>
+    <xs:documentation>
+      Every XMIR document is essentially an XML document that
+      contains objects found in a EOLANG program together with
+      supplementary information, such as metas, license, and so on.
+    </xs:documentation>
+  </xs:annotation>
   <xs:simpleType name="empty">
     <xs:restriction base="xs:string">
       <xs:length value="0"/>
