@@ -27,7 +27,7 @@ tests:
   - /program/objects[count(.//o[@ref])=0]
 eo: |
   +package org.eolang
-  
+
   # This is the default 64+ symbols comment in front of abstract object.
   [] > bytes
     $.eq 01- > yes
