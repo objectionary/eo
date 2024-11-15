@@ -47,8 +47,8 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.TrParsing;
 import org.eolang.parser.Schema;
+import org.eolang.parser.TrParsing;
 
 /**
  * Read XMIR files and translate them to the phi-calculus expression.
