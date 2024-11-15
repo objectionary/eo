@@ -99,12 +99,12 @@ final class PhiMojoTest {
                 f.build().plugins().appendItself();
                 f.exec("eo:register", "eo:parse", "eo:optimize");
                 f.exec("eo:xmir-to-phi");
-                MatcherAssert.assertThat(
-                    "the .phi file is generated",
-                    f.files().file("target/eo/phi/org/eolang/bytes.phi").exists(),
-                    Matchers.is(true)
-                );
             }
+        );
+        MatcherAssert.assertThat(
+            "the .phi file is generated",
+            temp.resolve("target/eo/phi/org/eolang/bytes.phi").toFile().exists(),
+            Matchers.is(true)
         );
     }
 
