@@ -42,7 +42,7 @@ jobs:
           ruby-version: 3.2
       - run: gem install hoc
       - run: |
-          git fetch --tag
+          git fetch --tags --force
           (
             printf 'Good news, we have just published the %d-th release ' \
               "$(git tag | wc -l | xargs)"
