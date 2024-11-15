@@ -80,7 +80,6 @@ final class OptimizeMojoTest {
                     f.files().file("target/eo/2-optimize/foo.xmir").exists(),
                     Matchers.is(true)
                 );
-                f.files().show();
             }
         );
     }

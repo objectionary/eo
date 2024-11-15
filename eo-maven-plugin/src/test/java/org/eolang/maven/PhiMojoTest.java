@@ -48,6 +48,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @ExtendWith(MktmpResolver.class)
+@ExtendWith(RandomProgramResolver.class)
 final class PhiMojoTest {
     /**
      * Comment.
@@ -56,13 +57,12 @@ final class PhiMojoTest {
         "# This is the default 64+ symbols comment in front of named abstract object.";
 
     @Test
-    void convertsSimpleObjectToPhi(@Mktmp final Path temp) throws Exception {
+    void convertsSimpleObjectToPhi(@Mktmp final Path temp,
+        @RandomProgram final String program) throws Exception {
         new Farea(temp).together(
             f -> {
                 f.clean();
-                f.files().file("src/main/eo/foo.eo").write(
-                    String.format("%s\n[] > foo\n", PhiMojoTest.COMMENT).getBytes()
-                );
+                f.files().file("src/main/eo/foo.eo").write(program.getBytes());
                 f.build()
                     .plugins()
                     .appendItself()
@@ -74,8 +74,37 @@ final class PhiMojoTest {
                     f.files().file("target/eo/phi/foo.phi").exists(),
                     Matchers.is(true)
                 );
-                f.files().show();
             }
+        );
+    }
+
+    @Test
+    void convertsObjectWithSystemType(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/org/eolang/bytes.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# In this program, we define a 'system' object, similar",
+                        "# to how it is defined in org.eolang package, trying to",
+                        "# reproduce the error.",
+                        "[] > bytes",
+                        "  $.eq 01- > yes",
+                        ""
+                    ).getBytes()
+                );
+                f.build().plugins().appendItself();
+                f.exec("eo:register", "eo:parse", "eo:optimize");
+                f.exec("eo:xmir-to-phi");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .phi file is generated",
+            temp.resolve("target/eo/phi/org/eolang/bytes.phi").toFile().exists(),
+            Matchers.is(true)
         );
     }
 

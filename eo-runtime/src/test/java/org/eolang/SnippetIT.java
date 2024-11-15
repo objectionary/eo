@@ -24,6 +24,8 @@
 package org.eolang;
 
 import com.jcabi.log.Logger;
+import com.yegor256.MayBeSlow;
+import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
@@ -39,7 +41,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.yegor256.Mktmp;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
 
@@ -61,6 +62,7 @@ final class SnippetIT {
 
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
+    @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
         final Yaml yaml = new Yaml();

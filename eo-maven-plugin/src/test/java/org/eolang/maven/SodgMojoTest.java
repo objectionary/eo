@@ -78,13 +78,11 @@ final class SodgMojoTest {
                     .execution()
                     .goals("register", "parse", "optimize", "shake", "sodg");
                 f.exec("compile");
-                f.files().show();
                 MatcherAssert.assertThat(
                     "the .sodg file is generated",
                     f.files().file("target/eo/sodg/foo.sodg").exists(),
                     Matchers.is(true)
                 );
-                f.files().show();
             }
         );
     }

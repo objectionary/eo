@@ -49,6 +49,7 @@ import org.eolang.maven.util.HmBase;
 import org.eolang.maven.util.Home;
 import org.eolang.maven.util.Walk;
 import org.eolang.parser.PhiSyntax;
+import org.eolang.parser.TrStepped;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -65,11 +66,13 @@ public final class UnphiMojo extends SafeMojo {
     /**
      * Unphi transformations.
      */
-    private static final Train<Shift> TRANSFORMATIONS = new TrClasspath<>(
-        "/org/eolang/maven/unphi/wrap-bytes.xsl",
-        "/org/eolang/parser/wrap-method-calls.xsl",
-        "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
-    ).back();
+    private static final Train<Shift> TRANSFORMATIONS = new TrStepped(
+        new TrClasspath<>(
+            "/org/eolang/maven/unphi/wrap-bytes.xsl",
+            "/org/eolang/parser/wrap-method-calls.xsl",
+            "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
+        ).back()
+    );
 
     /**
      * The directory where to take phi files for parsing from.

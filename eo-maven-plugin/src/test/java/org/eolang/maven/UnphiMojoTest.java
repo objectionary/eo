@@ -165,16 +165,15 @@ final class UnphiMojoTest {
     void convertsToXmirAndBack(final String pack, @Mktmp final Path temp) throws Exception {
         final Map<String, Object> map = new Yaml().load(pack);
         if (map.get("skip") != null) {
-            Assumptions.abort(
-                String.format("%s is not ready", pack)
-            );
+            Assumptions.abort(String.format("%s is not ready", pack));
         }
         final String phi = map.get("phi").toString();
         final String main = "target/phi/main.phi";
         final Path path = Paths.get(main);
         new HmBase(temp).save(phi, path);
         final long saved = temp.resolve(path).toFile().lastModified();
-        final FakeMaven maven = new FakeMaven(temp).execute(UnphiMojo.class);
+        final FakeMaven maven = new FakeMaven(temp)
+            .execute(UnphiMojo.class);
         maven.foreignTojos().add("name")
             .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
         final Path result = maven
@@ -189,10 +188,8 @@ final class UnphiMojoTest {
         );
         MatcherAssert.assertThat(
             "Origin phi should equal to phi got from \"unphied\" xmir, but it isn't",
-            phi,
-            Matchers.equalTo(
-                new TextOf(result).asString()
-            )
+            new TextOf(result).asString(),
+            Matchers.equalTo(phi)
         );
     }
 
