@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.1
++rt jvm org.eolang:eo-runtime:0.41.2
 +rt node eo2js-runtime:0.0.0
-+version 0.41.1
++version 0.41.2
 
 # The `while` object is very similar to a loop with a pre-condition.
 # Here's how you can use it:
@@ -62,9 +62,9 @@
   # Attention! The object is for internal usage only. Please don't use
   # the object programmatically outside of `while` object.
   [index] > loop
-    ^.body index > current
+    body index > current
     if. > @
-      (^.condition (index.plus 1)).as-bool
+      (condition (index.plus 1)).as-bool
       seq
         *
           current

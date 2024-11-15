@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.1
++rt jvm org.eolang:eo-runtime:0.41.2
 +rt node eo2js-runtime:0.0.0
-+version 0.41.1
++version 0.41.2
 
 # The 16 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.
@@ -45,24 +45,24 @@
 
   # Returns `true` if `$` < `x`.
   # Here `x` must be an `i16` object.
-  ^.as-i32.lt x.as-i16.as-i32 > [x] > lt
+  as-i32.lt x.as-i16.as-i32 > [x] > lt
 
   # Returns `true` if `$` <= `x`.
   # Here `x` must be an `i16` object.
-  ^.as-i32.lte x.as-i16.as-i32 > [x] > lte
+  as-i32.lte x.as-i16.as-i32 > [x] > lte
 
   # Returns `true` if `$` > `x`.
   # Here `x` must be an `i16` object.
-  ^.as-i32.gt x.as-i16.as-i32 > [x] > gt
+  as-i32.gt x.as-i16.as-i32 > [x] > gt
 
   # Returns `true` if `$` >= `x`.
   # Here `x` must be an `i16` object.
-  ^.as-i32.gte x.as-i16.as-i32 > [x] > gte
+  as-i32.gte x.as-i16.as-i32 > [x] > gte
 
   # Multiplication of `$` and `x`.
   # Here `x` must be an `i16` object.
   [x] > times
-    (^.as-i32.times x.as-i16.as-i32).as-bytes > bts
+    (as-i32.times x.as-i16.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
     if. > @
@@ -77,7 +77,7 @@
   # Sum of `$` and `x`.
   # Here `x` must be an `i16` object.
   [x] > plus
-    (^.as-i32.plus x.as-i16.as-i32).as-bytes > bts
+    (as-i32.plus x.as-i16.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
     if. > @
@@ -91,14 +91,14 @@
 
   # Subtraction between `$` and `x`.
   # Here `x` must be an `i16` object.
-  ^.plus x.as-i16.neg > [x] > minus
+  plus x.as-i16.neg > [x] > minus
 
   # Quotient of the division of `$` by `x`.
   # Here `x` must be an `i16` object.
   # An `error` is returned if or `x` is equal to 0.
   [x] > div
     x.as-i16 > x-as-i16
-    (^.as-i32.div x-as-i16.as-i32).as-bytes > bts
+    (as-i32.div x-as-i16.as-i32).as-bytes > bts
     bts.slice 0 2 > left
     bts.slice 2 2 > right
     00-00 > zero
@@ -107,7 +107,7 @@
       error
         sprintf
           "Can't divide %d by i16 zero"
-          * ^.as-i32.as-i64.as-number
+          * as-i32.as-i64.as-number
       if.
         or.
           left.eq zero

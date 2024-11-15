@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.41.1
++rt jvm org.eolang:eo-runtime:0.41.2
 +rt node eo2js-runtime:0.0.0
-+version 0.41.1
++version 0.41.2
 
 # The `stdout` object is convenient wrapper on `console` object which
 # uses it as output only and allows to print given argument to console as `string`:

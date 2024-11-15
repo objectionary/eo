@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.1
++rt jvm org.eolang:eo-runtime:0.41.2
 +rt node eo2js-runtime:0.0.0
-+version 0.41.1
++version 0.41.2
 
 # Tuple.
 [head tail] > tuple
@@ -41,7 +41,7 @@
 
   # Obtain the length of the tuple.
   [] > length
-    ^.head.length.plus 1 > len!
+    head.length.plus 1 > len!
     number len > @
 
   # Take one element from the tuple, at the given position.
@@ -61,7 +61,7 @@
 
     [tup len] > at-fast
       if. > @
-        (len.plus -1).gt ^.index
+        (len.plus -1).gt index
         ^.at-fast
           tup.head
           len.plus -1

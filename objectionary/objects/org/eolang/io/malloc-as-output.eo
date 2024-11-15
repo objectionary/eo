@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.io
-+rt jvm org.eolang:eo-runtime:0.41.1
++rt jvm org.eolang:eo-runtime:0.41.2
 +rt node eo2js-runtime:0.0.0
-+version 0.41.1
++version 0.41.2
 
 # Makes an output from allocated block in memory.
 # Here `allocated` is `malloc.of.allocated` object.
