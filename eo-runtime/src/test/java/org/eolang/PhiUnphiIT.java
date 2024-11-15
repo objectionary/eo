@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import com.yegor256.MayBeSlow;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
@@ -49,6 +50,7 @@ final class PhiUnphiIT {
 
     // @checkstyle MethodLengthCheck (170 lines)
     @Test
+    @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
