@@ -28,7 +28,6 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
@@ -48,7 +47,7 @@ import org.cactoos.number.SumOf;
 import org.cactoos.text.TextOf;
 import org.eolang.maven.footprint.Saved;
 import org.eolang.maven.util.Walk;
-import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.TrParsing;
 import org.eolang.parser.Schema;
 
 /**
@@ -219,9 +218,9 @@ public final class PhiMojo extends SafeMojo {
     private Train<Shift> train() {
         final Train<Shift> train;
         if (this.phiOptimize) {
-            train = new ParsingTrain();
+            train = new TrParsing();
         } else {
-            train = new TrDefault<>();
+            train = new com.yegor256.xsline.TrDefault<>();
         }
         final List<String> dependent = new ListOf<>(
             "/org/eolang/parser/critical-errors/duplicate-names.xsl",

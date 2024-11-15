@@ -43,7 +43,7 @@ import org.eolang.maven.optimization.OptTrain;
 import org.eolang.maven.optimization.Optimization;
 import org.eolang.maven.tojos.ForeignTojo;
 import org.eolang.maven.tojos.TojoHash;
-import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.TrParsing;
 
 /**
  * Optimize XML files.
@@ -143,7 +143,7 @@ public final class OptimizeMojo extends SafeMojo {
      */
     private Optimization optimization() {
         final Optimization opt;
-        final Train<Shift> train = this.measured(new ParsingTrain());
+        final Train<Shift> train = this.measured(new TrParsing());
         if (this.trackOptimizationSteps) {
             opt = new OptSpy(
                 train,

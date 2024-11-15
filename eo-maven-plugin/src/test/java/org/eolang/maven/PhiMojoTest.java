@@ -98,7 +98,6 @@ final class PhiMojoTest {
                 );
                 f.build().plugins().appendItself();
                 f.exec("eo:register", "eo:parse", "eo:optimize");
-                f.files().file("target/eo/2-optimize/org/eolang/bytes.xmir").show();
                 f.exec("eo:xmir-to-phi");
                 MatcherAssert.assertThat(
                     "the .phi file is generated",

@@ -45,7 +45,7 @@ import org.eolang.maven.rust.FFINode;
 import org.eolang.maven.rust.Names;
 import org.eolang.maven.rust.RustNode;
 import org.eolang.maven.tojos.ForeignTojo;
-import org.eolang.parser.ParsingTrain;
+import org.eolang.parser.TrParsing;
 
 /**
  * Parse rust inserts.
@@ -67,7 +67,7 @@ public final class BinarizeParse {
      * appropriate XSL transformation.
      */
     private static final Train<Shift> TRAIN = new TrBulk<>(
-        new TrClasspath<>(new ParsingTrain().empty()),
+        new TrClasspath<>(new TrParsing().empty()),
         Arrays.asList("/org/eolang/maven/add_rust/add_rust.xsl")
     ).back().back();
 
