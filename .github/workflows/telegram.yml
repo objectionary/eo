@@ -36,7 +36,7 @@ jobs:
       - uses: djdefi/cloc-action@7
         with:
           options: --json --report-file=cloc.json
-      - run: sudo apt-get update && sudo apt-get install --yes jq
+      - run: sudo apt-get update && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
@@ -44,22 +44,25 @@ jobs:
       - run: |
           git fetch --tag
           (
-            printf 'Good news, we have just published the %dth release ' \
+            printf 'Good news, we have just published the %d-th release ' \
               "$(git tag | wc -l | xargs)"
             printf 'of [EO-to-Java compiler](https://github.com/objectionary/eo): '
             printf '[%s](https://github.com/objectionary/eo/releases/tag/%s). ' \
               "${{github.ref_name}}" "${{github.ref_name}}"
-            printf 'At the moment, there are %d lines-of code ' \
-              "$(jq '.SUM.code' <cloc.json)"
-            printf 'and %d [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
-              "$(hoc .)"
-            printf 'in the [repository](https://github.com/objectionary/eo) '
-            printf '(%d Git commits total). ' \
+            printf 'At the moment, there are %dK lines-of code ' \
+              "$(echo "$(jq '.SUM.code' <cloc.json)" / 1000 | bc)"
+            printf 'and %dK [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
+              "$(echo "$(hoc .)" / 1000 | bc)"
+            printf 'in the [repository](https://github.com/objectionary/eo) on GitHub '
+            printf '(%d commits total). ' \
               "$(git rev-list --count master)"
-            printf 'There are %d objects and %d atoms in the runtime. ' \
+            printf 'Currently, there are %d objects and %d atoms ' \
               "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)" \
               "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
-            printf 'You are welcome to give it a try!'
+            printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module. '
+            printf 'There are %d open issues in [our backlog](https://github.com/objectionary/eo/issues), ' \
+              "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100' | jq length)"
+            printf 'please, help us fix them (take those with the "help wanted" badge first).'
           ) > message.md
       - uses: appleboy/telegram-action@master
         with:

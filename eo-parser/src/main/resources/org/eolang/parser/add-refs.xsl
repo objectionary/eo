@@ -30,12 +30,21 @@ SOFTWARE.
   which are not getting @ref attributes after this transformation
   are not visible in the current scope. Maybe they are
   global or just a mistake.
+
+  We must not add "ref" attributes to objects that refer to
+  "bytes" if such objects are inside the "org.eolang.bytes". Such
+  a reference would be misleading: instead of referring to the
+  global "org.eolang.bytes" they will lead to local "bytes"
+  defined in this particular file.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base]">
+  <xsl:template match="o[not(@base='bytes' and /program/metas/meta[head='package' and tail='org.eolang'] and /program/objects/o[@name='bytes'])]">
+    <xsl:apply-templates select="." mode="not-bytes"/>
+  </xsl:template>
+  <xsl:template match="o[@base]" mode="not-bytes">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[not(starts-with(@base, '.'))]" mode="with-base">
+  <xsl:template match="o[not(contains(@base, '.'))]" mode="with-base">
     <xsl:apply-templates select="." mode="no-dots"/>
   </xsl:template>
   <xsl:template match="o[@base!='$' and @base!='^']" mode="no-dots">

@@ -76,7 +76,6 @@ final class PrintMojoTest {
                     f.files().file("target/generated-sources/eo/foo.eo").exists(),
                     Matchers.is(true)
                 );
-                f.files().show();
             }
         );
     }

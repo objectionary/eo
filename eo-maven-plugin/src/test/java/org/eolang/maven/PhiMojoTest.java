@@ -74,8 +74,37 @@ final class PhiMojoTest {
                     f.files().file("target/eo/phi/foo.phi").exists(),
                     Matchers.is(true)
                 );
-                f.files().show();
             }
+        );
+    }
+
+    @Test
+    void convertsObjectWithSystemType(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/org/eolang/bytes.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# In this program, we define a 'system' object, similar",
+                        "# to how it is defined in org.eolang package, trying to",
+                        "# reproduce the error.",
+                        "[] > bytes",
+                        "  $.eq 01- > yes",
+                        ""
+                    ).getBytes()
+                );
+                f.build().plugins().appendItself();
+                f.exec("eo:register", "eo:parse", "eo:optimize");
+                f.exec("eo:xmir-to-phi");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .phi file is generated",
+            temp.resolve("target/eo/phi/org/eolang/bytes.phi").toFile().exists(),
+            Matchers.is(true)
         );
     }
 

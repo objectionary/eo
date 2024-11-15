@@ -26,6 +26,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.Xsline;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XaxStory;
@@ -37,17 +38,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test case for {@link ParsingTrain}.
+ * Test case for {@link TrParsing}.
  *
  * @since 0.23
  */
-final class ParsingTrainTest {
+final class TrParsingTest {
 
     @Test
     void buildsList() {
         MatcherAssert.assertThat(
             "ParsingTrain is not iterable with more than 1 item, but it must be",
-            new ParsingTrain(),
+            new TrParsing(),
             Matchers.iterableWithSize(Matchers.greaterThan(1))
         );
     }
@@ -72,7 +73,7 @@ final class ParsingTrainTest {
         MatcherAssert.assertThat(
             "XSL transformation don't work properly.",
             new Xsline(
-                new ParsingTrain()
+                new TrParsing()
             ).pass(xml),
             XhtmlMatchers.hasXPaths(
                 "/program/sheets[count(sheet)=3]",
@@ -101,7 +102,7 @@ final class ParsingTrainTest {
         MatcherAssert.assertThat(
             "Failed to convert byte to int using the apply-func.xsl transformation",
             new Xsline(
-                new ParsingTrain("/org/eolang/parser/apply-func.xsl")
+                new TrClasspath<>("/org/eolang/parser/apply-func.xsl").back()
             ).pass(new XMLDocument(String.format("<o>%s</o>", bytes))),
             XhtmlMatchers.hasXPath(
                 String.format("/o[text()='%s']", num)
@@ -120,7 +121,7 @@ final class ParsingTrainTest {
         }
         MatcherAssert.assertThat(
             String.format(
-                "The %s check pack is failed.",
+                "The check pack has failed: %n%s",
                 pack
             ),
             check.failures(),
