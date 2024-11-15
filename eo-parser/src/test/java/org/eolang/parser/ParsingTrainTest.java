@@ -120,7 +120,7 @@ final class ParsingTrainTest {
         }
         MatcherAssert.assertThat(
             String.format(
-                "The %s check pack is failed.",
+                "The check pack has failed: %n%s",
                 pack
             ),
             check.failures(),

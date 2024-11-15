@@ -26,10 +26,8 @@ package org.eolang.parser;
 import com.jcabi.xml.ClasspathSources;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
-import com.yegor256.xsline.StAfter;
 import com.yegor256.xsline.StEndless;
 import com.yegor256.xsline.StLambda;
-import com.yegor256.xsline.StSequence;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.TrEnvelope;
@@ -45,14 +43,6 @@ import java.util.logging.Level;
  * @since 0.1
  */
 public final class ParsingTrain extends TrEnvelope {
-
-    /**
-     * Apply changes to each XML after processing.
-     */
-    private static final XSL EACH = new XSLDocument(
-        ParsingTrain.class.getResourceAsStream("_each.xsl"),
-        "each.xsl"
-    ).with(new ClasspathSources(ParsingTrain.class));
 
     /**
      * Transform stars to tuples.
@@ -121,7 +111,7 @@ public final class ParsingTrain extends TrEnvelope {
      */
     ParsingTrain(final String... sheets) {
         super(
-            new TrLambda(
+            new TrStepped(
                 new TrFast(
                     new TrLambda(
                         new TrLogged(
@@ -143,19 +133,6 @@ public final class ParsingTrain extends TrEnvelope {
                     ),
                     TrFast.class,
                     500L
-                ),
-                shift -> new StSequence(
-                    shift.uid(),
-                    xml -> xml.nodes("//error[@severity='critical']").isEmpty(),
-                    new StAfter(
-                        shift,
-                        new StLambda(
-                            shift::uid,
-                            (pos, xml) -> ParsingTrain.EACH.with("step", pos)
-                                .with("sheet", shift.uid())
-                                .transform(xml)
-                        )
-                    )
                 )
             )
         );

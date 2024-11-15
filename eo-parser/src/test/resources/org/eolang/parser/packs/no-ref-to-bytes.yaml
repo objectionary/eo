@@ -19,14 +19,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-log4j.rootLogger=WARN, CONSOLE
-
-log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
-log4j.appender.CONSOLE.layout=com.jcabi.log.MulticolorLayout
-log4j.appender.CONSOLE.layout.ConversionPattern=%d{HH:mm:ss} [%color{%p}] %c: %m%n
-
-log4j.logger.com.jcabi.log=WARN
-log4j.logger.org.eolang=WARN
-log4j.logger.org.eolang.parser.xmir.XmirTest=WARN
-log4j.logger.org.eolang.parser.CheckPack=INFO
+---
+xsls:
+  - /org/eolang/parser/add-refs.xsl
+tests:
+  - /program/errors[count(*)=0]
+  - /program/objects[count(.//o[@ref])=0]
+eo: |
+  +package org.eolang
+  
+  # This is the default 64+ symbols comment in front of abstract object.
+  [] > bytes
+    $.eq 01- > yes
