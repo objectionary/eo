@@ -533,21 +533,9 @@ SOFTWARE.
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>new Dataized(</xsl:text>
     <xsl:value-of select="eo:eol(4 + $indent)"/>
-    <xsl:text>new PhSafe(</xsl:text>
-    <xsl:value-of select="eo:eol(5 + $indent)"/>
-    <xsl:text>new PhNamed(</xsl:text>
-    <xsl:value-of select="eo:eol(6 + $indent)"/>
     <xsl:text>new </xsl:text>
     <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
-    <xsl:text>(),</xsl:text>
-    <xsl:value-of select="eo:eol(6 + $indent)"/>
-    <xsl:text>"</xsl:text>
-    <xsl:value-of select="@original-name"/>
-    <xsl:text>"</xsl:text>
-    <xsl:value-of select="eo:eol(5 + $indent)"/>
-    <xsl:text>)</xsl:text>
-    <xsl:value-of select="eo:eol(4 + $indent)"/>
-    <xsl:text>)</xsl:text>
+    <xsl:text>()</xsl:text>
     <xsl:value-of select="eo:eol(3 + $indent)"/>
     <xsl:text>).asBool()</xsl:text>
     <xsl:value-of select="eo:eol(2 + $indent)"/>

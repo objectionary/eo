@@ -31,7 +31,7 @@ package org.eolang;
  */
 @SuppressWarnings("PMD.TooManyMethods")
 @Versionized
-public final class PhLocated implements Phi {
+public final class PhLocated implements Phi, Atom {
 
     /**
      * The original.
@@ -111,17 +111,17 @@ public final class PhLocated implements Phi {
 
     @Override
     public Phi take(final String name) {
-        return this.origin.take(name);
+        return this.through(() -> this.origin.take(name));
     }
 
     @Override
     public boolean put(final int pos, final Phi object) {
-        return this.origin.put(pos, object);
+        return this.through(() -> this.origin.put(pos, object));
     }
 
     @Override
-    public boolean put(final String name, final Phi object) {
-        return this.origin.put(name, object);
+    public boolean put(final String nme, final Phi object) {
+        return this.through(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -131,16 +131,67 @@ public final class PhLocated implements Phi {
 
     @Override
     public String forma() {
-        return this.origin.forma();
+        return this.through(this.origin::forma);
     }
 
     @Override
     public void attach(final byte[] data) {
-        this.origin.attach(data);
+        this.through(
+            () -> {
+                this.origin.attach(data);
+                return null;
+            }
+        );
     }
 
     @Override
     public byte[] delta() {
-        return this.origin.delta();
+        return this.through(this.origin::delta, ".Δ");
+    }
+
+    @Override
+    public Phi lambda() {
+        return this.through(() -> ((Atom) this.origin).lambda(), ".λ");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param <T> Type of result
+     * @return Result
+     */
+    private <T> T through(final Action<T> action) {
+        return this.through(action, "");
+    }
+
+    /**
+     * Helper, for other methods.
+     * @param action The action
+     * @param suffix The suffix to add to the label
+     * @param <T> Type of result
+     * @return Result
+     */
+    private <T> T through(final Action<T> action, final String suffix) {
+        try {
+            return action.act();
+        } catch (final ExUnset ex) {
+            throw new ExUnset(this.label(suffix), ex);
+        } catch (final ExReadOnly ex) {
+            throw new ExReadOnly(this.label(suffix), ex);
+        } catch (final ExAbstract ex) {
+            throw new ExFailure(this.label(suffix), ex);
+        }
+    }
+
+    /**
+     * The label of the exception.
+     * @param suffix The suffix to add to the label
+     * @return Label
+     */
+    private String label(final String suffix) {
+        return String.format(
+            "Error at the \"%s%s\" attribute",
+            this.locator(), suffix
+        );
     }
 }

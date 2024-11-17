@@ -28,7 +28,6 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import java.util.function.Supplier;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
@@ -65,52 +64,6 @@ public final class EOerror extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         throw new ExError(this.take("message"));
-    }
-
-    /**
-     * Builds error message from the exception.
-     *
-     * @since 0.40
-     */
-    public static final class ErrorMsg implements Supplier<String> {
-        /**
-         * The exception.
-         */
-        private final Throwable exp;
-
-        /**
-         * Ctor.
-         *
-         * @param exp The exception.
-         */
-        public ErrorMsg(final Throwable exp) {
-            this.exp = exp;
-        }
-
-        @Override
-        public String get() {
-            return ErrorMsg.message(this.exp);
-        }
-
-        /**
-         * Make a message from an exception.
-         * @param exp The exception.
-         * @return Message.
-         */
-        private static String message(final Throwable exp) {
-            final StringBuilder ret = new StringBuilder(0);
-            if (exp.getMessage() != null) {
-                if (!(exp instanceof ExFailure)) {
-                    ret.append(exp.getClass().getSimpleName()).append(": ");
-                }
-                ret.append(exp.getMessage().replace("%", "%%"));
-            }
-            if (exp.getCause() != null) {
-                ret.append("; caused by ")
-                    .append(ErrorMsg.message(exp.getCause()));
-            }
-            return ret.toString();
-        }
     }
 
     /**
