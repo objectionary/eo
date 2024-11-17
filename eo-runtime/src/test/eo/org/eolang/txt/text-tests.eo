@@ -286,6 +286,17 @@
     (text "hello").up-cased
 
 # Test.
+[] > splits-and-returns-strings
+  eq. > @
+    length.
+      at.
+        split.
+          text "hello world!"
+          " "
+        1
+    6
+
+# Test.
 [] > converts-text-with-upper-letters-to-upper-case
   eq. > @
     "HELLO"
