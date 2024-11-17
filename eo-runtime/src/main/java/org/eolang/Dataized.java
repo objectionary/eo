@@ -126,21 +126,14 @@ public final class Dataized {
             final List<String> raw = new ArrayList<>(ex.locations().size());
             raw.addAll(ex.locations());
             Collections.reverse(raw);
-//            raw.add(
-//                new VerboseBytesAsString(
-//                    new Dataized(ex.enclosure()).take()
-//                ).get()
-//            );
-            final int width = (int) Math.log10(raw.size());
+            if ("org.eolang.string".equals(ex.enclosure().forma())) {
+                raw.add(new Dataized(ex.enclosure()).take(String.class));
+            }
+            final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
             final List<String> clean = new ArrayList<>(raw.size());
             int idx = 1;
             for (final String line : raw) {
-                clean.add(
-                    String.format(
-                        String.format("%%%dd) %%s", width),
-                        idx, line
-                    )
-                );
+                clean.add(String.format(fmt, idx, line));
                 ++idx;
             }
             this.logger.log(
