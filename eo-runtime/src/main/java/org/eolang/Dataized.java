@@ -24,9 +24,12 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -119,6 +122,34 @@ public final class Dataized {
                 );
             }
             return data;
+        } catch (final EOerror.ExError ex) {
+            final List<String> raw = new ArrayList<>(ex.locations().size());
+            raw.addAll(ex.locations());
+            Collections.reverse(raw);
+            if ("org.eolang.string".equals(ex.enclosure().forma())) {
+                raw.add(
+                    String.format(
+                        "\"%s\"",
+                        new Dataized(ex.enclosure()).take(String.class)
+                    )
+                );
+            }
+            final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
+            final List<String> clean = new ArrayList<>(raw.size());
+            int idx = 1;
+            for (final String line : raw) {
+                clean.add(String.format(fmt, idx, line));
+                ++idx;
+            }
+            this.logger.log(
+                Level.SEVERE,
+                String.format(
+                    "Dataized to org.eolang.error with %s inside, at:%n  ⇢ %s",
+                    ex.enclosure().forma(),
+                    String.join("\n  ⇢ ", clean)
+                )
+            );
+            throw ex;
         } finally {
             Dataized.LEVEL.set(before);
         }

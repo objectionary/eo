@@ -23,6 +23,7 @@
  */
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Handler;
@@ -93,6 +94,21 @@ final class DataizedTest {
                 Matchers.containsString("numberν"),
                 Matchers.not(Matchers.containsString("\n"))
             )
+        );
+    }
+
+    @Test
+    void failsWhenError() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhWith(
+                    new EOerror(),
+                    "message",
+                    new Data.ToPhi("hello")
+                )
+            ).take(),
+            "re-throws when dataization fails with 'error' object"
         );
     }
 
