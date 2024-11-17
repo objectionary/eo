@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -365,6 +366,60 @@ final class PullMojoTest {
                 .resolve("org/eolang/bytes.eo")
                 .toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    void ignoresPreviousMistakesAfterCorrection(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# In this program, we refer to the 'bar' object",
+                        "# by mistake. The build should fail because of it,",
+                        "# in particular its 'pull' step.",
+                        "[] > foo",
+                        "  bar 42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.build().plugins().appendItself();
+                MatcherAssert.assertThat(
+                    "first run must fail, because the 'bar' object is absent",
+                    f.execQuiet(
+                        "eo:register", "eo:parse", "eo:optimize", "eo:shake",
+                        "eo:discover-foreign", "eo:pull"
+                    ),
+                    Matchers.not(Matchers.equalTo(0))
+                );
+                f.files().show();
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# Now, this program, doesn't refer to the 'bar' object",
+                        "# which makes this program valid and it must compile.",
+                        "[] > foo",
+                        "  42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.exec(
+                    "eo:register", "eo:parse", "eo:optimize", "eo:shake",
+                    "eo:discover-foreign", "eo:pull"
+                );
+                f.files().show();
+            }
+        );
+        MatcherAssert.assertThat(
+            "necessary objects were pulled",
+            temp.resolve("target/eo/4-pull/org/eolang/number.eo").toFile().exists(),
+            Matchers.is(true)
         );
     }
 
