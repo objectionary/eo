@@ -396,7 +396,6 @@ final class PullMojoTest {
                     ),
                     Matchers.not(Matchers.equalTo(0))
                 );
-                f.files().show();
                 f.files().file("src/main/eo/foo.eo").write(
                     String.join(
                         "\n",
@@ -413,7 +412,6 @@ final class PullMojoTest {
                     "eo:register", "eo:parse", "eo:optimize", "eo:shake",
                     "eo:discover-foreign", "eo:pull"
                 );
-                f.files().show();
             }
         );
         MatcherAssert.assertThat(
