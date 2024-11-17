@@ -129,7 +129,7 @@ public final class Dataized {
             this.logger.log(
                 Level.SEVERE,
                 String.format(
-                    "Dataized to error at:%n  %s",
+                    "Dataized to 'org.eolang.error' at:%n  %s",
                     String.join("\n  ", locs)
                 )
             );
