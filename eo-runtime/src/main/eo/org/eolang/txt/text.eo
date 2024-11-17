@@ -383,9 +383,10 @@
       if. > @
         ^.len.eq current
         accum.with > with-substr
-          ^.self-as-bytes.slice
-            start
-            current.minus start
+          string
+            ^.self-as-bytes.slice
+              start
+              current.minus start
         if.
           eq.
             ^.delim
