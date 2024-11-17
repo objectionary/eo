@@ -124,16 +124,13 @@ public final class Dataized {
             return data;
         } catch (final EOerror.ExError ex) {
             final List<String> locs = new ArrayList<>(ex.locations().size());
-            for (final String loc : ex.locations()) {
-                locs.add(String.format("  %s", loc));
-            }
+            locs.addAll(ex.locations());
             Collections.reverse(locs);
             this.logger.log(
                 Level.SEVERE,
                 String.format(
-                    "Dataized to error at %s:%n  %s",
-                    this.phi.locator(),
-                    String.join("\n", locs)
+                    "Dataized to error at:%n  %s",
+                    String.join("\n  ", locs)
                 )
             );
             throw ex;
