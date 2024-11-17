@@ -106,6 +106,7 @@ public final class PullMojo extends SafeMojo {
     private boolean overWrite;
 
     @Override
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void exec() throws IOException {
         if (this.offline) {
             Logger.info(
@@ -113,6 +114,7 @@ public final class PullMojo extends SafeMojo {
                 "No programs were pulled because eo.offline flag is TRUE"
             );
         } else {
+            final long start = System.currentTimeMillis();
             if (this.hash == null) {
                 this.hash = new ChCached(
                     new ChNarrow(
@@ -137,7 +139,8 @@ public final class PullMojo extends SafeMojo {
                 } catch (final IOException exception) {
                     throw new IOException(
                         String.format(
-                            "Failed to pull object discovered at %s",
+                            "Failed to pull object '%s' discovered at %s",
+                            tojo.identifier(),
                             tojo.discoveredAt()
                         ),
                         exception
@@ -147,8 +150,9 @@ public final class PullMojo extends SafeMojo {
             }
             Logger.info(
                 this,
-                "%d program(s) were pulled: %s",
+                "%d program(s) were pulled in %[ms]s: %s",
                 tojos.size(),
+                System.currentTimeMillis() - start,
                 names
             );
         }
