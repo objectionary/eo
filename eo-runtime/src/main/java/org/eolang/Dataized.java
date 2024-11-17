@@ -24,6 +24,7 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -119,6 +120,12 @@ public final class Dataized {
                 );
             }
             return data;
+        } catch (final EOerror.ExError ex) {
+            this.logger.log(
+                Level.SEVERE,
+                String.join("\n", ex.locations())
+            );
+            throw ex;
         } finally {
             Dataized.LEVEL.set(before);
         }

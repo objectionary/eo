@@ -24,6 +24,8 @@
 
 package org.eolang;
 
+import EOorg.EOeolang.EOerror;
+
 /**
  * An object with coordinates (line and position).
  *
@@ -178,6 +180,8 @@ public final class PhLocated implements Phi, Atom {
             throw new ExUnset(this.label(suffix), ex);
         } catch (final ExReadOnly ex) {
             throw new ExReadOnly(this.label(suffix), ex);
+        } catch (final EOerror.ExError ex) {
+            throw new EOerror.ExError(ex, this.label(suffix));
         } catch (final ExAbstract ex) {
             throw new ExFailure(this.label(suffix), ex);
         }

@@ -28,6 +28,9 @@
  */
 package EOorg.EOeolang; // NOPMD
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
@@ -86,12 +89,36 @@ public final class EOerror extends PhDefault implements Atom {
         private final Phi enc;
 
         /**
+         * Locations seen on its way out.
+         */
+        private final Collection<String> locs;
+
+        /**
          * Ctor.
          * @param enclosure Enclosure inside the error
          */
         public ExError(final Phi enclosure) {
+            this(enclosure, Collections.emptyList());
+        }
+
+        /**
+         * Ctor.
+         * @param cause Previous error
+         * @param loc New location
+         */
+        public ExError(final ExError cause, final String loc) {
+            this(cause.enclosure(), concat(cause.locs, loc));
+        }
+
+        /**
+         * Ctor.
+         * @param enclosure Enclosure inside the error
+         * @param locations Locations seen
+         */
+        public ExError(final Phi enclosure, final Collection<String> locations) {
             super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
+            this.locs = locations;
         }
 
         /**
@@ -100,6 +127,28 @@ public final class EOerror extends PhDefault implements Atom {
          */
         public Phi enclosure() {
             return this.enc;
+        }
+
+        /**
+         * Take locations.
+         * @return The locations
+         */
+        public Collection<String> locations() {
+            return this.locs;
+        }
+
+        /**
+         * Concatenate locations.
+         * @param before Locations before
+         * @param loc New one
+         * @return New list of them
+         */
+        private static Collection<String> concat(final Collection<String> before,
+            final String loc) {
+            final Collection<String> list = new ArrayList<>(before.size() + 1);
+            list.addAll(before);
+            list.add(loc);
+            return list;
         }
 
         /**
