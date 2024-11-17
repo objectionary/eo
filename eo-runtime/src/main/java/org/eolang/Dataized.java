@@ -127,7 +127,12 @@ public final class Dataized {
             raw.addAll(ex.locations());
             Collections.reverse(raw);
             if ("org.eolang.string".equals(ex.enclosure().forma())) {
-                raw.add(new Dataized(ex.enclosure()).take(String.class));
+                raw.add(
+                    String.format(
+                        "\"%s\"",
+                        new Dataized(ex.enclosure()).take(String.class)
+                    )
+                );
             }
             final String fmt = String.format("%%%dd) %%s", (int) Math.log10(raw.size()) + 1);
             final List<String> clean = new ArrayList<>(raw.size());
