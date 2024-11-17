@@ -190,8 +190,8 @@ public final class PhLocated implements Phi, Atom {
      */
     private String label(final String suffix) {
         return String.format(
-            "Error at the \"%s%s\" attribute",
-            this.locator(), suffix
+            "Error in the \"%s%s\" attribute at %s:%s",
+            this.location, suffix, this.line, this.position
         );
     }
 }

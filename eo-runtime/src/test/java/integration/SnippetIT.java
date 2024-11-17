@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.eolang;
+package integration;
 
 import com.jcabi.log.Logger;
 import com.yegor256.MayBeSlow;
