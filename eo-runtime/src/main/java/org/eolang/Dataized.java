@@ -126,22 +126,29 @@ public final class Dataized {
             final List<String> raw = new ArrayList<>(ex.locations().size());
             raw.addAll(ex.locations());
             Collections.reverse(raw);
-            raw.add(
-                new VerboseBytesAsString(
-                    new Dataized(ex.enclosure()).take()
-                ).get()
-            );
+//            raw.add(
+//                new VerboseBytesAsString(
+//                    new Dataized(ex.enclosure()).take()
+//                ).get()
+//            );
+            final int width = (int) Math.log10(raw.size());
             final List<String> clean = new ArrayList<>(raw.size());
             int idx = 1;
             for (final String line : raw) {
-                clean.add(String.format("%3d) %s", idx, line));
+                clean.add(
+                    String.format(
+                        String.format("%%%dd) %%s", width),
+                        idx, line
+                    )
+                );
                 ++idx;
             }
             this.logger.log(
                 Level.SEVERE,
                 String.format(
-                    "Dataized to 'org.eolang.error' at:%n  ⇢ %s",
-                    String.join("\n  ⇢ ", raw)
+                    "Dataized to org.eolang.error with %s inside, at:%n  ⇢ %s",
+                    ex.enclosure().forma(),
+                    String.join("\n  ⇢ ", clean)
                 )
             );
             throw ex;
