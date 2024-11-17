@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.2
++version 0.41.3
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -201,7 +201,7 @@
 
 # Test.
 [] > rust-invalid-put
-  "Rust insert failed " > message
+  "Error in the " > message
   QQ.rust > put
     """
     use eo::Portal;
@@ -233,7 +233,7 @@
 [] > rust-invalid-bind
   1 > a
   2 > b
-  "Rust insert failed " > to-check
+  "Error in the " > to-check
   QQ.rust > insert
     """
     use eo::Portal;
@@ -331,7 +331,7 @@
 
 # Test.
 [] > rust-error
-  "Rust insert failed " > message
+  "Error in the " > message
   QQ.rust > err
     """
     use eo::Portal;

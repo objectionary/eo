@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.txt
-+version 0.41.2
++version 0.41.3
 
 # Test.
 [] > text-slices-the-origin-string
@@ -284,6 +284,17 @@
   eq. > @
     "HELLO"
     (text "hello").up-cased
+
+# Test.
+[] > splits-and-returns-strings
+  eq. > @
+    length.
+      at.
+        split.
+          text "hello world!"
+          " "
+        1
+    6
 
 # Test.
 [] > converts-text-with-upper-letters-to-upper-case

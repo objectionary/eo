@@ -28,9 +28,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.txt
-+rt jvm org.eolang:eo-runtime:0.41.2
++rt jvm org.eolang:eo-runtime:0.41.3
 +rt node eo2js-runtime:0.0.0
-+version 0.41.2
++version 0.41.3
 
 # Text.
 [origin] > text
@@ -383,9 +383,10 @@
       if. > @
         ^.len.eq current
         accum.with > with-substr
-          ^.self-as-bytes.slice
-            start
-            current.minus start
+          string
+            ^.self-as-bytes.slice
+              start
+              current.minus start
         if.
           eq.
             ^.delim
