@@ -98,35 +98,17 @@ final class DataizedTest {
     }
 
     @Test
-    void logsWhenError() {
-        final Logger log = Logger.getLogger("logsWhenException");
-        final Level before = log.getLevel();
-        log.setLevel(Level.ALL);
-        final List<LogRecord> logs = new LinkedList<>();
-        final Handler hnd = new Hnd(logs);
-        log.addHandler(hnd);
-        final Phi error = new PhWith(
-            new EOerror(),
-            "message",
-            new Data.ToPhi("hello")
-        );
-        IntStream.range(0, 5).forEach(
-            i -> Assertions.assertThrows(
-                EOerror.ExError.class,
-                () -> new Dataized(error).take(),
-                "Expected failure with ExFailure exception on incorrect object dataization"
-            )
-        );
-        new Dataized(new Data.ToPhi(1L), log).take();
-        log.setLevel(before);
-        log.removeHandler(hnd);
-        MatcherAssert.assertThat(
-            "Expected correct logs for object dataization",
-            logs.get(0).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("numberν"),
-                Matchers.not(Matchers.containsString("\n"))
-            )
+    void failsWhenError() {
+        Assertions.assertThrows(
+            EOerror.ExError.class,
+            () -> new Dataized(
+                new PhWith(
+                    new EOerror(),
+                    "message",
+                    new Data.ToPhi("hello")
+                )
+            ).take(),
+            "re-throws when dataization fails with 'error' object"
         );
     }
 

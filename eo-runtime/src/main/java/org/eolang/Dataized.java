@@ -26,8 +26,10 @@ package org.eolang;
 
 import EOorg.EOeolang.EOerror;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -121,9 +123,18 @@ public final class Dataized {
             }
             return data;
         } catch (final EOerror.ExError ex) {
+            final List<String> locs = new ArrayList<>(ex.locations().size());
+            for (final String loc : ex.locations()) {
+                locs.add(String.format("  %s", loc));
+            }
+            Collections.reverse(locs);
             this.logger.log(
                 Level.SEVERE,
-                String.join("\n", ex.locations())
+                String.format(
+                    "Dataized to error at %s:%n  %s",
+                    this.phi.locator(),
+                    String.join("\n", locs)
+                )
             );
             throw ex;
         } finally {
