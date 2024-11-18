@@ -22,31 +22,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="incorrect-home" version="2.0">
+<!--
+Raise an error if errors are found within program
+-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="fail-on-critical" version="2.0">
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="/program/errors">
+  <xsl:template match="/program/errors/error[@severity='critical']">
+    <xsl:message terminate="yes">
+      <xsl:text>Critical error identified:
+</xsl:text>
+      <xsl:for-each select="/program/errors/error[@severity='critical']">
+        <xsl:value-of select="concat('  ', /program/@source, ', ', @line, ': ',  text() , ';&#10;')"/>
+      </xsl:for-each>
+    </xsl:message>
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
-      <xsl:for-each select="/program/metas/meta">
-        <xsl:variable name="meta-head" select="head"/>
-        <xsl:variable name="meta-tail" select="tail"/>
-        <xsl:if test="$meta-head='home' and not(matches($meta-tail, '^(?:http(s)?://)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#\[\]@!\$&amp;''\(\)\*\+,;=.]+$'))">
-          <xsl:element name="error">
-            <xsl:attribute name="check">
-              <xsl:text>incorrect-home</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="line">
-              <xsl:value-of select="@line"/>
-            </xsl:attribute>
-            <xsl:attribute name="severity">
-              <xsl:text>warning</xsl:text>
-            </xsl:attribute>
-            <xsl:text>Wrong format of home url "</xsl:text>
-            <xsl:value-of select="$meta-tail"/>
-            <xsl:text>"</xsl:text>
-          </xsl:element>
-        </xsl:if>
-      </xsl:for-each>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*">

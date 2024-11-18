@@ -141,12 +141,12 @@ public final class VerifyMojo extends SafeMojo {
             this::logErrors,
             new TrClasspath<>(
                 new TrDefault<>(),
-                "/org/eolang/parser/fail-on-errors.xsl",
-                "/org/eolang/parser/fail-on-critical.xsl"
+                "/org/eolang/maven/verify/fail-on-errors.xsl",
+                "/org/eolang/maven/verify/fail-on-critical.xsl"
             ).back()
         );
         if (this.failOnWarning) {
-            opt = new OptTrain(opt, "/org/eolang/parser/fail-on-warnings.xsl");
+            opt = new OptTrain(opt, "/org/eolang/maven/verify/fail-on-warnings.xsl");
         }
         return opt;
     }
