@@ -60,9 +60,9 @@ jobs:
               "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)" \
               "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
             printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module. '
-            printf 'There are %d open issues in [our backlog](https://github.com/objectionary/eo/issues), ' \
-              "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100' | jq length)"
-            printf 'please, help us fix them (take those with the "help wanted" badge first).'
+            printf 'There are [%d issues](https://github.com/objectionary/eo/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) ' \
+              "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
+            printf 'in the backlog, where your help is needed!'
           ) > message.md
       - uses: appleboy/telegram-action@master
         with:
