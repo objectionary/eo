@@ -26,27 +26,29 @@ SOFTWARE.
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="white-list">
     <a>as-phi</a>
-    <a>bool</a>
     <a>bytes</a>
     <a>cage</a>
     <a>cti</a>
+    <a>dataized</a>
     <a>error</a>
-    <a>float</a>
-    <a>goto</a>
-    <a>heap</a>
-    <a>int</a>
-    <a>memory</a>
+    <a>false</a>
+    <a>go</a>
+    <a>i16</a>
+    <a>i32</a>
+    <a>i64</a>
+    <a>malloc</a>
     <a>nan</a>
     <a>negative-infinity</a>
-    <a>nop</a>
+    <a>number</a>
     <a>positive-infinity</a>
-    <a>ram</a>
     <a>rust</a>
     <a>seq</a>
     <a>string</a>
     <a>switch</a>
+    <a>true</a>
     <a>try</a>
     <a>tuple</a>
+    <a>while</a>
   </xsl:variable>
   <xsl:variable name="name" select="//objects/o[1]/@name"/>
   <xsl:template match="/program/errors">
