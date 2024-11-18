@@ -54,12 +54,13 @@ jobs:
             printf 'and %dK [hits-of-code](https://www.yegor256.com/2014/11/14/hits-of-code.html) ' \
               "$(echo "$(hoc .)" / 1000 | bc)"
             printf 'in the [repository](https://github.com/objectionary/eo) on GitHub '
-            printf '(%d commits total). ' \
-              "$(git rev-list --count master)"
-            printf 'Currently, there are %d objects and %d atoms ' \
-              "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)" \
+            printf '(%d commits total); ' \
+              "$(git rev-list --count origin/master)"
+            printf '[%d objects](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/eo/org/eolang) ' \
+              "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)"
+            printf 'and [%d atoms](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/java/EOorg/EOeolang) ' \
               "$(find eo-runtime/src/main/java/EOorg -name 'EO*.java' | wc -l)"
-            printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module. '
+            printf 'in the [eo-runtime](https://github.com/objectionary/eo/tree/master/eo-runtime) module; '
             printf 'There are [%d issues](https://github.com/objectionary/eo/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) ' \
               "$(curl --silent 'https://api.github.com/repos/objectionary/eo/issues?state=open&per_page=100&labels=help%20wanted' | jq length)"
             printf 'in the backlog, where your help is needed!'
