@@ -125,7 +125,9 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
 
     @Override
     public void enterProgram(final EoParser.ProgramContext ctx) {
-        this.dirs.add("program")
+        this.dirs
+            .comment(XeEoListener.INFO)
+            .add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
@@ -136,7 +138,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     DateTimeFormatter.ISO_INSTANT
                 )
             )
-            .comment(XeEoListener.INFO)
             .add("listing").set(new SourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up()
