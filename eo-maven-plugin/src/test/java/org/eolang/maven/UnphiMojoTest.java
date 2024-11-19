@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -144,6 +145,7 @@ final class UnphiMojoTest {
                 )
             ).asString()
         );
+        Logger.info(this, "Parsed phi:\n%s", doc);
         for (final String xpath : (Iterable<String>) map.get("tests")) {
             final List<XML> nodes = doc.nodes(xpath);
             if (nodes.isEmpty()) {
@@ -174,13 +176,15 @@ final class UnphiMojoTest {
         final long saved = temp.resolve(path).toFile().lastModified();
         final FakeMaven maven = new FakeMaven(temp)
             .execute(UnphiMojo.class);
-        maven.foreignTojos().add("name")
-            .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
+        final Path xmir = temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR));
+        Logger.info(this, "Unphied: \n%s", new TextOf(xmir).asString());
+        maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .execute(OptimizeMojo.class)
             .execute(PhiMojo.class)
             .result()
             .get(main);
+        Logger.info(this, "Phied: \n%s", new TextOf(result).asString());
         MatcherAssert.assertThat(
             String.format("%s should have been rewritten after optimization, but it wasn't", main),
             result.toFile().lastModified(),

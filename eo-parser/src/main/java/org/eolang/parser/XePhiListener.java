@@ -186,15 +186,15 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterScoped(final PhiParser.ScopedContext ctx) {
         if (ctx.HOME() != null) {
-            this.objects().prop("base", "Q").leave();
-        } else if (ctx.XI() != null) {
-            this.objects().prop("base", "$").leave();
+            this.objects().prop("base", "Q");
+        } else {
+            this.objects().prop("base", "$");
         }
     }
 
     @Override
     public void exitScoped(final PhiParser.ScopedContext ctx) {
-        // Nothing here
+        this.objects().leave();
     }
 
     @Override
@@ -215,30 +215,23 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterBinding(final PhiParser.BindingContext ctx) {
-        if (ctx.alphaBinding() != null || ctx.emptyBinding() != null) {
-            this.objects().start();
-        }
+        // Nothing here
     }
 
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void exitBinding(final PhiParser.BindingContext ctx) {
-        if (this.objs.size() > this.packages.size()
-            && (ctx.alphaBinding() != null || ctx.emptyBinding() != null)) {
-            this.objects().enter()
-                .prop(this.properties.peek(), this.attributes.pop())
-                .leave();
-        }
-    }
-
-    @Override
-    public void enterAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
         // Nothing here
     }
 
     @Override
-    public void exitAlphaBinding(final PhiParser.AlphaBindingContext ctx) {
-        // Nothing here
+    public void enterTauBinding(final PhiParser.TauBindingContext ctx) {
+        this.enterObjectBinding();
+    }
+
+    @Override
+    public void exitTauBinding(final PhiParser.TauBindingContext ctx) {
+        this.exitObjectBinding();
     }
 
     @Override
@@ -276,12 +269,13 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
 
     @Override
     public void enterEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
-        // Nothing here
+        this.enterObjectBinding();
     }
 
     @Override
     public void exitEmptyBinding(final PhiParser.EmptyBindingContext ctx) {
         this.objects().leave();
+        this.exitObjectBinding();
     }
 
     @Override
@@ -297,14 +291,11 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 );
             }
         } else {
-            this.objects()
-                .start()
-                .prop("data", "bytes")
-                .prop("base", "org.eolang.bytes");
-            if (!"--".equals(ctx.BYTES().getText())) {
+            if ("--".equals(ctx.BYTES().getText())) {
+                this.objects().data(ctx.BYTES().getText());
+            } else {
                 this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
             }
-            this.objects().leave();
         }
     }
 
@@ -329,15 +320,22 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     public void enterApplication(final PhiParser.ApplicationContext ctx) {
         this.properties.push("as");
         this.objects().enter();
-        if (ctx.bindings().binding().size() == 0) {
-            this.objects().prop("copy");
-        }
     }
 
     @Override
     public void exitApplication(final PhiParser.ApplicationContext ctx) {
         this.objects().leave();
         this.properties.pop();
+    }
+
+    @Override
+    public void enterApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+        // Nothing here
+    }
+
+    @Override
+    public void exitApplicationBinding(final PhiParser.ApplicationBindingContext ctx) {
+        // Nothing here
     }
 
     @Override
@@ -412,6 +410,24 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
      */
     private Objects objects() {
         return this.objs.getLast();
+    }
+
+    /**
+     * Enter either tau or empty binding.
+     */
+    private void enterObjectBinding() {
+        this.objects().start();
+    }
+
+    /**
+     * Exit either tau or empty binding.
+     */
+    private void exitObjectBinding() {
+        if (this.objs.size() > this.packages.size()) {
+            this.objects().enter()
+                .prop(this.properties.peek(), this.attributes.pop())
+                .leave();
+        }
     }
 
     /**

@@ -90,7 +90,7 @@ SOFTWARE.
     </xsl:apply-templates>
   </xsl:template>
   <!-- BASED -->
-  <xsl:template match="o[not(@data) and @base]" mode="head">
+  <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
     <xsl:choose>
       <xsl:when test="starts-with(@base,'.')">
         <xsl:value-of select="substring(@base,2)"/>
@@ -106,7 +106,7 @@ SOFTWARE.
     </xsl:choose>
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
-  <xsl:template match="o[not(@data) and not(@base)]" mode="head">
+  <xsl:template match="o[not(@base) and not(eo:has-data(.))]" mode="head">
     <xsl:param name="indent"/>
     <xsl:if test="@name">
       <xsl:value-of select="$comment"/>
@@ -140,35 +140,33 @@ SOFTWARE.
     </xsl:if>
   </xsl:template>
   <!-- DATA -->
-  <xsl:template match="o[@data]" mode="head">
+  <xsl:template match="o[eo:has-data(.)]" mode="head">
+    <xsl:variable name="data" select="normalize-space(string-join(text(),''))"/>
     <xsl:choose>
-      <xsl:when test="@data='string'">
-        <xsl:text>"</xsl:text>
-        <xsl:value-of select="text()"/>
-        <xsl:text>"</xsl:text>
+      <!-- NUMBER -->
+      <xsl:when test="matches($data, '^(0|(-?[1-9][0-9]*))(\.\d+)?$')">
+        <xsl:value-of select="$data"/>
       </xsl:when>
-      <xsl:when test="@data='number'">
-        <xsl:value-of select="text()"/>
-      </xsl:when>
-      <xsl:when test="@data='bytes'">
+      <!-- BYTES -->
+      <xsl:when test="$data='' or matches($data, '^(?:[0-9A-Fa-f]{2}(?:\s|$))+')">
         <xsl:choose>
-          <xsl:when test="empty(text())">
+          <xsl:when test="empty($data)">
             <xsl:text>--</xsl:text>
           </xsl:when>
-          <xsl:when test="string-length(text())=2">
-            <xsl:value-of select="text()"/>
+          <xsl:when test="string-length($data)=2">
+            <xsl:value-of select="$data"/>
             <xsl:text>-</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="replace(text(), ' ', '-')"/>
+            <xsl:value-of select="replace($data, ' ', '-')"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
+      <!-- STRING -->
       <xsl:otherwise>
-        <xsl:message terminate="yes">
-          <xsl:text>Invalid data attribute: </xsl:text>
-          <xsl:value-of select="@data"/>
-        </xsl:message>
+        <xsl:text>"</xsl:text>
+        <xsl:value-of select="$data"/>
+        <xsl:text>"</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

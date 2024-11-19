@@ -137,7 +137,7 @@ public final class StUnhex extends StEnvelope {
      */
     private static String xpath(final String type) {
         return String.format(
-            "(//o[@data='bytes' and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
+            "(//o[not(o) and string-length(normalize-space(text())) > 0 and (@base='bytes' or @base='org.eolang.bytes') and not(empty(text()))]/parent::o[(@base='%s' or @base='org.eolang.%1$s')])[1]",
             type
         );
     }

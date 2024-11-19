@@ -101,16 +101,6 @@ public final class PhSafe implements Phi {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        PhSafe.through(
-            () -> {
-                this.origin.attach(data);
-                return null;
-            }
-        );
-    }
-
-    @Override
     public byte[] delta() {
         return PhSafe.through(this.origin::delta);
     }

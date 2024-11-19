@@ -216,8 +216,8 @@ public final class BinarizeParseTest {
      * @return The resulting map with relatives paths as keys and absolute paths as values.
      * @throws IOException
      */
-    private static
-        Map<String, Path> execParse(final Path temp, final Path... programs) throws IOException {
+    private static Map<String, Path> execParse(final Path temp, final Path... programs)
+        throws IOException {
         final FakeMaven maven;
         final File generated = temp.resolve("target/generated").toFile();
         final File portal = new File("../eo-runtime/src/main/rust/eo");

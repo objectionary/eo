@@ -113,13 +113,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        System.out.printf("%d.attach(%s)...\n", this.hashCode(), Arrays.toString(data));
-        this.origin.attach(data);
-        System.out.printf("%d.attach(%s)!\n", this.hashCode(), Arrays.toString(data));
-    }
-
-    @Override
     public byte[] delta() {
         System.out.printf("%d.delta()...\n", this.hashCode());
         final byte[] data = this.origin.delta();

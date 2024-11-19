@@ -126,16 +126,6 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        throw new IllegalStateException(
-            String.format(
-                "Can't #attach(%s) to package object \"%s\"",
-                Arrays.toString(data), this.pkg
-            )
-        );
-    }
-
-    @Override
     public byte[] delta() {
         throw new IllegalStateException(
             String.format(

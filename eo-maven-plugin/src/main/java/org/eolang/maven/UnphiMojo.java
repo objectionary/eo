@@ -69,6 +69,7 @@ public final class UnphiMojo extends SafeMojo {
     private static final Train<Shift> TRANSFORMATIONS = new TrStepped(
         new TrClasspath<>(
             "/org/eolang/maven/unphi/wrap-bytes.xsl",
+            "/org/eolang/maven/unphi/normalize-bytes.xsl",
             "/org/eolang/parser/wrap-method-calls.xsl",
             "/org/eolang/maven/unphi/atoms-with-bound-attrs.xsl"
         ).back()
@@ -109,6 +110,7 @@ public final class UnphiMojo extends SafeMojo {
         final List<String> errors = new ListOf<>();
         final Home home = new HmBase(this.unphiOutputDir);
         final Iterable<Directive> metas = new UnphiMojo.Metas(this.unphiMetas);
+        final Xsline xsline = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS));
         final int count = new SumOf(
             new Threads<>(
                 Runtime.getRuntime().availableProcessors(),
@@ -121,14 +123,13 @@ public final class UnphiMojo extends SafeMojo {
                                 String.format(".%s", AssembleMojo.XMIR)
                             )
                         );
-                        final XML result = new Xsline(this.measured(UnphiMojo.TRANSFORMATIONS))
-                            .pass(
-                                new PhiSyntax(
-                                    phi.getFileName().toString().replace(".phi", ""),
-                                    new TextOf(phi),
-                                    metas
-                                ).parsed()
-                            );
+                        final XML result = xsline.pass(
+                            new PhiSyntax(
+                                phi.getFileName().toString().replace(".phi", ""),
+                                new TextOf(phi),
+                                metas
+                            ).parsed()
+                        );
                         home.save(result.toString(), xmir);
                         Logger.info(
                             this,

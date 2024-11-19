@@ -105,10 +105,6 @@ public interface Phi extends Term, Data {
             return this.pkg.forma();
         }
 
-        public void attach(final byte[] data) {
-            this.pkg.attach(data);
-        }
-
         @Override
         public byte[] delta() {
             throw new IllegalStateException(

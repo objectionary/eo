@@ -22,25 +22,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="data" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="normalize-bytes" version="2.0">
+  <!--
+  Convert such XMIR:
+    <o base='any'>
+      <o abstract="" as="0">01 2A</o>
+    </o>
+  to this:
+    <o base='any'>
+      01 2A
+    </o>
+  -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[eo:has-data(.)]">
-    <xsl:copy>
-      <xsl:apply-templates select="@*"/>
-      <xsl:attribute name="primitive"/>
-      <xsl:element name="value">
-        <xsl:text>new byte[] {</xsl:text>
-        <xsl:for-each select="tokenize(text(), ' ')">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>, </xsl:text>
-          </xsl:if>
-          <xsl:text>(byte) 0x</xsl:text>
-          <xsl:value-of select="."/>
-        </xsl:for-each>
-        <xsl:text>}</xsl:text>
-      </xsl:element>
-    </xsl:copy>
+  <xsl:template match="o[@abstract and @as='0' and eo:has-data(.)]">
+    <xsl:value-of select="text()"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

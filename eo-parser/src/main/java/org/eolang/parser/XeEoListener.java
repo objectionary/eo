@@ -1197,16 +1197,13 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
     @Override
     @SuppressWarnings("PMD.ConfusingTernary")
     public void enterData(final EoParser.DataContext ctx) {
-        final String type;
         final String data;
         final String base;
         final String text = ctx.getText();
         if (ctx.BYTES() != null) {
-            type = "bytes";
             base = "bytes";
-            data = text.replaceAll("\\s+", "").replace("-", " ").trim();
+            data = text.replaceAll("\\s+", "").trim();
         } else if (ctx.FLOAT() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1215,7 +1212,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.INT() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1224,7 +1220,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.HEX() != null) {
-            type = "bytes";
             base = "number";
             data = XeEoListener.bytesToHex(
                 ByteBuffer
@@ -1233,7 +1228,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                     .array()
             );
         } else if (ctx.STRING() != null) {
-            type = "bytes";
             base = "string";
             data = XeEoListener.bytesToHex(
                 StringEscapeUtils.unescapeJava(
@@ -1241,7 +1235,6 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         } else if (ctx.TEXT() != null) {
-            type = "bytes";
             base = "string";
             final int indent = ctx.getStart().getCharPositionInLine();
             data = XeEoListener.bytesToHex(
@@ -1259,9 +1252,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
                 ctx.getStart().getLine()
             );
         }
-        this.objects.prop("data", type);
-        this.objects.prop("base", base);
-        this.objects.data(data);
+        this.objects.prop("base", base).data(data);
     }
 
     @Override
@@ -1431,7 +1422,7 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Hexadecimal value as string.
      */
     private static String bytesToHex(final byte... bytes) {
-        final StringJoiner out = new StringJoiner(" ");
+        final StringJoiner out = new StringJoiner("-");
         for (final byte bty : bytes) {
             out.add(String.format("%02X", bty));
         }
