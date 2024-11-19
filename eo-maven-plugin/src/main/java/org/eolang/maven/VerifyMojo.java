@@ -165,7 +165,11 @@ public final class VerifyMojo extends SafeMojo {
             if (!line.isEmpty()) {
                 message.append(':').append(Integer.parseInt(line.get(0)));
             }
-            message.append(' ').append(error.xpath("text()").get(0));
+            message.append(' ')
+                .append(error.xpath("text()").get(0))
+                .append(" (")
+                .append(error.xpath("@check").get(0))
+                .append(')');
             final String severity = error.xpath("@severity").get(0);
             switch (severity) {
                 case "warning":
