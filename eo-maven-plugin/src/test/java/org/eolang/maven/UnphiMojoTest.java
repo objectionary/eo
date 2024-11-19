@@ -178,6 +178,8 @@ final class UnphiMojoTest {
             .withXmir(temp.resolve(String.format("target/%s/main.xmir", ParseMojo.DIR)));
         final Path result = maven
             .execute(OptimizeMojo.class)
+            .with("phiFailOnCritical", false)
+            .with("phiFailOnError", false)
             .execute(PhiMojo.class)
             .result()
             .get(main);

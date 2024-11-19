@@ -64,7 +64,8 @@ public final class TrStepped extends TrEnvelope {
                         shift,
                         new StLambda(
                             shift::uid,
-                            (pos, xml) -> TrStepped.EACH.with("step", pos)
+                            (pos, xml) -> TrStepped.EACH
+                                .with("step", pos)
                                 .with("sheet", shift.uid())
                                 .transform(xml)
                         )

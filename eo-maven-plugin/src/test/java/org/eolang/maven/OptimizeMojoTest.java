@@ -23,6 +23,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -67,7 +68,7 @@ final class OptimizeMojoTest {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "Test.\n[] > foo\n".getBytes()
+                    "# Test.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()
@@ -75,12 +76,12 @@ final class OptimizeMojoTest {
                     .execution()
                     .goals("register", "parse", "optimize");
                 f.exec("compile");
-                MatcherAssert.assertThat(
-                    "the .xmir file is generated",
-                    f.files().file("target/eo/2-optimize/foo.xmir").exists(),
-                    Matchers.is(true)
-                );
             }
+        );
+        MatcherAssert.assertThat(
+            "the .xmir file contains lint defects",
+            new XMLDocument(temp.resolve("target/eo/2-optimize/foo.xmir")),
+            XhtmlMatchers.hasXPaths("/program/errors/error")
         );
     }
 
@@ -219,13 +220,6 @@ final class OptimizeMojoTest {
             .with("trackOptimizationSteps", true)
             .execute(new FakeMaven.Optimize())
             .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res,
-            Matchers.hasKey(
-                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
-            )
-        );
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             res,

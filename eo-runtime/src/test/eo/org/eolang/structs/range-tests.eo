@@ -73,6 +73,7 @@
       [num] > y
         num > @
         [] > next
+          42 > nothing
       y 10 > @
     1
   rng.is-empty > @
