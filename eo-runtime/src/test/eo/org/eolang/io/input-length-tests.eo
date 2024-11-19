@@ -44,8 +44,11 @@
     malloc.of
       10
       [m]
-        input-length > @
-          tee-input
-            bytes-as-input 01-02-03-04-05-06-07-08-09-10
-            malloc-as-output m
+        seq > @
+          *
+            input-length
+              tee-input
+                bytes-as-input 01-02-03-04-05-06-07-08-09-10
+                malloc-as-output m
+            m
     01-02-03-04-05-06-07-08-09-10

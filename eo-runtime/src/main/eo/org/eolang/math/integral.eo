@@ -53,19 +53,22 @@
           [left] >>
             ^.^.b > right
             ((right.minus left).div ^.^.n).as-number > step
-            while > @
-              [i] >>
-                if. > @
-                  (^.left.as-number.plus ^.step).lt ^.right
-                  seq
-                    *
-                      ^.^.sum.put
-                        ^.^.sum.as-number.plus
-                          ^.^.^.subsection
-                            ^.left.as-number
+            seq > @
+              *
+                while
+                  [i] >>
+                    if. > @
+                      (^.left.as-number.plus ^.step).lt ^.right
+                      seq
+                        *
+                          ^.^.sum.put
+                            ^.^.sum.as-number.plus
+                              ^.^.^.subsection
+                                ^.left.as-number
+                                ^.left.as-number.plus ^.step
+                          ^.left.put
                             ^.left.as-number.plus ^.step
-                      ^.left.put
-                        ^.left.as-number.plus ^.step
-                      true
-                  false
-              true > [i]
+                          true
+                      false
+                  true > [i]
+                sum
