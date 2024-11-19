@@ -26,55 +26,55 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-two-bools
   eq. > @
     true
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > true-as-bool
   true.as-bool > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-two-different-types
   not. > @
     eq.
       true
       42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-bool-to-bytes
   and. > @
     true.eq 01-
     false.eq 00-
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-bool-to-string
   and. > @
     true.eq "\001"
     false.eq "\000"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-bool-to-bytes-reverse
   and. > @
     01-.as-bytes.eq true
     00-.as-bytes.eq false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > true-not-is-false
   eq. > @
     true.not
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > true-and-false-is-false
   not. > @
     and.
       true
       false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > forks-on-true-condition
   eq. > @
     if.
@@ -83,7 +83,7 @@
       42
     123
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > forks-on-false-condition
   eq. > @
     if.

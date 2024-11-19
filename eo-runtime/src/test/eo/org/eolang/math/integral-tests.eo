@@ -27,7 +27,7 @@
 +package org.eolang.math
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > calculates-lineal-integral
   as-number. > lineal
     integral
@@ -54,7 +54,7 @@
         value
         value.neg
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > calculates-quadratic-integral
   as-number. > quadratic
     integral
@@ -81,7 +81,7 @@
         value
         value.neg
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > calculates-cube-integral
   as-number. > cube
     integral

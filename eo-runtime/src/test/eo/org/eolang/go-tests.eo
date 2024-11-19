@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > goto-jumps-backwards
   eq. > @
     malloc.of
@@ -47,7 +47,7 @@
             true
     10
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > goto-jumps-forward
   [x] > div
     malloc.for > @
@@ -70,7 +70,7 @@
       div 0
       0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-from-method-body
   [a b] > max
     go.to > @
@@ -86,7 +86,7 @@
     max 7 42
     42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > nested-goto
   eq. > @
     go.to

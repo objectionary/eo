@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > dataized-does-not-do-recalculation
   eq. > @
     malloc.for
@@ -42,7 +42,7 @@
             cached.as-bool
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > dataizes-as-bytes-behaves-as-exclamationed
   # Func.
   [] > func

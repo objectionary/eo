@@ -26,125 +26,125 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-has-valid-bytes
   eq. > @
     42.as-i64.as-bytes
     00-00-00-00-00-00-00-2A
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-as-bytes-is-not-equal-to-number-bytes
   not. > @
     eq.
       i64 234.as-bytes
       234.as-i64.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-to-i32-and-back
   eq. > @
     234.as-i64
     234.as-i64.as-i32.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-i64-to-i32-and-back
   eq. > @
     -234.as-i64
     -234.as-i64.as-i32.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 3147483647.as-i64.as-i32 > [] > throws-on-converting-to-i32-if-out-of-bounds
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-less-true
   lt. > @
     10.as-i64
     50.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-less-equal
   not. > @
     lt.
       10.as-i64
       10.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-less-false
   not. > @
     lt.
       10.as-i64
       -5.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-greater-true
   gt. > @
     -200.as-i64
     -1000.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-greater-false
   not. > @
     gt.
       0.as-i64
       100.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-greater-equal
   not. > @
     gt.
       0.as-i64
       0.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-lte-true
   lte. > @
     -200.as-i64
     -100.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-lte-equal
   lte. > @
     50.as-i64
     50.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-lte-false
   not. > @
     lte.
       0.as-i64
       -10.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-gte-true
   gte. > @
     -1000.as-i64
     -1100.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-gte-equal
   gte. > @
     113.as-i64
     113.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-gte-false
   not. > @
     gte.
       0.as-i64
       10.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-zero-eq-to-i64-zero
   eq. > @
     0.as-i64
     0.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-eq-true
   eq. > @
     123.as-i64
     123.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-eq-false
   not. > @
     eq.
@@ -163,7 +163,7 @@
     1.as-i64.minus 1.as-i64
     0.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 2.as-i64.div 0.as-i64 > [] > throws-on-division-i64-by-i64-zero
 
 # Checks that division by one returns the dividend.
@@ -179,13 +179,13 @@
     13.as-i64.div -5.as-i64
     -2.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-div-less-than-i64-one
   lt. > @
     1.as-i64.div 5.as-i64
     1.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > i64-multiply-by-zero
   eq. > @
     1000.as-i64.times 0.as-i64

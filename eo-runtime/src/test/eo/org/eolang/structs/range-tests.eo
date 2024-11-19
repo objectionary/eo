@@ -27,7 +27,7 @@
 +package org.eolang.structs
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > simple-range-from-one-to-ten
   range > rng
     []
@@ -40,7 +40,7 @@
     rng
     * 1 2 3 4 5 6 7 8 9
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > simple-range-with-floats-from-one-to-five
   range > rng
     []
@@ -53,7 +53,7 @@
     rng
     * 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > range-with-out-of-bounds
   range > rng
     []
@@ -66,7 +66,7 @@
     rng
     * 1 6
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > range-with-wrong-items-is-an-empty-array
   range > rng
     []

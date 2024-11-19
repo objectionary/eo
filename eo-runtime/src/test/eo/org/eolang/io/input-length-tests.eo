@@ -30,7 +30,7 @@
 +package org.eolang.io
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > reads-all-bytes-and-returns-length
   eq. > @
     input-length
@@ -38,7 +38,7 @@
         01-02-03-04-05-06-07-08-09-10
     10
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > copies-all-bytes-to-output-and-returns-length
   eq. > @
     malloc.of

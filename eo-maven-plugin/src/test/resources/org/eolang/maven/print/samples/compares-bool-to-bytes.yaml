@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 origin: |
-  # This is a unit-test for the corresponding EO object.
+  # Test.
   [] > compares-bool-to-bytes
     and. > @
       true.eq 01-

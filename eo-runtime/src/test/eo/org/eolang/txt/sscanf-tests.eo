@@ -29,32 +29,32 @@
 +package org.eolang.txt
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-string
   eq. > @
     "hello"
     tail.
       sscanf "%s" "hello"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-int
   eq. > @
     33
     tail.
       sscanf "%d" "33"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-float
   eq. > @
     0.24
     tail.
       sscanf "%f" "0.24"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-sscanf-with-wrong-format
   sscanf "%l" "error" > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-string-int-float
   eq. > @
     list
@@ -63,35 +63,35 @@
         "hello 33 0.24"
     * "hello" 33 0.24
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-string-with-ending
   eq. > @
     "hello"
     tail.
       sscanf "%s!" "hello!"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-complex-string
   eq. > @
     "test"
     tail.
       sscanf "some%sstring" "someteststring"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-complex-int
   eq. > @
     734987259
     tail.
       sscanf "!%d!" "!734987259!"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-complex-float
   eq. > @
     1991.01
     tail.
       sscanf "this will be=%f" "this will be=1991.01"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-with-sprintf
   eq. > @
     list
@@ -102,7 +102,7 @@
           * "This" 8
     * "This" 8
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sscanf-complex-case
   eq. > @
     list

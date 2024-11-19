@@ -29,119 +29,119 @@
 +package org.eolang.txt
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-slices-the-origin-string
   eq. > @
     (text "Hello, world!").slice 7 5
     "world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > trimmed-left-empty-text
   eq. > @
     (text "").trimmed-left
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-left-one-space
   eq. > @
     (text " s").trimmed-left
     "s"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-left-many-spaces
   eq. > @
     (text "     some").trimmed-left
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-left-only-spaces
   eq. > @
     (text "     ").trimmed-left
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > trimmed-right-empty-text
   eq. > @
     (text "").trimmed-right
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-right-one-space
   eq. > @
     (text "s ").trimmed-right
     "s"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-right-many-spaces
   eq. > @
     (text "some     ").trimmed-right
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-right-only-spaces
   eq. > @
     (text "     ").trimmed-right
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-one-space-left
   eq. > @
     (text " some").trimmed
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-one-space-right
   eq. > @
     (text "some ").trimmed
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-one-space-both
   eq. > @
     (text " some ").trimmed
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-many-spaces
   eq. > @
     (text "    some     ").trimmed
     "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-empty
   eq. > @
     (text "").trimmed
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-trimmed-only-spaces
   eq. > @
     (text "        ").trimmed
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-first-char
   eq. > @
     "s"
     (text "some").at 0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-third-char
   eq. > @
     "m"
     (text "some").at 2
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-char-at-negative-index
   eq. > @
     "m"
     (text "some").at -2
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-text-at-index-more-than-length
   (text "some").at 10 > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > chains-with-other-strings
   eq. > @
     "Hello, world!"
@@ -152,7 +152,7 @@
         "world"
         "!"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-same-text-on-chaining-with-no-strings
   eq. > @
     "Some"
@@ -160,132 +160,132 @@
       text "Some"
       *
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > joined-no-strings
   eq. > @
     ""
     (text "-").joined *
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > joined-one-string
   eq. > @
     "some"
     (text "-").joined
       * "some"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > joined-many-strings
   eq. > @
     "hello-world-dear-friend"
     (text "-").joined
       * "hello" "world" "dear" "friend"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-text-repeating-less-than-zero-times
   (text "").repeated -1 > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-repeated-zero-times-is-empty
   eq. > @
     ""
     (text "some").repeated 0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-repeated-five-times
   eq. > @
     "heyheyheyheyhey"
     (text "hey").repeated 5
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > index-of-non-existed-substring-with-more-length
   eq. > @
     -1
     (text "Hello").index-of "Somebody"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > index-of-non-existed-substring-with-same-length
   eq. > @
     -1
     (text "Hello").index-of "world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-valid-index-of-substring
   eq. > @
     3
     (text "Hello world").index-of "lo wo"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-valid-index-of-substring-in-the-end
   eq. > @
     6
     (text "Hello world").index-of "world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > starts-with-substring
   (text "Hello, world").starts-with "Hello" > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > does-not-start-with-substring
   not. > @
     (text "Hello, world").starts-with "world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > ends-with-substring
   (text "Hello world!").ends-with "world!" > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > does-not-end-with-substring
   not. > @
     (text "Hello world!").ends-with "Hello"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-contains-substring
   (text "Hello, world!").contains "o, wo" > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-does-not-contain-substring
   not. > @
     (text "Hello, world!").contains "Hey"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > finds-last-index-of-substring
   eq. > @
     5
     (text "Hey, Hey, Hey").last-index-of "Hey,"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > finds-last-index-of-the-same-string
   eq. > @
     0
     (text "Hello").last-index-of "Hello"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > last-index-of-non-existed-substring
   eq. > @
     -1
     (text "Hello, world").last-index-of "somebody"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > splits-text-by-dash
   eq. > @
     list
       (text "a-b-c").split "-"
     * "a" "b" "c"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > splits-text-with-empty-strings
   eq. > @
     list
       (text "-a-b-").split "-"
     * "" "a" "b" ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-text-to-upper-case
   eq. > @
     "HELLO"
     (text "hello").up-cased
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > splits-and-returns-strings
   eq. > @
     length.
@@ -296,99 +296,99 @@
         1
     6
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-text-with-upper-letters-to-upper-case
   eq. > @
     "HELLO"
     (text "HeLlO").up-cased
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-text-to-lower-case
   eq. > @
     "hello"
     (text "HELLO").low-cased
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-text-with-low-letters-to-lower-case
   eq. > @
     "hello"
     (text "HeLlO").low-cased
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-text-to-number
   eq. > @
     5
     (text "5").as-number
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-converting-text-to-number
   (text "Hello").as-number > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > converts-float-text-to-number
   eq. > @
     3.14
     (text "3.14").as-number
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-text-is-ascii
   is-ascii. > @
     text
       "H311oW"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-emoji-is-not-ascii
   not. > @
     is-ascii.
       text
         "🌵"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-string-of-numbers-is-ascii
   is-ascii. > @
     text
       "123"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-simple-text-is-alphanumeric
   is-alphanumeric. > @
     text
       "eEo"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-text-with-number-is-alphanumeric
   is-alphanumeric. > @
     text
       "ab3d"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-text-with-dashes-is-not-alphanumeric
   not. > @
     is-alphanumeric.
       text
         "-w-"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-simple-text-is-alpha
   is-alpha. > @
     text
       "eEo"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-text-with-number-is-not-alpha
   not. > @
     is-alpha.
       text
         "ab3d"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > checks-if-text-with-dashes-is-not-alpha
   not. > @
     is-alpha.
       text
         "-w-"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > does-not-replaces-if-regex-not-found
   text
     "Hello, world"
@@ -399,7 +399,7 @@
   .eq > @
     "Hello, world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > replaces-digits-with-string
   text
     "Hell0, w0rld"
@@ -410,7 +410,7 @@
   .eq > @
     "Hello, world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > replaces-slashes-to-windows-separator
   text
     "C:\\Windows/foo\\bar/hello.txt"
@@ -421,7 +421,7 @@
   .eq > @
     "C:\\Windows\\foo\\bar\\hello.txt"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > replaces-windows-path-with-slash
   text
     "C:\\Windows\\Users\\AppLocal\\shrek"
@@ -432,7 +432,7 @@
   .eq > @
     "C/Windows/Users/AppLocal/shrek"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sanitizes-windows-path-with-regex
   text
     "foo\\bar<:>?*\"|baz\\asdf"

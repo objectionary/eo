@@ -68,7 +68,7 @@ final class OptimizeMojoTest {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "# This is a unit-test for the corresponding EO object.\n[] > foo\n".getBytes()
+                    "# Test.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()

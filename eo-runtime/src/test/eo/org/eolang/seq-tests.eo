@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-float-less
   malloc.of > @
     1
@@ -42,7 +42,7 @@
                   m.as-number
               1.1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-float-greater
   malloc.of > @
     1
@@ -58,7 +58,7 @@
                   m.as-number
               0.9
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-int-less
   malloc.of > @
     1
@@ -74,7 +74,7 @@
                   m.as-number
               2
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-int-less-or-equal
   malloc.of > @
     1
@@ -139,7 +139,7 @@
         true
         true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-int-equal-to-test
   malloc.of > @
     1
@@ -156,7 +156,7 @@
                   m.as-number
               1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-single-dataization-int-equal-to-cache-problem-test
   malloc.of > @
     1
@@ -175,7 +175,7 @@
                   m
               1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-calculates-and-returns
   eq. > @
     1
@@ -184,7 +184,7 @@
         0
         1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > seq-calculates-and-returns-object
   eq. > @
     "Hello!"

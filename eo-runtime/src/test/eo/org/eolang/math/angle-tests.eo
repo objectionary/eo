@@ -28,37 +28,37 @@
 +package org.eolang.math
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sin-zero
   eq. > @
     (angle 0).sin
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sin-pi-div-2
   eq. > @
     (angle (pi.div 2)).sin
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > sin-pi-floored
   eq. > @
     (angle pi).sin.floor
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > cos-zero
   eq. > @
     (angle 0).cos
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > cos-pi-div-2-floored
   eq. > @
     (angle (pi.div 2)).cos.floor
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > cos-pi
   eq. > @
     (angle pi).cos

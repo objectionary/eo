@@ -27,55 +27,55 @@
 +package org.eolang.math
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 (numbers *).max > [] > throws-on-taking-max-from-empty-sequence-of-numbers
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 (numbers *).min > [] > throws-on-taking-min-from-empty-sequence-of-numbers
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > max-of-one-item-array
   eq. > @
     (numbers (* 42)).max
     42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > min-of-one-item-array
   eq. > @
     (numbers (* 42)).min
     42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > max-of-array-is-first
   eq. > @
     (numbers (* 25 12 -2)).max
     25
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > max-of-array-is-in-the-center
   eq. > @
     (numbers (* 12 25 -2)).max
     25
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > max-of-array-is-last
   eq. > @
     (numbers (* 12 -2 25)).max
     25
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > min-of-array-is-first
   eq. > @
     (numbers (* -2 25 12)).min
     -2
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > min-of-array-is-in-the-center
   eq. > @
     (numbers (* 12 -2 25)).min
     -2
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > min-of-array-is-last
   eq. > @
     (numbers (* 12 25 -2)).min

@@ -26,64 +26,64 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > calculates-length-of-spaces-only
   eq. > @
     " ".length
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > turns-string-into-bytes
   eq. > @
     "€ друг".as-bytes
     E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > bytes-equal-to-string
   eq. > @
     D0-B4-D1-80-D1-83-D0-B3
     "друг"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > string-equals-to-bytes
   eq. > @
     "друг"
     D0-B4-D1-80-D1-83-D0-B3
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > reads-the-length
   eq. > @
     "Hello, друг!".length
     12
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-two-different-types
   not. > @
     eq.
       "Hello"
       42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-string-with-nan
   not. > @
     eq.
       nan
       "друг"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-string-with-positive-infinity
   eq. > @
     positive-infinity.eq "друг"
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-string-with-negative-infinity
   not. > @
     eq.
       negative-infinity
       "друг"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-block-one-line
   eq. > @
     """
@@ -91,7 +91,7 @@
     """
     "Abc"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-block-tree-lines
   eq. > @
     """
@@ -101,7 +101,7 @@
     """.as-bytes
     65-0A-65-0A-65
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > text-block-with-margin
   eq. > @
     """
@@ -111,20 +111,20 @@
     """.as-bytes
     7A-0A-20-20-79-0A-20-78
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-two-different-strings
   not. > @
     eq.
       "Hello"
       "Good bye"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > supports-escape-sequences
   eq. > @
     "Hello, \u0434\u0440\u0443\u0433!\n"
     "Hello, друг!\n"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > supports-escape-sequences-in-text
   eq. > @
     """
@@ -132,7 +132,7 @@
     """
     "Hello, друг!\n"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > preserves-indentation-in-text
   eq. > @
     """
@@ -142,7 +142,7 @@
     """
     "a\n b\n  c"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > compares-two-strings
   eq. > @
     eq.
@@ -150,55 +150,55 @@
       "x"
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > one-symbol-string-compares
   eq. > @
     "Ф"
     "Ф"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > supports-escape-sequences-line-break
   eq. > @
     "\n"
     "\012"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > supports-escape-sequences-unicode
   eq. > @
     "\u0424"
     "Ф"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-from-start
   eq. > @
     "hello".slice 0 1
     "h"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-in-the-middle
   eq. > @
     "hello".slice 2 3
     "llo"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-from-the-end
   eq. > @
     "hello".slice 4 1
     "o"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-empty-string
   eq. > @
     "".slice 0 0
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > no-slice-string
   eq. > @
     "no slice".slice 0 0
     ""
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-escape-sequences-line-break
   eq. > @
     "\n".slice
@@ -206,7 +206,7 @@
       "\n".length
     "\012"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-escape-sequences-unicode
   eq. > @
     "\u0424".slice
@@ -214,7 +214,7 @@
       "\u0424".length
     "Ф"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-foreign-literals
   eq. > @
     "привет".slice
@@ -222,7 +222,7 @@
       1
     "п"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > slice-foreign-literals-2
   eq. > @
     "hello, 大家!".slice
@@ -230,21 +230,21 @@
       1
     "大"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-slicing-start-below-zero
   slice. > @
     "some string"
     -1
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-slicing-end-below-start
   slice. > @
     "some string"
     2
     -1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-slicing-end-greater-actual
   slice. > @
     "some string"

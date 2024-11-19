@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > takes-part-of-bytes
   eq. > @
     slice.
@@ -35,7 +35,7 @@
       3
     1F-EE-B5
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > size-of-part-is-correct
   eq. > @
     size.
@@ -45,42 +45,42 @@
         3
     3
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > counts-size-of-bytes
   eq. > @
     size.
       F1-20-5F-EC-B5-90-32
     7
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > turns-bytes-into-a-string
   eq. > @
     as-string.
       E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
     "你好, друг!"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-zero
   not. > @
     eq.
       0.as-bytes.left 1
       -1.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-with-zero
   not. > @
     eq.
       2.as-bytes.left 0
       -3.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-with-odd-neg
   not. > @
     eq.
       -17.as-bytes.left 1
       33.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-with-minus-one
   eq. > @
     eq.
@@ -88,56 +88,56 @@
       7.as-bytes
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (-18.left 2).eq 71.not
 [] > left-with-even-neg
   eq. > @
     FF-FF-FF-FF-FF-FF-FF-EE.left 2
     00-00-00-00-00-00-00-47.not
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-with-even-plus
   not. > @
     eq.
       4.as-bytes.left 3
       -33.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > left-with-odd-plus
   not. > @
     eq.
       5.as-bytes.left 3
       -41.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-zero
   not. > @
     eq.
       0.as-bytes.right 2
       -1.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-odd-neg
   not. > @
     eq.
       -37.as-bytes.right 3
       4.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-minus-one
   not. > @
     eq.
       -1.as-bytes.right 4
       0.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-even-neg
   not. > @
     eq.
       -38.as-bytes.right 1
       18.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-even-plus
   eq. > @
     eq.
@@ -145,14 +145,14 @@
       -10.as-bytes
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > right-with-odd-plus
   not. > @
     eq.
       37.as-bytes.right 3
       -5.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > and-with-zero
   not. > @
     eq.
@@ -161,14 +161,14 @@
         32.as-bytes
       -1.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > and-with-two-neg
   not. > @
     eq.
       -6.as-bytes.and -4.as-bytes
       7.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > and-with-two-plus
   not. > @
     eq.
@@ -177,91 +177,91 @@
         10.as-bytes
       -1.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > and-with-one-neg-one-plus
   not. > @
     eq.
       -7.as-bytes.and 7.as-bytes
       -2.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > or-with-zero
   not. > @
     eq.
       -11.as-bytes.or 0.as-bytes
       10.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > or-with-two-neg
   not. > @
     eq.
       -27.as-bytes.or -13.as-bytes
       8.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > or-with-two-plus
   not. > @
     eq.
       5.as-bytes.or 14.as-bytes
       -16.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > or-with-one-neg-one-plus
   not. > @
     eq.
       -7.as-bytes.or 23.as-bytes
       0.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > xor-with-zero
   not. > @
     eq.
       0.as-bytes.xor 29.as-bytes
       -30.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > xor-with-two-neg
   not. > @
     eq.
       -1.as-bytes.xor -123.as-bytes
       -123.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > xor-with-two-plus
   not. > @
     eq.
       53.as-bytes.xor 24.as-bytes
       -46.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > xor-with-one-neg-one-plus
   not. > @
     eq.
       -36.as-bytes.xor 43.as-bytes
       8.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > not-with-zero
   not. > @
     eq.
       0.as-bytes
       0.as-bytes.not
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > not-with-neg
   not. > @
     eq.
       -1.as-bytes
       -1.as-bytes.not
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > not-with-plus
   not. > @
     eq.
       53.as-bytes
       53.as-bytes.not
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > conjunction-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
@@ -269,7 +269,7 @@
     a.and b
     02-23-C0-05-5E-70-10
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > written-in-several-lines
   eq. > @
     size.
@@ -277,7 +277,7 @@
       BE-BE
     4
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > bitwise-works
   eq. > @
     as-number.
@@ -286,14 +286,14 @@
         1.as-bytes
     1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > convertible-to-bool
   not. > @
     eq.
       01-.as-bool
       00-.as-bool
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (-127.or 127).eq -1
 [] > bitwise-works-negative
   eq. > @
@@ -303,7 +303,7 @@
         00-00-00-00-00-00-00-7F.as-bytes
     FF-FF-FF-FF-FF-FF-FF-FF
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concatenation-of-bytes
   02-EF-D4-05-5E-78-3A > a
   12-33-C1-B5-5E-71-55 > b
@@ -311,7 +311,7 @@
     a.concat b
     02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concat-bools-as-bytes
   true.as-bytes > b1
   false.as-bytes > b2
@@ -321,7 +321,7 @@
       b2
     01-00
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concat-with-empty
   eq. > @
     concat.
@@ -329,7 +329,7 @@
       --
     05-5E-78
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concat-empty-with
   eq. > @
     concat.
@@ -337,7 +337,7 @@
       05-5E-78
     05-5E-78
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concat-empty
   eq. > @
     concat.
@@ -345,7 +345,7 @@
       --
     --
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > concat-strings
   concat. > s-bytes
     "hello ".as-bytes
@@ -355,95 +355,95 @@
       s-bytes
     "hello world"
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (2397719729.xor 4294967295).eq 1897247566
 [] > xor-works
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor 00-00-00-00-FF-FF-FF-FF
     00-00-00-00-71-15-B3-4E
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > one-xor-one-as-number
   eq. > @
     (1.as-bytes.xor 1.as-bytes).as-number
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (2397719729.or -4294967296).eq -1897247567
 [] > or-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (2397719729.and -4294967296).eq 0
 [] > and-neg-bytes-as-number-with-leading-zeroes
   eq. > @
     (00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (2397719729.xor -4294967296).eq -1897247567
 [] > xor-neg-bytes-with-leading-zeroes
   eq. > @
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-8E-EA-4C-B1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (4294967295.or -4294967296).eq -1
 [] > or-neg-bytes-without-leading-zeroes
   eq. > @
     00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
     FF-FF-FF-FF-FF-FF-FF-FF
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (4294967295.and -4294967296).eq 0
 [] > and-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00).as-number
     0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (4294967295.xor -4294967296).eq -1
 [] > xor-neg-bytes-as-number-without-leading-zeroes
   eq. > @
     (00-00-00-00-FF-FF-FF-FF.xor FF-FF-FF-FF-00-00-00-00).as-number
     FF-FF-FF-FF-FF-FF-FF-FF
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > or-neg-bytes-as-number-with-zero
   eq. > @
     (-4294967296.as-bytes.or 0.as-bytes).as-number
     -4294967296
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 # (-4294967296L.or 1).eq -4294967295L
 [] > or-neg-bytes-with-one
   eq. > @
     FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
     FF-FF-FF-FF-00-00-00-01
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-bytes-of-wrong-size-as-number
   01-01-01-01.as-number > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > throws-on-bytes-of-wrong-size-as-i64
   01-01-01-01.as-i64 > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > bytes-converts-to-i64
   eq. > @
     00-00-00-00-00-00-00-2A.as-i64
     42.as-i64
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > bytes-converts-to-i64-and-back
   eq. > @
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > bytes-as-i64-as-bytes-not-eq-to-number-as-bytes
   not. > @
     eq.

@@ -32,34 +32,34 @@
     negative-infinity
     -1.0.div 0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-eq-negative-infinity
   eq. > @
     negative-infinity
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-eq-positive-infinity
   not. > @
     eq.
       negative-infinity
       positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-eq-nan
   not. > @
     eq.
       negative-infinity
       nan
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-eq-int
   not. > @
     eq.
       negative-infinity
       42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-eq-float
   not. > @
     eq.
@@ -72,25 +72,25 @@
     negative-infinity.lt negative-infinity
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lt-positive-infinity
   eq. > @
     negative-infinity.lt positive-infinity
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-lt-nan
   eq. > @
     negative-infinity.lt nan
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lt-int
   lt. > @
     negative-infinity
     42
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lt-float
   lt. > @
     negative-infinity
@@ -102,25 +102,25 @@
     negative-infinity.lte negative-infinity
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lte-positive-infinity
   eq. > @
     negative-infinity.lte positive-infinity
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-lte-nan
   eq. > @
     negative-infinity.lte nan
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lte-int
   eq. > @
     negative-infinity.lte 42
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-lte-float
   eq. > @
     negative-infinity.lte 42.5
@@ -133,25 +133,25 @@
       negative-infinity
       negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gt-positive-infinity
   eq. > @
     negative-infinity.gt positive-infinity
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gt-nan
   eq. > @
     negative-infinity.gt nan
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gt-int
   eq. > @
     negative-infinity.gt 42
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gt-float
   eq. > @
     negative-infinity.gt 42.5
@@ -163,282 +163,282 @@
     negative-infinity.gte negative-infinity
     true
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gte-positive-infinity
   eq. > @
     negative-infinity.gte positive-infinity
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gte-nan
   eq. > @
     negative-infinity.gte nan
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gte-int
   eq. > @
     negative-infinity.gte 42
     false
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-not-gte-float
   eq. > @
     negative-infinity.gte 42.5
     false
 
 # Times.
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-float-zero
   eq. > @
     as-bytes.
       negative-infinity.times 0.0
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-neg-float-zero
   eq. > @
     as-bytes.
       negative-infinity.times -0.0
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-int-zero
   eq. > @
     as-bytes.
       positive-infinity.times 0
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-nan
   eq. > @
     as-bytes.
       negative-infinity.times nan
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-positive-infinity
   eq. > @
     negative-infinity.times positive-infinity
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-negative-infinity
   eq. > @
     negative-infinity.times negative-infinity
     positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-positive-float
   eq. > @
     negative-infinity.times 42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-positive-int
   eq. > @
     negative-infinity.times 42
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-negative-float
   eq. > @
     negative-infinity.times -42.5
     positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-times-negative-int
   eq. > @
     negative-infinity.times -42
     positive-infinity
 
 # Plus
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-nan
   eq. > @
     as-bytes.
       negative-infinity.plus nan
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-positive-infinity
   eq. > @
     as-bytes.
       negative-infinity.plus positive-infinity
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-negative-infinity
   eq. > @
     negative-infinity
     negative-infinity.plus negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-positive-float
   eq. > @
     negative-infinity.plus 42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-positive-int
   eq. > @
     negative-infinity.plus 42
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-negative-float
   eq. > @
     negative-infinity.plus -42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-plus-negative-int
   eq. > @
     negative-infinity.plus -42
     negative-infinity
 
 # Negation.
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-neg-is-positive-infinity
   eq. > @
     negative-infinity.neg
     positive-infinity
 
 # Minus.
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-nan
   eq. > @
     as-bytes.
       negative-infinity.minus nan
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-negative-infinity
   eq. > @
     as-bytes.
       negative-infinity.minus negative-infinity
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-positive-infinity
   eq. > @
     negative-infinity.minus positive-infinity
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-positive-float
   eq. > @
     negative-infinity.minus 42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-positive-int
   eq. > @
     negative-infinity.minus 42
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-negative-float
   eq. > @
     negative-infinity.minus -42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-minus-negative-int
   eq. > @
     negative-infinity.minus -42
     negative-infinity
 
 # Division
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-float-zero
   eq. > @
     negative-infinity.div 0.0
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-neg-float-zero
   eq. > @
     negative-infinity.div -0.0
     positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-int-zero
   eq. > @
     negative-infinity.div 0
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-neg-int-zero
   eq. > @
     negative-infinity.div -0
     positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-nan
   eq. > @
     as-bytes.
       negative-infinity.div nan
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-positive-infinity
   eq. > @
     as-bytes.
       negative-infinity.div positive-infinity
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-negative-infinity
   eq. > @
     as-bytes.
       negative-infinity.div negative-infinity
     nan.as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-positive-float
   eq. > @
     negative-infinity.div 42.5
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-positive-int
   eq. > @
     negative-infinity.div 42
     negative-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-negative-float
   eq. > @
     negative-infinity.div -42.5
     positive-infinity
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-div-negative-int
   eq. > @
     negative-infinity.div -42
     positive-infinity
 
 # Bytes.
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-as-bytes-is-valid
   eq. > @
     negative-infinity.as-bytes
     (-1.0.div 0.0).as-bytes
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-floor-is-equal-to-self
   negative-infinity.floor.eq negative-infinity > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-is-not-nan
   negative-infinity.is-nan.not > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-is-not-finite
   negative-infinity.is-finite.not > @
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > negative-infinity-is-not-integer
   negative-infinity.is-integer.not > @
 

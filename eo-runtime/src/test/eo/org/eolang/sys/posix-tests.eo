@@ -28,7 +28,7 @@
 +package org.eolang.sys
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > invokes-getpid-correctly
   or. > @
     os.is-windows
@@ -39,7 +39,7 @@
           tuple.empty
       0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > opens-posix-tcp-socket
   code. > sd
     posix
@@ -55,7 +55,7 @@
           "close"
           * sd
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > closes-posix-tcp-socket
   code. > sd
     posix
@@ -74,7 +74,7 @@
                 * sd
             -1
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 [] > returns-valid-posix-inet-addr-for-localhost
   code. > addr
     posix

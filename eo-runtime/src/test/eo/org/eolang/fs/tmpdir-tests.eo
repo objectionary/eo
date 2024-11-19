@@ -27,14 +27,14 @@
 +package org.eolang.fs
 +version 0.0.0
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 tmpdir.exists > [] > global-temp-dir-exists
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 tmpdir.is-directory > [] > global-temp-dir-is-directory
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 tmpdir.path.eq tmpdir.path > [] > returns-the-same-tmpdir
 
-# This is a unit-test for the corresponding EO object.
+# Test.
 tmpdir.tmpfile.exists > [] > creates-tmpfile
