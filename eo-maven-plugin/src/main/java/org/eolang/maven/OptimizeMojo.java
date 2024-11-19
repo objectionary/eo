@@ -175,6 +175,9 @@ public final class OptimizeMojo extends SafeMojo {
     private static XML lint(final XML xmir) throws IOException {
         final Directives dirs = new Directives().xpath("/program").addIf("errors").strict(1);
         for (final Defect defect : new Program(xmir).defects()) {
+            if (OptimizeMojo.suppressed(xmir, defect)) {
+                continue;
+            }
             dirs.add("error")
                 .attr("check", defect.rule())
                 .attr("severity", defect.severity().toString().toLowerCase(Locale.ENGLISH))
@@ -187,5 +190,20 @@ public final class OptimizeMojo extends SafeMojo {
         final Node node = xmir.node();
         new Xembler(dirs).applyQuietly(node);
         return new XMLDocument(node);
+    }
+
+    /**
+     * This defect is suppressed?
+     * @param xmir The XMIR
+     * @param defect The defect
+     * @return TRUE if suppressed
+     */
+    private static boolean suppressed(final XML xmir, final Defect defect) {
+        return !xmir.nodes(
+            String.format(
+                "/program/metas/meta[head='unlint' and tail='%s']",
+                defect.rule()
+            )
+        ).isEmpty();
     }
 }
