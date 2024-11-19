@@ -59,7 +59,7 @@ final class PrintMojoTest {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "# Test.\n[] > foo\n".getBytes()
+                    "# This unit test is supposed to check the functionality of the corresponding object.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()
