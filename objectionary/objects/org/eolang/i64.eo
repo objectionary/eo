@@ -24,9 +24,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.3
++rt jvm org.eolang:eo-runtime:0.42.0
 +rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
 # The 64 bits signed integer.
 # Here `as-bytes` must be a `bytes` object.

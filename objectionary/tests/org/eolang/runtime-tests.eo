@@ -24,7 +24,8 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++unlint abstract-decoratee
++version 0.42.0
 
 # Test.
 [] > understands-this-correctly
@@ -96,7 +97,10 @@
             *
               ^.m.put (^.m.as-number.plus 1)
               42
-        a.neg.neg.neg.neg.eq 42 > @
+        seq > @
+          *
+            a.neg.neg.neg.neg.eq 42
+            m
     1
 
 # Test.
@@ -153,6 +157,7 @@
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
+            42 > x
   true > @
 
 # Test.

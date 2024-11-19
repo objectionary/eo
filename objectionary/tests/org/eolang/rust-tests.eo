@@ -23,7 +23,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++version 0.42.0
 
 # Works with long names correctly.
 [] > rust-long-variable
@@ -569,6 +569,5 @@
           org.
             Q
         00-00-00-00-00-00-00-0F
-  # This is the default 64+ symbols comment in front of named abstract object.
   [] > auto-named-attr-at-327-6
   true > @

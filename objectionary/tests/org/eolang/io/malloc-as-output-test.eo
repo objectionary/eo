@@ -25,7 +25,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > makes-an-output-from-malloc-and-writes
@@ -36,7 +36,10 @@
         malloc-as-output m > output
         output.write 01-02-03 > o1
         o1.write 04-05-06-07 > o2
-        o2.write 08-09-A0 > @
+        seq > @
+          *
+            o2.write 08-09-A0
+            m
     01-02-03-04-05-06-07-08-09-A0
 
 # Test.

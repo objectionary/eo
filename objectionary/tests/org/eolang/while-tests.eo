@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > while-dataizes-only-first-cycle
@@ -143,21 +143,24 @@
       malloc.for > @
         0
         [iter] >>
-          while > @
-            [i] >>
-              if. > @
-                max.gt iter
-                seq
-                  *
-                    acc.put
-                      acc.as-number.plus
-                        arr.at
-                          iter.as-number
-                    iter.put
-                      iter.as-number.plus 1
-                    true
-                false
-            true > [i]
+          seq > @
+            *
+              while
+                [i] >>
+                  if. > @
+                    max.gt iter
+                    seq
+                      *
+                        acc.put
+                          acc.as-number.plus
+                            arr.at
+                              iter.as-number
+                        iter.put
+                          iter.as-number.plus 1
+                        true
+                    false
+                true > [i]
+              acc
   data.eq arr.length > @
 
 # Test.
@@ -170,19 +173,22 @@
       malloc.for > @
         0
         [iter] >>
-          while > @
-            [i] >>
-              if. > @
-                max.gt iter
-                seq
-                  *
-                    acc.put
-                      acc.as-number.plus
-                        arr.at
-                          iter.as-number
-                    iter.put
-                      iter.as-number.plus 1
-                    true
-                false
-            true > [i]
+          seq > @
+            *
+              while
+                [i] >>
+                  if. > @
+                    max.gt iter
+                    seq
+                      *
+                        acc.put
+                          acc.as-number.plus
+                            arr.at
+                              iter.as-number
+                        iter.put
+                          iter.as-number.plus 1
+                        true
+                    false
+                true > [i]
+              acc
   data.eq arr.length > @

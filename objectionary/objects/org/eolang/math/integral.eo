@@ -23,9 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.math
-+rt jvm org.eolang:eo-runtime:0.41.3
-+rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
 # Counts integral from `a` to `b`.
 # Here `func` is integration function, `a` is an upper limit,
@@ -55,19 +53,22 @@
           [left] >>
             ^.^.b > right
             ((right.minus left).div ^.^.n).as-number > step
-            while > @
-              [i] >>
-                if. > @
-                  (^.left.as-number.plus ^.step).lt ^.right
-                  seq
-                    *
-                      ^.^.sum.put
-                        ^.^.sum.as-number.plus
-                          ^.^.^.subsection
-                            ^.left.as-number
+            seq > @
+              *
+                while
+                  [i] >>
+                    if. > @
+                      (^.left.as-number.plus ^.step).lt ^.right
+                      seq
+                        *
+                          ^.^.sum.put
+                            ^.^.sum.as-number.plus
+                              ^.^.^.subsection
+                                ^.left.as-number
+                                ^.left.as-number.plus ^.step
+                          ^.left.put
                             ^.left.as-number.plus ^.step
-                      ^.left.put
-                        ^.left.as-number.plus ^.step
-                      true
-                  false
-              true > [i]
+                          true
+                      false
+                  true > [i]
+                sum

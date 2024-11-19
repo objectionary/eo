@@ -23,9 +23,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.3
++rt jvm org.eolang:eo-runtime:0.42.0
 +rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
 # The `malloc` object is an abstraction of a storage of data in heap
 # memory. The implementation of `malloc` is platform dependent. It may
@@ -33,7 +33,7 @@
 #
 # There are two ways of how `malloc` could be used:
 #
-# First, when the size of required memory block is known upfront:
+# First, when the size of the required memory block is known beforehand:
 #
 # ```
 # malloc.of
@@ -44,8 +44,8 @@
 #
 # Here, the first argument is a size of allocated block in memory, the second argument
 # is the scope where memory block is available for reading and writing. When `malloc.of` is
-# dataized it dataizes the scope, takes the data from the block in memory, clears the block and
-# returns the data. So there's no need for end-user to care about clearing memory after allocation.
+# dataized it dataizes the scope, clears the block and returns the result of scope dataization.
+# So there's no need for end-user to care about clearing memory after allocation.
 #
 # Second, when the size is not known upfront, but there exists
 # an object ready to be dataized and placed into the memory block
@@ -63,9 +63,7 @@
 # size is allocated and the data is written to the block. The second argument is the same scope as
 # in the p.1.
 #
-# The void attribute in the scope object is memory-block object which provides API to write and read
-# data to the memory.
-#
+# Consider the next code:
 # ```
 # malloc.of
 #   8                         # allocate 8 bytes length block in memory
@@ -80,6 +78,8 @@
 #         m.id                # get identifier of the block
 #         m.@                 # the same as m.get
 # ```
+# Here the void attribute in the scope object is memory-block object which provides API to write
+# and read data to the memory.
 [] > malloc
   # Allocates block in memory for given `object`. After allocation the provided object is dataized
   # and the data are written into memory.

@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.io
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > reads-from-bytes-and-writes-to-memory
@@ -53,7 +53,10 @@
           malloc-as-output m
         tee.read 2 > i1
         i1.read 2 > i2
-        i2.read 1 > @
+        seq > @
+          *
+            i2.read 1
+            m
     01-02-03-04-05
 
 # Test.
@@ -72,8 +75,9 @@
                     tee-input
                       bytes-as-input 01-02-03-04-05
                       malloc-as-output m2
-                    malloc-as-output ^.m1
+                    malloc-as-output m1
                   5
-                ^.m1.write 5 2A-
+                m1.write 5 2A-
+                m1
     01-02-03-04-05-2A
 

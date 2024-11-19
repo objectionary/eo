@@ -24,13 +24,17 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > writes-into-memory-of
   malloc.of > mem
     8
-    m.write 0 10 > [m]
+    [m]
+      seq > @
+        *
+          m.write 0 10
+          m
   mem.eq 10 > @
 
 # Test.
@@ -39,6 +43,14 @@
     0
     m.put 10 > [m]
   mem.eq 10 > @
+
+# Test.
+[] > returns-size-from-scope
+  eq. > @
+    malloc.of
+      5
+      m.size > [m]
+    5
 
 # Test.
 [] > malloc-scope-is-dataized-twice
@@ -61,7 +73,7 @@
   eq. > @
     malloc.for
       42
-      true > [m]
+      m > [m]
     42
 
 # Test.

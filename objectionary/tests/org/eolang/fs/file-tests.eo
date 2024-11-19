@@ -29,7 +29,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang.fs
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > check-if-current-directory-is-directory
@@ -266,16 +266,19 @@
   .of
     12
     [m]
-      tmpdir
-      .tmpfile
-      .open
-        "w"
-        f.write "Hello, world" > [f]
-      .open > @
-        "r"
-        [f] >>
-          m.put > @
-            f.read 12
+      seq > @
+        *
+          tmpdir
+          .tmpfile
+          .open
+            "w"
+            f.write "Hello, world" > [f]
+          .open
+            "r"
+            [f] >>
+              m.put > @
+                f.read 12
+          m
   .eq "Hello, world" > @
 
 # Test.
@@ -300,13 +303,16 @@
       .of
         13
         [m] >>
-          file
-            ^.src
-          .open > @
-            "r"
-            [f] >>
-              ^.m.put > @
-                f.read 13
+          seq > @
+            *
+              file
+                ^.src
+              .open
+                "r"
+                [f] >>
+                  ^.m.put > @
+                    f.read 13
+              m
       .eq "Shrek is love"
 
 # Test.
@@ -323,16 +329,19 @@
       .of
         14
         [m] >>
-          file
-            ^.src
-          .open > @
-            "a+"
-            [f] >>
-              seq > @
-                *
-                  f.write "!"
-                  ^.m.put
-                    f.read 14
+          seq > @
+            *
+              file
+                ^.src
+              .open
+                "a+"
+                [f] >>
+                  seq > @
+                    *
+                      f.write "!"
+                      ^.m.put
+                        f.read 14
+              m
       .eq "Shrek is love!"
 
 # Test.
@@ -341,17 +350,20 @@
   .of
     5
     [m]
-      tmpdir
-      .tmpfile
-      .open > @
-        "w+"
-        [f] >>
-          f.read 7 > i1
-          i1.read 5 > i2
-          seq > @
-            *
-              f.write "Hello, world"
-              ^.m.put i2
+      seq > @
+        *
+          tmpdir
+          .tmpfile
+          .open
+            "w+"
+            [f] >>
+              f.read 7 > i1
+              i1.read 5 > i2
+              seq > @
+                *
+                  f.write "Hello, world"
+                  ^.m.put i2
+          m
   .eq "world" > @
 
 # Test.

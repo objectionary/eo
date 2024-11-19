@@ -23,9 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.3
-+rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
 # The object dataizes `target`, makes new instance of `bytes` from given data and behaves as result
 # `bytes`.
@@ -37,7 +35,7 @@
 # (dataized some-object).as-bytes > cached
 # ```
 #
-# Dataization is a process of retrieving data (bytes) from an object, by taking its Δ
+# Dataization is a process of retrieving data (bytes) from an object, by taking its \Delta
 # attribute.
 # An example of usage:
 #

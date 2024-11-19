@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > goto-jumps-backwards
@@ -44,7 +44,7 @@
                       i.as-number.lt 10
                       g.backward
                       true
-            true
+            i
     10
 
 # Test.
@@ -59,7 +59,7 @@
               *
                 if.
                   x.eq 0
-                  g.forward true
+                  g.forward r
                   true
                 r.put (42.div x)
   and. > @

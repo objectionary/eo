@@ -24,16 +24,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang.structs
-+rt jvm org.eolang:eo-runtime:0.41.3
-+rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
-# Range — create a `list` containing a range of elements
+# Range - create a `list` containing a range of elements
 # Here `start` must be a abstract object that must have an object `next` to get
 # next element and object `lt` to compare with the `end` object.
 # Every next element also must have an objects `next` and `lt`.
 # The first object in the chain must have a default value
-# e.g.
+# e.g.:
+#
+# ```
 # range
 #   []
 #     [num] > build
@@ -41,6 +41,8 @@
 #       build (@.plus 1) > next
 #     build 1 > @
 #   10
+# ```
+#
 # Here the first argument is an abstract object that has a default value - 1 and
 # it also has object `next`. The next object after first is decorator of
 # `1.plus 1` and also has object `next`. Since these objects are ints - they have

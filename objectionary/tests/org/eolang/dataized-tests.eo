@@ -24,7 +24,7 @@
 +home https://github.com/objectionary/eo
 +tests
 +package org.eolang
-+version 0.41.3
++version 0.42.0
 
 # Test.
 [] > dataized-does-not-do-recalculation
@@ -40,6 +40,7 @@
             cached.as-number
             cached.as-bytes
             cached.as-bool
+            m
     1
 
 # Test.

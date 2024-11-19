@@ -23,9 +23,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package org.eolang
-+rt jvm org.eolang:eo-runtime:0.41.3
-+rt node eo2js-runtime:0.0.0
-+version 0.41.3
++version 0.42.0
 
 # Negative infinity.
 [] > negative-infinity
@@ -51,7 +49,7 @@
         (number value).is-nan
         ^.eq value
 
-  # Tests that $ ≤ x.
+  # Tests that $ <= x.
   [x] > lte
     x > value!
     not. > @
@@ -60,7 +58,7 @@
   # Tests that $ > x.
   false > [x] > gt
 
-  # Tests that $ ≥ x.
+  # Tests that $ >= x.
   ^.eq x > [x] > gte
 
   # Multiplication of $ and x.
