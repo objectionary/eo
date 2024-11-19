@@ -164,7 +164,7 @@ final class VerifyMojoTest {
                     "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
                     "  # This is the default 64+ symbols comment in front of named abstract object.",
-                    "  [] > @",
+                    "  [] > x",
                     "    \"Hello world\" > @"
                 )
                 .with("failOnWarning", false)

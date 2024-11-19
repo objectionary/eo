@@ -27,7 +27,7 @@
 +package org.eolang.io
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > makes-an-output-from-malloc-and-writes
   eq. > @
     malloc.of
@@ -39,7 +39,7 @@
         o2.write 08-09-A0 > @
     01-02-03-04-05-06-07-08-09-A0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-writing-more-than-allocated
   malloc.of > @
     2

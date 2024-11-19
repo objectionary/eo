@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > while-dataizes-only-first-cycle
   eq. > @
     0
@@ -37,14 +37,14 @@
           i.eq 0 > [i]
           m.put i > [i] >>
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > simple-while-with-false-first
   not. > @
     while > res
       false > [i]
       true > [i]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > simple-bool-expression-via-malloc-in-while
   eq. > @
     malloc.for
@@ -55,7 +55,7 @@
           m.put false > [i] >>
     false
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > last-while-dataization-object
   eq. > @
     malloc.for
@@ -66,14 +66,14 @@
           m.put (m.as-number.plus 1) > [i] >>
     3
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > last-while-dataization-object-with-false-condition
   not. > @
     while
       1.gt 2 > [i]
       true > [i]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > while-simple-iteration
   eq. > @
     malloc.for
@@ -84,7 +84,7 @@
           m.put i > [i] >>
     9
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > iterating-tuple-with-while-using-internal-iterator
   * 1 1 1 1 > arr
   arr.length.plus -1 > max
@@ -111,7 +111,7 @@
                       iter.as-number.plus 1
   data.eq arr.length > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > iterating-tuple-with-while-using-external-iterator
   * 1 1 1 1 > arr
   arr.length.plus -1 > max
@@ -133,7 +133,7 @@
                     iter.as-number.plus 1
   data.eq arr.length > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > iterating-tuple-with-while-without-body-multiple
   * 1 1 1 > arr
   arr.length > max
@@ -160,7 +160,7 @@
             true > [i]
   data.eq arr.length > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > iterating-tuple-with-while-without-body-single
   * 1 > arr
   arr.length > max

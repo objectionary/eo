@@ -28,7 +28,7 @@
 +package org.eolang.fs
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > bound-tmpfile-does-not-recreates-file
   tmpdir.tmpfile > f
   f.path.eq f.path > @
@@ -40,7 +40,7 @@
     d.exists
     d.is-directory
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > deletes-empty-directory
   tmpdir
   .tmpfile
@@ -54,13 +54,13 @@
   .exists
   .not > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-opening-directory
   tmpdir.open > @
     "w"
     true > [d]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > deletes-directory-with-files-recursively
   (dir tmpdir.tmpfile.deleted).made > d
   d.tmpfile > first
@@ -75,7 +75,7 @@
       first.exists.not
     second.exists.not
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > deletes-directory-with-file-and-dir
   (dir tmpdir.tmpfile.deleted).made > d
   (dir d.tmpfile.deleted).made > inner
@@ -92,7 +92,7 @@
       inner.exists.not
     f.exists.not
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > walks-recursively
   (dir tmpdir.tmpfile.deleted).made.as-path > d
   seq > @

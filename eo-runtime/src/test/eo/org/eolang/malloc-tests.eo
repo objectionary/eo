@@ -26,21 +26,21 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > writes-into-memory-of
   malloc.of > mem
     8
     m.write 0 10 > [m]
   mem.eq 10 > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > puts-into-memory-for
   malloc.for > mem
     0
     m.put 10 > [m]
   mem.eq 10 > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-scope-is-dataized-twice
   eq. > @
     2
@@ -56,7 +56,7 @@
             second
             second
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-for-writes-first-init-value
   eq. > @
     malloc.for
@@ -64,7 +64,7 @@
       true > [m]
     42
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-puts-over-the-previous-data
   malloc.of > mem
     13
@@ -78,7 +78,7 @@
       "orld!".as-bytes
     mem
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-rewrites-and-increments-itself
   malloc.of > mem
     8
@@ -89,7 +89,7 @@
           m.put (m.as-number.plus 5)
   mem.eq 6 > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > writes-into-two-malloc-objects
   malloc.of > a
     8
@@ -101,19 +101,19 @@
     a.eq 10
     b.eq 20
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-overflow-boolean-malloc
   malloc.for > @
     false
     m.put 86124867.88 > [m]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-overflow-string-malloc
   malloc.for > @
     "Hello"
     m.put "Much longer string!" > [m]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-is-strictly-sized-int
   eq. > @
     malloc.for
@@ -121,7 +121,7 @@
       m.put 2556 > [m]
     2556
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-is-strictly-typed-float
   eq. > @
     malloc.for
@@ -129,7 +129,7 @@
       m.put 82.22 > [m]
     82.22
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > memory-is-strictly-sized-string
   eq. > @
     malloc.for
@@ -137,19 +137,19 @@
       m.put "Prot" > [m]
     "Proto"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-is-strictly-typed-bool
   malloc.for > @
     false
     m.put true > [m]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-gives-id-to-allocated-block
   malloc.of > @
     1
     m.put (m.id.gt 0) > [m]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-allocates-right-size-block
   malloc.of > @
     1
@@ -159,7 +159,7 @@
         [m] >>
           b.put (m.size.eq 10) > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-writes-and-reads
   malloc.of > @
     1
@@ -176,7 +176,7 @@
                   m.read 0 12
                   "Hello, Jeff!"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-concacts-strings-with-offset
   malloc.of > @
     1
@@ -191,13 +191,13 @@
               b.put
                 (m.read 0 3).eq "XYX"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-writing-more-than-allocated-to-malloc-with-offset
   malloc.of > @
     1
     m.write 1 true > [m]
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-reads-with-offset-and-length
   malloc.of > @
     1
@@ -211,7 +211,7 @@
               b.put
                 (m.read 2 5).eq "Hello"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-increases-block-size
   malloc.of > @
     1
@@ -227,7 +227,7 @@
                   m.size.eq 6
                   m.get.eq 01-02-03-04-00-00
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > malloc-decreases-block-size
   malloc.of > @
     1
@@ -243,7 +243,7 @@
                   m.size.eq 3
                   m.get.eq 01-02-03
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-changing-size-to-negative
   malloc.of > @
     1

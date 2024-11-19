@@ -29,7 +29,7 @@
 +package org.eolang.io
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > reads-from-bytes-and-writes-to-memory
   eq. > @
     malloc.of
@@ -42,7 +42,7 @@
           5
     01-02-03-04-05
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > reads-from-bytes-and-writes-to-memory-by-portions
   eq. > @
     malloc.of
@@ -56,7 +56,7 @@
         i2.read 1 > @
     01-02-03-04-05
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > reads-from-bytes-and-writes-to-two-memory-blocks
   eq. > @
     malloc.of

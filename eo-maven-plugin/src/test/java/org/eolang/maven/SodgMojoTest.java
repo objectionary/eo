@@ -70,7 +70,7 @@ final class SodgMojoTest {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "# Test.\n[] > foo\n".getBytes()
+                    "# This is a unit-test for the corresponding EO object.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()

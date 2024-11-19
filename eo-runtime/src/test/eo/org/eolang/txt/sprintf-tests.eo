@@ -27,7 +27,7 @@
 +package org.eolang.txt
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > prints-simple-string
   eq. > @
     "Hello, Jeffrey!"
@@ -35,7 +35,7 @@
       "Hello, %s!"
       * "Jeffrey"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > prints-complex-string
   eq. > @
     "Привет 3.140000 Jeff X!"
@@ -43,7 +43,7 @@
       "Привет %f %s %s!"
       * 3.14 "Jeff" "X"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > prints-bytes-string
   eq. > @
     "40-45-00-00-00-00-00-00"
@@ -51,7 +51,7 @@
       "%x"
       * 42.as-bytes
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > formats-all-objects
   eq. > @
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
@@ -59,13 +59,13 @@
       "string %s, bytes %x, float %f, int %d, bool %b"
       * "Jeff" "Jeff".as-bytes 42.3 14 false
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-sprintf-with-arguments-that-does-not-match
   sprintf > @
     "%s%s"
     * "Jeff"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > sprintf-does-not-fail-if-arguments-more-than-formats
   eq. > @
     "Hey"
@@ -73,11 +73,11 @@
       "%s"
       * "Hey" "Jeff"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-sprintf-unsupported-format
   sprintf "%o" * > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > sprintf-prints-percents
   eq. > @
     "%Jeff"
@@ -85,7 +85,7 @@
       "%%%s"
       * "Jeff"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > sprintf-does-not-print-i64
   not. > @
     eq.
@@ -94,7 +94,7 @@
         * 42.as-i64
       "42"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > sprintf-prints-i64-as-number
   eq. > @
     "42"

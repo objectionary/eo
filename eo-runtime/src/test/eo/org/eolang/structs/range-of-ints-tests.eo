@@ -27,36 +27,36 @@
 +package org.eolang.structs
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > simple-range-of-ints-from-one-to-ten
   eq. > @
     range-of-ints 1 10
     * 1 2 3 4 5 6 7 8 9
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > range-of-ints-from-ten-to-ten-is-empty
   is-empty. > @
     range-of-ints 10 10
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > range-of-descending-ints-is-empty
   is-empty. > @
     range-of-ints 10 1
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > range-of-negative-ints-works-as-well
   eq. > @
     range-of-ints -5 0
     * -5 -4 -3 -2 -1
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-range-of-ints-with-non-int-start
   range-of-ints 1.2 3 > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-range-of-ints-with-not-int-end
   range-of-ints 1 2.5 > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-range-of-not-ints
   range-of-ints 1.5 5.2 > @

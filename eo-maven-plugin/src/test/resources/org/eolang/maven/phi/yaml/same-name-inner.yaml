@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 eo: |
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compiles-correctly-with-long-duplicate-names
     # Long object 1.
     [] > long-object-name

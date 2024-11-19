@@ -138,7 +138,7 @@ public final class OptimizeMojo extends SafeMojo {
         final Path target = new Place(name).make(base, AssembleMojo.XMIR);
         tojo.withOptimized(
             new FpDefault(
-                src -> this.lint(optimization.apply(xmir)).toString(),
+                src -> OptimizeMojo.lint(optimization.apply(xmir)).toString(),
                 this.cache.toPath().resolve(OptimizeMojo.CACHE),
                 this.plugin.getVersion(),
                 new TojoHash(tojo),
@@ -172,7 +172,7 @@ public final class OptimizeMojo extends SafeMojo {
      * @return XML after linting
      * @throws IOException If fails
      */
-    private XML lint(final XML xmir) throws IOException {
+    private static XML lint(final XML xmir) throws IOException {
         final Directives dirs = new Directives().xpath("/program").addIf("errors").strict(1);
         for (final Defect defect : new Program(xmir).defects()) {
             dirs.add("error")

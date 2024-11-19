@@ -49,36 +49,36 @@ eo: |
   +package org.eolang
   +version 0.0.0
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-two-bools
     eq. > @
       true
       true
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > true-as-bool
     true.as-bool > @
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-two-different-types
     not. > @
       eq.
         true
         42
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-bool-to-bytes
     and. > @
       true.eq 01-
       false.eq 00-
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-bool-to-string
     and. > @
       true.eq "\001"
       false.eq "\000"
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-bool-to-bytes-reverse
     and. > @
       01-.as-bytes.eq true

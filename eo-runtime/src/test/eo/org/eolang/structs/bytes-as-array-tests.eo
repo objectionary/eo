@@ -28,7 +28,7 @@
 +package org.eolang.structs
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > converts-bytes-to-array
   eq. > @
     list
@@ -36,7 +36,7 @@
         20-1F-EE-B5-FF
     * 20- 1F- EE- B5- FF-
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > single-byte-to-array
   eq. > @
     list
@@ -44,7 +44,7 @@
         1F-
     * 1F-
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > zero-bytes-to-array
   eq. > @
     list

@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > understands-this-correctly
   [x] > a
     $.x > @
@@ -34,7 +34,7 @@
     a 42
     42
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > takes-parent-object
   [x] > a
     [] > take
@@ -44,7 +44,7 @@
     a 42
     42
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > makes-object-a-constant
   [] > foo
     times. > @
@@ -55,7 +55,7 @@
     f
     f
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > takes-parent-through-attribute
   42 > x
   $ > this
@@ -66,14 +66,14 @@
           this.x
           42
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-when-applies-to-closed-object
   [x] > a
     x > @
   a false > closed
   closed true > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > makes-deep-object-recursively
   eq. > @
     x 5
@@ -85,7 +85,7 @@
       x
         i.minus 1
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > calculates-only-once
   eq. > @
     malloc.for
@@ -99,7 +99,7 @@
         a.neg.neg.neg.neg.eq 42 > @
     1
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > writes-cage-to-malloc
   (cage number.plus).new > f2
   eq. > @
@@ -117,7 +117,7 @@
                 f1.put f2
     3
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > recursion-without-arguments
   [n] > func
     if. > @
@@ -134,35 +134,36 @@
         ^.func m > @
     0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > unescapes-slashes
   eq. > @
     "x\\b\\f\\u\\r\\t\\n\\'"
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > unescapes-symbols
   eq. > @
     "\b\f\n\r\t\u27E6"
     08-0C-0A-0D-09-E2-9F-A6
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > compiles-correctly-with-long-duplicate-names
   [] > long-object-name
     [] > long-object-name
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
+            42 > x
   true > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > named-inner-abstract-object
   seq > @
     *
       [] > a
         true > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > app-that-calls-func
   [] > app
     [args] > f
@@ -175,7 +176,7 @@
     output
     2
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > directly-accesses-objects-from-root
   eq. > @
     Q.org.eolang.malloc.of
@@ -188,7 +189,7 @@
               m.as-number.minus 2
     40
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > directly-accesses-objects-from-standard-root
   eq. > @
     QQ.malloc.of
@@ -201,7 +202,7 @@
               m.as-number.minus 2
     40
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > standard-root-and-root
   QQ.sys.os > stand-root
   Q.org.eolang.sys.os > root
@@ -209,7 +210,7 @@
     root
     stand-root
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > extract-attribute-from-decoratee
   [foo] > return
   [] > a
@@ -221,7 +222,7 @@
     a.foo
     43
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > constant-defends-against-side-effects
   [x] > inc
     seq > @
@@ -241,7 +242,7 @@
             num
     64
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > parent-in-vertical-notation
   5 > m
   [] > value
@@ -253,7 +254,7 @@
     value
     5
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > parent-in-horizontal-notation
   5 > m
   [] > value
@@ -263,7 +264,7 @@
     value
     5
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > phi-in-vertical-notation
   [] > value
     [] > @
@@ -273,7 +274,7 @@
       value
     100
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > phi-in-horizontal-notation
   [] > value
     [] > @
@@ -282,7 +283,7 @@
     value.@
     100
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > right-way-to-use-hierarchy
   # Bool mock
   [value] > pybool
@@ -294,7 +295,7 @@
       ^.^.pyint (^.value.plus x.value) > @
   ((pyint 1).add (pyint 3)).eq (pyint 4) > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > check-triple-quotes
   eq. > @
     """
@@ -304,7 +305,7 @@
     """
     "Hello\n\nHello"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > correctly-handles-same-name-attrs-simplified
   [first second] > calc
     plus. > @
@@ -322,7 +323,7 @@
           y > @
     3
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > correctly-handles-same-name-attrs
   [f s] > calc
     plus. > @

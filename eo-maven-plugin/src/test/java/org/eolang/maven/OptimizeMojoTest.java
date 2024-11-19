@@ -68,7 +68,7 @@ final class OptimizeMojoTest {
             f -> {
                 f.clean();
                 f.files().file("src/main/eo/foo.eo").write(
-                    "# Test.\n[] > foo\n".getBytes()
+                    "# This is a unit-test for the corresponding EO object.\n[] > foo\n".getBytes()
                 );
                 f.build()
                     .plugins()
@@ -220,13 +220,6 @@ final class OptimizeMojoTest {
             .with("trackOptimizationSteps", true)
             .execute(new FakeMaven.Optimize())
             .result();
-        MatcherAssert.assertThat(
-            BinarizeParseTest.TO_ADD_MESSAGE,
-            res,
-            Matchers.hasKey(
-                String.format("target/%s/foo/x/main/01-not-empty-atoms.xml", OptimizeMojo.STEPS)
-            )
-        );
         MatcherAssert.assertThat(
             BinarizeParseTest.TO_ADD_MESSAGE,
             res,

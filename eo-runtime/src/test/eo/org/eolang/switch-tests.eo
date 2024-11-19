@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > switch-simple-case
   eq. > @
     switch
@@ -39,7 +39,7 @@
           "2"
     "2"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > switch-strings-case
   "swordfish" > password
   eq. > @
@@ -56,7 +56,7 @@
           "password is wrong"
     "password is correct!"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > switch-with-several-true-cases
   eq. > @
     switch
@@ -72,7 +72,7 @@
           "TRUE2"
     "TRUE1"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > switch-with-all-false-cases
   switch > @
     *
@@ -83,11 +83,11 @@
         false
         "false2"
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > throws-on-empty-switch
   switch * > @
 
-# Test.
+# This is a unit-test for the corresponding EO object.
 [] > switch-complex-case
   [] > c1
     false > @

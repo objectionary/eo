@@ -38,7 +38,7 @@ eo: |
   +tests
   +version 0.0.0
 
-  # Test.
+  # This is a unit-test for the corresponding EO object.
   [] > compares-two-bools
   eq. > @
     true
