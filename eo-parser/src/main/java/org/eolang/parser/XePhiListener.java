@@ -119,7 +119,9 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
     @Override
     public void enterProgram(final PhiParser.ProgramContext ctx) {
         this.objs.add(new Objects.ObjXembly());
-        this.dirs.add("program")
+        this.dirs
+            .comment(XePhiListener.INFO)
+            .add("program")
             .attr("name", this.name)
             .attr("version", Manifests.read("EO-Version"))
             .attr("revision", Manifests.read("EO-Revision"))
@@ -128,7 +130,6 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 "time",
                 ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
             )
-            .comment(XePhiListener.INFO)
             .add("listing").set(new SourceText(ctx)).up()
             .add("errors").up()
             .add("sheets").up()
