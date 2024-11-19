@@ -58,10 +58,7 @@ public final class EOmalloc$EOof$EOφ extends PhDefault implements Atom {
             allocated.put("id", new Data.ToPhi((long) identifier));
             final Phi scope = rho.take("scope").copy();
             scope.put(0, allocated);
-            new Dataized(scope).take();
-            res = new Data.ToPhi(
-                Heaps.INSTANCE.read(identifier, 0, Heaps.INSTANCE.size(identifier))
-            );
+            res = new Data.ToPhi(new Dataized(scope).take());
         } finally {
             Heaps.INSTANCE.free(identifier);
         }

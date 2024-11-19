@@ -66,8 +66,23 @@ SOFTWARE.
     <xs:attribute name="const" type="empty"/>
   </xs:complexType>
   <xs:complexType name="program">
-    <xs:sequence>
+    <xs:all>
       <xs:element name="listing" type="xs:string"/>
+      <xs:element name="comments" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="comment" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="xs:string">
+                    <xs:attribute name="line" use="required" type="xs:decimal"/>
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="errors">
         <xs:complexType>
           <xs:sequence>
@@ -76,7 +91,7 @@ SOFTWARE.
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="check"/>
-                    <xs:attribute name="line" use="required"/>
+                    <xs:attribute name="line" type="xs:decimal"/>
                     <xs:attribute name="severity" use="required">
                       <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -86,8 +101,6 @@ SOFTWARE.
                         </xs:restriction>
                       </xs:simpleType>
                     </xs:attribute>
-                    <xs:attribute name="sheet"/>
-                    <xs:attribute name="step"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>
@@ -127,7 +140,7 @@ SOFTWARE.
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-    </xs:sequence>
+    </xs:all>
     <xs:attribute name="ms" type="xs:decimal" use="required"/>
     <xs:attribute name="name" type="xs:string" use="required"/>
     <xs:attribute name="time" type="xs:dateTime" use="required"/>

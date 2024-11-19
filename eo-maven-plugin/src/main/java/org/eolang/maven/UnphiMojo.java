@@ -133,7 +133,7 @@ public final class UnphiMojo extends SafeMojo {
                         home.save(result.toString(), xmir);
                         Logger.info(
                             this,
-                            "Parsed to xmir: %s -> %s",
+                            "Parsed to xmir: %[file]s -> %[file]s",
                             phi, this.unphiOutputDir.toPath().resolve(xmir)
                         );
                         if (result.nodes("//errors[count(error)=0]").isEmpty()) {

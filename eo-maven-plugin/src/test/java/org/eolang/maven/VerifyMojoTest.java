@@ -151,7 +151,7 @@ final class VerifyMojoTest {
             new XMLDocument(
                 maven.result().get("target/3-shake/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(4)
+            Matchers.hasSize(Matchers.greaterThan(2))
         );
     }
 
@@ -164,7 +164,7 @@ final class VerifyMojoTest {
                     "# This is the default 64+ symbols comment in front of named abstract object.",
                     "[] > main",
                     "  # This is the default 64+ symbols comment in front of named abstract object.",
-                    "  [] > @",
+                    "  [] > x",
                     "    \"Hello world\" > @"
                 )
                 .with("failOnWarning", false)

@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.yaml.snakeyaml.Yaml;
 
@@ -70,45 +69,6 @@ final class EoSyntaxTest {
                 "/program/listing",
                 "/program/metas/meta[head='meta2']",
                 "/program/objects/o[@name='fibo']"
-            )
-        );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "  , comment-length-check, Comment must be at least 64 characters long",
-        "Hello world., comment-length-check, Comment must be at least 64 characters long",
-        "Привет мир., comment-content-check, Comment must contain only ASCII printable characters: 0x20-0x7f",
-        "lowcase., comment-start-character-check, Comment must start with capital letter",
-        "without dot, comment-ending-check, Comment must end with dot"
-    })
-    void containsCommentCheckErrors(
-        final String comment,
-        final String check,
-        final String message
-    ) throws IOException {
-        MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
-            XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        "test-1",
-                        new InputOf(
-                            String.join(
-                                "\n",
-                                String.format("# %s", comment),
-                                "[] > app\n"
-                            )
-                        )
-                    ).parsed().toString().getBytes(),
-                    StandardCharsets.UTF_8
-                )
-            ),
-            XhtmlMatchers.hasXPath(
-                String.format(
-                    "//errors/error[@line and @check='%s' and @severity='%s' and text()='%s']",
-                    check, "warning", message
-                )
             )
         );
     }

@@ -52,8 +52,8 @@ public final class RegisterMojo extends SafeMojo {
     /**
      * Directory in which {@code .eo} files are located.
      *
-     * If you need to register {@code .eo} files located in many directories, you can
-     * use the {@code &lt;includeSources&gt;} feature, for example:
+     * <p>If you need to register {@code .eo} files located in many directories,
+     * you can use the {@code &lt;includeSources&gt;} feature, for example:</p>
      *
      * <pre> &lt;configuration&gt;
      *   &lt;sourcesDir&gt;/&lt;/sourcesDir&gt;

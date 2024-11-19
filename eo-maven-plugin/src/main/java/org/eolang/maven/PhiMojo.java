@@ -223,14 +223,13 @@ public final class PhiMojo extends SafeMojo {
             train = new com.yegor256.xsline.TrDefault<>();
         }
         final List<String> dependent = new ListOf<>(
-            "/org/eolang/parser/critical-errors/duplicate-names.xsl",
             "/org/eolang/maven/phi/incorrect-inners.xsl"
         );
         if (this.phiFailOnError) {
-            dependent.add("/org/eolang/parser/fail-on-errors.xsl");
+            dependent.add("/org/eolang/maven/verify/fail-on-errors.xsl");
         }
         if (this.phiFailOnCritical) {
-            dependent.add("/org/eolang/parser/fail-on-critical.xsl");
+            dependent.add("/org/eolang/maven/verify/fail-on-critical.xsl");
         }
         dependent.add("/org/eolang/maven/phi/to-phi.xsl");
         return this.measured(

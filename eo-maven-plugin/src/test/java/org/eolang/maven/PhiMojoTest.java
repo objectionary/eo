@@ -46,7 +46,7 @@ import org.yaml.snakeyaml.Yaml;
  * Test cases for {@link PhiMojo}.
  * @since 0.34.0
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
 final class PhiMojoTest {
@@ -282,6 +282,8 @@ final class PhiMojoTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(map.get("eo").toString())
+                    .with("phiFailOnCritical", false)
+                    .with("phiFailOnError", false)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")

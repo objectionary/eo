@@ -75,4 +75,20 @@ final class PhiSyntaxTest {
             )
         );
     }
+
+    @Test
+    void addsMetaForPackage() throws IOException {
+        MatcherAssert.assertThat(
+            "XMIR contains meta with package",
+            new PhiSyntax(
+                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(Δ ⤍ 42-), λ ⤍ Package⟧⟧}"
+            ).parsed(),
+            XhtmlMatchers.hasXPath(
+                "/program/metas/meta[@line='1' and head='package' and tail='foo']",
+                "/program/objects/o[@base='Q']",
+                "/program/objects/o[@base='.org' and @method]",
+                "/program/objects/o[@base='.eolang' and @method]"
+            )
+        );
+    }
 }

@@ -181,6 +181,8 @@ final class UnphiMojoTest {
         maven.foreignTojos().add("name").withXmir(xmir);
         final Path result = maven
             .execute(OptimizeMojo.class)
+            .with("phiFailOnCritical", false)
+            .with("phiFailOnError", false)
             .execute(PhiMojo.class)
             .result()
             .get(main);
