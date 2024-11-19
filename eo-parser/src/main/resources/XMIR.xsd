@@ -91,7 +91,7 @@ SOFTWARE.
                 <xs:simpleContent>
                   <xs:extension base="xs:string">
                     <xs:attribute name="check"/>
-                    <xs:attribute name="line" use="required" type="xs:decimal"/>
+                    <xs:attribute name="line" type="xs:decimal"/>
                     <xs:attribute name="severity" use="required">
                       <xs:simpleType>
                         <xs:restriction base="xs:string">
@@ -101,8 +101,6 @@ SOFTWARE.
                         </xs:restriction>
                       </xs:simpleType>
                     </xs:attribute>
-                    <xs:attribute name="sheet"/>
-                    <xs:attribute name="step"/>
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>

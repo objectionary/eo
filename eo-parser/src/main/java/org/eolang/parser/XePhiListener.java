@@ -145,6 +145,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             final String pckg = String.join(".", this.packages);
             this.dirs.xpath("metas[last()]").strict(1)
                 .add("meta")
+                .attr("line", 1)
                 .add("head").set("package").up()
                 .add("tail").set(pckg).up()
                 .add("part").set(pckg).up()

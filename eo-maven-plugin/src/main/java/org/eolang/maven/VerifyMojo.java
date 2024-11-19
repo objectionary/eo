@@ -30,6 +30,7 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -158,20 +159,21 @@ public final class VerifyMojo extends SafeMojo {
      */
     private XML logErrors(final XML xml) {
         for (final XML error : xml.nodes("/program/errors/error")) {
-            final String message = Logger.format(
-                "%[file]s, line %s: %s",
-                xml.xpath("/program/@source").get(0),
-                error.xpath("@line").get(0),
-                error.xpath("text()").get(0)
-            );
+            final List<String> line = error.xpath("@line");
+            final StringBuilder message = new StringBuilder()
+                .append(Logger.format("%[file]s", xml.xpath("/program/@source").get(0)));
+            if (!line.isEmpty()) {
+                message.append(':').append(Integer.parseInt(line.get(0)));
+            }
+            message.append(' ').append(error.xpath("text()").get(0));
             final String severity = error.xpath("@severity").get(0);
             switch (severity) {
                 case "warning":
-                    Logger.warn(this, message);
+                    Logger.warn(this, message.toString());
                     break;
                 case "error":
                 case "critical":
-                    Logger.error(this, message);
+                    Logger.error(this, message.toString());
                     break;
                 default:
                     throw new IllegalArgumentException(

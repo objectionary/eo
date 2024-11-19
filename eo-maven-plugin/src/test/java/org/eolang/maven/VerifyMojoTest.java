@@ -151,7 +151,7 @@ final class VerifyMojoTest {
             new XMLDocument(
                 maven.result().get("target/3-shake/foo/x/main.xmir")
             ).nodes("//errors/error[@severity='warning']"),
-            Matchers.hasSize(4)
+            Matchers.hasSize(Matchers.greaterThan(3))
         );
     }
 

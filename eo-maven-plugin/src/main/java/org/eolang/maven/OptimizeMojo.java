@@ -178,9 +178,11 @@ public final class OptimizeMojo extends SafeMojo {
             dirs.add("error")
                 .attr("check", defect.rule())
                 .attr("severity", defect.severity().toString().toLowerCase(Locale.ENGLISH))
-                .attr("line", defect.line())
-                .set(defect.text())
-                .up();
+                .set(defect.text());
+            if (defect.line() > 0) {
+                dirs.attr("line", defect.line());
+            }
+            dirs.up();
         }
         final Node node = xmir.node();
         new Xembler(dirs).applyQuietly(node);
