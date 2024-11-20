@@ -76,6 +76,7 @@ public final class RegisterMojo extends SafeMojo {
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code property} attribute is omitted for collection
      * properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)

@@ -26,6 +26,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
+import com.yegor256.farea.Farea;
 import com.yegor256.tojos.MnCsv;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -57,6 +58,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -64,6 +66,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link PullMojo}.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (1000 lines)
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 @ExtendWith(WeAreOnline.class)
@@ -365,6 +368,57 @@ final class PullMojoTest {
                 .resolve("org/eolang/bytes.eo")
                 .toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @Disabled
+    void ignoresPreviousMistakesAfterCorrection(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# In this program, we refer to the 'bar' object",
+                        "# by mistake. The build should fail because of this,",
+                        "# in particular its 'pull' step must fail.",
+                        "[] > foo",
+                        "  bar 42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.build().plugins().appendItself();
+                f.exec("eo:register", "eo:parse", "eo:optimize", "eo:shake");
+                MatcherAssert.assertThat(
+                    "first run must fail, because the 'bar' object is absent",
+                    f.execQuiet("eo:discover-foreign", "eo:pull"),
+                    Matchers.not(Matchers.equalTo(0))
+                );
+                f.files().file("src/main/eo/foo.eo").write(
+                    String.join(
+                        "\n",
+                        "+package org.eolang",
+                        "",
+                        "# Now, this program, doesn't refer to the 'bar' object",
+                        "# which makes this program valid and it must compile.",
+                        "[] > foo",
+                        "  42 > @",
+                        ""
+                    ).getBytes()
+                );
+                f.exec(
+                    "eo:register", "eo:parse", "eo:optimize", "eo:shake",
+                    "eo:discover-foreign", "eo:pull"
+                );
+            }
+        );
+        MatcherAssert.assertThat(
+            "necessary objects were pulled",
+            temp.resolve("target/eo/4-pull/org/eolang/number.eo").toFile().exists(),
+            Matchers.is(true)
         );
     }
 

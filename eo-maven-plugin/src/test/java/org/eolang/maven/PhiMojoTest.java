@@ -152,9 +152,7 @@ final class PhiMojoTest {
         final String xmir,
         @Mktmp final Path temp
     ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("phiFailOnError", false)
-            .with("phiOptimize", true);
+        final FakeMaven maven = new FakeMaven(temp);
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
         Assertions.assertDoesNotThrow(
             () -> maven.execute(PhiMojo.class),
@@ -163,105 +161,16 @@ final class PhiMojoTest {
     }
 
     @Test
-    void doesNotFailOnCritical(@Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .with("phiFailOnCritical", false)
-                .withProgram(
-                    PhiMojoTest.COMMENT,
-                    "[] > with-duplicates",
-                    "  true > x",
-                    "  false > x"
-                )
-                .execute(new FakeMaven.Phi()),
-            "PhiMojo should not fail on critical errors with 'phiFailsOnCritical' = false"
-        );
-    }
-
-    @Test
-    void skipsFailedOnCriticalError(@Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .with("phiFailOnCritical", true)
-                .with("phiSkipFailed", true)
-                .withProgram(
-                    PhiMojoTest.COMMENT,
-                    "[] > with-duplicates",
-                    "  true > x",
-                    "  false > x"
-                )
-                .execute(new FakeMaven.Phi()),
-            "PhiMojo should not fail on critical errors with 'phiSkipFailed' = true"
-        );
-    }
-
-    @Test
-    void failsOnError(@Mktmp final Path temp) {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(
-                    PhiMojoTest.COMMENT,
-                    "[] > without-name",
-                    "  true"
-                )
-                .execute(new FakeMaven.Phi()),
-            "PhiMojo should fail on errors with 'phiFailOnError' = true"
-        );
-    }
-
-    @Test
     void doesNotFailOnError(@Mktmp final Path temp) {
         Assertions.assertDoesNotThrow(
             () -> new FakeMaven(temp)
-                .with("phiFailOnError", false)
                 .withProgram(
                     PhiMojoTest.COMMENT,
                     "[] > without-name",
                     "  true"
                 )
                 .execute(new FakeMaven.Phi()),
-            "PhiMojo should not fail on errors with 'phiFailOnError' = false"
-        );
-    }
-
-    @Test
-    void skipsFailedOnError(@Mktmp final Path temp) {
-        Assertions.assertDoesNotThrow(
-            () -> new FakeMaven(temp)
-                .with("phiFailOnCritical", false)
-                .with("phiFailOnError", true)
-                .with("phiSkipFailed", true)
-                .withProgram(
-                    PhiMojoTest.COMMENT,
-                    "[] > without-name",
-                    "  true"
-                )
-                .execute(new FakeMaven.Phi()),
-            "PhiMojo should not fail on errors with 'phiSkipFailed' = true"
-        );
-    }
-
-    @Test
-    void doesNotSaveSkippedFile(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "Skipped file should not be saved after PhiMojo is done",
-            new FakeMaven(temp)
-                .with("phiFailOnCritical", true)
-                .with("phiSkipFailed", true)
-                .withProgram(
-                    PhiMojoTest.COMMENT,
-                    "[] > with-duplicates",
-                    "  true > x",
-                    "  false > x"
-                )
-                .execute(new FakeMaven.Phi())
-                .result(),
-            Matchers.not(
-                Matchers.hasKey(
-                    String.format("target/phi/foo/x/main.%s", PhiMojo.EXT)
-                )
-            )
+            "PhiMojo should not fail on errors"
         );
     }
 
