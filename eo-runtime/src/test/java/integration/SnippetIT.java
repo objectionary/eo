@@ -40,6 +40,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -63,12 +64,12 @@ import org.yaml.snakeyaml.Yaml;
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
 
+    @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
-        Assumptions.assumeTrue(false, "The test disabled for now");
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final String file = map.get("file").toString();
