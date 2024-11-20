@@ -32,7 +32,6 @@ import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
@@ -40,7 +39,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -55,16 +53,11 @@ import org.yaml.snakeyaml.Yaml;
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
- * @todo #3483:30min Enable the integration tests. {@link SnippetIT} and {@link PhiUnphiIT} were
- *  disabled because some break changes in eo-runtime were introduced. When new version of EO is
- *  released the tests must be enabled by removing {@code Assumptions.assumeTrue}.
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
 @ExtendWith(MktmpResolver.class)
 final class SnippetIT {
-
-    @Disabled
     @ParameterizedTest
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
@@ -79,9 +72,7 @@ final class SnippetIT {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files().file("src/main/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main/eo")
-                );
+                new CopiedSources(f).apply("src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
                     .write(

@@ -31,8 +31,13 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -57,12 +62,7 @@ final class PhiUnphiIT {
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                f.files().file("src/main").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
-                );
-                f.files().file("src/test/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/test/eo")
-                );
+                new CopiedSources(f).apply("src/main").apply("src/test/eo");
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
@@ -99,7 +99,7 @@ final class PhiUnphiIT {
                     .set("phiOutputDir", "${project.build.directory}/phi")
                     .set("unphiInputDir", "${project.build.directory}/phi")
                     .set("unphiOutputDir", "${project.build.directory}/generated-eo-test/1-parse")
-                    .set("unphiMetas", new String[]{"+tests"})
+                    .set("unphiMetas", new String[]{"+tests", "+unlint abstract-decoratee"})
                     .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
                     .set("printReversed", Boolean.TRUE.toString());
