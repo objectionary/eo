@@ -103,9 +103,9 @@ final class XmirTest {
             first,
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
-        Logger.info(this, "First:%n%s", first);
+        Logger.debug(this, "First:%n%s", first);
         final String eolang = xmir.apply(first).toEO();
-        Logger.info(this, "EOLANG:%n%s", eolang);
+        Logger.debug(this, "EOLANG:%n%s", eolang);
         return eolang;
     }
 }

@@ -27,6 +27,7 @@ SOFTWARE.
   Here we add xi-edges to objects that ARE other objects.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/sodg">
     <xsl:copy>
@@ -34,7 +35,7 @@ SOFTWARE.
       <xsl:apply-templates select="/program/objects//o" mode="sodg"/>
     </xsl:copy>
   </xsl:template>
-  <xsl:template match="o[@base and not(@level) and not(starts-with(@base, '.')) and not(o) and not(@data) and not(@abstract)]" mode="sodg" priority="1">
+  <xsl:template match="o[@base and not(@level) and not(starts-with(@base, '.')) and not(o) and not(eo:has-data(.)) and not(@abstract)]" mode="sodg" priority="1">
     <xsl:call-template name="i">
       <xsl:with-param name="name" select="'BIND'"/>
       <xsl:with-param name="args" as="item()*">

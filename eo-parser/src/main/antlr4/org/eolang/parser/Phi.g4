@@ -33,8 +33,8 @@ program
     ;
 
 object
-    : formation applicationsOrDispatches
-    | scoped (dispatch applicationsOrDispatches)?
+    : formation (dispatch applicationsOrDispatches)?
+    | scoped applicationsOrDispatches
     | termination
     ;
 
@@ -49,17 +49,17 @@ scoped
 
 bindings
     : binding?
-    | binding (COMMA binding)*
+    | binding (COMMA binding)+
     ;
 
 binding
-    : alphaBinding
+    : tauBinding
     | emptyBinding
     | deltaBinding
     | lambdaBinding
     ;
 
-alphaBinding
+tauBinding
     : attribute ARROW object
     ;
 
@@ -91,7 +91,12 @@ FUNCTION
     ;
 
 application
-    : LB bindings RB
+    : LB applicationBinding RB
+    ;
+
+applicationBinding
+    : tauBinding?
+    | tauBinding (COMMA tauBinding)*
     ;
 
 dispatch: DOT attribute

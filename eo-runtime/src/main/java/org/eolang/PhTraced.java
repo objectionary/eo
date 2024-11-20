@@ -152,11 +152,6 @@ public final class PhTraced implements Phi {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        this.object.attach(data);
-    }
-
-    @Override
     public byte[] delta() {
         return new TracingWhileGetting<>(this.object::delta).get();
     }

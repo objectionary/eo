@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -75,7 +75,7 @@ public class PhDefault implements Phi, Cloneable {
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
-    private AtomicReference<byte[]> data;
+    private final Optional<byte[]> data;
 
     /**
      * Forma of it.
@@ -93,11 +93,19 @@ public class PhDefault implements Phi, Cloneable {
     private Map<String, Attr> attrs;
 
     /**
+     * Default ctor.
+     */
+    public PhDefault() {
+        this(null);
+    }
+
+    /**
      * Ctor.
+     * @param dta Object data
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public PhDefault() {
-        this.data = new AtomicReference<>(null);
+    public PhDefault(final byte[] dta) {
+        this.data = Optional.ofNullable(dta);
         this.form = PhDefault.TO_FORMA.matcher(this.getClass().getName()).replaceAll("$1");
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
@@ -118,13 +126,13 @@ public class PhDefault implements Phi, Cloneable {
     public String φTerm() {
         final List<String> list = new ArrayList<>(this.attrs.size());
         final String format = "%s ↦ %s";
-        if (this.data.get() != null) {
-            list.add(
+        this.data.ifPresent(
+            bytes -> list.add(
                 String.format(
-                    format, Attr.DELTA, new BytesOf(this.data.get()).asString()
+                    format, Attr.DELTA, new BytesOf(bytes).asString()
                 )
-            );
-        }
+            )
+        );
         for (final Map.Entry<String, Attr> ent : this.attrs.entrySet().stream().filter(
             e -> !e.getKey().equals(Attr.RHO)
         ).collect(Collectors.toList())) {
@@ -156,7 +164,7 @@ public class PhDefault implements Phi, Cloneable {
             this.getClass().getCanonicalName(),
             this.hashCode()
         );
-        if (this.data.get() != null) {
+        if (this.data.isPresent()) {
             result = String.format(
                 "%s=%s",
                 result,
@@ -170,7 +178,6 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.data = new AtomicReference<>(this.data.get());
             final Map<String, Attr> map = new HashMap<>(this.attrs.size());
             for (final Map.Entry<String, Attr> ent : this.attrs.entrySet()) {
                 map.put(ent.getKey(), ent.getValue().copy(copy));
@@ -251,21 +258,9 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public void attach(final byte[] bytes) {
-        synchronized (this.data) {
-            if (this.data.get() != null) {
-                throw new ExFailure(
-                    "Some data is already attached to the object, can't reattach"
-                );
-            }
-            this.data.set(bytes);
-        }
-    }
-
-    @Override
     public byte[] delta() {
         final byte[] bytes;
-        if (this.data.get() != null) {
+        if (this.data.isPresent()) {
             bytes = this.data.get();
         } else if (this instanceof Atom) {
             bytes = this.take(Attr.LAMBDA).delta();

@@ -239,7 +239,7 @@ final class EoSyntaxTest {
             xml,
             XhtmlMatchers.hasXPaths(
                 "/program/objects[count(o)=1]",
-                "/program/objects/o[@data='bytes']"
+                "/program/objects/o[text()]"
             )
         );
     }

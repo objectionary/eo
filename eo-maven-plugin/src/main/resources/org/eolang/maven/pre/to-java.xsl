@@ -491,11 +491,11 @@ SOFTWARE.
     <xsl:param name="name"/>
     <xsl:value-of select="$indent"/>
     <xsl:value-of select="$name"/>
-    <xsl:text> = new PhData(</xsl:text>
+    <xsl:text> = new PhWith(</xsl:text>
     <xsl:value-of select="$name"/>
-    <xsl:text>, </xsl:text>
+    <xsl:text>, 0, new PhDefault(</xsl:text>
     <xsl:value-of select="text()"/>
-    <xsl:text>);</xsl:text>
+    <xsl:text>));</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Class for tests -->

@@ -42,27 +42,27 @@ phi: |-
         x ↦ Φ.org.eolang.memory(
           α0 ↦ Φ.org.eolang.number(
             α0 ↦ Φ.org.eolang.bytes(
-              Δ ⤍ 00-00-00-00-00-00-00-00
+              α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-00 ⟧
             )
           )
         ),
         φ ↦ ξ.x.write(
           α0 ↦ Φ.org.eolang.number(
             α0 ↦ Φ.org.eolang.bytes(
-              Δ ⤍ 40-14-00-00-00-00-00-00
+              α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
             )
           )
         ).eq(
           α0 ↦ Φ.org.eolang.number(
             α0 ↦ Φ.org.eolang.bytes(
-              Δ ⤍ 40-14-00-00-00-00-00-00
+              α0 ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧
             )
           )
         ).and(
           α0 ↦ ξ.x.as-int.lt(
             α0 ↦ Φ.org.eolang.number(
               α0 ↦ Φ.org.eolang.bytes(
-                Δ ⤍ 40-24-00-00-00-00-00-00
+                α0 ↦ ⟦ Δ ⤍ 40-24-00-00-00-00-00-00 ⟧
               )
             )
           ).while(
@@ -72,7 +72,7 @@ phi: |-
                 α0 ↦ ξ.ρ.x.as-int.plus(
                   α0 ↦ Φ.org.eolang.number(
                     α0 ↦ Φ.org.eolang.bytes(
-                      Δ ⤍ 3F-F0-00-00-00-00-00-00
+                      α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧
                     )
                   )
                 )
@@ -81,7 +81,7 @@ phi: |-
           ).eq(
             α0 ↦ Φ.org.eolang.number(
               α0 ↦ Φ.org.eolang.bytes(
-                Δ ⤍ 40-26-00-00-00-00-00-00
+                α0 ↦ ⟦ Δ ⤍ 40-26-00-00-00-00-00-00 ⟧
               )
             )
           )

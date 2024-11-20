@@ -28,6 +28,8 @@ import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Directives;
 
 /**
@@ -36,16 +38,17 @@ import org.xembly.Directives;
  * @since 0.35.0
  */
 final class PhiSyntaxTest {
-    @Test
-    void addsError() throws IOException {
+    @ParameterizedTest
+    @CsvSource({
+        "empty ↦ Φ.org.eolang.bytes, program structure is invalid",
+        "{⟦obj ↦ ⟦⟧(x ↦ ⟦⟧)⟧}, application on formation is not supported",
+        "{⟦obj ↦ ⟦a ↦ ⟦⟧.y(Δ ⤍ 00-)⟧⟧}, delta application is not supported"
+    })
+    void addsError(final String program, final String message) throws IOException {
         MatcherAssert.assertThat(
-            "Result XML must contain errors",
-            new PhiSyntax(
-                "empty ↦ Φ.org.eolang.bytes"
-            ).parsed(),
-            XhtmlMatchers.hasXPath(
-                "//errors[count(error)>0]"
-            )
+            String.format("Result XML must contain errors because %s", message),
+            new PhiSyntax(program).parsed(),
+            XhtmlMatchers.hasXPath("//errors[count(error)>0]")
         );
     }
 
@@ -78,7 +81,7 @@ final class PhiSyntaxTest {
         MatcherAssert.assertThat(
             "XMIR contains meta with package",
             new PhiSyntax(
-                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(Δ ⤍ 42-), λ ⤍ Package⟧⟧}"
+                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(α0 ↦ ⟦ Δ ⤍ 42- ⟧), λ ⤍ Package⟧⟧}"
             ).parsed(),
             XhtmlMatchers.hasXPath(
                 "/program/metas/meta[@line='1' and head='package' and tail='foo']",

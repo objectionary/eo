@@ -28,6 +28,7 @@ SOFTWARE.
   the data into them.
   -->
   <xsl:import href="/org/eolang/maven/sodg/_macros.xsl"/>
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/program/sodg">
     <xsl:copy>
@@ -36,7 +37,7 @@ SOFTWARE.
     </xsl:copy>
   </xsl:template>
   <!-- remove this "!=tuple" after the fix: https://github.com/objectionary/eo/issues/1060 -->
-  <xsl:template match="o[@base and @data and @data != 'tuple']" mode="sodg" priority="1">
+  <xsl:template match="o[@base and eo:has-data(.)]" mode="sodg" priority="1">
     <xsl:variable name="v">
       <xsl:value-of select="@loc"/>
       <xsl:text>.Δ</xsl:text>

@@ -48,7 +48,7 @@ final class RustNodeTest {
     @Test
     void generatesRust(@Mktmp final Path temp) throws IOException {
         final XML insert = new XMLDocument(
-            "<rust code=\"75 73 65 20\" code_loc=\"Φ.org.eolang.custom-rust.r.α0\"><dependencies/></rust>"
+            "<rust code=\"75-73-65-20\" code_loc=\"Φ.org.eolang.custom-rust.r.α0\"><dependencies/></rust>"
         ).nodes("rust").get(0);
         final Path lib = temp.resolve("Lib");
         final Path  gen = temp.resolve("generated");

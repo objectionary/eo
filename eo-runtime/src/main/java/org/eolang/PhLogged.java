@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import java.util.Arrays;
-
 /**
  * An object that reports all manipulations with it to the log (very useful
  * for debugging purposes).
@@ -110,13 +108,6 @@ public final class PhLogged implements Phi {
     @Override
     public String toString() {
         return this.origin.toString();
-    }
-
-    @Override
-    public void attach(final byte[] data) {
-        System.out.printf("%d.attach(%s)...\n", this.hashCode(), Arrays.toString(data));
-        this.origin.attach(data);
-        System.out.printf("%d.attach(%s)!\n", this.hashCode(), Arrays.toString(data));
     }
 
     @Override

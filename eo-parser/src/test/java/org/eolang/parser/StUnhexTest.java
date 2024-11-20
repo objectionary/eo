@@ -42,10 +42,10 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>43 70 2E 4F 30 46 73 2E</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes'>43-70-2E-4F-30-46-73-2E</o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='72872276393407200' and @data='number']")
+            XhtmlMatchers.hasXPaths("//o[text()='72872276393407200']")
         );
     }
 
@@ -55,29 +55,29 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>FF FF FF FF FF FF FF FF</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes'>FF-FF-FF-FF-FF-FF-FF-FF</o></o></p>"
                 )
             ),
-            XhtmlMatchers.hasXPaths("//o[text()='NaN' and @data='number']")
+            XhtmlMatchers.hasXPaths("//o[text()='NaN']")
         );
     }
 
     @Test
     void convertsStringFromHexToEo() {
         MatcherAssert.assertThat(
-            EoIndentLexerTest.TO_ADD_MESSAGE,
+            "String bytes must be converted to human readable string, but they didn't",
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
                     String.join(
                         "",
-                        "<p><o base='string'><o base='bytes' data='bytes'>41 42 0A 09</o></o>",
-                        "<o base='string'><o base='bytes' data='bytes'>41 42</o></o></p>"
+                        "<p><o base='string'><o base='bytes'>41-42-0A-09</o></o>",
+                        "<o base='string'><o base='bytes'>41-42</o></o></p>"
                     )
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[text()='AB\\n\\t' and @data='string']",
-                "//o[text()='AB' and @data='string']"
+                "//o[text()='\"AB\\n\\t\"']",
+                "//o[text()='\"AB\"']"
             )
         );
     }
@@ -88,11 +88,11 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='string'><o base='bytes' data='bytes'/></o></p>"
+                    "<p><o base='string'><o base='bytes'/></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[empty(text()) and @data='string']"
+                "//o[empty(text())]"
             )
         );
     }
@@ -103,11 +103,11 @@ final class StUnhexTest {
             EoIndentLexerTest.TO_ADD_MESSAGE,
             new Xsline(new StUnhex()).pass(
                 new XMLDocument(
-                    "<p><o base='number'><o base='org.eolang.bytes' data='bytes'>41 42 43 67 AE CD 3E FD</o></o></p>"
+                    "<p><o base='number'><o base='org.eolang.bytes'>41-42-43-67-AE-CD-3E-FD</o></o></p>"
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "//o[text()='2393807.3656386123' and @data='number']"
+                "//o[text()='2393807.3656386123']"
             )
         );
     }

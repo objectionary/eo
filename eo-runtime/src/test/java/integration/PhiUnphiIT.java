@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -53,6 +54,7 @@ final class PhiUnphiIT {
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
+        Assumptions.assumeTrue(false, "The test disabled for now");
         new Farea(temp).together(
             f -> {
                 f.files().file("src/main").save(

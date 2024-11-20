@@ -54,6 +54,9 @@ import org.yaml.snakeyaml.Yaml;
  * Then, when new {@code eo-runtime.jar} is
  * released to Maven Central, you enable this test again.</p>
  * @since 0.1
+ * @todo #3483:30min Enable the integration tests. {@link SnippetIT} and {@link PhiUnphiIT} were
+ *  disabled because some break changes in eo-runtime were introduced. When new version of EO is
+ *  released the tests must be enabled by removing {@code Assumptions.assumeTrue}.
  */
 @ExtendWith(WeAreOnline.class)
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
@@ -65,6 +68,7 @@ final class SnippetIT {
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
     void runsAllSnippets(final String yml, final @Mktmp Path temp) throws IOException {
+        Assumptions.assumeTrue(false, "The test disabled for now");
         final Yaml yaml = new Yaml();
         final Map<String, Object> map = yaml.load(yml);
         final String file = map.get("file").toString();

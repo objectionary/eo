@@ -497,6 +497,15 @@ final class PhDefaultTest {
         );
     }
 
+    @Test
+    void printsData() {
+        MatcherAssert.assertThat(
+            "PhDefault with injected data must print them to string",
+            new PhDefault(new byte[] {0x01, 0x02, 0x03}).toString(),
+            Matchers.containsString("01-02-03")
+        );
+    }
+
     /**
      * Rnd.
      * @since 1.0

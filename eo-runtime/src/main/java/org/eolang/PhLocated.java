@@ -137,16 +137,6 @@ public final class PhLocated implements Phi, Atom {
     }
 
     @Override
-    public void attach(final byte[] data) {
-        this.through(
-            () -> {
-                this.origin.attach(data);
-                return null;
-            }
-        );
-    }
-
-    @Override
     public byte[] delta() {
         return this.through(this.origin::delta, ".Δ");
     }
