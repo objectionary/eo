@@ -67,6 +67,11 @@ public class PhDefault implements Phi, Cloneable {
     private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
 
     /**
+     * From Java class name to forma.
+     */
+    private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO");
+
+    /**
      * Data.
      * @checkstyle VisibilityModifierCheck (2 lines)
      */
@@ -93,7 +98,7 @@ public class PhDefault implements Phi, Cloneable {
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public PhDefault() {
         this.data = new AtomicReference<>(null);
-        this.form = this.getClass().getName();
+        this.form = PhDefault.TO_FORMA.matcher(this.getClass().getName()).replaceAll("$1");
         this.attrs = new HashMap<>(0);
         this.order = new HashMap<>(0);
         this.add(Attr.RHO, new AtRho());

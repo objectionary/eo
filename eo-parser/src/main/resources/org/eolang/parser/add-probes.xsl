@@ -67,7 +67,7 @@ SOFTWARE.
           <xsl:if test="not(eo:contains-any-of($p, ('$', '^', '@', '&lt;'))) and not(starts-with($p, '.')) and $c &gt; 1">
             <xsl:element name="meta">
               <xsl:attribute name="line">
-                <xsl:value-of select="@line"/>
+                <xsl:value-of select="if (@line) then @line else '0'"/>
               </xsl:attribute>
               <xsl:element name="head">
                 <xsl:text>probe</xsl:text>

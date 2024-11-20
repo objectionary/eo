@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > goto-jumps-backwards
   eq. > @
     malloc.of
@@ -44,10 +44,10 @@
                       i.as-number.lt 10
                       g.backward
                       true
-            true
+            i
     10
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > goto-jumps-forward
   [x] > div
     malloc.for > @
@@ -59,7 +59,7 @@
               *
                 if.
                   x.eq 0
-                  g.forward true
+                  g.forward r
                   true
                 r.put (42.div x)
   and. > @
@@ -70,7 +70,7 @@
       div 0
       0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > returns-from-method-body
   [a b] > max
     go.to > @
@@ -86,7 +86,7 @@
     max 7 42
     42
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > nested-goto
   eq. > @
     go.to

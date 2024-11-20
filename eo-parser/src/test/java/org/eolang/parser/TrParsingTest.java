@@ -54,7 +54,7 @@ final class TrParsingTest {
     }
 
     @Test
-    void stopsPipeline() {
+    void passesPipelineEvenWithErrors() {
         final XML xml = new XMLDocument(
             String.join(
                 "\n",
@@ -71,13 +71,13 @@ final class TrParsingTest {
             )
         );
         MatcherAssert.assertThat(
-            "XSL transformation don't work properly.",
+            "XSL transformation works properly.",
             new Xsline(
                 new TrParsing()
             ).pass(xml),
             XhtmlMatchers.hasXPaths(
-                "/program/sheets[count(sheet)=3]",
-                "/program/errors/error[@severity='critical']"
+                "/program/sheets[count(sheet)>1]",
+                "/program/errors[not(error)]"
             )
         );
     }

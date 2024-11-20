@@ -28,7 +28,9 @@
  */
 package EOorg.EOeolang; // NOPMD
 
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import org.eolang.AtVoid;
 import org.eolang.Atom;
 import org.eolang.Dataized;
@@ -68,52 +70,6 @@ public final class EOerror extends PhDefault implements Atom {
     }
 
     /**
-     * Builds error message from the exception.
-     *
-     * @since 0.40
-     */
-    public static final class ErrorMsg implements Supplier<String> {
-        /**
-         * The exception.
-         */
-        private final Throwable exp;
-
-        /**
-         * Ctor.
-         *
-         * @param exp The exception.
-         */
-        public ErrorMsg(final Throwable exp) {
-            this.exp = exp;
-        }
-
-        @Override
-        public String get() {
-            return ErrorMsg.message(this.exp);
-        }
-
-        /**
-         * Make a message from an exception.
-         * @param exp The exception.
-         * @return Message.
-         */
-        private static String message(final Throwable exp) {
-            final StringBuilder ret = new StringBuilder(0);
-            if (exp.getMessage() != null) {
-                if (!(exp instanceof ExFailure)) {
-                    ret.append(exp.getClass().getSimpleName()).append(": ");
-                }
-                ret.append(exp.getMessage().replace("%", "%%"));
-            }
-            if (exp.getCause() != null) {
-                ret.append("; caused by ")
-                    .append(ErrorMsg.message(exp.getCause()));
-            }
-            return ret.toString();
-        }
-    }
-
-    /**
      * This exception is thrown by the {@link EOerror} object only.
      *
      * <p>You are not supposed to use it anywhere else!</p>
@@ -133,12 +89,36 @@ public final class EOerror extends PhDefault implements Atom {
         private final Phi enc;
 
         /**
+         * Locations seen on its way out.
+         */
+        private final Collection<String> locs;
+
+        /**
          * Ctor.
          * @param enclosure Enclosure inside the error
          */
         public ExError(final Phi enclosure) {
+            this(enclosure, Collections.emptyList());
+        }
+
+        /**
+         * Ctor.
+         * @param cause Previous error
+         * @param loc New location
+         */
+        public ExError(final ExError cause, final String loc) {
+            this(cause.enclosure(), concat(cause.locs, loc));
+        }
+
+        /**
+         * Ctor.
+         * @param enclosure Enclosure inside the error
+         * @param locations Locations seen
+         */
+        public ExError(final Phi enclosure, final Collection<String> locations) {
             super(EOerror.ExError.safeMessage(enclosure));
             this.enc = enclosure;
+            this.locs = locations;
         }
 
         /**
@@ -147,6 +127,28 @@ public final class EOerror extends PhDefault implements Atom {
          */
         public Phi enclosure() {
             return this.enc;
+        }
+
+        /**
+         * Take locations.
+         * @return The locations
+         */
+        public Collection<String> locations() {
+            return this.locs;
+        }
+
+        /**
+         * Concatenate locations.
+         * @param before Locations before
+         * @param loc New one
+         * @return New list of them
+         */
+        private static Collection<String> concat(final Collection<String> before,
+            final String loc) {
+            final Collection<String> list = new ArrayList<>(before.size() + 1);
+            list.addAll(before);
+            list.add(loc);
+            return list;
         }
 
         /**

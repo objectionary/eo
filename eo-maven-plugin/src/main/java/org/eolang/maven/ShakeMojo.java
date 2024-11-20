@@ -44,6 +44,7 @@ import org.eolang.maven.tojos.TojoHash;
 
 /**
  * Shake (prepare) XML files after optimizations for translation to java.
+ *
  * @since 0.33.0
  */
 @Mojo(

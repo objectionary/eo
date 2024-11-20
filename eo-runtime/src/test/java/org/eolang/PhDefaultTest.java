@@ -422,6 +422,15 @@ final class PhDefaultTest {
     }
 
     @Test
+    void rendersFormaProperly() {
+        MatcherAssert.assertThat(
+            "forma of 'number' is the full name of the 'number' object",
+            new Data.ToPhi(42L).forma(),
+            Matchers.equalTo("org.eolang.number")
+        );
+    }
+
+    @Test
     void hasDifferentFormaWithBoundedMethod() {
         final Phi five = new Data.ToPhi(5L);
         MatcherAssert.assertThat(

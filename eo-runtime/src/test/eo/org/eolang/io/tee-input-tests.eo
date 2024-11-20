@@ -29,7 +29,7 @@
 +package org.eolang.io
 +version 0.0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-bytes-and-writes-to-memory
   eq. > @
     malloc.of
@@ -42,7 +42,7 @@
           5
     01-02-03-04-05
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-bytes-and-writes-to-memory-by-portions
   eq. > @
     malloc.of
@@ -53,10 +53,13 @@
           malloc-as-output m
         tee.read 2 > i1
         i1.read 2 > i2
-        i2.read 1 > @
+        seq > @
+          *
+            i2.read 1
+            m
     01-02-03-04-05
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > reads-from-bytes-and-writes-to-two-memory-blocks
   eq. > @
     malloc.of
@@ -72,8 +75,9 @@
                     tee-input
                       bytes-as-input 01-02-03-04-05
                       malloc-as-output m2
-                    malloc-as-output ^.m1
+                    malloc-as-output m1
                   5
-                ^.m1.write 5 2A-
+                m1.write 5 2A-
+                m1
     01-02-03-04-05-2A
 

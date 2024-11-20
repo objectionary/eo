@@ -22,7 +22,7 @@
 ---
 xsls: [ ]
 tests:
-  - /program/comment()[1]
+  - /comment()[1]
 eo: |
   # This is the default 64+ symbols comment in front of abstract object.
   [] > main

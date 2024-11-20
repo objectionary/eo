@@ -26,7 +26,7 @@
 +package org.eolang
 +version 0.0.0
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > dataized-does-not-do-recalculation
   eq. > @
     malloc.for
@@ -40,9 +40,10 @@
             cached.as-number
             cached.as-bytes
             cached.as-bool
+            m
     1
 
-# Test.
+# This unit test is supposed to check the functionality of the corresponding object.
 [] > dataizes-as-bytes-behaves-as-exclamationed
   # Func.
   [] > func

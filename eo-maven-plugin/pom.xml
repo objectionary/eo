@@ -40,6 +40,11 @@ SOFTWARE.
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>lints</artifactId>
+      <version>0.0.8</version>
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>xsline</artifactId>
       <!-- version from parent POM -->

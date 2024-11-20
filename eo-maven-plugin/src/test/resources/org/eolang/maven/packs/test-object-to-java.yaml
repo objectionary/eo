@@ -38,7 +38,7 @@ eo: |
   +tests
   +version 0.0.0
 
-  # Test.
+  # This unit test is supposed to check the functionality of the corresponding object.
   [] > compares-two-bools
   eq. > @
     true
