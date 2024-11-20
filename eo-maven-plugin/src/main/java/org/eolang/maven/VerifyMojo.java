@@ -232,6 +232,9 @@ public final class VerifyMojo extends SafeMojo {
                 sum.append('s');
             }
         }
+        if (sum.length() == 0) {
+            sum.append("no complaints");
+        }
         return sum.toString();
     }
 

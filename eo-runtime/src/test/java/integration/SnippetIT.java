@@ -40,7 +40,6 @@ import org.eolang.jucs.ClasspathSource;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.yaml.snakeyaml.Yaml;
@@ -62,7 +61,6 @@ import org.yaml.snakeyaml.Yaml;
 final class SnippetIT {
 
     @ParameterizedTest
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     @ClasspathSource(value = "org/eolang/snippets/", glob = "**.yaml")
