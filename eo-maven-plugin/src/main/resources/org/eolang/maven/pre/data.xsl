@@ -31,12 +31,14 @@ SOFTWARE.
       <xsl:attribute name="primitive"/>
       <xsl:element name="value">
         <xsl:text>new byte[] {</xsl:text>
-        <xsl:for-each select="tokenize(text(), ' ')">
-          <xsl:if test="position() &gt; 1">
-            <xsl:text>, </xsl:text>
+        <xsl:for-each select="tokenize(text(), '-')">
+          <xsl:if test=".!=''">
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>, </xsl:text>
+            </xsl:if>
+            <xsl:text>(byte) 0x</xsl:text>
+            <xsl:value-of select="."/>
           </xsl:if>
-          <xsl:text>(byte) 0x</xsl:text>
-          <xsl:value-of select="."/>
         </xsl:for-each>
         <xsl:text>}</xsl:text>
       </xsl:element>

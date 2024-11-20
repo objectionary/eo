@@ -27,7 +27,7 @@ SOFTWARE.
   Convert such expression in XMIR:
     x ↦ ⟦ Δ ⤍ 01- ⟧,
   to this:
-    x ↦ Φ.org.eolang.bytes( α0 ↦ [ Δ ⤍ 01- ] )
+    x ↦ Φ.org.eolang.bytes( α0 ↦ ⟦ Δ ⤍ 01- ⟧ )
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>

@@ -26,14 +26,14 @@ SOFTWARE.
   <!--
   Convert such expression in XMIR:
     x ↦ ⟦
-      text ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A),
-      size ↦ Φ.org.eolang.bytes (Δ ⤍ 00-00-00-00-00-00-00-08),
+      text ↦ Φ.org.eolang.bytes (α0 ↦ ⟦ Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A ⟧),
+      size ↦ Φ.org.eolang.bytes (α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-08 ⟧),
       λ ⤍ Lorg_eolang_io_stdout
     ⟧
   to this:
     x ↦ Φ.org.eolang.io.stdout(
-      text ↦ Φ.org.eolang.bytes (Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A),
-      size ↦ Φ.org.eolang.bytes (Δ ⤍ 00-00-00-00-00-00-00-08)
+      text ↦ Φ.org.eolang.bytes (α0 ↦ ⟦ Δ ⤍ 48-65-6C-6C-6F-20-77-6F-72-6C-64-0A ⟧),
+      size ↦ Φ.org.eolang.bytes (α0 ↦ ⟦ Δ ⤍ 00-00-00-00-00-00-00-08 ⟧)
     )
   -->
   <xsl:output encoding="UTF-8" method="xml"/>

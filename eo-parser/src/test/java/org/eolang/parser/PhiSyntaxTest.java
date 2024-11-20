@@ -81,7 +81,7 @@ final class PhiSyntaxTest {
         MatcherAssert.assertThat(
             "XMIR contains meta with package",
             new PhiSyntax(
-                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(Δ ⤍ 42-), λ ⤍ Package⟧⟧}"
+                "{⟦foo ↦ ⟦bar ↦ Φ.org.eolang.bytes(α0 ↦ ⟦ Δ ⤍ 42- ⟧), λ ⤍ Package⟧⟧}"
             ).parsed(),
             XhtmlMatchers.hasXPath(
                 "/program/metas/meta[@line='1' and head='package' and tail='foo']",

@@ -127,27 +127,6 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- TOKENIZE BYTES -->
-  <xsl:function name="eo:bytes">
-    <xsl:param name="bts"/>
-    <xsl:choose>
-      <xsl:when test="string-length($bts)&gt;2">
-        <xsl:for-each select="tokenize($bts, ' ')">
-          <xsl:if test="position()&gt;1">
-            <xsl:text>-</xsl:text>
-          </xsl:if>
-          <xsl:value-of select="."/>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:when test="string-length($bts)=2">
-        <xsl:value-of select="$bts"/>
-        <xsl:text>-</xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:text>--</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
   <!-- COMMA WITH SPACE -->
   <xsl:function name="eo:comma">
     <xsl:param name="pos"/>
@@ -331,7 +310,7 @@ SOFTWARE.
       <xsl:value-of select="$space"/>
       <xsl:value-of select="$delta"/>
       <xsl:value-of select="$dashed-arrow"/>
-      <xsl:value-of select="eo:bytes(text()[last()])"/>
+      <xsl:value-of select="text()[last()]"/>
       <xsl:value-of select="$space"/>
       <xsl:value-of select="$rb"/>
       <xsl:value-of select="eo:eol($tabs)"/>

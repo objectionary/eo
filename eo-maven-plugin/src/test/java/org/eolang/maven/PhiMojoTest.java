@@ -284,6 +284,7 @@ final class PhiMojoTest {
                     .withProgram(map.get("eo").toString())
                     .with("phiFailOnCritical", false)
                     .with("phiFailOnError", false)
+                    .with("trackOptimizationSteps", true)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")

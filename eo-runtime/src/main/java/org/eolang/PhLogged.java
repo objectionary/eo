@@ -24,8 +24,6 @@
 
 package org.eolang;
 
-import java.util.Arrays;
-
 /**
  * An object that reports all manipulations with it to the log (very useful
  * for debugging purposes).

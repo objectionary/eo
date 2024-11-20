@@ -157,34 +157,7 @@ SOFTWARE.
   </xsl:template>
   <!-- DATA -->
   <xsl:template match="o[eo:has-data(.)]" mode="head">
-    <xsl:variable name="data" select="normalize-space(string-join(text(),''))"/>
-    <xsl:choose>
-      <!-- NUMBER -->
-      <xsl:when test="matches($data, '^(0|(-?[1-9][0-9]*))(\.\d+)?$')">
-        <xsl:value-of select="$data"/>
-      </xsl:when>
-      <!-- BYTES -->
-      <xsl:when test="$data='' or matches($data, '^(?:[0-9A-Fa-f]{2}(?:\s|$))+')">
-        <xsl:choose>
-          <xsl:when test="empty($data)">
-            <xsl:text>--</xsl:text>
-          </xsl:when>
-          <xsl:when test="string-length($data)=2">
-            <xsl:value-of select="$data"/>
-            <xsl:text>-</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="replace($data, ' ', '-')"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <!-- STRING -->
-      <xsl:otherwise>
-        <xsl:text>"</xsl:text>
-        <xsl:value-of select="$data"/>
-        <xsl:text>"</xsl:text>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:value-of select="normalize-space(string-join(text(),''))"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

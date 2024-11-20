@@ -293,11 +293,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
                 );
             }
         } else {
-            if ("--".equals(ctx.BYTES().getText())) {
-                this.objects().data(ctx.BYTES().getText());
-            } else {
-                this.objects().data(ctx.BYTES().getText().replaceAll("-", " ").trim());
-            }
+            this.objects().data(ctx.BYTES().getText().trim());
         }
     }
 
@@ -369,8 +365,7 @@ public final class XePhiListener implements PhiListener, Iterable<Directive> {
             .prop("base", "org.eolang.string")
             .start()
             .prop("base", "org.eolang.bytes")
-            .prop("data", "bytes")
-            .data("55 6E 6B 6E 6F 77 6E 20 65 72 72 6F 72")
+            .data("55-6E-6B-6E-6F-77-6E-20-65-72-72-6F-72")
             .leave()
             .leave()
             .leave();

@@ -55,7 +55,7 @@ SOFTWARE.
   <xsl:function name="eo:hex-to-utf8">
     <xsl:param name="str"/>
     <xsl:variable name="hex">0123456789ABCDEF</xsl:variable>
-    <xsl:variable name="tail" select="translate($str, ' ', '')"/>
+    <xsl:variable name="tail" select="translate($str, '-', '')"/>
     <xsl:if test="$tail">
       <!-- extract first 2 digits -->
       <xsl:variable name="first" select="substring($tail, 1, 1)"/>

@@ -24,6 +24,8 @@ eo: -- > empty
 phi: |-
   {
     ⟦
-      empty ↦ Φ.org.eolang.bytes
+      empty ↦ Φ.org.eolang.bytes(
+        α0 ↦ ⟦ Δ ⤍ -- ⟧
+      )
     ⟧
   }

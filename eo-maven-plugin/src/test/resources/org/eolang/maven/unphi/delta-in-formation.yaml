@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 tests:
-  - //o[not(@abstract) and @name='x' and @base='org.eolang.bytes' and text()='01']
+  - //o[not(@abstract) and @name='x' and @base='org.eolang.bytes' and text()='01-']
 phi: |
   {
     ⟦

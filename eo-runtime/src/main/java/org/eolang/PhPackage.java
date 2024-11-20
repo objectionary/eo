@@ -25,7 +25,6 @@
 package org.eolang;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

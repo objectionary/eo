@@ -1365,10 +1365,19 @@ public final class XeEoListener implements EoListener, Iterable<Directive> {
      * @return Hexadecimal value as string.
      */
     private static String bytesToHex(final byte... bytes) {
-        final StringJoiner out = new StringJoiner("-");
-        for (final byte bty : bytes) {
-            out.add(String.format("%02X", bty));
+        final String hex;
+        if (bytes.length == 0) {
+            hex = "--";
+        } else {
+            final StringJoiner out = new StringJoiner("-");
+            for (final byte bty : bytes) {
+                out.add(String.format("%02X", bty));
+            }
+            if (bytes.length == 1) {
+                out.add("");
+            }
+            hex = out.toString();
         }
-        return out.toString();
+        return hex;
     }
 }

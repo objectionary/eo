@@ -26,11 +26,11 @@ SOFTWARE.
   <!--
   Convert such XMIR:
     <o base='any'>
-      <o abstract="" as="0">01 2A</o>
+      <o abstract="" as="0">01-2A</o>
     </o>
   to this:
     <o base='any'>
-      01 2A
+      01-2A
     </o>
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
