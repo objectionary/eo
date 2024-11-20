@@ -45,7 +45,7 @@ SOFTWARE.
     <xs:attribute name="scope" type="xs:string"/>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
-    <xs:attribute name="star"/>
+    <xs:attribute name="star" type="empty"/>
     <xs:attribute name="as"/>
     <xs:attribute name="atom"/>
     <xs:attribute name="flags"/>
