@@ -114,7 +114,6 @@ SOFTWARE.
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="line"/>
-                <xs:attribute name="expanded"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
