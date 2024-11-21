@@ -22,9 +22,9 @@
 ---
 core:
   - changed-files:
-    - any-glob-to-any-file:
-        - 'eo-parser/src/main/resources/XMIR.xsd'
-        - 'eo-parser/**/*.g4'
-        - '**/*.md'
-        - '**/pom.xml'
-        - '.github/**'
+      - any-glob-to-any-file:
+          - 'eo-parser/src/main/resources/XMIR.xsd'
+          - 'eo-parser/**/*.g4'
+          - '**/*.md'
+          - '**/pom.xml'
+          - '.github/**'
