@@ -32,7 +32,6 @@ import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.cactoos.iterable.Mapped;
@@ -73,15 +72,10 @@ final class SnippetIT {
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
-                f.files().file("src/main/eo").save(
-                    Paths.get(System.getProperty("user.dir")).resolve("src/main/eo")
-                );
+                new CopiedSources(f).apply("src/main/eo");
                 f.files()
                     .file(String.format("src/main/eo/%s", file))
-                    .write(
-                        String.format("%s\n", map.get("eo"))
-                            .getBytes(StandardCharsets.UTF_8)
-                    );
+                    .write(String.format("%s\n", map.get("eo")).getBytes(StandardCharsets.UTF_8));
                 f.dependencies().append(
                     "org.eolang",
                     "eo-runtime",
@@ -90,7 +84,6 @@ final class SnippetIT {
                         "1.0-SNAPSHOT"
                     )
                 );
-                f.dependencies().appendItself();
                 f.build()
                     .plugins()
                     .append(

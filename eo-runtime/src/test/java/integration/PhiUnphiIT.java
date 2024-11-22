@@ -54,6 +54,8 @@ final class PhiUnphiIT {
     @ExtendWith(MayBeSlow.class)
     @ExtendWith(WeAreOnline.class)
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
+        final String group = "org.eolang";
+        final String version = System.getProperty("eo.version", "1.0-SNAPSHOT");
         new Farea(temp).together(
             f -> {
                 new CopiedSources(f).apply("src/main").apply("src/test/eo");
@@ -68,12 +70,9 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
+                        group,
                         "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
+                        version
                     )
                     .execution("phi-unphi")
                     .phase("process-sources")
@@ -128,15 +127,17 @@ final class PhiUnphiIT {
                     "junit-pioneer",
                     "2.2.0"
                 );
+                f.dependencies().append(
+                    group,
+                    "eo-runtime",
+                    version
+                );
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
+                        group,
                         "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
+                        version
                     )
                     .execution("compile")
                     .goals(
@@ -158,12 +159,9 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
+                        group,
                         "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
+                        version
                     )
                     .execution("deps")
                     .phase("process-sources")
@@ -171,12 +169,9 @@ final class PhiUnphiIT {
                 f.build()
                     .plugins()
                     .append(
-                        "org.eolang",
+                        group,
                         "eo-maven-plugin",
-                        System.getProperty(
-                            "eo.version",
-                            "1.0-SNAPSHOT"
-                        )
+                        version
                     )
                     .execution("tests")
                     .phase("generate-test-sources")
