@@ -99,7 +99,7 @@ final class PhiUnphiIT {
                     .set("phiOutputDir", "${project.build.directory}/phi")
                     .set("unphiInputDir", "${project.build.directory}/phi")
                     .set("unphiOutputDir", "${project.build.directory}/generated-eo-test/1-parse")
-                    .set("unphiMetas", new String[]{"+tests"})
+                    .set("unphiMetas", new String[]{"+tests", "+unlint abstract-decoratee"})
                     .set("printSourcesDir", "${project.build.directory}/generated-eo-test/1-parse")
                     .set("printOutputDir", "${project.basedir}/src/test/generated-eo")
                     .set("printReversed", Boolean.TRUE.toString());
