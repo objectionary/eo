@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.42.0" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.43.0" elementFormDefault="qualified">
   <xs:annotation>
     <xs:appinfo>XML schema for XMIR documents</xs:appinfo>
     <xs:documentation>
@@ -42,24 +42,11 @@ SOFTWARE.
     </xs:sequence>
     <xs:attribute name="line" type="xs:decimal"/>
     <xs:attribute name="pos" type="xs:decimal"/>
-    <xs:attribute name="scope" type="xs:string"/>
     <xs:attribute name="name"/>
     <xs:attribute name="base"/>
-    <xs:attribute name="data">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="bytes"/>
-          <xs:enumeration value="string"/>
-          <xs:enumeration value="int"/>
-          <xs:enumeration value="float"/>
-          <xs:enumeration value="bool"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="star"/>
+    <xs:attribute name="star" type="empty"/>
     <xs:attribute name="as"/>
     <xs:attribute name="atom"/>
-    <xs:attribute name="flags"/>
     <xs:attribute name="loc"/>
     <xs:attribute name="abstract" type="empty"/>
     <xs:attribute name="method" type="empty"/>
@@ -127,7 +114,6 @@ SOFTWARE.
                   <xs:element name="part" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="line"/>
-                <xs:attribute name="expanded"/>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
