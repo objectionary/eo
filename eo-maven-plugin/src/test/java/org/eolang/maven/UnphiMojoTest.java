@@ -29,7 +29,9 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -58,6 +60,60 @@ import org.yaml.snakeyaml.Yaml;
  */
 @ExtendWith(MktmpResolver.class)
 final class UnphiMojoTest {
+
+    @Test
+    void convertsPhiToXmir(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/phi/foo.phi").write(
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( α0 ↦ ⟦ Δ ⤍ 00- ⟧ ) ⟧}".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .phase("initialize")
+                    .goals("phi-to-xmir");
+                f.exec("initialize");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the .xmir file is generated",
+            XhtmlMatchers.xhtml(
+                new String(
+                    Files.readAllBytes(
+                        temp.resolve("target/eo/1-parse/foo.xmir")
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths("/program/objects/o[text()='00-']")
+        );
+    }
+
+    @Test
+    void failsOnBrokenPhiSyntax(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("target/eo/phi/foo.phi").write(
+                    "{ ⟦ a ↦ Φ.org.eolang.bytes ( Δ ⤍ 00- ) ⟧}".getBytes()
+                );
+                f.build()
+                    .plugins()
+                    .appendItself()
+                    .execution()
+                    .phase("initialize")
+                    .goals("phi-to-xmir");
+                MatcherAssert.assertThat(
+                    "fails because of broken phi syntax",
+                    f.execQuiet("initialize"),
+                    Matchers.not(Matchers.equalTo(0))
+                );
+            }
+        );
+    }
+
     @Test
     void createsFile(@Mktmp final Path temp) throws Exception {
         new HmBase(temp).save(
