@@ -76,16 +76,16 @@ final class UnphiMojoTest {
         );
     }
 
-    @Test
-    void failsIfParsedWithErrors(@Mktmp final Path temp) throws IOException {
-        new HmBase(temp).save(
-            "std ↦ Φ.org.eolang.io.stdout, y ↦ Φ.org.eolang.x",
-            Paths.get("target/phi/std.phi")
-        );
+    @ParameterizedTest
+    @CsvSource({
+        "std ↦ Φ.org.eolang.io.stdout",
+        "{⟦access ↦ Φ.jeo.int (α0 ↦ Φ.org.eolang.bytes (Δ ⤍ 00-00-00-00-00-00-00-21))⟧}"
+    })
+    void failsIfParsedWithErrors(final String program, @Mktmp final Path temp) throws IOException {
+        new HmBase(temp).save(program, Paths.get("target/phi/std.phi"));
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .execute(UnphiMojo.class),
+            () -> new FakeMaven(temp).execute(UnphiMojo.class),
             "UnphiMojo execution should fail because of parsing errors"
         );
     }
