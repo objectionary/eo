@@ -27,6 +27,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -103,8 +105,17 @@ final class PhiMojoTest {
         );
         MatcherAssert.assertThat(
             "the .phi file is generated",
-            temp.resolve("target/eo/phi/org/eolang/bytes.phi").toFile().exists(),
-            Matchers.is(true)
+            new String(
+                Files.readAllBytes(
+                    temp.resolve("target/eo/phi/org/eolang/bytes.phi")
+                ),
+                StandardCharsets.UTF_8
+            ),
+            Matchers.allOf(
+                Matchers.containsString("α0 ↦ Φ.org.eolang.bytes("),
+                Matchers.containsString("α0 ↦ ⟦ Δ ⤍ 01- ⟧"),
+                Matchers.containsString("yes ↦ ξ.eq(")
+            )
         );
     }
 
