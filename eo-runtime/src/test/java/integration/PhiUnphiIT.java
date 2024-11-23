@@ -32,6 +32,7 @@ import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -56,7 +57,12 @@ final class PhiUnphiIT {
     void runsTestsAfterPhiAndUnphi(final @Mktmp Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
-                new CopiedSources(f).apply("src/main").apply("src/test/eo");
+                f.files().file("src/main").save(
+                    Paths.get(System.getProperty("user.dir")).resolve("src/main")
+                );
+                f.files().file("src/test/eo").save(
+                    Paths.get(System.getProperty("user.dir")).resolve("src/test/eo")
+                );
                 f.properties()
                     .set("project.build.sourceEncoding", StandardCharsets.UTF_8.name())
                     .set("project.reporting.outputEncoding", StandardCharsets.UTF_8.name());
