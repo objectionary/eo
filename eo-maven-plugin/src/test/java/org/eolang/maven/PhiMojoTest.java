@@ -164,9 +164,7 @@ final class PhiMojoTest {
         final String xmir,
         @Mktmp final Path temp
     ) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("phiFailOnError", false)
-            .with("phiOptimize", false);
+        final FakeMaven maven = new FakeMaven(temp);
         new HmBase(temp).save(xmir, Paths.get("target/2-optimize/test.xmir"));
         Assertions.assertDoesNotThrow(
             () -> maven.execute(PhiMojo.class),
@@ -219,8 +217,6 @@ final class PhiMojoTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(map.get("eo").toString())
-                    .with("phiFailOnCritical", false)
-                    .with("phiFailOnError", false)
                     .execute(new FakeMaven.Phi())
                     .result()
                     .get("target/phi/foo/x/main.phi")
